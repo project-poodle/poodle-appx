@@ -7,9 +7,10 @@ elif [ ! -f "$1" ]; then
     echo "ERROR: init yaml file NOT exist: $1 !"
     exit 1
 else
+    pushd
     cd `dirname $1`
     export init_yaml_filepath="`pwd`/`basename $1`"
-    cd -
+    popd
 fi
 
 cd `dirname $0`
