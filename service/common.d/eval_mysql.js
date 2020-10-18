@@ -9,7 +9,7 @@ const parser = new ArgumentParser({
 
 parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
 parser.add_argument('-f', '--filepath', { help: 'mysql command(s) filepath' });
-parser.add_argument('-e', '--execute', { help: 'execute mysql command line(s)' });
+parser.add_argument('-e', '--execute', { help: 'execute mysql command line' });
 
 args = parser.parse_args();
 
