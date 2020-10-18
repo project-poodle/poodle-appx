@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
+##############################
+# check parameters
 if [ "$1" = "" ]; then
     echo "Usage: $0 <init_yaml_filepath>"
     exit 1
 elif [ ! -f "$1" ]; then
     echo "ERROR: init yaml file NOT exist: $1 !"
     exit 1
-else
-    pushd `pwd`
-    cd `dirname $1`
-    export init_yaml_filepath="`pwd`/`basename $1`"
-    popd
 fi
 
+##############################
+# env setup
 pushd `pwd`
 cd `dirname $0`
 export CURR_DIR=`pwd`
 export BASE_DIR=${CURR_DIR}/..
+source ${BASE_DIR}/common.d/func.sh
 popd
 
-source ${BASE_DIR}/common.d/func.sh
 check_root
+
 
 ##############################
 # generate and install templates
