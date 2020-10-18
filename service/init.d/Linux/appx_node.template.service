@@ -1,5 +1,5 @@
 [Unit]
-Description=appx service
+Description=appx node service
 After=network.target
 StartLimitIntervalSec=0
 
@@ -7,9 +7,9 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-User={{appx.init.service_usr_appx}}
-Group={{appx.init.service_grp_appx}}
-ExecStart={{appx.init.location_appx}}/service/app.sh
+User={{{appx.init.service_usr_appx}}}
+Group={{{appx.init.service_grp_appx}}}
+ExecStart={{{appx.init.location_appx}}}/service/app.sh
 
 [Install]
 WantedBy=multi-user.target

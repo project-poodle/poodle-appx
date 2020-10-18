@@ -21,5 +21,5 @@ appx:
         mysql_port: "3306"
         mysql_admin_user: "root"
         mysql_admin_pass: "h6sRVR4Z7e"
-        mysql_appx_user: "{{appx.init.appx_admin_user}}"
-        mysql_appx_pass: "{{appx.init.appx_admin_pass}}"
+        mysql_appx_user: "{{{appx.init.appx_admin_user}}}"
+        mysql_appx_pass: "{{{appx.init.appx_admin_pass}}}"
