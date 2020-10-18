@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-cd `dirname $0`
-export CURR_DIR=`pwd`
-export BASE_DIR=${CURR_DIR}/../..
+if [ "${BASE_DIR}" = "" ]; then
+    echo "ERROR: BASE_DIR variable NOT set !"
+    exit 1
+fi
 
 source ${BASE_DIR}/common.d/func.sh
 
