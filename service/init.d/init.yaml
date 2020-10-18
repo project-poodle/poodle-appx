@@ -5,7 +5,7 @@ appx:
         # schema convention
         schema_prefix: "appx"
         schema_separator: "."
-        # admin user and group must exist before running init.sh
+        # admin user and group MUST EXIST before running init.sh
         service_usr_admin: "root"
         service_grp_admin: "sys"
         # appx service user id and group id - automatically created by init.sh
@@ -13,10 +13,10 @@ appx:
         service_uid_appx: "799"
         service_grp_appx: "appx"
         service_gid_appx: "799"
-        # appx node app username and password
+        # appx node app username and password - CHANGE THIS to initial password
         appx_node_user: "appx"
         appx_node_pass: "P@@dle101"
-        # mysql init values
+        # mysql init values - CHANGE THIS to mysql credentials
         mysql_host: "192.168.1.200"
         mysql_port: "3306"
         mysql_admin_user: "root"
