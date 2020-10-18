@@ -9,6 +9,7 @@ elif [ ! -f "$1" ]; then
 else
     cd `dirname $1`
     export init_yaml_filepath="`pwd`/`basename $1`"
+    cd -
 fi
 
 cd `dirname $0`
