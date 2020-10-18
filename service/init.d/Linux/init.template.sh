@@ -14,6 +14,8 @@ sudo useradd -r -s /usr/sbin/nologin -u {{appx.init.service_uid_appx}} -g {{appx
 rm -fR /tmp/$$
 mkdir -p /tmp/$$
 
+umask 022
+
 # install appx_mysql
 echo "=========="
 echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service --yaml ${INIT_YAML}
