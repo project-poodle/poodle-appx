@@ -7,7 +7,8 @@ elif [ ! -f "$1" ]; then
     echo "ERROR: init yaml file NOT exist: $1 !"
     exit 1
 else
-    export init_yaml_filename="$1"
+    cd `dirname $1`
+    export init_yaml_filepath="`pwd`/`basename $1`"
 fi
 
 cd `dirname $0`
@@ -24,7 +25,7 @@ rm -fR /tmp/$$
 mkdir -p /tmp/$$
 
 echo "=========="
-parse_yaml "${init_yaml_filename}" | tee /tmp/$$/env.sh
+parse_yaml "${init_yaml_filepath}" | tee /tmp/$$/env.sh
 source /tmp/$$/env.sh
 
 mkdir -p ${BASE_DIR}/conf.d
