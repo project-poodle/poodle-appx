@@ -24,7 +24,8 @@ check_node_binary()
     fi
 }
 
-function parse_yaml {
+function parse_yaml()
+{
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\):|\1|" \
@@ -40,3 +41,35 @@ function parse_yaml {
       }
    }'
 }
+
+function eval_template()
+{
+    if [ "${NODE}" = "" ]; then
+        echo "ERROR: NODE variable NOT set !"
+        exit 1
+    fi
+
+    if [ "${BASE_DIR}" = "" ]; then
+        echo "ERROR: BASE_DIR variable NOT set !"
+        exit 1
+    fi
+
+    ${NODE} ${BASE_DIR}/common.d/eval_template.js "$@"
+}
+
+function eval_mysql()
+{
+    if [ "${NODE}" = "" ]; then
+        echo "ERROR: NODE variable NOT set !"
+        exit 1
+    fi
+
+    if [ "${BASE_DIR}" = "" ]; then
+        echo "ERROR: BASE_DIR variable NOT set !"
+        exit 1
+    fi
+
+    ${NODE} ${BASE_DIR}/common.d/eval_mysql.js "$@"
+}
+
+check_node_binary

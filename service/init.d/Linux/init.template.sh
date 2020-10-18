@@ -18,9 +18,7 @@ umask 022
 
 # install appx_mysql
 echo "=========="
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service --yaml ${INIT_YAML}
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service --yaml ${INIT_YAML} | tee /tmp/$$/appx_mysql.service
+eval_template --template ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service --yaml ${INIT_YAML} | tee /tmp/$$/appx_mysql.service
 
 sudo cp -f /tmp/$$/appx_mysql.service /etc/systemd/system/
 sudo systemctl daemon-reload
@@ -30,9 +28,7 @@ sudo systemctl status appx_mysql
 
 # install appx_node
 echo "=========="
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${BASE_DIR}/init.d/`uname`/appx_node.template.service --yaml ${INIT_YAML}
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${BASE_DIR}/init.d/`uname`/appx_node.template.service --yaml ${INIT_YAML} | tee /tmp/$$/appx_node.service
+eval_template --template ${BASE_DIR}/init.d/`uname`/appx_node.template.service --yaml ${INIT_YAML} | tee /tmp/$$/appx_node.service
 
 sudo cp -f /tmp/$$/appx_node.service /etc/systemd/system/
 sudo systemctl daemon-reload

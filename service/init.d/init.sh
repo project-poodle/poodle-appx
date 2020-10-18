@@ -37,30 +37,22 @@ chmod 755 ${BASE_DIR}/conf.d
 umask 077
 
 echo "=========="
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.yaml
+eval_template --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.yaml
 export INIT_YAML=/tmp/$$/init.yaml
 
 echo "=========="
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${INIT_YAML}
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${INIT_YAML} | tee /tmp/$$/init.`uname`.sh
+eval_template --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${INIT_YAML} | tee /tmp/$$/init.`uname`.sh
 bash -x /tmp/$$/init.`uname`.sh
 
 echo "=========="
 MYSQL_ADMIN_FILE=${BASE_DIR}/conf.d/mysql_admin.json
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/mysql_admin.json --yaml ${INIT_YAML}
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/mysql_admin.json --yaml ${INIT_YAML} | tee ${MYSQL_ADMIN_FILE}
+eval_template --template ${CURR_DIR}/mysql_admin.json --yaml ${INIT_YAML} | tee ${MYSQL_ADMIN_FILE}
 chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
 chmod 600 ${MYSQL_ADMIN_FILE}
 
 echo "=========="
 MYSQL_APPX_FILE=${BASE_DIR}/conf.d/mysql_appx.json
-echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML}
-echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML} | tee ${MYSQL_APPX_FILE}
+eval_template --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML} | tee ${MYSQL_APPX_FILE}
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
 chmod 600 ${MYSQL_APPX_FILE}
 
