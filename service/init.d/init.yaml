@@ -6,8 +6,10 @@ appx:
         # appx service id
         service_id_admin: "root"
         service_grp_admin: "sys"
-        service_id_appx: "appx"
+        service_usr_appx: "appx"
+        service_uid_appx: "799"
         service_grp_appx: "appx"
+        service_gid_appx: "799"
         # appx local admin
         appx_admin_user: "appx"
         appx_admin_pass: "P@@dle101"

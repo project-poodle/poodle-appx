@@ -23,11 +23,21 @@ check_node_binary
 rm -fR /tmp/$$
 mkdir -p /tmp/$$
 
-umask 077
-
 echo "=========="
 parse_yaml "${init_yaml_filename}" | tee /tmp/$$/env.sh
 source /tmp/$$/env.sh
+
+mkdir ${BASE_DIR}/conf.d
+chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${BASE_DIR}/conf.d
+chmod 755 ${BASE_DIR}/conf.d
+
+umask 077
+
+echo "=========="
+echo ${NODE} ${CURR_DIR}/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${CURR_DIR}/init.yaml
+echo "----------"
+echo ${NODE} ${CURR_DIR}/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.`uname`.sh
+bash -x /tmp/$$/init.`uname`.sh
 
 echo "=========="
 echo ${NODE} ${CURR_DIR}/eval_template.js --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml
@@ -47,7 +57,7 @@ MYSQL_APPX_FILE=${BASE_DIR}/conf.d/mysql_appx.json
 echo ${NODE} ${CURR_DIR}/eval_template.js --template ${CURR_DIR}/mysql_appx.json --yaml /tmp/$$/init.yaml
 echo "----------"
 ${NODE} ${CURR_DIR}/eval_template.js --template ${CURR_DIR}/mysql_appx.json --yaml /tmp/$$/init.yaml | tee ${MYSQL_APPX_FILE}
-chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
+chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
 chmod 600 ${MYSQL_APPX_FILE}
 
 echo "----------"
