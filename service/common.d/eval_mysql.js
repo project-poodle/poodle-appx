@@ -15,28 +15,28 @@ args = parser.parse_args();
 
 
 let commands = ""
-if (args.path == undefined && args.command == undefined) {
+if (args.filepath == undefined && args.execute == undefined) {
 
-    console.error("ERROR: either path or command is required !")
+    console.error("ERROR: either filepath or execute is required !")
     process.exit(1)
 
-} else if (args.path != undefined && args.command != undefined ) {
+} else if (args.filepath != undefined && args.execute != undefined ) {
 
-    console.error("ERROR: cannot have both path and command at the same time !")
+    console.error("ERROR: cannot have both filepath and execute at the same time !")
     process.exit(1)
 
-} else if (args.path != undefined) {
+} else if (args.filepath != undefined) {
 
-    if (!fs.existsSync(args.path)) {
-        console.error("ERROR: path file does not exist [" + args.path + "] !")
+    if (!fs.existsSync(args.filepath)) {
+        console.error("ERROR: path file does not exist [" + args.filepath + "] !")
         process.exit(1)
     } else {
-        commands = fs.readFileSync(args.path, 'utf8')
+        commands = fs.readFileSync(args.filepath, 'utf8')
     }
 
-} else if (args.command != undefined) {
+} else if (args.execute != undefined) {
 
-    commands = args.command
+    commands = args.execute
 
 } else {
 
@@ -58,3 +58,13 @@ var conn = mysql.createConnection({
     user: mysql_conf.user,
     password: mysql_conf.pass
 })
+
+conn.query(commands, function (error, results, fields) {
+  if (error) {
+      console.log(error);
+      process.exit(1);
+  }
+  console.log(results);
+});
+
+conn.end();

@@ -28,9 +28,6 @@ rm -fR /tmp/$$
 mkdir -p /tmp/$$
 
 echo "===================="
-parse_yaml "${init_yaml_filepath}" | tee /tmp/$$/env.sh
-source /tmp/$$/env.sh
-
 mkdir -p ${BASE_DIR}/conf.d
 chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${BASE_DIR}/conf.d
 chmod 755 ${BASE_DIR}/conf.d
@@ -40,6 +37,9 @@ umask 077
 echo "===================="
 eval_template --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.yaml
 export INIT_YAML=/tmp/$$/init.yaml
+
+parse_yaml "${INIT_YAML}" | tee /tmp/$$/env.sh
+source /tmp/$$/env.sh
 
 echo "===================="
 eval_template --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${INIT_YAML} | tee /tmp/$$/init.`uname`.sh
@@ -56,6 +56,18 @@ MYSQL_APPX_FILE=${BASE_DIR}/conf.d/mysql_appx.json
 eval_template --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML} | tee ${MYSQL_APPX_FILE}
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
 chmod 600 ${MYSQL_APPX_FILE}
+
+echo "===================="
+echo eval_mysql_admin -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
+eval_mysql_admin -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
+
+echo "===================="
+echo eval_mysql_admin -e "CREATE DATABASE IF NOT EXISTS \`${appx__init__schema_prefix}\`"
+eval_mysql_admin -e "CREATE DATABASE IF NOT EXISTS \`${appx__init__schema_prefix}\`"
+
+echo "===================="
+echo eval_mysql_admin -e "GRANT ALL PRIVILEGES ON \`${appx__init__schema_prefix}\`.* TO '${appx__init__mysql_node_user}'@'%'"
+eval_mysql_admin -e "GRANT ALL PRIVILEGES ON \`${appx__init__schema_prefix}\`.* TO '${appx__init__mysql_node_user}'@'%'"
 
 echo "----------"
 rm -fR /tmp/$$
