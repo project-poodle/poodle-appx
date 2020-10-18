@@ -1,0 +1,18 @@
+appx:
+    init:
+        # schema convention
+        schema_prefix: "appx"
+        schema_separator: "."
+        # appx service id
+        service_id_admin: "root"
+        service_id_appx: "appx"
+        # appx local admin
+        appx_admin_user: "appx"
+        appx_admin_pass: "P@@dle101"
+        # mysql init values
+        mysql_host: "192.168.1.200"
+        mysql_port: "3306"
+        mysql_admin_user: "root"
+        mysql_admin_pass: "h6sRVR4Z7e"
+        mysql_appx_user: "{{appx.init.appx_admin_user}}"
+        mysql_appx_pass: "{{appx.init.appx_admin_pass}}"

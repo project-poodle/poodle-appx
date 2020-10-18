@@ -10,7 +10,10 @@
   "author": "Draco Tadpole",
   "license": "Apache-2.0",
   "dependencies": {
+    "argparse": "^2.0.1",
     "express": "^4.17.1",
-    "mysql": "^2.18.1"
+    "mustache": "^4.0.1",
+    "mysql": "^2.18.1",
+    "yaml": "^1.10.0"
   }
 }

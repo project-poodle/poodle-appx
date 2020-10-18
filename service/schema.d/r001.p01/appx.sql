@@ -24,13 +24,13 @@ DROP TABLE IF EXISTS `appx`.`transform_status`;
 
 CREATE TABLE IF NOT EXISTS `appx`.`_appx_meta` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
-    `appx_name`             VARCHAR(32)             NOT NULL,
-    `appx_key`              VARCHAR(32)             NOT NULL,
-    `appx_info`             JSON                    NOT NULL,
+    `meta_name`             VARCHAR(32)             NOT NULL,
+    `meta_key`              VARCHAR(32)             NOT NULL,
+    `meta_info`             JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_metadata(appx_name, appx_key),
+    UNIQUE INDEX idx_metadata(meta_name, meta_key),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -377,10 +377,10 @@ CREATE TABLE IF NOT EXISTS `appx`.`transform_status` (
 CHARACTER SET utf8 COLLATE utf8_bin
 PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
 
-INSERT INTO `appx`.`_appx_meta`(`appx_name`, `appx_key`, `appx_info`) VALUES ('appx.version',       'r001.p01',                     JSON_OBJECT('comment', 'initialize')) ON DUPLICATE KEY UPDATE appx_info=VALUES(appx_info);
-INSERT INTO `appx`.`_appx_meta`(`appx_name`, `appx_key`, `appx_info`) VALUES ('appx.schema',        'prefix',                       JSON_OBJECT('value', '{{appx.init.schema_prefix}}', 'comment', 'initialize')) ON DUPLICATE KEY UPDATE appx_info=VALUES(appx_info);
-INSERT INTO `appx`.`_appx_meta`(`appx_name`, `appx_key`, `appx_info`) VALUES ('appx.schema',        'separator',                    JSON_OBJECT('value', '{{appx.init.schema_separator}}', 'comment', 'initialize')) ON DUPLICATE KEY UPDATE appx_info=VALUES(appx_info);
-INSERT INTO `appx`.`_appx_meta`(`appx_name`, `appx_key`, `appx_info`) VALUES ('appx.local_auth',    '{{appx.init.admin_user}}',     JSON_OBJECT('password', PASSWORD("{{appx.init.admin_pass}}"), 'comment', 'initialize')) ON DUPLICATE KEY UPDATE appx_info=VALUES(appx_info);
+INSERT INTO `appx`.`_appx_meta`(`meta_name`, `meta_key`, `meta_info`) VALUES ('appx.version',       'r001.p01',                     JSON_OBJECT('comment', 'initialize')) ON DUPLICATE KEY UPDATE meta_info=VALUES(meta_info);
+INSERT INTO `appx`.`_appx_meta`(`meta_name`, `meta_key`, `meta_info`) VALUES ('appx.schema',        'prefix',                       JSON_OBJECT('value', '{{appx.init.schema_prefix}}', 'comment', 'initialize')) ON DUPLICATE KEY UPDATE meta_info=VALUES(meta_info);
+INSERT INTO `appx`.`_appx_meta`(`meta_name`, `meta_key`, `meta_info`) VALUES ('appx.schema',        'separator',                    JSON_OBJECT('value', '{{appx.init.schema_separator}}', 'comment', 'initialize')) ON DUPLICATE KEY UPDATE meta_info=VALUES(meta_info);
+INSERT INTO `appx`.`_appx_meta`(`meta_name`, `meta_key`, `meta_info`) VALUES ('appx.local_auth',    '{{appx.init.admin_user}}',     JSON_OBJECT('password', PASSWORD("{{appx.init.admin_pass}}"), 'comment', 'initialize')) ON DUPLICATE KEY UPDATE meta_info=VALUES(meta_info);
 
-INSERT INTO `appx`.`_role_scope`(`scope_name`, `scope_spec`) VALUES ('appx.local_auth', '{"comment": "initial scope"}') ON DUPLICATE KEY UPDATE scope_spec=VALUES(scope_spec);
-INSERT INTO `appx`.`_role_grant`(`role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('appx.superadmin', 'appx.local_auth', 'appx', '{"comment": "initial grant"}') ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
+INSERT INTO `appx`.`_role_scope`(`scope_name`, `scope_spec`) VALUES ('appx.local_auth', '{"comment": "initialize"}') ON DUPLICATE KEY UPDATE scope_spec=VALUES(scope_spec);
+INSERT INTO `appx`.`_role_grant`(`role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('appx.superadmin', 'appx.local_auth', 'appx', '{"comment": "initialize"}') ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
