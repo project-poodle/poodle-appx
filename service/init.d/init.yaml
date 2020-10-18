@@ -1,11 +1,14 @@
 appx:
     init:
+        # install location
+        location_appx: "/opt/appx"
         # schema convention
         schema_prefix: "appx"
         schema_separator: "."
-        # appx service id
-        service_id_admin: "root"
+        # appx admin id
+        service_usr_admin: "root"
         service_grp_admin: "sys"
+        # appx service id
         service_usr_appx: "appx"
         service_uid_appx: "799"
         service_grp_appx: "appx"

@@ -1,13 +1,11 @@
 const fs = require('fs');
 const mysql = require('mysql');
 const { ArgumentParser } = require('argparse');
-const { version } = require('../../package.json');
 
 const parser = new ArgumentParser({
   description: 'database admin procedure'
 });
 
-parser.add_argument('-v', '--version', { action: 'version', version });
 parser.add_argument('-f', '--mysql_admin_file', { help: 'mysql admin config file' });
 
 args = parser.parse_args();

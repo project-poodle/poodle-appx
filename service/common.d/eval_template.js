@@ -1,15 +1,13 @@
 const fs = require('fs');
-const YAML = require('yaml')
+const YAML = require('yaml');
 const Mustache = require('mustache');
 const { ArgumentParser } = require('argparse');
-const { version } = require('../package.json');
 
 
 const parser = new ArgumentParser({
   description: 'evaluate template'
 });
 
-parser.add_argument('-v', '--version', { action: 'version', version });
 parser.add_argument('-t', '--template', { help: 'template file', required: true });
 parser.add_argument('-y', '--yaml', { help: 'yaml value file' });
 parser.add_argument('-j', '--json', { help: 'json value file' });
@@ -58,8 +56,8 @@ if (!fs.existsSync(args.template)) {
     process.exit(1)
 }
 
-var template = fs.readFileSync(args.template, 'utf8')
+let template = fs.readFileSync(args.template, 'utf8')
 
 
-var rendered = Mustache.render(template, value);
+let rendered = Mustache.render(template, value);
 console.log(rendered)
