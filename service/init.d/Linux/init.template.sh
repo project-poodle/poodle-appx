@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-# create group appx
+# cleanup user and group
+sudo userdel {{appx.init.service_usr_appx}}
 sudo groupdel {{appx.init.service_grp_appx}}
+
+# create group appx
 sudo groupadd -r -g {{appx.init.service_gid_appx}} {{appx.init.service_grp_appx}}
 
 # create user appx
-sudo userdel {{appx.init.service_usr_appx}}
 sudo useradd -r -s /usr/sbin/nologin -u {{appx.init.service_uid_appx}} -g {{appx.init.service_gid_appx}} {{appx.init.service_usr_appx}}
 
 
