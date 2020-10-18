@@ -39,6 +39,7 @@ function eval_template()
     fi
 
     ${NODE} ${BASE_DIR}/common.d/eval_template.js "$@"
+    return $?
 }
 
 function eval_mysql()
@@ -54,6 +55,7 @@ function eval_mysql()
     fi
 
     ${NODE} ${BASE_DIR}/common.d/eval_mysql.js "$@"
+    return $?
 }
 
 function eval_mysql_admin()
@@ -69,6 +71,7 @@ function eval_mysql_admin()
     fi
 
     ${NODE} ${BASE_DIR}/common.d/eval_mysql.js --conf ${BASE_DIR}/conf.d/mysql_admin.json "$@"
+    return $?
 }
 
 function eval_mysql_appx()
@@ -84,6 +87,7 @@ function eval_mysql_appx()
     fi
 
     ${NODE} ${BASE_DIR}/common.d/eval_mysql.js --conf ${BASE_DIR}/conf.d/mysql_appx.json "$@"
+    return $?
 }
 
 function parse_yaml()
