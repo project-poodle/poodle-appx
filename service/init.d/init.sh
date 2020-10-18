@@ -27,7 +27,7 @@ echo "=========="
 parse_yaml "${init_yaml_filename}" | tee /tmp/$$/env.sh
 source /tmp/$$/env.sh
 
-mkdir ${BASE_DIR}/conf.d
+mkdir -p ${BASE_DIR}/conf.d
 chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${BASE_DIR}/conf.d
 chmod 755 ${BASE_DIR}/conf.d
 
