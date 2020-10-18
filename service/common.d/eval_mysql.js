@@ -7,14 +7,14 @@ const parser = new ArgumentParser({
   description: 'evaluate mysql commands'
 });
 
-parser.add_argument('-f', '--conf', { help: 'mysql config file', required: true });
-parser.add_argument('-p', '--path', { help: 'mysql command file path' });
-parser.add_argument('-c', '--command', { help: 'mysql command lines' });
+parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
+parser.add_argument('-f', '--filepath', { help: 'mysql command(s) filepath' });
+parser.add_argument('-e', '--execute', { help: 'execute mysql command line(s)' });
 
 args = parser.parse_args();
 
 
-let value = ""
+let commands = ""
 if (args.path == undefined && args.command == undefined) {
 
     console.error("ERROR: either path or command is required !")
@@ -31,12 +31,12 @@ if (args.path == undefined && args.command == undefined) {
         console.error("ERROR: path file does not exist [" + args.path + "] !")
         process.exit(1)
     } else {
-        value = fs.readFileSync(args.path, 'utf8')
+        commands = fs.readFileSync(args.path, 'utf8')
     }
 
 } else if (args.command != undefined) {
 
-    value = args.command
+    commands = args.command
 
 } else {
 

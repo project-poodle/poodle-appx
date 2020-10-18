@@ -13,18 +13,21 @@ else
     popd
 fi
 
+pushd `pwd`
 cd `dirname $0`
 export CURR_DIR=`pwd`
 export BASE_DIR=${CURR_DIR}/..
+popd
 
 source ${BASE_DIR}/common.d/func.sh
 check_root
 
-
+##############################
+# generate and install templates
 rm -fR /tmp/$$
 mkdir -p /tmp/$$
 
-echo "=========="
+echo "===================="
 parse_yaml "${init_yaml_filepath}" | tee /tmp/$$/env.sh
 source /tmp/$$/env.sh
 
@@ -34,21 +37,21 @@ chmod 755 ${BASE_DIR}/conf.d
 
 umask 077
 
-echo "=========="
+echo "===================="
 eval_template --template ${CURR_DIR}/init.yaml --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.yaml
 export INIT_YAML=/tmp/$$/init.yaml
 
-echo "=========="
+echo "===================="
 eval_template --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${INIT_YAML} | tee /tmp/$$/init.`uname`.sh
 bash -x /tmp/$$/init.`uname`.sh
 
-echo "=========="
+echo "===================="
 MYSQL_ADMIN_FILE=${BASE_DIR}/conf.d/mysql_admin.json
 eval_template --template ${CURR_DIR}/mysql_admin.json --yaml ${INIT_YAML} | tee ${MYSQL_ADMIN_FILE}
 chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
 chmod 600 ${MYSQL_ADMIN_FILE}
 
-echo "=========="
+echo "===================="
 MYSQL_APPX_FILE=${BASE_DIR}/conf.d/mysql_appx.json
 eval_template --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML} | tee ${MYSQL_APPX_FILE}
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}

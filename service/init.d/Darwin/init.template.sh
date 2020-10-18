@@ -5,8 +5,16 @@ if [ "${BASE_DIR}" = "" ]; then
     exit 1
 fi
 
+if [ "${INIT_YAML}" = "" ]; then
+    echo "ERROR: INIT_YAML variable NOT set !"
+    exit 1
+fi
+
 source ${BASE_DIR}/common.d/func.sh
 
+umask 022
+
+##############################
 # cleanup user and group
 sudo dscl . -delete /Users/{{{appx.init.service_usr_appx}}}
 sudo dscl . -delete /Groups/{{{appx.init.service_grp_appx}}}
