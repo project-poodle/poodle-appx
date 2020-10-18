@@ -1,8 +1,8 @@
 {
     "host": "{{{appx.init.mysql_host}}}",
     "port": "{{{appx.init.mysql_port}}}",
-    "user": "{{{appx.init.mysql_appx_user}}}",
-    "pass": "{{{appx.init.mysql_appx_pass}}}",
+    "user": "{{{appx.init.mysql_node_user}}}",
+    "pass": "{{{appx.init.mysql_node_pass}}}",
     "schema_prefix": "{{{appx.init.schema_prefix}}}",
     "schema_separator": "{{{appx.init.schema_separator}}}"
 }
