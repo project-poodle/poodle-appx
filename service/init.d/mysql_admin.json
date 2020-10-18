@@ -3,6 +3,7 @@
     "port": "{{{appx.init.mysql_port}}}",
     "user": "{{{appx.init.mysql_admin_user}}}",
     "pass": "{{{appx.init.mysql_admin_pass}}}",
+    "node_user": "{{{appx.init.mysql_node_user}}}",
     "schema_prefix": "{{{appx.init.schema_prefix}}}",
     "schema_separator": "{{{appx.init.schema_separator}}}"
 }

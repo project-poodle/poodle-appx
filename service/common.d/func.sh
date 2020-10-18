@@ -26,6 +26,25 @@ check_node_binary()
 
 check_node_binary
 
+sleep_random()
+{
+   MIN_SECS=$1
+   MAX_SECS=$2
+   if [ "$1" = "" -o "$1" -lt "0" ]; then
+      echo "INFO: MIN_SECS set to 5."
+      MIN_SECS=5
+   fi
+
+   if [ "$2" = "" -o "$2" -lt "$1" ]; then
+      MAX_SECS=$(($MIN_SECS * 2))
+      echo "INFO: MAX_SECS set to $MAX_SECS."
+   fi
+
+   sleep_secs=$(($MIN_SECS + $RANDOM * ($MAX_SECS - $MIN_SECS) / 32000))
+   echo "INFO: sleep $sleep_secs.  [current time $SECONDS]"
+   sleep $sleep_secs
+}
+
 function eval_template()
 {
     if [ "${NODE}" = "" ]; then

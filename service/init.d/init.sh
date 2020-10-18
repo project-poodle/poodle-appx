@@ -51,11 +51,20 @@ eval_template --template ${CURR_DIR}/mysql_admin.json --yaml ${INIT_YAML} | tee 
 chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
 chmod 600 ${MYSQL_ADMIN_FILE}
 
+mkdir -p /var/log/appx-mysql/
+chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} /var/log/appx-mysql/
+chmod -R ug-rwx /var/log/appx-mysql/
+
+
 echo "===================="
 MYSQL_APPX_FILE=${BASE_DIR}/conf.d/mysql_appx.json
 eval_template --template ${CURR_DIR}/mysql_appx.json --yaml ${INIT_YAML} | tee ${MYSQL_APPX_FILE}
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
 chmod 600 ${MYSQL_APPX_FILE}
+
+mkdir -p /var/log/appx-node/
+chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} /var/log/appx-node/
+chmod -R ug=rX /var/log/appx-node/
 
 echo "===================="
 echo eval_mysql_admin -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
