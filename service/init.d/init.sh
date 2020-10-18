@@ -11,8 +11,8 @@ else
 fi
 
 cd `dirname $0`
-CURR_DIR=`pwd`
-BASE_DIR=${CURR_DIR}/..
+export CURR_DIR=`pwd`
+export BASE_DIR=${CURR_DIR}/..
 
 source ${BASE_DIR}/common.d/func.sh
 
@@ -41,7 +41,7 @@ ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/init.yaml -
 echo "=========="
 echo ${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml /tmp/$$/init.yaml
 echo "----------"
-${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml ${CURR_DIR}/init.yaml | tee /tmp/$$/init.`uname`.sh
+${NODE} ${BASE_DIR}/common.d/eval_template.js --template ${CURR_DIR}/`uname`/init.template.sh --yaml /tmp/$$/init.yaml | tee /tmp/$$/init.`uname`.sh
 bash -x /tmp/$$/init.`uname`.sh
 
 echo "=========="
