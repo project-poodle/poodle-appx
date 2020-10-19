@@ -1,0 +1,79 @@
+######################################################################
+# global
+global:
+    version: "r001.p01"
+    schema_prefix: "{{{MYSQL_CONF.schema_prefix}}}"
+    schema_separator: "{{{MYSQL_CONF.schema_separator}}}"
+
+######################################################################
+# metadata
+_appx_meta:
+    - meta_name: "appx.version"
+      meta_key: "{{{SELF.global.version}}}"
+      meta_info:
+          comment: "initialize"
+    - meta_name: "appx.schema"
+      meta_key: "prefix"
+      meta_info:
+          value: "{{{MYSQL_CONF.schema_prefix}}}"
+          comment: "initialize"
+    - meta_name: "appx.schema"
+      meta_key: "separator"
+      meta_info:
+          value: "{{{MYSQL_CONF.schema_separator}}}"
+          comment: "initialize"
+    - meta_name: "appx.local_auth"
+      meta_key: "{{{MYSQL_CONF.appx_node_user}}}"
+      meta_info:
+          function: "PASSWORD"
+          password: "{{{MYSQL_CONF.appx_node_pass}}}"
+          comment: "initialize"
+
+######################################################################
+# _role_scope
+_role_scope:
+    - scope_name: "appx.local_auth"
+      scope_spec:
+          comment: "initialize"
+
+# _role_grant
+_role_grant:
+    - role_name: "appx.superadmin"
+      grant_scope: "appx.local_auth"
+      grant_name: "{{{MYSQL_CONF.appx_node_user}}}"
+      grant_spec:
+          comment: "initialize"
+
+######################################################################
+# namespace
+namespace:
+    - namespace: "sys"
+      namespace_spec:
+          comment: "initialize"
+
+######################################################################
+# env
+env:
+    - namespace: "sys"
+      env_name: "internal"
+      env_spec:
+          comment: "initialize"
+
+######################################################################
+# application
+app:
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_spec:
+          comment: "initialize"
+
+######################################################################
+# deployment
+deployment:
+    - namespace: "sys"
+      env_name: "internal"
+      app_name: "appx"
+      app_ver: "internal"
+      deployment_spec:
+          comment: "initialize"

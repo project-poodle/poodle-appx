@@ -2,13 +2,13 @@ appx:
     init:
         # install location
         location_appx: "/opt/appx"
-        # schema convention
+        # schema convention - prefix is limited to 5 charaters or less. separater is 1 charater
         schema_prefix: "appx"
         schema_separator: "."
-        # admin user and group MUST EXIST before running init.sh
+        # admin service user and group MUST EXIST before running init.sh
         service_usr_admin: "root"
         service_grp_admin: "sys"
-        # appx service user id and group id - automatically created by init.sh
+        # appx service user and group - automatically created by init.sh
         service_usr_appx: "appx"
         service_uid_appx: "799"
         service_grp_appx: "appx"

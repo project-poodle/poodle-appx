@@ -4,5 +4,7 @@
     "user": "{{{appx.init.mysql_node_user}}}",
     "pass": "{{{appx.init.mysql_node_pass}}}",
     "schema_prefix": "{{{appx.init.schema_prefix}}}",
-    "schema_separator": "{{{appx.init.schema_separator}}}"
+    "schema_separator": "{{{appx.init.schema_separator}}}",
+    "appx_node_user": "{{{appx.init.appx_node_user}}}",
+    "appx_node_pass": "{{{appx.init.appx_node_pass}}}"
 }

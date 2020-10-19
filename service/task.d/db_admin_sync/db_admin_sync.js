@@ -35,7 +35,7 @@ pool.query('SHOW DATABASES LIKE "' + pattern + '"', function (error, results) {
     // loop through all databases
     results.forEach((result, i) => {
         // grant privileges to mysql_conf.node_user
-        let grant_sql = 'GRANT ALL PRIVILEGES ON `' + result[Object.keys(result)[0]] + '`.* TO "' + mysql_conf.node_user + '"@"%"'
+        let grant_sql = 'GRANT ALL PRIVILEGES ON `' + result[Object.keys(result)[0]] + '`.* TO "' + mysql_conf.mysql_node_user + '"@"%"'
         pool.query(grant_sql, function (error, results) {
             if (error) {
                 count_failure += 1
