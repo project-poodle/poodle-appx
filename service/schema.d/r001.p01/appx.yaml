@@ -9,7 +9,7 @@ global:
 # metadata
 _appx_meta:
     - meta_name: "appx.version"
-      meta_key: "{{{SELF.global.version}}}"
+      meta_key: "{{{global.version}}}"
       meta_info:
           comment: "initialize"
     - meta_name: "appx.schema"
