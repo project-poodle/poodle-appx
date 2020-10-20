@@ -1,7 +1,7 @@
-const fs = require('fs');
-const mysql = require('mysql');
+const fs = require('fs')
+const mysql = require('mysql')
 const db = require('./src/db/db')
-const { ArgumentParser } = require('argparse');
+const { ArgumentParser } = require('argparse')
 
 const parser = new ArgumentParser({
     description: 'launch appx rest api server'
@@ -19,10 +19,15 @@ let db_pool = db.getPool(args.conf)
 const express = require('express')
 const app = express()
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
+//////////////////////////////////////////////////
+// initialize router --- Note: perform this step only after db_pool is initialized
+const { router, endpoints } = require('./src/rest/router')
+
+app.use('/api', router)
+app.get('/doc', (req, res) => {
+    res.send(JSON.stringify(endpoints, null, 4))
 })
 
-var server = app.listen(3000, () => {
+var server = app.listen(0, () => {
     console.log(`INFO: appx rest api server listening at http://${server.address().address}:${server.address().port}`)
 })
