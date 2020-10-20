@@ -6,5 +6,6 @@
     "schema_prefix": "{{{appx.init.schema_prefix}}}",
     "schema_separator": "{{{appx.init.schema_separator}}}",
     "appx_node_user": "{{{appx.init.appx_node_user}}}",
-    "appx_node_pass": "{{{appx.init.appx_node_pass}}}"
+    "appx_node_pass": "{{{appx.init.appx_node_pass}}}",
+    "appx_node_pool": "{{{appx.init.appx_node_pool}}}"
 }

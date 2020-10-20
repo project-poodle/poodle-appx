@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-pushd `pwd`
+pushd `pwd` > /dev/null
 cd `dirname $0`
 export CURR_DIR=`pwd`
 export BASE_DIR=${CURR_DIR}
 source ${BASE_DIR}/common.d/func.sh
-popd
+popd > /dev/null
 
 
-${NODE} ${BASE_DIR}/app.js
+LOG_FILE="/var/log/appx-node/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
+
+exec ${NODE} ${BASE_DIR}/app.js "$@" 2>&1 | tee ${LOG_FILE}

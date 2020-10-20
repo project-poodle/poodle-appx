@@ -1,5 +1,5 @@
 [Unit]
-Description=appx mysql service
+Description=appx mysql admin service
 After=network.target
 StartLimitIntervalSec=0
 

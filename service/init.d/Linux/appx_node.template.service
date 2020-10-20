@@ -1,5 +1,5 @@
 [Unit]
-Description=appx node service
+Description=appx rest api service
 After=network.target
 StartLimitIntervalSec=0
 
@@ -9,7 +9,7 @@ Restart=always
 RestartSec=1
 User={{{appx.init.service_usr_appx}}}
 Group={{{appx.init.service_grp_appx}}}
-ExecStart={{{appx.init.location_appx}}}/service/app.sh
+ExecStart={{{appx.init.location_appx}}}/service/app.sh -c {{{appx.init.location_appx}}}/conf.d/mysql_appx.json
 
 [Install]
 WantedBy=multi-user.target

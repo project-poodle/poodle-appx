@@ -16,6 +16,7 @@ appx:
         # appx node app username and password - CHANGE THIS to initial password
         appx_node_user: "appx"
         appx_node_pass: "P@@dle101"
+        appx_node_pool: 20
         # mysql init values - CHANGE THIS to mysql credentials
         mysql_host: "192.168.1.200"
         mysql_port: "3306"
