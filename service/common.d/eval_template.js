@@ -47,7 +47,7 @@ let variables = {
                 if (data.startsWith('`') && data.endsWith('`')) {
                     return data.substring(1, data.length-1)
                 } else {
-                    return '"' + data + '"'
+                    return '"' + data.replace(/"/g, '\\"') + '"'
                 }
             } else if (data instanceof Array) {
                 let results = []
