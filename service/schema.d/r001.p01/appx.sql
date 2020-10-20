@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation` (
     `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
-    `objn_spec`             JSON                    NOT NULL,
+    `relation_spec`         JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
-    `objn_state`            JSON                    NOT NULL,
+    `relation_state`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
@@ -387,62 +387,62 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_role_scope`(`scope_name`, `scope_spec
 {{/_role_scope}}
 {{#_role_grant}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_role_grant`(`role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ({{{role_name}}}, {{{grant_scope}}}, {{{grant_name}}}, {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_role_grant`(`role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('{{{role_name}}}', '{{{grant_scope}}}', '{{{grant_name}}}', {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
 {{/.}}
 {{/_role_grant}}
 
 -- namespace --
 {{#namespace}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `namespace_spec`) VALUES ('{{{namespace}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE namespace_spec=VALUES(namespace_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `namespace_spec`) VALUES ('{{{namespace}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE namespace_spec=VALUES(namespace_spec);
 {{/.}}
 {{/namespace}}
 
 -- app --
 {{#app}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`app`(`namespace`, `app_name`, `app_ver`, `app_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_spec}}) ON DUPLICATE KEY UPDATE app_spec=VALUES(app_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`app`(`namespace`, `app_name`, `app_ver`, `app_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_spec}}) ON DUPLICATE KEY UPDATE app_spec=VALUES(app_spec);
 {{/.}}
 {{/app}}
 
 -- env --
 {{#env}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`env`(`namespace`, `env_name`, `env_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', {{#env_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/env_spec}}) ON DUPLICATE KEY UPDATE env_spec=VALUES(env_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`env`(`namespace`, `env_name`, `env_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', {{#env_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/env_spec}}) ON DUPLICATE KEY UPDATE env_spec=VALUES(env_spec);
 {{/.}}
 {{/env}}
 
 -- deployment --
 {{#deployment}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`deployment`(`namespace`, `env_name`, `app_name`, `app_ver`, `deployment_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/deployment_spec}})  ON DUPLICATE KEY UPDATE app_ver=VALUES(app_ver), deployment_spec=VALUES(deployment_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`deployment`(`namespace`, `env_name`, `app_name`, `app_ver`, `deployment_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/deployment_spec}})  ON DUPLICATE KEY UPDATE app_ver=VALUES(app_ver), deployment_spec=VALUES(deployment_spec);
 {{/.}}
 {{/deployment}}
 
 -- obj --
 {{#obj}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`obj`(`namespace`, `app_name`, `app_ver`, `obj_name`, `obj_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', {{#obj_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/obj_spec}}) ON DUPLICATE KEY UPDATE obj_spec=VALUES(obj_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`obj`(`namespace`, `app_name`, `app_ver`, `obj_name`, `obj_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', {{#obj_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/obj_spec}}) ON DUPLICATE KEY UPDATE obj_spec=VALUES(obj_spec);
 {{/.}}
 {{/obj}}
 
 -- relation --
 {{#relation}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`relation`(`namespace`, `app_name`, `app_ver`, `obj_name`, `objn_name`, `relation_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{objn_name}}}', {{#relation_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/relation_spec}}) ON DUPLICATE KEY UPDATE relation_spec=VALUES(relation_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`relation`(`namespace`, `app_name`, `app_ver`, `obj_name`, `objn_name`, `relation_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{objn_name}}}', {{#relation_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/relation_spec}}) ON DUPLICATE KEY UPDATE relation_spec=VALUES(relation_spec);
 {{/.}}
 {{/relation}}
 
 -- attr --
 {{#attr}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`attr`(`namespace`, `app_name`, `app_ver`, `obj_name`, `attr_name`, `attr_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{attr_name}}}', {{#attr_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/attr_spec}}) ON DUPLICATE KEY UPDATE attr_spec=VALUES(attr_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`attr`(`namespace`, `app_name`, `app_ver`, `obj_name`, `attr_name`, `attr_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{attr_name}}}', {{#attr_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/attr_spec}}) ON DUPLICATE KEY UPDATE attr_spec=VALUES(attr_spec);
 {{/.}}
 {{/attr}}
 
 -- api --
 {{#api}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`api`(`namespace`, `app_name`, `app_ver`, `obj_name`, `api_method`, `api_endpoint`, `api_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{api_method}}}', '{{{api_endpoint}}}', {{#api_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/api_spec}}) ON DUPLICATE KEY UPDATE api_spec=VALUES(api_spec)
+INSERT INTO `{{{global.schema_prefix}}}`.`api`(`namespace`, `app_name`, `app_ver`, `obj_name`, `api_method`, `api_endpoint`, `api_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{api_method}}}', '{{{api_endpoint}}}', {{#api_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/api_spec}}) ON DUPLICATE KEY UPDATE api_spec=VALUES(api_spec);
 {{/.}}
 {{/api}}
