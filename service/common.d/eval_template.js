@@ -33,45 +33,42 @@ let template = fs.readFileSync(args.template, 'utf8')
 // process variables
 let variables = {
 
-    "MYSQL_JSON": function() {
+    "APPX": {
 
-        let render_func = function(data, depth) {
+        "TO_MYSQL_JSON": function() {
 
-            if (typeof data == null || typeof data == "undefined") {
-                return 'null';
-            } else if (typeof data == "number") {
-                return string(data)
-            } else if (typeof data == "boolean") {
-                return data.toString()
-            } else if (typeof data == "string") {
-                if (data.startsWith('`') && data.endsWith('`')) {
-                    return data.substring(1, data.length-1)
+            let render_func = function(data, depth) {
+
+                if (typeof data == null || typeof data == "undefined") {
+                    return 'null';
+                } else if (typeof data == "number") {
+                    return string(data)
+                } else if (typeof data == "boolean") {
+                    return data.toString()
+                } else if (typeof data == "string") {
+                    if (data.startsWith('`') && data.endsWith('`')) {
+                        return data.substring(1, data.length-1)
+                    } else {
+                        return '"' + data.replace(/"/g, '\\"') + '"'
+                    }
+                } else if (data instanceof Array) {
+                    let results = []
+                    data.forEach((value) => {
+                        results.push(render_func(value, depth+1))
+                    });
+                    return 'JSON_ARRAY(' + results.join(', ') + ')'
                 } else {
-                    return '"' + data.replace(/"/g, '\\"') + '"'
+                    let results = []
+                    Object.keys(data).forEach((key) => {
+                        results.push('"' + key + '", ' + render_func(data[key], depth+1))
+                    });
+                    return 'JSON_OBJECT(' + results.join(', ') + ')'
                 }
-            } else if (data instanceof Array) {
-                let results = []
-                data.forEach((value) => {
-                    results.push(render_func(value, depth+1))
-                });
-                return 'JSON_ARRAY(' + results.join(', ') + ')'
-            } else {
-                let results = []
-                Object.keys(data).forEach((key) => {
-                    results.push('"' + key + '", ' + render_func(data[key], depth+1))
-                });
-                return 'JSON_OBJECT(' + results.join(', ') + ')'
             }
-        }
 
-        return function(text, render) {
-            // console.log(util.inspect(this))
-            // return util.inspect(this) + "{{this}} " + render(text)
-            return render_func(this, 0)
-            // return render_func(util.inspect(this))
-            // return typeof util.inspect(this)
-            // return typeof this
-            // return this
+            return function(text, render) {
+                return render_func(this, 0)
+            }
         }
     }
 }
