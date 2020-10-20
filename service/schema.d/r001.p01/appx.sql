@@ -217,13 +217,12 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `env_name`              VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_state`             JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, app_ver, obj_name),
+    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -249,14 +248,13 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `env_name`              VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
     `relation_state`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, app_ver, obj_name, objn_name),
+    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, objn_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -283,14 +281,13 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `env_name`              VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `attr_name`             VARCHAR(32)             NOT NULL,
     `attr_state`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, app_ver, obj_name, attr_name),
+    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, attr_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -319,7 +316,6 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `env_name`              VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `api_method`            VARCHAR(15)             NOT NULL,
     `api_endpoint`          VARCHAR(255)            NOT NULL,
@@ -327,7 +323,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, app_ver, obj_name, api_method, api_endpoint),
+    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, api_method, api_endpoint),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -359,14 +355,13 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `env_name`              VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_ver`               VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `transform_name`        VARCHAR(32)             NOT NULL,
     `transform_state`       JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, app_ver, obj_name, transform_name),
+    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, transform_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin

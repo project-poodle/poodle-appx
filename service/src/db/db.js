@@ -6,7 +6,7 @@ const DEFAULT_POOL_SIZE = 15;
 var db_pool = null;
 var conf_file = null;
 
-exports.getPool = (mysql_conf_file) => {
+var getPool = (mysql_conf_file) => {
 
     if (db_pool == null) {
 
@@ -27,4 +27,19 @@ exports.getPool = (mysql_conf_file) => {
     }
 
     return db_pool
+}
+
+module.exports = {
+
+    getPool: getPool,
+
+    query: (sql, variables, callback) => {
+
+        getPool().query(sql, variables, (error, results, fields) => {
+            if (error) {
+                console.log("ERROR: [" + sql + "] : " + error)
+            }
+            callback(error, results, fields)
+        })
+    }
 }
