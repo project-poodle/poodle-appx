@@ -12,7 +12,7 @@ api:
           permission: "sys.appx.read"
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace
-              op: "select"
+              op: "list"
               obj_name: "namespace"
               join:
                   - obj_name: "namespace_status"
@@ -30,7 +30,7 @@ api:
           permission: "sys.appx.read"
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace WHERE namespace=:namespace
-              op: "select"
+              op: "get"
               obj_name: "namespace"
               join:
                   - obj_name: "namespace_status"
@@ -93,7 +93,7 @@ api:
           permission: "sys.appx.status"
           syntax:
               # INSERT INTO appx.namespace_status (namespace, namespace_state) VALUES (:namespace, body.namespace_state) ON DUPLICATE KEY UPDATE namespace_state = VALUES(namespace_state)
-              op: "upsert"
+              op: "status"
               obj_name: "namespace_status"
           doc:
               desc: "post namespace status for :namespace"
@@ -109,7 +109,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "env"
               join:
                   - obj_name: "namespace"
@@ -127,7 +127,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "env"
               join:
                   - obj_name: "namespace"
@@ -187,7 +187,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "env_status"
           doc:
               desc: "post env status for :namespace / :env_name"
@@ -203,7 +203,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "app"
               join:
                   - obj_name: "namespace"
@@ -221,7 +221,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "app"
               join:
                   - obj_name: "namespace"
@@ -239,7 +239,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "app"
               join:
                   - obj_name: "namespace"
@@ -299,7 +299,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "app_status"
           doc:
               desc: "post app status for :namespace / :app_name / :app_ver"
@@ -315,7 +315,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "deployment"
               join:
                   - obj_name: "namespace"
@@ -335,7 +335,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "deployment"
               join:
                   - obj_name: "namespace"
@@ -355,7 +355,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "deployment"
               join:
                   - obj_name: "namespace"
@@ -375,7 +375,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "deployment"
               join:
                   - obj_name: "namespace"
@@ -437,7 +437,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "deployment_status"
           doc:
               desc: "post deployment status for :namespace / :env_name / :app_name"
@@ -453,7 +453,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "obj"
               join:
                   - obj_name: "namespace"
@@ -470,7 +470,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "obj"
               join:
                   - obj_name: "namespace"
@@ -490,7 +490,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "obj"
               join:
                   - obj_name: "namespace"
@@ -507,7 +507,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "obj"
               join:
                   - obj_name: "namespace"
@@ -569,7 +569,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "obj_status"
           doc:
               desc: "post obj status for :namespace / :env_name / :app_name / :obj_name"
@@ -585,7 +585,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -602,7 +602,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -622,7 +622,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -639,7 +639,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -659,7 +659,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -676,7 +676,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "relation"
               join:
                   - obj_name: "namespace"
@@ -738,7 +738,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "relation_status"
           doc:
               desc: "post relation status for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
@@ -754,7 +754,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "attr"
               join:
                   - obj_name: "namespace"
@@ -772,7 +772,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "attr"
               join:
                   - obj_name: "namespace"
@@ -793,7 +793,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "attr"
               join:
                   - obj_name: "namespace"
@@ -811,7 +811,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "attr"
               join:
                   - obj_name: "namespace"
@@ -874,7 +874,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "attr_status"
           doc:
               desc: "post attr status for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
@@ -890,7 +890,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "transform"
               join:
                   - obj_name: "namespace"
@@ -908,7 +908,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "list"
               obj_name: "transform"
               join:
                   - obj_name: "namespace"
@@ -929,7 +929,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "transform"
               join:
                   - obj_name: "namespace"
@@ -947,7 +947,7 @@ api:
       api_spec:
           permission: "sys.appx.read"
           syntax:
-              op: "select"
+              op: "get"
               obj_name: "transform"
               join:
                   - obj_name: "namespace"
@@ -1010,7 +1010,7 @@ api:
       api_spec:
           permission: "sys.appx.status"
           syntax:
-              op: "upsert"
+              op: "status"
               obj_name: "transform_status"
           doc:
               desc: "post transform status for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
