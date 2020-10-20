@@ -25,8 +25,7 @@ _appx_meta:
     - meta_name: "appx.local_auth"
       meta_key: "{{{MYSQL_CONF.appx_node_user}}}"
       meta_info:
-          function: "PASSWORD"
-          password: "{{{MYSQL_CONF.appx_node_pass}}}"
+          password: '`PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")`'
           comment: "initialize"
 
 ######################################################################

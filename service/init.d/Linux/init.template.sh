@@ -34,7 +34,7 @@ mkdir -p /tmp/$$
 ##############################
 # install appx_mysql
 echo "=========="
-eval_template -t ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service -y ${INIT_YAML} | tee /tmp/$$/appx_mysql.service
+eval_template -t ${BASE_DIR}/init.d/`uname`/appx_mysql.template.service -y1 ${INIT_YAML} | tee /tmp/$$/appx_mysql.service
 
 sudo cp -f /tmp/$$/appx_mysql.service /etc/systemd/system/
 sudo systemctl daemon-reload
@@ -45,7 +45,7 @@ sudo systemctl status appx_mysql
 ##############################
 # install appx_node
 echo "=========="
-eval_template -t ${BASE_DIR}/init.d/`uname`/appx_node.template.service -y ${INIT_YAML} | tee /tmp/$$/appx_node.service
+eval_template -t ${BASE_DIR}/init.d/`uname`/appx_node.template.service -y1 ${INIT_YAML} | tee /tmp/$$/appx_node.service
 
 sudo cp -f /tmp/$$/appx_node.service /etc/systemd/system/
 sudo systemctl daemon-reload

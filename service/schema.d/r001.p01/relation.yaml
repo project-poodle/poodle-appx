@@ -6,7 +6,7 @@ relation:
       app_ver: "internal"
       obj_name: "namespace"
       objn_name: "namespace_status"
-      obj_spec:
+      relation_spec:
           type:
               type: "1"
           attrs:
@@ -20,7 +20,7 @@ relation:
       app_ver: "internal"
       obj_name: "env"
       objn_name: "env_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "1"
           attrs:
@@ -36,7 +36,7 @@ relation:
       app_ver: "internal"
       obj_name: "app"
       objn_name: "app_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "1"
           attrs:
@@ -54,7 +54,7 @@ relation:
       app_ver: "internal"
       obj_name: "deployment"
       objn_name: "deployment_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "1"
           attrs:
@@ -74,7 +74,7 @@ relation:
       app_ver: "internal"
       obj_name: "object"
       objn_name: "object_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "n"
               attrs:
@@ -96,7 +96,7 @@ relation:
       app_ver: "internal"
       obj_name: "attr"
       objn_name: "attr_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "n"
               attrs:
@@ -120,7 +120,7 @@ relation:
       app_ver: "internal"
       obj_name: "api"
       objn_name: "api_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "n"
               attrs:
@@ -146,7 +146,7 @@ relation:
       app_ver: "internal"
       obj_name: "transform"
       objn_name: "transform_status"
-      obj_spec:
+      relation_spec:
           kind:
               type: "n"
               attrs:
@@ -170,7 +170,7 @@ relation:
       app_ver: "internal"
       obj_name: "namespace"
       objn_name: "env"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -186,7 +186,7 @@ relation:
       app_ver: "internal"
       obj_name: "namespace"
       objn_name: "app"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -203,7 +203,7 @@ relation:
       app_ver: "internal"
       obj_name: "env"
       objn_name: "deployment"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -222,7 +222,7 @@ relation:
       app_ver: "internal"
       obj_name: "app"
       objn_name: "deployment"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -242,7 +242,7 @@ relation:
       app_ver: "internal"
       obj_name: "app"
       objn_name: "obj"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -263,7 +263,7 @@ relation:
       app_ver: "internal"
       obj_name: "deployment"
       objn_name: "obj_status"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -283,7 +283,7 @@ relation:
       app_ver: "internal"
       obj_name: "obj"
       objn_name: "attr"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -305,7 +305,7 @@ relation:
       app_ver: "internal"
       obj_name: "deployment"
       objn_name: "attr_status"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -326,7 +326,7 @@ relation:
       app_ver: "internal"
       obj_name: "obj"
       objn_name: "api"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -349,7 +349,7 @@ relation:
       app_ver: "internal"
       obj_name: "deployment"
       objn_name: "api_status"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -371,7 +371,7 @@ relation:
       app_ver: "internal"
       obj_name: "obj"
       objn_name: "transform"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
@@ -393,7 +393,7 @@ relation:
       app_ver: "internal"
       obj_name: "deployment"
       objn_name: "transform_status"
-      obj_spec:
+      relation_spec:
           type:
               type: "n"
               attrs:
