@@ -6,15 +6,31 @@ const db = require('../db/db')
 let endpoints = []
 
 let db_pool = db.getPool()
-db_pool.query('SELECT * FROM api WHERE deleted=0', (err, results) => {
+db_pool.query(`SELECT
+                    api.namespace,
+                    api.app_name, api.app_ver,
+                    deployment.env_name,
+                    obj_name,
+                    api_method, api_endpoint, api_spec
+                FROM api
+                JOIN deployment
+                    ON api.namespace = deployment.namespace
+                    AND api.app_name = deployment.app_name
+                    AND api.app_ver = deployment.app_ver
+                WHERE api.deleted=0 AND deployment.deleted=0`,
+                (err, results) => {
 
     if (err) throw err;
 
     results.forEach((result) => {
 
-        let endpoint = '/' + result.namespace + '/' + result.app_name + '/' + result.app_ver + '/' + result.api_endpoint
+        let endpoint = '/' + result.namespace + '/' + result.env_name + '/' + result.app_name + '/' + result.api_endpoint
         endpoint = endpoint.replace(/\/+/g, '/')
-        endpoints.push({method: result.api_method, endpoint: endpoint, spec: JSON.parse(result.api_spec)})
+        endpoints.push({
+            method: result.api_method,
+            endpoint: endpoint,
+            spec: JSON.parse(result.api_spec)
+        })
 
         switch (result.api_method) {
             case "get":
@@ -38,7 +54,7 @@ db_pool.query('SELECT * FROM api WHERE deleted=0', (err, results) => {
                 })
                 break
             default:
-                throw Error(`unknow api method: ${result.api_method} [JSON.stringify(result)]`)
+                throw Error(`unknow api method: ${result.api_method} [${JSON.stringify(result)}]`)
         }
     });
 })

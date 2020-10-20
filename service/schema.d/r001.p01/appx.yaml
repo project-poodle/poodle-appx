@@ -54,7 +54,7 @@ namespace:
 # env
 env:
     - namespace: "sys"
-      env_name: "internal"
+      env_name: "base"
       env_spec:
           comment: "initialize"
 
@@ -71,7 +71,7 @@ app:
 # deployment
 deployment:
     - namespace: "sys"
-      env_name: "internal"
+      env_name: "base"
       app_name: "appx"
       app_ver: "internal"
       deployment_spec:
