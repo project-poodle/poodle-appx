@@ -8,49 +8,18 @@ const parser = new ArgumentParser({
   description: 'evaluate template'
 });
 
-parser.add_argument('-t', '--template', { help: 'template file', required: true });
-parser.add_argument('-y', '--yaml', { help: 'yaml value file' });
-parser.add_argument('-j', '--json', { help: 'json value file' });
-
-args = parser.parse_args();
-
-
-let value = {}
-if (args.yaml == undefined && args.json == undefined) {
-
-    console.error("ERROR: either yaml or json is required !")
-    process.exit(1)
-
-} else if (args.yaml != undefined && args.json != undefined ) {
-
-    console.error("ERROR: cannot have both yaml and json at the same time !")
-    process.exit(1)
-
-} else if (args.yaml != undefined) {
-
-    if (!fs.existsSync(args.yaml)) {
-        console.error("ERROR: yaml file does not exist [" + args.yaml + "] !")
-        process.exit(1)
-    } else {
-        value = YAML.parse(fs.readFileSync(args.yaml, 'utf8'))
-    }
-
-} else if (args.json != undefined) {
-
-    if (!fs.existsSync(args.json)) {
-        console.error("ERROR: json file does not exist [" + args.json + "] !")
-        process.exit(1)
-    } else {
-        value = JSON.parse(fs.readFileSync(args.json, 'utf8'))
-    }
-
-} else {
-
-    console.error("ERROR: THIS SHOULD NEVER HAPPEN !")
-    process.exit(1)
+parser.add_argument('-t',   '--template',   { help: 'template file', required: true });
+for (let i = 1; i < 10; i++) {
+    parser.add_argument('-y'  +i,   '--yaml_file'  +i, { help: 'yaml variable file '+i });
+    parser.add_argument('-ys' +i,   '--yaml_scope' +i, { help: 'yaml variable scope '+i });
+    parser.add_argument('-j'  +i,   '--json_file'  +i, { help: 'json variable file '+i });
+    parser.add_argument('-js' +i,   '--json_scope' +i, { help: 'json variable scope '+i });
 }
+args = parser.parse_args();
+//console.log(JSON.stringify(args, null, 4))
+//process.exit(0)
 
-
+// validate template file
 if (!fs.existsSync(args.template)) {
     console.error("ERROR: template file do not exist [" + args.template + "] !")
     process.exit(1)
@@ -59,5 +28,53 @@ if (!fs.existsSync(args.template)) {
 let template = fs.readFileSync(args.template, 'utf8')
 
 
-let rendered = Mustache.render(template, value);
+// process variables
+let variables = {}
+let initialized = false
+
+for (let i = 1; i < 10; i++) {
+    // process yaml
+    if (args['yaml_file'+i] != undefined) {
+
+        if (!fs.existsSync(args['yaml_file'+i])) {
+            console.error("ERROR: yaml file does not exist [" + args['yaml_file'+i] + "] !")
+            process.exit(1)
+        }
+
+        if (args['yaml_scope'+i] != undefined) {
+            variables[args['yaml_scope'+i]] = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
+        } else {
+            variables = Object.assign(variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
+        }
+
+        initialized = true
+    }
+
+    // proces json
+    if (args['json_file'+i] != undefined) {
+
+        if (!fs.existsSync(args.json)) {
+            console.error("ERROR: json file does not exist [" + args['json_file'+i] + "] !")
+            process.exit(1)
+        }
+
+        if (args['json_scope'+i] != undefined) {
+            variables[args['json_scope'+i]] = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
+        } else {
+            variables = Object.assign(variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
+        }
+
+        initialized = true
+    }
+}
+
+if (! initialized) {
+
+    console.error("ERROR: at least one variable file, either yaml or json is required !")
+    process.exit(1)
+}
+
+
+// evaluate template with variables
+let rendered = Mustache.render(template, variables);
 console.log(rendered)
