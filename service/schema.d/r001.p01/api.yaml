@@ -371,7 +371,7 @@ api:
       app_ver: "internal"
       obj_name: "api"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/env/:app_ver/app/:app_name"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
@@ -391,7 +391,7 @@ api:
       app_ver: "internal"
       obj_name: "api"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/env/:app_ver/app/:app_name"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
@@ -405,7 +405,7 @@ api:
       app_ver: "internal"
       obj_name: "api"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/deployment/env/:app_ver/app/:app_name"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
@@ -419,7 +419,7 @@ api:
       app_ver: "internal"
       obj_name: "api"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/deployment/env/:app_ver/app/:app_name"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
@@ -433,7 +433,7 @@ api:
       app_ver: "internal"
       obj_name: "api"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/env/:app_ver/app/:app_name/status"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
