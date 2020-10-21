@@ -8,6 +8,6 @@ source ${BASE_DIR}/common.d/func.sh
 popd > /dev/null
 
 
-LOG_FILE="/var/log/appx-node/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
+LOG_FILE="/var/log/appx/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
 
 exec ${NODE} ${BASE_DIR}/app.js "$@" 2>&1 | tee ${LOG_FILE}
