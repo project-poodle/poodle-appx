@@ -1,5 +1,6 @@
 const fs = require('fs');
 const mysql = require('mysql');
+const deasync = require('deasync');
 
 const DEFAULT_POOL_SIZE = 15;
 
@@ -29,17 +30,26 @@ var getPool = (mysql_conf_file) => {
     return db_pool
 }
 
+var query = (sql, variables, callback) => {
+
+    getPool().query(sql, variables, (error, results, fields) => {
+        if (error) {
+            console.log("ERROR: [" + sql + "] : " + error)
+        }
+        // callback
+        if (typeof fields == 'undefined') {
+            callback(error, results)
+        } else {
+            callback(error, results, fields)
+        }
+    })
+}
+
 module.exports = {
 
     getPool: getPool,
 
-    query: (sql, variables, callback) => {
+    query: query,
 
-        getPool().query(sql, variables, (error, results, fields) => {
-            if (error) {
-                console.log("ERROR: [" + sql + "] : " + error)
-            }
-            callback(error, results, fields)
-        })
-    }
+    query_sync: deasync(query)
 }

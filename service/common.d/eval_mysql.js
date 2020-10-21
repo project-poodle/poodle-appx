@@ -1,5 +1,6 @@
 const fs = require('fs');
 const mysql = require('mysql');
+const deasync = require('deasync');
 const { ArgumentParser } = require('argparse');
 
 
@@ -14,7 +15,7 @@ parser.add_argument('-e', '--execute', { help: 'execute mysql command line' });
 args = parser.parse_args();
 
 
-let commands = ""
+let commands = []
 if (args.filepath == undefined && args.execute == undefined) {
 
     console.error("ERROR: either filepath or execute is required !")
@@ -31,12 +32,13 @@ if (args.filepath == undefined && args.execute == undefined) {
         console.error("ERROR: path file does not exist [" + args.filepath + "] !")
         process.exit(1)
     } else {
-        commands = fs.readFileSync(args.filepath, 'utf8')
+        let content = fs.readFileSync(args.filepath, 'utf8')
+        commands = content.toString().split(/;\s*\n/);
     }
 
 } else if (args.execute != undefined) {
 
-    commands = args.execute
+    commands.push(args.execute)
 
 } else {
 
@@ -52,19 +54,41 @@ if (!fs.existsSync(args.conf)) {
 
 let mysql_conf = JSON.parse(fs.readFileSync(args.conf, 'utf8'))
 
-var conn = mysql.createConnection({
+let conn = mysql.createConnection({
     host: mysql_conf.host,
     port: mysql_conf.port,
     user: mysql_conf.user,
     password: mysql_conf.pass
 })
 
-conn.query(commands, function (error, results, fields) {
-  if (error) {
-      console.log(error);
-      process.exit(1);
-  }
-  console.log(results);
+// get synchronous method
+let query_sync = deasync(conn.query)
+
+commands.forEach((command) => {
+
+    try {
+
+        // skip empty command
+        if (command.trim() == "") {
+            return
+        }
+
+        let results = conn.query(command, [], (err, res, f) => {
+            if (err) throw err
+            console.log(`INFO: success! [${command}]`);
+            //console.log(results);
+        })
+
+        //let results = query_sync(command, [])
+        //console.log(`INFO: success! [${command}]`);
+
+    } catch (error) {
+
+        if (error) {
+            console.log(`ERROR: [${command}]` + (error.length > 255 ? error.substring(0,255) : error));
+            process.exit(1);
+        }
+    }
 });
 
 conn.end();
