@@ -15,7 +15,7 @@ rm -fR /tmp/$$
 mkdir -p /tmp/$$
 echo "----------"
 
-eval_template -t appx.yaml -y1 appx.yaml -j1 ${BASE_DIR}/conf.d/mysql_appx.json -js1 MYSQL_CONF > /tmp/$$/appx.yaml
+eval_template -t ${CURR_DIR}/appx.yaml -y1 ${CURR_DIR}/appx.yaml -j1 ${BASE_DIR}/conf.d/mysql_appx.json -js1 MYSQL_CONF > /tmp/$$/appx.yaml
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"
     cat /tmp/$$/appx.sql.out
@@ -26,7 +26,7 @@ else
 fi
 echo "----------"
 
-eval_template -t appx.sql -y1 /tmp/$$/appx.yaml -y2 obj.yaml -y3 relation.yaml -y4 attr.yaml -y5 api.yaml > /tmp/$$/appx.sql
+eval_template -t ${CURR_DIR}/appx.sql -y1 /tmp/$$/appx.yaml -y2 ${CURR_DIR}/obj.yaml -y3 ${CURR_DIR}/relation.yaml -y4 ${CURR_DIR}/attr.yaml -y5 ${CURR_DIR}/api.yaml > /tmp/$$/appx.sql
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"
     cat /tmp/$$/appx.sql.out
