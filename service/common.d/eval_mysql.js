@@ -8,9 +8,11 @@ const parser = new ArgumentParser({
   description: 'evaluate mysql commands'
 });
 
-parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
+parser.add_argument('-c', '--conf',     { help: 'mysql config file', required: true });
 parser.add_argument('-f', '--filepath', { help: 'mysql command(s) filepath' });
-parser.add_argument('-e', '--execute', { help: 'execute mysql command line' });
+parser.add_argument('-e', '--execute',  { help: 'execute mysql command line' });
+parser.add_argument('-p', '--print',    { action: 'store_true', help: 'print command' });
+parser.add_argument('-r', '--result',   { action: 'store_true', help: 'print results' });
 
 args = parser.parse_args();
 
@@ -61,9 +63,17 @@ let conn = mysql.createConnection({
     password: mysql_conf.pass
 })
 
+////////////////////////////////////////////////////////////////////////////////
 // get synchronous method
-let query_sync = deasync(conn.query)
+let query_async = (sql, params, callback) => {
+    conn.query(sql, params, (error, results, fields) => {
+        callback(error, results, fields)
+    })
+}
+let query_sync = deasync(query_async)
 
+////////////////////////////////////////////////////////////////////////////////
+// execute sql commands
 commands.forEach((command) => {
 
     try {
@@ -73,14 +83,18 @@ commands.forEach((command) => {
             return
         }
 
-        let results = conn.query(command, [], (err, res, f) => {
-            if (err) throw err
-            console.log(`INFO: success! [${command}]`);
-            //console.log(results);
-        })
+        // execute query
+        let results = query_sync(command, [])
 
-        //let results = query_sync(command, [])
-        //console.log(`INFO: success! [${command}]`);
+        // print command
+        if (args.print) {
+            console.log(`INFO: success! [${command}]`)
+        }
+
+        // print result
+        if (args.result) {
+            console.log(JSON.stringify(results, null, 4))
+        }
 
     } catch (error) {
 

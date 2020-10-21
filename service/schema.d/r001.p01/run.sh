@@ -37,8 +37,8 @@ else
 fi
 echo "----------"
 
-echo eval_mysql_appx -f /tmp/$$/appx.sql
-eval_mysql_appx -f /tmp/$$/appx.sql > /tmp/$$/appx.sql.out
+echo eval_mysql_appx -f /tmp/$$/appx.sql "$@"
+eval_mysql_appx -f /tmp/$$/appx.sql "$@" > /tmp/$$/appx.sql.out
 if [ $? -ne 0 ]; then
     cat /tmp/$$/appx.sql.out
     echo "----------"
