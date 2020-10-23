@@ -1,0 +1,125 @@
+$var:
+
+    - $sql:
+        $query: "SELECT * FROM namespace WHERE deleted = 0"
+        $map:
+            $var: namespaces
+            $key: "{{@.namespace}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM app WHERE deleted = 0"
+        $map:
+            $var: apps
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM env WHERE deleted = 0"
+        $map:
+            $var: envs
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM deployment WHERE deleted = 0"
+
+        $map:
+            $var: deployments_by_env
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+            $value: "{{@}}"
+
+        $map:
+            $var: deployments_by_app
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.app_name}}"
+                - "{{@.env_name}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM obj WHERE deleted = 0"
+
+        $map:
+            $var: objs
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.obj_name}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM relation WHERE deleted = 0"
+
+        $map:
+            $var: relations_1ton
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.obj_name}}"
+                - "{{@.objn_name}}"
+            $value: "{{@}}"
+
+        $map:
+            $var: relations_nto1
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.objn_name}}"
+                - "{{@.obj_name}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM api WHERE deleted = 0"
+
+        $map:
+            $var: apis_by_method
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.obj_name}}"
+                - "{{@.api_method}}"
+                - "{{@.api_endpoint}}"
+            $value: "{{@}}"
+
+        $map:
+            $var: apis_by_endpoint
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.obj_name}}"
+                - "{{@.api_endpoint}}"
+                - "{{@.api_method}}"
+            $value: "{{@}}"
+
+    - $sql:
+        $query: "SELECT * FROM transform WHERE deleted = 0"
+
+        $map:
+            $var: transforms
+            $key:
+                - "{{@.namespace}}"
+                - "{{@.env_name}}"
+                - "{{@.app_name}}"
+                - "{{@.app_ver}}"
+                - "{{@.obj_name}}"
+                - "{{@.transform_name}}"
+            $value: "{{@}}"

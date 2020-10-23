@@ -1,0 +1,110 @@
+namespace:
+
+    "#namespaces":                                  # namespace
+        namespace: "%namespaces"
+        spec: ":namespaces.namespace_spec"
+
+        apps:
+            "#apps[%namespaces]":                   # app_name
+                "#:apps":                           # app_ver
+                    namespace: "%namespaces"
+                    app_name: "%%apps"
+                    app_ver: "%apps"
+                    spec: ":apps.app_spec"
+
+                    deployments:
+                        "#deployments_by_app[%namespaces][%%apps][?app_ver == %apps]":      # env_name
+                            namespace: "%namespaces"
+                            app_name: "%%apps"
+                            app_ver: "%apps"
+                            env_name: "%deployments_by_app"
+                            spec: ":deployments_by_app.deployment_spec"
+
+                    objs:
+                        "#objs[%namespaces][%%apps][%apps]":                                # obj_name
+                            namespace: "%namespaces"
+                            app_name: "%%apps"
+                            app_ver: "%apps"
+                            obj_name: "%objs"
+                            spec: ":objs.obj_spec"
+
+                            relations_1ton:
+                                "#relations_1ton[%namespaces][%%apps][%apps][%objs]":       # objn_name
+                                    namespace: "%namespaces"
+                                    app_name: "%%apps"
+                                    app_ver: "%apps"
+                                    obj_name: "%objs"
+                                    objn_name: "%relations_1ton"
+                                    relation_spec: ":relations_1ton.relation_spec"
+
+                            relations_nto1:
+                                "#relations_nto1[%namespaces][%%apps][%apps][%objs]":       # obj_name
+                                    namespace: "%namespaces"
+                                    app_name: "%%apps"
+                                    app_ver: "%apps"
+                                    objn_name: "%objs"
+                                    obj_name: "%relations_nto1"
+                                    relation_spec: ":relations_nto1.relation_spec"
+
+                            apis_by_method:
+                                "#apis_by_method[%namespaces][%%apps][%apps][%objs]":       # api_method
+                                    "#:apis_by_method":                                     # api_endpoint
+                                        namespace: "%namespaces"
+                                        app_name: "%%apps"
+                                        app_ver: "%apps"
+                                        obj_name: "%objs"
+                                        api_method: "%%apis_by_method"
+                                        api_endpoint: "%apis_by_method"
+                                        api_spec: ":apis.api_spec"
+
+                            apis_by_endpoint:
+                                "#apis_by_endpoint[%namespaces][%%apps][%apps][%objs]":     # api_endpoint
+                                    "#:apis_by_endpoint":                                   # api_method
+                                        namespace: "%namespaces"
+                                        app_name: "%%apps"
+                                        app_ver: "%apps"
+                                        obj_name: "%objs"
+                                        api_endpoint: "%%apis_by_endpoint"
+                                        api_method: "%apis_by_endpoint"
+                                        api_spec: ":apis.api_spec"
+
+                            transforms:
+                                "#transforms[%namespaces][%%apps][%apps][%objs]":           # transform_name
+                                    namespace: "%namespaces"
+                                    app_name: "%%apps"
+                                    app_ver: "%apps"
+                                    obj_name: "%objs"
+                                    transform_name: "%transforms"
+                                    transform_spec: ":transforms.transform_spec"
+
+        envs:
+            "#envs[%namespaces]":
+                namespace: "%namespaces"
+                env_name: "%envs"
+                spec: ":envs.env_spec"
+
+                deployments:
+                    "#deployments_by_env[%namespaces][%envs]":
+                        namespace: "%namespaces"
+                        env_name: "%envs"
+                        app_name: "%deployments_by_env"
+                        spec: ":deployments_by_env.deployment_spec"
+
+
+app:
+
+    "#apps":                                        # namespace
+        "#:apps":                                   # app_name
+            "#:apps":                               # app_ver
+                namespace: "%%%apps"
+                app_name: "%%apps"
+                app_ver: "%apps"
+                spec: ":apps.app_spec"
+
+                deployments:
+                    "#deployments_by_app[%%%apps][%%apps][?app_ver == %apps]":              # env_name
+                        namespace: "%%%apps"
+                        app_name: "%%apps"
+                        app_ver: "%apps"
+                        env_name: "%deployments_by_app"
+                        spec: ":deployments_by_app.deployment_spec"
