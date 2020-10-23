@@ -78,13 +78,13 @@ namespace:
                                     transform_spec: ":transforms.transform_spec"
 
         envs:
-            "#envs[%namespaces]":
+            "#envs[%namespaces]":                                                           # env_name
                 namespace: "%namespaces"
                 env_name: "%envs"
                 spec: ":envs.env_spec"
 
                 deployments:
-                    "#deployments_by_env[%namespaces][%envs]":
+                    "#deployments_by_env[%namespaces][%envs]":                              # app_name
                         namespace: "%namespaces"
                         env_name: "%envs"
                         app_name: "%deployments_by_env"
