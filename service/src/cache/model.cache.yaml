@@ -13,7 +13,7 @@ namespace:
                     spec: ":apps.app_spec"
 
                     deployments:
-                        "#deployments_by_app[%namespaces][%%apps](?app_ver == %apps)":      # env_name
+                        "#deployments_by_app[%namespaces][%%apps](app_ver == %apps)":       # env_name
                             namespace: "%namespaces"
                             app_name: "%%apps"
                             app_ver: "%apps"
@@ -102,7 +102,7 @@ app:
                 spec: ":apps.app_spec"
 
                 deployments:
-                    "#deployments_by_app[%%%apps][%%apps](?app_ver == %apps)":              # env_name
+                    "#deployments_by_app[%%%apps][%%apps](app_ver == %apps)":               # env_name
                         namespace: "%%%apps"
                         app_name: "%%apps"
                         app_ver: "%apps"
