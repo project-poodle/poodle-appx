@@ -60,7 +60,19 @@ let conn = mysql.createConnection({
     host: mysql_conf.host,
     port: mysql_conf.port,
     user: mysql_conf.user,
-    password: mysql_conf.pass
+    password: mysql_conf.pass,
+    database: mysql_conf.schema_prefix,
+    typeCast: function(field, next) {
+        if (field.type == 'BLOB' && field.length == 4294967295) {
+            let value = field.string();
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
+            }
+        }
+        return next();
+    }
 })
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,17 @@ var getPool = (mysql_conf_file) => {
             user            : mysql_conf.user,
             password        : mysql_conf.pass,
             database        : mysql_conf.schema_prefix,
+            typeCast        : function(field, next) {
+                if (field.type == 'BLOB' && field.length == 4294967295) {
+                    let value = field.string();
+                    try {
+                        return JSON.parse(value);
+                    } catch (e) {
+                        return value;
+                    }
+                }
+                return next();
+            }
         });
     }
 
@@ -32,14 +43,16 @@ var getPool = (mysql_conf_file) => {
 
 var query = (sql, variables, callback) => {
 
+    // console.log(`INFO: [${sql}]`)
     getPool().query(sql, variables, (error, results, fields) => {
         if (error) {
-            console.log("ERROR: [" + sql + "] : " + error)
+            console.log(`ERROR: [${sql}] -- ${error}`)
         }
         // callback
         if (typeof fields == 'undefined') {
             callback(error, results)
         } else {
+            // console.log(fields)
             callback(error, results, fields)
         }
     })
