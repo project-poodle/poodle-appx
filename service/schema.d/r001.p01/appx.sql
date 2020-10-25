@@ -157,6 +157,7 @@ PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
+    `owner`                 VARCHAR(32)             NOT NULL,
     `namespace_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -472,7 +473,7 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_perm_func`(`namespace`, `role_name`, 
 -- namespace --
 {{#namespace}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `namespace_spec`) VALUES ('{{{namespace}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE namespace_spec=VALUES(namespace_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `owner`, `namespace_spec`) VALUES ('{{{namespace}}}', '{{{owner}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE owner=VALUES(owner), namespace_spec=VALUES(namespace_spec);
 {{/.}}
 {{/namespace}}
 

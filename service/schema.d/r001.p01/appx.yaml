@@ -74,6 +74,7 @@ _perm_func:
 # namespace
 namespace:
     - namespace: "sys"
+      owner: "{{{MYSQL_CONF.appx_node_user}}}"
       namespace_spec:
           comment: "initialize"
 
