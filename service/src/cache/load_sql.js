@@ -2,6 +2,8 @@ const fs = require('fs');
 const YAML = require('yaml');
 const db = require('../db/db')
 
+db.getPool("../../conf.d/mysql_appx.json")
+
 function load_sql(filepath) {
 
     let variables = {}
@@ -57,5 +59,6 @@ function load_sql(filepath) {
     return variables
 }
 
-db.getPool("../../conf.d/mysql_appx.json")
-console.log(JSON.stringify(load_sql("model.input.yaml"), null, 4))
+module.exports = {
+    load_sql: load_sql
+}

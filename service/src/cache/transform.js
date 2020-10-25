@@ -1,4 +1,6 @@
-const YAML = require('yaml');
+const fs = require('fs');
+const YAML = require('yaml')
+const { load_sql } = require('./load_sql')
 
 // let re = /(\#|\@|\$|\+{1,2}|\-{1,2}|\*{1,2}|\/|\&{1,2}|\|{1,2}|\^|\!|\~|={1,3}|\?|\:|\[|\]|\(|\)|\{|\}|[A-Za-z_][A-Za-z_0-9]*)+/
 
@@ -18,12 +20,21 @@ function eval_with_context(expr, ctx) {
     return eval(expr, ctx)
 }
 
-function transform(transformer, input) {
+function transform_json(transform, input) {
 
+    if (Array.isArray(transform)) {
+
+    } else {
+        
+    }
 }
 
-input =
+let input = load_sql("model.input.yaml")
 
-transformer = YAML.parse(fs.readFileSync("model.transform.yaml", 'utf8'))
+let transform = YAML.parse(fs.readFileSync("model.transform.yaml", 'utf8'))
 
-eval_with_context(expr)
+console.log(JSON.stringify(input, null, 4))
+
+console.log(JSON.stringify(transform, null, 4))
+
+//eval_with_context(expr, input)
