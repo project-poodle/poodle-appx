@@ -54,19 +54,19 @@ _perm_func:
     - namespace: "sys"
       role_name: "appx.superadmin"
       func_scope: "appx"
-      func_name: "sys.appx.read"
+      func_name: "read"
       func_spec:
           comment: "initialize"
     - namespace: "sys"
       role_name: "appx.superadmin"
       func_scope: "appx"
-      func_name: "sys.appx.write"
+      func_name: "write"
       func_spec:
           comment: "initialize"
     - namespace: "sys"
       role_name: "appx.superadmin"
       func_scope: "appx"
-      func_name: "sys.appx.status"
+      func_name: "status"
       func_spec:
           comment: "initialize"
 
