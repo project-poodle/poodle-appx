@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_scope`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_grant`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_func`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_obj`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_spec_audit`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_state_audit`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_state_history`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`namespace`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`namespace_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`runtime`;
@@ -23,6 +26,7 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`api_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`transform`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`transform_status`;
 
+-- metadata --
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_appx_meta` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `meta_name`             VARCHAR(32)             NOT NULL,
@@ -36,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_appx_meta` (
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- local user(s) --
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user_local` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
@@ -50,20 +55,23 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user_local` (
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- roles and permissions --
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_scope` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
     `scope_name`            VARCHAR(32)             NOT NULL,
     `scope_spec`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(scope_name),
+    UNIQUE INDEX idx_app(namespace, scope_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_grant` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
     `grant_scope`           VARCHAR(32)             NOT NULL,
     `grant_name`            VARCHAR(32)             NOT NULL,
@@ -71,13 +79,14 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_grant` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(role_name, grant_scope, grant_name),
+    UNIQUE INDEX idx_app(namespace, role_name, grant_scope, grant_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_perm_func` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
     `func_scope`            VARCHAR(32)             NOT NULL,
     `func_name`             VARCHAR(32)             NOT NULL,
@@ -85,13 +94,14 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_perm_func` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(role_name, func_scope, func_name),
+    UNIQUE INDEX idx_app(namespace, role_name, func_scope, func_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_perm_obj` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
     `obj_scope`             VARCHAR(32)             NOT NULL,
     `obj_key`               VARCHAR(32)             NOT NULL,
@@ -99,11 +109,51 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_perm_obj` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(role_name, obj_scope, obj_key),
+    UNIQUE INDEX idx_app(namespace, role_name, obj_scope, obj_key),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- auditing --
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_spec_audit` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `spec_name`             VARCHAR(32)             NOT NULL,
+    `spec_id`               BIGINT                  NOT NULL,
+    `spec_audit`            JSON                    NOT NULL,
+    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`, `namespace`, `spec_name`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `spec_name`) PARTITIONS 20;
+
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_state_audit` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `state_name`            VARCHAR(32)             NOT NULL,
+    `state_id`              BIGINT                  NOT NULL,
+    `spec_audit`            JSON                    NOT NULL,
+    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`, `namespace`, `state_name`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
+
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_state_history` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `state_name`            VARCHAR(32)             NOT NULL,
+    `state_id`              BIGINT                  NOT NULL,
+    `state_time`            DATETIME                NOT NULL,
+    `state_history`         JSON                    NOT NULL,
+    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE INDEX idx_state_history(namespace, state_name, state_id, state_time),
+    PRIMARY KEY (`id`, `namespace`, `state_name`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
+
+-- main schema --
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
@@ -223,9 +273,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj` (
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, app_name, app_ver, obj_name),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
-CHARACTER SET utf8 COLLATE utf8_bin;
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -238,9 +289,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
-CHARACTER SET utf8 COLLATE utf8_bin;
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -254,9 +306,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation` (
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, app_name, app_ver, obj_name, objn_name),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
-CHARACTER SET utf8 COLLATE utf8_bin;
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -270,9 +323,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, objn_name),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
-CHARACTER SET utf8 COLLATE utf8_bin;
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -289,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -306,7 +360,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -324,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -342,7 +396,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -363,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -380,7 +434,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
+PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
 
 -- metadata --
 {{#_appx_meta}}
@@ -399,14 +453,21 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_user_local`(`namespace`, `username`, 
 -- role definitions --
 {{#_role_scope}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_role_scope`(`scope_name`, `scope_spec`) VALUES ('{{{scope_name}}}', {{#scope_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/scope_spec}}) ON DUPLICATE KEY UPDATE scope_spec=VALUES(scope_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_role_scope`(`namespace`, `scope_name`, `scope_spec`) VALUES ('{{{namespace}}}', '{{{scope_name}}}', {{#scope_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/scope_spec}}) ON DUPLICATE KEY UPDATE scope_spec=VALUES(scope_spec);
 {{/.}}
 {{/_role_scope}}
 {{#_role_grant}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_role_grant`(`role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('{{{role_name}}}', '{{{grant_scope}}}', '{{{grant_name}}}', {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_role_grant`(`namespace`, `role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('{{{namespace}}}', '{{{role_name}}}', '{{{grant_scope}}}', '{{{grant_name}}}', {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
 {{/.}}
 {{/_role_grant}}
+
+-- permission definitions --
+{{#_perm_func}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`_perm_func`(`namespace`, `role_name`, `func_scope`, `func_name`, `func_spec`) VALUES ('{{{namespace}}}', '{{{role_name}}}', '{{{func_scope}}}', '{{{func_name}}}', {{#func_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/func_spec}}) ON DUPLICATE KEY UPDATE func_spec=VALUES(func_spec);
+{{/.}}
+{{/_perm_func}}
 
 -- namespace --
 {{#namespace}}
