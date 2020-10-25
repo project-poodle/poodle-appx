@@ -38,7 +38,7 @@ function load_cache_conf() {
     } finally {
 
         let sleep = get_random_between(60, 120) * 1000
-        // console.log(`INFO: load_cache_conf - sleep for ${Math.round(sleep/1000)} sec(s)`)
+        // console.log(`INFO: load_cache_conf - refresh after ${Math.round(sleep/1000)} sec(s)`)
         setTimeout(() => { load_cache_conf() }, sleep)
     }
 }
@@ -68,7 +68,7 @@ function load_cache_for(name) {
     } finally {
 
         let sleep = get_random_between(cache_conf[name].refresh.min, cache_conf[name].refresh.max) * 1000
-        console.log(`INFO: load_cache_for("${name}") - sleep for ${Math.round(sleep/1000)} sec(s)`)
+        console.log(`INFO: load_cache_for("${name}") - refresh after ${Math.round(sleep/1000)} sec(s)`)
         setTimeout(() => { load_cache_for(name) }, sleep)
     }
 }

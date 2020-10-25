@@ -1,9 +1,9 @@
-const fs = require('fs')
-const mysql = require('mysql')
-const db = require('./src/db/db')
-const cache = require('./src/cache/cache')
-const { ArgumentParser } = require('argparse')
+//const fs = require('fs')
+//const mysql = require('mysql')
 
+//////////////////////////////////////////////////
+// process cli arguments
+const { ArgumentParser } = require('argparse')
 const parser = new ArgumentParser({
     description: 'launch appx rest api server'
 });
@@ -13,10 +13,12 @@ args = parser.parse_args();
 
 //////////////////////////////////////////////////
 // check database connectivity
+const db = require('./src/db/db')
 let db_pool = db.getPool(args.conf)
 
 //////////////////////////////////////////////////
-// check database connectivity
+// load cache to memory
+const cache = require('./src/cache/cache')
 let appx_cache = cache.APPX()
 
 //////////////////////////////////////////////////
@@ -33,6 +35,8 @@ app.get('/doc', (req, res) => {
     res.send(JSON.stringify(endpoints, null, 4))
 })
 
+//////////////////////////////////////////////////
+// start listening
 var server = app.listen(0, () => {
     console.log(`INFO: appx rest api server listening at http://${server.address().address}:${server.address().port}`)
 })
