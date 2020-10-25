@@ -1,6 +1,7 @@
 const fs = require('fs')
 const mysql = require('mysql')
 const db = require('./src/db/db')
+const cache = require('./src/cache/cache')
 const { ArgumentParser } = require('argparse')
 
 const parser = new ArgumentParser({
@@ -13,6 +14,10 @@ args = parser.parse_args();
 //////////////////////////////////////////////////
 // check database connectivity
 let db_pool = db.getPool(args.conf)
+
+//////////////////////////////////////////////////
+// check database connectivity
+let appx_cache = cache.APPX()
 
 //////////////////////////////////////////////////
 // initialize express
