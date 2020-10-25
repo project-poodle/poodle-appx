@@ -1,11 +1,11 @@
 namespace:
 
-    "#ns{$namespaces}":                                     # namespace
+    "#ns{$sql.namespaces}":                                 # namespace
         namespace: "@ns"
         spec: "$ns.namespace_spec"
 
         apps:
-            "#app{$apps[@ns]}":                             # app_name
+            "#app{$sql.apps[@ns]}":                         # app_name
                 "#app{$app}":                               # app_ver
                     namespace: "@ns"
                     app_name: "@@app"
@@ -13,7 +13,7 @@ namespace:
                     spec: "$app.app_spec"
 
                     deployments:
-                        "#dp{$deployments_by_app[@ns][@@app]}{? $app_ver == @app }":            # env_name
+                        "#dp{$sql.deployments_by_app[@ns][@@app]}{? $app_ver == @app }":        # env_name
                             namespace: "@ns"
                             app_name: "@@app"
                             app_ver: "@app"
@@ -21,7 +21,7 @@ namespace:
                             spec: "$dp.deployment_spec"
 
                     objs:
-                        "#obj{$objects[@ns][@@app][@app]}":                                     # obj_name
+                        "#obj{$sql.objs[@ns][@@app][@app]}":                                    # obj_name
                             namespace: "@ns"
                             app_name: "@@app"
                             app_ver: "@app"
@@ -29,7 +29,7 @@ namespace:
                             spec: "$obj.obj_spec"
 
                             relations_1ton:
-                                "#rel{$relations_1ton[@ns][@@app][@app][@obj]}":                # objn_name
+                                "#rel{$sql.relations_1ton[@ns][@@app][@app][@obj]}":            # objn_name
                                     namespace: "@ns"
                                     app_name: "@@app"
                                     app_ver: "@app"
@@ -38,7 +38,7 @@ namespace:
                                     relation_spec: "$rel.relation_spec"
 
                             relations_nto1:
-                                "#rel{$relations_nto1[@ns][@@app][@app][@obj]}":                # obj_name
+                                "#rel{$sql.relations_nto1[@ns][@@app][@app][@obj]}":            # obj_name
                                     namespace: "@ns"
                                     app_name: "@@app"
                                     app_ver: "@app"
@@ -47,7 +47,7 @@ namespace:
                                     relation_spec: "$rel.relation_spec"
 
                             apis_by_method:
-                                "#api{$apis_by_method[@ns][@@app][@app][@obj]}":                # api_method
+                                "#api{$sql.apis_by_method[@ns][@@app][@app][@obj]}":            # api_method
                                     "#api{$api}":                                               # api_endpoint
                                         namespace: "@ns"
                                         app_name: "@@app"
@@ -58,18 +58,18 @@ namespace:
                                         api_spec: "$api.api_spec"
 
                             apis_by_endpoint:
-                                "#api{$apis_by_endpoint[@ns][@@app][@app][@obj]}":              # api_endpoint
+                                "#api{$sql.apis_by_endpoint[@ns][@@app][@app][@obj]}":          # api_endpoint
                                     "#api{$api}":                                               # api_method
-                                        namespace: "@namespaces"
-                                        app_name: "@@apps"
-                                        app_ver: "@apps"
-                                        obj_name: "@objs"
-                                        api_endpoint: "@@apis_by_endpoint"
-                                        api_method: "@apis_by_endpoint"
-                                        api_spec: "$apis.api_spec"
+                                        namespace: "@ns"
+                                        app_name: "@@app"
+                                        app_ver: "@app"
+                                        obj_name: "@obj"
+                                        api_endpoint: "@@api"
+                                        api_method: "@api"
+                                        api_spec: "$api.api_spec"
 
                             transforms:
-                                "#tf{$transforms[@ns][@@app][@app][@obj]}":                     # transform_name
+                                "#tf{$sql.transforms[@ns][@@app][@app][@obj]}":                 # transform_name
                                     namespace: "@ns"
                                     app_name: "@@app"
                                     app_ver: "@app"
@@ -78,13 +78,13 @@ namespace:
                                     transform_spec: "$tf.transform_spec"
 
         envs:
-            "#env{$envs[@ns]}":                                                                 # env_name
+            "#env{$sql.envs[@ns]}":                                                             # env_name
                 namespace: "@ns"
                 env_name: "@env"
                 spec: "$env.env_spec"
 
                 deployments:
-                    "#dp{$deployments_by_env[@ns][@env]}":                                      # app_name
+                    "#dp{$sql.deployments_by_env[@ns][@env]}":                                  # app_name
                         namespace: "@ns"
                         env_name: "@env"
                         app_name: "@dp"
@@ -92,7 +92,7 @@ namespace:
                         spec: "$dp.deployment_spec"
 
                         objs:
-                            "#obj{$objs[@ns][@dp][$dp.app_ver]}":                              # obj_name
+                            "#obj{$sql.objs[@ns][@dp][$dp.app_ver]}":                           # obj_name
                                 namespace: "@ns"
                                 app_name: "@dp"
                                 app_ver: "$dp.app_ver"
@@ -100,7 +100,7 @@ namespace:
                                 spec: "$obj.obj_spec"
 
                                 relations_1ton:
-                                    "#rel{$relations_1ton[@ns][@dp][$dp.app_ver][@obj]}":       # objn_name
+                                    "#rel{$sql.relations_1ton[@ns][@dp][$dp.app_ver][@obj]}":   # objn_name
                                         namespace: "@ns"
                                         app_name: "@dp"
                                         app_ver: "$dp.app_ver"
@@ -109,7 +109,7 @@ namespace:
                                         relation_spec: "$rel.relation_spec"
 
                                 relations_nto1:
-                                    "#rel{$relations_nto1[@ns][@dp][$dp.app_ver][@obj]}":       # obj_name
+                                    "#rel{$sql.relations_nto1[@ns][@dp][$dp.app_ver][@obj]}":   # obj_name
                                         namespace: "@ns"
                                         app_name: "@dp"
                                         app_ver: "$dp.app_ver"
@@ -118,7 +118,7 @@ namespace:
                                         relation_spec: "$rel.relation_spec"
 
                                 apis_by_method:
-                                    "#api{$apis_by_method[@ns][@dp][$dp.app_ver][@obj]}":       # api_method
+                                    "#api{$sql.apis_by_method[@ns][@dp][$dp.app_ver][@obj]}":   # api_method
                                         "#api{$api}":                                           # api_endpoint
                                             namespace: "@ns"
                                             app_name: "@dp"
@@ -129,7 +129,7 @@ namespace:
                                             api_spec: "$api.api_spec"
 
                                 apis_by_endpoint:
-                                    "#api{$apis_by_endpoint[@ns][@dp][$dp.app_ver][@obj]}":     # api_endpoint
+                                    "#api{$sql.apis_by_endpoint[@ns][@dp][$dp.app_ver][@obj]}": # api_endpoint
                                         "#api{$api}":                                           # api_method
                                             namespace: "@ns"
                                             app_name: "@dp"
@@ -140,7 +140,7 @@ namespace:
                                             api_spec: "$api.api_spec"
 
                                 transforms:
-                                    "#tf{$transforms[@ns][@dp][$dp.app_ver][@obj]}":            # transform_name
+                                    "#tf{$sql.transforms[@ns][@dp][$dp.app_ver][@obj]}":        # transform_name
                                         namespace: "@ns"
                                         app_name: "@dp"
                                         app_ver: "$dp.app_ver"
@@ -151,7 +151,7 @@ namespace:
 
 app:
 
-    "#app{$apps}":                                          # namespace
+    "#app{$sql.apps}":                                      # namespace
         "#app{$app}":                                       # app_name
             "#app{$app}":                                   # app_ver
                 namespace: "@@@app"
@@ -160,7 +160,7 @@ app:
                 spec: "$app.app_spec"
 
                 deployments:
-                    "#dp{$deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":             # env_name
+                    "#dp{$sql.deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":             # env_name
                         namespace: "@@@app"
                         app_name: "@@app"
                         app_ver: "@app"

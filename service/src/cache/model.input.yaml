@@ -1,17 +1,17 @@
 - query: "SELECT * FROM namespace WHERE deleted = 0"
   map_def:
-      - name: namespaces
+      - name: sql.namespaces
         key:
             - "$@.namespace"
         value: "$@"
 
   arr_def:
-      - name: namespace_arr
+      - name: sql.namespace_arr
         value: "$@"
 
 - query: "SELECT * FROM app WHERE deleted = 0"
   map_def:
-      - name: apps
+      - name: sql.apps
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -20,7 +20,7 @@
 
 - query: "SELECT * FROM env WHERE deleted = 0"
   map_def:
-      - name: envs
+      - name: sql.envs
         key:
             - "$@.namespace"
             - "$@.env_name"
@@ -28,14 +28,14 @@
 
 - query: "SELECT * FROM deployment WHERE deleted = 0"
   map_def:
-      - name: deployments_by_env
+      - name: sql.deployments_by_env
         key:
             - "$@.namespace"
             - "$@.env_name"
             - "$@.app_name"
         value: "$@"
 
-      - name: deployments_by_app
+      - name: sql.deployments_by_app
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -44,7 +44,7 @@
 
 - query: "SELECT * FROM obj WHERE deleted = 0"
   map_def:
-      - name: objs
+      - name: sql.objs
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -54,7 +54,7 @@
 
 - query: "SELECT * FROM relation WHERE deleted = 0"
   map_def:
-      - name: relations_1ton
+      - name: sql.relations_1ton
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -63,7 +63,7 @@
             - "$@.objn_name"
         value: "$@"
 
-      - name: relations_nto1
+      - name: sql.relations_nto1
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -74,7 +74,7 @@
 
 - query: "SELECT * FROM api WHERE deleted = 0"
   map_def:
-      - name: apis_by_method
+      - name: sql.apis_by_method
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -84,7 +84,7 @@
             - "$@.api_endpoint"
         value: "$@"
 
-      - name: apis_by_endpoint
+      - name: sql.apis_by_endpoint
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -96,7 +96,7 @@
 
 - query: "SELECT * FROM transform WHERE deleted = 0"
   map_def:
-      - name: transforms
+      - name: sql.transforms
         key:
             - "$@.namespace"
             - "$@.app_name"

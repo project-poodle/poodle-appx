@@ -1,5 +1,6 @@
-const fs = require('fs');
-const YAML = require('yaml');
+const fs = require('fs')
+const YAML = require('yaml')
+const dotProp = require('dot-prop')
 const db = require('../db/db')
 
 db.getPool("../../conf.d/mysql_appx.json")
@@ -36,7 +37,7 @@ function load_sql(filepath) {
                     Object.assign(curr_map, value)
                 });
 
-                variables[map_def.name] = map
+                dotProp.set(variables, map_def.name, map)
             });
         }
 
@@ -51,7 +52,7 @@ function load_sql(filepath) {
                     arr.push(eval(arr_def.value.replace(/\$@/g, 'result')))
                 });
 
-                variables[arr_def.name] = arr
+                dotProp.set(variables, arr_def.name, arr)
             });
         }
     });

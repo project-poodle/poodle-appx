@@ -12,6 +12,7 @@
   "dependencies": {
     "argparse": "^2.0.1",
     "deasync": "^0.1.20",
+    "dot-prop": "^6.0.0",
     "express": "^4.17.1",
     "mustache": "^4.0.1",
     "mysql": "^2.18.1",
