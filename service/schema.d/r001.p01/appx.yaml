@@ -22,11 +22,15 @@ _appx_meta:
       meta_info:
           value: "{{{MYSQL_CONF.schema_separator}}}"
           comment: "initialize"
-    - meta_name: "appx.local_auth"
-      meta_key: "{{{MYSQL_CONF.appx_node_user}}}"
-      meta_info:
-          password: '`PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")`'
-          comment: "initialize"
+
+######################################################################
+# metadata
+_user_local:
+    - namespace: "sys"
+      username: "{{{MYSQL_CONF.appx_node_user}}}"
+      password: 'PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")'
+      user_info:
+          comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}"
 
 ######################################################################
 # _role_scope

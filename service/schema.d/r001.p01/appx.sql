@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_appx_meta`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_user_local`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_scope`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_grant`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_func`;
@@ -31,6 +32,20 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_appx_meta` (
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_metadata(meta_name, meta_key),
+    PRIMARY KEY (`id`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin;
+
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user_local` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `username`              VARCHAR(32)             NOT NULL,
+    `password`              VARCHAR(255)            NOT NULL,
+    `user_info`             JSON                    NOT NULL,
+    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
+    UNIQUE INDEX idx_metadata(namespace, username),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -373,6 +388,13 @@ PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
 INSERT INTO `{{{global.schema_prefix}}}`.`_appx_meta`(`meta_name`, `meta_key`, `meta_info`) VALUES ('{{{meta_name}}}', '{{{meta_key}}}', {{#meta_info}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/meta_info}}) ON DUPLICATE KEY UPDATE meta_info=VALUES(meta_info);
 {{/.}}
 {{/_appx_meta}}
+
+-- local users --
+{{#_user_local}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`_user_local`(`namespace`, `username`, `password`, `user_info`) VALUES ('{{{namespace}}}', '{{{username}}}', {{{password}}}, {{#user_info}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_info}}) ON DUPLICATE KEY UPDATE user_info=VALUES(user_info);
+{{/.}}
+{{/_user_local}}
 
 -- role definitions --
 {{#_role_scope}}
