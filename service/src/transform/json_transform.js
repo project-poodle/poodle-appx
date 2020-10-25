@@ -5,18 +5,7 @@ const REGEX_OBJ = REGEX_VAR + '(\\.' + REGEX_VAR + ')*'
 const REGEX_FNC = REGEX_OBJ + '\\s*\\(\\s*' + REGEX_OBJ + '\\s*(\\s*,\\s*' + REGEX_OBJ + '\\s*)*' + '\\s*\\)'
 const REGEX_FNC2 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
 const REGEX_FNC3 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
-// const REGEX_FNC4 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC3 + '|' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC3 + '|' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
 const KEY_SUFFIX = '__k'
-
-//const getMyDotProp = (obj, prop, defaultVal) => {
-//    if (obj) {
-//        //console.log(`getMyDotProp(${obj}, ${prop}, ${defaultVal})`)
-//        return dotProp.get(obj, prop, defaultVal)
-//    } else {
-//        //console.log(`getMyDotProp(null, ${prop}, ${defaultVal})`)
-//        return defaultVal
-//    }
-//}
 
 /**
  * evaluate expression with context
@@ -39,7 +28,6 @@ function eval_with_context(expr, ctx) {
     while (expr.match(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'))) {
         // console.log(`eval(${expr})`)
         expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'dotProp.get($1, $63, null)')
-        // expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + '|' + REGEX_FNC4 + ')' + '\\[([^\\]]+)\\]'), 'getMyDotProp($1, $189, null)')
     }
 
     console.log(`eval(${expr})`)
