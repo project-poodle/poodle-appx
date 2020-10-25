@@ -31,16 +31,16 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
+      obj_name: "runtime"
       obj_spec:
-          comment: "initialize: env"
+          comment: "initialize: runtime"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env_status"
+      obj_name: "runtime_status"
       obj_spec:
-          comment: "initialize: env_status"
+          comment: "initialize: runtime_status"
 
     - namespace: "sys"
       app_name: "appx"

@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_func`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_obj`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`namespace`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`namespace_status`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`env`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`env_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`runtime`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`runtime_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`app`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`app_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`deployment`;
@@ -113,28 +113,28 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace_status` (
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`env` (
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`runtime` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
-    `env_spec`              JSON                    NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
+    `runtime_spec`          JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`env_status` (
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`runtime_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
-    `env_state`             JSON                    NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
+    `runtime_state`         JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -170,14 +170,14 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`deployment` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
     `deployment_spec`       JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -185,14 +185,14 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`deployment_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
     `deployment_status`     JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -215,14 +215,14 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_state`             JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -246,7 +246,7 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, objn_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, objn_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -279,7 +279,7 @@ PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `attr_name`             VARCHAR(32)             NOT NULL,
@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, attr_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, attr_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -314,7 +314,7 @@ PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `api_method`            VARCHAR(15)             NOT NULL,
@@ -323,7 +323,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, api_method, api_endpoint),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, api_method, api_endpoint),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -353,7 +353,7 @@ PARTITION BY KEY(namespace, app_name) PARTITIONS 10;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `env_name`              VARCHAR(9)              NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `transform_name`        VARCHAR(32)             NOT NULL,
@@ -361,7 +361,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, env_name, app_name, obj_name, transform_name),
+    UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, transform_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -400,17 +400,17 @@ INSERT INTO `{{{global.schema_prefix}}}`.`app`(`namespace`, `app_name`, `app_ver
 {{/.}}
 {{/app}}
 
--- env --
-{{#env}}
+-- runtime --
+{{#runtime}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`env`(`namespace`, `env_name`, `env_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', {{#env_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/env_spec}}) ON DUPLICATE KEY UPDATE env_spec=VALUES(env_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`runtime`(`namespace`, `runtime_name`, `runtime_spec`) VALUES ('{{{namespace}}}', '{{{runtime_name}}}', {{#runtime_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/runtime_spec}}) ON DUPLICATE KEY UPDATE runtime_spec=VALUES(runtime_spec);
 {{/.}}
-{{/env}}
+{{/runtime}}
 
 -- deployment --
 {{#deployment}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`deployment`(`namespace`, `env_name`, `app_name`, `app_ver`, `deployment_spec`) VALUES ('{{{namespace}}}', '{{{env_name}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/deployment_spec}})  ON DUPLICATE KEY UPDATE app_ver=VALUES(app_ver), deployment_spec=VALUES(deployment_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`deployment`(`namespace`, `runtime_name`, `app_name`, `app_ver`, `deployment_spec`) VALUES ('{{{namespace}}}', '{{{runtime_name}}}', '{{{app_name}}}', '{{{app_ver}}}', {{#deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/deployment_spec}})  ON DUPLICATE KEY UPDATE app_ver=VALUES(app_ver), deployment_spec=VALUES(deployment_spec);
 {{/.}}
 {{/deployment}}
 

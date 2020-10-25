@@ -18,17 +18,17 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
-      objn_name: "env_status"
+      obj_name: "runtime"
+      objn_name: "runtime_status"
       relation_spec:
           kind:
               type: "1"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
-          comment: "initialize: env -> env_status (1)"
+              - src: "runtime_name"
+                tgt: "runtime_name"
+          comment: "initialize: runtime -> runtime_status (1)"
 
     ######################################################################
     - namespace: "sys"
@@ -60,8 +60,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
+              - src: "runtime_name"
+                tgt: "runtime_name"
               - src: "app_name"
                 tgt: "app_name"
               - src: "app_ver"
@@ -78,7 +78,7 @@ relation:
           kind:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -100,7 +100,7 @@ relation:
           kind:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -124,7 +124,7 @@ relation:
           kind:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -150,7 +150,7 @@ relation:
           kind:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -169,16 +169,16 @@ relation:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace"
-      objn_name: "env"
+      objn_name: "runtime"
       relation_spec:
           type:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-          comment: "initialize: namespace -> env (n)"
+          comment: "initialize: namespace -> runtime (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -201,7 +201,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
+      obj_name: "runtime"
       objn_name: "deployment"
       relation_spec:
           type:
@@ -212,9 +212,9 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
-          comment: "initialize: env -> deployment (n)"
+              - src: "runtime_name"
+                tgt: "runtime_name"
+          comment: "initialize: runtime -> deployment (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -226,7 +226,7 @@ relation:
           type:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -246,7 +246,7 @@ relation:
           type:
               type: "n"
               attrs:
-                  - "env_name"
+                  - "runtime_name"
                   - "obj_name"
           attrs:
               - src: "namespace"
@@ -271,8 +271,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
+              - src: "runtime_name"
+                tgt: "runtime_name"
               - src: "app_name"
                 tgt: "app_name"
           comment: "initialize: deployment -> obj_status (n)"
@@ -314,8 +314,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
+              - src: "runtime_name"
+                tgt: "runtime_name"
               - src: "app_name"
                 tgt: "app_name"
           comment: "initialize: deployment -> attr_status (n)"
@@ -359,8 +359,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
+              - src: "runtime_name"
+                tgt: "runtime_name"
               - src: "app_name"
                 tgt: "app_name"
           comment: "initialize: deployment -> api_status (n)"
@@ -402,8 +402,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "env_name"
-                tgt: "env_name"
+              - src: "runtime_name"
+                tgt: "runtime_name"
               - src: "app_name"
                 tgt: "app_name"
           comment: "initialize: deployment -> transform_status (n)"

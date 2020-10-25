@@ -38,11 +38,11 @@ attr:
           type: "JSON"
 
     ######################################################################
-    # env
+    # runtime
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
+      obj_name: "runtime"
       attr_name: "namespace"
       attr_spec:
           key: true
@@ -50,26 +50,26 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
-      attr_name: "env_name"
+      obj_name: "runtime"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env"
-      attr_name: "env_spec"
+      obj_name: "runtime"
+      attr_name: "runtime_spec"
       attr_spec:
           key: false
           type: "JSON"
 
     ######################################################################
-    # env_status
+    # runtime_status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env_status"
+      obj_name: "runtime_status"
       attr_name: "namespace"
       attr_spec:
           key: true
@@ -77,16 +77,16 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env_status"
-      attr_name: "env_name"
+      obj_name: "runtime_status"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "env_status"
-      attr_name: "env_state"
+      obj_name: "runtime_status"
+      attr_name: "runtime_state"
       attr_spec:
           key: false
           type: "JSON"
@@ -175,7 +175,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
@@ -218,7 +218,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment_status"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
@@ -304,7 +304,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj_status"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
@@ -406,7 +406,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr_status"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
@@ -524,7 +524,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api_status"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"
@@ -642,7 +642,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform_status"
-      attr_name: "env_name"
+      attr_name: "runtime_name"
       attr_spec:
           key: true
           type: "VARCHAR(9)"

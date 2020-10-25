@@ -51,11 +51,11 @@ namespace:
           comment: "initialize"
 
 ######################################################################
-# env
-env:
+# runtime
+runtime:
     - namespace: "sys"
-      env_name: "base"
-      env_spec:
+      runtime_name: "base"
+      runtime_spec:
           comment: "initialize"
 
 ######################################################################
@@ -71,7 +71,7 @@ app:
 # deployment
 deployment:
     - namespace: "sys"
-      env_name: "base"
+      runtime_name: "base"
       app_name: "appx"
       app_ver: "internal"
       deployment_spec:
