@@ -53,7 +53,7 @@ function load_cache_for(name) {
         //console.log(JSON.stringify(transform, null, 4))
 
         let result = json_transform(transform, input)
-        console.log(JSON.stringify(result, null, 4))
+        //console.log(JSON.stringify(result, null, 4))
 
         CACHE_VARS[name] = result
         console.log(`INFO: load_cache_for("${name}") - success !`)

@@ -30,7 +30,7 @@ function eval_with_context(expr, ctx) {
         expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'dotProp.get($1, $63, null)')
     }
 
-    console.log(`eval(${expr})`)
+    //console.log(`eval(${expr})`)
     let r = eval(expr, ctx)
     //console.log(`eval(${expr}) => ${r}`)
     return r
