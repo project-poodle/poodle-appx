@@ -46,14 +46,55 @@ var query = (sql, variables, callback) => {
     // console.log(`INFO: [${sql}]`)
     getPool().query(sql, variables, (error, results, fields) => {
         if (error) {
-            console.log(`ERROR: [${sql}] -- ${error}`)
+            console.log(`ERROR: [${sql}] -- ${error.toString()}`)
+
+            // check if error is operation error
+            // https://github.com/mysqljs/mysql#error-handling
+            // err.fatal:
+            //      Boolean, indicating if this error is terminal to the connection object.
+            //      If the error is not from a MySQL protocol operation, this property will not be defined.
+            if (error.fatal) {
+                console.log(`INFO: retry connection error [${sql}] -- ${error.toString()}`)
+                // if yes, release the pool, and retry
+                db_pool.end(function (err) {
+                    if (err) {
+                        console.log(`ERROR: db_pool.end failed [${err.toString()}]`)
+                    }
+                });
+                // re-establish connection, and try again
+                try {
+                    db_pool = null
+                    getPool().query(sql, variables, (error, results, fields) => {
+                        if (error) {
+                            console.log(`ERROR: unrecoverable error [${sql}] -- ${error.toString()}`)
+                        }
+                        // callback
+                        if (callback) {
+                            if (fields) {
+                                callback(error, results, fields)
+                            } else {
+                                callback(error, results)
+                            }
+                        }
+                    })
+                } catch (err) {
+                    console.log(`ERROR: failed to re-execute query [${err.toString()}]`)
+                    if (callback) {
+                        callback(err, null)
+                    }
+                } finally {
+                    // callback should have already been called, just return
+                    return
+                }
+            }
         }
         // callback
-        if (typeof fields == 'undefined') {
-            callback(error, results)
-        } else {
-            // console.log(fields)
-            callback(error, results, fields)
+        if (callback) {
+            if (fields) {
+                callback(error, results, fields)
+            } else {
+                callback(error, results)
+            }
         }
     })
 }
