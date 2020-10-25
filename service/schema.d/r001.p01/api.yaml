@@ -9,7 +9,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace
               verb: "get"
@@ -26,7 +26,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace WHERE namespace=:namespace
               verb: "get"
@@ -43,7 +43,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               # INSERT INTO appx.namespace (namespace, namespace_spec) VALUES (:namespace, body.namespace_spec) ON DUPLICATE KEY UPDATE namespace_spec = VALUES(namespace_spec)
               verb: "upsert"
@@ -57,7 +57,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               # UPDATE appx.namespace SET namespace_spec = :body.namespace_spec WHERE namespace = :namespace
               verb: "update"
@@ -71,7 +71,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               # UPDATE appx.namespace SET deleted=1 WHERE namespace = :namespace
               verb: "delete"
@@ -85,7 +85,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               # INSERT INTO appx.namespace_status (namespace, namespace_state) VALUES (:namespace, body.namespace_state) ON DUPLICATE KEY UPDATE namespace_state = VALUES(namespace_state)
               verb: "status"
@@ -101,7 +101,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/runtime"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -118,7 +118,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -135,7 +135,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -148,7 +148,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -161,7 +161,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -174,7 +174,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/runtime/:runtime_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -189,7 +189,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -206,7 +206,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -223,7 +223,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -240,7 +240,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -253,7 +253,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -266,7 +266,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -279,7 +279,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -294,7 +294,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -313,7 +313,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -332,7 +332,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/app/:app_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -351,7 +351,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -370,7 +370,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -383,7 +383,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -396,7 +396,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -409,7 +409,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -424,7 +424,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -440,7 +440,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -459,7 +459,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -475,7 +475,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -494,7 +494,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -507,7 +507,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -520,7 +520,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -533,7 +533,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -548,7 +548,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -564,7 +564,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/relation"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -583,7 +583,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -599,7 +599,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/relation/:obj_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -618,7 +618,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -634,7 +634,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/relation/:obj_name/:objn_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -653,7 +653,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -666,7 +666,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -679,7 +679,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -692,7 +692,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/relation/:obj_name/:objn_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -707,7 +707,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -724,7 +724,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/attr"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -744,7 +744,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -761,7 +761,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/attr/:attr_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -781,7 +781,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -794,7 +794,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -807,7 +807,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -820,7 +820,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/attr/:attr_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -835,7 +835,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -851,7 +851,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/api"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -871,7 +871,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -888,7 +888,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -908,7 +908,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -921,7 +921,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -934,7 +934,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -947,7 +947,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/api/:api_method/:api_endpoint/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
@@ -962,7 +962,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -979,7 +979,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/transform"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -999,7 +999,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -1016,7 +1016,7 @@ api:
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/transform/:transform_name"
       api_spec:
-          permission: "sys.appx.read"
+          permission: "read"
           syntax:
               verb: "get"
               join:
@@ -1036,7 +1036,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "upsert"
           doc:
@@ -1049,7 +1049,7 @@ api:
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "update"
           doc:
@@ -1062,7 +1062,7 @@ api:
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
-          permission: "sys.appx.write"
+          permission: "write"
           syntax:
               verb: "delete"
           doc:
@@ -1075,7 +1075,7 @@ api:
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name/app/:app_name/obj/:obj_name/transform/:transform_name/status"
       api_spec:
-          permission: "sys.appx.status"
+          permission: "status"
           syntax:
               verb: "status"
           doc:
