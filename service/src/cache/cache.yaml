@@ -1,15 +1,6 @@
-model:
-    export: true
-    input: model.input.yaml
-    format: model.format.yaml
-    refresh:
-        min: 300
-        max: 600
-
-security:
-    export: true
-    input: role_n_perm.input.yaml
-    format: role_n_perm.format.yaml
-    refresh:
-        min: 300
-        max: 600
+- export: true
+  sql_input: ./model.input.yaml
+  transform: ./model.transform.yaml
+  refresh:
+      min: 300
+      max: 600

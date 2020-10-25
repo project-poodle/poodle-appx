@@ -1,14 +1,9 @@
-const fs = require('fs');
-const YAML = require('yaml')
-const { load_sql } = require('./load_sql')
-
-// let re = /(\#|\@|\$|\+{1,2}|\-{1,2}|\*{1,2}|\/|\&{1,2}|\|{1,2}|\^|\!|\~|={1,3}|\?|\:|\[|\]|\(|\)|\{|\}|[A-Za-z_][A-Za-z_0-9]*)+/
-
 const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
 const KEY_SUFFIX = '__k'
 
-expr = "$deployments_by_app[@namespaces][@@apps]"
-
+/**
+ * evaluate expression with context
+ */
 function eval_with_context(expr, ctx) {
 
     // substitute variable
@@ -29,7 +24,10 @@ function eval_with_context(expr, ctx) {
     return r
 }
 
-function transform_json(transform, context) {
+/**
+ * transform context json with transform spec
+ */
+function json_transform(transform, context) {
 
     //console.log('transform')
     //console.log(transform)
@@ -38,7 +36,7 @@ function transform_json(transform, context) {
 
         let result = []
         transform.forEach((transform_value, i) => {
-            result.append(transform_json(transform_value, context))
+            result.append(json_transform(transform_value, context))
         });
 
         return result
@@ -91,7 +89,7 @@ function transform_json(transform, context) {
                         // update result
                         //console.log('child_context')
                         //console.log(child_context)
-                        result[key] = transform_json(transform[transform_key], child_context)
+                        result[key] = json_transform(transform[transform_key], child_context)
                     });
 
                 } else if (map) {
@@ -128,7 +126,7 @@ function transform_json(transform, context) {
                         child_context[variable] = value
 
                         // update result
-                        result.push(transform_json(transform[transform_key], child_context))
+                        result.push(json_transform(transform[transform_key], child_context))
                     });
 
                 } else {
@@ -138,7 +136,7 @@ function transform_json(transform, context) {
 
             } else {
 
-                result[transform_key] = transform_json(transform[transform_key], context)
+                result[transform_key] = json_transform(transform[transform_key], context)
             }
         });
 
@@ -150,14 +148,7 @@ function transform_json(transform, context) {
     }
 }
 
-//console.log('input')
-let input = load_sql("model.input.yaml")
-//console.log(JSON.stringify(input, null, 4))
 
-//console.log('transform')
-let transform = YAML.parse(fs.readFileSync("model.transform.yaml", 'utf8'))
-//console.log(JSON.stringify(transform, null, 4))
-
-console.log('result')
-let result = transform_json(transform, input)
-console.log(JSON.stringify(result, null, 4))
+module.exports = {
+    json_transform: json_transform
+}

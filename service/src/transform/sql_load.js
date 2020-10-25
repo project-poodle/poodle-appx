@@ -3,9 +3,16 @@ const YAML = require('yaml')
 const dotProp = require('dot-prop')
 const db = require('../db/db')
 
-db.getPool("../../conf.d/mysql_appx.json")
+try {
+    db.getPool(__dirname + '/../../conf.d/mysql_appx.json')
+} catch (err) {
+    console.warn(`WARN: ${err.toString()}`)
+}
 
-function load_sql(filepath) {
+/**
+ * load sql data
+ */
+function sql_load(filepath) {
 
     let variables = {}
 
@@ -61,5 +68,5 @@ function load_sql(filepath) {
 }
 
 module.exports = {
-    load_sql: load_sql
+    sql_load: sql_load
 }
