@@ -1,5 +1,22 @@
+const dotProp = require('dot-prop')
+
 const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
+const REGEX_OBJ = REGEX_VAR + '(\\.' + REGEX_VAR + ')*'
+const REGEX_FNC = REGEX_OBJ + '\\s*\\(\\s*' + REGEX_OBJ + '\\s*(\\s*,\\s*' + REGEX_OBJ + '\\s*)*' + '\\s*\\)'
+const REGEX_FNC2 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
+const REGEX_FNC3 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
+// const REGEX_FNC4 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC3 + '|' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC3 + '|' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
 const KEY_SUFFIX = '__k'
+
+//const getMyDotProp = (obj, prop, defaultVal) => {
+//    if (obj) {
+//        //console.log(`getMyDotProp(${obj}, ${prop}, ${defaultVal})`)
+//        return dotProp.get(obj, prop, defaultVal)
+//    } else {
+//        //console.log(`getMyDotProp(null, ${prop}, ${defaultVal})`)
+//        return defaultVal
+//    }
+//}
 
 /**
  * evaluate expression with context
@@ -18,7 +35,14 @@ function eval_with_context(expr, ctx) {
         expr = expr.replace(new RegExp('\\@(ctx\\.' + REGEX_VAR + '(' + KEY_SUFFIX + ')+)', 'g'), '$1' + KEY_SUFFIX)
     }
 
-    //console.log(`eval(${expr})`)
+    // substitute [] index
+    while (expr.match(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'))) {
+        // console.log(`eval(${expr})`)
+        expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'dotProp.get($1, $63, null)')
+        // expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + '|' + REGEX_FNC4 + ')' + '\\[([^\\]]+)\\]'), 'getMyDotProp($1, $189, null)')
+    }
+
+    console.log(`eval(${expr})`)
     let r = eval(expr, ctx)
     //console.log(`eval(${expr}) => ${r}`)
     return r
@@ -29,8 +53,8 @@ function eval_with_context(expr, ctx) {
  */
 function json_transform(transform, context) {
 
-    //console.log('transform')
-    //console.log(transform)
+    // console.log('transform')
+    // console.log(transform)
 
     if (Array.isArray(transform)) {
 
@@ -58,15 +82,15 @@ function json_transform(transform, context) {
                 try {
                     map = eval_with_context(expr, context)
                 } catch (error) {
-                    console.warn(`WARN: failed to evaluate [${expr}] -- ${error.toString()}`)
+                    console.log(`WARN: failed to evaluate { ${expr} } -- ${error.toString()}`)
                 }
 
                 if (typeof map === 'object' && map !== null) {
 
                     Object.keys(map).forEach((key, i) => {
 
-                        //console.log('context')
-                        //console.log(context)
+                        // console.log('context')
+                        // console.log(context)
 
                         let child_context = { ...context }
                         child_context[variable] = {}
@@ -87,8 +111,8 @@ function json_transform(transform, context) {
                         child_context[variable + KEY_SUFFIX] = key
 
                         // update result
-                        //console.log('child_context')
-                        //console.log(child_context)
+                        // console.log('child_context')
+                        // console.log(child_context)
                         result[key] = json_transform(transform[transform_key], child_context)
                     });
 
@@ -102,28 +126,34 @@ function json_transform(transform, context) {
                 let variable = tokens[2]
                 let expr = tokens[3]
 
-                let arr = eval_with_context(expr, context)
+                let arr = []
+                try {
+                    arr = eval_with_context(expr, context)
+                } catch (error) {
+                    console.log(`WARN: failed to evaluate { ${expr} } -- ${error.toString()}`)
+                }
 
                 if (Array.isArray(arr)) {
 
                     arr.forEach((value, i) => {
 
                         let child_context = { ...context }
+                        child_context[variable] = {}
+
+                        // build child value
+                        child_context[variable] = value
 
                         // build child key(s)
                         let key_idx = KEY_SUFFIX
-                        while (key_idx in child_context) {
+                        while (variable in context && (variable + key_idx) in context) {
                             key_idx = key_idx + KEY_SUFFIX
                         }
                         while (key_idx.length > KEY_SUFFIX.length) {
                             let parent_idx = key_idx.substring(0, key_idx.length - KEY_SUFFIX.length)
-                            child_context[key_idx] = child_context[parent_idx]
+                            child_context[variable + key_idx] = context[variable + parent_idx]
                             key_idx = parent_idx
                         }
-                        child_context[KEY_SUFFIX] = i
-
-                        // build child value
-                        child_context[variable] = value
+                        child_context[variable + KEY_SUFFIX] = i
 
                         // update result
                         result.push(json_transform(transform[transform_key], child_context))

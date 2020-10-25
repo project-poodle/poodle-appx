@@ -1,6 +1,6 @@
-- export: true
-  sql_input: ./model.input.yaml
-  transform: ./model.transform.yaml
-  refresh:
-      min: 300
-      max: 600
+APPX:
+    sql_input: "model.input.yaml"
+    transform: "model.transform.yaml"
+    refresh:
+        min: 180
+        max: 300
