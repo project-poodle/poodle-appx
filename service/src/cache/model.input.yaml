@@ -47,7 +47,6 @@
       - name: objs
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.obj_name"
@@ -58,7 +57,6 @@
       - name: relations_1ton
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.obj_name"
@@ -68,7 +66,6 @@
       - name: relations_nto1
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.objn_name"
@@ -80,7 +77,6 @@
       - name: apis_by_method
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.obj_name"
@@ -91,7 +87,6 @@
       - name: apis_by_endpoint
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.obj_name"
@@ -104,7 +99,6 @@
       - name: transforms
         key:
             - "$@.namespace"
-            - "$@.env_name"
             - "$@.app_name"
             - "$@.app_ver"
             - "$@.obj_name"

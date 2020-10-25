@@ -5,7 +5,7 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace"
       api_method: "get"
       api_endpoint: "/namespace"
       api_spec:
@@ -13,7 +13,6 @@ api:
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace
               verb: "get"
-              obj: "namespace"
               join:
                   - obj: "namespace_status"
                     type: "left"
@@ -23,7 +22,7 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace"
       api_method: "get"
       api_endpoint: "/namespace/:namespace"
       api_spec:
@@ -31,7 +30,6 @@ api:
           syntax:
               # SELECT * FROM appx.namespace LEFT JOIN appx.namespace_status ON namespace.namespace = namespace_status.namespace WHERE namespace=:namespace
               verb: "get"
-              obj: "namespace"
               join:
                   - obj: "namespace_status"
                     type: "left"
@@ -41,7 +39,7 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace"
       api_method: "post"
       api_endpoint: "/namespace/:namespace"
       api_spec:
@@ -49,14 +47,13 @@ api:
           syntax:
               # INSERT INTO appx.namespace (namespace, namespace_spec) VALUES (:namespace, body.namespace_spec) ON DUPLICATE KEY UPDATE namespace_spec = VALUES(namespace_spec)
               verb: "upsert"
-              obj: "namespace"
           doc:
               desc: "upsert namespace for :namespace"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace"
       api_method: "put"
       api_endpoint: "/namespace/:namespace"
       api_spec:
@@ -64,14 +61,13 @@ api:
           syntax:
               # UPDATE appx.namespace SET namespace_spec = :body.namespace_spec WHERE namespace = :namespace
               verb: "update"
-              obj: "namespace"
           doc:
               desc: "update namespace for :namespace"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace"
       api_spec:
@@ -79,14 +75,13 @@ api:
           syntax:
               # UPDATE appx.namespace SET deleted=1 WHERE namespace = :namespace
               verb: "delete"
-              obj: "namespace"
           doc:
               desc: "delete namespace for :namespace (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "namespace_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/status"
       api_spec:
@@ -94,7 +89,6 @@ api:
           syntax:
               # INSERT INTO appx.namespace_status (namespace, namespace_state) VALUES (:namespace, body.namespace_state) ON DUPLICATE KEY UPDATE namespace_state = VALUES(namespace_state)
               verb: "status"
-              obj: "namespace_status"
           doc:
               desc: "post namespace status for :namespace"
 
@@ -103,14 +97,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/env"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "env"
               join:
                   - obj: "namespace"
                   - obj: "env_status"
@@ -121,14 +114,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/env/:env_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "env"
               join:
                   - obj: "namespace"
                   - obj: "env_status"
@@ -139,56 +131,52 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/env/:env_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "env"
           doc:
               desc: "upsert env for :namespace / :env_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/env/:env_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "env"
           doc:
               desc: "update env for :namespace / :env_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/env/:env_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "env"
           doc:
               desc: "delete env for :namespace / :env_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "env_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/env/:env_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "env_status"
           doc:
               desc: "post env status for :namespace / :env_name"
 
@@ -197,14 +185,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "app"
               join:
                   - obj: "namespace"
                   - obj: "app_status"
@@ -215,14 +202,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "app"
               join:
                   - obj: "namespace"
                   - obj: "app_status"
@@ -233,14 +219,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "app"
               join:
                   - obj: "namespace"
                   - obj: "app_status"
@@ -251,56 +236,52 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "app"
           doc:
               desc: "upsert app for :namespace / :app_name / :app_ver"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "app"
           doc:
               desc: "update app for :namespace / :app_name / :app_ver"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "app"
           doc:
               desc: "delete app for :namespace / :app_name / :app_ver (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "app_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "app_status"
           doc:
               desc: "post app status for :namespace / :app_name / :app_ver"
 
@@ -309,14 +290,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "deployment"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -329,14 +309,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "deployment"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -349,14 +328,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/app/:app_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "deployment"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -369,14 +347,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "deployment"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -389,56 +366,52 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "deployment"
           doc:
               desc: "upsert deployment for :namespace / :env_name / :app_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "deployment"
           doc:
               desc: "update deployment for :namespace / :env_name / :app_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "deployment"
           doc:
               desc: "delete deployment for :namespace / :env_name / :app_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "deployment_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "deployment_status"
           doc:
               desc: "post deployment status for :namespace / :env_name / :app_name"
 
@@ -447,14 +420,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "obj"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -464,14 +436,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "obj"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -484,14 +455,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "obj"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -501,14 +471,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "obj"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -521,56 +490,52 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "obj"
           doc:
               desc: "upsert obj for :namespace / :app_name / :app_ver / :obj_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "obj"
           doc:
               desc: "update obj for :namespace / :app_name / :app_ver / :obj_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "obj"
           doc:
               desc: "delete obj for :namespace / :app_name / :app_ver / :obj_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "obj_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "obj_status"
           doc:
               desc: "post obj status for :namespace / :env_name / :app_name / :obj_name"
 
@@ -579,14 +544,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "relation"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -596,14 +560,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/relation"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj_name: "relation"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -616,14 +579,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "relation"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -633,14 +595,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/relation/:obj_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "relation"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -653,14 +614,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "relation"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -670,14 +630,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/relation/:obj_name/:objn_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "relation"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -690,56 +649,52 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "relation"
           doc:
               desc: "upsert relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "relation"
           doc:
               desc: "update relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "relation"
           doc:
               desc: "delete relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "relation_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/relation/:obj_name/:objn_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "relation_status"
           doc:
               desc: "post relation status for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
 
@@ -748,14 +703,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "attr"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -766,14 +720,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/attr"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "attr"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -787,14 +740,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "attr"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -805,14 +757,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "attr"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -826,72 +777,194 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "attr"
           doc:
               desc: "upsert attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "attr"
           doc:
               desc: "update attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "attr"
           doc:
               desc: "delete attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "attr_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/attr/:attr_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "attr_status"
           doc:
               desc: "post attr status for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
+
+    ######################################################################
+    # api
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "get"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api"
+      api_spec:
+          permission: "sys.appx.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "app"
+                  - obj: "obj"
+          doc:
+              desc: "list apis for :namespace / :app_name / :app_ver / :obj_name"
+    # list by deployment
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "get"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/api"
+      api_spec:
+          permission: "sys.appx.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "namespace"
+                  - obj: "env"
+                  - obj: "app"
+                  - obj: "obj"
+                  - obj: "api_status"
+                    type: "left"
+          doc:
+              desc: "list deployment apis for :namespace / :env_name / :app_name / :obj_name"
+    # get
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "get"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "sys.appx.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "namespace"
+                  - obj: "app"
+                  - obj: "obj"
+          doc:
+              desc: "get api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
+    # get by deployment
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "get"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "sys.appx.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "namespace"
+                  - obj: "env"
+                  - obj: "app"
+                  - obj: "obj"
+                  - obj: "api_status"
+                    type: "left"
+          doc:
+              desc: "get deployment api for :namespace / :env_name / :app_name / :obj_name / :api_method / :api_endpoint"
+    # upsert
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "post"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "sys.appx.write"
+          syntax:
+              verb: "upsert"
+          doc:
+              desc: "upsert api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
+    # update
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "put"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "sys.appx.write"
+          syntax:
+              verb: "update"
+          doc:
+              desc: "update api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
+    # delete
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      api_method: "delete"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "sys.appx.write"
+          syntax:
+              verb: "delete"
+          doc:
+              desc: "delete api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint (logical deletion)"
+    # status
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api_status"
+      api_method: "post"
+      api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/api/:api_method/:api_endpoint/status"
+      api_spec:
+          permission: "sys.appx.status"
+          syntax:
+              verb: "status"
+          doc:
+              desc: "post api status for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
 
     ######################################################################
     # transform
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "transform"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -902,14 +975,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/transform"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "transform"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -923,14 +995,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "transform"
               join:
                   - obj: "namespace"
                   - obj: "app"
@@ -941,14 +1012,13 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "get"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "sys.appx.read"
           syntax:
               verb: "get"
-              obj: "transform"
               join:
                   - obj: "namespace"
                   - obj: "env"
@@ -962,55 +1032,51 @@ api:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "upsert"
-              obj: "transform"
           doc:
               desc: "upsert transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "put"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "update"
-              obj: "transform"
           doc:
               desc: "update transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform"
       api_method: "delete"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "sys.appx.write"
           syntax:
               verb: "delete"
-              obj: "transform"
           doc:
               desc: "delete transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "api"
+      obj_name: "transform_status"
       api_method: "post"
       api_endpoint: "/namespace/:namespace/deployment/env/:env_name/app/:app_name/obj/:obj_name/transform/:transform_name/status"
       api_spec:
           permission: "sys.appx.status"
           syntax:
               verb: "status"
-              obj: "transform_status"
           doc:
               desc: "post transform status for :namespace / :app_name / :app_ver / :obj_name / :transform_name"

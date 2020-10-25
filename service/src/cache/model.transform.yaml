@@ -1,65 +1,65 @@
 namespace:
 
-    "#{$namespaces}":                                       # namespace
-        namespace: "@namespaces"
-        spec: "$namespaces.namespace_spec"
+    "#ns{$namespaces}":                                     # namespace
+        namespace: "@ns"
+        spec: "$ns.namespace_spec"
 
         apps:
-            "#{$apps[@namespaces]}":                        # app_name
-                "#{$apps}":                                 # app_ver
-                    namespace: "@namespaces"
-                    app_name: "@@apps"
-                    app_ver: "@apps"
-                    spec: "$apps.app_spec"
+            "#app{$apps[@ns]}":                             # app_name
+                "#app{$app}":                               # app_ver
+                    namespace: "@ns"
+                    app_name: "@@app"
+                    app_ver: "@app"
+                    spec: "$app.app_spec"
 
                     deployments:
-                        "#{$deployments_by_app[@namespaces][@@apps]}{? $app_ver == @apps }":    # env_name
-                            namespace: "@namespaces"
-                            app_name: "@@apps"
-                            app_ver: "@apps"
-                            env_name: "@deployments_by_app"
-                            spec: "$deployments_by_app.deployment_spec"
+                        "#dp{$deployments_by_app[@ns][@@app]}{? $app_ver == @app }":            # env_name
+                            namespace: "@ns"
+                            app_name: "@@app"
+                            app_ver: "@app"
+                            env_name: "@dp"
+                            spec: "$dp.deployment_spec"
 
                     objs:
-                        "#{$objs[@namespaces][@@apps][@apps]}":                                 # obj_name
-                            namespace: "@namespaces"
-                            app_name: "@@apps"
-                            app_ver: "@apps"
-                            obj_name: "@objs"
-                            spec: "$objs.obj_spec"
+                        "#obj{$objects[@ns][@@app][@app]}":                                     # obj_name
+                            namespace: "@ns"
+                            app_name: "@@app"
+                            app_ver: "@app"
+                            obj_name: "@obj"
+                            spec: "$obj.obj_spec"
 
                             relations_1ton:
-                                "#{$relations_1ton[@namespaces][@@apps][@apps][@objs]}":        # objn_name
-                                    namespace: "@namespaces"
-                                    app_name: "@@apps"
-                                    app_ver: "@apps"
-                                    obj_name: "@objs"
-                                    objn_name: "@relations_1ton"
-                                    relation_spec: "$relations_1ton.relation_spec"
+                                "#rel{$relations_1ton[@ns][@@app][@app][@obj]}":                # objn_name
+                                    namespace: "@ns"
+                                    app_name: "@@app"
+                                    app_ver: "@app"
+                                    obj_name: "@obj"
+                                    objn_name: "@rel"
+                                    relation_spec: "$rel.relation_spec"
 
                             relations_nto1:
-                                "#{$relations_nto1[@namespaces][@@apps][@apps][@objs]}":        # obj_name
-                                    namespace: "@namespaces"
-                                    app_name: "@@apps"
-                                    app_ver: "@apps"
-                                    objn_name: "@objs"
-                                    obj_name: "@relations_nto1"
-                                    relation_spec: "$relations_nto1.relation_spec"
+                                "#rel{$relations_nto1[@ns][@@app][@app][@obj]}":                # obj_name
+                                    namespace: "@ns"
+                                    app_name: "@@app"
+                                    app_ver: "@app"
+                                    objn_name: "@obj"
+                                    obj_name: "@rel"
+                                    relation_spec: "$rel.relation_spec"
 
                             apis_by_method:
-                                "#{$apis_by_method[@namespaces][@@apps][@apps][@objs]}":        # api_method
-                                    "#{$apis_by_method}":                                       # api_endpoint
-                                        namespace: "@namespaces"
-                                        app_name: "@@apps"
-                                        app_ver: "@apps"
-                                        obj_name: "@objs"
-                                        api_method: "@@apis_by_method"
-                                        api_endpoint: "@apis_by_method"
-                                        api_spec: "$apis.api_spec"
+                                "#api{$apis_by_method[@ns][@@app][@app][@obj]}":                # api_method
+                                    "#api{$api}":                                               # api_endpoint
+                                        namespace: "@ns"
+                                        app_name: "@@app"
+                                        app_ver: "@app"
+                                        obj_name: "@obj"
+                                        api_method: "@@api"
+                                        api_endpoint: "@api"
+                                        api_spec: "$api.api_spec"
 
                             apis_by_endpoint:
-                                "#{$apis_by_endpoint[@namespaces][@@apps][@apps][@objs]}":      # api_endpoint
-                                    "#{$apis_by_endpoint}":                                     # api_method
+                                "#api{$apis_by_endpoint[@ns][@@app][@app][@obj]}":              # api_endpoint
+                                    "#api{$api}":                                               # api_method
                                         namespace: "@namespaces"
                                         app_name: "@@apps"
                                         app_ver: "@apps"
@@ -69,100 +69,100 @@ namespace:
                                         api_spec: "$apis.api_spec"
 
                             transforms:
-                                "#{$transforms[@namespaces][@@apps][@apps][@objs]}":            # transform_name
-                                    namespace: "@namespaces"
-                                    app_name: "@@apps"
-                                    app_ver: "@apps"
-                                    obj_name: "@objs"
-                                    transform_name: "@transforms"
-                                    transform_spec: "$transforms.transform_spec"
+                                "#tf{$transforms[@ns][@@app][@app][@obj]}":                     # transform_name
+                                    namespace: "@ns"
+                                    app_name: "@@app"
+                                    app_ver: "@app"
+                                    obj_name: "@obj"
+                                    transform_name: "@tf"
+                                    transform_spec: "$tf.transform_spec"
 
         envs:
-            "#{$envs[@namespaces]}":                                                                                                # env_name
-                namespace: "@namespaces"
-                env_name: "@envs"
-                spec: "$envs.env_spec"
+            "#env{$envs[@ns]}":                                                                 # env_name
+                namespace: "@ns"
+                env_name: "@env"
+                spec: "$env.env_spec"
 
                 deployments:
-                    "#{$deployments_by_env[@namespaces][@envs]}":                                                                   # app_name
-                        namespace: "@namespaces"
-                        env_name: "@envs"
-                        app_name: "@deployments_by_env"
-                        app_ver: "$deployments_by_env.app_ver"
-                        spec: "$deployments_by_env.deployment_spec"
+                    "#dp{$deployments_by_env[@ns][@env]}":                                      # app_name
+                        namespace: "@ns"
+                        env_name: "@env"
+                        app_name: "@dp"
+                        app_ver: "$dp.app_ver"
+                        spec: "$dp.deployment_spec"
 
                         objs:
-                            "#{$objs[@namespaces][@deployments_by_env][$deployments_by_env.app_ver]}":                              # obj_name
-                                namespace: "@namespaces"
-                                app_name: "@deployments_by_env"
-                                app_ver: "$deployments_by_env.app_ver"
-                                obj_name: "@objs"
-                                spec: "$objs.obj_spec"
+                            "#obj{$objs[@ns][@dp][$dp.app_ver]}":                              # obj_name
+                                namespace: "@ns"
+                                app_name: "@dp"
+                                app_ver: "$dp.app_ver"
+                                obj_name: "@obj"
+                                spec: "$obj.obj_spec"
 
                                 relations_1ton:
-                                    "#{$relations_1ton[@namespaces][@deployments_by_env][$deployments_by_env.app_ver][@objs]}":     # objn_name
-                                        namespace: "@namespaces"
-                                        app_name: "@deployments_by_env"
-                                        app_ver: "$deployments_by_env.app_ver"
-                                        obj_name: "@objs"
-                                        objn_name: "@relations_1ton"
-                                        relation_spec: "$relations_1ton.relation_spec"
+                                    "#rel{$relations_1ton[@ns][@dp][$dp.app_ver][@obj]}":       # objn_name
+                                        namespace: "@ns"
+                                        app_name: "@dp"
+                                        app_ver: "$dp.app_ver"
+                                        obj_name: "@obj"
+                                        objn_name: "@rel"
+                                        relation_spec: "$rel.relation_spec"
 
                                 relations_nto1:
-                                    "#{$relations_nto1[@namespaces][@deployments_by_env][$deployments_by_env.app_ver][@objs]}":     # obj_name
-                                        namespace: "@namespaces"
-                                        app_name: "@deployments_by_env"
-                                        app_ver: "$deployments_by_env.app_ver"
-                                        objn_name: "@objs"
-                                        obj_name: "@relations_nto1"
-                                        relation_spec: "$relations_nto1.relation_spec"
+                                    "#rel{$relations_nto1[@ns][@dp][$dp.app_ver][@obj]}":       # obj_name
+                                        namespace: "@ns"
+                                        app_name: "@dp"
+                                        app_ver: "$dp.app_ver"
+                                        objn_name: "@obj"
+                                        obj_name: "@rel"
+                                        relation_spec: "$rel.relation_spec"
 
                                 apis_by_method:
-                                    "#{$apis_by_method[@namespaces][@deployments_by_env][$deployments_by_env.app_ver][@objs]}":     # api_method
-                                        "#{$apis_by_method}":                                                                       # api_endpoint
-                                            namespace: "@namespaces"
-                                            app_name: "@deployments_by_env"
-                                            app_ver: "$deployments_by_env.app_ver"
-                                            obj_name: "@objs"
-                                            api_method: "@@apis_by_method"
-                                            api_endpoint: "@apis_by_method"
-                                            api_spec: "$apis.api_spec"
+                                    "#api{$apis_by_method[@ns][@dp][$dp.app_ver][@obj]}":       # api_method
+                                        "#api{$api}":                                           # api_endpoint
+                                            namespace: "@ns"
+                                            app_name: "@dp"
+                                            app_ver: "$dp.app_ver"
+                                            obj_name: "@obj"
+                                            api_method: "@@api"
+                                            api_endpoint: "@api"
+                                            api_spec: "$api.api_spec"
 
                                 apis_by_endpoint:
-                                    "#{$apis_by_endpoint[@namespaces][@deployments_by_env][$deployments_by_env.app_ver][@objs]}":   # api_endpoint
-                                        "#{$apis_by_endpoint}":                                                                     # api_method
-                                            namespace: "@namespaces"
-                                            app_name: "@deployments_by_env"
-                                            app_ver: "$deployments_by_env.app_ver"
-                                            obj_name: "@objs"
-                                            api_endpoint: "@@apis_by_endpoint"
-                                            api_method: "@apis_by_endpoint"
-                                            api_spec: "$apis.api_spec"
+                                    "#api{$apis_by_endpoint[@ns][@dp][$dp.app_ver][@obj]}":     # api_endpoint
+                                        "#api{$api}":                                           # api_method
+                                            namespace: "@ns"
+                                            app_name: "@dp"
+                                            app_ver: "$dp.app_ver"
+                                            obj_name: "@obj"
+                                            api_endpoint: "@@api"
+                                            api_method: "@api"
+                                            api_spec: "$api.api_spec"
 
                                 transforms:
-                                    "#{$transforms[@namespaces][@deployments_by_env][$deployments_by_env.app_ver][@objs]}":         # transform_name
-                                        namespace: "@namespaces"
-                                        app_name: "@deployments_by_env"
-                                        app_ver: "$deployments_by_env.app_ver"
-                                        obj_name: "@objs"
-                                        transform_name: "@transforms"
-                                        transform_spec: "$transforms.transform_spec"
+                                    "#tf{$transforms[@ns][@dp][$dp.app_ver][@obj]}":            # transform_name
+                                        namespace: "@ns"
+                                        app_name: "@dp"
+                                        app_ver: "$dp.app_ver"
+                                        obj_name: "@obj"
+                                        transform_name: "@tf"
+                                        transform_spec: "$tf.transform_spec"
 
 
 app:
 
-    "#{$apps}":                                             # namespace
-        "#{$apps}":                                         # app_name
-            "#{$apps}":                                     # app_ver
-                namespace: "@@@apps"
-                app_name: "@@apps"
-                app_ver: "@apps"
-                spec: "$apps.app_spec"
+    "#app{$apps}":                                          # namespace
+        "#app{$app}":                                       # app_name
+            "#app{$app}":                                   # app_ver
+                namespace: "@@@app"
+                app_name: "@@app"
+                app_ver: "@app"
+                spec: "$app.app_spec"
 
                 deployments:
-                    "#{$deployments_by_app[@@@apps][@@apps]}{? $app_ver == @apps }":            # env_name
-                        namespace: "@@@apps"
-                        app_name: "@@apps"
-                        app_ver: "@apps"
-                        env_name: "@deployments_by_app"
-                        spec: "$deployments_by_app.deployment_spec"
+                    "#dp{$deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":             # env_name
+                        namespace: "@@@app"
+                        app_name: "@@app"
+                        app_ver: "@app"
+                        env_name: "@dp"
+                        spec: "$dp.deployment_spec"
