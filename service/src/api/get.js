@@ -86,7 +86,7 @@ function handle_get(api_result, req, res) {
             let relation_spec = null
 
             let lookup_tables = [api_result.obj_name, ...Object.keys(join_tables)]
-            console.log(lookup_tables)
+            // console.log(lookup_tables)
             for (let i=0; i<lookup_tables.length; i++) {
 
                 // lookup_name
@@ -111,16 +111,7 @@ function handle_get(api_result, req, res) {
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     terminal = true
                     return
-                } else {
-                    console.log(lookup_obj_attrs)
                 }
-
-                // add attr to select if not already exist
-                //Object.keys(lookup_obj_attrs).forEach((lookup_attr, i) => {
-                //    if (! (lookup_attr in select_attrs)) {
-                //        select_attrs[`${lookup_attr}`] = `\`${lookup_name}\`.\`${lookup_attr}\``
-                //    }
-                //});
 
                 // lookup_relations
                 let lookup_relations_1ton = dotProp.get(lookup_obj, `relations_1ton`)
