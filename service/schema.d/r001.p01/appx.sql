@@ -35,22 +35,23 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_appx_meta` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_metadata(meta_name, meta_key),
+    UNIQUE INDEX idx_metadata(`meta_name`, `meta_key`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
--- local user(s) --
-CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user_local` (
+-- user(s) --
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
+    `scope_name`            VARCHAR(32)             NOT NULL,
     `username`              VARCHAR(32)             NOT NULL,
     `password`              VARCHAR(255)            NOT NULL,
     `user_info`             JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_metadata(namespace, username),
+    UNIQUE INDEX idx_metadata(`namespace`, `scope_name`, `username`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_scope` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, scope_name),
+    UNIQUE INDEX idx_app(`namespace`, `scope_name`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -157,7 +158,8 @@ PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `owner`                 VARCHAR(32)             NOT NULL,
+    `owner_scope`           VARCHAR(32)             NOT NULL,
+    `owner_name`            VARCHAR(32)             NOT NULL,
     `namespace_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -445,11 +447,11 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_appx_meta`(`meta_name`, `meta_key`, `
 {{/_appx_meta}}
 
 -- local users --
-{{#_user_local}}
+{{#_user}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_user_local`(`namespace`, `username`, `password`, `user_info`) VALUES ('{{{namespace}}}', '{{{username}}}', {{{password}}}, {{#user_info}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_info}}) ON DUPLICATE KEY UPDATE user_info=VALUES(user_info);
+INSERT INTO `{{{global.schema_prefix}}}`.`_user`(`namespace`, `scope_name`, `username`, `password`, `user_info`) VALUES ('{{{namespace}}}', '{{{scope_name}}}', '{{{username}}}', {{{password}}}, {{#user_info}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_info}}) ON DUPLICATE KEY UPDATE password=VALUES(password), user_info=VALUES(user_info);
 {{/.}}
-{{/_user_local}}
+{{/_user}}
 
 -- role definitions --
 {{#_role_scope}}
@@ -473,7 +475,7 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_perm_func`(`namespace`, `role_name`, 
 -- namespace --
 {{#namespace}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `owner`, `namespace_spec`) VALUES ('{{{namespace}}}', '{{{owner}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE owner=VALUES(owner), namespace_spec=VALUES(namespace_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`namespace`(`namespace`, `owner_scope`, `owner_name`, `namespace_spec`) VALUES ('{{{namespace}}}', '{{{owner_scope}}}', '{{{owner_name}}}', {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}) ON DUPLICATE KEY UPDATE owner_scope=VALUES(owner_scope), owner_name=VALUES(owner_name), namespace_spec=VALUES(namespace_spec);
 {{/.}}
 {{/namespace}}
 
