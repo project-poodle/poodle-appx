@@ -298,9 +298,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "deployment_status"
                     type: "left"
           doc:
@@ -317,9 +317,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "deployment_status"
                     type: "left"
           doc:
@@ -336,9 +336,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "deployment_status"
                     type: "left"
           doc:
@@ -355,9 +355,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "deployment_status"
                     type: "left"
           doc:
@@ -428,8 +428,8 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list objs for :namespace / :app_name / :app_ver"
     # list by deployment
@@ -444,9 +444,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "obj_status"
                     type: "left"
           doc:
@@ -463,8 +463,8 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "get obj for :namespace / :app_name / :app_ver / :obj_name"
     # get by deployment
@@ -479,9 +479,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime"
                   - obj: "app"
+                  - obj: "namespace"
                   - obj: "obj_status"
                     type: "left"
           doc:
@@ -552,8 +552,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list relations for :namespace / :app_name / :app_ver"
     # list by deployment
@@ -568,9 +569,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "relation_status"
                     type: "left"
           doc:
@@ -587,8 +589,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list relations for :namespace / :app_name / :app_ver / :obj_name"
     # list by deployment
@@ -603,9 +606,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "relation_status"
                     type: "left"
           doc:
@@ -622,8 +626,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "get relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
     # get by deployment
@@ -638,9 +643,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
+                  - obj: "obj"
                   - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "relation_status"
                     type: "left"
           doc:
@@ -711,9 +717,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list attrs for :namespace / :app_name / :app_ver / :obj_name"
     # list by deployment
@@ -728,10 +734,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "attr_status"
                     type: "left"
           doc:
@@ -748,9 +754,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "get attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
     # get by deployment
@@ -765,10 +771,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "attr_status"
                     type: "left"
           doc:
@@ -839,8 +845,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list apis for :namespace / :app_name / :app_ver / :obj_name"
     # list by deployment
@@ -855,10 +862,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "api_status"
                     type: "left"
           doc:
@@ -875,9 +882,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "get api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
     # get by deployment
@@ -892,10 +899,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "api_status"
                     type: "left"
           doc:
@@ -966,9 +973,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "list transforms for :namespace / :app_name / :app_ver / :obj_name"
     # list by deployment
@@ -983,10 +990,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "attr_status"
                     type: "left"
           doc:
@@ -1003,9 +1010,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
           doc:
               desc: "get transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
     # get by deployment
@@ -1020,10 +1027,10 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
-                  - obj: "runtime"
-                  - obj: "app"
                   - obj: "obj"
+                  - obj: "app"
+                  - obj: "runtime"
+                  - obj: "namespace"
                   - obj: "attr_status"
                     type: "left"
           doc:
