@@ -41,7 +41,7 @@ function handle_get(api_result, req, res) {
 
     // generate sql statement
     let select_attrs = {}
-    let join_tables = []
+    let join_tables = {}
     let lookup_tables = [ api_result.obj_name ]
 
     // process select statement
@@ -85,18 +85,12 @@ function handle_get(api_result, req, res) {
             // process relations
             let relation_spec = null
 
-            let lookup_tables = [api_result.obj_name, ...join_tables.map((item)=>{return item.name})]
+            let lookup_tables = [api_result.obj_name, ...Object.keys(join_tables)]
             console.log(lookup_tables)
             for (let i=0; i<lookup_tables.length; i++) {
 
                 // lookup_name
                 let lookup_name = lookup_tables[i]
-
-                let join_table = {
-                    name: join_name,
-                    type: join_type,
-                    attrs: []
-                }
 
                 // lookup_obj
                 let lookup_obj_prop = `object.${api_result.namespace}.runtimes.${api_result.runtime_name}.deployments.${api_result.app_name}.objs.${lookup_name}`
@@ -153,6 +147,7 @@ function handle_get(api_result, req, res) {
                     return
                 }
 
+                relation_attrs = []
                 relation_spec['attrs'].forEach((rel_attr, i) => {
 
                     if (! (rel_attr.src in lookup_obj_attrs)) {
@@ -165,14 +160,29 @@ function handle_get(api_result, req, res) {
                     let src = `\`${api_result.obj_name}\`.\`${rel_attr.src}\``
                     let tgt = `\`${join_name}\`.\`${rel_attr.tgt}\``
 
-                    join_table.attrs.push({
+                    relation_attrs.push({
                         src: src,
                         tgt: tgt
                     })
                 });
 
-                // add join table
-                join_tables.push(join_table)
+                // we are here if relation_spec is found
+                if (relation_attrs.length == 0) {
+                    let msg = `ERROR: empty relation attrs for join obj [${join_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
+                    log_api_status(api_result, FAILURE, msg)
+                    res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                    terminal = true
+                    return
+                }
+
+                // append join table attrs
+                if (! (join_name in join_tables)) {
+                        join_tables[join_name] = {
+                            type: join_type,
+                            attrs: []
+                        }
+                }
+                join_tables[join_name].attrs = join_tables[join_name].attrs.concat(relation_attrs)
             }
 
             // if relation_spec not found
@@ -199,13 +209,14 @@ function handle_get(api_result, req, res) {
     sql = sql + ` FROM \`${api_result.obj_name}\``
 
     // join
-    join_tables.forEach((join_table, i) => {
+    Object.keys(join_tables).forEach((join_name, i) => {
+        let join_table = join_tables[join_name]
         if (join_table.type) {
-            sql = sql + ` ${join_table.type.toUpperCase()} JOIN \`${join_table.name}\``
+            sql = sql + ` ${join_table.type.toUpperCase()} JOIN \`${join_name}\``
         } else {
-            sql = sql + ` JOIN \`${join_table.name}\``
+            sql = sql + ` JOIN \`${join_name}\``
         }
-        sql = sql + ` ON \`${join_table.name}\`.\`deleted\` = 0`
+        sql = sql + ` ON \`${join_name}\`.\`deleted\` = 0`
         join_table.attrs.forEach((join_attr, i) => {
             sql = sql + ` AND ${join_attr.src} = ${join_attr.tgt}`
         });

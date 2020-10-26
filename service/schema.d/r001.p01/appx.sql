@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`deployment_status` (
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
-    `deployment_status`     JSON                    NOT NULL,
+    `deployment_state`      JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name),
