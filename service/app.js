@@ -27,7 +27,7 @@ const app = express()
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
-const { dispatcher } = require('./src/rest/dispatcher')
+const { dispatcher } = require('./src/api/dispatcher')
 
 app.use('/api', dispatcher)
 
