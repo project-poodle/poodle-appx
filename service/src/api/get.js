@@ -1,10 +1,13 @@
 const dotProp = require('dot-prop')
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status } = require('./router')
+const { log_api_status, SUCCESS, FAILURE } = require('./util')
 
 
-const handle_get = (api_result, req, res) => {
+function handle_get(api_result, req, res) {
+
+    let terminal = false
+
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
 
@@ -22,6 +25,7 @@ const handle_get = (api_result, req, res) => {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_result.api_spec)}] !`
         log_api_status(api_result, FAILURE, msg)
         res.status(422).send(JSON.stringify({error: msg}))
+        terminal = true
         return
     }
 
@@ -31,6 +35,7 @@ const handle_get = (api_result, req, res) => {
         let msg = `ERROR: failed to retrieve attrs for obj [${api_result.obj_name}] !`
         log_api_status(api_result, FAILURE, msg)
         res.status(422).send(JSON.stringify({error: msg}))
+        terminal = true
         return
     }
 
@@ -63,6 +68,7 @@ const handle_get = (api_result, req, res) => {
                 let msg = `ERROR: failed to retrieve attrs for other obj [${other_name}] !`
                 log_api_status(api_result, FAILURE, msg)
                 res.status(422).send(JSON.stringify({error: msg}))
+                terminal = true
                 return
             }
 
@@ -84,6 +90,7 @@ const handle_get = (api_result, req, res) => {
                 let msg = `ERROR: cannot find relation for join obj [${other_name}] - [${JSON.stringify(api_result.api_spec)}] !`
                 log_api_status(api_result, FAILURE, msg)
                 res.status(422).send(JSON.stringify({error: msg}))
+                terminal = true
                 return
             }
 
@@ -92,6 +99,7 @@ const handle_get = (api_result, req, res) => {
                 let msg = `ERROR: cannot parse relation for join obj [${other_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
                 log_api_status(api_result, FAILURE, msg)
                 res.status(422).send(JSON.stringify({error: msg}))
+                terminal = true
                 return
             }
 
@@ -113,6 +121,10 @@ const handle_get = (api_result, req, res) => {
                 })
             });
         });
+    }
+
+    if (terminal) {
+        return
     }
 
     // select

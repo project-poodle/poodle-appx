@@ -2,42 +2,11 @@ const express = require('express')
 const dotProp = require('dot-prop')
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { log_api_status, SUCCESS, FAILURE } = require('./util')
 const { handle_get } = require('./get')
 
 // track a list of endpoints
 // let endpoints = []
-
-const SUCCESS = "ok"
-const FAILURE = "failure"
-
-function log_api_status(api_result, status, message) {
-
-    db.query_sync(`INSERT INTO api_status
-                    (
-                        namespace,
-                        runtime_name,
-                        app_name,
-                        obj_name,
-                        api_method,
-                        api_endpoint,
-                        api_state
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?, ?, ?, ?,
-                        JSON_OBJECT('status', '${status}', 'message', '${message}')
-                    )
-                    ON DUPLICATE KEY UPDATE
-                        api_state=VALUES(api_state)`,
-                    [
-                        api_result.namespace,
-                        api_result.runtime_name,
-                        api_result.app_name,
-                        api_result.obj_name,
-                        api_result.api_method,
-                        api_result.api_endpoint
-                    ])
-}
 
 function get_router(namespace, runtime_name, app_name) {
 
@@ -109,6 +78,5 @@ function get_router(namespace, runtime_name, app_name) {
 
 //export this router to use in our index.js
 module.exports = {
-    get_router: get_router,
-    log_api_status: log_api_status
+    get_router: get_router
 }
