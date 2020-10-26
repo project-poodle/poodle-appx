@@ -45,6 +45,7 @@ var query = (sql, variables, callback) => {
 
     // console.log(`INFO: [${sql}]`)
     getPool().query(sql, variables, (error, results, fields) => {
+
         if (error) {
             console.log(`ERROR: [${sql}] -- ${error.toString()}`)
 

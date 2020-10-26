@@ -12,6 +12,7 @@ attr:
           type: "VARCHAR(32)"
     - namespace: "sys"
       app_name: "appx"
+      app_ver: "internal"
       obj_name: "namespace"
       attr_name: "namespace_spec"
       attr_spec:

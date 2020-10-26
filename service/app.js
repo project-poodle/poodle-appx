@@ -27,18 +27,14 @@ const app = express()
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
-const { router, endpoints } = require('./src/rest/router')
+const { dispatcher } = require('./src/rest/dispatcher')
 
-app.use('/api', router)
-app.get('/doc', (req, res) => {
-    // console.log(req.route)
-    res.send(JSON.stringify(endpoints, null, 4))
-})
+app.use('/api', dispatcher)
 
 // console.log(app._router.stack)
 
 //////////////////////////////////////////////////
 // start listening
-var server = app.listen(0, () => {
+var server = app.listen(3000, () => {
     console.log(`INFO: appx rest api server listening at http://${server.address().address}:${server.address().port}`)
 })

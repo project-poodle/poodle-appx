@@ -1,76 +1,154 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const dotProp = require('dot-prop')
 const db = require('../db/db')
+const cache = require('../cache/cache')
 
 // track a list of endpoints
-let endpoints = []
+// let endpoints = []
 
-let results = db.query_sync(`SELECT
-                api.namespace,
-                api.app_name,
-                api.app_ver,
-                deployment.runtime_name,
-                obj_name,
-                api_method,
-                api_endpoint,
-                api_spec
-            FROM api
-            JOIN deployment
-                ON api.namespace = deployment.namespace
-                AND api.app_name = deployment.app_name
-                AND api.app_ver = deployment.app_ver
-            WHERE api.deleted=0
-                AND deployment.deleted=0`)
+const SUCCESS = "ok"
+const FAILURE = "failure"
 
-results.forEach((result) => {
+function log_api_status(api_result, status, message) {
 
-    let endpoint = '/' + result.namespace + '/' + result.runtime_name + '/' + result.app_name + '/' + result.api_endpoint
-    endpoint = endpoint.replace(/\/+/g, '/')
-    endpoints.push({...result, api_spec: result})
+    db.query_sync(`INSERT INTO api_status
+                    (
+                        namespace,
+                        runtime_name,
+                        app_name,
+                        obj_name,
+                        api_method,
+                        api_endpoint,
+                        api_state
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?, ?, ?, ?,
+                        JSON_OBJECT('status', '${status}', 'message', '${message}')
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        api_state=VALUES(api_state)`,
+                    [
+                        api_result.namespace,
+                        api_result.runtime_name,
+                        api_result.app_name,
+                        api_result.obj_name,
+                        api_result.api_method,
+                        api_result.api_endpoint
+                    ])
+}
 
-    switch (result.api_method) {
+function get_router(namespace, runtime_name, app_name) {
 
-        case "get":
-            router.get(endpoint, (req, res) => {
-                //console.log(req)
-                console.log(req.route)
-                res.send(JSON.stringify(result, null, 4))
-            })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
-            break
+    let api_results = db.query_sync(`SELECT
+                    api.namespace,
+                    api.app_name,
+                    api.app_ver,
+                    deployment.runtime_name,
+                    api.obj_name,
+                    api.api_method,
+                    api.api_endpoint,
+                    api.api_spec,
+                    deployment.deployment_spec,
+                    api.create_time,
+                    api.update_time
+                FROM api
+                JOIN deployment
+                    ON api.namespace = deployment.namespace
+                    AND api.app_name = deployment.app_name
+                    AND api.app_ver = deployment.app_ver
+                WHERE
+                    api.namespace = '${namespace}'
+                    AND deployment.runtime_name = '${runtime_name}'
+                    AND api.app_name = '${app_name}'
+                    AND api.deleted=0
+                    AND deployment.deleted=0`)
 
-        case "post":
-            router.post(endpoint, (req, res) => {
-                res.send(JSON.stringify(result, null, 4))
-            })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
-            break
+    let router = express.Router()
 
-        case "put":
-            router.put(endpoint, (req, res) => {
-                res.send(JSON.stringify(result, null, 4))
-            })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
-            break
+    api_results.forEach((api_result) => {
 
-        case "delete":
-            router.delete(endpoint, (req, res) => {
-                res.send(JSON.stringify(result, null, 4))
-            })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
-            break
+        switch (api_result.api_method) {
 
-        default:
-            throw Error(`unknow api method: ${result.api_method} [${JSON.stringify(result)}]`)
-    }
-});
+            case "get":
+                router.get(api_result.api_endpoint, (req, res) => {
+
+                    // console.log(cache.get_cache_for('object'))
+                    let obj_prop = `object.${api_result.namespace}.runtimes.${api_result.runtime_name}.deployments.${api_result.app_name}.objs.${api_result.obj_name}`
+                    let obj = dotProp.get(cache.get_cache_for('object'), obj_prop)
+                    // console.log(JSON.stringify(obj, null, 4))
+
+                    let relations_1ton = dotProp.get(obj, `relations_1ton`)
+                    let relations_nto1 = dotProp.get(obj, `relations_nto1`)
+
+                    let verb = dotProp.get(api_result.api_spec, 'syntax.verb')
+                    let join = dotProp.get(api_result.api_spec, 'syntax.join')
+
+                    if (!verb) {
+                        log_api_status(api_result, FAILURE, `ERROR: api syntax missing verb - [${JSON.stringify(api_result.api_spec)}] !`)
+                    }
+
+                    // let obj_attrs = dotProp.get(obj, `attrs.${api_result.obj_name}`)
+                    let obj_attrs = dotProp.get(obj, `attrs`)
+                    if (!obj_attrs) {
+                        log_api_status(api_result, FAILURE, `ERROR: failed retrieve attrs for obj [${api_result.obj_name}] !`)
+                    }
+
+                    let sql = "SELECT "
+                    Object.keys(obj_attrs).forEach((obj_attr, i) => {
+                        sql = sql + `\`${api_result.obj_name}\`.\`${obj_attr}\`, `
+                    });
+                    sql = sql + `\`${api_result.obj_name}\`.\`create_time\`, `
+                    sql = sql + `\`${api_result.obj_name}\`.\`update_time\``
+                    sql = sql + ` FROM \`${api_result.obj_name}\``
+
+                    if (join) {
+                        join.forEach((other_obj, i) => {
+                            
+                        });
+
+                    }
+                    sql = sql + ` WHERE \`${api_result.obj_name}\`.\`deleted\` = 0`
+
+                    console.log(`INFO: ${sql}`)
+                    let result = db.query_sync(sql)
+
+                    res.send(JSON.stringify(result, null, 4))
+                })
+
+                log_api_status(api_result, SUCCESS, `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
+                break
+
+            case "post":
+                router.post(api_result.api_endpoint, (req, res) => {
+                    res.send(JSON.stringify(api_result, null, 4))
+                })
+                log_api_status(api_result, SUCCESS, `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
+                break
+
+            case "put":
+                router.put(api_result.api_endpoint, (req, res) => {
+                    res.send(JSON.stringify(api_result, null, 4))
+                })
+                log_api_status(api_result, SUCCESS, `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
+                break
+
+            case "delete":
+                router.delete(api_result.api_endpoint, (req, res) => {
+                    res.send(JSON.stringify(api_result, null, 4))
+                })
+                log_api_status(api_result, SUCCESS, `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
+                break
+
+            default:
+                log_api_status(api_result, FAILURE, `unknow api method: ${api_result.api_method} [${JSON.stringify(api_result)}]`)
+        }
+    });
+
+    return router
+}
 
 //export this router to use in our index.js
 module.exports = {
-    router: router,
-    endpoints: endpoints
+    get_router: get_router
 }

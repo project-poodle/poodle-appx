@@ -1,4 +1,4 @@
-namespace:
+object:
 
     "#ns{$sql.namespaces}":                                 # namespace
         namespace: "@ns"
@@ -117,6 +117,15 @@ namespace:
                                         obj_name: "@rel"
                                         relation_spec: "$rel.relation_spec"
 
+                                attrs:
+                                    "#attr{$sql.attrs[@ns][@dp][$dp.app_ver][@obj]}":           # attr_name
+                                        namespace: "@ns"
+                                        app_name: "@dp"
+                                        app_ver: "$dp.app_ver"
+                                        obj_name: "@obj"
+                                        attr_name: "@attr"
+                                        attr_spec: "$attr.attr_spec"
+
                                 apis_by_method:
                                     "#api{$sql.apis_by_method[@ns][@dp][$dp.app_ver][@obj]}":   # api_method
                                         "#api{$api}":                                           # api_endpoint
@@ -147,22 +156,3 @@ namespace:
                                         obj_name: "@obj"
                                         transform_name: "@tf"
                                         transform_spec: "$tf.transform_spec"
-
-
-app:
-
-    "#app{$sql.apps}":                                      # namespace
-        "#app{$app}":                                       # app_name
-            "#app{$app}":                                   # app_ver
-                namespace: "@@@app"
-                app_name: "@@app"
-                app_ver: "@app"
-                spec: "$app.app_spec"
-
-                deployments:
-                    "#dp{$sql.deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":         # runtime_name
-                        namespace: "@@@app"
-                        app_name: "@@app"
-                        app_ver: "@app"
-                        runtime_name: "@dp"
-                        spec: "$dp.deployment_spec"
