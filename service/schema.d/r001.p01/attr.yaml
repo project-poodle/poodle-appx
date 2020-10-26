@@ -18,6 +18,25 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "namespace"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "namespace"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # namespace_status
@@ -37,6 +56,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "namespace_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # runtime
@@ -64,6 +93,26 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "runtime"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "runtime"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
+
 
     ######################################################################
     # runtime_status
@@ -91,6 +140,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "runtime_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # app
@@ -126,6 +185,26 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "app"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "app"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
+
 
     ######################################################################
     # app_status
@@ -161,6 +240,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "app_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # deployment
@@ -204,6 +293,26 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "deployment"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "deployment"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
+
 
     ######################################################################
     # deployment_status
@@ -247,6 +356,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "deployment_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # obj
@@ -290,6 +409,25 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "obj"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "obj"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # obj_status
@@ -341,6 +479,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "obj_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # attr
@@ -392,6 +540,25 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "attr"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "attr"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # attr_status
@@ -451,6 +618,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "attr_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # api
@@ -510,6 +687,25 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # api_status
@@ -577,6 +773,16 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # transform
@@ -628,6 +834,25 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "transform"
+      attr_name: "create_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "transform"
+      attr_name: "update_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP
 
     ######################################################################
     # transform_status
@@ -687,3 +912,13 @@ attr:
       attr_spec:
           key: false
           type: "JSON"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "transform_status"
+      attr_name: "status_time"
+      attr_spec:
+          key: false
+          type: "TIMESTAMP"
+          default: CURRENT_TIMESTAMP
+          on_update: CURRENT_TIMESTAMP

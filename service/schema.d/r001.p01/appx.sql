@@ -173,8 +173,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `namespace_state`       JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace),
     PRIMARY KEY (`id`)
@@ -199,8 +198,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`runtime_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `runtime_state`         JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name),
     PRIMARY KEY (`id`)
@@ -227,8 +225,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`app_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
     `app_state`             JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, app_name, app_ver),
     PRIMARY KEY (`id`)
@@ -257,8 +254,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`deployment_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
     `deployment_status`     JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name),
     PRIMARY KEY (`id`)
@@ -288,8 +284,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_state`             JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
@@ -322,8 +317,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
     `relation_state`        JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, objn_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
@@ -356,8 +350,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `obj_name`              VARCHAR(32)             NOT NULL,
     `attr_name`             VARCHAR(32)             NOT NULL,
     `attr_state`            JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, attr_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
@@ -392,8 +385,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `api_method`            VARCHAR(15)             NOT NULL,
     `api_endpoint`          VARCHAR(255)            NOT NULL,
     `api_state`             JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, api_method, api_endpoint),
     PRIMARY KEY (`id`, `namespace`, `app_name`)
@@ -430,8 +422,7 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `obj_name`              VARCHAR(32)             NOT NULL,
     `transform_name`        VARCHAR(32)             NOT NULL,
     `transform_state`       JSON                    NOT NULL,
-    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, transform_name),
     PRIMARY KEY (`id`, `namespace`, `app_name`)

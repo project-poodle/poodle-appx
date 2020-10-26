@@ -98,13 +98,12 @@ function get_router(namespace, runtime_name, app_name) {
                     Object.keys(obj_attrs).forEach((obj_attr, i) => {
                         sql = sql + `\`${api_result.obj_name}\`.\`${obj_attr}\`, `
                     });
-                    sql = sql + `\`${api_result.obj_name}\`.\`create_time\`, `
-                    sql = sql + `\`${api_result.obj_name}\`.\`update_time\``
+                    sql = sql + `\`${api_result.obj_name}\`.\`id\``
                     sql = sql + ` FROM \`${api_result.obj_name}\``
 
                     if (join) {
                         join.forEach((other_obj, i) => {
-                            
+
                         });
 
                     }
