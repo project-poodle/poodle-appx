@@ -66,6 +66,7 @@
 - query: "SELECT
                 obj.id,
                 obj.namespace,
+                deployment.runtime_name,
                 obj.app_name,
                 obj.app_ver,
                 obj.obj_name,
@@ -96,6 +97,7 @@
 - query: "SELECT
                 relation.id,
                 relation.namespace,
+                deployment.runtime_name,
                 relation.app_name,
                 relation.app_ver,
                 relation.obj_name,
@@ -137,6 +139,7 @@
 - query: "SELECT
                 api.id,
                 api.namespace,
+                deployment.runtime_name,
                 api.app_name,
                 api.app_ver,
                 api.obj_name,
@@ -181,6 +184,7 @@
 - query: "SELECT
                 transform.id,
                 transform.namespace,
+                deployment.runtime_name,
                 transform.app_name,
                 transform.app_ver,
                 transform.obj_name,
