@@ -29,7 +29,7 @@ function load_routers() {
 
         ROUTES[route] = router
 
-        console.log(`INFO: loaded routes for ${route} !`)
+        console.log(`INFO: loaded routes for deployment [${route}]`)
     });
 }
 
