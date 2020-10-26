@@ -105,9 +105,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime_status"
                     type: "left"
+                  - obj: "namespace"
           doc:
               desc: "list runtimes for :namespace"
     # get
@@ -122,9 +122,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "runtime_status"
                     type: "left"
+                  - obj: "namespace"
           doc:
               desc: "get runtime for :namespace / :runtime_name"
     # upsert
@@ -193,9 +193,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "app_status"
                     type: "left"
+                  - obj: "namespace"
           doc:
               desc: "list apps for :namespace"
     # list by :app_name
@@ -210,9 +210,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "app_status"
                     type: "left"
+                  - obj: "namespace"
           doc:
               desc: "list apps for :namespace / :app_name"
     # get
@@ -227,9 +227,9 @@ api:
           syntax:
               verb: "get"
               join:
-                  - obj: "namespace"
                   - obj: "app_status"
                     type: "left"
+                  - obj: "namespace"
           doc:
               desc: "get app for :namespace / :app_name / :app_ver"
     # upsert
@@ -298,11 +298,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "deployment_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "deployment_status"
-                    type: "left"
           doc:
               desc: "list deployments for :namespace"
     # list by :runtime_name
@@ -317,11 +317,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "deployment_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "deployment_status"
-                    type: "left"
           doc:
               desc: "list deployments for :namespace / :runtime_name"
     # list by :app_name
@@ -336,11 +336,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "deployment_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "deployment_status"
-                    type: "left"
           doc:
               desc: "list deployments for :namespace / :app_name"
     # get
@@ -355,11 +355,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "deployment_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "deployment_status"
-                    type: "left"
           doc:
               desc: "get deployment for :namespace / :runtime_name / :app_name"
     # upsert
@@ -444,11 +444,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "obj_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "obj_status"
-                    type: "left"
           doc:
               desc: "list deployment objs for :namespace / :runtime_name / :app_name"
     # get
@@ -479,11 +479,11 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "obj_status"
+                    type: "left"
                   - obj: "runtime"
                   - obj: "app"
                   - obj: "namespace"
-                  - obj: "obj_status"
-                    type: "left"
           doc:
               desc: "get deployment obj for :namespace / :runtime_name / :app_name / :obj_name"
     # upsert
@@ -569,12 +569,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "relation_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "relation_status"
-                    type: "left"
           doc:
               desc: "list deployment relations for :namespace / :runtime_name / :app_name"
     # list
@@ -606,12 +606,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "relation_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "relation_status"
-                    type: "left"
           doc:
               desc: "list deployment relations for :namespace / :runtime_name / :app_name / :obj_name"
     # get
@@ -643,12 +643,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "relation_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "relation_status"
-                    type: "left"
           doc:
               desc: "get deployment relation for :namespace / :runtime_name / :app_name / :obj_name / :objn_name"
     # upsert
@@ -734,12 +734,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "attr_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "attr_status"
-                    type: "left"
           doc:
               desc: "list deployment attrs for :namespace / :runtime_name / :app_name / :obj_name"
     # get
@@ -771,12 +771,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "attr_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "attr_status"
-                    type: "left"
           doc:
               desc: "get deployment attr for :namespace / :runtime_name / :app_name / :obj_name / :attr_name"
     # upsert
@@ -862,12 +862,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "api_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "api_status"
-                    type: "left"
           doc:
               desc: "list deployment apis for :namespace / :runtime_name / :app_name / :obj_name"
     # get
@@ -899,12 +899,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "api_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "api_status"
-                    type: "left"
           doc:
               desc: "get deployment api for :namespace / :runtime_name / :app_name / :obj_name / :api_method / :api_endpoint"
     # upsert
@@ -990,12 +990,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "attr_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "attr_status"
-                    type: "left"
           doc:
               desc: "list deployment transforms for :namespace / :runtime_name / :app_name / :obj_name"
     # get
@@ -1027,12 +1027,12 @@ api:
           syntax:
               verb: "get"
               join:
+                  - obj: "attr_status"
+                    type: "left"
                   - obj: "obj"
                   - obj: "app"
                   - obj: "runtime"
                   - obj: "namespace"
-                  - obj: "attr_status"
-                    type: "left"
           doc:
               desc: "get deployment transform for :namespace / :runtime_name / :app_name / :obj_name / :transform_name"
     # upsert

@@ -1,7 +1,7 @@
 const db = require('../db/db')
 
 const SUCCESS = "ok"
-const FAILURE = "failure"
+const FAILURE = "error"
 
 const log_api_status = (api_result, status, message) => {
 

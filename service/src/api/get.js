@@ -24,7 +24,7 @@ function handle_get(api_result, req, res) {
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_result.api_spec)}] !`
         log_api_status(api_result, FAILURE, msg)
-        res.status(422).send(JSON.stringify({error: msg}))
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         terminal = true
         return
     }
@@ -34,7 +34,7 @@ function handle_get(api_result, req, res) {
     if (!obj_attrs) {
         let msg = `ERROR: failed to retrieve attrs for obj [${api_result.obj_name}] !`
         log_api_status(api_result, FAILURE, msg)
-        res.status(422).send(JSON.stringify({error: msg}))
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         terminal = true
         return
     }
@@ -42,6 +42,7 @@ function handle_get(api_result, req, res) {
     // generate sql statement
     let select_attrs = {}
     let join_tables = []
+    let lookup_tables = [ api_result.obj_name ]
 
     // process select statement
     Object.keys(obj_attrs).forEach((obj_attr, i) => {
@@ -50,76 +51,138 @@ function handle_get(api_result, req, res) {
 
     // process join statement
     if (join) {
-        join.forEach((join_obj, i) => {
+        join.forEach((join_spec, i) => {
 
-            let other_name = join_obj['obj']
-            let join_type = join_obj['type']
-            let join_table = {
-                name: other_name,
-                type: join_type,
-                attrs: []
-            }
+            let join_name = join_spec['obj']
+            let join_type = join_spec['type']
 
-            // process attributes
-            let other_obj_prop = `object.${api_result.namespace}.runtimes.${api_result.runtime_name}.deployments.${api_result.app_name}.objs.${other_name}`
-            let other_obj = dotProp.get(cache_obj, other_obj_prop)
-            let other_obj_attrs = dotProp.get(other_obj, `attrs`)
-            if (!other_obj_attrs) {
-                let msg = `ERROR: failed to retrieve attrs for other obj [${other_name}] !`
+            // process join obj attributes
+            let join_obj_prop = `object.${api_result.namespace}.runtimes.${api_result.runtime_name}.deployments.${api_result.app_name}.objs.${join_name}`
+            let join_obj = dotProp.get(cache_obj, join_obj_prop)
+            if (!join_obj) {
+                let msg = `ERROR: failed to retrieve join obj [${join_name}] !`
                 log_api_status(api_result, FAILURE, msg)
-                res.status(422).send(JSON.stringify({error: msg}))
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 terminal = true
                 return
             }
 
-            Object.keys(other_obj_attrs).forEach((obj_attr, i) => {
-                if (! (obj_attr in select_attrs)) {
-                    select_attrs[`${obj_attr}`] = `\`${other_name}\`.\`${obj_attr}\``
+            let join_obj_attrs = dotProp.get(join_obj, `attrs`)
+            if (!join_obj_attrs) {
+                let msg = `ERROR: failed to retrieve attrs for join obj [${join_name}] !`
+                log_api_status(api_result, FAILURE, msg)
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                terminal = true
+                return
+            }
+
+            Object.keys(join_obj_attrs).forEach((join_attr, i) => {
+                if (! (join_attr in select_attrs)) {
+                    select_attrs[`${join_attr}`] = `\`${join_name}\`.\`${join_attr}\``
                 }
             });
 
-            // process join tables
-            join_tables.push(join_table)
+            // process relations
+            let relation_spec = null
 
-            let relation_spec = {}
-            if (other_name in relations_1ton) {
-                relation_spec = relations_1ton[other_name]['relation_spec']
-            } else if (other_name in relations_nto1) {
-                relation_spec = relations_nto1[other_name]['relation_spec']
-            } else {
-                let msg = `ERROR: cannot find relation for join obj [${other_name}] - [${JSON.stringify(api_result.api_spec)}] !`
-                log_api_status(api_result, FAILURE, msg)
-                res.status(422).send(JSON.stringify({error: msg}))
-                terminal = true
-                return
-            }
+            let lookup_tables = [api_result.obj_name, ...join_tables.map((item)=>{return item.name})]
+            console.log(lookup_tables)
+            for (let i=0; i<lookup_tables.length; i++) {
 
-            // we are here if relation_spec is found
-            if (! ('attrs' in relation_spec) || !Array.isArray(relation_spec['attrs'])) {
-                let msg = `ERROR: cannot parse relation for join obj [${other_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
-                log_api_status(api_result, FAILURE, msg)
-                res.status(422).send(JSON.stringify({error: msg}))
-                terminal = true
-                return
-            }
+                // lookup_name
+                let lookup_name = lookup_tables[i]
 
-            relation_spec['attrs'].forEach((rel_attr, i) => {
-
-                if (! (rel_attr.src in obj_attrs)) {
-                    return
+                let join_table = {
+                    name: join_name,
+                    type: join_type,
+                    attrs: []
                 }
-                if (! (rel_attr.tgt in other_obj_attrs)) {
+
+                // lookup_obj
+                let lookup_obj_prop = `object.${api_result.namespace}.runtimes.${api_result.runtime_name}.deployments.${api_result.app_name}.objs.${lookup_name}`
+                let lookup_obj = dotProp.get(cache_obj, lookup_obj_prop)
+                if (!lookup_obj) {
+                    let msg = `ERROR: failed to retrieve lookup obj [${lookup_name}] !`
+                    log_api_status(api_result, FAILURE, msg)
+                    res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                    terminal = true
                     return
                 }
 
-                let src = `\`${api_result.obj_name}\`.\`${rel_attr.src}\``
-                let tgt = `\`${other_name}\`.\`${rel_attr.tgt}\``
+                // lookup_obj_attrs
+                let lookup_obj_attrs = dotProp.get(lookup_obj, `attrs`)
+                if (!lookup_obj_attrs) {
+                    let msg = `ERROR: failed to retrieve attrs for other obj [${lookup_tables[i]}] !`
+                    log_api_status(api_result, FAILURE, msg)
+                    res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                    terminal = true
+                    return
+                } else {
+                    console.log(lookup_obj_attrs)
+                }
 
-                join_table.attrs.push({
-                    src: src,
-                    tgt: tgt
-                })
-            });
+                // add attr to select if not already exist
+                //Object.keys(lookup_obj_attrs).forEach((lookup_attr, i) => {
+                //    if (! (lookup_attr in select_attrs)) {
+                //        select_attrs[`${lookup_attr}`] = `\`${lookup_name}\`.\`${lookup_attr}\``
+                //    }
+                //});
+
+                // lookup_relations
+                let lookup_relations_1ton = dotProp.get(lookup_obj, `relations_1ton`)
+                let lookup_relations_nto1 = dotProp.get(lookup_obj, `relations_nto1`)
+
+                if (join_name in lookup_relations_1ton) {
+                    relation_spec = lookup_relations_1ton[join_name]['relation_spec']
+                    // break - if first match wins
+                    // no break - if adding all matches
+                } else if (join_name in lookup_relations_nto1) {
+                    relation_spec = lookup_relations_nto1[join_name]['relation_spec']
+                    // break - if first match wins
+                    // no break - if adding all matches
+                } else {
+                    continue
+                }
+
+                // we are here if relation_spec is found
+                if (! ('attrs' in relation_spec) || !Array.isArray(relation_spec['attrs'])) {
+                    let msg = `ERROR: cannot parse relation for join obj [${join_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
+                    log_api_status(api_result, FAILURE, msg)
+                    res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                    terminal = true
+                    return
+                }
+
+                relation_spec['attrs'].forEach((rel_attr, i) => {
+
+                    if (! (rel_attr.src in lookup_obj_attrs)) {
+                        return
+                    }
+                    if (! (rel_attr.tgt in join_obj_attrs)) {
+                        return
+                    }
+
+                    let src = `\`${api_result.obj_name}\`.\`${rel_attr.src}\``
+                    let tgt = `\`${join_name}\`.\`${rel_attr.tgt}\``
+
+                    join_table.attrs.push({
+                        src: src,
+                        tgt: tgt
+                    })
+                });
+
+                // add join table
+                join_tables.push(join_table)
+            }
+
+            // if relation_spec not found
+            if (! relation_spec) {
+                let msg = `ERROR: cannot find relation for join obj [${join_name}] - [${JSON.stringify(api_result.api_spec)}] !`
+                log_api_status(api_result, FAILURE, msg)
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                terminal = true
+                return
+            }
         });
     }
 
