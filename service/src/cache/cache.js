@@ -1,6 +1,7 @@
 const fs = require('fs');
 const YAML = require('yaml')
 const dotProp = require('dot-prop')
+var SHA256 = require("crypto-js/sha256");
 const { sql_load } = require('../transform/sql_load')
 const { json_transform, json_trigger } = require('../transform/json_transform')
 
@@ -11,6 +12,7 @@ function get_random_between(min, max) {
 
 // cache_vars
 const CACHE_VARS = {}
+const LOAD_CACHE_TIMER_TASKS = {}
 
 // cache conf
 var cache_conf = YAML.parse(fs.readFileSync(__dirname + '/cache.yaml', 'utf8'))
@@ -37,7 +39,7 @@ function init_cache() {
 
     } finally {
 
-        let sleep = get_random_between(60, 120) * 1000
+        let sleep = get_random_between(180, 360) * 1000
         setTimeout(() => { init_cache() }, sleep)
         // console.log(`INFO: init_cache - reconcile in ${Math.round(sleep/1000)} sec(s)`)
     }
@@ -52,7 +54,7 @@ function get_cache_for(name, params) {
     }
 }
 
-function load_cache_for(name, params) {
+function load_cache_for(name, params, repeat=false) {
 
     // console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - starting ...`)
 
@@ -128,8 +130,16 @@ function load_cache_for(name, params) {
         }
 
         let sleep = get_random_between(min, max) * 1000
-        setTimeout(() => { load_cache_for(name, params) }, sleep)
-        console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - reconcile in ${Math.round(sleep/1000)} sec(s)`)
+
+        // check if repeat is needed
+        let timer_key = SHA256(name + JSON.stringify(params, params ? Object.keys(params).sort() : null, 4))
+        if (! (timer_key in LOAD_CACHE_TIMER_TASKS) || repeat) {
+            setTimeout(() => { load_cache_for(name, params, true) }, sleep)
+            LOAD_CACHE_TIMER_TASKS[timer_key] = true
+            console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - reconcile in ${Math.round(sleep/1000)} sec(s)`)
+        } else {
+            console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)})`)
+        }
     }
 }
 

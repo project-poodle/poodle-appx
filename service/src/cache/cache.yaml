@@ -5,7 +5,7 @@ appx:
     transform: "appx.transform.yaml"
     reconcile:
         min: 180
-        max: 300
+        max: 360
 
 ##################################################
 namespace:
@@ -14,7 +14,7 @@ namespace:
     transform: "namespace.transform.yaml"
     reconcile:
         min: 180
-        max: 300
+        max: 360
     trigger:
         "#ns{$namespace}":
             "$invoke":
@@ -32,7 +32,7 @@ deployment:
     transform: "deployment.transform.yaml"
     reconcile:
         min: 180
-        max: 300
+        max: 360
     trigger:
         "#ns{$deployment}":
             runtimes:
@@ -58,4 +58,4 @@ object:
     transform: "object.transform.yaml"
     reconcile:
         min: 180
-        max: 300
+        max: 360
