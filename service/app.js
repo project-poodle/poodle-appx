@@ -19,7 +19,6 @@ let db_pool = db.getPool(args.conf)
 //////////////////////////////////////////////////
 // load cache to memory
 const cache = require('./src/cache/cache')
-let appx_cache = cache.APPX()
 
 //////////////////////////////////////////////////
 // initialize express
@@ -32,8 +31,11 @@ const { router, endpoints } = require('./src/rest/router')
 
 app.use('/api', router)
 app.get('/doc', (req, res) => {
+    // console.log(req.route)
     res.send(JSON.stringify(endpoints, null, 4))
 })
+
+// console.log(app._router.stack)
 
 //////////////////////////////////////////////////
 // start listening

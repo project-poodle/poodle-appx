@@ -1,6 +1,61 @@
-APPX:
-    sql_input: "model.input.yaml"
-    transform: "model.transform.yaml"
-    refresh:
+##################################################
+appx:
+    params: null
+    sql_input: "appx.sql.yaml"
+    transform: "appx.transform.yaml"
+    reconcile:
+        min: 180
+        max: 300
+
+##################################################
+namespace:
+    params: null
+    sql_input: "namespace.sql.yaml"
+    transform: "namespace.transform.yaml"
+    reconcile:
+        min: 180
+        max: 300
+    trigger:
+        "#ns{$namespace}":
+            "$invoke":
+                module: "../cache/cache"
+                method: "load_cache_for"
+                params:
+                    - '"deployment"'
+                    - namespace: "@ns"
+
+##################################################
+deployment:
+    params:
+        - namespace
+    sql_input: "deployment.sql.yaml"
+    transform: "deployment.transform.yaml"
+    reconcile:
+        min: 180
+        max: 300
+    trigger:
+        "#ns{$deployment}":
+            runtimes:
+                "#rt{$deployment[@ns]['runtimes']}":
+                    deployments:
+                        "#dp{$deployment[@ns]['runtimes'][@rt]['deployments']}":
+                            "$invoke":
+                                module: "../cache/cache"
+                                method: "load_cache_for"
+                                params:
+                                    - '"object"'
+                                    - namespace: "@ns"
+                                      runtime_name: "@rt"
+                                      app_name: "@dp"
+
+##################################################
+object:
+    params:
+        - namespace
+        - runtime_name
+        - app_name
+    sql_input: "object.sql.yaml"
+    transform: "object.transform.yaml"
+    reconcile:
         min: 180
         max: 300

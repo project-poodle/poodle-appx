@@ -13,11 +13,11 @@ namespace:
                     spec: "$app.app_spec"
 
                     deployments:
-                        "#dp{$sql.deployments_by_app[@ns][@@app]}{? $app_ver == @app }":        # env_name
+                        "#dp{$sql.deployments_by_app[@ns][@@app]}{? $app_ver == @app }":        # runtime_name
                             namespace: "@ns"
                             app_name: "@@app"
                             app_ver: "@app"
-                            env_name: "@dp"
+                            runtime_name: "@dp"
                             spec: "$dp.deployment_spec"
 
                     objs:
@@ -77,16 +77,16 @@ namespace:
                                     transform_name: "@tf"
                                     transform_spec: "$tf.transform_spec"
 
-        envs:
-            "#env{$sql.envs[@ns]}":                                                             # env_name
+        runtimes:
+            "#runtime{$sql.runtimes[@ns]}":                                                     # runtime_name
                 namespace: "@ns"
-                env_name: "@env"
-                spec: "$env.env_spec"
+                runtime_name: "@runtime"
+                spec: "$runtime.runtime_spec"
 
                 deployments:
-                    "#dp{$sql.deployments_by_env[@ns][@env]}":                                  # app_name
+                    "#dp{$sql.deployments_by_runtime[@ns][@runtime]}":                          # app_name
                         namespace: "@ns"
-                        env_name: "@env"
+                        runtime_name: "@runtime"
                         app_name: "@dp"
                         app_ver: "$dp.app_ver"
                         spec: "$dp.deployment_spec"
@@ -160,9 +160,9 @@ app:
                 spec: "$app.app_spec"
 
                 deployments:
-                    "#dp{$sql.deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":             # env_name
+                    "#dp{$sql.deployments_by_app[@@@app][@@app]}{? $app_ver == @app }":         # runtime_name
                         namespace: "@@@app"
                         app_name: "@@app"
                         app_ver: "@app"
-                        env_name: "@dp"
+                        runtime_name: "@dp"
                         spec: "$dp.deployment_spec"

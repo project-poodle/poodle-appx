@@ -9,7 +9,7 @@ let results = db.query_sync(`SELECT
                 api.namespace,
                 api.app_name,
                 api.app_ver,
-                deployment.env_name,
+                deployment.runtime_name,
                 obj_name,
                 api_method,
                 api_endpoint,
@@ -24,7 +24,7 @@ let results = db.query_sync(`SELECT
 
 results.forEach((result) => {
 
-    let endpoint = '/' + result.namespace + '/' + result.env_name + '/' + result.app_name + '/' + result.api_endpoint
+    let endpoint = '/' + result.namespace + '/' + result.runtime_name + '/' + result.app_name + '/' + result.api_endpoint
     endpoint = endpoint.replace(/\/+/g, '/')
     endpoints.push({...result, api_spec: result})
 
@@ -32,34 +32,36 @@ results.forEach((result) => {
 
         case "get":
             router.get(endpoint, (req, res) => {
+                //console.log(req)
+                console.log(req.route)
                 res.send(JSON.stringify(result, null, 4))
             })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `env_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.env_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
+            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
+                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
             break
 
         case "post":
             router.post(endpoint, (req, res) => {
                 res.send(JSON.stringify(result, null, 4))
             })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `env_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.env_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
+            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
+                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
             break
 
         case "put":
             router.put(endpoint, (req, res) => {
                 res.send(JSON.stringify(result, null, 4))
             })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `env_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.env_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
+            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
+                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
             break
 
         case "delete":
             router.delete(endpoint, (req, res) => {
                 res.send(JSON.stringify(result, null, 4))
             })
-            db.query_sync("INSERT INTO `api_status`(`namespace`, `env_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
-                            [result.namespace, result.env_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
+            db.query_sync("INSERT INTO `api_status`(`namespace`, `runtime_name`, `app_name`, `obj_name`, `api_method`, `api_endpoint`, `api_state`) VALUES (?, ?, ?, ?, ?, ?, JSON_OBJECT('status', 'published successfully!')) ON DUPLICATE KEY UPDATE api_state=VALUES(api_state)",
+                            [result.namespace, result.runtime_name, result.app_name, result.obj_name, result.api_method, result.api_endpoint])
             break
 
         default:
