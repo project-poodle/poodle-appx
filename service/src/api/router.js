@@ -42,7 +42,15 @@ function get_router(namespace, runtime_name, app_name) {
 
             case "get":
                 router.get(api_result.api_endpoint, (req, res) => {
-                    handle_get(api_result, req, res)
+                    handle_get({
+                                    namespace: api_result.namespace,
+                                    runtime_name: api_result.runtime_name,
+                                    app_name: api_result.app_name,
+                                    obj_name: api_result.obj_name,
+                                    api_method: api_result.api_method,
+                                    api_endpoint: api_result.api_endpoint
+                                },
+                                req, res)
                 })
                 log_api_status(api_result, SUCCESS, `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
                 break

@@ -3,6 +3,8 @@ const db = require('../db/db')
 const SUCCESS = "ok"
 const FAILURE = "error"
 
+const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
+
 const log_api_status = (api_result, status, message) => {
 
     db.query_sync(`INSERT INTO api_status
@@ -35,5 +37,6 @@ const log_api_status = (api_result, status, message) => {
 module.exports = {
     log_api_status: log_api_status,
     SUCCESS: SUCCESS,
-    FAILURE: FAILURE
+    FAILURE: FAILURE,
+    REGEX_VAR: REGEX_VAR
 }

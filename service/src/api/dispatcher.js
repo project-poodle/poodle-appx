@@ -2,10 +2,9 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { REGEX_VAR }  = require('./util')
 const { get_router }  = require('./router')
 
-
-const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
 
 const ROUTES = {}
 
