@@ -14,6 +14,22 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace"
+      attr_name: "owner_scope"
+      attr_spec:
+          key: false
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "namespace"
+      attr_name: "owner_name"
+      attr_spec:
+          key: false
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "namespace"
       attr_name: "namespace_spec"
       attr_spec:
           key: false
@@ -25,6 +41,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -34,6 +51,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -63,6 +81,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -100,6 +119,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -109,6 +129,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -147,6 +168,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -192,6 +214,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -201,6 +224,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -247,6 +271,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -300,6 +325,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -309,6 +335,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -363,6 +390,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -416,6 +444,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -425,6 +454,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -486,6 +516,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -547,6 +578,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -556,6 +588,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -625,6 +658,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -694,6 +728,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -703,6 +738,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -780,6 +816,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -841,6 +878,7 @@ attr:
       attr_name: "create_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
     - namespace: "sys"
@@ -850,6 +888,7 @@ attr:
       attr_name: "update_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP
@@ -919,6 +958,7 @@ attr:
       attr_name: "status_time"
       attr_spec:
           key: false
+          managed: false
           type: "TIMESTAMP"
           default: CURRENT_TIMESTAMP
           on_update: CURRENT_TIMESTAMP

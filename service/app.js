@@ -23,7 +23,10 @@ const cache = require('./src/cache/cache')
 //////////////////////////////////////////////////
 // initialize express
 const express = require('express')
+var bodyParser = require('body-parser')
+
 const app = express()
+app.use(bodyParser.json())
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized

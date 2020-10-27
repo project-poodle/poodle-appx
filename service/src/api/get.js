@@ -31,7 +31,13 @@ function parse_get(api_context, req, res) {
 
     let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
     let obj = dotProp.get(cache_obj, obj_prop)
-    // console.log(JSON.stringify(obj, null, 4))
+    if (!obj) {
+        let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
+        log_api_status(api_context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return
+    }
 
     let api_spec = dotProp.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
     if (!api_spec) {
@@ -43,8 +49,6 @@ function parse_get(api_context, req, res) {
     }
 
     let verb = dotProp.get(api_spec, 'syntax.verb')
-    let join = dotProp.get(api_spec, 'syntax.join')
-
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -63,12 +67,13 @@ function parse_get(api_context, req, res) {
         return
     }
 
-    // process select attrs
+    // update select attrs
     Object.keys(obj_attrs).forEach((obj_attr, i) => {
         select_attrs[`${obj_attr}`] = `\`${api_context.obj_name}\`.\`${obj_attr}\``
     });
 
     // process join statement
+    let join = dotProp.get(api_spec, 'syntax.join')
     let lookup_tables = [ api_context.obj_name ]
     if (join) {
         join.forEach((join_spec, i) => {
@@ -404,7 +409,7 @@ function handle_get(api_context, req, res) {
     let result = db.query_sync(sql, sql_params)
 
     // send back the result
-    res.status(200).send(JSON.stringify(result, null, 4))
+    res.status(200).json(result)
 }
 
 // export

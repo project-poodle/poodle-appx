@@ -1,13 +1,4 @@
 ##################################################
-appx:
-    params: null
-    sql_input: "appx.sql.yaml"
-    transform: "appx.transform.yaml"
-    reconcile:
-        min: 180
-        max: 360
-
-##################################################
 namespace:
     params: null
     sql_input: "namespace.sql.yaml"
