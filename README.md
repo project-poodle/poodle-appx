@@ -2,7 +2,7 @@
 
 Project Poodle - AppX - app builder
 
-# initial setup of AppX service
+# Initial setup of AppX service
 
     cd service
 
