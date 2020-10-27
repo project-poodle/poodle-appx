@@ -225,7 +225,7 @@ function parse_get(api_context, req, res) {
         }
 
         let where_clause = {
-            key: select_attrs[param_key],
+            attr: select_attrs[param_key],
             value: params[param_key]
         }
 
@@ -255,7 +255,7 @@ function parse_get(api_context, req, res) {
                 }
 
                 if (! (match[1] in select_attrs)) {
-                    let msg = `ERROR: failed to retrieve attr for sort key [${sortKey}] - [${req.url}] !`
+                    let msg = `ERROR: unable to find attr for sort key [${sortKey}] - [${req.url}] !`
                     log_api_status(api_context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
@@ -288,7 +288,34 @@ function parse_get(api_context, req, res) {
             }
 
         } else {
+
             // other query columns
+            let regex = `^(${REGEX_VAR})(\\.${REGEX_VAR})*$`
+            let match = query_key.match(new RegExp(regex))
+
+            if (! match) {
+                let msg = `ERROR: unrecognized query key [${query_key}] - [${req.url}] !`
+                log_api_status(api_context, FAILURE, msg)
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                fatal = true
+                return
+            }
+
+            if (! (match[1] in select_attrs)) {
+                let msg = `ERROR: unable to find attr for query key [${query_key}] - [${req.url}] !`
+                log_api_status(api_context, FAILURE, msg)
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                fatal = true
+                return
+            }
+
+            let where_clause = {
+                attr: select_attrs[match[1]],
+                json_attr: match[2],
+                value: queries[query_key]
+            }
+
+            where_clauses.push(where_clause)
         }
     });
 
@@ -341,7 +368,11 @@ function handle_get(api_context, req, res) {
 
     let sql_params = []
     parsed.where_clauses.forEach((where_clause, i) => {
-        sql = sql + ` AND ${where_clause.key} = ?`
+        if (where_clause.json_attr) {
+            sql = sql + ` AND JSON_EXTRACT(${where_clause.attr}, '\$${where_clause.json_attr}') = ?`
+        } else {
+            sql = sql + ` AND ${where_clause.attr} = ?`
+        }
         sql_params.push(`${where_clause.value}`)
     });
 
