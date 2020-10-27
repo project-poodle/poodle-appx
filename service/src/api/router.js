@@ -7,6 +7,7 @@ const { handle_get } = require('./get')
 const { handle_upsert } = require('./upsert')
 const { handle_update } = require('./update')
 const { handle_delete } = require('./delete')
+const { handle_status } = require('./status')
 
 // track a list of endpoints
 // let endpoints = []
@@ -38,6 +39,9 @@ function handle_req(api_context, req, res) {
             return
 
         case "status":
+            handle_status(api_context, req, res)
+            return
+
         default:
             log_api_status(api_context, FAILURE,
                 `ERROR: unsupported verb [${api_spec.syntax.verb}] - [${JSON.stringify(api_spec)}]`)
