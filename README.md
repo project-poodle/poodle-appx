@@ -5,7 +5,7 @@ Project Poodle - AppX - app builder
 
     cd service
     
-    -- edit init.d/init.yaml
+    -- edit init.d/init.yaml: update credentials and mysql connection info
 
     sudo ./init.d/init.sh ./init.d/init.yaml
 
