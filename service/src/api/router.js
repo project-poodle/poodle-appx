@@ -2,52 +2,13 @@ const express = require('express')
 const dotProp = require('dot-prop')
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status, SUCCESS, FAILURE } = require('./util')
+const { log_api_status, get_api_spec, SUCCESS, FAILURE } = require('./util')
 const { handle_get } = require('./get')
 const { handle_upsert } = require('./upsert')
+const { handle_update } = require('./update')
 
 // track a list of endpoints
 // let endpoints = []
-
-function get_api_spec(api_context) {
-
-    let fatal = false
-
-    // console.log(cache.get_cache_for('object'))
-    let cache_obj = cache.get_cache_for('object')
-
-    let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
-    let obj = dotProp.get(cache_obj, obj_prop)
-    if (!obj) {
-        let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return
-    }
-
-
-    let api_spec = dotProp.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
-    if (!api_spec) {
-        let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return null
-    }
-
-    // check verb
-    let verb = dotProp.get(api_spec, 'syntax.verb')
-    if (!verb) {
-        let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
-        log_api_status(api_context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return null
-    }
-
-    return api_spec
-}
 
 function handle_req(api_context, req, res) {
 
@@ -68,6 +29,9 @@ function handle_req(api_context, req, res) {
             return
 
         case "update":
+            handle_update(api_context, req, res)
+            return
+
         case "delete":
         case "status":
         default:
