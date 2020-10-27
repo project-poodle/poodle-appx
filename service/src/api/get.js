@@ -241,10 +241,10 @@ function parse_get(api_context, req, res) {
             sortKeys.forEach((sortKey, i) => {
 
                 let regex = `^(${REGEX_VAR})(\\.${REGEX_VAR})*(\\((asc|desc)\\))?$`
-                console.log(sortKey)
-                console.log(regex)
+                //console.log(sortKey)
+                //console.log(regex)
                 let match = sortKey.match(new RegExp(regex))
-                console.log(match)
+                //console.log(match)
 
                 if (! match) {
                     let msg = `ERROR: unrecognized sort key [${sortKey}] - [${req.url}] !`
