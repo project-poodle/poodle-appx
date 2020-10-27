@@ -1,7 +1,8 @@
 # poodle-appx
+
 Project Poodle - AppX - app builder
 
-# setup service
+# initial setup of AppX service
 
     cd service
 
