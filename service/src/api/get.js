@@ -240,6 +240,12 @@ function parse_get(api_context, req, res) {
     // process query string
     let queries = req.query || {}
     Object.keys(queries).forEach((query_key, i) => {
+
+        // cut short if fatal
+        if (fatal) {
+            return { fatal: fatal }
+        }
+
         if (query_key == '_sort') {
 
             let sortKeys = queries[query_key].split(",")
