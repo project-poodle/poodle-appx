@@ -27,7 +27,7 @@ function handle_upsert(api_context, req, res) {
             sql = sql + `, \`${attr}\``
         }
     })
-    sql = sql + `) VALUES (`
+    sql = sql + `, \`deleted\`) VALUES (`
     first = true
     Object.keys(parsed.data_attrs).forEach((attr_key, i) => {
         if (first) {
@@ -47,7 +47,7 @@ function handle_upsert(api_context, req, res) {
             sql_params.push(`${JSON.stringify(attr_value)}`)
         }
     })
-    sql = sql + `)`
+    sql = sql + `, 0)`
 
     Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
 
@@ -60,17 +60,11 @@ function handle_upsert(api_context, req, res) {
         }
     })
 
-    first = true
+    sql = sql + ` ON DUPLICATE KEY UPDATE \`deleted\`=0`
     Object.keys(parsed.data_attrs).forEach((data_attr, i) => {
 
         if (data_attr in parsed.non_key_attrs) {
-            if (first) {
-                sql = sql + ` ON DUPLICATE KEY UPDATE `
-                first = false
-            } else {
-                sql = sql + ` ,`
-            }
-            sql = sql + `\`${data_attr}\`=VALUES(\`${data_attr}\`)`
+            sql = sql + `, \`${data_attr}\`=VALUES(\`${data_attr}\`)`
         }
     });
 

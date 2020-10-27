@@ -6,6 +6,7 @@ const { log_api_status, get_api_spec, SUCCESS, FAILURE } = require('./util')
 const { handle_get } = require('./get')
 const { handle_upsert } = require('./upsert')
 const { handle_update } = require('./update')
+const { handle_delete } = require('./delete')
 
 // track a list of endpoints
 // let endpoints = []
@@ -13,7 +14,7 @@ const { handle_update } = require('./update')
 function handle_req(api_context, req, res) {
 
     // check api_spec
-    let api_spec = get_api_spec(api_context)
+    let api_spec = get_api_spec(api_context, req, res)
     if (! api_spec) {
         return
     }
@@ -33,6 +34,9 @@ function handle_req(api_context, req, res) {
             return
 
         case "delete":
+            handle_delete(api_context, req, res)
+            return
+
         case "status":
         default:
             log_api_status(api_context, FAILURE,

@@ -16,10 +16,18 @@ function handle_update(api_context, req, res) {
 
     let sql_params = []
 
-    // select
+    // update
     let sql = `UPDATE \`${api_context.obj_name}\``
+
+    // set clause
     let first = true
     Object.keys(parsed.data_attrs).forEach((attr_key, i) => {
+
+        // skip key columns
+        if (attr_key in parsed.key_attrs) {
+            return
+        }
+
         if (first) {
             sql = sql + ` SET \`${attr_key}\`=?`
             first = false
@@ -37,6 +45,7 @@ function handle_update(api_context, req, res) {
         }
     })
 
+    // where clause
     first = true
     Object.keys(parsed.key_attrs).forEach((attr_key, i) => {
 

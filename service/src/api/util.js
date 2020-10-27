@@ -42,7 +42,7 @@ const log_api_status = (api_result, status, message) => {
 /**
  * get_api_spec
  */
-function get_api_spec(api_context) {
+function get_api_spec(api_context, req, res) {
 
     let fatal = false
 
