@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Draco Tadpole",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "dependencies": {
     "argparse": "^2.0.1",
     "crypto-js": "^4.0.0",
