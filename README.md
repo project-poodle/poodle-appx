@@ -34,7 +34,7 @@ Project Poodle - AppX - app builder
           }
         ]
 
-    curl 'localhost:3000/api/sys/base/appx/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)' | jq
+    curl 'http://localhost:3000/api/sys/base/appx/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)' | jq
 
         [
           {
