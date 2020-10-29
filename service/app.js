@@ -1,5 +1,4 @@
-//const fs = require('fs')
-//const mysql = require('mysql')
+const fs = require('fs')
 
 //////////////////////////////////////////////////
 // process cli arguments
@@ -10,6 +9,8 @@ const parser = new ArgumentParser({
 
 parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
 args = parser.parse_args();
+
+let db_conf_options = JSON.parse(fs.readFileSync(args.conf))
 
 //////////////////////////////////////////////////
 // check database connectivity
@@ -23,18 +24,58 @@ const cache = require('./src/cache/cache')
 //////////////////////////////////////////////////
 // initialize express
 const express = require('express')
-var bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const session = require("express-session")
+const MySQLStore = require('express-mysql-session')(session);
 
+// express app
 const app = express()
-app.use(bodyParser.json())
+//app.use(cookieParser)
+//app.configure(function() {
+//    app.use(express.cookieParser())
+//})
+
+// initialize sessions
+let sessionStore = new MySQLStore(db_conf_options);
+app.use(session({
+    store: sessionStore,
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}))
+
+// initialize passport, and passport session
+const { passport } = require("./src/auth/passport")
+app.use(passport.initialize())
+app.use(passport.session())
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
 const { dispatcher } = require('./src/api/dispatcher')
 
-app.use('/api', dispatcher)
+app.use('/api', bodyParser.json())
+app.use('/api',
+    passport.authenticate('basic', { session: false }),
+    dispatcher)
 
-// console.log(app._router.stack)
+// handle local login
+//app.post('/login/local', passport.authenticate(
+//    'local',
+//    {
+//        successRedirect: '/appx/console',
+//        failureRedirect: '/appx/login',
+//        failureFlash: true
+//    })
+//)
+
+// handle logout
+//app.get('/logout',
+//    function(req, res) {
+//        req.logout();
+//        res.redirect('/appx/login');
+//    }
+//)
 
 //////////////////////////////////////////////////
 // start listening
