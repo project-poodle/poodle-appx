@@ -1,7 +1,8 @@
 const db = require('../db/db')
 const passport = require('passport')
-const BasicStrategy = require('passport-http').BasicStrategy;
+const BasicStrategy = require('passport-http').BasicStrategy
 const LocalStrategy = require('passport-local').Strategy
+const BearerStrategy = require('passport-http-bearer').Strategy
 
 
 function findLocalUserWithPass(username, password) {
@@ -69,6 +70,7 @@ function findLocalUser(username) {
     }
 }
 
+// basic auth
 passport.use(new BasicStrategy(
     function(username, password, done) {
         try {
@@ -104,9 +106,26 @@ passport.use(new LocalStrategy(
     })
 )
 
+// bearer strategy
+passport.use(new BearerStrategy(
+    function(token, done) {
+        try {
+            let user = findUserWithToken(token)
+            if (user == null) {
+                done(null, false)
+            } else {
+                done(null, user, { scope: 'all' })
+            }
+        } catch (err) {
+            done(err)
+        }
+    }
+))
+
+
 // serialize
-passport.serializeUser(function(user, down) {
-    down(null, user);
+passport.serializeUser(function(user, done) {
+    done(null, user);
 })
 
 // deserialize
@@ -123,6 +142,32 @@ passport.deserializeUser(function(user, done) {
     }
 })
 
+// authenticator will choose between different strategies
+const authenticator = function (req, res, next) {
+
+    if (!req.headers.authorization) {
+        return res.status(403).json({ status: 'error', message: 'unauthorized' })
+    }
+
+    // console.log(req.headers.authorization)
+    if (req.headers.authorization.match(/^Basic/i)) {
+
+        let strategy = passport.authenticate('basic', { session: false })
+        strategy(req, res, next)
+
+    } else if (req.headers.authorization.match(/^Bearer/i)) {
+
+        let strategy = passport.authenticate('bearer', { session: false })
+        strategy(req, res, next)
+
+    } else {
+
+        return res.status(403).json({ status: 'error', message: 'unauthorized' });
+    }
+}
+
+// exports
 module.exports = {
-    passport: passport
+    passport: passport,
+    authenticator: authenticator
 }

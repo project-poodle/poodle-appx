@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path');
 
 //////////////////////////////////////////////////
 // process cli arguments
@@ -31,6 +32,7 @@ const MySQLStore = require('express-mysql-session')(session);
 
 // express app
 const app = express()
+app.use('/appx', express.static(path.join(__dirname, 'public')))
 //app.use(cookieParser)
 //app.configure(function() {
 //    app.use(express.cookieParser())
@@ -46,7 +48,7 @@ app.use(session({
 }))
 
 // initialize passport, and passport session
-const { passport } = require("./src/auth/passport")
+const { passport, authenticator } = require("./src/auth/passport")
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -55,27 +57,25 @@ app.use(passport.session())
 const { dispatcher } = require('./src/api/dispatcher')
 
 app.use('/api', bodyParser.json())
-app.use('/api',
-    passport.authenticate('basic', { session: false }),
-    dispatcher)
+app.use('/api', authenticator, dispatcher)
 
 // handle local login
-//app.post('/login/local', passport.authenticate(
-//    'local',
-//    {
-//        successRedirect: '/appx/console',
-//        failureRedirect: '/appx/login',
-//        failureFlash: true
-//    })
-//)
+app.post('/login/local', passport.authenticate(
+    'local',
+    {
+        successRedirect: '/appx/console',
+        failureRedirect: '/appx/login',
+        failureFlash: true
+    })
+)
 
-// handle logout
-//app.get('/logout',
-//    function(req, res) {
-//        req.logout();
-//        res.redirect('/appx/login');
-//    }
-//)
+ handle logout
+app.get('/logout',
+    function(req, res) {
+        req.logout();
+        res.redirect('/appx/login');
+    }
+)
 
 //////////////////////////////////////////////////
 // start listening

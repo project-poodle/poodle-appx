@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_appx_meta`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_user_local`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_scope`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_role_grant`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_module`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_grant`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_func`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_perm_obj`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_spec_audit`;
@@ -57,30 +57,29 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_user` (
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 -- roles and permissions --
-CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_scope` (
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_auth_module` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
-    `namespace`             VARCHAR(32)             NOT NULL,
-    `scope_name`            VARCHAR(32)             NOT NULL,
-    `scope_spec`            JSON                    NOT NULL,
+    `auth_module`           VARCHAR(32)             NOT NULL,
+    `auth_spec`             JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(`namespace`, `scope_name`),
+    UNIQUE INDEX idx_app(`auth_module`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_role_grant` (
+CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_auth_grant` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
-    `grant_scope`           VARCHAR(32)             NOT NULL,
-    `grant_name`            VARCHAR(32)             NOT NULL,
+    `auth_module`           VARCHAR(32)             NOT NULL,
+    `auth_name`             VARCHAR(32)             NOT NULL,
     `grant_spec`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX idx_app(namespace, role_name, grant_scope, grant_name),
+    UNIQUE INDEX idx_app(namespace, role_name, auth_module, auth_name),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -287,10 +286,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`obj_status` (
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name),
-    PRIMARY KEY (`id`, `namespace`, `app_name`)
+    PRIMARY KEY (`id`, `namespace`, `runtime_name`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `runtime_name`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -320,10 +319,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`relation_status` (
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, objn_name),
-    PRIMARY KEY (`id`, `namespace`, `app_name`)
+    PRIMARY KEY (`id`, `namespace`, `runtime_name`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `runtime_name`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -353,10 +352,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`attr_status` (
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, attr_name),
-    PRIMARY KEY (`id`, `namespace`, `app_name`)
+    PRIMARY KEY (`id`, `namespace`, `runtime_name`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `runtime_name`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -388,10 +387,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`api_status` (
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, api_method, api_endpoint),
-    PRIMARY KEY (`id`, `namespace`, `app_name`)
+    PRIMARY KEY (`id`, `namespace`, `runtime_name`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `runtime_name`, `app_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -425,10 +424,10 @@ CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`transform_status` (
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX idx_app(namespace, runtime_name, app_name, obj_name, transform_name),
-    PRIMARY KEY (`id`, `namespace`, `app_name`)
+    PRIMARY KEY (`id`, `namespace`, `runtime_name`, `app_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `runtime_name`, `app_name`) PARTITIONS 20;
 
 -- metadata --
 {{#_appx_meta}}
@@ -444,17 +443,19 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_user`(`namespace`, `scope_name`, `use
 {{/.}}
 {{/_user}}
 
+-- auth modules --
+{{#_auth_module}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`_auth_module`(`auth_module`, `auth_spec`) VALUES ('{{{auth_module}}}', {{#auth_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/auth_spec}}) ON DUPLICATE KEY UPDATE auth_spec=VALUES(auth_spec);
+{{/.}}
+{{/_auth_module}}
+
 -- role definitions --
-{{#_role_scope}}
+{{#_auth_grant}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_role_scope`(`namespace`, `scope_name`, `scope_spec`) VALUES ('{{{namespace}}}', '{{{scope_name}}}', {{#scope_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/scope_spec}}) ON DUPLICATE KEY UPDATE scope_spec=VALUES(scope_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_auth_grant`(`namespace`, `role_name`, `auth_module`, `auth_name`, `grant_spec`) VALUES ('{{{namespace}}}', '{{{role_name}}}', '{{{auth_module}}}', '{{{auth_name}}}', {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
 {{/.}}
-{{/_role_scope}}
-{{#_role_grant}}
-{{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_role_grant`(`namespace`, `role_name`, `grant_scope`, `grant_name`, `grant_spec`) VALUES ('{{{namespace}}}', '{{{role_name}}}', '{{{grant_scope}}}', '{{{grant_name}}}', {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}) ON DUPLICATE KEY UPDATE grant_spec=VALUES(grant_spec);
-{{/.}}
-{{/_role_grant}}
+{{/_auth_grant}}
 
 -- permission definitions --
 {{#_perm_func}}
