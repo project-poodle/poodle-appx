@@ -118,40 +118,44 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_spec_audit` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `spec_name`             VARCHAR(32)             NOT NULL,
-    `spec_id`               BIGINT                  NOT NULL,
+    `app_name`              VARCHAR(15)             NOT NULL,
+    `obj_name`              VARCHAR(32)             NOT NULL,
+    `obj_id`                BIGINT                  NOT NULL,
     `spec_audit`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`, `namespace`, `spec_name`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `spec_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `app_name`, `obj_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_state_audit` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `state_name`            VARCHAR(32)             NOT NULL,
-    `state_id`              BIGINT                  NOT NULL,
-    `spec_audit`            JSON                    NOT NULL,
+    `app_name`              VARCHAR(15)             NOT NULL,
+    `obj_name`              VARCHAR(32)             NOT NULL,
+    `obj_id`                BIGINT                  NOT NULL,
+    `state_audit`           JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`, `namespace`, `state_name`)
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `app_name`, `obj_name`) PARTITIONS 20;
 
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`_state_history` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `state_name`            VARCHAR(32)             NOT NULL,
-    `state_id`              BIGINT                  NOT NULL,
-    `state_time`            DATETIME                NOT NULL,
+    `app_name`              VARCHAR(15)             NOT NULL,
+    `obj_name`              VARCHAR(32)             NOT NULL,
+    `obj_id`                BIGINT                  NOT NULL,
+    `obj_time`              DATETIME                NOT NULL,
     `state_history`         JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE INDEX idx_state_history(namespace, state_name, state_id, state_time),
-    PRIMARY KEY (`id`, `namespace`, `state_name`)
+    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE INDEX idx_state_history(`namespace`, `app_name`, `obj_name`, `obj_id`, `obj_time`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `state_name`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `app_name`, `obj_name`) PARTITIONS 20;
 
 -- main schema --
 CREATE TABLE IF NOT EXISTS `{{{global.schema_prefix}}}`.`namespace` (
