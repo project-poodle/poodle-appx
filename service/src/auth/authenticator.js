@@ -86,24 +86,37 @@ function findUserWithPass(realm, username, password) {
                     user_spec: objPath.get(local_db, 'field.user_spec', 'user_spec')
                 }
 
-                let user = findLocalUserWithPass(realm, username, password, table, fields)
+                let result = findLocalUserWithPass(realm, username, password, table, fields)
 
-                return user
+                return result
 
             } else if (realm_module.module_spec.protocol == 'ldap') {
+
                 found = true
                 if (! ('auth_name_match' in realm_module.module_spec)) {
-                    res.status(422).json({status: 'error', message: `ldap protocol missing [auth_name_match]`})
-                    return
+                    return {
+                        status: 'error',
+                        message: `ldap protocol missing [auth_name_match]`
+                    }
                 }
                 if (! ('ldap' in realm_module.module_spec)) {
-                    res.status(422).json({status: 'error', message: `ldap protocol missing [ldap]`})
-                    return
+                    return {
+                        status: 'error',
+                        message: `ldap protocol missing [ldap]`
+                    }
                 }
+
             } else {
 
+                continue
             }
         }
+    }
+
+    // we are here if no matching protocol found
+    return {
+        status: 'error',
+        message: `Unable to find matching authentication protocol`
     }
 }
 
@@ -128,16 +141,16 @@ function authenticateUserWithPass(req, res, next) {
         let username = req.body.username
         let password = req.body.password
 
-        let user = findUserWithPass(realm, username, password)
+        let result = findUserWithPass(realm, username, password)
 
-        if (user && user.user && user.status == 'ok') {
+        if (result && result.user && result.status == 'ok') {
 
-            console.log(`INFO: user [${username}] authenticated successfully`)
+            console.log(`INFO: user [${username}] authenticated successfully !`)
             crypto.randomBytes(64, function(err, buffer) {
 
                 let token = buffer.toString('base64')
                 let token_spec = {
-                    user_spec: user.user.user_spec
+                    user_spec: result.user.user_spec
                 }
 
                 let sql = `INSERT INTO
@@ -151,6 +164,7 @@ function authenticateUserWithPass(req, res, next) {
 
         } else {
 
+            console.log(`INFO: user [${username}] authentication failed !`)
             res.status(422).json(user)
             return
 
@@ -261,13 +275,13 @@ const authenticator = function (req, res, next) {
                 return
             }
 
-            let user = findUserWithPass(realm, credentials[0], credentials[1])
-            if (user && user.user && user.status == 'ok') {
-                req.user = user
+            let result = findUserWithPass(realm, credentials[0], credentials[1])
+            if (result && result.user && result.status == 'ok') {
+                req.user = result.user
                 next()
             } else {
                 res.set('WWW-Authenticate', `Basic realm="${realm}"`)
-                res.status(401).json(user)
+                res.status(401).json(result)
                 return
             }
         } catch (err) {
