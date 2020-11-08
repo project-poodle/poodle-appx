@@ -15,7 +15,7 @@ rm -fR /tmp/$$
 mkdir -p /tmp/$$
 echo "----------"
 
-eval_template -t ${CURR_DIR}/appx.yaml -y1 ${CURR_DIR}/appx.yaml -j1 ${BASE_DIR}/conf.d/mysql_appx.json -js1 MYSQL_CONF -j2 ${BASE_DIR}/conf.d/ldap.json -js2 LDAP_CONF > /tmp/$$/appx.yaml
+eval_template -t ${CURR_DIR}/appx.yaml -y1 ${CURR_DIR}/appx.yaml -j1 ${BASE_DIR}/conf.d/mysql_appx.json -js1 MYSQL_CONF -j2 ${BASE_DIR}/conf.d/ldap_appx.json -js2 LDAP_CONF > /tmp/$$/appx.yaml
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"
     cat /tmp/$$/appx.sql.out

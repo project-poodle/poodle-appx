@@ -83,14 +83,14 @@ chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} /var/log/a
 chmod -R go=rX /var/log/appx/
 
 echo "--------------------"
-LDAP_FILE=${BASE_DIR}/conf.d/ldap.json
-eval_template -t ${CURR_DIR}/ldap.json -y1 ${INIT_YAML} > ${LDAP_FILE}
+LDAP_APPX_FILE=${BASE_DIR}/conf.d/ldap_appx.json
+eval_template -t ${CURR_DIR}/ldap_appx.json -y1 ${INIT_YAML} > ${LDAP_APPX_FILE}
 if [ $? -ne 0 ]; then
-    echo "ERROR: failed to generate ${LDAP_FILE} ! --- [/tmp/$$/]"
+    echo "ERROR: failed to generate ${LDAP_APPX_FILE} ! --- [/tmp/$$/]"
     exit 1
 fi
-chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LDAP_FILE}
-chmod 600 ${LDAP_FILE}
+chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LDAP_APPX_FILE}
+chmod 600 ${LDAP_APPX_FILE}
 
 echo "--------------------"
 eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"

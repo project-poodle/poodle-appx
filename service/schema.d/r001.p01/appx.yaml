@@ -66,9 +66,7 @@ _realm_module:
           protocol: "ldap"
           auth_name_match: 1
           ldap:
-              host: "{{{LDAP_CONF.host}}}"
-              port: "{{{LDAP_CONF.port}}}"
-              ssl: {{{LDAP_CONF.ssl}}}
+              conf: ldap_appx.json
               base_dn:
                   - "{{{LDAP_CONF.base_dn}}}"
               search: "(&(objectClass=person)(cn=$1))"
