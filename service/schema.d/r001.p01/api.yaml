@@ -87,7 +87,7 @@ api:
       api_spec:
           permission: "status"
           syntax:
-              # INSERT INTO appx.namespace_status (namespace, namespace_state) VALUES (:namespace, body.namespace_state) ON DUPLICATE KEY UPDATE namespace_state = VALUES(namespace_state)
+              # INSERT INTO appx.namespace_status (namespace, namespace_status) VALUES (:namespace, body.namespace_status) ON DUPLICATE KEY UPDATE namespace_status = VALUES(namespace_status)
               verb: "status"
           doc:
               desc: "post namespace status for :namespace"

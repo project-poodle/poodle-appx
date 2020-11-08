@@ -1,4 +1,4 @@
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('./util')

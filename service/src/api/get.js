@@ -1,4 +1,4 @@
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
@@ -30,7 +30,7 @@ function parse_get(api_context, req, res) {
     let cache_obj = cache.get_cache_for('object')
 
     let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
-    let obj = dotProp.get(cache_obj, obj_prop)
+    let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
         let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -39,7 +39,7 @@ function parse_get(api_context, req, res) {
         return
     }
 
-    let api_spec = dotProp.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
     if (!api_spec) {
         let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -48,7 +48,7 @@ function parse_get(api_context, req, res) {
         return
     }
 
-    let verb = dotProp.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, 'syntax.verb')
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -58,7 +58,7 @@ function parse_get(api_context, req, res) {
     }
 
     // process object attrs
-    let obj_attrs = dotProp.get(obj, `attrs`)
+    let obj_attrs = objPath.get(obj, `attrs`)
     if (!obj_attrs) {
         let msg = `ERROR: failed to retrieve attrs for obj [${api_context.obj_name}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -73,7 +73,7 @@ function parse_get(api_context, req, res) {
     });
 
     // process join statement
-    let join = dotProp.get(api_spec, 'syntax.join')
+    let join = objPath.get(api_spec, 'syntax.join')
     let lookup_tables = [ api_context.obj_name ]
     if (join) {
         join.forEach((join_spec, i) => {
@@ -83,7 +83,7 @@ function parse_get(api_context, req, res) {
 
             // process join obj attributes
             let join_obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${join_name}`
-            let join_obj = dotProp.get(cache_obj, join_obj_prop)
+            let join_obj = objPath.get(cache_obj, join_obj_prop)
             if (!join_obj) {
                 let msg = `ERROR: failed to retrieve join obj [${join_name}] !`
                 log_api_status(api_context, FAILURE, msg)
@@ -92,7 +92,7 @@ function parse_get(api_context, req, res) {
                 return
             }
 
-            let join_obj_attrs = dotProp.get(join_obj, `attrs`)
+            let join_obj_attrs = objPath.get(join_obj, `attrs`)
             if (!join_obj_attrs) {
                 let msg = `ERROR: failed to retrieve attrs for join obj [${join_name}] !`
                 log_api_status(api_context, FAILURE, msg)
@@ -119,7 +119,7 @@ function parse_get(api_context, req, res) {
 
                 // lookup_obj
                 let lookup_obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${lookup_name}`
-                let lookup_obj = dotProp.get(cache_obj, lookup_obj_prop)
+                let lookup_obj = objPath.get(cache_obj, lookup_obj_prop)
                 if (!lookup_obj) {
                     let msg = `ERROR: failed to retrieve lookup obj [${lookup_name}] !`
                     log_api_status(api_context, FAILURE, msg)
@@ -129,7 +129,7 @@ function parse_get(api_context, req, res) {
                 }
 
                 // lookup_obj_attrs
-                let lookup_obj_attrs = dotProp.get(lookup_obj, `attrs`)
+                let lookup_obj_attrs = objPath.get(lookup_obj, `attrs`)
                 if (!lookup_obj_attrs) {
                     let msg = `ERROR: failed to retrieve attrs for other obj [${lookup_tables[i]}] !`
                     log_api_status(api_context, FAILURE, msg)
@@ -139,8 +139,8 @@ function parse_get(api_context, req, res) {
                 }
 
                 // lookup_relations
-                let lookup_relations_1ton = dotProp.get(lookup_obj, `relations_1ton`)
-                let lookup_relations_nto1 = dotProp.get(lookup_obj, `relations_nto1`)
+                let lookup_relations_1ton = objPath.get(lookup_obj, `relations_1ton`)
+                let lookup_relations_nto1 = objPath.get(lookup_obj, `relations_nto1`)
 
                 if (join_name in lookup_relations_1ton) {
                     relation_spec = lookup_relations_1ton[join_name]['relation_spec']

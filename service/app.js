@@ -27,8 +27,8 @@ const cache = require('./src/cache/cache')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const session = require("express-session")
-const MySQLStore = require('express-mysql-session')(session);
+//const session = require("express-session")
+//const MySQLStore = require('express-mysql-session')(session);
 
 // express app
 const app = express()
@@ -38,6 +38,7 @@ app.use('/appx', express.static(path.join(__dirname, 'public')))
 //    app.use(express.cookieParser())
 //})
 
+/*
 // initialize sessions
 let sessionStore = new MySQLStore(db_conf_options);
 app.use(session({
@@ -46,11 +47,13 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+*/
 
-// initialize passport, and passport session
-const { passport, authenticator } = require("./src/auth/passport")
-app.use(passport.initialize())
-app.use(passport.session())
+//////////////////////////////////////////////////
+// initialize authenticator --- Note: perform this step only after db_pool is initialized
+const { authenticator, loginUserWithPass } = require("./src/auth")
+//app.use(passport.initialize())
+//app.use(passport.session())
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
@@ -60,22 +63,23 @@ app.use('/api', bodyParser.json())
 app.use('/api', authenticator, dispatcher)
 
 // handle local login
-app.post('/login/local', passport.authenticate(
-    'local',
-    {
-        successRedirect: '/appx/console',
-        failureRedirect: '/appx/login',
-        failureFlash: true
-    })
-)
+app.use('/login', bodyParser.json())
+app.post('/login/local', loginUserWithPass)
 
-//            s handle logout
-app.get('/logout',
+/*
+// handle logout
+app.use('/logout',
     function(req, res) {
         req.logout();
         res.redirect('/appx/login');
     }
 )
+*/
+
+// redirect root
+app.use('/', (req, res, next) => {
+    res.redirect("/appx")
+})
 
 //////////////////////////////////////////////////
 // start listening

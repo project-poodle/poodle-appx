@@ -47,6 +47,7 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE `{{{global.schema_prefix}}}`.`_realm` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `realm`                 VARCHAR(32)             NOT NULL,
+    `realm_key`             VARBINARY(64)           NOT NULL,
     `realm_spec`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -230,7 +231,7 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 CREATE TABLE `{{{global.schema_prefix}}}`.`namespace_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
-    `namespace_state`       JSON                    NOT NULL,
+    `namespace_status`      JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace),
@@ -255,7 +256,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`runtime_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `runtime_name`          VARCHAR(9)              NOT NULL,
-    `runtime_state`         JSON                    NOT NULL,
+    `runtime_status`        JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name),
@@ -282,7 +283,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`app_status` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
-    `app_state`             JSON                    NOT NULL,
+    `app_status`            JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, app_name, app_ver),
@@ -311,7 +312,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`deployment_status` (
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
-    `deployment_state`      JSON                    NOT NULL,
+    `deployment_status`     JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name),
@@ -341,7 +342,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`obj_status` (
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
-    `obj_state`             JSON                    NOT NULL,
+    `obj_status`            JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name, obj_name),
@@ -374,7 +375,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`relation_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
-    `relation_state`        JSON                    NOT NULL,
+    `relation_status`       JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name, obj_name, objn_name),
@@ -407,7 +408,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`attr_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `attr_name`             VARCHAR(32)             NOT NULL,
-    `attr_state`            JSON                    NOT NULL,
+    `attr_status`           JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name, obj_name, attr_name),
@@ -442,7 +443,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`api_status` (
     `obj_name`              VARCHAR(32)             NOT NULL,
     `api_method`            VARCHAR(15)             NOT NULL,
     `api_endpoint`          VARCHAR(255)            NOT NULL,
-    `api_state`             JSON                    NOT NULL,
+    `api_status`            JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name, obj_name, api_method, api_endpoint),
@@ -479,7 +480,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`transform_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `transform_name`        VARCHAR(32)             NOT NULL,
-    `transform_state`       JSON                    NOT NULL,
+    `transform_status`      JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(namespace, runtime_name, app_name, obj_name, transform_name),
@@ -499,7 +500,7 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_appx_meta`(`meta_name`, `meta_key`, `
 -- realm --
 {{#_realm}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_realm`(`realm`, `realm_spec`) VALUES ('{{{realm}}}', {{#realm_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_spec}}) ON DUPLICATE KEY UPDATE realm_spec=VALUES(realm_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_realm`(`realm`, `realm_key`, `realm_spec`) VALUES ('{{{realm}}}', {{{realm_key}}}, {{#realm_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_spec}}) ON DUPLICATE KEY UPDATE realm_key=VALUES(realm_key), realm_spec=VALUES(realm_spec);
 {{/.}}
 {{/_realm}}
 

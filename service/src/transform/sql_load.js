@@ -1,6 +1,6 @@
 const fs = require('fs')
 const YAML = require('yaml')
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 const Mustache = require('mustache');
 const db = require('../db/db')
 
@@ -52,7 +52,7 @@ function sql_load(filepath, context) {
                     Object.assign(curr_map, value)
                 });
 
-                dotProp.set(variables, map_def.name, map)
+                objPath.set(variables, map_def.name, map)
             });
         }
 
@@ -67,7 +67,7 @@ function sql_load(filepath, context) {
                     arr.push(eval(Mustache.render(arr_def.value, context).replace(/\$@/g, 'result')))
                 });
 
-                dotProp.set(variables, arr_def.name, arr)
+                objPath.set(variables, arr_def.name, arr)
             });
         }
     });

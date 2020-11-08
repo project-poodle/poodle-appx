@@ -1,6 +1,6 @@
 const fs = require('fs');
 const YAML = require('yaml')
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 var SHA256 = require("crypto-js/sha256");
 const { sql_load } = require('../transform/sql_load')
 const { json_transform, json_trigger } = require('../transform/json_transform')
@@ -91,7 +91,7 @@ function load_cache_for(name, params, repeat=false) {
         let transform = YAML.parse(fs.readFileSync(transform_filepath, 'utf8'))
         //console.log(JSON.stringify(transform, null, 4))
 
-        let result = json_transform(dotProp.get(CACHE_VARS, name, null), input, transform, {params: params})
+        let result = json_transform(objPath.get(CACHE_VARS, name, null), input, transform, {params: params})
         // console.log(JSON.stringify(result, null, 4))
 
         // assign CACHE_VARS only if params is null

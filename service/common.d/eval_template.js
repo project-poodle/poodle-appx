@@ -42,7 +42,7 @@ let variables = {
                 if (typeof data == null || typeof data == "undefined") {
                     return 'null';
                 } else if (typeof data == "number") {
-                    return string(data)
+                    return data.toString()
                 } else if (typeof data == "boolean") {
                     return data.toString()
                 } else if (typeof data == "string") {

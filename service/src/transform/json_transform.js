@@ -1,4 +1,4 @@
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 const Mustache = require('mustache');
 
 const INVOKE_KEY = '$invoke'
@@ -35,7 +35,7 @@ function eval_with_input(expr, ctx) {
     // substitute [] index
     while (expr.match(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'))) {
         // console.log(`eval(${expr})`)
-        expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'dotProp.get($1, $63, null)')
+        expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'objPath.get($1, $63, null)')
     }
 
     // console.log(`eval(${expr}), ${ctx}`)
@@ -136,7 +136,7 @@ function json_transform(target, source, transform, context) {
                         // update target
                         // console.log('child_source')
                         // console.log(child_source)
-                        dotProp.set(target, key, json_transform(dotProp.get(target, key, null), child_source, transform[transform_key], context))
+                        objPath.set(target, key, json_transform(objPath.get(target, key, null), child_source, transform[transform_key], context))
                     });
 
                 } else if (map) {
@@ -203,7 +203,7 @@ function json_transform(target, source, transform, context) {
             } else {
 
                 // console.log(`transform_rendered_key: ${transform_rendered_key} - transform_key: ${transform_key}`)
-                dotProp.set(target, transform_rendered_key, json_transform(dotProp.get(target, transform_rendered_key, null), source, transform[transform_key], context))
+                objPath.set(target, transform_rendered_key, json_transform(objPath.get(target, transform_rendered_key, null), source, transform[transform_key], context))
             }
         });
 

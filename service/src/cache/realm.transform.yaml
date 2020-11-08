@@ -20,4 +20,5 @@ realm_module:
         "#rlm{$rlm}":                                   # module_name
             realm: "@@rlm"
             module_name: "@rlm"
+            module_pattern: "$rlm.module_pattern"
             module_spec: "$rlm.module_spec"

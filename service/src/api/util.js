@@ -1,4 +1,4 @@
-const dotProp = require('dot-prop')
+const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 
@@ -20,7 +20,7 @@ const log_api_status = (api_result, status, message) => {
                         obj_name,
                         api_method,
                         api_endpoint,
-                        api_state
+                        api_status
                     )
                     VALUES
                     (
@@ -28,7 +28,7 @@ const log_api_status = (api_result, status, message) => {
                         JSON_OBJECT('status', '${status}', 'message', '${message}')
                     )
                     ON DUPLICATE KEY UPDATE
-                        api_state=VALUES(api_state)`,
+                        api_status=VALUES(api_status)`,
                     [
                         api_result.namespace,
                         api_result.runtime_name,
@@ -50,7 +50,7 @@ function get_api_spec(api_context, req, res) {
     let cache_obj = cache.get_cache_for('object')
 
     let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
-    let obj = dotProp.get(cache_obj, obj_prop)
+    let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
         let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -60,7 +60,7 @@ function get_api_spec(api_context, req, res) {
     }
 
 
-    let api_spec = dotProp.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
     if (!api_spec) {
         let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -70,7 +70,7 @@ function get_api_spec(api_context, req, res) {
     }
 
     // check verb
-    let verb = dotProp.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, 'syntax.verb')
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -99,7 +99,7 @@ function parse_for_sql(api_context, req, res) {
     let cache_obj = cache.get_cache_for('object')
 
     let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
-    let obj = dotProp.get(cache_obj, obj_prop)
+    let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
         let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -108,7 +108,7 @@ function parse_for_sql(api_context, req, res) {
         return
     }
 
-    let api_spec = dotProp.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
     if (!api_spec) {
         let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -117,7 +117,7 @@ function parse_for_sql(api_context, req, res) {
         return
     }
 
-    let verb = dotProp.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, 'syntax.verb')
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
         log_api_status(api_context, FAILURE, msg)
@@ -127,7 +127,7 @@ function parse_for_sql(api_context, req, res) {
     }
 
     // process object attrs
-    let obj_attrs = dotProp.get(obj, `attrs`)
+    let obj_attrs = objPath.get(obj, `attrs`)
     if (!obj_attrs) {
         let msg = `ERROR: failed to retrieve attrs for obj [${api_context.obj_name}] !`
         log_api_status(api_context, FAILURE, msg)

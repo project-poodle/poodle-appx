@@ -1,5 +1,4 @@
 const express = require('express')
-const dotProp = require('dot-prop')
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { log_api_status, get_api_spec, SUCCESS, FAILURE } = require('./util')

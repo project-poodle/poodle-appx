@@ -70,7 +70,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace_status"
-      attr_name: "namespace_state"
+      attr_name: "namespace_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -157,7 +157,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "runtime_status"
-      attr_name: "runtime_state"
+      attr_name: "runtime_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -260,7 +260,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "app_status"
-      attr_name: "app_state"
+      attr_name: "app_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -379,7 +379,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment_status"
-      attr_name: "deployment_state"
+      attr_name: "deployment_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -505,7 +505,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj_status"
-      attr_name: "obj_state"
+      attr_name: "obj_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -647,7 +647,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr_status"
-      attr_name: "attr_state"
+      attr_name: "attr_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -805,7 +805,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api_status"
-      attr_name: "api_state"
+      attr_name: "api_status"
       attr_spec:
           key: false
           type: "JSON"
@@ -947,7 +947,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform_status"
-      attr_name: "transform_state"
+      attr_name: "transform_status"
       attr_spec:
           key: false
           type: "JSON"
