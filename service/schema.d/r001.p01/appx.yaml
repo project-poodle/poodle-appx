@@ -32,7 +32,7 @@ _realm:
 
 ######################################################################
 # user
-_user:
+_realm_user:
     - realm: "appx"
       username: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       password: 'PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")'
@@ -40,17 +40,17 @@ _user:
           comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
 
 ######################################################################
-# _auth_module
-_auth_module:
+# _realm_module
+_realm_module:
     # local auth
     - realm: "appx"
-      module_name: "appx.local"
+      module_name: "00.appx.local"
       module_pattern: "^(.+)(\\@LOCAL)$"
       module_spec:
           protocol: "local_db"
           auth_name: "$1"
           local_db:
-              table: "_user"
+              table: "_realm_user"
               field:
                   realm: realm
                   username: username
@@ -58,7 +58,8 @@ _auth_module:
           comment: "initialize auth module [appx.local]"
     # ldap auth
     - realm: "appx"
-      module_name: "appx.ldap_user"
+      module_name: "10.appx.ldap_user"
+      module_priority: 10
       module_pattern: "^(.+)(\\@LDAP)$"
       module_spec:
           protocol: "ldap"
@@ -71,7 +72,7 @@ _auth_module:
           comment: "initialize auth module [appx.ldap_user]"
     # google auth
     - realm: "appx"
-      module_name: "appx.google"
+      module_name: "20.appx.google"
       module_pattern: "^(.+)$"
       module_spec:
           protocol: "google"
@@ -82,7 +83,7 @@ _auth_module:
           comment: "initialize auth module [appx.google]"
     # facebook auth
     - realm: "appx"
-      module_name: "appx.facebook"
+      module_name: "21.appx.facebook"
       module_pattern: "^(.+)$"
       module_spec:
           protocol: "facebook"
@@ -93,7 +94,7 @@ _auth_module:
           comment: "initialize auth module [appx.facebook]"
     # github auth
     - realm: "appx"
-      module_name: "appx.github"
+      module_name: "22.appx.github"
       module_pattern: "^(.+)$"
       module_spec:
           protocol: "github"
@@ -104,12 +105,12 @@ _auth_module:
           comment: "initialize auth module [appx.facebook]"
 
 ######################################################################
-# _auth_app_realm
-_auth_app_realm:
+# _realm_app
+_realm_app:
     - realm: "appx"
       namespace: "sys"
       app_name: "appx"
-      app_realm_spec:
+      realm_app_spec:
           comment: "initialize auth app realm"
 
 ######################################################################

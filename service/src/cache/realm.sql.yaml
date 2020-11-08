@@ -1,6 +1,6 @@
-# _auth_app_realm
+# _realm_app
 - query: "SELECT *
-            FROM _auth_app_realm
+            FROM _realm_app
             WHERE
                 deleted = 0"
   map_def:
@@ -15,4 +15,19 @@
             - "$@.realm"
             - "$@.namespace"
             - "$@.app_name"
+        value: "$@"
+
+# _realm_module
+- query: "SELECT *
+            FROM _realm_module
+            WHERE
+                deleted = 0
+            ORDER BY
+                realm ASC,
+                module_name ASC"
+  map_def:
+      - name: sql.realm_module
+        key:
+            - "$@.realm"
+            - "$@.module_name.replace(/\\./g, '__')"
         value: "$@"

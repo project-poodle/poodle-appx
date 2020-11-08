@@ -15,7 +15,7 @@ function findUserWithPass(username, password) {
                     username,
                     user_spec,
                     deleted
-                FROM _user
+                FROM _realm_user
                 WHERE realm='appx'
                 AND username=?
                 AND password=PASSWORD(?)
@@ -36,37 +36,6 @@ function findUserWithPass(username, password) {
         }
     }
 }
-
-/*
-function findUser(username) {
-
-    let sql = `SELECT
-                    id,
-                    domain,
-                    username,
-                    user_info,
-                    deleted
-                FROM _user
-                WHERE domain='appx'
-                AND username=?
-                AND deleted=0`
-
-    let result = db.query_sync(sql, [username])
-
-    if (!result || result.length == 0) {
-        //console.log(`findLocalUser failed !`)
-        //console.log(`${sql}, [${username}]`)
-        return null
-    } else {
-        //console.log(`findLocalUser success !`)
-        return {
-            domain: result[0].domain,
-            username: result[0].username,
-            user_info: result[0].user_info
-        }
-    }
-}
-*/
 
 function findToken(token) {
 
@@ -104,7 +73,6 @@ passport.use(new BasicStrategy(
     function(username, password, done) {
         try {
             let user = findUserWithPass(username, password)
-            console.log(username, password)
             if (user == null) {
                 done(null, false)
             } else {
@@ -177,9 +145,11 @@ const authenticator = function (req, res, next) {
 
     const realm_by_app = cache.get_cache_for('realm').realm_by_app
     const app_by_realm = cache.get_cache_for('realm').app_by_realm
+    const realm_module = cache.get_cache_for('realm').realm_module
 
-    console.log(realm_by_app)
-    console.log(app_by_realm)
+    // console.log(realm_by_app)
+    // console.log(app_by_realm)
+    // console.log(realm_module)
 
     // compute current url
     let url = req.url
@@ -200,20 +170,20 @@ const authenticator = function (req, res, next) {
             return
         }
     } else {
-        res.status(401).send(`ERROR: Cannot determine namespace and app_name from url [${url}]`)
+        res.status(401).send(`ERROR: Cannot determine Authentication Realm -- Missing namespace or app_name in url [${url}]`)
         return
     }
 
+    // request authentication for specific realm
     if (!req.headers.authorization) {
-        res.set('WWW-Authenticate', `Basic realm="appx"`) // change this
-        res.status(401).send('Authentication required.') // custom message
+        res.set('WWW-Authenticate', `Basic realm="${realm}"`)
+        res.status(401).send(`Authentication required for realm [${realm}]`)
         return
     }
 
     // console.log(req.headers.authorization)
-    if (req.headers.authorization.match(/^Basic/i)) {
+    if (req.headers.authorization.match(/Basic/i)) {
 
-        console.log(`basic auth`)
         let strategy = passport.authenticate('basic', { session: false })
         strategy(req, res, next)
 

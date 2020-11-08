@@ -2,4 +2,4 @@
     namespace: "@ns"
     owner_scope: "$ns.owner_scope"
     owner_name: "$ns.owner_name"
-    spec: "$ns.namespace_spec"
+    namespace_spec: "$ns.namespace_spec"

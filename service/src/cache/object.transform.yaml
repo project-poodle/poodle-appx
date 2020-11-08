@@ -2,7 +2,7 @@ object:
 
     "#ns{$sql.namespaces}":                                 # namespace
         namespace: "@ns"
-        spec: "$ns.namespace_spec"
+        namespace_spec: "$ns.namespace_spec"
 
         apps:
             "#app{$sql.apps[@ns]}":                         # app_name
@@ -10,7 +10,7 @@ object:
                     namespace: "@ns"
                     app_name: "@@app"
                     app_ver: "@app"
-                    spec: "$app.app_spec"
+                    app_spec: "$app.app_spec"
 
                     deployments:
                         "#dp{$sql.deployments_by_app[@ns][@@app]}{? $app_ver == @app }":        # runtime_name
@@ -18,7 +18,7 @@ object:
                             app_name: "@@app"
                             app_ver: "@app"
                             runtime_name: "@dp"
-                            spec: "$dp.deployment_spec"
+                            deployment_spec: "$dp.deployment_spec"
 
                     objs:
                         "#obj{$sql.objs[@ns][@@app][@app]}":                                    # obj_name
@@ -26,7 +26,7 @@ object:
                             app_name: "@@app"
                             app_ver: "@app"
                             obj_name: "@obj"
-                            spec: "$obj.obj_spec"
+                            obj_spec: "$obj.obj_spec"
 
                             relations_1ton:
                                 "#rel{$sql.relations_1ton[@ns][@@app][@app][@obj]}":            # objn_name
@@ -81,7 +81,7 @@ object:
             "#runtime{$sql.runtimes[@ns]}":                                                     # runtime_name
                 namespace: "@ns"
                 runtime_name: "@runtime"
-                spec: "$runtime.runtime_spec"
+                runtime_spec: "$runtime.runtime_spec"
 
                 deployments:
                     "#dp{$sql.deployments_by_runtime[@ns][@runtime]}":                          # app_name
@@ -89,7 +89,7 @@ object:
                         runtime_name: "@runtime"
                         app_name: "@dp"
                         app_ver: "$dp.app_ver"
-                        spec: "$dp.deployment_spec"
+                        deployment_spec: "$dp.deployment_spec"
 
                         objs:
                             "#obj{$sql.objs[@ns][@dp][$dp.app_ver]}":                           # obj_name
@@ -97,7 +97,7 @@ object:
                                 app_name: "@dp"
                                 app_ver: "$dp.app_ver"
                                 obj_name: "@obj"
-                                spec: "$obj.obj_spec"
+                                obj_spec: "$obj.obj_spec"
 
                                 relations_1ton:
                                     "#rel{$sql.relations_1ton[@ns][@dp][$dp.app_ver][@obj]}":   # objn_name

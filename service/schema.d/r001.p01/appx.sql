@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_appx_meta`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_realm`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_user`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_token`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_module`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_app_realm`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_realm_user`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_realm_token`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_realm_module`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_realm_app`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_grant`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_func_perm`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`_auth_obj_perm`;
@@ -57,7 +57,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_realm` (
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 -- user(s) --
-CREATE TABLE `{{{global.schema_prefix}}}`.`_user` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`_realm_user` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `realm`                 VARCHAR(32)             NOT NULL,
     `username`              VARCHAR(32)             NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_user` (
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 -- token(s) --
-CREATE TABLE `{{{global.schema_prefix}}}`.`_token` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`_realm_token` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `realm`                 VARCHAR(32)             NOT NULL,
     `token`                 VARCHAR(255)            NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_token` (
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 -- auth module --
-CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_module` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`_realm_module` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `realm`                 VARCHAR(32)             NOT NULL,
     `module_name`           VARCHAR(32)             NOT NULL,
@@ -103,12 +103,12 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_module` (
 CHARACTER SET utf8 COLLATE utf8_bin;
 
 -- realm to app mapping --
-CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_app_realm` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`_realm_app` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `realm`                 VARCHAR(32)             NOT NULL,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(32)             NOT NULL,
-    `app_realm_spec`        JSON                    NOT NULL,
+    `realm_app_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
@@ -504,25 +504,25 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_realm`(`realm`, `realm_spec`) VALUES 
 {{/_realm}}
 
 -- local users --
-{{#_user}}
+{{#_realm_user}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_user`(`realm`, `username`, `password`, `user_spec`) VALUES ('{{{realm}}}', '{{{username}}}', {{{password}}}, {{#user_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_spec}}) ON DUPLICATE KEY UPDATE password=VALUES(password), user_spec=VALUES(user_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_realm_user`(`realm`, `username`, `password`, `user_spec`) VALUES ('{{{realm}}}', '{{{username}}}', {{{password}}}, {{#user_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_spec}}) ON DUPLICATE KEY UPDATE password=VALUES(password), user_spec=VALUES(user_spec);
 {{/.}}
-{{/_user}}
+{{/_realm_user}}
 
 -- auth modules --
-{{#_auth_module}}
+{{#_realm_module}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_auth_module`(`realm`, `module_name`, `module_pattern`, `module_spec`) VALUES ('{{{realm}}}', '{{{module_name}}}', '{{{module_pattern}}}', {{#module_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/module_spec}}) ON DUPLICATE KEY UPDATE module_pattern=VALUES(module_pattern), module_spec=VALUES(module_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_realm_module`(`realm`, `module_name`, `module_pattern`, `module_spec`) VALUES ('{{{realm}}}', '{{{module_name}}}', '{{{module_pattern}}}', {{#module_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/module_spec}}) ON DUPLICATE KEY UPDATE module_pattern=VALUES(module_pattern), module_spec=VALUES(module_spec);
 {{/.}}
-{{/_auth_module}}
+{{/_realm_module}}
 
 -- auth app realms --
-{{#_auth_app_realm}}
+{{#_realm_app}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_auth_app_realm`(`realm`, `namespace`, `app_name`, `app_realm_spec`) VALUES ('{{{realm}}}', '{{{namespace}}}', '{{{app_name}}}', {{#app_realm_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_realm_spec}}) ON DUPLICATE KEY UPDATE app_realm_spec=VALUES(app_realm_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_realm_app`(`realm`, `namespace`, `app_name`, `realm_app_spec`) VALUES ('{{{realm}}}', '{{{namespace}}}', '{{{app_name}}}', {{#realm_app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_app_spec}}) ON DUPLICATE KEY UPDATE realm_app_spec=VALUES(realm_app_spec);
 {{/.}}
-{{/_auth_app_realm}}
+{{/_realm_app}}
 
 -- role definitions --
 {{#_auth_grant}}

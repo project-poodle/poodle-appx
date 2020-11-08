@@ -4,7 +4,7 @@ realm_by_app:
             namespace: "@@rlm"
             app_name: "@rlm"
             realm: "$rlm.realm"
-            spec: "$rlm.app_realm_spec"
+            realm_app_spec: "$rlm.realm_app_spec"
 
 app_by_realm:
     "#rlm{$sql.app_by_realm}":                          # realm
@@ -13,4 +13,11 @@ app_by_realm:
                 realm: "@@@rlm"
                 namespace: "@@rlm"
                 app_name: "@rlm"
-                spec: "$rlm.app_realm_spec"
+                realm_app_spec: "$rlm.realm_app_spec"
+
+realm_module:
+    "#rlm{$sql.realm_module}":                          # realm
+        "#rlm{$rlm}":                                   # module_name
+            realm: "@@rlm"
+            module_name: "@rlm"
+            module_spec: "$rlm.module_spec"
