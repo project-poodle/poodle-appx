@@ -21,6 +21,11 @@ appx:
         mysql_host: "192.168.1.200"
         mysql_port: "3306"
         mysql_admin_user: "root"
-        mysql_admin_pass: "wX3rzYmUBR"
+        mysql_admin_pass: "Vlt6DF6RcV"
         mysql_node_user: "{{{appx.init.appx_node_user}}}"
         mysql_node_pass: "{{{appx.init.appx_node_pass}}}"
+        # LDAP configuration
+        ldap_host: 192.168.1.200
+        ldap_port: 389
+        ldap_ssl: false
+        ldap_base_dn: 'dc=app-x,dc=org'

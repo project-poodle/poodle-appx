@@ -69,7 +69,7 @@ app.post('/login/local', passport.authenticate(
     })
 )
 
- handle logout
+//            s handle logout
 app.get('/logout',
     function(req, res) {
         req.logout();

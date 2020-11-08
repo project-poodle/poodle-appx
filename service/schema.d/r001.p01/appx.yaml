@@ -24,49 +24,124 @@ _appx_meta:
           comment: "initialize"
 
 ######################################################################
-# metadata
+# realm
+_realm:
+    - realm: "appx"
+      realm_spec:
+          comment: "initialize [appx] realm"
+
+######################################################################
+# user
 _user:
-    - namespace: "sys"
-      scope_name: "local"
-      username: "{{{MYSQL_CONF.appx_node_user}}}"
-      password: 'PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")'
-      user_info:
-          comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}"
+    - realm: "appx"
+      username: "{{{MYSQL_APPX.appx_node_user}}}@LOCAL"
+      password: 'PASSWORD("{{{MYSQL_APPX.appx_node_pass}}}")'
+      user_spec:
+          comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
 
 ######################################################################
 # _auth_module
 _auth_module:
-    - namespace: "sys"
-      auth_module: "appx.local"
-      auth_spec:
-          comment: "initialize"
+    # local auth
+    - realm: "appx"
+      module_name: "appx.local"
+      module_pattern: "^(.+)(\\@LOCAL)$"
+      module_spec:
+          protocol: "local_db"
+          auth_name: "$1"
+          local_db:
+              table: "_user"
+              field:
+                  realm: realm
+                  username: username
+                  password: password
+          comment: "initialize auth module [appx.local]"
+    # ldap auth
+    - realm: "appx"
+      module_name: "appx.ldap_user"
+      module_pattern: "^(.+)(\\@LDAP)$"
+      module_spec:
+          protocol: "ldap"
+          auth_name: "$1"
+          ldap:
+              url: "ldap://{{{LDAP_CONF.ldap_host}}}:{{{LDAP_CONF.ldap_port}}}"
+              base_dn: "{{{LDAP_CONF.base_dn}}}"
+              search: "(|(uid=%u)(mail=%u)(employeeNumber=%u))"
+              group_attr: "memberOf"
+          comment: "initialize auth module [appx.ldap_user]"
+    # google auth
+    - realm: "appx"
+      module_name: "appx.google"
+      module_pattern: "^(.+)$"
+      module_spec:
+          protocol: "google"
+          auth_name: "$1"
+          google:
+              some_key: "some_key"
+              some_other_key: "some_other_key"
+          comment: "initialize auth module [appx.google]"
+    # facebook auth
+    - realm: "appx"
+      module_name: "appx.facebook"
+      module_pattern: "^(.+)$"
+      module_spec:
+          protocol: "facebook"
+          auth_name: "$1"
+          google:
+              some_key: "some_key"
+              some_other_key: "some_other_key"
+          comment: "initialize auth module [appx.facebook]"
+    # github auth
+    - realm: "appx"
+      module_name: "appx.github"
+      module_pattern: "^(.+)$"
+      module_spec:
+          protocol: "github"
+          auth_name: "$1"
+          google:
+              some_key: "some_key"
+              some_other_key: "some_other_key"
+          comment: "initialize auth module [appx.facebook]"
 
+######################################################################
+# _auth_app_realm
+_auth_app_realm:
+    - realm: "appx"
+      namespace: "sys"
+      app_name: "appx"
+      app_realm_spec:
+          comment: "initialize auth app realm"
+
+######################################################################
 # _auth_grant
 _auth_grant:
     - namespace: "sys"
-      role_name: "appx.superadmin"
-      auth_module: "appx.local"
-      auth_name: "{{{MYSQL_CONF.appx_node_user}}}"
+      app_name: "appx"
+      role_name: "superadmin"
+      module_name: "appx"
+      grant_type: "user"
+      grant_name: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       grant_spec:
-          comment: "initialize"
+          comment: "initialize {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
 
+######################################################################
 # _perm_func
-_perm_func:
+_auth_func_perm:
     - namespace: "sys"
+      app_name: "appx"
       role_name: "appx.superadmin"
-      func_scope: "appx"
       func_name: "read"
       func_spec:
           comment: "initialize"
     - namespace: "sys"
+      app_name: "appx"
       role_name: "appx.superadmin"
-      func_scope: "appx"
       func_name: "write"
       func_spec:
           comment: "initialize"
     - namespace: "sys"
+      app_name: "appx"
       role_name: "appx.superadmin"
-      func_scope: "appx"
       func_name: "status"
       func_spec:
           comment: "initialize"
@@ -75,8 +150,8 @@ _perm_func:
 # namespace
 namespace:
     - namespace: "sys"
-      owner_scope: "local"
-      owner_name: "{{{MYSQL_CONF.appx_node_user}}}"
+      owner_realm: "appx"
+      owner_name: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       namespace_spec:
           comment: "initialize"
 

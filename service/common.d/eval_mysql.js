@@ -61,7 +61,6 @@ let conn = mysql.createConnection({
     port: mysql_conf.port,
     user: mysql_conf.user,
     password: mysql_conf.pass,
-    database: mysql_conf.schema_prefix,
     typeCast: function(field, next) {
         if (field.type == 'BLOB' && field.length == 4294967295) {
             let value = field.string();
