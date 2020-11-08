@@ -52,7 +52,7 @@ function findUserWithPass(realm, username, password) {
     for (let i=0; i<sorted_module.length; i++) {
 
         let realm_module = realm_modules[realm][sorted_module[i]]
-        console.log(realm_module)
+        // console.log(realm_module)
         let matches = username.match(realm_module.module_pattern)
         if (matches) {
 
@@ -86,7 +86,6 @@ function findUserWithPass(realm, username, password) {
                     user_spec: objPath.get(local_db, 'field.user_spec', 'user_spec')
                 }
 
-                console.log(realm, username, password, table, fields)
                 let user = findLocalUserWithPass(realm, username, password, table, fields)
 
                 return user
