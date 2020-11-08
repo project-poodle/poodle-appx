@@ -15,6 +15,8 @@
     "crypto-js": "^4.0.0",
     "deasync": "^0.1.20",
     "express": "^4.17.1",
+    "ldapjs": "^2.2.0",
+    "ldapjs-client": "^0.1.1",
     "mustache": "^4.0.1",
     "mysql": "^2.18.1",
     "object-path": "^0.11.5",
