@@ -15,7 +15,6 @@
     "crypto-js": "^4.0.0",
     "deasync": "^0.1.20",
     "express": "^4.17.1",
-    "express-mysql-session": "^2.1.4",
     "mustache": "^4.0.1",
     "mysql": "^2.18.1",
     "object-path": "^0.11.5",

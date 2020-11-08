@@ -78,6 +78,8 @@ function findUserWithPass(realm, username, password) {
                     }
                 }
 
+                let local_username = matches[realm_module.module_spec.auth_name_match]
+
                 let table = local_db.table
                 let fields = {
                     realm: objPath.get(local_db, 'field.realm', 'realm'),
@@ -86,7 +88,7 @@ function findUserWithPass(realm, username, password) {
                     user_spec: objPath.get(local_db, 'field.user_spec', 'user_spec')
                 }
 
-                let result = findLocalUserWithPass(realm, username, password, table, fields)
+                let result = findLocalUserWithPass(realm, local_username, password, table, fields)
 
                 return result
 
