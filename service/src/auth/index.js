@@ -1,7 +1,7 @@
 /**
  * Module dependencies.
  */
-const { authenticator, loginUserWithPass, findUserWithPass } = require('./authenticator')
+const { authenticator, authenticateUserWithPass, findUserWithPass } = require('./authenticator')
 // const {  } = require('./auth_local')
 
 /**
@@ -10,5 +10,5 @@ const { authenticator, loginUserWithPass, findUserWithPass } = require('./authen
  module.exports = {
      authenticator: authenticator,
      findUserWithPass: findUserWithPass,
-     loginUserWithPass: loginUserWithPass
+     authenticateUserWithPass: authenticateUserWithPass
  }

@@ -51,7 +51,7 @@ app.use(session({
 
 //////////////////////////////////////////////////
 // initialize authenticator --- Note: perform this step only after db_pool is initialized
-const { authenticator, loginUserWithPass } = require("./src/auth")
+const { authenticator, authenticateUserWithPass } = require("./src/auth")
 //app.use(passport.initialize())
 //app.use(passport.session())
 
@@ -64,7 +64,7 @@ app.use('/api', authenticator, dispatcher)
 
 // handle local login
 app.use('/login', bodyParser.json())
-app.post('/login/local', loginUserWithPass)
+app.post('/login/local', authenticateUserWithPass)
 
 /*
 // handle logout

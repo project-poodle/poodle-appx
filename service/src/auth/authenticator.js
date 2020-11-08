@@ -9,21 +9,21 @@ const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')
 const { findLocalUserWithPass } = require('./auth_local')
 
-function findToken(token) {
+function findToken(realm, token) {
 
     let sql = `SELECT
                     id,
-                    domain,
+                    realm,
                     token,
                     username,
-                    token_info,
+                    token_spec,
                     deleted
-                FROM _token
-                WHERE domain='appx'
+                FROM _realm_token
+                WHERE realm=?
                 AND token=?
                 AND deleted=0`
 
-    let result = db.query_sync(sql, [token])
+    let result = db.query_sync(sql, [realm, token])
 
     if (!result || result.length == 0) {
         return null
@@ -107,7 +107,7 @@ function findUserWithPass(realm, username, password) {
     }
 }
 
-function loginUserWithPass(req, res, next) {
+function authenticateUserWithPass(req, res, next) {
 
     try {
         // console.log(req.body)
@@ -132,10 +132,20 @@ function loginUserWithPass(req, res, next) {
 
         if (user && user.user && user.status == 'ok') {
 
+            console.log(`INFO: user [${username}] authenticated successfully`)
             crypto.randomBytes(64, function(err, buffer) {
-                var token = buffer.toString('base64')
 
-                let sql = `INSERT INTO _realm_token (realm, token, username, )`
+                let token = buffer.toString('base64')
+                let token_spec = {
+                    user_spec: user.user.user_spec
+                }
+
+                let sql = `INSERT INTO
+                                _realm_token (realm, token, username, expiration, token_spec)
+                                VALUES (?, ?, ?, NOW() + INTERVAL 8 HOUR, ?)`
+
+                // console.log(sql, [realm, token, username, JSON.stringify(token_spec)])
+                db.query_sync(sql, [realm, token, username, JSON.stringify(token_spec)])
                 res.status(200).json({status: 'ok', token: token})
             })
 
@@ -154,6 +164,7 @@ function loginUserWithPass(req, res, next) {
     }
 }
 
+/*
 // bearer strategy
 passport.use(new BearerStrategy(
     function(token, done) {
@@ -169,6 +180,7 @@ passport.use(new BearerStrategy(
         }
     }
 ))
+*/
 
 // authenticator will choose between different strategies
 const authenticator = function (req, res, next) {
@@ -224,7 +236,7 @@ const authenticator = function (req, res, next) {
     if (auth_type.toUpperCase() == 'AppX'.toUpperCase()) {
 
         try {
-            let token = findToken(auth_token)
+            let token = findToken(realm, auth_token)
             if (token == null) {
                 res.set('WWW-Authenticate', `Basic realm="${realm}"`)
                 res.status(401).json({ status: 'error', message: `Invalid Token` })
@@ -235,7 +247,7 @@ const authenticator = function (req, res, next) {
             }
         } catch (err) {
             res.set('WWW-Authenticate', `Basic realm="${realm}"`)
-            res.status(401).json({ status: 'error', message: `err` })
+            res.status(401).json({ status: 'error', message: `${err}` })
             return
         }
 
@@ -260,7 +272,7 @@ const authenticator = function (req, res, next) {
             }
         } catch (err) {
             res.set('WWW-Authenticate', `Basic realm="${realm}"`)
-            res.status(401).json({ status: 'error', message: `err` })
+            res.status(401).json({ status: 'error', message: `${err}` })
             return
         }
 
@@ -281,6 +293,6 @@ const authenticator = function (req, res, next) {
 // exports
 module.exports = {
     authenticator: authenticator,
-    loginUserWithPass: loginUserWithPass,
+    authenticateUserWithPass: authenticateUserWithPass,
     findUserWithPass: findUserWithPass
 }
