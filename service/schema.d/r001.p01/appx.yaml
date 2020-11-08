@@ -34,8 +34,8 @@ _realm:
 # user
 _user:
     - realm: "appx"
-      username: "{{{MYSQL_APPX.appx_node_user}}}@LOCAL"
-      password: 'PASSWORD("{{{MYSQL_APPX.appx_node_pass}}}")'
+      username: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
+      password: 'PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")'
       user_spec:
           comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
 

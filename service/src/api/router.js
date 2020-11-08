@@ -48,7 +48,7 @@ function handle_req(api_context, req, res) {
     }
 }
 
-function get_router(namespace, runtime_name, app_name) {
+function get_router(namespace, app_name, runtime_name) {
 
     let api_results = db.query_sync(`SELECT
                     api.namespace,

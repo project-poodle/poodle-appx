@@ -111,6 +111,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_app_realm` (
     `app_realm_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
     UNIQUE INDEX `unique_idx`(`realm`, `namespace`, `app_name`),
     PRIMARY KEY (`id`)
 )

@@ -3,18 +3,20 @@ const passport = require('passport')
 const BasicStrategy = require('passport-http').BasicStrategy
 const LocalStrategy = require('passport-local').Strategy
 const BearerStrategy = require('passport-http-bearer').Strategy
+const cache = require('../cache/cache')
+const { REGEX_VAR }  = require('../api/util')
 
 
 function findUserWithPass(username, password) {
 
     let sql = `SELECT
                     id,
-                    domain,
+                    realm,
                     username,
-                    user_info,
+                    user_spec,
                     deleted
                 FROM _user
-                WHERE domain='appx'
+                WHERE realm='appx'
                 AND username=?
                 AND password=PASSWORD(?)
                 AND deleted=0`
@@ -102,6 +104,7 @@ passport.use(new BasicStrategy(
     function(username, password, done) {
         try {
             let user = findUserWithPass(username, password)
+            console.log(username, password)
             if (user == null) {
                 done(null, false)
             } else {
@@ -172,16 +175,45 @@ passport.use(new LocalStrategy(
 // authenticator will choose between different strategies
 const authenticator = function (req, res, next) {
 
-    console.log(req.url)
+    const realm_by_app = cache.get_cache_for('realm').realm_by_app
+    const app_by_realm = cache.get_cache_for('realm').app_by_realm
+
+    console.log(realm_by_app)
+    console.log(app_by_realm)
+
+    // compute current url
+    let url = req.url
+    if (! url) {
+        url = req.originalUrl.substring(req.baseUrl.length)
+    }
+
+    let realm = null
+    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/)`))
+    if (match) {
+        let namespace = match[2]
+        let app_name = match[3]
+        if (namespace in realm_by_app && app_name in realm_by_app[namespace] && 'realm' in realm_by_app[namespace][app_name]) {
+            realm = realm_by_app[namespace][app_name]['realm']
+        }
+        if (!realm) {
+            res.status(401).send(`ERROR: Authentication Realm NOT configured for [${namespace}/${app_name}]`)
+            return
+        }
+    } else {
+        res.status(401).send(`ERROR: Cannot determine namespace and app_name from url [${url}]`)
+        return
+    }
 
     if (!req.headers.authorization) {
-        res.set('WWW-Authenticate', 'Basic realm="appx"') // change this
+        res.set('WWW-Authenticate', `Basic realm="appx"`) // change this
         res.status(401).send('Authentication required.') // custom message
+        return
     }
 
     // console.log(req.headers.authorization)
     if (req.headers.authorization.match(/^Basic/i)) {
 
+        console.log(`basic auth`)
         let strategy = passport.authenticate('basic', { session: false })
         strategy(req, res, next)
 

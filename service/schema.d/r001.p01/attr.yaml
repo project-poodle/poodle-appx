@@ -14,7 +14,7 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace"
-      attr_name: "owner_scope"
+      attr_name: "owner_realm"
       attr_spec:
           key: false
           type: "VARCHAR(32)"

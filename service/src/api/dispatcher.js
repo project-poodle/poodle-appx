@@ -22,9 +22,9 @@ function load_routers() {
 
     dp_results.forEach((dp_result, i) => {
 
-        let router = get_router(dp_result.namespace, dp_result.runtime_name, dp_result.app_name)
+        let router = get_router(dp_result.namespace, dp_result.app_name, dp_result.runtime_name)
 
-        let route = `/${dp_result.namespace}/${dp_result.runtime_name}/${dp_result.app_name}`
+        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.runtime_name}`
 
         ROUTES[route] = router
 

@@ -1,4 +1,13 @@
 ##################################################
+realm:
+    params: null
+    sql_input: "realm.sql.yaml"
+    transform: "realm.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
 namespace:
     params: null
     sql_input: "namespace.sql.yaml"
