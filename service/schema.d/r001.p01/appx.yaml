@@ -144,7 +144,7 @@ _auth_grant:
       app_name: "appx"
       role_name: "user"
       grant_type: "user"
-      grant_name: "agent@LDAP"
+      grant_name: "appx@LDAP"
       grant_spec:
           comment: "initialize guest@LDAP"
 
