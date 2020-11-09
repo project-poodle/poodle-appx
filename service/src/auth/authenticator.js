@@ -179,7 +179,7 @@ function authenticateUserWithPass(req, res, next) {
         let password = req.body.password
 
         let result = findUserWithPass(realm, username, password)
-        console.log(result)
+        // console.log(result)
 
         if (result && result.user && result.status == 'ok') {
 
@@ -201,7 +201,7 @@ function authenticateUserWithPass(req, res, next) {
         } else {
 
             console.log(`INFO: user [${username}] authentication failed ! [${result.module}]`)
-            res.status(422).json(user)
+            res.status(422).json(result)
             return
 
         }

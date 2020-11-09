@@ -46,7 +46,7 @@ _realm_module:
     # local auth
     - realm: "appx"
       module_name: "00.appx.local"
-      module_pattern: "^(.+)(\\@LOCAL)$"
+      module_pattern: "^(.+)\\@LOCAL$"
       module_spec:
           protocol: "local_db"
           auth_name_match: 1
@@ -61,16 +61,17 @@ _realm_module:
     - realm: "appx"
       module_name: "10.appx.ldap"
       module_priority: 10
-      module_pattern: "^(.+)(\\@LDAP)$"
+      module_pattern: "^(.+)\\@LDAP$"
       module_spec:
           protocol: "ldap"
           auth_name_match: 1
           ldap:
               conf: ldap_appx.json
-              base_dn:
-                  - "{{{LDAP_CONF.base_dn}}}"
+              base_dn: "{{{LDAP_CONF.base_dn}}}"
               search: "(&(objectClass=person)(cn=${username}))"
               group_attr: "memberOf"
+              group_pattern: "^cn=([^,]+)(,(.+))?$"
+              group_name_match: 1
           comment: "initialize auth module [appx.ldap_user]"
     # google auth
     - realm: "appx"

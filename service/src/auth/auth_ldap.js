@@ -19,6 +19,7 @@ ldap:
 
 let ldap_connect = (host, port, ssl, user, pass, callback) => {
 
+    // console.log(host, port, ssl, user, pass)
     let ldap_client = ldap.createClient({url: `${ssl?'ldap':'ldaps'}://${host}:${port}/`})
     ldap_client.bind(user, pass, (err, result) => {
         callback(err, ldap_client)
@@ -85,35 +86,51 @@ function findLdapUserWithPass(realm, protocol, username, password) {
         let ldap_conf = JSON.parse(fs.readFileSync(conf_file, 'utf8'))
         let ldap_client = ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl,
                                             ldap_conf.bind_user, ldap_conf.bind_pass)
-        ldap_conn[protocol.conf] = ldap_client
+        ldap_conn[protocol.conf] = {
+            ldap_conf: ldap_conf,
+            ldap_client: ldap_client
+        }
     }
 
+    let { ldap_conf, ldap_client } = ldap_conn[protocol.conf]
     let options = {
         filter: protocol.search.replace(/\$\{username\}/, username),
         scope: 'sub',
         attributes: ['dn', protocol.group_attr]
     }
-    let search = ldap_search_sync(ldap_conn[protocol.conf], protocol.base_dn[0], options)
+    let search = ldap_search_sync(ldap_client, protocol.base_dn, options)
     let results = ldap_search_objects_sync(search)
-    //console.log(results)
+    // console.log(results)
 
-    if (!results || results.length == 0) {
+    if (!results || results.length == 0 || (! ('dn' in results[0]))) {
         return {
             status: 'error',
             user: null,
             message: `Invalid Username or Password`
         }
-    } else {
+    }
+
+    // we are here if we have found the user, next authenticate the user with password
+    try {
+        ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl, results[0].dn, password)
+    } catch (err) {
         return {
-            status: 'ok',
-            user: {
-                realm: realm,
-                username: username,
-                user_spec: {
-                    dn: 'dn' in results[0] ? results[0].dn : ''
-                },
-                group_spec: protocol.group_attr in results[0] ? results[0][protocol.group_attr] : []
-            }
+            status: 'error',
+            user: null,
+            message: `Invalid Username or Password`
+        }
+    }
+
+    // we are here if user authentication (bind) to ldap is succcessful
+    return {
+        status: 'ok',
+        user: {
+            realm: realm,
+            username: username,
+            user_spec: {
+                dn: results[0].dn
+            },
+            group_spec: protocol.group_attr in results[0] ? results[0][protocol.group_attr] : []
         }
     }
 }
