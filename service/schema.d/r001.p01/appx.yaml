@@ -126,6 +126,13 @@ _auth_grant:
       grant_name: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       grant_spec:
           comment: "initialize {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "admin"
+      grant_type: "user"
+      grant_name: "centos@LDAP"
+      grant_spec:
+          comment: "initialize centos@LDAP"
 
 ######################################################################
 # _perm_func
@@ -146,6 +153,18 @@ _auth_func_perm:
       app_name: "appx"
       role_name: "superadmin"
       auth_func_name: "status"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "admin"
+      auth_func_name: "read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "admin"
+      auth_func_name: "write"
       auth_func_spec:
           comment: "initialize"
 

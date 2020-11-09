@@ -19,6 +19,32 @@ function handle_req(api_context, req, res) {
         return
     }
 
+    if ('permission' in api_spec) {
+        let permission = api_spec.permission
+
+        if (req.context.user.func_perms.includes(permission)) {
+
+            req.context.func_perm_granted = true
+
+        } else {
+
+            let obj_perm_granted = false
+            Object.keys(req.context.user.obj_perms).map(obj_type => {
+
+                if (req.context.user.obj_perms[obj_type].includes(permission)) {
+                    obj_perm_granted = true
+                }
+            })
+
+            if (! obj_perm_granted) {
+                res.status(403).json({status: FAILURE, message: `Permission Denied`})
+                return
+            }
+        }
+    }
+
+    console.log(req.context)
+
     // handle request by verb
     switch(api_spec.syntax.verb) {
         case "get":
