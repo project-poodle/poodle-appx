@@ -44,7 +44,7 @@ let variables = {
          * {{/parent}}
          * {{/APPX}}
          *
-         * --- yaml file ---
+         * --- yaml input file ---
          * parent:
          *     child.key.with.dot: child.value.with.dot
          *
