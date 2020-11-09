@@ -8,6 +8,15 @@ realm:
         max: 360
 
 ##################################################
+auth:
+    params: null
+    sql_input: "auth.sql.yaml"
+    transform: "auth.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
 namespace:
     params: null
     sql_input: "namespace.sql.yaml"

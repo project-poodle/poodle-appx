@@ -141,12 +141,12 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_func_perm` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
-    `func_name`             VARCHAR(32)             NOT NULL,
-    `func_spec`             JSON                    NOT NULL,
+    `auth_func_name`        VARCHAR(32)             NOT NULL,
+    `auth_func_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `role_name`, `func_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `role_name`, `auth_func_name`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -157,13 +157,14 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_auth_obj_perm` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(32)             NOT NULL,
     `role_name`             VARCHAR(32)             NOT NULL,
-    `obj_type`              VARCHAR(32)             NOT NULL,
-    `obj_key`               VARCHAR(32)             NOT NULL,
-    `obj_spec`              JSON                    NOT NULL,
+    `auth_obj_type`         VARCHAR(32)             NOT NULL,
+    `auth_obj_key`          VARCHAR(64)             NOT NULL,
+    `auth_func_name`        VARCHAR(32)             NOT NULL,
+    `auth_obj_spec`         JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `role_name`, `obj_type`, `obj_key`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `role_name`, `auth_obj_type`, `auth_obj_key`, `auth_func_name`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -535,7 +536,7 @@ INSERT INTO `{{{global.schema_prefix}}}`.`_auth_grant`(`namespace`, `app_name`, 
 -- permission definitions --
 {{#_auth_func_perm}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`_auth_func_perm`(`namespace`, `app_name`, `role_name`, `func_name`, `func_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{role_name}}}', '{{{func_name}}}', {{#func_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/func_spec}}) ON DUPLICATE KEY UPDATE func_spec=VALUES(func_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`_auth_func_perm`(`namespace`, `app_name`, `role_name`, `auth_func_name`, `auth_func_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{role_name}}}', '{{{auth_func_name}}}', {{#auth_func_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/auth_func_spec}}) ON DUPLICATE KEY UPDATE auth_func_spec=VALUES(auth_func_spec);
 {{/.}}
 {{/_auth_func_perm}}
 

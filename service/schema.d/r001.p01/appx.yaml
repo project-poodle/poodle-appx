@@ -122,7 +122,6 @@ _auth_grant:
     - namespace: "sys"
       app_name: "appx"
       role_name: "superadmin"
-      module_name: "appx"
       grant_type: "user"
       grant_name: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       grant_spec:
@@ -133,21 +132,21 @@ _auth_grant:
 _auth_func_perm:
     - namespace: "sys"
       app_name: "appx"
-      role_name: "appx.superadmin"
-      func_name: "read"
-      func_spec:
+      role_name: "superadmin"
+      auth_func_name: "read"
+      auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "appx.superadmin"
-      func_name: "write"
-      func_spec:
+      role_name: "superadmin"
+      auth_func_name: "write"
+      auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "appx.superadmin"
-      func_name: "status"
-      func_spec:
+      role_name: "superadmin"
+      auth_func_name: "status"
+      auth_func_spec:
           comment: "initialize"
 
 ######################################################################

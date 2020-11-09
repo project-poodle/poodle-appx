@@ -23,6 +23,7 @@ function findToken(realm, token) {
                 FROM _realm_token
                 WHERE realm=?
                 AND token=?
+                AND expiration > NOW()
                 AND deleted=0`
 
     let result = db.query_sync(sql, [realm, token])
@@ -31,10 +32,10 @@ function findToken(realm, token) {
         return null
     } else {
         return {
-            domain: result[0].domain,
+            realm: result[0].realm,
             token: result[0].token,
             username: result[0].username,
-            token_info: result[0].token_info
+            token_spec: result[0].token_spec
         }
     }
 }
@@ -233,6 +234,91 @@ passport.use(new BearerStrategy(
 ))
 */
 
+const lookupRolesPerms = function(namespace, app_name, user) {
+
+    let roles = new Set()
+
+    const username = user.username
+    const groups = user.groups
+
+    // console.log(JSON.stringify(cache.get_cache_for('auth'), null, 4))
+
+    const auth_grant_by_user = cache.get_cache_for('auth').auth_grant_by_user
+    if (namespace in auth_grant_by_user
+        && app_name in auth_grant_by_user[namespace]
+        && username in auth_grant_by_user[namespace][app_name]) {
+
+        Object.keys(auth_grant_by_user[namespace][app_name][username]).map(role => roles.add(role))
+    }
+
+    const auth_grant_by_group = cache.get_cache_for('auth').auth_grant_by_group
+    if (groups && Array.isArray(groups)) {
+        for (group of groups) {
+
+            if (namespace in auth_grant_by_group
+                && app_name in auth_grant_by_group[namespace]
+                && group in auth_grant_by_group[namespace][app_name]) {
+
+                Object.keys(auth_grant_by_group[namespace][app_name][group]).map(role => roles.add(role))
+            }
+        }
+    }
+
+    // update roles
+    user.roles = Array.from(roles.keys()).sort()
+    if (! user.roles) {
+        return user
+    }
+
+    // lookup functional perms
+    let func_perms = new Set()
+
+    const auth_func_perm_by_role = cache.get_cache_for('auth').auth_func_perm_by_role
+    for (role_name of user.roles) {
+
+        if (namespace in auth_func_perm_by_role
+            && app_name in auth_func_perm_by_role[namespace]
+            && role_name in auth_func_perm_by_role[namespace][app_name]) {
+
+            Object.keys(auth_func_perm_by_role[namespace][app_name][role_name]).map(func_perm => func_perms.add(func_perm))
+        }
+    }
+
+    user.func_perms = Array.from(func_perms.keys()).sort()
+
+    // lookup object perms
+    let obj_perms = {}
+
+    const auth_obj_perm_by_role = cache.get_cache_for('auth').auth_obj_perm_by_role
+    for (role_name of user.roles) {
+
+        if (namespace in auth_obj_perm_by_role
+            && app_name in auth_obj_perm_by_role[namespace]
+            && role_name in auth_obj_perm_by_role[namespace][app_name]) {
+
+            Object.keys(auth_obj_perm_by_role[namespace][app_name][role_name]).map(obj_type => {
+
+                let perms = new Set()
+                Object.keys(auth_obj_perm_by_role[namespace][app_name][role_name][obj_type]).map(obj_key => {
+
+                    Object.keys(auth_obj_perm_by_role[namespace][app_name][role_name][obj_type][obj_key]).map(func_name => {
+
+                        perms.add(func_name)
+                    })
+                })
+
+                obj_perms[obj_type] = Array.from(perms.keys()).sort()
+            })
+        }
+    }
+
+    user.obj_perms = obj_perms
+
+    // return enriched user
+    // console.log(user)
+    return user
+}
+
 // authenticator will choose between different strategies
 const authenticator = function (req, res, next) {
 
@@ -251,10 +337,12 @@ const authenticator = function (req, res, next) {
     }
 
     let realm = null
+    let namespace = null
+    let app_name = null
     let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/)`))
     if (match) {
-        let namespace = match[2]
-        let app_name = match[3]
+        namespace = match[2]
+        app_name = match[3]
         if (namespace in realm_by_app && app_name in realm_by_app[namespace] && 'realm' in realm_by_app[namespace][app_name]) {
             realm = realm_by_app[namespace][app_name]['realm']
         }
@@ -289,14 +377,24 @@ const authenticator = function (req, res, next) {
         try {
             let token = findToken(realm, auth_token)
             if (token == null) {
+
                 res.set('WWW-Authenticate', `Basic realm="${realm}"`)
                 res.status(401).json({ status: 'error', message: `Invalid Token` })
                 return
+
             } else {
-                req.user = token.user
+
+                req.user = lookupRolesPerms(namespace, app_name,
+                    {
+                        realm: token.realm,
+                        username: token.username,
+                        groups: token.token_spec.groups,
+                    }
+                )
                 next()
             }
         } catch (err) {
+
             res.set('WWW-Authenticate', `Basic realm="${realm}"`)
             res.status(401).json({ status: 'error', message: `${err}` })
             return
@@ -314,14 +412,24 @@ const authenticator = function (req, res, next) {
 
             let result = findUserWithPass(realm, credentials[0], credentials[1])
             if (result && result.user && result.status == 'ok') {
-                req.user = result.user
+
+                req.user = lookupRolesPerms(namespace, app_name,
+                    {
+                        realm: result.user.realm,
+                        username: credentials[0],
+                        groups: result.user.groups
+                    }
+                )
                 next()
+
             } else {
+
                 res.set('WWW-Authenticate', `Basic realm="${realm}"`)
                 res.status(401).json(result)
                 return
             }
         } catch (err) {
+
             res.set('WWW-Authenticate', `Basic realm="${realm}"`)
             res.status(401).json({ status: 'error', message: `${err}` })
             return
@@ -329,8 +437,11 @@ const authenticator = function (req, res, next) {
 
     } else if (auth_type.toUpperCase() == 'Bearer'.toUpperCase()) {
 
-        let strategy = passport.authenticate('bearer', { session: false })
-        strategy(req, res, next)
+        //let strategy = passport.authenticate('bearer', { session: false })
+        //strategy(req, res, next)
+        res.set('WWW-Authenticate', `Basic realm="${realm}"`)
+        res.status(401).json({ status: 'error', message: 'Unauthorized' })
+        return
 
     } else {
 
