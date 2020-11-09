@@ -1,8 +1,9 @@
-const fs = require('fs');
-const util = require('util');
-const YAML = require('yaml');
-const Mustache = require('mustache');
-const { ArgumentParser } = require('argparse');
+const fs = require('fs')
+const util = require('util')
+const objPath = require('object-path')
+const YAML = require('yaml')
+const Mustache = require('mustache')
+const { ArgumentParser } = require('argparse')
 
 const MAX_COUNT = 20
 
@@ -34,6 +35,28 @@ let template = fs.readFileSync(args.template, 'utf8')
 let variables = {
 
     "APPX": {
+
+        /*
+         * --- template file ---
+         * {{#APPX}}
+         * {{#parent}}
+         * {{#DOT_KEY}}child.key.with.dot{{/DOT_KEY}}
+         * {{/parent}}
+         * {{/APPX}}
+         *
+         * --- yaml file ---
+         * parent:
+         *     child.key.with.dot: child.value.with.dot
+         *
+         * --- output ---
+         * child.value.with.dot
+         *
+         */
+        "DOT_KEY": function() {
+            return function(text, render) {
+                return objPath.get(this, [text], "")
+            }
+        },
 
         "TO_MYSQL_JSON": function() {
 
@@ -88,7 +111,7 @@ for (let i = 1; i < MAX_COUNT; i++) {
         if (args['yaml_scope'+i] != undefined) {
             variables[args['yaml_scope'+i]] = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
         } else {
-            variables = Object.assign(variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
+            variables = Object.assign({}, variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
         }
 
         variable_initialized = true
@@ -105,7 +128,7 @@ for (let i = 1; i < MAX_COUNT; i++) {
         if (args['json_scope'+i] != undefined) {
             variables[args['json_scope'+i]] = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
         } else {
-            variables = Object.assign(variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
+            variables = Object.assign({}, variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
         }
 
         variable_initialized = true
