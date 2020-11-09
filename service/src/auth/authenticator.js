@@ -236,10 +236,13 @@ passport.use(new BearerStrategy(
 
 const lookupRolesPerms = function(namespace, app_name, user) {
 
-    let roles = new Set()
-
     const username = user.username
     const groups = user.groups
+
+    user.namespace = namespace
+    user.app_name = app_name
+
+    let roles = new Set()
 
     // console.log(JSON.stringify(cache.get_cache_for('auth'), null, 4))
 
@@ -315,7 +318,7 @@ const lookupRolesPerms = function(namespace, app_name, user) {
     user.obj_perms = obj_perms
 
     // return enriched user
-    // console.log(user)
+    console.log(user)
     return user
 }
 
