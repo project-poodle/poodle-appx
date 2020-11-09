@@ -1,5 +1,5 @@
 auth_grant_by_role:
-    "#au{$sql.auth_grant_by_role}":                     # namespace
+    "#au{$sql_auth_grant_by_role}":                     # namespace
         "#au{$au}":                                     # app_name
             "#au{$au}":                                 # role_name
                 "#au{$au}":                             # grant_type
@@ -12,7 +12,7 @@ auth_grant_by_role:
                         grant_spec: "$au.grant_spec"
 
 auth_grant_by_user:
-    "#au{$sql.auth_grant_by_user}":                     # namespace
+    "#au{$sql_auth_grant_by_user}":                     # namespace
         "#au{$au}":                                     # app_name
             "#au{$au}":                                 # username
                 "#au{$au}":                             # role_name
@@ -25,7 +25,7 @@ auth_grant_by_user:
                     grant_spec: "$au.grant_spec"
 
 auth_grant_by_group:
-    "#au{$sql.auth_grant_by_user}":                     # namespace
+    "#au{$sql_auth_grant_by_user}":                     # namespace
         "#au{$au}":                                     # app_name
             "#au{$au}":                                 # group
                 "#au{$au}":                             # role_name
@@ -38,7 +38,7 @@ auth_grant_by_group:
                     grant_spec: "$au.grant_spec"
 
 auth_func_perm_by_role:
-    "#au{$sql.auth_func_perm_by_role}":                 # namespace
+    "#au{$sql_auth_func_perm_by_role}":                 # namespace
         "#au{$au}":                                     # app_name
             "#au{$au}":                                 # role_name
                 "#au{$au}":                             # auth_func_name
@@ -49,7 +49,7 @@ auth_func_perm_by_role:
                     auth_func_spec: "$au.auth_func_spec"
 
 auth_obj_perm_by_role:
-    "#au{$sql.auth_obj_perm_by_role}":                  # namespace
+    "#au{$sql_auth_obj_perm_by_role}":                  # namespace
         "#au{$au}":                                     # app_name
             "#au{$au}":                                 # role_name
                 "#au{$au}":                             # auth_obj_type

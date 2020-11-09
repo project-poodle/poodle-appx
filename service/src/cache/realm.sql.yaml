@@ -4,13 +4,13 @@
             WHERE
                 deleted = 0"
   map_def:
-      - name: sql.realm_by_app
+      - name: sql_realm_by_app
         key:
             - "$@.namespace"
             - "$@.app_name"
         value: "$@"
 
-      - name: sql.app_by_realm
+      - name: sql_app_by_realm
         key:
             - "$@.realm"
             - "$@.namespace"
@@ -26,7 +26,7 @@
                 realm ASC,
                 module_name ASC"
   map_def:
-      - name: sql.realm_module
+      - name: sql_realm_module
         key:
             - "$@.realm"
             - "$@.module_name.replace(/\\./g, '__')"

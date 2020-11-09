@@ -5,7 +5,7 @@
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.namespaces
+      - name: sql_namespaces
         key:
             - "$@.namespace"
         value: "$@"
@@ -18,7 +18,7 @@
                 AND app_name = '{{params.app_name}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.apps
+      - name: sql_apps
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -33,7 +33,7 @@
                 AND runtime_name = '{{params.runtime_name}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.runtimes
+      - name: sql_runtimes
         key:
             - "$@.namespace"
             - "$@.runtime_name"
@@ -48,14 +48,14 @@
                 AND app_name = '{{params.app_name}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.deployments_by_runtime
+      - name: sql_deployments_by_runtime
         key:
             - "$@.namespace"
             - "$@.runtime_name"
             - "$@.app_name"
         value: "$@"
 
-      - name: sql.deployments_by_app
+      - name: sql_deployments_by_app
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -86,7 +86,7 @@
                 AND obj.deleted = 0
                 AND deployment.deleted = 0"
   map_def:
-      - name: sql.objs
+      - name: sql_objs
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -119,7 +119,7 @@
                 AND relation.deleted = 0
                 AND deployment.deleted = 0"
   map_def:
-      - name: sql.relations_1ton
+      - name: sql_relations_1ton
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -128,7 +128,7 @@
             - "$@.objn_name"
         value: "$@"
 
-      - name: sql.relations_nto1
+      - name: sql_relations_nto1
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -162,7 +162,7 @@
                 AND attr.deleted = 0
                 AND deployment.deleted = 0"
   map_def:
-      - name: sql.attrs
+      - name: sql_attrs
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -197,7 +197,7 @@
                 AND api.deleted = 0
                 AND deployment.deleted = 0"
   map_def:
-      - name: sql.apis_by_method
+      - name: sql_apis_by_method
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -207,7 +207,7 @@
             - "$@.api_endpoint"
         value: "$@"
 
-      - name: sql.apis_by_endpoint
+      - name: sql_apis_by_endpoint
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -242,7 +242,7 @@
                 AND transform.deleted = 0
                 AND deployment.deleted = 0"
   map_def:
-      - name: sql.transforms
+      - name: sql_transforms
         key:
             - "$@.namespace"
             - "$@.app_name"

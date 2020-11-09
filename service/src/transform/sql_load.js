@@ -52,7 +52,7 @@ function sql_load(filepath, context) {
                     Object.assign(curr_map, value)
                 });
 
-                objPath.set(variables, map_def.name, map)
+                objPath.set(variables, [map_def.name], map)
             });
         }
 

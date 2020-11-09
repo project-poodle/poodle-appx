@@ -5,7 +5,7 @@
                 grant_type = 'user'
                 AND deleted = 0"
   map_def:
-      - name: sql.auth_grant_by_role
+      - name: sql_auth_grant_by_role
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -21,7 +21,7 @@
                 grant_type = 'user'
                 AND deleted = 0"
   map_def:
-      - name: sql.auth_grant_by_user
+      - name: sql_auth_grant_by_user
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -36,7 +36,7 @@
                 grant_type = 'group'
                 AND deleted = 0"
   map_def:
-      - name: sql.auth_grant_by_group
+      - name: sql_auth_grant_by_group
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -50,7 +50,7 @@
             WHERE
                 deleted = 0"
   map_def:
-      - name: sql.auth_func_perm_by_role
+      - name: sql_auth_func_perm_by_role
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -64,7 +64,7 @@
             WHERE
                 deleted = 0"
   map_def:
-      - name: sql.auth_obj_perm_by_role
+      - name: sql_auth_obj_perm_by_role
         key:
             - "$@.namespace"
             - "$@.app_name"

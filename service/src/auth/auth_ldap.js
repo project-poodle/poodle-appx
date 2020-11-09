@@ -1,7 +1,6 @@
 const fs = require('fs')
 const ldap = require('ldapjs')
 const deasync = require('deasync')
-const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')

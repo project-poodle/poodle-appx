@@ -1,5 +1,4 @@
 const crypto = require('crypto')
-const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')

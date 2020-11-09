@@ -42,38 +42,37 @@ const log_api_status = (api_result, status, message) => {
 /**
  * get_api_spec
  */
-function get_api_spec(api_context, req, res) {
+function get_api_spec(context, req, res) {
 
     let fatal = false
 
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
 
-    let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
+    let obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", context.obj_name]
     let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
-        let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
     }
 
-
-    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
     if (!api_spec) {
-        let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return null
     }
 
     // check verb
-    let verb = objPath.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, ["syntax", "verb"])
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return null
@@ -86,7 +85,7 @@ function get_api_spec(api_context, req, res) {
 /**
  * parse_upsert
  */
-function parse_for_sql(api_context, req, res) {
+function parse_for_sql(context, req, res) {
 
     let fatal = false
 
@@ -98,29 +97,29 @@ function parse_for_sql(api_context, req, res) {
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
 
-    let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
+    let obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", context.obj_name]
     let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
-        let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
     }
 
-    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
     if (!api_spec) {
-        let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
     }
 
-    let verb = objPath.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, ["syntax", "verb"])
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
@@ -129,8 +128,8 @@ function parse_for_sql(api_context, req, res) {
     // process object attrs
     let obj_attrs = objPath.get(obj, `attrs`)
     if (!obj_attrs) {
-        let msg = `ERROR: failed to retrieve attrs for obj [${api_context.obj_name}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: failed to retrieve attrs for obj [${context.obj_name}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
@@ -160,8 +159,8 @@ function parse_for_sql(api_context, req, res) {
         }
 
         if (! (param_key in key_attrs) && ! (param_key in non_key_attrs)) {
-            let msg = `ERROR: param_key not found [${param_key}] - [${api_context.api_endpoint}] !`
-            log_api_status(api_context, FAILURE, msg)
+            let msg = `ERROR: param_key not found [${param_key}] - [${context.api_endpoint}] !`
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return
@@ -180,7 +179,7 @@ function parse_for_sql(api_context, req, res) {
 
         if (! (body_key in non_key_attrs)) {
             let msg = `ERROR: body_key not found [${body_key}] - [${body}] !`
-            log_api_status(api_context, FAILURE, msg)
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return

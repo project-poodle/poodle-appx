@@ -1,4 +1,3 @@
-const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
@@ -6,9 +5,9 @@ const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('
 /**
  * handle_delete
  */
-function handle_delete(api_context, req, res) {
+function handle_delete(context, req, res) {
 
-    let parsed = parse_for_sql(api_context, req, res)
+    let parsed = parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -17,7 +16,7 @@ function handle_delete(api_context, req, res) {
     let sql_params = []
 
     // delete (logical)
-    let sql = `UPDATE \`${api_context.obj_name}\` SET \`deleted\`=1`
+    let sql = `UPDATE \`${context.obj_name}\` SET \`deleted\`=1`
 
     // set clause
     Object.keys(parsed.data_attrs).forEach((attr_key, i) => {
@@ -47,7 +46,7 @@ function handle_delete(api_context, req, res) {
 
         if (! (attr_key in parsed.data_attrs)) {
             let msg = `ERROR: key attr not found [${attr_key}] !`
-            log_api_status(api_context, FAILURE, msg)
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return

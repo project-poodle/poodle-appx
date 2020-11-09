@@ -12,7 +12,7 @@ let MAX_LIMIT = 200 * 1000
 /**
  * parse_get
  */
-function parse_get(api_context, req, res) {
+function parse_get(context, req, res) {
 
     let fatal = false
 
@@ -29,29 +29,29 @@ function parse_get(api_context, req, res) {
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
 
-    let obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${api_context.obj_name}`
+    let obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", context.obj_name]
     let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
-        let msg = `ERROR: obj not found [${api_context.obj_name}] - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
     }
 
-    let api_spec = objPath.get(obj, `apis_by_method.${api_context.api_method}.${api_context.api_endpoint}.api_spec`)
+    let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
     if (!api_spec) {
-        let msg = `ERROR: api_spec not found - [${JSON.stringify(api_context)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
     }
 
-    let verb = objPath.get(api_spec, 'syntax.verb')
+    let verb = objPath.get(api_spec, ["syntax", "verb"])
     if (!verb) {
         let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
-        log_api_status(api_context, FAILURE, msg)
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
@@ -60,8 +60,8 @@ function parse_get(api_context, req, res) {
     // process object attrs
     let obj_attrs = objPath.get(obj, `attrs`)
     if (!obj_attrs) {
-        let msg = `ERROR: failed to retrieve attrs for obj [${api_context.obj_name}] !`
-        log_api_status(api_context, FAILURE, msg)
+        let msg = `ERROR: failed to retrieve attrs for obj [${context.obj_name}] !`
+        log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
         return
@@ -69,12 +69,12 @@ function parse_get(api_context, req, res) {
 
     // update select attrs
     Object.keys(obj_attrs).forEach((obj_attr, i) => {
-        select_attrs[`${obj_attr}`] = `\`${api_context.obj_name}\`.\`${obj_attr}\``
+        select_attrs[`${obj_attr}`] = `\`${context.obj_name}\`.\`${obj_attr}\``
     });
 
     // process join statement
-    let join = objPath.get(api_spec, 'syntax.join')
-    let lookup_tables = [ api_context.obj_name ]
+    let join = objPath.get(api_spec, ["syntax", "join"])
+    let lookup_tables = [ context.obj_name ]
     if (join) {
         join.forEach((join_spec, i) => {
 
@@ -82,11 +82,11 @@ function parse_get(api_context, req, res) {
             let join_type = join_spec['type']
 
             // process join obj attributes
-            let join_obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${join_name}`
+            let join_obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", join_name]
             let join_obj = objPath.get(cache_obj, join_obj_prop)
             if (!join_obj) {
                 let msg = `ERROR: failed to retrieve join obj [${join_name}] !`
-                log_api_status(api_context, FAILURE, msg)
+                log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
                 return
@@ -95,7 +95,7 @@ function parse_get(api_context, req, res) {
             let join_obj_attrs = objPath.get(join_obj, `attrs`)
             if (!join_obj_attrs) {
                 let msg = `ERROR: failed to retrieve attrs for join obj [${join_name}] !`
-                log_api_status(api_context, FAILURE, msg)
+                log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
                 return
@@ -110,7 +110,7 @@ function parse_get(api_context, req, res) {
             // process relations
             let relation_spec = null
 
-            let lookup_tables = [api_context.obj_name, ...Object.keys(join_tables)]
+            let lookup_tables = [context.obj_name, ...Object.keys(join_tables)]
             // console.log(lookup_tables)
             for (let i=0; i<lookup_tables.length; i++) {
 
@@ -118,11 +118,11 @@ function parse_get(api_context, req, res) {
                 let lookup_name = lookup_tables[i]
 
                 // lookup_obj
-                let lookup_obj_prop = `object.${api_context.namespace}.runtimes.${api_context.runtime_name}.deployments.${api_context.app_name}.objs.${lookup_name}`
+                let lookup_obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", lookup_name]
                 let lookup_obj = objPath.get(cache_obj, lookup_obj_prop)
                 if (!lookup_obj) {
                     let msg = `ERROR: failed to retrieve lookup obj [${lookup_name}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -132,7 +132,7 @@ function parse_get(api_context, req, res) {
                 let lookup_obj_attrs = objPath.get(lookup_obj, `attrs`)
                 if (!lookup_obj_attrs) {
                     let msg = `ERROR: failed to retrieve attrs for other obj [${lookup_tables[i]}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -157,7 +157,7 @@ function parse_get(api_context, req, res) {
                 // we are here if relation_spec is found
                 if (! ('attrs' in relation_spec) || !Array.isArray(relation_spec['attrs'])) {
                     let msg = `ERROR: cannot parse relation for join obj [${join_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -173,7 +173,7 @@ function parse_get(api_context, req, res) {
                         return
                     }
 
-                    let src = `\`${api_context.obj_name}\`.\`${rel_attr.src}\``
+                    let src = `\`${context.obj_name}\`.\`${rel_attr.src}\``
                     let tgt = `\`${join_name}\`.\`${rel_attr.tgt}\``
 
                     relation_attrs.push({
@@ -185,7 +185,7 @@ function parse_get(api_context, req, res) {
                 // we are here if relation_spec is found
                 if (relation_attrs.length == 0) {
                     let msg = `ERROR: empty relation attrs for join obj [${join_name}] - relation_spec [${JSON.stringify(relation_spec)}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -204,7 +204,7 @@ function parse_get(api_context, req, res) {
             // if relation_spec not found
             if (! relation_spec) {
                 let msg = `ERROR: cannot find relation for join obj [${join_name}] - [${JSON.stringify(api_spec)}] !`
-                log_api_status(api_context, FAILURE, msg)
+                log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
                 return
@@ -222,8 +222,8 @@ function parse_get(api_context, req, res) {
     Object.keys(params).forEach((param_key, i) => {
 
         if (! (param_key in select_attrs)) {
-            let msg = `ERROR: param_key not found [${param_key}] - [${api_context.api_endpoint}] !`
-            log_api_status(api_context, FAILURE, msg)
+            let msg = `ERROR: param_key not found [${param_key}] - [${context.api_endpoint}] !`
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return
@@ -259,7 +259,7 @@ function parse_get(api_context, req, res) {
 
                 if (! match) {
                     let msg = `ERROR: unrecognized sort key [${sortKey}] - [${req.url}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -267,7 +267,7 @@ function parse_get(api_context, req, res) {
 
                 if (! (match[1] in select_attrs)) {
                     let msg = `ERROR: unable to find attr for sort key [${sortKey}] - [${req.url}] !`
-                    log_api_status(api_context, FAILURE, msg)
+                    log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
                     return
@@ -306,7 +306,7 @@ function parse_get(api_context, req, res) {
 
             if (! match) {
                 let msg = `ERROR: unrecognized query key [${query_key}] - [${req.url}] !`
-                log_api_status(api_context, FAILURE, msg)
+                log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
                 return
@@ -314,7 +314,7 @@ function parse_get(api_context, req, res) {
 
             if (! (match[1] in select_attrs)) {
                 let msg = `ERROR: unable to find attr for query key [${query_key}] - [${req.url}] !`
-                log_api_status(api_context, FAILURE, msg)
+                log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
                 return
@@ -344,9 +344,9 @@ function parse_get(api_context, req, res) {
 /**
  * handle_get
  */
-function handle_get(api_context, req, res) {
+function handle_get(context, req, res) {
 
-    let parsed = parse_get(api_context, req, res)
+    let parsed = parse_get(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -357,8 +357,8 @@ function handle_get(api_context, req, res) {
     Object.keys(parsed.select_attrs).forEach((attr, i) => {
         sql = sql + `${parsed.select_attrs[attr]}, `
     });
-    sql = sql + `\`${api_context.obj_name}\`.\`id\``
-    sql = sql + ` FROM \`${api_context.obj_name}\``
+    sql = sql + `\`${context.obj_name}\`.\`id\``
+    sql = sql + ` FROM \`${context.obj_name}\``
 
     // join
     Object.keys(parsed.join_tables).forEach((join_name, i) => {
@@ -375,7 +375,7 @@ function handle_get(api_context, req, res) {
     });
 
     // where statement
-    sql = sql + ` WHERE \`${api_context.obj_name}\`.\`deleted\` = 0`
+    sql = sql + ` WHERE \`${context.obj_name}\`.\`deleted\` = 0`
 
     let sql_params = []
     parsed.where_clauses.forEach((where_clause, i) => {

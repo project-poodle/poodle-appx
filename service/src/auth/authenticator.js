@@ -1,9 +1,9 @@
 const crypto = require('crypto')
 const objPath = require("object-path")
 const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const BasicStrategy = require('passport-http').BasicStrategy
-const BearerStrategy = require('passport-http-bearer').Strategy
+//const LocalStrategy = require('passport-local').Strategy
+//const BasicStrategy = require('passport-http').BasicStrategy
+//const BearerStrategy = require('passport-http-bearer').Strategy
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')
@@ -95,10 +95,10 @@ function findUserWithPass(realm, username, password) {
 
                 let table = local_db.table
                 let fields = {
-                    realm: objPath.get(local_db, 'field.realm', 'realm'),
-                    username: objPath.get(local_db, 'field.username', 'username'),
-                    password: objPath.get(local_db, 'field.password', 'password'),
-                    user_spec: objPath.get(local_db, 'field.user_spec', 'user_spec')
+                    realm: objPath.get(local_db, ['field', 'realm'], 'realm'),
+                    username: objPath.get(local_db, ['field', 'username'], 'username'),
+                    password: objPath.get(local_db, ['field', 'password'], 'password'),
+                    user_spec: objPath.get(local_db, ['field', 'user_spec'], 'user_spec')
                 }
 
                 let result = findLocalUserWithPass(realm, local_username, password, table, fields)

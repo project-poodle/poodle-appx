@@ -1,3 +1,5 @@
+const deepEqual = require('deep-equal')
+const stringify = require('fast-json-stable-stringify')
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
@@ -5,9 +7,9 @@ const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('
 /**
  * handle_upsert
  */
-function handle_upsert(api_context, req, res) {
+function handle_upsert(context, req, res) {
 
-    let parsed = parse_for_sql(api_context, req, res)
+    let parsed = parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -16,7 +18,7 @@ function handle_upsert(api_context, req, res) {
     let sql_params = []
 
     // select
-    let sql = `INSERT INTO \`${api_context.obj_name}\``
+    let sql = `INSERT INTO \`${context.obj_name}\``
     let first = true
     Object.keys(parsed.data_attrs).forEach((attr, i) => {
         if (first) {
@@ -52,7 +54,7 @@ function handle_upsert(api_context, req, res) {
 
         if (! (key_attr in parsed.data_attrs)) {
             let msg = `ERROR: key attr not found [${key_attr}] !`
-            log_api_status(api_context, FAILURE, msg)
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return
@@ -65,7 +67,41 @@ function handle_upsert(api_context, req, res) {
         if (data_attr in parsed.non_key_attrs) {
             sql = sql + `, \`${data_attr}\`=VALUES(\`${data_attr}\`)`
         }
-    });
+    })
+
+    // create prev sql
+    let sql_prev = `SELECT \`id\``
+    let sql_prev_params = []
+
+    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
+        sql_prev += ` ,\`${key_attr}\``
+    })
+
+    Object.keys(parsed.non_key_attrs).forEach((non_key_attr, i) => {
+        sql_prev += ` ,\`${non_key_attr}\``
+    })
+
+    sql_prev += ` FROM \`${context.obj_name}\` WHERE deleted=0`
+    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
+
+        sql_prev += ` AND \`${key_attr}\`=?`
+        sql_prev_params.push(parsed.data_attr[key_attr])
+    })
+
+    // query prev
+    let prev = db.query_sync(sql_prev, sql_prev_params)
+    if (prev && prev.length > 0) {
+        // ;
+        let comp_obj = { ...prev }
+        delete comp_obj.id
+        delete comp_obj.create_time
+        delete comp_obj.update_time
+        if (stringify(comp_obj) == stringify(data_attrs)) {
+
+        }
+    } else {
+        prev = null
+    }
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)

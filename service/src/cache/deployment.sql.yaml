@@ -5,7 +5,7 @@
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.namespaces
+      - name: sql_namespaces
         key:
             - "$@.namespace"
         value: "$@"
@@ -17,7 +17,7 @@
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.apps
+      - name: sql_apps
         key:
             - "$@.namespace"
             - "$@.app_name"
@@ -31,7 +31,7 @@
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.runtimes
+      - name: sql_runtimes
         key:
             - "$@.namespace"
             - "$@.runtime_name"
@@ -44,14 +44,14 @@
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql.deployments_by_runtime
+      - name: sql_deployments_by_runtime
         key:
             - "$@.namespace"
             - "$@.runtime_name"
             - "$@.app_name"
         value: "$@"
 
-      - name: sql.deployments_by_app
+      - name: sql_deployments_by_app
         key:
             - "$@.namespace"
             - "$@.app_name"

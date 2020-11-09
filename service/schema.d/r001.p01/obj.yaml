@@ -4,6 +4,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: namespace"
 
@@ -11,6 +12,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "namespace_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: namespace_state"
 
@@ -18,6 +20,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "app"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: app"
 
@@ -25,6 +28,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "app_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: app_status"
 
@@ -32,6 +36,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "runtime"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: runtime"
 
@@ -39,6 +44,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "runtime_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: runtime_status"
 
@@ -46,6 +52,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: deployment"
 
@@ -53,6 +60,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: deployment_status"
 
@@ -60,6 +68,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: obj"
 
@@ -67,6 +76,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: obj_status"
 
@@ -74,6 +84,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: relation"
 
@@ -81,6 +92,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: relation_status"
 
@@ -88,6 +100,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: attr"
 
@@ -95,6 +108,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: attr_status"
 
@@ -102,6 +116,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: api"
 
@@ -109,6 +124,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: api_status"
 
@@ -116,6 +132,7 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform"
+      obj_type: "spec"
       obj_spec:
           comment: "initialize: transform"
 
@@ -123,5 +140,6 @@ obj:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform_status"
+      obj_type: "status"
       obj_spec:
           comment: "initialize: transform_status"

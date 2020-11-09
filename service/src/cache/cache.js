@@ -91,7 +91,7 @@ function load_cache_for(name, params, repeat=false) {
         let transform = YAML.parse(fs.readFileSync(transform_filepath, 'utf8'))
         //console.log(JSON.stringify(transform, null, 4))
 
-        let result = json_transform(objPath.get(CACHE_VARS, name, null), input, transform, {params: params})
+        let result = json_transform(objPath.get(CACHE_VARS, [name], null), input, transform, {params: params})
         // console.log(JSON.stringify(result, null, 4))
 
         // assign CACHE_VARS only if params is null

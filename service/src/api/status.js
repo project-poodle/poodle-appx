@@ -5,9 +5,9 @@ const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('
 /**
  * handle_status
  */
-function handle_status(api_context, req, res) {
+function handle_status(context, req, res) {
 
-    let parsed = parse_for_sql(api_context, req, res)
+    let parsed = parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -16,7 +16,7 @@ function handle_status(api_context, req, res) {
     let sql_params = []
 
     // select
-    let sql = `INSERT INTO \`${api_context.obj_name}\``
+    let sql = `INSERT INTO \`${context.obj_name}\``
     let first = true
     Object.keys(parsed.data_attrs).forEach((attr, i) => {
         if (first) {
@@ -52,7 +52,7 @@ function handle_status(api_context, req, res) {
 
         if (! (key_attr in parsed.data_attrs)) {
             let msg = `ERROR: key attr not found [${key_attr}] !`
-            log_api_status(api_context, FAILURE, msg)
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return

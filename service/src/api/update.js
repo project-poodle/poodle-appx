@@ -5,9 +5,9 @@ const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('
 /**
  * handle_update
  */
-function handle_update(api_context, req, res) {
+function handle_update(context, req, res) {
 
-    let parsed = parse_for_sql(api_context, req, res)
+    let parsed = parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -16,7 +16,7 @@ function handle_update(api_context, req, res) {
     let sql_params = []
 
     // update
-    let sql = `UPDATE \`${api_context.obj_name}\``
+    let sql = `UPDATE \`${context.obj_name}\``
 
     // set clause
     let first = true
@@ -50,7 +50,7 @@ function handle_update(api_context, req, res) {
 
         if (! (attr_key in parsed.data_attrs)) {
             let msg = `ERROR: key attr not found [${attr_key}] !`
-            log_api_status(api_context, FAILURE, msg)
+            log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return

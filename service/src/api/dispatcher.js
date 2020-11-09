@@ -51,10 +51,10 @@ const dispatcher = function (req, res, next) {
             // process context
             let namespace = match[2]
             let app_name = match[3]
-            let runtime = match[4]
+            let runtime_name = match[4]
             req.context.namespace = namespace
             req.context.app_name = app_name
-            req.context.runtime = runtime
+            req.context.runtime_name = runtime_name
             //console.log(req.context)
             // process url
             req.baseUrl = req.baseUrl + match[1]
