@@ -14,10 +14,11 @@ function findLocalUserWithPass(realm, username, password, table, fields) {
                     user_spec,
                     deleted
                 FROM ${table}
-                WHERE ${fields.realm}=?
-                AND ${fields.username}=?
-                AND ${fields.password}=PASSWORD(?)
-                AND deleted=0`
+                WHERE
+                    ${fields.realm}=?
+                    AND ${fields.username}=?
+                    AND ${fields.password}=PASSWORD(?)
+                    AND deleted=0`
 
     // console.log(sql, [realm, username, password])
     let result = db.query_sync(sql, [realm, username, password])

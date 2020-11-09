@@ -8,6 +8,8 @@ const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')
 const { findLocalUserWithPass } = require('./auth_local')
+const { findLdapUserWithPass } = require('./auth_ldap')
+
 
 function findToken(realm, token) {
 
@@ -48,10 +50,10 @@ function findUserWithPass(realm, username, password) {
         }
     }
 
-    let sorted_module = Object.keys(realm_modules[realm]).sort()
-    for (let i=0; i<sorted_module.length; i++) {
+    let sorted_module_name = Object.keys(realm_modules[realm]).sort()
+    for (let i=0; i<sorted_module_name.length; i++) {
 
-        let realm_module = realm_modules[realm][sorted_module[i]]
+        let realm_module = realm_modules[realm][sorted_module_name[i]]
         // console.log(realm_module)
         let matches = username.match(realm_module.module_pattern)
         if (matches) {
@@ -61,12 +63,21 @@ function findUserWithPass(realm, username, password) {
                 if (! ('auth_name_match' in realm_module.module_spec)) {
                     return {
                         status: 'error',
+                        module: sorted_module_name[i],
                         message: `local_db protocol missing [auth_name_match]`
+                    }
+                } else if (typeof realm_module.module_spec.auth_name_match != 'number') {
+                    let auth_name_match = realm_module.module_spec.auth_name_match
+                    return {
+                        status: 'error',
+                        module: sorted_module_name[i],
+                        message: `local_db protocol [auth_name_match] is not a number [${typeof auth_name_match} : ${auth_name_match}]`
                     }
                 }
                 if (! ('local_db' in realm_module.module_spec)) {
                     return {
                         status: 'error',
+                        module: sorted_module_name[i],
                         message: `local_db protocol missing [local_db]`
                     }
                 }
@@ -74,6 +85,7 @@ function findUserWithPass(realm, username, password) {
                 if (! ('table' in local_db)) {
                     return {
                         status: 'error',
+                        module: sorted_module_name[i],
                         message: `local_db protocol missing [local_db.table]`
                     }
                 }
@@ -90,22 +102,44 @@ function findUserWithPass(realm, username, password) {
 
                 let result = findLocalUserWithPass(realm, local_username, password, table, fields)
 
-                return result
+                return {
+                    module: sorted_module_name[i],
+                    ...result
+                }
 
             } else if (realm_module.module_spec.protocol == 'ldap') {
 
-                found = true
                 if (! ('auth_name_match' in realm_module.module_spec)) {
                     return {
                         status: 'error',
+                        module: sorted_module_name[i],
                         message: `ldap protocol missing [auth_name_match]`
+                    }
+                } else if (typeof realm_module.module_spec.auth_name_match != 'number') {
+                    let auth_name_match = realm_module.module_spec.auth_name_match
+                    return {
+                        status: 'error',
+                        module: sorted_module_name[i],
+                        message: `ldap protocol [auth_name_match] is not a number [${typeof auth_name_match} : ${auth_name_match}]`
                     }
                 }
                 if (! ('ldap' in realm_module.module_spec)) {
                     return {
                         status: 'error',
+                        module: sorted_module_name[i],
                         message: `ldap protocol missing [ldap]`
                     }
+                }
+
+                let ldap_username = matches[realm_module.module_spec.auth_name_match]
+
+                let protocol = realm_module.module_spec.ldap
+
+                let result = findLdapUserWithPass(realm, protocol, ldap_username, password)
+
+                return {
+                    module: sorted_module_name[i],
+                    ...result
                 }
 
             } else {
@@ -118,6 +152,7 @@ function findUserWithPass(realm, username, password) {
     // we are here if no matching protocol found
     return {
         status: 'error',
+        module: null,
         message: `Unable to find matching authentication protocol`
     }
 }
@@ -144,16 +179,15 @@ function authenticateUserWithPass(req, res, next) {
         let password = req.body.password
 
         let result = findUserWithPass(realm, username, password)
+        console.log(result)
 
         if (result && result.user && result.status == 'ok') {
 
-            console.log(`INFO: user [${username}] authenticated successfully !`)
+            console.log(`INFO: user [${username}] authenticated successfully ! [${result.module}]`)
             crypto.randomBytes(64, function(err, buffer) {
 
                 let token = buffer.toString('base64')
-                let token_spec = {
-                    user_spec: result.user.user_spec
-                }
+                let token_spec = { module: result.module, ...result.user }
 
                 let sql = `INSERT INTO
                                 _realm_token (realm, token, username, expiration, token_spec)
@@ -166,7 +200,7 @@ function authenticateUserWithPass(req, res, next) {
 
         } else {
 
-            console.log(`INFO: user [${username}] authentication failed !`)
+            console.log(`INFO: user [${username}] authentication failed ! [${result.module}]`)
             res.status(422).json(user)
             return
 
@@ -174,6 +208,7 @@ function authenticateUserWithPass(req, res, next) {
 
     } catch (err) {
 
+        console.log(err.stack)
         res.status(422).json({status: 'error', message: `${err}`})
         return
 
