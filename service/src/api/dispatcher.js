@@ -55,7 +55,7 @@ const dispatcher = function (req, res, next) {
             req.context.namespace = namespace
             req.context.app_name = app_name
             req.context.runtime = runtime
-            console.log(req.context)
+            //console.log(req.context)
             // process url
             req.baseUrl = req.baseUrl + match[1]
             req.url = req.originalUrl.substring(req.baseUrl.length)
