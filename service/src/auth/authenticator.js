@@ -239,9 +239,6 @@ const lookupRolesPerms = function(namespace, app_name, user) {
     const username = user.username
     const groups = user.groups
 
-    user.namespace = namespace
-    user.app_name = app_name
-
     let roles = new Set()
 
     // console.log(JSON.stringify(cache.get_cache_for('auth'), null, 4))
@@ -318,7 +315,7 @@ const lookupRolesPerms = function(namespace, app_name, user) {
     user.obj_perms = obj_perms
 
     // return enriched user
-    console.log(user)
+    // console.log(user)
     return user
 }
 
@@ -394,6 +391,12 @@ const authenticator = function (req, res, next) {
                         groups: token.token_spec.groups,
                     }
                 )
+                req.context = {
+                    namespace: namespace,
+                    app_name: app_name,
+                    user: req.user
+                }
+                //console.log(req.context)
                 next()
             }
         } catch (err) {
@@ -423,6 +426,12 @@ const authenticator = function (req, res, next) {
                         groups: result.user.groups
                     }
                 )
+                req.context = {
+                    namespace: namespace,
+                    app_name: app_name,
+                    user: req.user
+                }
+                //console.log(req.context)
                 next()
 
             } else {

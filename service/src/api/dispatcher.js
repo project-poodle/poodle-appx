@@ -42,12 +42,21 @@ const dispatcher = function (req, res, next) {
         url = req.originalUrl.substring(req.baseUrl.length)
     }
 
-    let match = url.match(new RegExp(`(\/${REGEX_VAR}\/${REGEX_VAR}\/${REGEX_VAR})\/`))
+    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/(${REGEX_VAR}))\/`))
     if (match) {
         let router = ROUTES[match[1]]
         if (!router) {
             res.status(404).send(`ERROR: handler for [${match[1]}] not found !`)
         } else {
+            // process context
+            let namespace = match[2]
+            let app_name = match[3]
+            let runtime = match[4]
+            req.context.namespace = namespace
+            req.context.app_name = app_name
+            req.context.runtime = runtime
+            console.log(req.context)
+            // process url
             req.baseUrl = req.baseUrl + match[1]
             req.url = req.originalUrl.substring(req.baseUrl.length)
             router.handle(req, res, next)
