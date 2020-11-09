@@ -146,7 +146,7 @@ _auth_grant:
       grant_type: "user"
       grant_name: "appx@LDAP"
       grant_spec:
-          comment: "initialize guest@LDAP"
+          comment: "initialize appx@LDAP"
 
 ######################################################################
 # _perm_func
