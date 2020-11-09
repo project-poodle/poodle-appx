@@ -140,6 +140,13 @@ _auth_grant:
       grant_name: "agent@LDAP"
       grant_spec:
           comment: "initialize agent@LDAP"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "user"
+      grant_type: "user"
+      grant_name: "agent@LDAP"
+      grant_spec:
+          comment: "initialize guest@LDAP"
 
 ######################################################################
 # _perm_func
@@ -184,6 +191,12 @@ _auth_func_perm:
       app_name: "appx"
       role_name: "agent"
       auth_func_name: "status"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "user"
+      auth_func_name: "read"
       auth_func_spec:
           comment: "initialize"
 
