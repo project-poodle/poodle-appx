@@ -65,14 +65,39 @@ let ldap_search_objects = (ldap_search, callback) => {
 
 let ldap_search_objects_sync = deasync(ldap_search_objects)
 
+/*
+ldap:
+    conf: ldap_appx.json
+    base_dn: "{{{LDAP_CONF.base_dn}}}"
+    search: "(&(objectClass=person)(cn=${username}))"
+    group_attr: "memberOf"
+    group_pattern: "^cn=([^,]+)(,(.+))?$"
+    group_name_match: 1
+*/
 
 function findLdapUserWithPass(realm, protocol, username, password) {
 
-    if (! ('conf' in protocol)) {
-        return {
-            status: 'error',
-            message: `ldap protocol conf not configured [${protocol.conf}]`
+    protocol = { ...protocol }
+
+    // check mandatory config
+    for (const protocol_attr of ['conf', 'base_dn', 'search', 'group_attr']) {
+
+        if (! (protocol_attr in protocol)) {
+            return {
+                status: 'error',
+                message: `ldap protocol: [${protocol_attr}] not configured [${protocol}]`
+            }
         }
+    }
+
+    // optional attribute
+    if (! ('group_pattern' in protocol)) {
+        protocol['group_pattern'] = '^(.+)$'
+    }
+
+    // optional attribute
+    if (! ('group_name_match' in protocol) || typeof protocol.group_name_match != 'number') {
+        protocol['group_name_match'] = 1
     }
 
     if (! (protocol.conf in ldap_conn)) {
@@ -110,7 +135,7 @@ function findLdapUserWithPass(realm, protocol, username, password) {
         }
     }
 
-    // we are here if we have found the user, next authenticate the user with password
+    // we have found the user, next, authenticate the user with password
     try {
         ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl, results[0].dn, password)
     } catch (err) {
@@ -121,7 +146,14 @@ function findLdapUserWithPass(realm, protocol, username, password) {
         }
     }
 
-    // we are here if user authentication (bind) to ldap is succcessful
+    // user authentication (bind) to ldap is succcessful, next, extract the groups
+    let groups = []
+    let group_specs = protocol.group_attr in results[0] ? results[0][protocol.group_attr] : []
+    if (Array.isArray(group_specs)) {
+        let rep = `\$${protocol.group_name_match}`
+        groups = group_specs.map(row => row.replace(new RegExp(protocol.group_pattern), rep))
+    }
+
     return {
         status: 'ok',
         user: {
@@ -130,7 +162,8 @@ function findLdapUserWithPass(realm, protocol, username, password) {
             user_spec: {
                 dn: results[0].dn
             },
-            group_spec: protocol.group_attr in results[0] ? results[0][protocol.group_attr] : []
+            groups: groups,
+            group_spec: group_specs
         }
     }
 }
