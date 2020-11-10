@@ -398,10 +398,10 @@ function handle_get(context, req, res) {
 
     // select
     let sql = "SELECT "
-    Object.keys(parsed.select_attrs).forEach((attr, i) => {
-        sql = sql + `${parsed.select_attrs[attr]}, `
-    });
     sql = sql + `\`${context.obj_name}\`.\`id\``
+    Object.keys(parsed.select_attrs).forEach((attr, i) => {
+        sql = sql + `, ${parsed.select_attrs[attr]}`
+    });
     sql = sql + ` FROM \`${context.obj_name}\``
 
     // join
