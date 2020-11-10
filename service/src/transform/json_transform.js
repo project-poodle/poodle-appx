@@ -127,32 +127,11 @@ function eval_with_input(expr, ctx) {
     let ast_tree = esprima.parse(expr).body[0]
     let converted_tree = traverse_with_obj_path(ast_tree)
     let converted_expr = escodegen.generate(converted_tree)
-    // console.log(JSON.stringify(result, null, 4))
 
-    /*
-    while (expr.match(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'))) {
-        // console.log(`eval(${expr})`)
-        expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'objPath.get($1, [$63], null)')
-    }
-    */
-
-    try {
-
-        // console.log(`eval(${expr}), ${ctx}`)
-        let r = eval(converted_expr, ctx)
-        //console.log(`eval(${expr}) => ${r}`)
-        return r
-
-    } catch (err) {
-
-        //let token = esprima.tokenize(expr)
-        //let token = esprima.parseScript(expr)
-        //console.log(JSON.stringify(token, null, 4))
-        console.log(expr)
-        console.log(converted_expr)
-        console.log(ctx)
-        throw err
-    }
+    // console.log(`eval(${expr}), ${ctx}`)
+    let r = eval(converted_expr, ctx)
+    //console.log(`eval(${expr}) => ${r}`)
+    return r
 }
 
 /**
