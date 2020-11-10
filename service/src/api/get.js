@@ -36,7 +36,7 @@ function parse_get(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal, status: FAILURE, error: msg }
     }
 
     let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
@@ -45,7 +45,7 @@ function parse_get(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal, status: FAILURE, error: msg }
     }
 
     let verb = objPath.get(api_spec, ["syntax", "verb"])
@@ -54,7 +54,7 @@ function parse_get(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal, status: FAILURE, error: msg }
     }
 
     // process object attrs
@@ -64,13 +64,31 @@ function parse_get(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal, status: FAILURE, error: msg }
     }
 
     // update select attrs
     Object.keys(obj_attrs).forEach((obj_attr, i) => {
         select_attrs[`${obj_attr}`] = `\`${context.obj_name}\`.\`${obj_attr}\``
     });
+
+    // process object type
+    let obj_type = objPath.get(obj, `obj_type`)
+    if (!obj_type) {
+        let msg = `ERROR: failed to retrieve type for obj [${context.obj_name}] !`
+        log_api_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return { fatal: fatal, status: FAILURE, error: msg }
+    }
+
+    // add select attrs for obj_type
+    if (obj_type == 'spec') {
+        select_attrs[`create_time`] = `\`${context.obj_name}\`.\`create_time\``
+        select_attrs[`update_time`] = `\`${context.obj_name}\`.\`update_time\``
+    } else if (obj_type == 'status') {
+        select_attrs[`status_time`] = `\`${context.obj_name}\`.\`status_time\``
+    }
 
     // process join statement
     let join = objPath.get(api_spec, ["syntax", "join"])
@@ -81,7 +99,7 @@ function parse_get(context, req, res) {
             let join_name = join_spec['obj']
             let join_type = join_spec['type']
 
-            // process join obj attributes
+            // find join obj
             let join_obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", join_name]
             let join_obj = objPath.get(cache_obj, join_obj_prop)
             if (!join_obj) {
@@ -89,23 +107,49 @@ function parse_get(context, req, res) {
                 log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
-                return
+                return { fatal: fatal, status: FAILURE, error: msg }
             }
 
+            // process join obj attrs
             let join_obj_attrs = objPath.get(join_obj, `attrs`)
             if (!join_obj_attrs) {
                 let msg = `ERROR: failed to retrieve attrs for join obj [${join_name}] !`
                 log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
-                return
+                return { fatal: fatal, status: FAILURE, error: msg }
             }
 
+            // add select attrs for join_obj
             Object.keys(join_obj_attrs).forEach((join_attr, i) => {
                 if (! (join_attr in select_attrs)) {
                     select_attrs[`${join_attr}`] = `\`${join_name}\`.\`${join_attr}\``
                 }
             });
+
+            // process join obj type
+            let join_obj_type = objPath.get(join_obj, `obj_type`)
+            if (!join_obj_type) {
+                let msg = `ERROR: failed to retrieve attrs for join obj [${join_name}] !`
+                log_api_status(context, FAILURE, msg)
+                res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+                fatal = true
+                return { fatal: fatal, status: FAILURE, error: msg }
+            }
+
+            // add select attrs for join_obj_type
+            if (join_obj_type == 'spec') {
+                if (! (`create_time` in select_attrs)) {
+                    select_attrs[`create_time`] = `\`${join_name}\`.\`create_time\``
+                }
+                if (! (`update_time` in select_attrs)) {
+                    select_attrs[`update_time`] = `\`${join_name}\`.\`update_time\``
+                }
+            } else if (join_obj_type == 'status') {
+                if (! (`status_time` in select_attrs)) {
+                    select_attrs[`status_time`] = `\`${join_name}\`.\`status_time\``
+                }
+            }
 
             // process relations
             let relation_spec = null
@@ -125,7 +169,7 @@ function parse_get(context, req, res) {
                     log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
-                    return
+                    return { fatal: fatal, status: FAILURE, error: msg }
                 }
 
                 // lookup_obj_attrs
@@ -135,7 +179,7 @@ function parse_get(context, req, res) {
                     log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
-                    return
+                    return { fatal: fatal, status: FAILURE, error: msg }
                 }
 
                 // lookup_relations
@@ -160,7 +204,7 @@ function parse_get(context, req, res) {
                     log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
-                    return
+                    return { fatal: fatal, status: FAILURE, error: msg }
                 }
 
                 relation_attrs = []
@@ -188,7 +232,7 @@ function parse_get(context, req, res) {
                     log_api_status(context, FAILURE, msg)
                     res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                     fatal = true
-                    return
+                    return { fatal: fatal, status: FAILURE, error: msg }
                 }
 
                 // append join table attrs
@@ -207,7 +251,7 @@ function parse_get(context, req, res) {
                 log_api_status(context, FAILURE, msg)
                 res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
                 fatal = true
-                return
+                return { fatal: fatal, status: FAILURE, error: msg }
             }
         });
     }

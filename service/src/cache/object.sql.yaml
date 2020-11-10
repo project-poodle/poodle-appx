@@ -70,6 +70,7 @@
                 obj.app_name,
                 obj.app_ver,
                 obj.obj_name,
+                obj.obj_type,
                 obj.obj_spec,
                 obj.create_time,
                 obj.update_time,

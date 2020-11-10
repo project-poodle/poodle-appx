@@ -26,6 +26,7 @@ object:
                             app_name: "@@app"
                             app_ver: "@app"
                             obj_name: "@obj"
+                            obj_type: "$obj.obj_type"
                             obj_spec: "$obj.obj_spec"
 
                             relations_1ton:
@@ -97,6 +98,7 @@ object:
                                 app_name: "@dp"
                                 app_ver: "$dp['app_ver']"
                                 obj_name: "@obj"
+                                obj_type: "$obj.obj_type"
                                 obj_spec: "$obj.obj_spec"
 
                                 relations_1ton:
