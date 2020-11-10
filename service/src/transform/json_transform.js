@@ -1,14 +1,105 @@
+const esprima = require('esprima')
+const escodegen = require('escodegen')
 const objPath = require("object-path")
 const Mustache = require('mustache');
 
 const INVOKE_KEY = '$invoke'
 
 const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
-const REGEX_OBJ = REGEX_VAR + '(\\.' + REGEX_VAR + ')*'
-const REGEX_FNC = REGEX_OBJ + '\\s*\\(\\s*' + REGEX_OBJ + '\\s*(\\s*,\\s*' + REGEX_OBJ + '\\s*)*' + '\\s*\\)'
-const REGEX_FNC2 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
-const REGEX_FNC3 = REGEX_OBJ + '\\s*\\(\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*(\\s*,\\s*(' + REGEX_FNC2 + '|' + REGEX_FNC + '|' + REGEX_OBJ + ')\\s*)*' + '\\s*\\)'
 const KEY_SUFFIX = '__k'
+
+// primitive test
+function isPrimitive(test) {
+    return (test !== Object(test))
+}
+
+// JavaScript AST representation of [objPath.get]
+const ast_objPath_get = {
+    "type": "MemberExpression",
+    "computed": false,
+    "object": {
+        "type": "Identifier",
+        "name": "objPath"
+    },
+    "property": {
+        "type": "Identifier",
+        "name": "get"
+    }
+}
+
+// JavaScript AST representation of [null]
+const ast_null = {
+    "type": "Literal",
+    "value": null,
+    "raw": "null"
+}
+
+// traverse with objPath
+function traverse_with_obj_path(input) {
+
+    if (isPrimitive(input)) {
+
+        return input
+
+    } else if (Array.isArray(input)) {
+
+        let result = []
+
+        for (child of input) {
+
+            result.push(traverse_with_obj_path(child))
+        }
+
+    } else if (typeof input === 'object' && input !== null) {
+
+        let result = {}
+
+        if (('type' in input) && ('object' in input) && ('property' in input) && (input.type == 'MemberExpression')) {
+
+            result.type = 'CallExpression'
+            result.callee = { ...ast_objPath_get }
+
+            // process object
+            let object = traverse_with_obj_path(input.object)
+
+            // process property
+            let property = { ...input.property }
+            if ('name' in property && 'type' in property && property.type == 'Identifier') {
+                // change Identifier property to Literal
+                property = {
+                    type: 'Literal',
+                    value: property.name,
+                    // raw: `'${property.name}'`
+                }
+            } else {
+                // process all other property type normally
+                property = traverse_with_obj_path(property)
+            }
+
+            result.arguments = [
+                object,
+                property,
+                { ...ast_null }
+            ]
+
+        } else {
+
+            for (key in input) {
+                result[key] = traverse_with_obj_path(input[key])
+            }
+        }
+
+        return result
+
+    } else if (input == null) {
+
+        return null
+
+    } else {
+
+        throw new Error(`Unrecognized input [${input}]`)
+    }
+}
 
 /**
  * evaluate expression with context
@@ -32,16 +123,36 @@ function eval_with_input(expr, ctx) {
         expr = expr.replace(new RegExp('\\@(ctx\\.' + REGEX_VAR + '(' + KEY_SUFFIX + ')+)', 'g'), '$1' + KEY_SUFFIX)
     }
 
-    // substitute [] index
+    // we have a valid JavaScript expression here, replace MemberExpression with CallExpression
+    let ast_tree = esprima.parse(expr).body[0]
+    let converted_tree = traverse_with_obj_path(ast_tree)
+    let converted_expr = escodegen.generate(converted_tree)
+    // console.log(JSON.stringify(result, null, 4))
+
+    /*
     while (expr.match(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'))) {
         // console.log(`eval(${expr})`)
         expr = expr.replace(new RegExp('(' + REGEX_OBJ + '|' + REGEX_FNC + '|' + REGEX_FNC2 + '|' + REGEX_FNC3 + ')' + '\\[([^\\]]+)\\]'), 'objPath.get($1, [$63], null)')
     }
+    */
 
-    // console.log(`eval(${expr}), ${ctx}`)
-    let r = eval(expr, ctx)
-    //console.log(`eval(${expr}) => ${r}`)
-    return r
+    try {
+
+        // console.log(`eval(${expr}), ${ctx}`)
+        let r = eval(converted_expr, ctx)
+        //console.log(`eval(${expr}) => ${r}`)
+        return r
+
+    } catch (err) {
+
+        //let token = esprima.tokenize(expr)
+        //let token = esprima.parseScript(expr)
+        //console.log(JSON.stringify(token, null, 4))
+        console.log(expr)
+        console.log(converted_expr)
+        console.log(ctx)
+        throw err
+    }
 }
 
 /**
