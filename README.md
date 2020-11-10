@@ -21,27 +21,57 @@ schema, rest API, and UI based on user defined model schema.
     sudo ./app.sh -c ./conf.d/mysql_appx.conf
 
     -- start a new terminal
-    curl -u 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace' | jq
 
-        [
-          {
+    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
+
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    Content-Length: 250
+    Content-Type: application/json; charset=utf-8
+    Date: Tue, 10 Nov 2020 11:10:16 GMT
+    ETag: W/"fa-I89e/KigIlGP3um7khL6W3FkFzI"
+    Keep-Alive: timeout=5
+    X-Powered-By: Express
+
+    [
+        {
+            "create_time": "2020-11-10T18:50:08.000Z",
+            "id": 1,
             "namespace": "sys",
-            "owner_scope": "local",
-            "owner_name": "appx",
             "namespace_spec": {
-              "comment": "test"
+                "a": 5
             },
-            "create_time": "2020-10-27T11:51:03.000Z",
-            "update_time": "2020-10-27T12:32:49.000Z",
-            "namespace_state": {
-              "comment": "test"
+            "namespace_status": {
+                "s": 3
             },
-            "status_time": "2020-10-27T12:37:48.000Z",
-            "id": 1
-          }
-        ]
+            "owner_name": "appx@LOCAL",
+            "owner_realm": "appx",
+            "status_time": "2020-11-10T18:57:17.000Z",
+            "update_time": "2020-11-10T19:10:05.000Z"
+        }
+    ]
 
-    curl -u 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)' | jq
+    --------
+
+    $ echo '{"owner_realm":"appx","owner_name":"appx@LOCAL","namespace_spec":{"a":5}}' | http -a 'appx@LOCAL:P@@dle101' POST 'http://localhost:3000/api/sys/appx/base/namespace/sys'
+
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    Content-Length: 15
+    Content-Type: application/json; charset=utf-8
+    Date: Tue, 10 Nov 2020 11:07:21 GMT
+    ETag: W/"f-VaSQ4oDUiZblZNAEkkN+sX+q3Sg"
+    Keep-Alive: timeout=5
+    X-Powered-By: Express
+
+    {
+        "status": "ok"
+    }
+
+
+    --------
+
+    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)'
 
         [
           {
