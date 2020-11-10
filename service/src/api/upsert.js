@@ -2,7 +2,7 @@ const deepEqual = require('deep-equal')
 const stringify = require('fast-json-stable-stringify')
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
+const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 /**
  * handle_upsert
@@ -69,43 +69,21 @@ function handle_upsert(context, req, res) {
         }
     })
 
-    // create prev sql
-    let sql_prev = `SELECT \`id\``
-    let sql_prev_params = []
-
-    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
-        sql_prev += ` ,\`${key_attr}\``
-    })
-
-    Object.keys(parsed.non_key_attrs).forEach((non_key_attr, i) => {
-        sql_prev += ` ,\`${non_key_attr}\``
-    })
-
-    sql_prev += ` FROM \`${context.obj_name}\` WHERE deleted=0`
-    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
-
-        sql_prev += ` AND \`${key_attr}\`=?`
-        sql_prev_params.push(parsed.data_attr[key_attr])
-    })
-
     // query prev
-    let prev = db.query_sync(sql_prev, sql_prev_params)
-    if (prev && prev.length > 0) {
-        // ;
-        let comp_obj = { ...prev }
-        delete comp_obj.id
-        delete comp_obj.create_time
-        delete comp_obj.update_time
-        if (stringify(comp_obj) == stringify(data_attrs)) {
-
-        }
-    } else {
-        prev = null
-    }
+    let prev = load_object(parsed)
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
     let result = db.query_sync(sql, sql_params)
+
+    // query curr
+    let curr = load_object(parsed)
+    let obj_changed = !deepEqual(curr, prev)
+
+    // record audit
+    if (curr != null && obj_changed) {
+        record_spec_audit(result.insertId, prev, curr, req)
+    }
 
     // send back the result
     res.status(200).json({status: SUCCESS})

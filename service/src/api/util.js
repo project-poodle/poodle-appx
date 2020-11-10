@@ -107,6 +107,17 @@ function parse_for_sql(context, req, res) {
         return
     }
 
+    // process object type
+    let obj_type = objPath.get(obj, `obj_type`)
+    if (!obj_type) {
+        let msg = `ERROR: failed to retrieve type for obj [${context.obj_name}] !`
+        log_api_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return
+    }
+
+    // api sepc
     let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
     if (!api_spec) {
         let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
@@ -191,17 +202,80 @@ function parse_for_sql(context, req, res) {
     // return result
     return {
         fatal: fatal,
+        obj_name: context.obj_name,
+        obj_type: obj_type,
         key_attrs: key_attrs,
         non_key_attrs: non_key_attrs,
         data_attrs: data_attrs
     }
 }
 
+/**
+ * load previous object
+ */
+function load_object(parsed) {
+
+    // create prev sql
+    let sql_prev = `SELECT \`id\``
+    let sql_prev_params = []
+
+    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
+        sql_prev += ` ,\`${key_attr}\``
+    })
+
+    Object.keys(parsed.non_key_attrs).forEach((non_key_attr, i) => {
+        sql_prev += ` ,\`${non_key_attr}\``
+    })
+
+    if (parsed.obj_type == 'spec') {
+        sql_prev += `, \`create_time\``
+        sql_prev += `, \`update_time\``
+    } else if (parsed.obj_type == 'status') {
+        sql_prev += `, \`status_time\``
+    }
+
+    sql_prev += ` FROM \`${parsed.obj_name}\` WHERE deleted=0`
+    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
+
+        sql_prev += ` AND \`${key_attr}\`=?`
+        sql_prev_params.push(parsed.data_attrs[key_attr])
+    })
+
+    let prev = db.query_sync(sql_prev, sql_prev_params)
+
+    if (prev && prev.length != 0) {
+        return prev[0]
+    } else {
+        return null
+    }
+}
+
+/**
+ * record spec audit to database
+ */
+function record_spec_audit(id, prev, curr, req) {
+
+    let audit_spec = {
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        verb: req.context.verb,
+        prev: prev,
+        curr: curr
+    }
+
+    let audit_sql = "INSERT INTO `_spec_audit` (`namespace`, `app_name`, `obj_name`, `obj_id`, `spec_audit`) VALUES (?, ?, ?, ?, ?)"
+    let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(audit_spec)]
+
+    console.log(`INFO: ${audit_sql}, [${audit_params}]`)
+    db.query_sync(audit_sql, audit_params)
+}
 
 module.exports = {
     get_api_spec: get_api_spec,
     log_api_status: log_api_status,
     parse_for_sql: parse_for_sql,
+    load_object: load_object,
+    record_spec_audit: record_spec_audit,
     SUCCESS: SUCCESS,
     FAILURE: FAILURE,
     REGEX_VAR: REGEX_VAR

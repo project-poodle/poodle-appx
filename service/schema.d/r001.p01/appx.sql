@@ -176,8 +176,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_spec_audit` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_id`                BIGINT                  NOT NULL,
-    `audit_prev`            JSON                    NOT NULL,
-    `audit_curr`            JSON                    NOT NULL,
+    `spec_audit`            JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )
@@ -191,7 +190,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_status_audit` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_id`                BIGINT                  NOT NULL,
-    `audit_status`          JSON                    NOT NULL,
+    `status_audit`          JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )

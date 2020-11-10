@@ -11,10 +11,10 @@ const { handle_status } = require('./status')
 // track a list of endpoints
 // let endpoints = []
 
-function handle_req(context, req, res) {
+function handle_req(req, res) {
 
     // check api_spec
-    let api_spec = get_api_spec(context, req, res)
+    let api_spec = get_api_spec(req.context, req, res)
     if (! api_spec) {
         return
     }
@@ -37,34 +37,35 @@ function handle_req(context, req, res) {
             })
 
             if (! obj_perm_granted) {
-                res.status(403).json({status: FAILURE, message: `Permission Denied`})
+                res.status(403).json({status: FAILURE, message: `Access Denied`})
                 return
             }
         }
     }
 
-    console.log(req.context)
+    req.context = Object.assign({}, req.context, { verb: api_spec.syntax.verb })
+    //console.log(req.context)
 
     // handle request by verb
     switch(api_spec.syntax.verb) {
         case "get":
-            handle_get(context, req, res)
+            handle_get(req.context, req, res)
             return
 
         case "upsert":
-            handle_upsert(context, req, res)
+            handle_upsert(req.context, req, res)
             return
 
         case "update":
-            handle_update(context, req, res)
+            handle_update(req.context, req, res)
             return
 
         case "delete":
-            handle_delete(context, req, res)
+            handle_delete(req.context, req, res)
             return
 
         case "status":
-            handle_status(context, req, res)
+            handle_status(req.context, req, res)
             return
 
         default:
@@ -118,8 +119,8 @@ function get_router(namespace, app_name, runtime_name) {
 
                 router.get(api_result.api_endpoint, (req, res) => {
 
-                    let context = Object.assign({}, api_context, req.context)
-                    handle_req(context, req, res)
+                    req.context = Object.assign({}, api_context, req.context)
+                    handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
@@ -128,8 +129,8 @@ function get_router(namespace, app_name, runtime_name) {
             case "post":
                 router.post(api_result.api_endpoint, (req, res) => {
 
-                    let context = Object.assign({}, api_context, req.context)
-                    handle_req(context, req, res)
+                    req.context = Object.assign({}, api_context, req.context)
+                    handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
@@ -138,8 +139,8 @@ function get_router(namespace, app_name, runtime_name) {
             case "put":
                 router.put(api_result.api_endpoint, (req, res) => {
 
-                    let context = Object.assign({}, api_context, req.context)
-                    handle_req(context, req, res)
+                    req.context = Object.assign({}, api_context, req.context)
+                    handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
@@ -148,8 +149,8 @@ function get_router(namespace, app_name, runtime_name) {
             case "delete":
                 router.delete(api_result.api_endpoint, (req, res) => {
 
-                    let context = Object.assign({}, api_context, req.context)
-                    handle_req(context, req, res)
+                    req.context = Object.assign({}, api_context, req.context)
+                    handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)

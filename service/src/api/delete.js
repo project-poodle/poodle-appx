@@ -1,6 +1,6 @@
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status, parse_for_sql, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
+const { log_api_status, parse_for_sql, load_prev_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 /**
  * handle_delete
@@ -71,9 +71,24 @@ function handle_delete(context, req, res) {
         }
     })
 
+    // query prev
+    let prev = load_prev_object(parsed)
+
+    let obj_changed = false
+    if (prev) {
+        obj_changed = true
+    } else {
+        prev = null
+    }
+
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
     let result = db.query_sync(sql, sql_params)
+
+    // record audit
+    if (prev != null && obj_changed) {
+        record_spec_audit(prev.id, prev, curr, req)
+    }
 
     // send back the result
     res.status(200).json({status: SUCCESS})
