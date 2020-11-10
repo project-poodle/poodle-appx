@@ -255,7 +255,7 @@ function load_object(parsed) {
  */
 function record_spec_audit(id, prev, curr, req) {
 
-    let audit_spec = {
+    let spec_audit = {
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         userAgent: req.get('user-agent'),
         verb: req.context.verb,
@@ -264,10 +264,47 @@ function record_spec_audit(id, prev, curr, req) {
     }
 
     let audit_sql = "INSERT INTO `_spec_audit` (`namespace`, `app_name`, `obj_name`, `obj_id`, `spec_audit`) VALUES (?, ?, ?, ?, ?)"
-    let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(audit_spec)]
+    let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(spec_audit)]
 
-    console.log(`INFO: ${audit_sql}, [${audit_params}]`)
-    db.query_sync(audit_sql, audit_params)
+    try {
+        db.query_sync(audit_sql, audit_params)
+    } catch (err) {
+        console.log(`ERROR: spec audit sql failed ${audit_sql}, ${audit_params}`)
+        throw err
+    }
+}
+
+/**
+ * record status audit to database
+ */
+function record_status_audit(id, status, req) {
+
+    let status_audit = {
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        userAgent: req.get('user-agent'),
+        verb: req.context.verb,
+        status: status
+    }
+
+    let audit_sql = "INSERT INTO `_status_audit` (`namespace`, `app_name`, `obj_name`, `obj_id`, `status_audit`) VALUES (?, ?, ?, ?, ?)"
+    let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(status_audit)]
+
+    try {
+        db.query_sync(audit_sql, audit_params)
+    } catch (err) {
+        console.log(`ERROR: status audit sql failed ${audit_sql}, ${audit_params}`)
+        throw err
+    }
+
+    let history_sql = "INSERT INTO `_status_history` (`namespace`, `app_name`, `obj_name`, `obj_id`, `obj_date`, `status_history`) VALUES (?, ?, ?, ?, CURDATE(), ?) ON DUPLICATE KEY UPDATE status_history=VALUES(status_history)"
+    let history_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(status_audit)]
+
+    try {
+        db.query_sync(history_sql, history_params)
+    } catch (err) {
+        console.log(`ERROR: status history sql failed ${history_sql}, ${history_params}`)
+        throw err
+    }
 }
 
 module.exports = {
@@ -276,6 +313,7 @@ module.exports = {
     parse_for_sql: parse_for_sql,
     load_object: load_object,
     record_spec_audit: record_spec_audit,
+    record_status_audit: record_status_audit,
     SUCCESS: SUCCESS,
     FAILURE: FAILURE,
     REGEX_VAR: REGEX_VAR

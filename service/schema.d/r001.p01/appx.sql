@@ -204,11 +204,11 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`_status_history` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `obj_id`                BIGINT                  NOT NULL,
-    `obj_time`              DATETIME                NOT NULL,
-    `history_status`        JSON                    NOT NULL,
+    `obj_date`              DATE                    NOT NULL,
+    `status_history`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `obj_name`, `obj_id`, `obj_time`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `obj_name`, `obj_id`, `obj_date`),
     PRIMARY KEY (`id`, `namespace`, `app_name`, `obj_name`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
