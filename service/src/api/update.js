@@ -93,7 +93,6 @@ function handle_update(context, req, res) {
         record_spec_audit(curr.id, prev, curr, req)
     }
 
-
     // send back the result
     res.status(200).json({status: SUCCESS})
 }

@@ -1,6 +1,8 @@
+const deepEqual = require('deep-equal')
+const stringify = require('fast-json-stable-stringify')
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status, parse_for_sql, load_prev_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
+const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 /**
  * handle_delete
@@ -72,18 +74,15 @@ function handle_delete(context, req, res) {
     })
 
     // query prev
-    let prev = load_prev_object(parsed)
-
-    let obj_changed = false
-    if (prev) {
-        obj_changed = true
-    } else {
-        prev = null
-    }
+    let prev = load_object(parsed)
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
     let result = db.query_sync(sql, sql_params)
+
+    // query curr
+    let curr = load_object(parsed)
+    let obj_changed = !deepEqual(curr, prev)
 
     // record audit
     if (prev != null && obj_changed) {
