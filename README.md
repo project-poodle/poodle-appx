@@ -9,16 +9,16 @@ schema, rest API, and UI based on user defined model schema.
 
 # Initial setup of AppX service
 
-    cd service
+    $ cd service
 
     -- edit init.d/init.yaml
        update credentials and mysql connection info
 
-    sudo ./init.d/init.sh ./init.d/init.yaml
+    $ sudo ./init.d/init.sh ./init.d/init.yaml
 
-    sudo ./schema.d/r001.p1/run.sh
+    $ sudo ./schema.d/r001.p1/run.sh
 
-    sudo ./app.sh -c ./conf.d/mysql_appx.conf
+    $ sudo ./app.sh -c ./conf.d/mysql_appx.conf
 
     -- start a new terminal
 
