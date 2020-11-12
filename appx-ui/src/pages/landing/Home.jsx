@@ -106,11 +106,11 @@ var videos= [
   //  start: 2695,
   //  end: 3001,
   //},
-  {
-    vid: 'wnhvanMdx4s', // space
-    start: 4824,
-    end: 5435,
-  },
+  //{
+  //  vid: 'wnhvanMdx4s', // space
+  //  start: 4824,
+  //  end: 5435,
+  //},
   //{
   //  vid: 'wnhvanMdx4s', // space
   //  start: 6752,
