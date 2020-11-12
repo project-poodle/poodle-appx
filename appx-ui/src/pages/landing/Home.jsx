@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {
   Box,
   Button,
@@ -9,24 +8,18 @@ import {
   Link,
   Icon,
   Paper,
-  Card,
   TextField,
   Typography,
   CssBaseline,
   makeStyles
 } from '@material-ui/core';
 // import ReactPlayer from 'react-player'
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
 import SlideshowIcon from '@material-ui/icons/Slideshow';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 
 const useStyles = makeStyles((theme) => ({
 
-  // @import url('https://fonts.googleapis.com/css?family=Roboto');
-
-  /*Background*/
   videoBackground: {
     background: "#000",
     position: "fixed",
@@ -52,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     },
     zIndex: -98
   },
+
   control: {
     padding: theme.spacing(2),
   },
@@ -63,11 +57,6 @@ const useStyles = makeStyles((theme) => ({
   gridTitle: {
     margin: 30,
   },
-  card: {
-    width: "100%",
-    backgroundColor: theme.palette.secondary.main,
-    zIndex: 0
-  }
 }))
 
 // keep a list of vids
@@ -112,11 +101,11 @@ var videos= [
     start: 263,
     end: 736,
   },
-  {
-    vid: 'wnhvanMdx4s', // space
-    start: 2695,
-    end: 3001,
-  },
+  //{
+  //  vid: 'wnhvanMdx4s', // space
+  //  start: 2695,
+  //  end: 3001,
+  //},
   {
     vid: 'wnhvanMdx4s', // space
     start: 4824,
@@ -129,7 +118,7 @@ var videos= [
   //},
   {
     vid: 'xRFrjAVH1uQ', // scene
-    start: 0,
+    start: 12,
     end: -1
   },
   {
@@ -174,12 +163,12 @@ window.onYouTubeIframeAPIReady = () => {
       },
       onStateChange: function(e) {
         if (e.data == 0) { // ended
-          let idx = Math.floor(Math.random() * videos.length)
-          let video = videos[idx]
-          let start = 'start' in video ? video.start : 0
-          let end = 'end' in video ? video.end : -1
-          player.cueVideoById(video.vid, start, end)
-          console.log(`INFO: YT cued ${JSON.stringify(video)}`)
+          let i = Math.floor(Math.random() * videos.length)
+          let v = videos[i]
+          let s = 'start' in v ? v.start : 0
+          let e = 'end' in v ? v.end : -1
+          player.cueVideoById({videoId:v.vid, startSeconds:s, endSeconds:e})
+          console.log(`INFO: YT cued ${JSON.stringify(v)}`)
           player.playVideo()
         }
       }
@@ -230,7 +219,7 @@ export default function Home() {
               size="large"
               variant="contained"
             >
-              Getting Start
+              Getting Started
             </Button>
         </Grid>
         <Grid item xs={false} md={1} lg={1} xl={1}>
