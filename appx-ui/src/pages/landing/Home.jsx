@@ -20,8 +20,16 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 const useStyles = makeStyles((theme) => ({
 
+  paper: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+
   videoBackground: {
-    background: "#000",
+    background: "#555",
     position: "fixed",
     top: 0,
     right: 0,
@@ -43,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
       width: "500%",
       left: "-200%",
     },
-    zIndex: -98
   },
 
   control: {
@@ -52,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     position: "fixed",
     bottom: "8%",
-    alignItems: 'center',
+    zIndex: 0
   },
   gridTitle: {
     margin: 30,
@@ -143,17 +150,17 @@ window.onYouTubeIframeAPIReady = () => {
   player = new window.YT.Player('video-foreground', {
     videoId: video.vid, // YouTube Video ID
     playerVars: {
-      autoplay: 1,        // Auto-play the video on load
-      controls: 0,        // Show pause/play buttons in player
-      showinfo: 0,        // Hide the video title
-      modestbranding: 1,  // Hide the Youtube Logo
+      autoplay: 1,          // Auto-play the video on load
+      controls: 0,          // Show pause/play buttons in player
+      showinfo: 0,          // Hide the video title
+      modestbranding: 1,    // Hide the Youtube Logo
       start: start,
       end: end,
-      loop: 1,            // Run the video in a loop
-      fs: 0,              // Hide the full screen button
-      cc_load_policy: 0, // Hide closed captions
-      iv_load_policy: 3,  // Hide the Video Annotations
-      autohide: 0,         // Hide video controls when playing
+      loop: 1,              // Run the video in a loop
+      fs: 0,                // Hide the full screen button
+      cc_load_policy: 0,    // Hide closed captions
+      iv_load_policy: 3,    // Hide the Video Annotations
+      autohide: 0,          // Hide video controls when playing
       //playlist: video.vid,
     },
     events: {
@@ -197,27 +204,29 @@ export default function Home() {
   });
 
   return (
-    <Box className={classes.videoBackground}>
-      <Box className={classes.videoForeground} id='video-foreground'>
+    <Box class="paper">
+      <Box className={classes.videoBackground}>
+        <Box className={classes.videoForeground} id='video-foreground'>
+        </Box>
       </Box>
-      <CssBaseline />
-      <Paper>
+      <Box className={classes.paper}>
       <Grid container component="main" spacing={1} className={classes.grid}>
+        <CssBaseline />
         <Grid item xs={12} className={classes.gridTitle}>
           <Typography variant="h3" align="center">
-            AppX - Design Your Own Apps
+            Design Your Own Apps with App-X
           </Typography>
         </Grid>
         <Grid item xs={false} sm={1} md={1} lg={2} xl={3}>
         </Grid>
         <Grid item xs={12} sm={5} md={4} lg={3} xl={2}>
             <Button
+              variant="contained"
               color="primary"
               fullWidth
               startIcon={<MenuBookIcon />}
-              //onClick={handleSubmit}
+              onClick={() => {alert('Not Implemented')}}
               size="large"
-              variant="contained"
             >
               Getting Started
             </Button>
@@ -228,12 +237,13 @@ export default function Home() {
         </Grid>
         <Grid item xs={12} sm={5} md={4} lg={3} xl={2}>
             <Button
+              variant="contained"
               color="primary"
               fullWidth
               startIcon={<SlideshowIcon />}
-              //onClick={handleSubmit}
+              // onClick={() => {alert('clicked #2')}}
+              href="login"
               size="large"
-              variant="contained"
             >
               Live Demo
             </Button>
@@ -241,7 +251,7 @@ export default function Home() {
         <Grid item xs={false} sm={1} md={1} lg={2} xl={3}>
         </Grid>
       </Grid>
-      </Paper>
+      </Box>
     </Box>
   );
 }

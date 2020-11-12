@@ -100,20 +100,20 @@ export default function SignInSide() {
                   //onClick={handleSubmit}
                   size="large"
                   variant="contained"
-                >
+                  >
                   Login with Facebook
                 </Button>
               </Grid>
               <Grid item xs={12}>
                 <Button
-                color="primary"
-                className={classes.google}
-                fullWidth
-                startIcon={<GoogleIcon />}
-                //onClick={handleSubmit}
-                size="large"
-                variant="contained"
-                >
+                  color="primary"
+                  className={classes.google}
+                  fullWidth
+                  startIcon={<GoogleIcon />}
+                  //onClick={handleSubmit}
+                  size="large"
+                  variant="contained"
+                  >
                   Login with Google
                 </Button>
               </Grid>
