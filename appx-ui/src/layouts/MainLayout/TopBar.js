@@ -35,8 +35,7 @@ const TopBar = ({ className, ...rest }) => {
       <Toolbar className={classes.toolbar}>
         <RouterLink to="/">
           <Avatar className={classes.avatar}>
-            <ViewQuiltRoundedIcon
-            />
+            <ViewQuiltRoundedIcon/>
           </Avatar>
         </RouterLink>
       </Toolbar>
