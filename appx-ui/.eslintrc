@@ -59,6 +59,8 @@
     "space-infix-ops": "off",
     "key-spacing": "off",
     "func-names": "off",
+    "no-useless-rename": "off",
+    "object-curly-newline": "off",
     "indent": "off",
     "no-unused-vars": "warn",
     "no-useless-computed-key": "warn",

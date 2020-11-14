@@ -38,72 +38,72 @@ const Dashboard = () => {
         >
           <Grid
             item
+            xl={3}
             lg={3}
             sm={6}
-            xl={3}
             xs={12}
           >
             <Budget />
           </Grid>
           <Grid
             item
+            xl={3}
             lg={3}
             sm={6}
-            xl={3}
             xs={12}
           >
             <TotalCustomers />
           </Grid>
           <Grid
             item
+            xl={3}
             lg={3}
             sm={6}
-            xl={3}
             xs={12}
           >
             <TasksProgress />
           </Grid>
           <Grid
             item
+            xl={3}
             lg={3}
             sm={6}
-            xl={3}
             xs={12}
           >
             <TotalProfit />
           </Grid>
           <Grid
             item
+            xl={9}
             lg={8}
             md={12}
-            xl={9}
             xs={12}
           >
             <Sales />
           </Grid>
           <Grid
             item
+            xl={3}
             lg={4}
             md={6}
-            xl={3}
             xs={12}
           >
             <TrafficByDevice />
           </Grid>
           <Grid
             item
+            xl={3}
             lg={4}
             md={6}
-            xl={3}
             xs={12}
           >
             <LatestProducts />
           </Grid>
           <Grid
             item
+            xl={9}
             lg={8}
             md={12}
-            xl={9}
             xs={12}
           >
             <LatestOrders />

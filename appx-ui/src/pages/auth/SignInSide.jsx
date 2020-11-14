@@ -31,7 +31,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    height: '100%',
   },
   image: {
     backgroundImage: 'url(https://source.unsplash.com/random)',
@@ -94,7 +94,7 @@ export default function SignInSide() {
         // TODO
         console.log(res)
         //history.push("/console")
-        navigate('/console')
+        navigate('/appx/console')
       },
       err => {
         // TODO
@@ -107,8 +107,8 @@ export default function SignInSide() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid item xs={false} sm={4} md={8} className={classes.image} />
-      <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
+      <Grid item xs={false} sm={4} md={7} lg={8} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />

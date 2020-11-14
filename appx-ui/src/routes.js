@@ -1,18 +1,17 @@
-import React from 'react';
-// import { Navigate } from 'react-router-dom';
-//import DashboardLayout from './layouts/DashboardLayout';
-//import MainLayout from './layouts/MainLayout';
-//import AccountView from './views/account/AccountView';
-//import CustomerListView from './views/customer/CustomerListView';
-import DashboardView from './views/reports/DashboardView';
-//import LoginView from './views/auth/LoginView';
-import Home from './pages/landing/Home';
-import SignInSide from './pages/auth/SignInSide';
-import NotFoundView from 'src/views/errors/NotFoundView';
-//import NotFoundView from './views/errors/NotFoundView';
-//import ProductListView from './views/product/ProductListView';
-//import RegisterView from './views/auth/RegisterView';
-//import SettingsView from './views/settings/SettingsView';
+import React from 'react'
+//import DashboardLayout from './layouts/DashboardLayout'
+//import MainLayout from './layouts/MainLayout'
+//import AccountView from './views/account/AccountView'
+//import CustomerListView from './views/customer/CustomerListView'
+import HeaderLayout from 'src/pageLayouts/headerLayout'
+import ConsoleLayout from 'src/pageLayouts/consoleLayout'
+import Home from './pages/landing/Home'
+import SignInSide from './pages/auth/SignInSide'
+import DashboardView from './views/reports/DashboardView'
+import NotFoundView from 'src/views/errors/NotFoundView'
+//import ProductListView from './views/product/ProductListView'
+//import RegisterView from './views/auth/RegisterView'
+//import SettingsView from './views/settings/SettingsView'
 
 /*
 
@@ -50,9 +49,9 @@ const routes = [
 
 const routes = {
     '/': () => <Home/>,
-    '/login': () => <SignInSide/>,
-    '/console': () => <DashboardView/>,
-    '/404': () => <NotFoundView/>,
+    '/appx/login': () => <HeaderLayout><SignInSide/></HeaderLayout>,
+    '/appx/console': () => <ConsoleLayout><DashboardView/></ConsoleLayout>,
+    '/404': () => <HeaderLayout><NotFoundView/></HeaderLayout>,
 }
 
 export default routes;

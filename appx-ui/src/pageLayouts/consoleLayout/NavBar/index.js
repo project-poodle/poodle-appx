@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React, { useEffect } from 'react'
+//import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { A, navigate } from 'hookrouter'
+import PropTypes from 'prop-types'
 import {
   Avatar,
   Box,
@@ -91,7 +92,7 @@ const useStyles = makeStyles(() => ({
 
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
-  const location = useLocation();
+  //const location = useLocation();
 
   //useEffect(() => {
   //  if (openMobile && onMobileClose) {
@@ -112,12 +113,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         flexDirection="column"
         p={2}
       >
-        <Avatar
-          className={classes.avatar}
-          component={RouterLink}
-          src={user.avatar}
-          to="/app/account"
-        />
+        <A href="/app/account">
+          <Avatar
+            className={classes.avatar}
+            src={user.avatar}
+          />
+        </A>
         <Typography
           className={classes.name}
           color="textPrimary"
@@ -156,28 +157,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           gutterBottom
           variant="h4"
         >
-          Need more?
+          Have Questions?
         </Typography>
-        <Typography
-          align="center"
-          variant="body2"
-        >
-          Upgrade to PRO version and access 20 more screens
-        </Typography>
-        <Box
-          display="flex"
-          justifyContent="center"
-          mt={2}
-        >
-          <Button
-            color="primary"
-            component="a"
-            href="https://react-material-kit.devias.io"
-            variant="contained"
-          >
-            See PRO version
-          </Button>
-        </Box>
       </Box>
     </Box>
   );

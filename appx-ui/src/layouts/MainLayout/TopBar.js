@@ -1,12 +1,13 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
-import { AppBar, Toolbar, makeStyles } from '@material-ui/core';
+import React from 'react'
+//import { Link as RouterLink } from 'react-router-dom'
+import { A } from 'hookrouter'
+import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';=
+import Avatar from '@material-ui/core/Avatar'
+import Typography from '@material-ui/core/Typography'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import Box from '@material-ui/core/Box'
+import { AppBar, Toolbar, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -34,25 +35,25 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const TopBar = ({ className, ...rest }) => {
-  const classes = useStyles();
+const TopBar = ({ ...rest }) => {
+  const classes = useStyles()
 
   return (
     <AppBar
-      className={clsx(classes.root, className)}
+      className={clsx(classes.root)}
       elevation={0}
       {...rest}
     >
       <Toolbar className={classes.toolbar}>
         <Box className={classes.fullWidth}>
-            <RouterLink to="/" className={classes.inline}>
+            <A to="/" className={classes.inline}>
               <Avatar className={classes.avatar}>
                 <ViewQuiltRoundedIcon/>
               </Avatar>
               <Typography variant="h3" display="inline" color="secondary" noWrap className={classes.text}>
                 App-X
               </Typography>
-            </RouterLink>
+            </A>
         </Box>
       </Toolbar>
     </AppBar>

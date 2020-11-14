@@ -4,6 +4,7 @@ import React from 'react';
 import { useRoutes } from 'hookrouter';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from './components/GlobalStyles';
+import HeaderLayout from 'src/pageLayouts/headerLayout'
 import NotFoundView from 'src/views/errors/NotFoundView';
 import './mixins/chartjs';
 import theme from './theme';
@@ -18,7 +19,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-        {routeResult || <NotFoundView />}
+        {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}
     </ThemeProvider>
   );
 };
