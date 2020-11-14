@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function SignInSide(props) {
+export default function SignInSide() {
 
   const classes = useStyles()
   //const history = useHistory()

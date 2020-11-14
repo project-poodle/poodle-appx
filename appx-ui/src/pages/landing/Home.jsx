@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Grid,
-  Typography,
+//  Typography,
   CssBaseline,
   makeStyles
 } from '@material-ui/core';
@@ -195,12 +195,12 @@ window.onYouTubeIframeAPIReady = () => {
       //playlist: video.vid,
     },
     events: {
-      onReady: function(e) {
+      onReady: function() {
         player.mute()
         player.playVideo()
       },
-      onStateChange: function(e) {
-        if (e.data === 0) { // ended
+      onStateChange: function(event) {
+        if (event.data === 0) { // ended
           let i = Math.floor(Math.random() * videos.length)
           let v = videos[i]
           let s = 'start' in v ? v.start : 0
@@ -209,6 +209,9 @@ window.onYouTubeIframeAPIReady = () => {
           console.log(`INFO: YT cued ${JSON.stringify(v)}`)
           player.playVideo()
         }
+      },
+      onPlaybackQualityChange: function(e) {
+        console.log(`INFO: ${e.data}`)
       }
     }
   });
@@ -233,17 +236,12 @@ export default function Home() {
   return (
     <Box class="paper">
       <Box className={classes.videoBackground}>
-        <Box className={classes.videoForeground} id='video-foreground'>
+        <Box className={classes.videoForeground} id="video-foreground">
         </Box>
       </Box>
       <Box className={classes.paper}>
       <Grid container component="main" spacing={1} className={classes.grid}>
         <CssBaseline />
-        <Grid item xs={12} className={classes.gridTitle}>
-          <Typography variant="h3" align="center">
-            Design Your Own Apps with App-X
-          </Typography>
-        </Grid>
         <Grid item xs={false} sm={1} md={1} lg={2} xl={3}>
         </Grid>
         <Grid item xs={12} sm={5} md={4} lg={3} xl={2}>
@@ -252,7 +250,7 @@ export default function Home() {
               color="primary"
               fullWidth
               startIcon={<MenuBookIcon />}
-              onClick={() => {alert('Not Implemented')}}
+              onClick={() => { navigate('/docs') }}
               size="large"
             >
               Getting Started
@@ -284,6 +282,13 @@ export default function Home() {
 }
 
 /*
+<Grid item xs={12} className={classes.gridTitle}>
+  <Typography variant="h3" align="center">
+    Design Your Own Apps with App-X
+  </Typography>
+</Grid>
+
+
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
