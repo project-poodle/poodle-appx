@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useTheme } from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
+// import { useTheme } from '@material-ui/core/styles';
+import { navigate } from 'hookrouter';
 import {
   Box,
   Button,
@@ -268,7 +269,7 @@ export default function Home() {
               fullWidth
               startIcon={<SlideshowIcon />}
               // onClick={() => {alert('clicked #2')}}
-              href="login"
+              onClick={() => { navigate('/login') }}
               size="large"
             >
               Live Demo

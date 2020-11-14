@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+//import { withRouter } from "react-router";
+//import { useHistory } from "react-router-dom";
+import { navigate } from 'hookrouter';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -75,6 +78,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide(props) {
 
+  const classes = useStyles()
+  //const history = useHistory()
+  //const { history } = props
+
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -86,6 +93,8 @@ export default function SignInSide(props) {
       res => {
         // TODO
         console.log(res)
+        //history.push("/console")
+        navigate('/console')
       },
       err => {
         // TODO
@@ -94,8 +103,6 @@ export default function SignInSide(props) {
     )
     event.preventDefault()
   }
-
-  let classes = useStyles()
 
   return (
     <Grid container component="main" className={classes.root}>
