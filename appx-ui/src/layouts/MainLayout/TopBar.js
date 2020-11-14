@@ -1,19 +1,12 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import ViewQuiltIcon from '@material-ui/icons/ViewQuilt';
 import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import {
-  AppBar,
-  Toolbar,
-  makeStyles
-} from '@material-ui/core';
-import Logo from 'src/components/Logo';
+import { AppBar, Toolbar, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {},

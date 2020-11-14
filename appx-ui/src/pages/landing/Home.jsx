@@ -3,12 +3,7 @@ import { useTheme } from '@material-ui/core/styles';
 import {
   Box,
   Button,
-  Container,
   Grid,
-  Link,
-  Icon,
-  Paper,
-  TextField,
   Typography,
   CssBaseline,
   makeStyles
@@ -204,7 +199,7 @@ window.onYouTubeIframeAPIReady = () => {
         player.playVideo()
       },
       onStateChange: function(e) {
-        if (e.data == 0) { // ended
+        if (e.data === 0) { // ended
           let i = Math.floor(Math.random() * videos.length)
           let v = videos[i]
           let s = 'start' in v ? v.start : 0
@@ -221,10 +216,6 @@ window.onYouTubeIframeAPIReady = () => {
 export default function Home() {
 
   const classes = useStyles();
-
-  let idx = Math.floor(Math.random() * videos.length)
-  //let video = videos[Math.min(idx, videos.length-1)]
-  let video = videos[idx]
 
   useEffect(() => {
       var aScript = document.createElement('script');

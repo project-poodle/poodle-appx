@@ -206,6 +206,8 @@ function del(app, url, callback, handler) {
 module.exports = {
   login: login,
   logout: logout,
+  get_base_url: get_base_url,
+  set_base_url: set_base_url,
   get: get,
   head: head,
   post: post,
