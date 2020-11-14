@@ -1,9 +1,7 @@
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 //import { useRoutes } from 'react-router-dom';
-import { useMemo } from "react";
-import { useRoutes, navigate } from 'hookrouter';
+import { useRoutes } from 'hookrouter';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from './components/GlobalStyles';
 import NotFoundView from 'src/views/errors/NotFoundView';

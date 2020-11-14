@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 //import DashboardLayout from './layouts/DashboardLayout';
-import MainLayout from './layouts/MainLayout';
+//import MainLayout from './layouts/MainLayout';
 //import AccountView from './views/account/AccountView';
 //import CustomerListView from './views/customer/CustomerListView';
 import DashboardView from './views/reports/DashboardView';
