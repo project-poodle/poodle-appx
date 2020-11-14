@@ -25,7 +25,6 @@ function findLocalUserWithPass(realm, username, password, table, fields) {
     if (!result || result.length == 0) {
         return {
             status: 'error',
-            user: null,
             message: `Invalid Username or Password`
         }
     } else {

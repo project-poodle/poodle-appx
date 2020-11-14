@@ -75,7 +75,7 @@ var videos= [
   },
   {
     vid: 'k5obtOZe4ZQ', // people
-    start: 40,
+    start: 47,
     end: 338,
   },
   {
@@ -96,8 +96,13 @@ var videos= [
   {
     vid: '-hcXR9aMTxI', // trees
     start: 0,
-    end: -1,
+    end: 135,
   },
+  //{
+  //  vid: '-hcXR9aMTxI', // trees
+  //  start: 135,
+  //  end: -1,
+  //},
   {
     vid: 'wnhvanMdx4s', // space
     start: 0,
@@ -106,7 +111,7 @@ var videos= [
   {
     vid: 'wnhvanMdx4s', // space
     start: 263,
-    end: 736,
+    end: 336,
   },
   //{
   //  vid: 'wnhvanMdx4s', // space
@@ -125,14 +130,44 @@ var videos= [
   //},
   {
     vid: 'xRFrjAVH1uQ', // scene
-    start: 12,
+    start: 18,
     end: -1
   },
+  //{
+  //  vid: 'uGWHSgIzqt0', // forest
+  //  start: 22,
+  //  end: 255,
+  //},
   {
-    vid: 'uGWHSgIzqt0', // forest
-    start: 22,
-    end: -1,
+    vid: 'zRpazyH1WzI', // compilation
+    start: 0,
+    end: 63,
   },
+  {
+    vid: 'zRpazyH1WzI', // compilation
+    start: 99,
+    end: 546,
+  },
+  {
+    vid: 'zRpazyH1WzI', // compilation
+    start: 632,
+    end: 1201
+  },
+  {
+    vid: 'zRpazyH1WzI', // compilation
+    start: 1262,
+    end: 1830
+  },
+  {
+    vid: 'zRpazyH1WzI', // compilation
+    start: 1990,
+    end: 2050
+  },
+  {
+    vid: 'vOxmsqd8f58', // water drop
+    start: 0,
+    end: -1
+  }
 ]
 
 

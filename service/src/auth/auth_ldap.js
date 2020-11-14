@@ -129,7 +129,6 @@ function findLdapUserWithPass(realm, protocol, username, password) {
     if (!results || results.length == 0 || (! ('dn' in results[0]))) {
         return {
             status: 'error',
-            user: null,
             message: `Invalid Username or Password`
         }
     }
@@ -140,7 +139,6 @@ function findLdapUserWithPass(realm, protocol, username, password) {
     } catch (err) {
         return {
             status: 'error',
-            user: null,
             message: `Invalid Username or Password`
         }
     }

@@ -22,7 +22,6 @@ const theme = createMuiTheme({
   shape: {
       borderRadius: 0,
   },
-  //shadows,
   typography
 });
 

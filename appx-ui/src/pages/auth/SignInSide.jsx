@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -16,6 +16,7 @@ import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import { colors } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { login } from 'src/api'
 
 function Copyright() {
   return (
@@ -75,8 +76,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
-  const classes = useStyles();
+
+export default function SignInSide(props) {
+
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
+  function handleSubmit(event) {
+    login(
+      'appx',
+      username,
+      password,
+      res => {
+        // TODO
+        console.log(res)
+      },
+      err => {
+        // TODO
+        console.log(err)
+      }
+    )
+    event.preventDefault()
+  }
+
+  let classes = useStyles()
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -124,10 +147,12 @@ export default function SignInSide() {
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="username"
               label="Login"
-              name="email"
-              autoComplete="email"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
               autoFocus
             />
             <TextField
@@ -140,9 +165,12 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
             />
             <Button
               type="submit"
+              onClick={handleSubmit}
               fullWidth
               variant="contained"
               color="primary"
@@ -158,5 +186,5 @@ export default function SignInSide() {
         </div>
       </Grid>
     </Grid>
-  );
+  )
 }
