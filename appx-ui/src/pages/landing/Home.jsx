@@ -151,7 +151,7 @@ var videos= [
   },
   {
     vid: 'zRpazyH1WzI', // compilation
-    start: 1262,
+    start: 1385,
     end: 1830
   },
   {
