@@ -250,7 +250,8 @@ export default function Home() {
               color="primary"
               fullWidth
               startIcon={<MenuBookIcon />}
-              onClick={() => { navigate('/docs') }}
+              // onClick={() => { navigate('/docs') }}
+              href="/docs"
               size="large"
             >
               Getting Started
@@ -267,7 +268,8 @@ export default function Home() {
               fullWidth
               startIcon={<SlideshowIcon />}
               // onClick={() => {alert('clicked #2')}}
-              onClick={() => { navigate('/appx/console') }}
+              // onClick={() => { navigate('/appx/console') }}
+              href="/appx/console"
               size="large"
             >
               Live Demo
