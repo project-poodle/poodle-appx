@@ -17,7 +17,7 @@ const App = () => {
 
   const routeResult = useRoutes(routes)
   //const routing = useRoutes(routes)
-  console.log(store)
+  // console.log(store)
 
   return (
     <Provider store={store}>
