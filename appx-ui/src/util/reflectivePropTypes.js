@@ -10,7 +10,7 @@ for(var propType in originalPropTypes){
   // Create a new reflective property each time the getter is called
   Object.defineProperty(newPropTypes, propType,
     {
-      get: reflectiveGetter(propType, originalPropTypes[propType])
+      get: reflectiveGetter(propType)
     }
   );
 }
@@ -18,9 +18,9 @@ for(var propType in originalPropTypes){
 //React.PropTypes = newPropTypes
 
 //Enforce different scope for each property
-function reflectiveGetter(propType, propValue){
+function reflectiveGetter(propType){
   return function(){
-    return createReflectivePropType(propType, propValue);
+    return createReflectivePropType(propType);
   }
 }
 
