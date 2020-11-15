@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//console.log(userToken)
+setInterval(() => {
+  get_user_info(null)
+}, Math.floor((Math.random() * 60) + 60) * 1000)
+
+
 const Header = ({
   className,
   onMobileNavOpen,
@@ -62,11 +68,6 @@ const Header = ({
   if (!userToken || !userToken.token || !userToken.username) {
     navigate('/appx/login')
   }
-
-  //console.log(userToken)
-  setTimeout(() => {
-    get_user_info(null)
-  }, Math.floor((Math.random() * 60) + 60) * 1000)
 
   // render
   return (
