@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { A, navigate } from 'hookrouter';
 // import { Link as RouterLink } from 'react-router-dom';
-import { A } from 'hookrouter'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded'
@@ -18,7 +19,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import { ExitToApp } from '@material-ui/icons';
-import { logout } from 'src/api'
+import { logout, get_app_context, get_user_info } from 'src/api'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
 const Header = ({
   className,
   onMobileNavOpen,
+  userToken,
+  userInfo,
   ...rest
 }) => {
   const classes = useStyles()
@@ -44,17 +47,28 @@ const Header = ({
 
   function handleLogout() {
     logout(
-      'appx',
-      'appx@LDAP',
-      () => {
-        // TODO
+      null,
+      (res) => {
+        navigate('/appx/login')
+        //console.log(res)
       },
-      () => {
+      (err) => {
         // TODO
+        console.log(err.stack)
       }
     )
   }
 
+  if (!userToken || !userToken.token || !userToken.username) {
+    navigate('/appx/login')
+  }
+
+  //console.log(userToken)
+  setTimeout(() => {
+    get_user_info(null)
+  }, Math.floor((Math.random() * 60) + 60) * 1000)
+
+  // render
   return (
     <AppBar
       className={clsx(classes.root, className)}
@@ -83,7 +97,7 @@ const Header = ({
           </IconButton>
           <IconButton
             color="inherit"
-            onClick={handleLogout}
+            onClick={() => {handleLogout()}}
           >
             <ExitToApp />
           </IconButton>
@@ -103,7 +117,36 @@ const Header = ({
 
 Header.propTypes = {
   className: PropTypes.string,
-  onMobileNavOpen: PropTypes.func
+  onMobileNavOpen: PropTypes.func,
+  userToken: PropTypes.object,
+  userInfo: PropTypes.object,
 };
 
-export default Header;
+// state to props
+const mapStateToProps = (state) => {
+  //console.log(state)
+  let app_context = get_app_context()
+  if (! ('namespace' in app_context) || !('app_name' in app_context)) {
+    return {}
+  }
+  if (!(app_context.namespace in state.userReducer)
+      || !(app_context.app_name in state.userReducer[app_context.namespace])) {
+    return {}
+  }
+  let userState = state.userReducer[app_context.namespace][app_context.app_name]
+  let updateState = {}
+  if ('userToken' in userState) {
+    updateState.userToken = userState.userToken
+  }
+  if ('userInfo' in userState) {
+    updateState.userInfo = userState.userInfo
+  }
+  return updateState
+}
+
+// dispatch to props
+const mapDispatchToProps = (dispatch) => {
+  return {}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

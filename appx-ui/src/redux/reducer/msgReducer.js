@@ -1,9 +1,9 @@
 
-const msgInitial = {
+const msgInitialState = {
   msgs: []
 }
 
-function msgReducer(state=msgInitial, action) {
+function msgReducer(state=msgInitialState, action) {
   // action: {
   //    type: 'msg/add',
   //    uuid: 'abc-def-xyz',
@@ -44,7 +44,7 @@ function msgReducer(state=msgInitial, action) {
       }
     default:
       if (action.type.startsWith('msg/')) {
-        console.log(`Uknown redux action ${action.type}`)
+        console.log(`Unknown redux action ${action.type}`)
       }
       return state
   }

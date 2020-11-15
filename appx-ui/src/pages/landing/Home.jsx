@@ -267,7 +267,7 @@ export default function Home() {
               fullWidth
               startIcon={<SlideshowIcon />}
               // onClick={() => {alert('clicked #2')}}
-              onClick={() => { navigate('/appx/login') }}
+              onClick={() => { navigate('/appx/console') }}
               size="large"
             >
               Live Demo

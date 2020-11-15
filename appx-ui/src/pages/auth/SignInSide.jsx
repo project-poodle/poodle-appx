@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-//import { withRouter } from "react-router";
-//import { useHistory } from "react-router-dom";
-import { navigate } from 'hookrouter';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
-import { makeStyles } from '@material-ui/core/styles';
-import { login } from 'src/api'
+import React, { useState } from 'react'
+//import { withRouter } from "react-router"
+//import { useHistory } from "react-router-dom"
+import { navigate } from 'hookrouter'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TextField from '@material-ui/core/TextField'
+import Link from '@material-ui/core/Link'
+import Paper from '@material-ui/core/Paper'
+import Box from '@material-ui/core/Box'
+import Grid from '@material-ui/core/Grid'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Typography from '@material-ui/core/Typography'
+import FacebookIcon from 'src/icons/Facebook'
+import GoogleIcon from 'src/icons/Google'
+import { makeStyles } from '@material-ui/core/styles'
+import { login, get_user_info } from 'src/api'
 
 function Copyright() {
   return (
@@ -93,7 +93,7 @@ export default function SignInSide() {
 
   function handleSubmit(event) {
     login(
-      'appx',
+      null,
       username,
       password,
       res => {
@@ -101,10 +101,11 @@ export default function SignInSide() {
         console.log(res)
         //history.push("/console")
         navigate('/appx/console')
+        get_user_info(null)
       },
       err => {
         // TODO
-        console.log(err)
+        console.log(err.stack)
         setLoginErr(err.message)
         setDisplayErr(true)
       }
