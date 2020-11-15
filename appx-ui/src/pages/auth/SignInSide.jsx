@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
   line: {
     margin: theme.spacing(1),
   },
+  error: {
+    margin: theme.spacing(1),
+    color: theme.palette.text.error,
+  },
   button: {
     margin: theme.spacing(1),
   },
@@ -84,6 +88,8 @@ export default function SignInSide() {
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [loginErr, setLoginErr] = useState("")
+  const [displayErr, setDisplayErr] = useState(false)
 
   function handleSubmit(event) {
     login(
@@ -99,6 +105,8 @@ export default function SignInSide() {
       err => {
         // TODO
         console.log(err)
+        setLoginErr(err.message)
+        setDisplayErr(true)
       }
     )
     event.preventDefault()
@@ -155,7 +163,7 @@ export default function SignInSide() {
               name="username"
               autoComplete="username"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={e => { setUsername(e.target.value); setDisplayErr(false) }}
               autoFocus
             />
             <TextField
@@ -169,8 +177,17 @@ export default function SignInSide() {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={e => { setPassword(e.target.value); setDisplayErr(false) }}
             />
+            {
+              displayErr ? (
+                <Grid item xs={12}>
+                  <Typography component="h1" variant="h5" className={classes.error}>
+                    {loginErr}
+                  </Typography>
+                </Grid>
+              ) : null
+            }
             <Button
               type="submit"
               onClick={handleSubmit}

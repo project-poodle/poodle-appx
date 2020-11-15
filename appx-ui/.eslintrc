@@ -61,6 +61,7 @@
     "func-names": "off",
     "no-useless-rename": "off",
     "object-curly-newline": "off",
+    "no-trailing-spaces": "off",
     "indent": "off",
     "no-unused-vars": "warn",
     "no-useless-computed-key": "warn",

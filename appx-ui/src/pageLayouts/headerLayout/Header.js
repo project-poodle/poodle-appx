@@ -19,10 +19,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.light,
   },
   text: {
-    paddingTop: 0,
-    paddingLeft: 16,
-    height: 60,
-    verticalAlign: "text-bottom",
+    paddingLeft: 12,
+    verticalAlign: "super",
     color: theme.palette.background.default,
   },
 }));
@@ -41,7 +39,7 @@ const Header = ({ ...rest }) => {
           <Avatar className={classes.avatar}>
             <ViewQuiltRoundedIcon/>
           </Avatar>
-          <Typography variant="h3" display="inline" color="secondary" noWrap className={classes.text}>
+          <Typography variant="h4" display="inline" color="secondary" noWrap className={classes.text}>
             App-X
           </Typography>
         </a>

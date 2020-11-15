@@ -24,7 +24,8 @@ function login(realm, username, password, callback, handler) {
       })
     .then((res) => {
       if ('data' in res && 'status' in res.data && 'token' in res.data) {
-        appx_token = res.token
+        appx_token = res.data.token
+        console.log(appx_token)
         callback(res.data)
       } else {
         handler({
@@ -64,7 +65,7 @@ function logout(realm, username, callback, handler) {
     )
     .then((res) => {
       if ('data' in res && 'status' in res.data) {
-        appx_token = ''
+        appx_token = null
         callback(res.data)
       } else {
         handler({

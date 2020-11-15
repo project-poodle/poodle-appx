@@ -17,7 +17,8 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
+import { ExitToApp } from '@material-ui/icons';
+import { logout } from 'src/api'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -27,10 +28,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.light,
   },
   text: {
-    paddingTop: 0,
-    paddingLeft: 16,
-    height: 60,
-    verticalAlign: "text-bottom",
+    paddingLeft: 12,
+    verticalAlign: "super",
     color: theme.palette.background.default,
   },
 }));
@@ -43,6 +42,19 @@ const Header = ({
   const classes = useStyles()
   const [notifications] = useState([])
 
+  function handleLogout() {
+    logout(
+      'appx',
+      'appx@LDAP',
+      () => {
+        // TODO
+      },
+      () => {
+        // TODO
+      }
+    )
+  }
+
   return (
     <AppBar
       className={clsx(classes.root, className)}
@@ -54,8 +66,8 @@ const Header = ({
           <Avatar className={classes.avatar}>
             <ViewQuiltRoundedIcon/>
           </Avatar>
-          <Typography variant="h3" display="inline" color="secondary" noWrap className={classes.text}>
-            App-X
+          <Typography variant="h4" display="inline" color="secondary" noWrap className={classes.text}>
+            App Builder
           </Typography>
         </A>
         <Box flexGrow={1} />
@@ -69,8 +81,11 @@ const Header = ({
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
+          <IconButton
+            color="inherit"
+            onClick={handleLogout}
+          >
+            <ExitToApp />
           </IconButton>
         </Hidden>
         <Hidden lgUp>

@@ -158,7 +158,7 @@ function findUserWithPass(realm, username, password) {
     }
 }
 
-function authenticateUserWithPass(req, res, next) {
+function loginUserWithPass(req, res, next) {
 
     try {
         // console.log(req.body)
@@ -205,6 +205,73 @@ function authenticateUserWithPass(req, res, next) {
             res.status(422).json(result)
             return
 
+        }
+
+    } catch (err) {
+
+        console.log(err.stack)
+        res.status(422).json({status: 'error', message: `${err}`})
+        return
+
+    }
+}
+
+function logoutUser(req, res, next) {
+
+    try {
+        // console.log(req.body)
+        if (! ('realm' in req.body)) {
+            res.status(422).json({status: 'error', message: 'missing realm'})
+            return
+        } else if (! ('username' in req.body)) {
+            res.status(422).json({status: 'error', message: 'missing username'})
+            return
+        }
+
+        let realm = req.body.realm
+        let username = req.body.username
+
+        if (!req.headers.authorization) {
+            res.status(401).send(`Authentication required for realm [${realm}]`)
+            return
+        }
+
+        let parts = req.headers.authorization.match(/^([a-zA-Z0-9]+) (.+)$/i)
+        if (! parts) {
+            res.status(401).send(`Authentication token unrecognized [${req.headers.authorization}]`)
+            return
+        }
+
+        let auth_type = parts[1].trim()
+        let auth_token = parts[2].trim()
+
+        if (auth_type.toUpperCase() == 'AppX'.toUpperCase()) {
+
+            try {
+                let token = findToken(realm, auth_token)
+                if (token == null) {
+
+                    res.status(401).json({ status: 'error', message: `Invalid Token` })
+                    return
+
+                } else {
+
+                  let sql = `DELETE FROM _realm_token WHERE realm=? AND username=? AND token=?`
+
+                  db.query_sync(sql, [realm, username, auth_token])
+                  res.status(200).json({status: 'ok', realm: realm, username: username, token: token})
+                }
+
+            } catch (err) {
+
+                res.status(401).json({ status: 'error', message: `${err}` })
+                return
+            }
+
+        } else {
+
+            res.status(401).json({ status: 'error', message: `ERROR: no auth token` })
+            return
         }
 
     } catch (err) {
@@ -467,6 +534,7 @@ const authenticator = function (req, res, next) {
 // exports
 module.exports = {
     authenticator: authenticator,
-    authenticateUserWithPass: authenticateUserWithPass,
-    findUserWithPass: findUserWithPass
+    loginUserWithPass: loginUserWithPass,
+    logoutUser: logoutUser,
+    findUserWithPass: findUserWithPass,
 }
