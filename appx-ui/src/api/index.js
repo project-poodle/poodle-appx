@@ -1,4 +1,6 @@
 const axios = require('axios').default;
+//import store from 'src/redux/store'
+const store = require('src/redux/store').default
 
 var appx_token = null
 var base_url = '/api'
@@ -25,7 +27,13 @@ function login(realm, username, password, callback, handler) {
     .then((res) => {
       if ('data' in res && 'status' in res.data && 'token' in res.data) {
         appx_token = res.data.token
-        console.log(appx_token)
+        console.log(store)
+        store.dispatch({
+          type: 'user/login',
+          realm: realm,
+          username: username,
+          token: appx_token,
+        })
         callback(res.data)
       } else {
         handler({
@@ -66,6 +74,11 @@ function logout(realm, username, callback, handler) {
     .then((res) => {
       if ('data' in res && 'status' in res.data) {
         appx_token = null
+        store.dispatch({
+          type: 'user/logout',
+          realm: realm,
+          username: username,
+        })
         callback(res.data)
       } else {
         handler({
