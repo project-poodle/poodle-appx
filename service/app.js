@@ -63,12 +63,12 @@ app.use('/api', bodyParser.json())
 app.use('/api', authenticator, dispatcher)
 
 // handle local login
-app.use('/login', bodyParser.json())
-app.post('/login/local', loginUserWithPass)
+// app.use('/login', bodyParser.json())
+// app.post('/login/local', loginUserWithPass)
 
 // handle local logout
-app.use('/logout', bodyParser.json())
-app.post('/logout', logoutUser)
+// app.use('/logout', bodyParser.json())
+// app.post('/logout', logoutUser)
 
 //////////////////////////////////////////////////
 // redirect root

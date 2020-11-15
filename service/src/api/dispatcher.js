@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { REGEX_VAR }  = require('./util')
+const { REGEX_VAR, SUCCESS, FAILURE }  = require('./util')
 const { get_router }  = require('./router')
 
 
@@ -46,7 +46,7 @@ const dispatcher = function (req, res, next) {
     if (match) {
         let router = ROUTES[match[1]]
         if (!router) {
-            res.status(404).send(`ERROR: handler for [${match[1]}] not found !`)
+            res.status(404).send(`ERROR: dispatcher for [${match[1]}] not found !`)
         } else {
             // process context
             let namespace = match[2]
@@ -62,7 +62,7 @@ const dispatcher = function (req, res, next) {
             router.handle(req, res, next)
         }
     } else {
-        next()
+        res.status(422).json({status:FAILURE, message: `ERROR: unknown dispatcher url [${req.url}]`})
     }
 }
 

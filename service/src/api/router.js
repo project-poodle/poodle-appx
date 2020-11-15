@@ -160,7 +160,11 @@ function get_router(namespace, app_name, runtime_name) {
                 log_api_status(api_result, FAILURE,
                     `unknow api method: ${api_result.api_method} [${JSON.stringify(api_result)}]`)
         }
-    });
+    })
+
+    router.use('/', (req, res) => {
+        res.status(404).json({status: FAILURE, message: `ERROR: API for [${req.url}] not found !`})
+    })
 
     return router
 }

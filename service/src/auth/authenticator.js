@@ -226,11 +226,22 @@ function logoutUser(req, res, next) {
         } else if (! ('username' in req.body)) {
             res.status(422).json({status: 'error', message: 'missing username'})
             return
+        } else if (! ('token' in req.body)) {
+            res.status(422).json({status: 'error', message: 'missing token'})
+            return
         }
 
+        // this is a private method, the token security validatation has already happened
         let realm = req.body.realm
         let username = req.body.username
+        let token = req.body.token
 
+        let sql = `DELETE FROM _realm_token WHERE realm=? AND username=? AND token=?`
+
+        db.query_sync(sql, [realm, username, token])
+        res.status(200).json({status: 'ok', realm: realm, username: username, token: token})
+
+        /*
         if (!req.headers.authorization) {
             res.status(401).send(`Authentication required for realm [${realm}]`)
             return
@@ -273,6 +284,7 @@ function logoutUser(req, res, next) {
             res.status(401).json({ status: 'error', message: `ERROR: no auth token` })
             return
         }
+        */
 
     } catch (err) {
 
@@ -283,24 +295,9 @@ function logoutUser(req, res, next) {
     }
 }
 
-/*
-// bearer strategy
-passport.use(new BearerStrategy(
-    function(token, done) {
-        try {
-            let user = findLocalToken(token)
-            if (user == null) {
-                done(null, false)
-            } else {
-                done(null, user, { scope: 'all' })
-            }
-        } catch (err) {
-            done(err)
-        }
-    }
-))
-*/
-
+/**
+ * lookup roles and permissions
+ */
 const lookupRolesPerms = function(namespace, app_name, user) {
 
     const username = user.username
@@ -406,10 +403,12 @@ const authenticator = function (req, res, next) {
     let realm = null
     let namespace = null
     let app_name = null
-    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/)`))
+    let action_name = null
+    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/(${REGEX_VAR}))`))
     if (match) {
         namespace = match[2]
         app_name = match[3]
+        action_name = match[4]
         if (namespace in realm_by_app && app_name in realm_by_app[namespace] && 'realm' in realm_by_app[namespace][app_name]) {
             realm = realm_by_app[namespace][app_name]['realm']
         }
@@ -418,8 +417,17 @@ const authenticator = function (req, res, next) {
             return
         }
     } else {
-        res.status(401).send(`ERROR: Cannot determine Authentication Realm -- Missing namespace or app_name in url [${url}]`)
+        res.status(401).send(`ERROR: Cannot determine Authentication Realm -- Missing namespace, app_name, or action/runtime in url [${url}]`)
         return
+    }
+
+    // if
+    if (action_name == 'login') {
+
+      // update realm
+      req.body.realm = realm
+      loginUserWithPass(req, res, next)
+      return
     }
 
     // request authentication for specific realm
@@ -445,7 +453,8 @@ const authenticator = function (req, res, next) {
             let token = findToken(realm, auth_token)
             if (token == null) {
 
-                res.set('WWW-Authenticate', `Basic realm="${realm}"`)
+                // do not request basic authentication if user specified AppX bearer
+                // res.set('WWW-Authenticate', `Basic realm="${realm}"`)
                 res.status(401).json({ status: 'error', message: `Invalid Token` })
                 return
 
@@ -463,12 +472,29 @@ const authenticator = function (req, res, next) {
                     app_name: app_name,
                     user: req.user
                 }
-                //console.log(req.context)
-                next()
+                // console.log(req.context)
+                if (action_name == 'user') {
+
+                  res.status(200).json({ status: 'ok', user: req.user})
+                  return
+
+                } else if (action_name == 'logout') {
+
+                  req.body.token = auth_token
+                  req.body.realm = token.realm
+                  req.body.username = token.username
+                  logoutUser(req, res, next)
+                  return
+
+                } else {
+                  // if this is not one of the known action, continue
+                  next()
+                }
             }
         } catch (err) {
 
-            res.set('WWW-Authenticate', `Basic realm="${realm}"`)
+            // do not request basic authentication if user specified AppX bearer
+            // res.set('WWW-Authenticate', `Basic realm="${realm}"`)
             res.status(401).json({ status: 'error', message: `${err}` })
             return
         }
@@ -499,7 +525,22 @@ const authenticator = function (req, res, next) {
                     user: req.user
                 }
                 //console.log(req.context)
-                next()
+                // console.log(req.context)
+                if (action_name == 'user') {
+
+                  res.status(200).json({ status: 'ok', user: req.user})
+                  return
+
+                } else if (action_name == 'logout') {
+
+                  // no logout support for basic auth
+                  res.status(422).json({ status: 'error', message: `ERROR: logout not supported with Basic Auth`})
+                  return
+
+                } else {
+                  // if this is not one of the known action, continue
+                  next()
+                }
 
             } else {
 
@@ -534,7 +575,7 @@ const authenticator = function (req, res, next) {
 // exports
 module.exports = {
     authenticator: authenticator,
-    loginUserWithPass: loginUserWithPass,
-    logoutUser: logoutUser,
-    findUserWithPass: findUserWithPass,
+    // loginUserWithPass: loginUserWithPass,
+    // logoutUser: logoutUser,
+    // findUserWithPass: findUserWithPass,
 }
