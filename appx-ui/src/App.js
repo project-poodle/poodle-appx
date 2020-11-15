@@ -7,9 +7,9 @@ import GlobalStyles from './components/GlobalStyles';
 import HeaderLayout from 'src/pageLayouts/headerLayout'
 import NotFoundView from 'src/views/errors/NotFoundView';
 import { Provider } from 'react-redux'
-//import store from 'src/redux/store'
 import theme from 'src/theme';
 import routes from './routes';
+//import store from 'src/redux/store'
 const store = require('src/redux/store').default
 
 
