@@ -10,7 +10,6 @@
   <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/prop-types@15/prop-types.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone@7/babel.js" crossorigin></script>
 </head>
 
 <body>
@@ -19,19 +18,43 @@
 </body>
 
 <script type="module">
-  //import { React, ReactDOM } from 'https://unpkg.com/es-react'
-  //import module from "https://unpkg.com/module@1";
-  //import require from 'https://unpkg.com/require@2'
-  //import { createRequire } from 'https://unpkg.com/module@1'
-  //const require = createRequire(import.meta.url);
-  console.log(PropTypes)
-  console.log(window.PropTypes)
-  //console.log(global.PropTypes)
-  console.log(self.PropTypes)
-  console.log(globalThis.PropTypes)
+
+  //console.log(PropTypes)
+  //console.log(window.PropTypes)
+  ////console.log(global.PropTypes)
+  //console.log(self.PropTypes)
+  //console.log(globalThis.PropTypes)
+
+  // service worker check
+  let hasRegStep = false
+  if (! ('serviceWorker' in navigator)) {
+
+    document.getElementById('root').value = `
+        This browser is not supported!
+        Use a latest version of Chrome, Edge, Safari, or Firefox to view this site.
+    `
+  } else if (!navigator.serviceWorker.controller) {
+    hasRegStep = true
+    navigator.serviceWorker.register('./sw.js', {scope: '.'})
+    .then((reg) => {
+      // registration successful
+      // console.log(navigator.serviceWorker)
+      // console.log(reg)
+      // reg.update()
+      console.log('Service Worker: registration succeeded. Scope is ' + reg.scope)
+      navigator.serviceWorker.ready.then(() => {
+        console.log(navigator.serviceWorker)
+      })
+      // render
+      //f()
+    }).catch((error) => {
+      // registration failed
+      console.log('Service Worker: registration failed with ' + error)
+    })
+  }
 
   // render function
-  function f() {
+  function render() {
     import('./appx/App.js').then(module => {
       const App = module.default
       //console.log(Appx)
@@ -42,22 +65,12 @@
     })
   }
 
-  // service worker
-  if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
-    navigator.serviceWorker.register('./sw.js', {scope: '/'})
-    .then((reg) => {
-      // registration worked
-      console.log('Registration succeeded. Scope is ' + reg.scope);
-      //f()
-      console.log(navigator.serviceWorker)
-    }).catch((error) => {
-      // registration failed
-      console.log('Registration failed with ' + error);
-    });
+  // wait for service worker registration, or render immediately
+  if (hasRegStep) {
+    setTimeout(render, 1000)
+  } else {
+    render()
   }
-
-  // render
-  setTimeout(f, 1000)
 
 </script>
 </html>

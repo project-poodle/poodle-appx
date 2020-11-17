@@ -4,11 +4,17 @@ importScripts('https://unpkg.com/@babel/standalone@7.12.6/babel.js')
 const babelConf = { presets: ['es2017','react'] }
 
 self.addEventListener('install', function(event) {
-  //console.log(`install event ${event}`)
+  self.skipWaiting()
+  console.log(`Service Worker: install event ${event}`)
 })
 
+self.addEventListener('activate', event => {
+  clients.claim()
+  console.log('Service Worker: ready to handle fetches');
+});
+
 self.addEventListener('fetch', function(event) {
-  //console.log(`fetch event ${event.request.url}`)
+  // console.log(`Service Worker: fetch event ${event.request.url}`)
   //console.log(self.registration)
   if (event.request.url.startsWith(self.registration.scope) && event.request.url.endsWith('.js')) {
 
