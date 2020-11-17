@@ -30,32 +30,19 @@
   console.log(self.PropTypes)
   console.log(globalThis.PropTypes)
 
-  //const babelConf = { presets: ['es2017','react'] }
-  //var input = `
-  //    const getMessage = () => "Hello World";
-  //    function a() {
-  //        return (<App />)
-  //    }
-  //    function helloWorld() {
-  //        alert(hello)
-  //    }`
-  //var output = Babel.transform(input, babelConf).code;
-  //console.log(output)
-
+  // render function
   function f() {
-    import('./Appx.js').then(module => {
-      const Appx = module.default
+    import('./appx/App.js').then(module => {
+      const App = module.default
       //console.log(Appx)
       ReactDOM.render(
-          React.createElement(Appx, null),
+          React.createElement(App, null),
           document.getElementById('root')
       )
     })
   }
 
-  //import htm from 'https://unpkg.com/htm?module'
-  //const html = htm.bind(React.createElement)
-
+  // service worker
   if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
     navigator.serviceWorker.register('./sw.js', {scope: '/'})
     .then((reg) => {
@@ -69,7 +56,7 @@
     });
   }
 
-
+  // render
   setTimeout(f, 1000)
 
 </script>

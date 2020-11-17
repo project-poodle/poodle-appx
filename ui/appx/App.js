@@ -1,25 +1,26 @@
-//import 'react-perfect-scrollbar/dist/css/styles.css';
-//import React from 'https://unpkg.com/react@^17?min';
-//import htm from 'https://unpkg.com/react@^3?min';
-//import htm from 'https://unpkg.com/htm?module'
-//const html = htm.bind(React.createElement)
-
 import Comp from './Comp.js'
+import Layout from './Layout.js'
 
-var count = 0
-//console.log(`Hello, App [${count}]!`);
+const Counter = props => {
+    const [count, setCount] = React.useState(parseInt(props.count))
+    return (
+      <div>
+          <h1>{count}</h1>
+          <button onClick={e => setCount(count - 1)}>Decrement</button>
+          <button onClick={e => setCount(count + 1)}>Increment</button>
+      </div>
+    )
+}
 
 const App = () => {
-
-  count += 1
-
-  //const routeResult = useRoutes(routes)
-  return (
-    <div>
-      <p>Hello, App #{count}</p>
-      <Comp />
-    </div>
-  )
-};
+    return (
+      <div>
+        <h1>No script tags, no build steps...</h1>
+        <Counter count={3} />
+        <Comp />
+        <Layout />
+      </div>
+    )
+}
 
 export default App;
