@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>App-X: Design Your Own Apps</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/prop-types@15/prop-types.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.js" crossorigin></script>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
+<script type="module">
+  //import { React, ReactDOM } from 'https://unpkg.com/es-react'
+  //import module from "https://unpkg.com/module@1";
+  //import require from 'https://unpkg.com/require@2'
+  //import { createRequire } from 'https://unpkg.com/module@1'
+  //const require = createRequire(import.meta.url);
+  console.log(PropTypes)
+  console.log(window.PropTypes)
+  //console.log(global.PropTypes)
+  console.log(self.PropTypes)
+  console.log(globalThis.PropTypes)
+
+  //const babelConf = { presets: ['es2017','react'] }
+  //var input = `
+  //    const getMessage = () => "Hello World";
+  //    function a() {
+  //        return (<App />)
+  //    }
+  //    function helloWorld() {
+  //        alert(hello)
+  //    }`
+  //var output = Babel.transform(input, babelConf).code;
+  //console.log(output)
+
+  function f() {
+    import('./Appx.js').then(module => {
+      const Appx = module.default
+      //console.log(Appx)
+      ReactDOM.render(
+          React.createElement(Appx, null),
+          document.getElementById('root')
+      )
+    })
+  }
+
+  //import htm from 'https://unpkg.com/htm?module'
+  //const html = htm.bind(React.createElement)
+
+  if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
+    navigator.serviceWorker.register('./sw.js', {scope: '/'})
+    .then((reg) => {
+      // registration worked
+      console.log('Registration succeeded. Scope is ' + reg.scope);
+      //f()
+      console.log(navigator.serviceWorker)
+    }).catch((error) => {
+      // registration failed
+      console.log('Registration failed with ' + error);
+    });
+  }
+
+
+  setTimeout(f, 1000)
+
+</script>
+</html>

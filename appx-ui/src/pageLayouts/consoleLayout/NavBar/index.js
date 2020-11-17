@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-//import { Link as RouterLink, useLocation } from 'react-router-dom';
+                 import React, { useEffect } from 'react'
 import { A, navigate } from 'hookrouter'
 import PropTypes from 'prop-types'
 import {
@@ -29,7 +28,7 @@ const user = {
   avatar: '/static/images/avatars/avatar_6.png',
   jobTitle: 'Senior Developer',
   name: 'Katarina Smith'
-};
+}
 
 const items = [
   {
