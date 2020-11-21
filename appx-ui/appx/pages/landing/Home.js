@@ -265,7 +265,7 @@ export default function Home() {
             fullWidth
             startIcon={<SlideshowIcon />}
             // onClick={() => { navigate('/docs') }}
-            href="/docs"
+            href="/appx/login"
             size="large"
           >
             Live Demo

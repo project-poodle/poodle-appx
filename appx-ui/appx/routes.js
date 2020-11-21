@@ -5,10 +5,10 @@ const React = module['react']
 //import MainLayout from './layouts/MainLayout'
 //import AccountView from './views/account/AccountView'
 //import CustomerListView from './views/customer/CustomerListView'
-//import HeaderLayout from 'appx/page/layouts/headerLayout.js'
+import HeaderLayout from '/pages/layouts/headerLayout'
 //import ConsoleLayout from 'src/pageLayouts/consoleLayout'
 import Home from '/pages/landing/Home'
-//import SignInSide from './pages/auth/SignInSide'
+import SignInSide from '/pages/auth/SignInSide'
 //import DashboardView from './views/reports/DashboardView'
 //import NotFoundView from 'src/views/errors/NotFoundView'
 //import ProductListView from './views/product/ProductListView'
@@ -51,7 +51,7 @@ const routes = [
 
 const routes = {
     '/': () => <Home/>,
-//    '/appx/login': () => <HeaderLayout><SignInSide/></HeaderLayout>,
+    '/appx/login': () => <HeaderLayout><SignInSide/></HeaderLayout>,
 //    '/appx/console': () => <ConsoleLayout><DashboardView/></ConsoleLayout>,
 //    '/404': () => <HeaderLayout><NotFoundView/></HeaderLayout>,
 }

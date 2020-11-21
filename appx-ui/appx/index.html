@@ -8,7 +8,6 @@
   <meta name="theme-color" content="#000000" />
   <title>App-X: Design Your Own Apps</title>
   <script type="module" src="/dist/esm/main.js"></script>
-  <script type="text/javascript" src="/import-maps/index.js"></script>
 </head>
 
 <body>
@@ -49,7 +48,7 @@
 
     //console.log(module.react)
     //console.log(module['react-dom'])
-    import('./App.js').then(app => {
+    import('/App').then(app => {
       const App = app.default
       //console.log(App)
       module['react-dom'].render(
