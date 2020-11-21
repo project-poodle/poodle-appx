@@ -1,8 +1,6 @@
 import pkg from '../package.json'
 import * as react from 'react'
 import * as reactDom from 'react-dom'
-//import React from 'react'
-//import ReactDOM from 'react-dom'
 import * as reactRedux from 'react-redux'
 import * as propTypes from 'prop-types'
 import * as redux from 'redux'
@@ -29,21 +27,3 @@ export default {
   "@material-ui/styles": materialStyles,
   "axios": axios
 }
-
-/*
-module.exports = {
-  "pkg": pkg,
-  "react": react,
-  "react-dom": reactDom,
-  "prop-types": propTypes,
-  "react-redux": reactRedux,
-  "redux": redux,
-  "react-router": reactRouter,
-  "react-router-dom": reactRouterDom,
-  "hookrouter": hookrouter,
-  "@material-ui/core": materialUI,
-  "@material-ui/icons": materialIcons,
-  "@material-ui/styles": materialStyles,
-  "axios": axios
-}
-*/

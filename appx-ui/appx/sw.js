@@ -27,7 +27,7 @@ function getBabelParser(request) {
         var output = Babel.transform(body, babelConf).code;
         //console.log(output)
         resolve(new Response(
-          output,
+          'import {default as module} from "module";\n' + output,
           {
             headers: {'Content-Type': 'application/javascript'}
           }
@@ -48,7 +48,7 @@ self.addEventListener('fetch', function(event) {
   const {request: {url}} = event;
   //console.log(`Service Worker: fetch event ${url}`)
 
-  if (url.startsWith(self.registration.scope) && !url.includes('/dist/')) {
+  if (url.startsWith(self.registration.scope) && !url.includes('/dist/')  && !url.includes('/import-maps/')) {
 
     if (url.endsWith('.js') || url.endsWith('.jsx')) {
 

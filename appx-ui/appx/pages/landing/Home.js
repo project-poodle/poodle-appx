@@ -1,15 +1,11 @@
-//import React from 'react'
-const React = module.react
+const React = module['react']
 //import { navigate } from 'hookrouter'
-//import MaterialUI from '@material-ui/core';
 const MaterialUI = module['@material-ui/core']
 const MaterialIcons = module['@material-ui/icons']
 
-//import { ShideShow as SlideshowIcon, MenuBook as MenuBookIcon } from '@material-ui/icons';
-
 const { useEffect } = React
 const { Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
-const { ShideShow: SlideshowIcon, MenuBook: MenuBookIcon } = MaterialIcons
+const { Slideshow: SlideshowIcon, MenuBook: MenuBookIcon } = MaterialIcons
 
 const useStyles = makeStyles((theme) => ({
 
@@ -216,7 +212,11 @@ window.onYouTubeIframeAPIReady = () => {
 
 export default function Home() {
 
+  //console.log(useStyles)
   const classes = useStyles();
+  //console.log(classes)
+
+  //console.log(Box, Button, Grid, CssBaseline, MenuBookIcon, SlideshowIcon, makeStyles)
 
   useEffect(() => {
       var aScript = document.createElement('script');
@@ -231,7 +231,7 @@ export default function Home() {
   });
 
   return (
-    <Box class="paper">
+    <Box className="paper">
       <Box className={classes.videoBackground}>
         <Box className={classes.videoForeground} id="video-foreground">
         </Box>
@@ -259,18 +259,17 @@ export default function Home() {
         <Grid item xs={false} md={1} lg={1} xl={1}>
         </Grid>
         <Grid item xs={12} sm={5} md={4} lg={3} xl={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              startIcon={<SlideshowIcon />}
-              // onClick={() => {alert('clicked #2')}}
-              // onClick={() => { navigate('/appx/console') }}
-              href="/appx/console"
-              size="large"
-            >
-              Live Demo
-            </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            startIcon={<SlideshowIcon />}
+            // onClick={() => { navigate('/docs') }}
+            href="/docs"
+            size="large"
+          >
+            Live Demo
+          </Button>
         </Grid>
         <Grid item xs={false} sm={1} md={1} lg={2} xl={3}>
         </Grid>

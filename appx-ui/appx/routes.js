@@ -6,7 +6,7 @@ const React = module.react
 //import CustomerListView from './views/customer/CustomerListView'
 //import HeaderLayout from 'appx/page/layouts/headerLayout.js'
 //import ConsoleLayout from 'src/pageLayouts/consoleLayout'
-import Home from './pages/landing/Home'
+import Home from 'appx/pages/landing/Home'
 //import SignInSide from './pages/auth/SignInSide'
 //import DashboardView from './views/reports/DashboardView'
 //import NotFoundView from 'src/views/errors/NotFoundView'

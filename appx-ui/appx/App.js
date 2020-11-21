@@ -1,18 +1,15 @@
 //import 'react-perfect-scrollbar/dist/css/styles.css';
-//import React from 'react';
 const React = module.react
-//import { useRoutes } from 'react-router-dom';
-//import { useRoutes } from 'hookrouter';
 const { useRoutes } = module.hookrouter
-//import MaterialUI from '@material-ui/core';
 const MaterialUI = module['@material-ui/core']
-import GlobalStyles from './components/GlobalStyles'
+import GlobalStyles from 'appx/components/GlobalStyles'
 
-//import HeaderLayout from 'appx/page/layouts/headerLayout.js'
-//import NotFoundView from 'appx/views/errors/NotFoundView.js';
+const { Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
 //import { Provider } from 'react-redux'
-import theme from './theme';
-import routes from './routes.js';
+import theme from 'appx/theme';
+import routes from 'appx/routes.js';
+//import HeaderLayout from 'appx/pages/layouts/headerLayout'
+//import NotFoundView from 'appx/views/errors/NotFoundView'
 //import store from 'src/redux/store'
 //const store = require('src/redux/store').default
 
@@ -29,6 +26,8 @@ const App = () => {
   return (
       <ThemeProvider theme={theme}>
         <GlobalStyles />
+        <CssBaseline />
+        Hello, World!
         {routeResult}
       </ThemeProvider>
   );
