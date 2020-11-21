@@ -43,8 +43,7 @@ load_from_local_storage()
 
 // core reducer function
 function userReducer(state=userInitialState, action) {
-  console.log(new Date())
-  console.log(action)
+  console.log({action: action, date: new Date()})
   switch (action.type) {
     // action: {
     //    type: 'user/login',
