@@ -2,7 +2,7 @@ const React = module.react
 const { useState } = module.react
 const { A, navigate } = module.hookrouter
 const PropTypes = module['prop-types']
-const clsx = module.clsx
+const clsx = module.clsx.default
 const {
   Icon,
   Button,

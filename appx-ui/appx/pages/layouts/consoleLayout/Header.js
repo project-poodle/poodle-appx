@@ -3,7 +3,7 @@ const { useState } = module.react
 const { connect } = module['react-redux']
 const { A, navigate } = module['hookrouter']
 const PropTypes = module['prop-types']
-const clsx = module.clsx
+const clsx = module.clsx.default
 const {
   Avatar,
   Typography,
