@@ -1,34 +1,13 @@
+import json from '@rollup/plugin-json';
+import html from '@rollup/plugin-html';
+import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import { terser } from "rollup-plugin-terser";
-import json from '@rollup/plugin-json';
-import pkg from './package.json';
+//import { terser } from "rollup-plugin-terser";
+//import pkg from './package.json';
+const pkg = require('./package.json');
 
 export default [
-  /*
-  // browser-friendly UMD build
-  {
-    input: 'lib/main.js',
-    output: {
-      name: 'module',
-      file: pkg.umd,
-      format: 'umd'
-    },
-    plugins: [
-      commonjs(), // so Rollup can convert `ms` to an ES module
-      nodeResolve(), // so Rollup can find `ms`
-      terser(),
-      json()
-    ]
-  },
-  */
-
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
   {
     input: 'lib/main.js',
     //input: [
@@ -37,16 +16,22 @@ export default [
     //  'lib/material-ui.js'
     //],
     output: [
+			{
+	      name: 'module',
+	      dir: pkg.umd,
+	      format: 'umd'
+	    },
+      //{
+      //  dir: pkg.cjs,
+      //  format: 'cjs'
+      //},
       {
-        file: pkg.cjs,
-        format: 'cjs'
-      },
-      {
-        file: pkg.esm,
+        dir: pkg.esm,
         format: 'es'
       }
     ],
     plugins: [
+			json(),
       commonjs({
         include: 'node_modules/**',  // Default: undefined
         // extensions: [ '.js', '.coffee' ],  // Default: [ '.js' ]
@@ -66,8 +51,13 @@ export default [
         // dedupe: [ 'react', 'react-dom' ], // Default: []
         //  moduleDirectory: 'js_modules'
       }),
-      terser(),
-      json()
+			replace({
+				//exclude: 'package.json',
+				include: 'node_modules/**',  // Default: undefined
+				'process.env.NODE_ENV': JSON.stringify('development')
+			}),
+     	//terser()
+			html()
     ]
   }
 ];
