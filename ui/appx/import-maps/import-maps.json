@@ -1,0 +1,13 @@
+{
+  "imports": {
+    "appx/": "/",
+    "react": "https://unpkg.com/react@17/umd/react.development.js",
+    "react-dom": "https://unpkg.com/react-dom@17/umd/react-dom.development.js",
+    "prop-types": "https://unpkg.com/prop-types@15/prop-types.js",
+    "hookrouter": "https://unpkg.com/hookrouter@1",
+    "hookrouter/": "https://unpkg.com/hookrouter@1/",
+    "@material-ui/core": "https://unpkg.com/@material-ui/core@4/umd/material-ui.development.js",
+    "@material-ui/icons": "https://unpkg.com/@material-ui/icons@4",
+    "@material-ui/styles": "https://unpkg.com/@material-ui/style@4"
+  }
+}
