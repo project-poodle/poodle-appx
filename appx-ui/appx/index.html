@@ -16,7 +16,7 @@
   <div id="root"></div>
 </body>
 
-<script type="module-shim">
+<script type="module">
 
   // register service worker
   let hasRegStep = false
@@ -42,7 +42,7 @@
     })
   }
 
-  import {default as module} from "module"
+  import module from "/dist/esm/main.js"
 
   // render function
   async function render() {
@@ -51,7 +51,7 @@
     //console.log(module['react-dom'])
     import('./App.js').then(app => {
       const App = app.default
-      //console.log(Appx)
+      //console.log(App)
       module['react-dom'].render(
           module['react'].createElement(App, null),
           document.getElementById('root')
@@ -61,7 +61,7 @@
 
   // wait for service worker registration, or render immediately
   if (hasRegStep) {
-    setTimeout(render, 1000)
+    setTimeout(render, 1500)
   } else {
     render()
   }

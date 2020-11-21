@@ -1,6 +1,5 @@
 {
   "imports": {
-    "appx/": "/",
-    "module": "/dist/esm/main.js"
+    "appx/": "/"
   }
 }

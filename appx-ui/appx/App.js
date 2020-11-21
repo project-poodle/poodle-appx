@@ -1,15 +1,15 @@
 //import 'react-perfect-scrollbar/dist/css/styles.css';
-const React = module.react
-const { useRoutes } = module.hookrouter
+const React = module['react']
+const { useRoutes } = module['hookrouter']
 const MaterialUI = module['@material-ui/core']
-import GlobalStyles from 'appx/components/GlobalStyles'
+import GlobalStyles from '/components/GlobalStyles'
 
 const { Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
 //import { Provider } from 'react-redux'
-import theme from 'appx/theme';
-import routes from 'appx/routes.js';
-//import HeaderLayout from 'appx/pages/layouts/headerLayout'
-//import NotFoundView from 'appx/views/errors/NotFoundView'
+import theme from '/theme';
+import routes from '/routes.js';
+import HeaderLayout from '/pages/layouts/headerLayout'
+import NotFoundView from '/views/errors/NotFoundView'
 //import store from 'src/redux/store'
 //const store = require('src/redux/store').default
 
@@ -18,19 +18,22 @@ const { ThemeProvider } = MaterialUI
 
 const App = () => {
 
+  //console.log(React)
+  //console.log(useRoutes)
+  //console.log(routes)
   const routeResult = useRoutes(routes)
-  //{routeResult}
+  //console.log(routeResult)
   //const routing = useRoutes(routes)
   // console.log(store)
 
   return (
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <CssBaseline />
-        Hello, World!
-        {routeResult}
+         {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}
       </ThemeProvider>
   );
 };
 
 export default App;
+
+//         {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}

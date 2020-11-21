@@ -3,7 +3,7 @@ const React = module.react
 const { makeStyles } = module['@material-ui/core']
 
 const PropTypes = module['prop-types']
-import Header from './Header';
+import Header from '/pages/layouts/headerLayout/Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {

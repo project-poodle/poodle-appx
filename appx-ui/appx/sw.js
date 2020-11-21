@@ -27,7 +27,9 @@ function getBabelParser(request) {
         var output = Babel.transform(body, babelConf).code;
         //console.log(output)
         resolve(new Response(
-          'import {default as module} from "module";\n' + output,
+          //'import module from "module";\n'
+          'import {default as module} from "/dist/esm/main.js";\n'
+          + output,
           {
             headers: {'Content-Type': 'application/javascript'}
           }

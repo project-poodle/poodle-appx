@@ -1,7 +1,7 @@
 const React = module.react
 const { A } = module.hookrouter
 const  { Avatar, Typography } = module['@material-ui/core']
-const { ViewQuiltRoundedIcon } = module['@material-ui/icons']
+const { ViewQuiltRounded : ViewQuiltRoundedIcon } = module['@material-ui/icons']
 //import clsx from 'clsx'
 // import PropTypes from 'prop-types'
 const { Box } = module['@material-ui/core']
@@ -33,16 +33,16 @@ const Header = ({ ...rest }) => {
       elevation={0}
       {...rest}
     >
-      <Toolbar className={classes.toolbar}>
-        <a href="/" className={classes.inline}>
-          <Avatar className={classes.avatar}>
-            <ViewQuiltRoundedIcon/>
-          </Avatar>
-          <Typography variant="h4" display="inline" color="secondary" noWrap className={classes.text}>
-            App-X
-          </Typography>
-        </a>
-      </Toolbar>
+    <Toolbar className={classes.toolbar}>
+    <a href="/" className={classes.inline}>
+    <Avatar className={classes.avatar}>
+      <ViewQuiltRoundedIcon/>
+    </Avatar>
+    <Typography variant="h4" display="inline" color="secondary" noWrap className={classes.text}>
+      App-X
+    </Typography>
+    </a>
+    </Toolbar>
     </AppBar>
   );
 };
