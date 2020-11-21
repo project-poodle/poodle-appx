@@ -85,7 +85,7 @@ self.addEventListener('fetch', function(event) {
 
               } else if (!response.url.endsWith('.js') && !response.url.endsWith('.js')) {
 
-                console.log(`Service Worker: [${url}] redirect [${response.url}.js]`)
+                console.log(`Service Worker: [${url}] redirect to [${response.url}.js]`)
                 newRequest = new Request(response.url + '.js')
                 //console.log(newRequest)
                 let newParser = getBabelParser(newRequest)

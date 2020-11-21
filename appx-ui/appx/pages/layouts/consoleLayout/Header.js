@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 //console.log(userToken)
 setInterval(() => {
   get_user_info(null)
-}, Math.floor((Math.random() * 60) + 60) * 1000)
+}, Math.floor((Math.random() * 120) + 60) * 1000)
 
 
 const Header = ({
