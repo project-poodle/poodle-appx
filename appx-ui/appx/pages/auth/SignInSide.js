@@ -15,9 +15,10 @@ const {
   makeStyles
 } = module['@material-ui/core']
 const { LockOutlined : LockOutlinedIcon } = module['@material-ui/icons']
-import FacebookIcon from '/icons/Facebook'
-import GoogleIcon from '/icons/Google'
-//import { login, get_user_info } from 'src/api'
+
+import FacebookIcon from '/appx/icons/Facebook'
+import GoogleIcon from '/appx/icons/Google'
+import { login, get_user_info } from '/appx/api'
 
 function Copyright() {
   return (
@@ -101,7 +102,6 @@ export default function SignInSide() {
       res => {
         // TODO
         console.log(res)
-        //history.push("/console")
         navigate('/appx/console')
         get_user_info(null)
       },
@@ -134,7 +134,7 @@ export default function SignInSide() {
                   className={classes.facebook}
                   fullWidth
                   startIcon={<FacebookIcon />}
-                  //onClick={handleSubmit}
+                  onClick={handleSubmit}
                   size="large"
                   variant="contained"
                   >
@@ -147,7 +147,7 @@ export default function SignInSide() {
                   className={classes.google}
                   fullWidth
                   startIcon={<GoogleIcon />}
-                  //onClick={handleSubmit}
+                  onClick={handleSubmit}
                   size="large"
                   variant="contained"
                   >
@@ -166,7 +166,7 @@ export default function SignInSide() {
               name="username"
               autoComplete="username"
               value={username}
-              //onChange={e => { setUsername(e.target.value); setDisplayErr(false) }}
+              onChange={e => { setUsername(e.target.value); setDisplayErr(false) }}
               autoFocus
             />
             <TextField
@@ -180,7 +180,7 @@ export default function SignInSide() {
               id="password"
               autoComplete="current-password"
               value={password}
-              //onChange={e => { setPassword(e.target.value); setDisplayErr(false) }}
+              onChange={e => { setPassword(e.target.value); setDisplayErr(false) }}
             />
             {
               displayErr ? (

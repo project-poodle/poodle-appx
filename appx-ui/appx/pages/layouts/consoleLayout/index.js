@@ -1,13 +1,14 @@
 const React = module.react
-//import { Outlet } from 'react-router-dom';
-const { makeStyles } = module['@material-ui/core']
-
+const { useState } = module.react
 const PropTypes = module['prop-types']
-import Header from '/appx/pages/layouts/headerLayout/Header';
+const { makeStyles } = module['@material-ui/core']
+import NavBar from '/appx/pages/layouts/consoleLayout/NavBar'
+import Header from '/appx/pages/layouts/consoleLayout/Header'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.dark,
     display: 'flex',
     height: '100%',
     overflow: 'hidden',
@@ -17,7 +18,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     overflow: 'hidden',
-    paddingTop: 64
+    paddingTop: 64,
+    [theme.breakpoints.up('lg')]: {
+      paddingLeft: 256
+    }
   },
   contentContainer: {
     display: 'flex',
@@ -29,19 +33,24 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     overflow: 'auto'
   }
-}));
+}))
 
-const HeaderLayout = (props) => {
+const ConsoleLayout = (props) => {
   const classes = useStyles();
+  const [isMobileNavOpen, setMobileNavOpen] = useState(false);
   const { children } = props
 
   return (
     <div className={classes.root}>
-      <Header />
+      <Header onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <NavBar
+        onMobileClose={() => setMobileNavOpen(false)}
+        openMobile={isMobileNavOpen}
+      />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            { children }
+          { children }
           </div>
         </div>
       </div>
@@ -49,8 +58,8 @@ const HeaderLayout = (props) => {
   )
 }
 
-HeaderLayout.propTypes = {
+ConsoleLayout.propTypes = {
   children: PropTypes.element.isRequired
 }
 
-export default HeaderLayout;
+export default ConsoleLayout;
