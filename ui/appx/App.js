@@ -1,26 +1,33 @@
-import Comp from './Comp.js'
-import Layout from './Layout.js'
+//import 'react-perfect-scrollbar/dist/css/styles.css';
+import React from 'react';
+//import { useRoutes } from 'react-router-dom';
+import { useRoutes } from 'hookrouter';
+import MaterialUI from '@material-ui/core';
+import GlobalStyles from 'appx/components/GlobalStyles.js';
+//import HeaderLayout from 'appx/page/layouts/headerLayout.js'
+//import NotFoundView from 'appx/views/errors/NotFoundView.js';
+//import { Provider } from 'react-redux'
+import theme from 'appx/theme';
+import routes from './routes.js';
+//import store from 'src/redux/store'
+//const store = require('src/redux/store').default
 
-const Counter = props => {
-    const [count, setCount] = React.useState(parseInt(props.count))
-    return (
-      <div>
-          <h1>{count}</h1>
-          <button onClick={e => setCount(count - 1)}>Decrement</button>
-          <button onClick={e => setCount(count + 1)}>Increment</button>
-      </div>
-    )
-}
+//const { useRoutes } = _router
+const { ThemeProvider } = MaterialUI
 
 const App = () => {
-    return (
-      <div>
-        <h1>No script tags, no build steps...</h1>
-        <Counter count={3} />
-        <Comp />
-        <Layout />
-      </div>
-    )
-}
+
+  //const routeResult = useRoutes(routes)
+  //{routeResult}
+  //const routing = useRoutes(routes)
+  // console.log(store)
+
+  return (
+      <ThemeProvider theme={theme}>
+      hello, world!
+        <GlobalStyles />
+      </ThemeProvider>
+  );
+};
 
 export default App;
