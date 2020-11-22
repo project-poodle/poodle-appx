@@ -54,7 +54,7 @@ self.addEventListener('fetch', function(event) {
 
     if (url.endsWith('.js') || url.endsWith('.jsx')) {
 
-      console.log(`Service Worker: babel transform [${url}]`)
+      console.log(`Service Worker: transform [${url}]`)
 
       let p = getBabelParser(event.request)
 
@@ -71,7 +71,7 @@ self.addEventListener('fetch', function(event) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: [${url}] redirect to [${response.url}index.js]`)
+                console.log(`Service Worker: [${url}] redirect/transform [${response.url}index.js]`)
                 newRequest = new Request(response.url + 'index.js')
                 //console.log(newRequest)
                 let newParser = getBabelParser(newRequest)
@@ -85,7 +85,7 @@ self.addEventListener('fetch', function(event) {
 
               } else if (!response.url.endsWith('.js') && !response.url.endsWith('.js')) {
 
-                console.log(`Service Worker: [${url}] redirect to [${response.url}.js]`)
+                console.log(`Service Worker: [${url}] redirect/transform [${response.url}.js]`)
                 newRequest = new Request(response.url + '.js')
                 //console.log(newRequest)
                 let newParser = getBabelParser(newRequest)
