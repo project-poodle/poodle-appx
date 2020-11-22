@@ -2,8 +2,19 @@ ui_element:
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
-      element_name: /index
-      element_type: page
+      element_name: /
+      element_type: html
+      element_spec:
+          template: /index.html
+          data:
+              title: Design Your Own Apps with App-X
+
+ui_element:
+    - namespace: sys
+      app_name: appx
+      ui_app_ver: internal
+      element_name: /AppX
+      element_type: js
       element_spec:
           scope: app-x
           name: /AppX
@@ -39,6 +50,6 @@ ui_element:
       app_name: appx
       ui_app_ver: internal
       element_name: /pages/landing/Home
-      element_type: element
+      element_type: js
       element_spec:
           comment: initialize home page

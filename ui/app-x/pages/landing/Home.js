@@ -120,7 +120,7 @@ var videos= [
   {
     vid: 'xRFrjAVH1uQ', // scene
     start: 18,
-    end: -1
+    end: 400
   },
   //{
   //  vid: 'uGWHSgIzqt0', // forest
