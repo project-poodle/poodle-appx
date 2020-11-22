@@ -7,9 +7,9 @@ schema, rest API, and UI based on user defined model schema.
 
 
 
-# Initial setup of AppX service
+# Initial setup of AppX API service
 
-    $ cd service
+    $ cd api
 
     -- edit init.d/init.yaml
        update credentials and mysql connection info
