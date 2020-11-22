@@ -1,0 +1,5 @@
+"#ns{$sql_namespaces}":                                 # namespace
+    namespace: "@ns"
+    owner_scope: "$ns.owner_scope"
+    owner_name: "$ns.owner_name"
+    namespace_spec: "$ns.namespace_spec"

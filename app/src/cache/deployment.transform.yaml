@@ -1,0 +1,35 @@
+"#ns{$sql_namespaces}":                                 # namespace
+    namespace: "@ns"
+    owner_scope: "$ns.owner_scope"
+    owner_name: "$ns.owner_name"
+    namespace_spec: "$ns.namespace_spec"
+
+    apps:
+        "#app{$sql_apps[@ns]}":                         # app_name
+            "#app{$app}":                               # app_ver
+                namespace: "@ns"
+                app_name: "@@app"
+                app_ver: "@app"
+                app_spec: "$app.app_spec"
+
+                deployments:
+                    "#dp{$sql_deployments_by_app[@ns][@@app]}{? $app_ver == @app }":        # runtime_name
+                        namespace: "@ns"
+                        app_name: "@@app"
+                        app_ver: "@app"
+                        runtime_name: "@dp"
+                        deployments_spec: "$dp.deployment_spec"
+
+    runtimes:
+        "#rt{$sql_runtimes[@ns]}":                                                          # runtime_name
+            namespace: "@ns"
+            runtime_name: "@rt"
+            runtime_spec: "$rt.runtime_spec"
+
+            deployments:
+                "#dp{$sql_deployments_by_runtime[@ns][@rt]}":                               # app_name
+                    namespace: "@ns"
+                    runtime_name: "@rt"
+                    app_name: "@dp"
+                    app_ver: "$dp.app_ver"
+                    deployment_spec: "$dp.deployment_spec"

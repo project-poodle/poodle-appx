@@ -1,0 +1,64 @@
+auth_grant_by_role:
+    "#au{$sql_auth_grant_by_role}":                     # namespace
+        "#au{$au}":                                     # app_name
+            "#au{$au}":                                 # role_name
+                "#au{$au}":                             # grant_type
+                    "#au{$au}":                         # grant_name
+                        namespace: "@@@@@au"
+                        app_name: "@@@@au"
+                        role_name: "@@@au"
+                        grant_type: "@@au"
+                        grant_name: "@au"
+                        grant_spec: "$au.grant_spec"
+
+auth_grant_by_user:
+    "#au{$sql_auth_grant_by_user}":                     # namespace
+        "#au{$au}":                                     # app_name
+            "#au{$au}":                                 # username
+                "#au{$au}":                             # role_name
+                    namespace: "@@@@au"
+                    app_name: "@@@au"
+                    username: "@@au"
+                    role_name: "@au"
+                    grant_type: "$au.grant_type"
+                    grant_name: "$au.grant_name"
+                    grant_spec: "$au.grant_spec"
+
+auth_grant_by_group:
+    "#au{$sql_auth_grant_by_user}":                     # namespace
+        "#au{$au}":                                     # app_name
+            "#au{$au}":                                 # group
+                "#au{$au}":                             # role_name
+                    namespace: "@@@@au"
+                    app_name: "@@@au"
+                    group: "@@au"
+                    role_name: "@au"
+                    grant_type: "$au.grant_type"
+                    grant_name: "$au.grant_name"
+                    grant_spec: "$au.grant_spec"
+
+auth_func_perm_by_role:
+    "#au{$sql_auth_func_perm_by_role}":                 # namespace
+        "#au{$au}":                                     # app_name
+            "#au{$au}":                                 # role_name
+                "#au{$au}":                             # auth_func_name
+                    namespace: "@@@@au"
+                    app_name: "@@@au"
+                    role_name: "@@au"
+                    auth_func_name: "@au"
+                    auth_func_spec: "$au.auth_func_spec"
+
+auth_obj_perm_by_role:
+    "#au{$sql_auth_obj_perm_by_role}":                  # namespace
+        "#au{$au}":                                     # app_name
+            "#au{$au}":                                 # role_name
+                "#au{$au}":                             # auth_obj_type
+                    "#au{$au}":                         # auth_obj_key
+                        "#au{$au}":                     # auth_func_name
+                            namespace: "@@@@@@au"
+                            app_name: "@@@@@au"
+                            role_name: "@@@@au"
+                            auth_obj_type: "@@@au"
+                            auth_obj_key: "@@au"
+                            auth_func_name: "@au"
+                            auth_obj_spec: "$au.auth_obj_spec"

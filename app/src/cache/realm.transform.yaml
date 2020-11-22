@@ -1,0 +1,24 @@
+realm_by_app:
+    "#rlm{$sql_realm_by_app}":                          # namespace
+        "#rlm{$rlm}":                                   # app_name
+            namespace: "@@rlm"
+            app_name: "@rlm"
+            realm: "$rlm.realm"
+            realm_app_spec: "$rlm.realm_app_spec"
+
+app_by_realm:
+    "#rlm{$sql_app_by_realm}":                          # realm
+        "#rlm{$rlm}":                                   # namespace
+            "#rlm{$rlm}":                               # app_name
+                realm: "@@@rlm"
+                namespace: "@@rlm"
+                app_name: "@rlm"
+                realm_app_spec: "$rlm.realm_app_spec"
+
+realm_module:
+    "#rlm{$sql_realm_module}":                          # realm
+        "#rlm{$rlm}":                                   # module_name
+            realm: "@@rlm"
+            module_name: "@rlm"
+            module_pattern: "$rlm.module_pattern"
+            module_spec: "$rlm.module_spec"

@@ -1,0 +1,70 @@
+##################################################
+realm:
+    params: null
+    sql_input: "realm.sql.yaml"
+    transform: "realm.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
+auth:
+    params: null
+    sql_input: "auth.sql.yaml"
+    transform: "auth.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
+namespace:
+    params: null
+    sql_input: "namespace.sql.yaml"
+    transform: "namespace.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+    trigger:
+        "#ns{$namespace}":
+            "$invoke":
+                module: "../cache/cache"
+                method: "load_cache_for"
+                params:
+                    - '"deployment"'
+                    - namespace: "@ns"
+
+##################################################
+deployment:
+    params:
+        - namespace
+    sql_input: "deployment.sql.yaml"
+    transform: "deployment.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+    trigger:
+        "#ns{$deployment}":
+            runtimes:
+                "#rt{$deployment[@ns]['runtimes']}":
+                    deployments:
+                        "#dp{$deployment[@ns]['runtimes'][@rt]['deployments']}":
+                            "$invoke":
+                                module: "../cache/cache"
+                                method: "load_cache_for"
+                                params:
+                                    - '"object"'
+                                    - namespace: "@ns"
+                                      runtime_name: "@rt"
+                                      app_name: "@dp"
+
+##################################################
+object:
+    params:
+        - namespace
+        - runtime_name
+        - app_name
+    sql_input: "object.sql.yaml"
+    transform: "object.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360

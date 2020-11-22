@@ -1,0 +1,8 @@
+{
+    "host": "{{{appx.init.ldap_host}}}",
+    "port": "{{{appx.init.ldap_port}}}",
+    "ssl": "{{{appx.init.ldap_ssl}}}",
+    "base_dn": "{{{appx.init.ldap_base_dn}}}",
+    "bind_user": "{{{appx.init.ldap_bind_user}}}",
+    "bind_pass": "{{{appx.init.ldap_bind_pass}}}"
+}

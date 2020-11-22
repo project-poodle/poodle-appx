@@ -1,0 +1,33 @@
+# _realm_app
+- query: "SELECT *
+            FROM _realm_app
+            WHERE
+                deleted = 0"
+  map_def:
+      - name: sql_realm_by_app
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+        value: "$@"
+
+      - name: sql_app_by_realm
+        key:
+            - "$@.realm"
+            - "$@.namespace"
+            - "$@.app_name"
+        value: "$@"
+
+# _realm_module
+- query: "SELECT *
+            FROM _realm_module
+            WHERE
+                deleted = 0
+            ORDER BY
+                realm ASC,
+                module_name ASC"
+  map_def:
+      - name: sql_realm_module
+        key:
+            - "$@.realm"
+            - "$@.module_name.replace(/\\./g, '__')"
+        value: "$@"

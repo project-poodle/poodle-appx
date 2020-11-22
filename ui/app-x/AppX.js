@@ -14,7 +14,7 @@ import store from '/app-x/redux/store'
 
 //const { useRoutes } = _router
 
-const App = () => {
+const AppX = () => {
 
   const routeResult = useRoutes(routes)
   //console.log(routeResult)
@@ -30,4 +30,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default AppX;

@@ -1,0 +1,9 @@
+- query: "SELECT *
+            FROM namespace
+            WHERE
+                deleted = 0"
+  map_def:
+      - name: sql_namespaces
+        key:
+            - "$@.namespace"
+        value: "$@"

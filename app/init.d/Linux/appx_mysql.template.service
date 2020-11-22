@@ -1,0 +1,15 @@
+[Unit]
+Description=appx mysql admin service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User={{{appx.init.service_usr_admin}}}
+Group={{{appx.init.service_grp_admin}}}
+ExecStart={{{appx.init.location_appx}}}/service/task.d/admin_db/run.sh
+
+[Install]
+WantedBy=multi-user.target

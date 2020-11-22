@@ -1,0 +1,30 @@
+{
+  "name": "appx-service",
+  "version": "0.1.0",
+  "description": "appx services",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app.js -c ./conf.d/mysql_appx.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "argparse": "^2.0.1",
+    "cookie-parser": "^1.4.5",
+    "crypto-js": "^4.0.0",
+    "deasync": "^0.1.20",
+    "deep-equal": "^2.0.4",
+    "escodegen": "^2.0.0",
+    "esprima": "^4.0.1",
+    "express": "^4.17.1",
+    "fast-json-stable-stringify": "^2.1.0",
+    "ldapjs": "^2.2.0",
+    "mustache": "^4.0.1",
+    "mysql": "^2.18.1",
+    "object-path": "^0.11.5",
+    "passport": "^0.4.1",
+    "typescript": "^4.0.3",
+    "yaml": "^1.10.0"
+  },
+  "author": "Project Poodle",
+  "license": "MIT"
+}

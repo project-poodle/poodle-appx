@@ -1,0 +1,75 @@
+# _auth_grant - by role
+- query: "SELECT *
+            FROM _auth_grant
+            WHERE
+                grant_type = 'user'
+                AND deleted = 0"
+  map_def:
+      - name: sql_auth_grant_by_role
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.role_name"
+            - "$@.grant_type"
+            - "$@.grant_name"
+        value: "$@"
+
+# _auth_grant - filter by user type
+- query: "SELECT *
+            FROM _auth_grant
+            WHERE
+                grant_type = 'user'
+                AND deleted = 0"
+  map_def:
+      - name: sql_auth_grant_by_user
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.grant_name"
+            - "$@.role_name"
+        value: "$@"
+
+# _auth_grant - filter by group type
+- query: "SELECT *
+            FROM _auth_grant
+            WHERE
+                grant_type = 'group'
+                AND deleted = 0"
+  map_def:
+      - name: sql_auth_grant_by_group
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.grant_name"
+            - "$@.role_name"
+        value: "$@"
+
+# _auth_func_perm
+- query: "SELECT *
+            FROM _auth_func_perm
+            WHERE
+                deleted = 0"
+  map_def:
+      - name: sql_auth_func_perm_by_role
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.role_name"
+            - "$@.auth_func_name"
+        value: "$@"
+
+# _auth_obj_perm
+- query: "SELECT *
+            FROM _auth_obj_perm
+            WHERE
+                deleted = 0"
+  map_def:
+      - name: sql_auth_obj_perm_by_role
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.role_name"
+            - "$@.auth_obj_type"
+            - "$@.auth_obj_key"
+            - "$@.auth_func_name"
+        value: "$@"
