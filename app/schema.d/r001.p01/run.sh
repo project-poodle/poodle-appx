@@ -26,7 +26,7 @@ else
 fi
 echo "----------"
 
-eval_template -t ${CURR_DIR}/appx.sql -y1 /tmp/$$/appx.yaml -y2 ${CURR_DIR}/obj.yaml -y3 ${CURR_DIR}/relation.yaml -y4 ${CURR_DIR}/attr.yaml -y5 ${CURR_DIR}/api.yaml > /tmp/$$/appx.sql
+eval_template -t ${CURR_DIR}/appx.sql -y1 /tmp/$$/appx.yaml -y2 ${CURR_DIR}/obj.yaml -y3 ${CURR_DIR}/relation.yaml -y4 ${CURR_DIR}/attr.yaml -y5 ${CURR_DIR}/api.yaml -y6 ${CURR_DIR}/ui_element.yaml > /tmp/$$/appx.sql
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"
     cat /tmp/$$/appx.sql.out

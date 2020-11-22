@@ -710,6 +710,6 @@ INSERT INTO `{{{global.schema_prefix}}}`.`ui_deployment`(`namespace`, `app_name`
 -- ui_element --
 {{#ui_element}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`ui_element`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `element_name`, `element_type`, `element_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{runtime_name}}}', '{{{ui_app_ver}}}', '{{{element_name}}}', '{{{element_type}}}', {{#element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/element_spec}}) ON DUPLICATE KEY UPDATE element_type=VALUES(element_type), element_spec=VALUES(element_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_element`(`namespace`, `app_name`, `ui_app_ver`, `element_name`, `element_type`, `element_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{ui_app_ver}}}', '{{{element_name}}}', '{{{element_type}}}', {{#element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/element_spec}}) ON DUPLICATE KEY UPDATE element_type=VALUES(element_type), element_spec=VALUES(element_spec);
 {{/.}}
 {{/ui_element}}

@@ -1,1 +1,8 @@
 ui_element:
+    - namespace: sys
+      app_name: appx
+      ui_app_ver: internal
+      element_name: /pages/home
+      element_type: element
+      element_spec:
+          comment: initialize home page
