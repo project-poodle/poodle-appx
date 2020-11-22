@@ -22,13 +22,17 @@ import * as materialStyles from '@material-ui/styles'
 import * as clsx from 'clsx'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
+// reflective prop types
+import reflectPropTypes from './reflectPropTypes'
 
 // export module as library
 export default {
   "pkg": pkg,
   "react": react,
   "react-dom": reactDom,
-  "prop-types": propTypes,
+  "prop-types": propTypes,     // override original propTypes
+  "origPropTypes": propTypes,
+  "reflectPropTypes": reflectPropTypes,
   "react-redux": reactRedux,
   "redux": redux,
   "hookrouter": hookrouter,

@@ -41,7 +41,7 @@ export default [
 				include: 'node_modules/**',  // Default: undefined
 				'process.env.NODE_ENV': JSON.stringify('development')
 			}),
-     	//terser()
+     	//terser(),
 			html()
     ]
   }
