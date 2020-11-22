@@ -1,4 +1,4 @@
-# Project Poodle - AppX
+# Project Poodle - App-X
 
 Project Poodle - AppX - app builder
 
@@ -7,9 +7,9 @@ schema, rest API, and UI based on user defined model schema.
 
 
 
-# Initial setup of AppX API service
+# Initial setup of App-X service
 
-    $ cd api
+    $ cd app
 
     -- edit init.d/init.yaml
        update credentials and mysql connection info
