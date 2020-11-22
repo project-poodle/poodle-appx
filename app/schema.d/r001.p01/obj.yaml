@@ -143,3 +143,51 @@ obj:
       obj_type: "status"
       obj_spec:
           comment: "initialize: transform_status"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app"
+      obj_type: "spec"
+      obj_spec:
+          comment: "initialize: ui_app"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app_status"
+      obj_type: "status"
+      obj_spec:
+          comment: "initialize: ui_app_status"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      obj_type: "spec"
+      obj_spec:
+          comment: "initialize: ui_deployment"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      obj_type: "status"
+      obj_spec:
+          comment: "initialize: ui_deployment_status"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      obj_type: "spec"
+      obj_spec:
+          comment: "initialize: ui_element"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      obj_type: "status"
+      obj_spec:
+          comment: "initialize: ui_element_status"

@@ -128,7 +128,7 @@ _auth_grant:
           comment: "initialize {{{MYSQL_CONF.appx_node_user}}}@LOCAL"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "admin"
+      role_name: "dev.fullstack"
       grant_type: "user"
       grant_name: "centos@LDAP"
       grant_spec:
@@ -142,7 +142,7 @@ _auth_grant:
           comment: "initialize agent@LDAP"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "user"
+      role_name: "dev.ui"
       grant_type: "user"
       grant_name: "appx@LDAP"
       grant_spec:
@@ -151,52 +151,142 @@ _auth_grant:
 ######################################################################
 # _perm_func
 _auth_func_perm:
+    # superadmin role
     - namespace: "sys"
       app_name: "appx"
       role_name: "superadmin"
-      auth_func_name: "read"
-      auth_func_spec:
-          comment: "initialize"
-    - namespace: "sys"
-      app_name: "appx"
-      role_name: "superadmin"
-      auth_func_name: "write"
+      auth_func_name: "app.read"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
       role_name: "superadmin"
-      auth_func_name: "status"
+      auth_func_name: "app.write"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "admin"
-      auth_func_name: "read"
+      role_name: "superadmin"
+      auth_func_name: "app.status"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
-      role_name: "admin"
-      auth_func_name: "write"
+      role_name: "superadmin"
+      auth_func_name: "ui.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "superadmin"
+      auth_func_name: "ui.write"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "superadmin"
+      auth_func_name: "ui.status"
+      auth_func_spec:
+          comment: "initialize"
+    # admin role
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.fullstack"
+      auth_func_name: "app.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.fullstack"
+      auth_func_name: "app.write"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.fullstack"
+      auth_func_name: "ui.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.fullstack"
+      auth_func_name: "ui.write"
+      auth_func_spec:
+          comment: "initialize"
+    # app dev role
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.app"
+      auth_func_name: "app.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.app"
+      auth_func_name: "app.write"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.app"
+      auth_func_name: "ui.read"
+      auth_func_spec:
+          comment: "initialize"
+    # ui dev role
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.ui"
+      auth_func_name: "app.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.ui"
+      auth_func_name: "ui.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "dev.ui"
+      auth_func_name: "ui.write"
+      auth_func_spec:
+          comment: "initialize"
+    # agent role
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "agent"
+      auth_func_name: "app.read"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
       role_name: "agent"
-      auth_func_name: "read"
+      auth_func_name: "app.status"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
       role_name: "agent"
-      auth_func_name: "status"
+      auth_func_name: "ui.read"
+      auth_func_spec:
+          comment: "initialize"
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "agent"
+      auth_func_name: "ui.status"
+      auth_func_spec:
+          comment: "initialize"
+    # user role
+    - namespace: "sys"
+      app_name: "appx"
+      role_name: "user"
+      auth_func_name: "app.read"
       auth_func_spec:
           comment: "initialize"
     - namespace: "sys"
       app_name: "appx"
       role_name: "user"
-      auth_func_name: "read"
+      auth_func_name: "ui.read"
       auth_func_spec:
           comment: "initialize"
 
@@ -210,14 +300,6 @@ namespace:
           comment: "initialize"
 
 ######################################################################
-# runtime
-runtime:
-    - namespace: "sys"
-      runtime_name: "base"
-      runtime_spec:
-          comment: "initialize"
-
-######################################################################
 # application
 app:
     - namespace: "sys"
@@ -227,11 +309,38 @@ app:
           comment: "initialize"
 
 ######################################################################
+# runtime
+runtime:
+    - namespace: "sys"
+      runtime_name: "base"
+      runtime_spec:
+          comment: "initialize"
+
+######################################################################
 # deployment
 deployment:
     - namespace: "sys"
-      runtime_name: "base"
       app_name: "appx"
+      runtime_name: "base"
       app_ver: "internal"
       deployment_spec:
+          comment: "initialize"
+
+######################################################################
+# ui_app
+ui_app:
+    - namespace: "sys"
+      app_name: "appx"
+      ui_app_ver: "internal"
+      ui_app_spec:
+          comment: "initialize"
+
+######################################################################
+# ui_deployment
+ui_deployment:
+    - namespace: "sys"
+      app_name: "appx"
+      runtime_name: "base"
+      ui_app_ver: "internal"
+      ui_deployment_spec:
           comment: "initialize"

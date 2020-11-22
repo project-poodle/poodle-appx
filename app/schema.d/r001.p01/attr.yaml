@@ -192,18 +192,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "deployment"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "deployment"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -235,18 +235,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "deployment_status"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "deployment_status"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "deployment_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -321,18 +321,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj_status"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "obj_status"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "obj_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -423,18 +423,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr_status"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "attr_status"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "attr_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -541,18 +541,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api_status"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "api_status"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "api_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -659,18 +659,18 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform_status"
-      attr_name: "runtime_name"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "transform_status"
       attr_name: "app_name"
       attr_spec:
           key: true
           type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "transform_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -700,6 +700,264 @@ attr:
       app_ver: "internal"
       obj_name: "transform_status"
       attr_name: "transform_status"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_app
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app"
+      attr_name: "ui_app_spec"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_app_status
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app_status"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app_status"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app_status"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_app_status"
+      attr_name: "ui_app_status"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_deployment
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      attr_name: "ui_deployment_spec"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_deployment_status
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment_status"
+      attr_name: "ui_deployment_status"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_element
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "element_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(255)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "element_type"
+      attr_spec:
+          key: false
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element"
+      attr_name: "element_spec"
+      attr_spec:
+          key: false
+          type: "JSON"
+
+    ######################################################################
+    # ui_element_status
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "namespace"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "app_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(15)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "runtime_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(9)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "ui_app_ver"
+      attr_spec:
+          key: true
+          type: "VARCHAR(32)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "element_name"
+      attr_spec:
+          key: true
+          type: "VARCHAR(255)"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_element_status"
+      attr_name: "element_status"
       attr_spec:
           key: false
           type: "JSON"

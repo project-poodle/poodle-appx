@@ -28,6 +28,12 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`api`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`api_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`transform`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`transform_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_app`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_app_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element_status`;
 
 -- metadata --
 CREATE TABLE `{{{global.schema_prefix}}}`.`_appx_meta` (
@@ -548,36 +554,35 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`ui_deployment_status` (
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
-CREATE TABLE `{{{global.schema_prefix}}}`.`ui_component` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `ui_app_ver`            VARCHAR(32)             NOT NULL,
-    `component_name`        VARCHAR(255)            NOT NULL,
-    `component_type`        VARCHAR(15)             NOT NULL,
-    `component_spec`        JSON                    NOT NULL,
+    `element_name`          VARCHAR(255)            NOT NULL,
+    `element_type`          VARCHAR(32)             NOT NULL,
+    `element_spec`          JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `ui_app_ver`, `component_name`),
-    PRIMARY KEY (`id`)
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `ui_app_ver`, `element_name`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `ui_app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
 PARTITION BY KEY(`namespace`, `app_name`, `ui_app_ver`) PARTITIONS 20;
 
-CREATE TABLE `{{{global.schema_prefix}}}`.`ui_component_status` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `ui_app_ver`            VARCHAR(32)             NOT NULL,
-    `component_name`        VARCHAR(255)            NOT NULL,
-    `component_type`        VARCHAR(15)             NOT NULL,
-    `component_status`      JSON                    NOT NULL,
+    `element_name`          VARCHAR(255)            NOT NULL,
+    `element_status`        JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `component_name`),
-    PRIMARY KEY (`id`)
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `element_name`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `runtime_name`, `ui_app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
 PARTITION BY KEY(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`) PARTITIONS 20;
@@ -687,3 +692,24 @@ INSERT INTO `{{{global.schema_prefix}}}`.`attr`(`namespace`, `app_name`, `app_ve
 INSERT INTO `{{{global.schema_prefix}}}`.`api`(`namespace`, `app_name`, `app_ver`, `obj_name`, `api_method`, `api_endpoint`, `api_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{app_ver}}}', '{{{obj_name}}}', '{{{api_method}}}', '{{{api_endpoint}}}', {{#api_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/api_spec}}) ON DUPLICATE KEY UPDATE api_spec=VALUES(api_spec);
 {{/.}}
 {{/api}}
+
+-- ui_app --
+{{#ui_app}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_app`(`namespace`, `app_name`, `ui_app_ver`, `ui_app_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{ui_app_ver}}}', {{#ui_app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_app_spec}}) ON DUPLICATE KEY UPDATE ui_app_spec=VALUES(ui_app_spec);
+{{/.}}
+{{/ui_app}}
+
+-- ui_deployment --
+{{#ui_deployment}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_deployment`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `ui_deployment_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{runtime_name}}}', '{{{ui_app_ver}}}', {{#ui_deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_deployment_spec}}) ON DUPLICATE KEY UPDATE ui_deployment_spec=VALUES(ui_deployment_spec);
+{{/.}}
+{{/ui_deployment}}
+
+-- ui_element --
+{{#ui_element}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_element`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `element_name`, `element_type`, `element_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{runtime_name}}}', '{{{ui_app_ver}}}', '{{{element_name}}}', '{{{element_type}}}', {{#element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/element_spec}}) ON DUPLICATE KEY UPDATE element_type=VALUES(element_type), element_spec=VALUES(element_spec);
+{{/.}}
+{{/ui_element}}
