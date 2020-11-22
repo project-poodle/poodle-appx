@@ -1,0 +1,87 @@
+# namespace
+- query: "SELECT *
+            FROM namespace
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_namespaces
+        key:
+            - "$@.namespace"
+        value: "$@"
+
+# ui_app
+- query: "SELECT *
+            FROM ui_app
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND app_name = '{{params.app_name}}'
+                AND ui_app_ver = '{{params.ui_app_ver}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_ui_apps
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+        value: "$@"
+
+# ui_deployment
+- query: "SELECT *
+            FROM ui_deployment
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND app_name = '{{params.app_name}}'
+                AND ui_app_ver = '{{params.ui_app_ver}}'
+                AND runtime_name = '{{params.runtime_name}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_ui_deployments_by_runtime
+        key:
+            - "$@.namespace"
+            - "$@.runtime_name"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+        value: "$@"
+
+      - name: sql_ui_deployments_by_ui_app
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+            - "$@.runtime_name"
+        value: "$@"
+
+# ui_element
+- query: "SELECT
+                ui_element.id,
+                ui_element.namespace,
+                ui_deployment.runtime_name,
+                ui_element.app_name,
+                ui_element.ui_app_ver,
+                ui_element.element_name,
+                ui_element.element_type,
+                ui_element.element_spec,
+                ui_element.create_time,
+                ui_element.update_time,
+                ui_element.deleted
+            FROM ui_element
+            JOIN ui_deployment
+                ON ui_element.namespace = ui_deployment.namespace
+                AND ui_element.app_name = ui_deployment.app_name
+                AND ui_element.ui_app_ver = ui_deployment.ui_app_ver
+            WHERE
+                ui_element.namespace = '{{params.namespace}}'
+                AND ui_deployment.runtime_name = '{{params.runtime_name}}'
+                AND ui_element.app_name = '{{params.app_name}}'
+                AND ui_element.ui_app_ver = '{{params.ui_app_ver}}'
+                AND ui_element.deleted = 0
+                AND ui_deployment.deleted = 0"
+  map_def:
+      - name: sql_ui_elements
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+            - "$@.element_name"
+        value: "$@"

@@ -2,7 +2,43 @@ ui_element:
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
-      element_name: /pages/home
+      element_name: /index
+      element_type: page
+      element_spec:
+          scope: app-x
+          name: /AppX
+          props:
+              routes:
+                  - route: "/"
+                    element:
+                        scope: app-x
+                        name: /pages/landing/Home
+                  - route: "/appx/login"
+                    element:
+                        scope: app-x
+                        name: /pages/layouts/headerLayout
+                        child:
+                            scope: app-x
+                            name: /pages/auth/SigninSide
+                  - route: "/appx/console"
+                    element:
+                        scope: app-x
+                        name: /pages/layouts/consoleLayout
+                        child:
+                            scope: app-x
+                            name: /views/errors/NotFoundView
+                  - route: "/404"
+                    element:
+                        scope: app-x
+                        name: /pages/layouts/headerLayout
+                        child:
+                            scope: app-x
+                            name: /views/errors/NotFoundView
+
+    - namespace: sys
+      app_name: appx
+      ui_app_ver: internal
+      element_name: /pages/landing/Home
       element_type: element
       element_spec:
           comment: initialize home page

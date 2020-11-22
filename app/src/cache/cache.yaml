@@ -26,12 +26,18 @@ namespace:
         max: 360
     trigger:
         "#ns{$namespace}":
-            "$invoke":
-                module: "../cache/cache"
-                method: "load_cache_for"
-                params:
-                    - '"deployment"'
-                    - namespace: "@ns"
+            - "$invoke":
+                  module: "../cache/cache"
+                  method: "load_cache_for"
+                  params:
+                      - '"deployment"'
+                      - namespace: "@ns"
+            - "$invoke":
+                  module: "../cache/cache"
+                  method: "load_cache_for"
+                  params:
+                      - '"ui_deployment"'
+                      - namespace: "@ns"
 
 ##################################################
 deployment:
@@ -65,6 +71,44 @@ object:
         - app_name
     sql_input: "object.sql.yaml"
     transform: "object.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
+ui_deployment:
+    params:
+        - namespace
+    sql_input: "ui_deployment.sql.yaml"
+    transform: "ui_deployment.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+    trigger:
+        "#ns{$ui_deployment}":
+            runtimes:
+                "#dp{$ui_deployment[@ns]['runtimes']}":
+                    "#dp{$dp}":
+                        "#dp{$dp}":
+                            "$invoke":
+                                module: "../cache/cache"
+                                method: "load_cache_for"
+                                params:
+                                    - '"ui_element"'
+                                    - namespace: "@ns"
+                                      runtime_name: "@@@dp"
+                                      app_name: "@@dp"
+                                      ui_app_ver: "@dp"
+
+##################################################
+ui_element:
+    params:
+        - namespace
+        - runtime_name
+        - app_name
+        - ui_app_ver
+    sql_input: "ui_element.sql.yaml"
+    transform: "ui_element.transform.yaml"
     reconcile:
         min: 180
         max: 360

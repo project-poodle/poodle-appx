@@ -1,0 +1,48 @@
+# namespace
+- query: "SELECT *
+            FROM namespace
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_namespaces
+        key:
+            - "$@.namespace"
+        value: "$@"
+
+# ui_app
+- query: "SELECT *
+            FROM ui_app
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_ui_apps
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+        value: "$@"
+
+# ui_deployment
+- query: "SELECT *
+            FROM ui_deployment
+            WHERE
+                namespace = '{{params.namespace}}'
+                AND deleted = 0"
+  map_def:
+      - name: sql_ui_deployments_by_runtime
+        key:
+            - "$@.namespace"
+            - "$@.runtime_name"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+        value: "$@"
+
+      - name: sql_ui_deployments_by_ui_app
+        key:
+            - "$@.namespace"
+            - "$@.app_name"
+            - "$@.ui_app_ver"
+            - "$@.runtime_name"
+        value: "$@"
