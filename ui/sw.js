@@ -1,7 +1,19 @@
 importScripts('/lib/babel.js')
 
 // babel config
-const babelConf = { presets: ['es2017','react'] }
+const babelConf = {
+  presets: [
+    'es2017',
+    'react'
+  ]
+}
+
+// exclude dirs
+const excludeDirs = [
+  '/dist/',
+  '/import-maps/',
+  '/lib/'
+]
 
 // install
 self.addEventListener('install', function(event) {
@@ -23,11 +35,9 @@ function getBabelParser(request) {
     fetch(request)
       .then(response => response.text())
       .then(body => {
-        //console.log(`body then [${event.request.url}]`)
         var output = Babel.transform(body, babelConf).code;
         //console.log(output)
         resolve(new Response(
-          //'import module from "module";\n'
           'import {default as lib} from "/dist/lib/main.js";\n'
           + output,
           {
@@ -46,11 +56,13 @@ function getBabelParser(request) {
 
 // intercept fetch event
 self.addEventListener('fetch', function(event) {
-  //console.log(self.registration)
+
   const {request: {url}} = event;
   //console.log(`Service Worker: fetch event ${url}`)
 
-  if (url.startsWith(self.registration.scope) && !url.includes('/dist/')  && !url.includes('/import-maps/')) {
+  const isExcluded = excludeDirs.reduce((r, dir) => (r || url.includes(dir)), false)
+
+  if (url.startsWith(self.registration.scope) && !isExcluded) {
 
     if (url.endsWith('.js') || url.endsWith('.jsx')) {
 
@@ -71,9 +83,9 @@ self.addEventListener('fetch', function(event) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: [${url}] redirect/transform [${response.url}index.js]`)
+                console.log(`Service Worker: redirect [${url}] transform [${response.url}index.js]`)
                 newRequest = new Request(response.url + 'index.js')
-                //console.log(newRequest)
+
                 let newParser = getBabelParser(newRequest)
                 newParser
                   .then(data => {
@@ -83,11 +95,11 @@ self.addEventListener('fetch', function(event) {
                     reject(error)
                   })
 
-              } else if (!response.url.endsWith('.js') && !response.url.endsWith('.js')) {
+              } else if (!response.url.endsWith('.js') && !response.url.endsWith('.jsx')) {
 
-                console.log(`Service Worker: [${url}] redirect/transform [${response.url}.js]`)
+                console.log(`Service Worker: redirect [${url}] transform [${response.url}.js]`)
                 newRequest = new Request(response.url + '.js')
-                //console.log(newRequest)
+
                 let newParser = getBabelParser(newRequest)
                 newParser
                   .then(data => {
@@ -108,8 +120,8 @@ self.addEventListener('fetch', function(event) {
             }
 
           }).catch(error => {
+
             console.log(`Service Worker: fetch error [${url}] [${error}]`)
-            //console.log(response)
             reject(error)
           })
       })
