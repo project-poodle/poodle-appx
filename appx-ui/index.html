@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="theme-color" content="#000000" />
   <title>App-X: Design Your Own Apps</title>
-  <script type="module" src="/dist/esm/main.js"></script>
+  <script type="module" src="/dist/lib/main.js"></script>
 </head>
 
 <body>
@@ -27,7 +27,7 @@
     `
   } else if (!navigator.serviceWorker.controller) {
     hasRegStep = true
-    navigator.serviceWorker.register('./sw.js', {scope: '.'})
+    navigator.serviceWorker.register('/sw.js', {scope: '/'})
     .then((reg) => {
       // registration successful
       console.log('Service Worker: registration succeeded. Scope is ' + reg.scope)
@@ -41,18 +41,18 @@
     })
   }
 
-  import module from "/dist/esm/main.js"
+  import lib from "/dist/lib/main.js"
 
   // render function
   async function render() {
 
     //console.log(module.react)
     //console.log(module['react-dom'])
-    import('/appx/App').then(app => {
+    import('/app-x/App').then(app => {
       const App = app.default
       //console.log(App)
-      module['react-dom'].render(
-          module['react'].createElement(App, null),
+      lib['react-dom'].render(
+          lib['react'].createElement(App, null),
           document.getElementById('root')
       )
     })

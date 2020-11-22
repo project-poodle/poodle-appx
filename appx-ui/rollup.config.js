@@ -1,30 +1,15 @@
-import json from '@rollup/plugin-json';
-import html from '@rollup/plugin-html';
-import replace from '@rollup/plugin-replace';
-import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json'
+import html from '@rollup/plugin-html'
+import replace from '@rollup/plugin-replace'
+import commonjs from '@rollup/plugin-commonjs'
+import nodeResolve from '@rollup/plugin-node-resolve'
 //import { terser } from "rollup-plugin-terser";
-//import pkg from './package.json';
-const pkg = require('./package.json');
+const pkg = require('./package.json')
 
 export default [
   {
     input: 'lib/main.js',
-    //input: [
-    //  'lib/util.js',
-    //  'lib/react.js',
-    //  'lib/material-ui.js'
-    //],
     output: [
-			{
-	      name: 'module',
-	      dir: pkg.umd,
-	      format: 'umd'
-	    },
-      //{
-      //  dir: pkg.cjs,
-      //  format: 'cjs'
-      //},
       {
         dir: pkg.esm,
         format: 'es'
@@ -60,4 +45,4 @@ export default [
 			html()
     ]
   }
-];
+]

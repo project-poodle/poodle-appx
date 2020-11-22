@@ -1,4 +1,4 @@
-importScripts('https://unpkg.com/@babel/standalone@7.12.6/babel.js')
+importScripts('/lib/babel.js')
 
 // babel config
 const babelConf = { presets: ['es2017','react'] }
@@ -28,7 +28,7 @@ function getBabelParser(request) {
         //console.log(output)
         resolve(new Response(
           //'import module from "module";\n'
-          'import {default as module} from "/dist/esm/main.js";\n'
+          'import {default as lib} from "/dist/lib/main.js";\n'
           + output,
           {
             headers: {'Content-Type': 'application/javascript'}
@@ -71,7 +71,7 @@ self.addEventListener('fetch', function(event) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: [${url}] redirect [${response.url}index.js]`)
+                console.log(`Service Worker: [${url}] redirect to [${response.url}index.js]`)
                 newRequest = new Request(response.url + 'index.js')
                 //console.log(newRequest)
                 let newParser = getBabelParser(newRequest)
