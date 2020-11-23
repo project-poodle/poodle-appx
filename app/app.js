@@ -71,7 +71,7 @@ app.use('/appx/ui', ui_dispatcher)
 //////////////////////////////////////////////////
 // redirect root
 app.use('/', (req, res, next) => {
-    res.redirect("/appx/ui/sys/appx/base/current")
+    res.redirect("/appx/ui/sys/appx/base/internal/")
 })
 
 //////////////////////////////////////////////////

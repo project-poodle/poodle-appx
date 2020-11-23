@@ -3,11 +3,15 @@ importScripts('/dist/lib/transpile.js')
 
 const importMappings = {}
 
+const UI_PREFIX = '/appx/ui/'
+
 // exclude dirs
 const excludeDirs = [
   '/lib/',
   '/dist/',
-  '/import-maps/'
+  '/appx/api/',
+  // '/appx/ui/',
+  // '/import-maps/'
 ]
 
 // install
@@ -83,7 +87,11 @@ self.addEventListener('fetch', function(event) {
 
   if (url.startsWith(self.registration.scope) && !isExcluded) {
 
-    if (url.endsWith('.js') || url.endsWith('.jsx')) {
+    if (url.includes(UI_PREFIX)) {
+
+      console.log(`Service Worker: UI transform [${url}]`)
+
+    } else if (url.endsWith('.js') || url.endsWith('.jsx')) {
 
       console.log(`Service Worker: transpile [${url}]`)
 

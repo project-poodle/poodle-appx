@@ -8,12 +8,15 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 //  changeOrigin: true, // for vhosted sites
 //})
 
-const apiProxy = createProxyMiddleware(pkg.proxy_base, {
+const apiProxy = createProxyMiddleware(pkg.proxy_api_base, {
   target: pkg.proxy_server,
   changeOrigin: true, // for vhosted sites
 })
 
-//console.log(`INFO: apiProxy ${apiProxy}`)
+const uiProxy = createProxyMiddleware(pkg.proxy_ui_base, {
+  target: pkg.proxy_server,
+  changeOrigin: true, // for vhosted sites
+})
 
 //////////////////////////////////////////////////
 // configs
@@ -26,6 +29,7 @@ module.exports = {
     // Reference: https://github.com/johnpapa/lite-server/blob/master/lib/config-defaults.js#L16
     middleware: {
       10: apiProxy,
+      20: uiProxy,
     }
   }
 }

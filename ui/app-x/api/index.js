@@ -1,7 +1,7 @@
 const axios = lib.axios
 import store from 'app-x/redux/store'
 
-var api_base_url = '/api'
+var api_base_url = '/appx/api'
 
 var app_context = {
   namespace: 'sys',
