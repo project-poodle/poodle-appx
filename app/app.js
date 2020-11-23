@@ -57,23 +57,21 @@ const { authenticator, loginUserWithPass, logoutUser } = require("./src/auth")
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
-const { dispatcher } = require('./src/api/dispatcher')
+const { api_dispatcher } = require('./src/api/api_dispatcher')
 
 app.use('/api', bodyParser.json())
-app.use('/api', authenticator, dispatcher)
+app.use('/api', authenticator, api_dispatcher)
 
-// handle local login
-// app.use('/login', bodyParser.json())
-// app.post('/login/local', loginUserWithPass)
+//////////////////////////////////////////////////
+// initialize ui router --- Note: perform this step only after db_pool is initialized
+const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 
-// handle local logout
-// app.use('/logout', bodyParser.json())
-// app.post('/logout', logoutUser)
+app.use('/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
 // redirect root
 app.use('/', (req, res, next) => {
-    res.redirect("/appx")
+    res.redirect("/ui/sys/appx/base/current")
 })
 
 //////////////////////////////////////////////////

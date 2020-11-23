@@ -18,7 +18,7 @@ const babelConf = {
 const default_import_maps = {
   imports: {
     "app-x/": "/app-x/",
-    "self/": "/ui/sys/appx/base/current/"
+    "self/": "/ui/sys/appx/base/internal/"
   }
 }
 

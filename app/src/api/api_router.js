@@ -1,6 +1,12 @@
 const express = require('express')
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { log_api_status, get_api_spec, SUCCESS, FAILURE } = require('./util')
+const { handle_get } = require('./get')
+const { handle_upsert } = require('./upsert')
+const { handle_update } = require('./update')
+const { handle_delete } = require('./delete')
+const { handle_status } = require('./status')
 
 // track a list of endpoints
 // let endpoints = []
@@ -68,7 +74,7 @@ function handle_req(req, res) {
     }
 }
 
-function get_router(namespace, app_name, runtime_name) {
+function load_api_router(namespace, app_name, runtime_name) {
 
     let api_results = db.query_sync(`SELECT
                     api.namespace,
@@ -165,5 +171,5 @@ function get_router(namespace, app_name, runtime_name) {
 
 //export this router to use in our index.js
 module.exports = {
-    get_router: get_router
+    load_api_router: load_api_router
 }

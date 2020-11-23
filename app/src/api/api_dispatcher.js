@@ -3,12 +3,12 @@ const router = express.Router()
 const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR, SUCCESS, FAILURE }  = require('./util')
-const { get_router }  = require('./router')
+const { load_api_router }  = require('./api_router')
 
 
 const ROUTES = {}
 
-function load_routers() {
+function load_api_routers() {
 
     let dp_results = db.query_sync(`SELECT
                     deployment.namespace,
@@ -22,19 +22,19 @@ function load_routers() {
 
     dp_results.forEach((dp_result, i) => {
 
-        let router = get_router(dp_result.namespace, dp_result.app_name, dp_result.runtime_name)
+        let router = load_api_router(dp_result.namespace, dp_result.app_name, dp_result.runtime_name)
 
         let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.runtime_name}`
 
         ROUTES[route] = router
 
-        console.log(`INFO: loaded routes for deployment [${route}]`)
+        console.log(`INFO: loaded API routes for API deployment [${route}]`)
     });
 }
 
-load_routers()
+load_api_routers()
 
-const dispatcher = function (req, res, next) {
+const api_dispatcher = function (req, res, next) {
 
     // compute current url
     let url = req.url
@@ -46,7 +46,7 @@ const dispatcher = function (req, res, next) {
     if (match) {
         let router = ROUTES[match[1]]
         if (!router) {
-            res.status(404).send(`ERROR: dispatcher for [${match[1]}] not found !`)
+            res.status(404).send(`ERROR: API dispatcher for [${match[1]}] not found !`)
         } else {
             // process context
             let namespace = match[2]
@@ -62,11 +62,11 @@ const dispatcher = function (req, res, next) {
             router.handle(req, res, next)
         }
     } else {
-        res.status(422).json({status:FAILURE, message: `ERROR: unknown dispatcher url [${req.url}]`})
+        res.status(422).json({status:FAILURE, message: `ERROR: unknown API dispatcher url [${req.url}]`})
     }
 }
 
 
 module.exports = {
-    dispatcher: dispatcher
+    api_dispatcher: api_dispatcher
 }
