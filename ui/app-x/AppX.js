@@ -6,19 +6,17 @@ const MaterialUI = lib['@material-ui/core']
 const { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
 const { Provider } = lib['react-redux']
 
-import theme from '/app-x/theme';
-import GlobalStyles from '/app-x/components/GlobalStyles'
-import HeaderLayout from '/app-x/pages/layouts/headerLayout'
-import NotFoundView from '/app-x/views/errors/NotFoundView'
-import store from '/app-x/redux/store'
+import theme from 'app-x/theme'
+import GlobalStyles from 'app-x/components/GlobalStyles'
+import HeaderLayout from 'app-x/pages/layouts/headerLayout'
+import NotFoundView from 'app-x/views/errors/NotFoundView'
+import store from 'app-x/redux/store'
 
-import routes from '/app-x/routes.js';
+import routes from 'app-x/routes.js';
 
 const AppX = (props) => {
 
   const routeResult = useRoutes(routes)
-  //console.log(routeResult)
-  //console.log(store)
 
   return (
     <Provider store={store}>

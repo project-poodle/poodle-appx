@@ -40,13 +40,16 @@
     })
   }
 
-  import lib from "/dist/lib/main.js"
+  import { default as lib } from "/dist/lib/main.js"
 
   // render function
   async function render() {
 
     //console.log(module.react)
     //console.log(module['react-dom'])
+    //const AppX = await importx('app-x', '/AppX')
+    //console.log(AppX)
+
     import('/app-x/AppX').then(appx => {
       const AppX = appx.default
       //console.log(App)

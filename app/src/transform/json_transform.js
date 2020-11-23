@@ -45,7 +45,7 @@ function traverse_with_obj_path(input) {
 
         let result = []
 
-        for (child of input) {
+        for (let child of input) {
 
             result.push(traverse_with_obj_path(child))
         }
@@ -84,7 +84,7 @@ function traverse_with_obj_path(input) {
 
         } else {
 
-            for (key in input) {
+            for (let key in input) {
                 result[key] = traverse_with_obj_path(input[key])
             }
         }

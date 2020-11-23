@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "proxy_base": "/api",
   "proxy_server": "http://localhost:3000/",
-  "esm": "dist/lib",
+  "dist": "dist/lib",
   "scripts": {
     "build": "rollup -c",
     "start": "lite-server -c bs-config.js",
@@ -30,11 +30,17 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
+    "@babel/standalone": "^7.12.7",
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-html": "^0.2.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-replace": "^2.3.4",
+    "acorn": "^8.0.4",
+    "acorn-jsx": "^5.3.1",
+    "argparse": "^2.0.1",
+    "escodegen": "^2.0.0",
+    "esprima": "^4.0.1",
     "http-proxy-middleware": "^1.0.6",
     "lite-server": "^2.6.1",
     "rollup": "^2.33.3",

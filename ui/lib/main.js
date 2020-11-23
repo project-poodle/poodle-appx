@@ -30,8 +30,7 @@ export default {
   "pkg": pkg,
   "react": react,
   "react-dom": reactDom,
-  "prop-types": propTypes,     // override original propTypes
-  "origPropTypes": propTypes,
+  "prop-types": propTypes,     // override original propTypes?
   "reflectPropTypes": reflectPropTypes,
   "react-redux": reactRedux,
   "redux": redux,

@@ -1,18 +1,11 @@
-importScripts('/lib/babel.js')
-
-// babel config
-const babelConf = {
-  presets: [
-    'es2017',
-    'react'
-  ]
-}
+//importScripts('/lib/babel.js')
+importScripts('/dist/lib/transpile.js')
 
 // exclude dirs
 const excludeDirs = [
+  '/lib/',
   '/dist/',
-  '/import-maps/',
-  '/lib/'
+  '/import-maps/'
 ]
 
 // install
@@ -25,21 +18,24 @@ self.addEventListener('install', function(event) {
 self.addEventListener('activate', event => {
   clients.claim()
   console.log('Service Worker: activated - clients claimed');
-});
+})
 
 // parse js/jsx with Babel
-function getBabelParser(request) {
+function getTranspiler(request) {
 
   let p = new Promise((resolve, reject) => {
 
     fetch(request)
       .then(response => response.text())
       .then(body => {
-        var output = Babel.transform(body, babelConf).code;
+        //var output = Babel.transform(body, babelConf).code;
         //console.log(output)
+        //console.log(Transpile)
+        var transpiledCode = Transpile(body)
+        // console.log(transpiled)
         resolve(new Response(
           'import {default as lib} from "/dist/lib/main.js";\n'
-          + output,
+          + transpiledCode,
           {
             headers: {'Content-Type': 'application/javascript'}
           }
@@ -68,7 +64,7 @@ self.addEventListener('fetch', function(event) {
 
       console.log(`Service Worker: transform [${url}]`)
 
-      let p = getBabelParser(event.request)
+      let p = getTranspiler(event.request)
 
       return event.respondWith(p)
 
@@ -86,7 +82,7 @@ self.addEventListener('fetch', function(event) {
                 console.log(`Service Worker: redirect [${url}] transform [${response.url}index.js]`)
                 newRequest = new Request(response.url + 'index.js')
 
-                let newParser = getBabelParser(newRequest)
+                let newParser = getTranspiler(newRequest)
                 newParser
                   .then(data => {
                     resolve(data)
@@ -100,7 +96,7 @@ self.addEventListener('fetch', function(event) {
                 console.log(`Service Worker: redirect [${url}] transform [${response.url}.js]`)
                 newRequest = new Request(response.url + '.js')
 
-                let newParser = getBabelParser(newRequest)
+                let newParser = getTranspiler(newRequest)
                 newParser
                   .then(data => {
                     resolve(data)
