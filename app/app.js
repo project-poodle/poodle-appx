@@ -68,12 +68,6 @@ const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 app.use('/appx/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
-// redirect root
-//app.use('/', (req, res, next) => {
-//    res.redirect("/appx/ui/sys/appx/base/internal/")
-//})
-
-//////////////////////////////////////////////////
 // static files
 const rootDir = path.join(__dirname, '../ui/')
 app.use('/',
