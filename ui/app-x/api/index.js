@@ -1,5 +1,5 @@
 const axios = lib.axios
-import store from '/app-x/redux/store'
+import store from 'app-x/redux/store'
 
 var api_base_url = '/api'
 

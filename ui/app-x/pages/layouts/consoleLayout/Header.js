@@ -22,7 +22,7 @@ const {
   ExitToApp: ExitToApp
 } = lib['@material-ui/icons']
 
-import { logout, get_app_context, get_user_info } from '/app-x/api'
+import { logout, get_app_context, get_user_info } from 'app-x/api'
 
 
 const useStyles = makeStyles((theme) => ({

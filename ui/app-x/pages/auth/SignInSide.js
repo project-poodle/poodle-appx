@@ -16,9 +16,9 @@ const {
 } = lib['@material-ui/core']
 const { LockOutlined : LockOutlinedIcon } = lib['@material-ui/icons']
 
-import FacebookIcon from '/app-x/icons/Facebook'
-import GoogleIcon from '/app-x/icons/Google'
-import { login, get_user_info } from '/app-x/api'
+import FacebookIcon from 'app-x/icons/Facebook'
+import GoogleIcon from 'app-x/icons/Google'
+import { login, get_user_info } from 'app-x/api'
 
 function Copyright() {
   return (

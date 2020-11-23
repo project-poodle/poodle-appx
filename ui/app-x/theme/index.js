@@ -1,7 +1,7 @@
 //import MaterialUI from '@material-ui/core';
 const MaterialUI = lib['@material-ui/core']
 
-import typography from '/app-x/theme/topography.js'
+import typography from 'app-x/theme/topography.js'
 
 const { createMuiTheme, colors } = MaterialUI;
 

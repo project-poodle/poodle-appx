@@ -24,7 +24,7 @@ const {
   Users: UsersIcon
 } = lib['react-feather']
 
-import NavItem from '/app-x/pages/layouts/consoleLayout/NavBar/NavItem'
+import NavItem from 'app-x/pages/layouts/consoleLayout/NavBar/NavItem'
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
