@@ -13,7 +13,7 @@ ui_element:
                     ui_app_spec: "$app.app_spec"
 
                     ui_deployments:
-                        "#dp{$sql_ui_deployments_by_ui_app[@ns][@@app][@app]}":                 # runtime_name
+                        "#dp{$sql_ui_elements[@ns][@@app][@app]}":                              # runtime_name
                             "#dp{$dp}":                                                         # element_name
                                 namespace: "@ns"
                                 app_name: "@@app"
@@ -22,16 +22,3 @@ ui_element:
                                 element_name: "@dp"
                                 element_type: "$dp.element_type"
                                 element_spec: "$dp.element_spec"
-
-        runtimes:
-            "#dp{$sql_deployments_by_runtime[@ns]}":                                            # runtime_name
-                "#dp{$dp}":                                                                     # app_name
-                    "#dp{$dp}":                                                                 # ui_app_ver
-                        "#dp{$dp}":                                                             # element_name
-                            namespace: "@ns"
-                            runtime_name: "@@@@dp"
-                            app_name: "@@@dp"
-                            app_ver: "@@dp"
-                            element_name: "@dp"
-                            element_type: "$dp.element_type"
-                            element_spec: "$dp.element_spec"

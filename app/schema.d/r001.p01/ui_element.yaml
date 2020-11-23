@@ -12,38 +12,43 @@ ui_element:
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
+      element_name: /index.html
+      element_type: html
+      element_spec:
+          template: /index.html
+          data:
+              title: Design Your Own Apps with App-X
+
+    - namespace: sys
+      app_name: appx
+      ui_app_ver: internal
       element_name: /AppX
       element_type: js
       element_spec:
-          scope: app-x
-          name: /AppX
+          name: app-x/AppX
           props:
               routes:
                   - route: "/"
                     element:
-                        scope: app-x
-                        name: /pages/landing/Home
-                  - route: "/appx/login"
+                        name: app-x/pages/landing/Home
+                  - route: "/login"
                     element:
-                        scope: app-x
-                        name: /pages/layouts/headerLayout
-                        child:
-                            scope: app-x
-                            name: /pages/auth/SigninSide
-                  - route: "/appx/console"
+                        name: app-x/pages/layouts/headerLayout
+                        children:
+                            - element:
+                                  name: app-x/pages/auth/SigninSide
+                  - route: "/console"
                     element:
-                        scope: app-x
-                        name: /pages/layouts/consoleLayout
-                        child:
-                            scope: app-x
-                            name: /views/errors/NotFoundView
+                        name: app-x/pages/layouts/consoleLayout
+                        children:
+                            - element:
+                                  name: app-x/views/errors/NotFoundView
                   - route: "/404"
                     element:
-                        scope: app-x
-                        name: /pages/layouts/headerLayout
-                        child:
-                            scope: app-x
-                            name: /views/errors/NotFoundView
+                        name: app-x/pages/layouts/headerLayout
+                        children:
+                            - element:
+                                  name: app-x/views/errors/NotFoundView
 
     - namespace: sys
       app_name: appx
@@ -51,4 +56,59 @@ ui_element:
       element_name: /pages/landing/Home
       element_type: js
       element_spec:
-          comment: initialize home page
+          name: app-x/pages/landing/Home
+          props:
+              youtube_playlist:
+                  - vid: 'vzR0dsZeQsY' # natural
+                    start: 6
+                    end: -1
+                  - vid: 'HHBsvKnCkwI' # city
+                    start: 0
+                    end: -1
+                  - vid: 'RQ18TpXxbzU' # flower
+                    start: 6
+                    end: -1
+                  - vid: 'k5obtOZe4ZQ' # people
+                    start: 0
+                    end: 8
+                  - vid: 'k5obtOZe4ZQ' # people
+                    start: 47
+                    end: 338
+                  - vid: 'k5obtOZe4ZQ' # people
+                    start: 375
+                    end: 512
+                  - vid: 'k5obtOZe4ZQ' # people
+                    start: 554
+                    end: 596
+                  - vid: '_f43Gl_6hkc' # ocean waves
+                    start: 0
+                    end: -1
+                  - vid: '-hcXR9aMTxI' # trees
+                    start: 0
+                    end: 135
+                  - vid: 'wnhvanMdx4s' # space
+                    start: 0
+                    end: 103
+                  - vid: 'wnhvanMdx4s' # space
+                    start: 263
+                    end: 336
+                  - vid: 'xRFrjAVH1uQ' # scene
+                    start: 18
+                    end: 400
+                  - vid: 'zRpazyH1WzI' # compilation
+                    start: 0
+                    end: 63
+                  - vid: 'zRpazyH1WzI' # compilation
+                    start: 99
+                    end: 546
+                  - vid: 'zRpazyH1WzI' # compilation
+                    start: 632
+                    end: 1201
+                  - vid: 'zRpazyH1WzI' # compilation
+                    start: 1385
+                    end: 1830
+                  - vid: 'zRpazyH1WzI' # compilation
+                    start: 1990
+                    end: 2050
+                  - vid: 'vOxmsqd8f58' # water drop
+                    start: 0

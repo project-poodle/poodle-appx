@@ -83,5 +83,6 @@
             - "$@.namespace"
             - "$@.app_name"
             - "$@.ui_app_ver"
+            - "$@.runtime_name"
             - "$@.element_name"
         value: "$@"
