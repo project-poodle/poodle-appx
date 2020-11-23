@@ -1,5 +1,5 @@
 const React = lib['react']
-//import { navigate } from 'hookrouter'
+const { navigate } = lib['hookrouter']
 const MaterialUI = lib['@material-ui/core']
 const MaterialIcons = lib['@material-ui/icons']
 
@@ -262,8 +262,8 @@ export default function Home() {
               color="primary"
               fullWidth
               startIcon={<MenuBookIcon />}
-              // onClick={() => { navigate('/docs') }}
-              href="/docs"
+              onClick={() => { navigate('/docs') }}
+              // href="/docs"
               size="large"
             >
               Getting Started
@@ -279,8 +279,8 @@ export default function Home() {
             color="primary"
             fullWidth
             startIcon={<SlideshowIcon />}
-            // onClick={() => { navigate('/docs') }}
-            href="/appx/login"
+            onClick={() => { navigate('/appx/login') }}
+            //href="/appx/login"
             size="large"
           >
             Live Demo

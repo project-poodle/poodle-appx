@@ -32,7 +32,6 @@ const bodyParser = require('body-parser')
 
 // express app
 const app = express()
-app.use('/appx', express.static(path.join(__dirname, 'public')))
 //app.use(cookieParser)
 //app.configure(function() {
 //    app.use(express.cookieParser())
@@ -51,7 +50,7 @@ app.use(session({
 
 //////////////////////////////////////////////////
 // initialize authenticator --- Note: perform this step only after db_pool is initialized
-const { authenticator, loginUserWithPass, logoutUser } = require("./src/auth")
+const { authenticator } = require("./src/auth")
 //app.use(passport.initialize())
 //app.use(passport.session())
 
@@ -70,9 +69,25 @@ app.use('/appx/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
 // redirect root
-app.use('/', (req, res, next) => {
-    res.redirect("/appx/ui/sys/appx/base/internal/")
-})
+//app.use('/', (req, res, next) => {
+//    res.redirect("/appx/ui/sys/appx/base/internal/")
+//})
+
+//////////////////////////////////////////////////
+// static files
+const rootDir = path.join(__dirname, '../ui/')
+app.use('/',
+    express.static(rootDir),
+    (req, res, next) => {
+        let url_comps = req.url.split('/')
+        //console.log(url_comps)
+        if (url_comps.length > 1 && fs.existsSync(path.join(rootDir, url_comps[1]))) {
+            next()
+        } else {
+            res.sendFile(path.join(__dirname, '../ui/index.html'))
+        }
+    }
+)
 
 //////////////////////////////////////////////////
 // start listening
