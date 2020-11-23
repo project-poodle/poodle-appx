@@ -6,5 +6,5 @@ init:
 	sudo ./schema.d/r001.p01/run.sh
 
 test:
-	http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
-	echo '{"realm":"appx","username":"appx@LOCAL","password":"P@@dle101"}' | http POST 'http://localhost:3000/api/sys/appx/login'
+	echo '{"realm":"appx","username":"appx@LOCAL","password":"P@@dle101"}' | http POST 'http://localhost:3000/appx/api/sys/appx/login'
+	http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/appx/api/sys/appx/base/namespace'

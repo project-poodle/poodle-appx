@@ -22,7 +22,7 @@ schema, rest API, and UI based on user defined model schema.
 
     -- start a new terminal
 
-    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
+    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/appx/api/sys/appx/base/namespace'
 
     HTTP/1.1 200 OK
     Connection: keep-alive
@@ -53,7 +53,7 @@ schema, rest API, and UI based on user defined model schema.
 
     --------
 
-    $ echo '{"owner_realm":"appx","owner_name":"appx@LOCAL","namespace_spec":{"a":5}}' | http -a 'appx@LOCAL:P@@dle101' POST 'http://localhost:3000/api/sys/appx/base/namespace/sys'
+    $ echo '{"owner_realm":"appx","owner_name":"appx@LOCAL","namespace_spec":{"a":5}}' | http -a 'appx@LOCAL:P@@dle101' POST 'http://localhost:3000/appx/api/sys/appx/base/namespace/sys'
 
     HTTP/1.1 200 OK
     Connection: keep-alive
@@ -71,7 +71,7 @@ schema, rest API, and UI based on user defined model schema.
 
     --------
 
-    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)'
+    $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/appx/api/sys/appx/base/namespace/sys/app/appx/internal/obj?_sort=namespace,obj_spec.comment(desc)'
 
         [
           {

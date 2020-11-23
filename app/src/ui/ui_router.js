@@ -1,3 +1,4 @@
+const objPath = require("object-path")
 const express = require('express')
 const db = require('../db/db')
 const cache = require('../cache/cache')
@@ -8,17 +9,15 @@ const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
  */
 function get_ui_element(context, req, res) {
 
-    let fatal = false
-
     let cache_elem = cache.get_cache_for('ui_element')
     console.log(cache_elem)
 
     let elem_prop = ["ui_element", context.namespace, "ui_apps", context.app_name, context.ui_app_ver, "ui_deployments", context.runtime_name, context.element_name]
-    let elem = objPath.get(cache_obj, obj_prop)
-    if (!obj) {
+    let elem = objPath.get(cache_elem, elem_prop)
+    if (!elem) {
         let msg = `ERROR: element not found [${context.element_name}] - [${JSON.stringify(context)}] !`
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
+        req.fatal = true
         return
     }
 
@@ -26,7 +25,7 @@ function get_ui_element(context, req, res) {
     if (!element_spec) {
         let msg = `ERROR: element_spec not found - [${JSON.stringify(context)}] !`
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
+        req.fatal = true
         return null
     }
 
@@ -40,11 +39,8 @@ function handle_req(req, res) {
 
     // check ui_element
     let ui_element = get_ui_element(req.context, req, res)
-    if (! ui_element) {
-        res.status(404).json({
-          status: FAILURE,
-          message: `ERROR: request url [${req.url}] not found`
-        })
+    if (req.fatal) {
+        return
     }
 
     //req.context = Object.assign({}, req.context, { verb: api_spec.syntax.verb })

@@ -48,6 +48,9 @@ const ui_dispatcher = function (req, res, next) {
         if (!router) {
             res.status(404).send(`ERROR: dispatcher for [${match[1]}] not found !`)
         } else {
+            if (! req.context) {
+                req.context = {}
+            }
             // process context
             let namespace = match[2]
             let app_name = match[3]
@@ -64,7 +67,7 @@ const ui_dispatcher = function (req, res, next) {
             router.handle(req, res, next)
         }
     } else {
-        res.status(422).json({status:FAILURE, message: `ERROR: unknown ui dispatcher url [${req.url}]`})
+        res.status(422).json({status:FAILURE, message: `ERROR: unrecognized UI dispatcher url [${req.url}]`})
     }
 }
 
