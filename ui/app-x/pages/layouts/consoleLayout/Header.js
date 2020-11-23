@@ -90,7 +90,7 @@ const Header = ({
           </Typography>
         </A>
         <Box flexGrow={1} />
-        <Hidden mdDown>
+        <Hidden smDown>
           <IconButton color="inherit">
             <Badge
               badgeContent={notifications.length}
@@ -107,7 +107,7 @@ const Header = ({
             <ExitToApp />
           </IconButton>
         </Hidden>
-        <Hidden lgUp>
+        <Hidden mdUp>
           <IconButton
             color="inherit"
             onClick={onMobileNavOpen}

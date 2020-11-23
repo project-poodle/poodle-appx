@@ -177,7 +177,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           {content}
         </Drawer>
       </Hidden>
-      <Hidden mdDown>
+      <Hidden smDown>
         <Drawer
           anchor="left"
           classes={{ paper: classes.desktopDrawer }}
