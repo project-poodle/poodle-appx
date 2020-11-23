@@ -16,39 +16,66 @@
 
 <script type="module">
 
-  // register service worker
-  let hasRegStep = false
-  if (! ('serviceWorker' in navigator)) {
+  let hasRegStep = false;
 
-    document.getElementById('root').value = `
-        This browser is not supported!
-        Use a latest version of Chrome, Edge, Safari, or Firefox to view this site.
-    `
-  } else if (!navigator.serviceWorker.controller) {
-    hasRegStep = true
-    navigator.serviceWorker.register('/sw.js', {scope: '/'})
-    .then((reg) => {
-      // registration successful
-      console.log('Service Worker: registration succeeded. Scope is ' + reg.scope)
-      navigator.serviceWorker.ready.then(() => {
-        // console.log(navigator.serviceWorker)
-        console.log('Service Worker: ready to handle fetches')
+  (function() {
+    "use strict"
+
+    if (!navigator.serviceWorker || !navigator.serviceWorker.register) {
+      document.getElementById('root').value = `
+          This browser is not supported!
+          Use a latest version of Chrome, Edge, Safari, or Firefox to view this site.
+      `
+      return
+    }
+
+    if (!navigator.serviceWorker.controller) {
+      hasRegStep = true
+      // register service worker
+      navigator.serviceWorker.register('/sw.js', {scope: '/'})
+      .then((reg) => {
+        // registration successful
+        console.log('Service Worker: registration succeeded. Scope is ' + reg.scope)
+        //console.log(reg)
+        navigator.serviceWorker.ready.then(regActive => {
+          console.log('Service Worker: ready')
+          //console.log(navigator.serviceWorker)
+          //console.log(reg)
+          console.log(regActive.active)
+          //reg.active.onstatechange = e => {
+          //  console.log(e)
+          //}
+          // Listen to messages from service workers.
+          regActive.active.addEventListener('message', function(event) {
+              console.log("Got reply from service worker: " + event.data)
+          })
+        })
+      }).catch((error) => {
+        // registration failed
+        console.log('Service Worker: registration failed - ' + error)
       })
-    }).catch((error) => {
-      // registration failed
-      console.log('Service Worker: registration failed - ' + error)
-    })
-  }
+    }
+
+    //if (navigator.serviceWorker.controller) {
+    //  // Yes, send our controller a message.
+    //  console.log("Sending 'hi' to controller");
+    //  navigator.serviceWorker.controller.postMessage({
+    //    type: 'importMaps',
+    //    baseurl: 'http://localhost:3000',
+    //    importMaps: {
+    //      imports: {
+    //        "app-x/": "http://localhost:3001/app-x/",
+    //        "self/": "http://localhost:3001/ui/sys/appx/base/current"
+    //      }
+    //    }
+    //  })
+    //}
+  })()
 
   import { default as lib } from "/dist/lib/main.js"
 
   // render function
   async function render() {
-
-    //console.log(module.react)
-    //console.log(module['react-dom'])
-    //const AppX = await importx('app-x', '/AppX')
-    //console.log(AppX)
 
     import('/app-x/AppX').then(appx => {
       const AppX = appx.default

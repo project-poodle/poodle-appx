@@ -1,6 +1,8 @@
 //importScripts('/lib/babel.js')
 importScripts('/dist/lib/transpile.js')
 
+const importMappings = {}
+
 // exclude dirs
 const excludeDirs = [
   '/lib/',
@@ -17,7 +19,23 @@ self.addEventListener('install', function(event) {
 // activate
 self.addEventListener('activate', event => {
   clients.claim()
-  console.log('Service Worker: activated - clients claimed');
+  console.log('Service Worker: activated - clients claimed')
+})
+
+// message
+self.addEventListener('message', event => {
+  switch (event.data.type) {
+    case "importMaps":
+      if ('baseurl' in event.data && 'importMaps' in event.data) {
+        importMaps[event.data.baseurl] = event.data.importMaps
+        console.log(`Service Worker: updated [${event.data.baseurl}] importMaps to ${event.data.importMaps}`)
+      } else {
+        console.log(`Service Worker: unrecognized importMaps message - ${event.data}`)
+      }
+      break
+    default:
+      console.log(`Service Worker: unrecognized message - ${event.data}`)
+  }
 })
 
 // parse js/jsx with Babel
@@ -31,7 +49,12 @@ function getTranspiler(request) {
         //var output = Babel.transform(body, babelConf).code;
         //console.log(output)
         //console.log(Transpile)
-        var transpiledCode = Transpile(body)
+        let importMaps = null
+        let foundPrefix = Object.keys(importMappings).find(prefix => request.url.startsWith(prefix))
+        if (foundPrefix) {
+          importMaps = importMappings[foundPrefix]
+        }
+        let transpiledCode = Transpile(body, importMaps)
         // console.log(transpiled)
         resolve(new Response(
           'import {default as lib} from "/dist/lib/main.js";\n'
@@ -62,7 +85,7 @@ self.addEventListener('fetch', function(event) {
 
     if (url.endsWith('.js') || url.endsWith('.jsx')) {
 
-      console.log(`Service Worker: transform [${url}]`)
+      console.log(`Service Worker: transpile [${url}]`)
 
       let p = getTranspiler(event.request)
 
@@ -79,7 +102,7 @@ self.addEventListener('fetch', function(event) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: redirect [${url}] transform [${response.url}index.js]`)
+                console.log(`Service Worker: redirect [${url}] transpile [${response.url}index.js]`)
                 newRequest = new Request(response.url + 'index.js')
 
                 let newParser = getTranspiler(newRequest)
@@ -93,7 +116,7 @@ self.addEventListener('fetch', function(event) {
 
               } else if (!response.url.endsWith('.js') && !response.url.endsWith('.jsx')) {
 
-                console.log(`Service Worker: redirect [${url}] transform [${response.url}.js]`)
+                console.log(`Service Worker: redirect [${url}] transpile [${response.url}.js]`)
                 newRequest = new Request(response.url + '.js')
 
                 let newParser = getTranspiler(newRequest)
