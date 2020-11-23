@@ -9,7 +9,6 @@ ui_element:
           data:
               title: Design Your Own Apps with App-X
 
-ui_element:
     - namespace: sys
       app_name: appx
       ui_app_ver: internal

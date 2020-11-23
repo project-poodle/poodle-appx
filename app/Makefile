@@ -3,5 +3,4 @@ run:
 
 init:
 	sudo ./init.d/init.sh ./init.d/init.yaml
-	pwd
-	sudo ./schema.d/r001.p1/run.sh
+	sudo ./schema.d/r001.p01/run.sh
