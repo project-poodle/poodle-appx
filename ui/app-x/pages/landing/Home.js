@@ -58,6 +58,21 @@ const useStyles = makeStyles((theme) => ({
 // keep a list of vids
 var videos= [
   {
+    vid: 'vzR0dsZeQsY', // natural
+    start: 0,
+    end: -1,
+  },
+  {
+    vid: 'HHBsvKnCkwI', // city
+    start: 0,
+    end: -1,
+  },
+  {
+    vid: 'RQ18TpXxbzU', // flower
+    start: 6,
+    end: -1,
+  },
+  {
     vid: 'k5obtOZe4ZQ', // people
     start: 0,
     end: 8,
