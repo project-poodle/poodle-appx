@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 var videos= [
   {
     vid: 'vzR0dsZeQsY', // natural
-    start: 0,
+    start: 6,
     end: -1,
   },
   {
