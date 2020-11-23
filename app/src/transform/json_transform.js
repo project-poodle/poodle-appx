@@ -1,7 +1,7 @@
 const esprima = require('esprima')
 const escodegen = require('escodegen')
 const objPath = require("object-path")
-const Mustache = require('mustache');
+const Mustache = require('mustache')
 
 const INVOKE_KEY = '$invoke'
 
