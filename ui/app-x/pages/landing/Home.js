@@ -152,11 +152,11 @@ var videos= [
     start: 99,
     end: 546,
   },
-  {
-    vid: 'zRpazyH1WzI', // compilation
-    start: 632,
-    end: 1201
-  },
+  //{
+  //  vid: 'zRpazyH1WzI', // compilation
+  //  start: 632,
+  //  end: 1201
+  //},
   //{
   //  vid: 'zRpazyH1WzI', // compilation
   //  start: 1485,
