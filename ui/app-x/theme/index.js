@@ -28,6 +28,6 @@ const theme = createMuiTheme({
       borderRadius: 0,
   },
   typography
-});
+})
 
-export default theme;
+export default theme
