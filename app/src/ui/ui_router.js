@@ -257,7 +257,7 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             ui_route_name: route_result.ui_route_name
         }
 
-        router.get(route_result.ui_route_name, (req, res) => {
+        router.get(route_result.ui_route_name.replace(/\/+/g, '/'), (req, res) => {
 
             req.context = Object.assign({}, {ui_route: route_context}, req.context)
             handle_route(req, res)
