@@ -5,6 +5,9 @@ init:
 	sudo ./init.d/init.sh ./init.d/init.yaml
 	./schema.d/r001.p01/run.sh
 
+build:
+	npm install
+
 test:
 	echo '{"realm":"appx","username":"appx@LOCAL","password":"P@@dle101"}' | http POST 'http://localhost:3000/appx/api/sys/appx/login'
 	http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/appx/api/sys/appx/base/namespace'

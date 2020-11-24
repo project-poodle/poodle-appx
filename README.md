@@ -9,16 +9,18 @@ schema, rest API, and UI based on user defined model schema.
 
 # Initial setup of App-X service
 
-    $ cd app
-
-    -- edit init.d/init.yaml
+    -- edit app/init.d/init.yaml
        update credentials and mysql connection info
 
-    $ sudo ./init.d/init.sh ./init.d/init.yaml
+    $ cd app && npm install && cd -                      (alternatively, 'make build')
 
-    $ sudo ./schema.d/r001.p1/run.sh
+    $ cd ui && npm install && cd -                       (alternatively, 'make build')
 
-    $ sudo ./app.sh -c ./conf.d/mysql_appx.conf
+    $ sudo ./app/init.d/init.sh ./app/init.d/init.yaml   (alternatively, 'make init')
+
+    $ ./app/schema.d/r001.p1/run.sh                      (alternatively, 'make init')
+
+    $ ./app/app.sh -c ./app/conf.d/mysql_appx.conf       (alternatively, 'make')
 
     -- start a new terminal
 

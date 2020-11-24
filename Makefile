@@ -4,7 +4,8 @@ run:
 init:
 	+$(MAKE) -C app init
 
-build-ui:
+build:
+	+$(MAKE) -C app build
 	+$(MAKE) -C ui build
 
 start-ui:
