@@ -61,7 +61,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
-chmod 600 ${MYSQL_ADMIN_FILE}
+chmod 644 ${MYSQL_ADMIN_FILE}
 
 mkdir -p /var/log/appx-mysql/
 chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} /var/log/appx-mysql/
@@ -76,7 +76,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
-chmod 600 ${MYSQL_APPX_FILE}
+chmod 644 ${MYSQL_APPX_FILE}
 
 mkdir -p /var/log/appx/
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} /var/log/appx/
@@ -90,7 +90,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LDAP_APPX_FILE}
-chmod 600 ${LDAP_APPX_FILE}
+chmod 644 ${LDAP_APPX_FILE}
 
 echo "--------------------"
 eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
