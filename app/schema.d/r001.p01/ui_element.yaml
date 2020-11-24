@@ -27,7 +27,6 @@ ui_element:
                       children:
                           - name: app-x/views/errors/NotFoundView
 
-
     - namespace: sys
       app_name: appx
       ui_app_ver: internal

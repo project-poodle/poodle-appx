@@ -333,6 +333,11 @@ ui_app:
       app_name: "appx"
       ui_app_ver: "internal"
       ui_app_spec:
+          importMaps:
+              imports:
+                  app-x/: /app-x/
+              libs:
+                  main: /dist/lib/main.js
           comment: "initialize"
 
 ######################################################################
