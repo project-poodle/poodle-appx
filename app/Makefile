@@ -1,9 +1,9 @@
 run:
-	sudo bash -c 'while true; do ./app.sh -c ./conf.d/mysql_appx.json; date; sleep 1; done'
+	while true; do ./app.sh -c ./conf.d/mysql_appx.json; date; sleep 1; done
 
 init:
 	sudo ./init.d/init.sh ./init.d/init.yaml
-	sudo ./schema.d/r001.p01/run.sh
+	./schema.d/r001.p01/run.sh
 
 test:
 	echo '{"realm":"appx","username":"appx@LOCAL","password":"P@@dle101"}' | http POST 'http://localhost:3000/appx/api/sys/appx/login'

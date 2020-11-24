@@ -2,7 +2,7 @@
 
 check_root()
 {
-    if [ `whoami` != "root" ]; then
+    if [ `whoami` != "root" -a "$NO_ROOT_CHECK" = "" ]; then
         echo "ERROR: must run as root !"
         exit 1
     fi

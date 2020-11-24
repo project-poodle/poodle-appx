@@ -12,6 +12,8 @@ fi
 
 source ${BASE_DIR}/common.d/func.sh
 
+check_root
+
 umask 022
 
 ##############################
