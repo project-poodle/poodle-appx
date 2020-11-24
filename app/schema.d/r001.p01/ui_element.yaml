@@ -2,60 +2,38 @@ ui_element:
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
-      element_name: /
-      element_type: html
-      element_spec:
+      ui_element_name: /
+      ui_element_type: html
+      ui_element_spec:
           template: /index.html
           data:
               title: Design Your Own Apps with App-X
+          element:
+              name: self/AppX
 
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
-      element_name: /index.html
-      element_type: html
-      element_spec:
-          template: /index.html
-          data:
-              title: Design Your Own Apps with App-X
-
-    - namespace: sys
-      app_name: appx
-      ui_app_ver: internal
-      element_name: /AppX
-      element_type: js
-      element_spec:
+      ui_element_name: /AppX
+      ui_element_type: js
+      ui_element_spec:
           name: app-x/AppX
           props:
-              routes:
-                  - route: "/"
-                    element:
-                        name: app-x/pages/landing/Home
-                  - route: "/login"
-                    element:
-                        name: app-x/pages/layouts/headerLayout
-                        children:
-                            - element:
-                                  name: app-x/pages/auth/SigninSide
-                  - route: "/console"
-                    element:
-                        name: app-x/pages/layouts/consoleLayout
-                        children:
-                            - element:
-                                  name: app-x/views/errors/NotFoundView
-                  - route: "/404"
-                    element:
-                        name: app-x/pages/layouts/headerLayout
-                        children:
-                            - element:
-                                  name: app-x/views/errors/NotFoundView
+              redux_provider: app-x/redux/store
+              theme_provider: app-x/theme
+              not_found_view:
+                  element:
+                      name: app-x/pages/layouts/headerLayout
+                      children:
+                          - name: app-x/views/errors/NotFoundView
+
 
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
-      element_name: /pages/landing/Home
-      element_type: js
-      element_spec:
+      ui_element_name: /pages/landing/Home
+      ui_element_type: js
+      ui_element_spec:
           name: app-x/pages/landing/Home
           props:
               youtube_playlist:

@@ -90,15 +90,24 @@ ui_deployment:
                 "#dp{$ui_deployment[@ns]['runtimes']}":
                     "#dp{$dp}":
                         "#dp{$dp}":
-                            "$invoke":
-                                module: "../cache/cache"
-                                method: "load_cache_for"
-                                params:
-                                    - '"ui_element"'
-                                    - namespace: "@ns"
-                                      runtime_name: "@@@dp"
-                                      app_name: "@@dp"
-                                      ui_app_ver: "@dp"
+                            - "$invoke":
+                                  module: "../cache/cache"
+                                  method: "load_cache_for"
+                                  params:
+                                      - '"ui_element"'
+                                      - namespace: "@ns"
+                                        runtime_name: "@@@dp"
+                                        app_name: "@@dp"
+                                        ui_app_ver: "@dp"
+                            - "$invoke":
+                                  module: "../cache/cache"
+                                  method: "load_cache_for"
+                                  params:
+                                      - '"ui_route"'
+                                      - namespace: "@ns"
+                                        runtime_name: "@@@dp"
+                                        app_name: "@@dp"
+                                        ui_app_ver: "@dp"
 
 ##################################################
 ui_element:
@@ -109,6 +118,19 @@ ui_element:
         - ui_app_ver
     sql_input: "ui_element.sql.yaml"
     transform: "ui_element.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
+ui_route:
+    params:
+        - namespace
+        - runtime_name
+        - app_name
+        - ui_app_ver
+    sql_input: "ui_route.sql.yaml"
+    transform: "ui_route.transform.yaml"
     reconcile:
         min: 180
         max: 360

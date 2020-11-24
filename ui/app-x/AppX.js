@@ -28,30 +28,4 @@ const AppX = (props) => {
   )
 }
 
-AppX.propTypes = {
-  routes: PropTypes.arrayOf({
-    route: PropTypes.string.isRequired,
-    element: PropTypes.shape({
-      scope: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      props: PropTypes.object,
-      child: PropTypes.shape({
-        scope: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        props: PropTypes.object,
-        child: PropTypes.shape({
-          scope: PropTypes.string.isRequired,
-          name: PropTypes.string.isRequired,
-          props: PropTypes.object,
-          child: PropTypes.shape({
-            scope: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            props: PropTypes.object
-          })
-        })
-      })
-    })
-  })
-}
-
 export default AppX;

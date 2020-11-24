@@ -14,11 +14,11 @@ ui_element:
 
                     ui_deployments:
                         "#dp{$sql_ui_elements[@ns][@@app][@app]}":                              # runtime_name
-                            "#dp{$dp}":                                                         # element_name
+                            "#dp{$dp}":                                                         # ui_element_name
                                 namespace: "@ns"
                                 app_name: "@@app"
                                 ui_app_ver: "@app"
                                 runtime_name: "@@dp"
-                                element_name: "@dp"
-                                element_type: "$dp.element_type"
-                                element_spec: "$dp.element_spec"
+                                ui_element_name: "@dp"
+                                ui_element_type: "$dp.ui_element_type"
+                                ui_element_spec: "$dp.ui_element_spec"

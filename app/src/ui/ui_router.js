@@ -26,11 +26,11 @@ function get_ui_element(context, req, res) {
         context.ui_app_ver,
         "ui_deployments",
         context.runtime_name,
-        context.element_name
+        context.ui_element_name
     ]
     let elem = objPath.get(cache_ui_element, elem_prop)
     if (!elem) {
-        let msg = `ERROR: element not found [${context.element_name}] - [${JSON.stringify(context)}] !`
+        let msg = `ERROR: element not found [${context.ui_element_name}] - [${JSON.stringify(context)}] !`
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return
@@ -62,7 +62,7 @@ function handle_req(req, res) {
     //console.log(req.context)
 
     // handle request by verb
-    switch(ui_element.element_type) {
+    switch(ui_element.ui_element_type) {
         case "html":
             handle_html(req.context, req, res)
             return
@@ -72,7 +72,7 @@ function handle_req(req, res) {
             return
 
         default:
-            let msg = `ERROR: unsupported ui element type [${ui_element.element_type}] - [${JSON.stringify(ui_element)}]`
+            let msg = `ERROR: unsupported ui element type [${ui_element.ui_element_type}] - [${JSON.stringify(ui_element)}]`
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             return
     }
@@ -89,8 +89,8 @@ const log_elem_status = (elem_context, status, message) => {
                         app_name,
                         ui_app_ver,
                         runtime_name,
-                        element_name,
-                        element_status
+                        ui_element_name,
+                        ui_element_status
                     )
                     VALUES
                     (
@@ -98,13 +98,13 @@ const log_elem_status = (elem_context, status, message) => {
                         JSON_OBJECT('status', ?, 'message', ?)
                     )
                     ON DUPLICATE KEY UPDATE
-                        element_status=VALUES(element_status)`,
+                        ui_element_status=VALUES(ui_element_status)`,
                     [
                         elem_context.namespace,
                         elem_context.app_name,
                         elem_context.ui_app_ver,
                         elem_context.runtime_name,
-                        elem_context.element_name,
+                        elem_context.ui_element_name,
                         status,
                         message
                     ])
@@ -121,9 +121,9 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                     ui_element.ui_app_ver,
                     ui_deployment.runtime_name,
                     ui_deployment.ui_deployment_spec,
-                    ui_element.element_name,
-                    ui_element.element_type,
-                    ui_element.element_spec,
+                    ui_element.ui_element_name,
+                    ui_element.ui_element_type,
+                    ui_element.ui_element_spec,
                     ui_element.create_time,
                     ui_element.update_time
                 FROM ui_element
@@ -148,11 +148,10 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             app_name: elem_result.app_name,
             runtime_name: elem_result.runtime_name,
             ui_app_ver: elem_result.ui_app_ver,
-            element_name: elem_result.element_name,
-            element_type: elem_result.element_type
+            ui_element_name: elem_result.ui_element_name
         }
 
-        router.get(elem_result.element_name, (req, res) => {
+        router.get(elem_result.ui_element_name, (req, res) => {
 
             req.context = Object.assign({}, elem_context, req.context)
             handle_req(req, res)

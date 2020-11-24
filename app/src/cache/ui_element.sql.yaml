@@ -59,9 +59,9 @@
                 ui_deployment.runtime_name,
                 ui_element.app_name,
                 ui_element.ui_app_ver,
-                ui_element.element_name,
-                ui_element.element_type,
-                ui_element.element_spec,
+                ui_element.ui_element_name,
+                ui_element.ui_element_type,
+                ui_element.ui_element_spec,
                 ui_element.create_time,
                 ui_element.update_time,
                 ui_element.deleted
@@ -84,5 +84,5 @@
             - "$@.app_name"
             - "$@.ui_app_ver"
             - "$@.runtime_name"
-            - "$@.element_name"
+            - "$@.ui_element_name"
         value: "$@"

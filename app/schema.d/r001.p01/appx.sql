@@ -34,6 +34,8 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_route`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_route_status`;
 
 -- metadata --
 CREATE TABLE `{{{global.schema_prefix}}}`.`_appx_meta` (
@@ -559,13 +561,13 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element` (
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
     `ui_app_ver`            VARCHAR(32)             NOT NULL,
-    `element_name`          VARCHAR(255)            NOT NULL,
-    `element_type`          VARCHAR(32)             NOT NULL,
-    `element_spec`          JSON                    NOT NULL,
+    `ui_element_name`       VARCHAR(255)            NOT NULL,
+    `ui_element_type`       VARCHAR(32)             NOT NULL,
+    `ui_element_spec`       JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `ui_app_ver`, `element_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `ui_app_ver`, `ui_element_name`),
     PRIMARY KEY (`id`, `namespace`, `app_name`, `ui_app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -577,11 +579,43 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element_status` (
     `app_name`              VARCHAR(15)             NOT NULL,
     `runtime_name`          VARCHAR(9)              NOT NULL,
     `ui_app_ver`            VARCHAR(32)             NOT NULL,
-    `element_name`          VARCHAR(255)            NOT NULL,
-    `element_status`        JSON                    NOT NULL,
+    `ui_element_name`       VARCHAR(255)            NOT NULL,
+    `ui_element_status`     JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `element_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `ui_element_name`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `runtime_name`, `ui_app_ver`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`) PARTITIONS 20;
+
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_route` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `app_name`              VARCHAR(15)             NOT NULL,
+    `ui_app_ver`            VARCHAR(32)             NOT NULL,
+    `ui_route_name`         VARCHAR(255)            NOT NULL,
+    `ui_route_spec`         JSON                    NOT NULL,
+    `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `ui_app_ver`, `ui_route_name`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `ui_app_ver`)
+)
+CHARACTER SET utf8 COLLATE utf8_bin
+PARTITION BY KEY(`namespace`, `app_name`, `ui_app_ver`) PARTITIONS 20;
+
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_route_status` (
+    `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
+    `namespace`             VARCHAR(32)             NOT NULL,
+    `app_name`              VARCHAR(15)             NOT NULL,
+    `runtime_name`          VARCHAR(9)              NOT NULL,
+    `ui_app_ver`            VARCHAR(32)             NOT NULL,
+    `ui_route_name`         VARCHAR(255)            NOT NULL,
+    `ui_route_status`       JSON                    NOT NULL,
+    `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `runtime_name`, `ui_app_ver`, `ui_route_name`),
     PRIMARY KEY (`id`, `namespace`, `app_name`, `runtime_name`, `ui_app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -710,6 +744,13 @@ INSERT INTO `{{{global.schema_prefix}}}`.`ui_deployment`(`namespace`, `app_name`
 -- ui_element --
 {{#ui_element}}
 {{#.}}
-INSERT INTO `{{{global.schema_prefix}}}`.`ui_element`(`namespace`, `app_name`, `ui_app_ver`, `element_name`, `element_type`, `element_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{ui_app_ver}}}', '{{{element_name}}}', '{{{element_type}}}', {{#element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/element_spec}}) ON DUPLICATE KEY UPDATE element_type=VALUES(element_type), element_spec=VALUES(element_spec);
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_element`(`namespace`, `app_name`, `ui_app_ver`, `ui_element_name`, `ui_element_type`, `ui_element_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{ui_app_ver}}}', '{{{ui_element_name}}}', '{{{ui_element_type}}}', {{#ui_element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_element_spec}}) ON DUPLICATE KEY UPDATE ui_element_type=VALUES(ui_element_type), ui_element_spec=VALUES(ui_element_spec);
 {{/.}}
 {{/ui_element}}
+
+-- ui_route --
+{{#ui_route}}
+{{#.}}
+INSERT INTO `{{{global.schema_prefix}}}`.`ui_route`(`namespace`, `app_name`, `ui_app_ver`, `ui_route_name`, `ui_route_spec`) VALUES ('{{{namespace}}}', '{{{app_name}}}', '{{{ui_app_ver}}}', '{{{ui_route_name}}}', {{#ui_route_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_route_spec}}) ON DUPLICATE KEY UPDATE ui_route_spec=VALUES(ui_route_spec);
+{{/.}}
+{{/ui_route}}
