@@ -1,0 +1,23 @@
+ui_route:
+
+    "#ns{$sql_namespaces}":                                 # namespace
+        namespace: "@ns"
+        namespace_spec: "$ns.namespace_spec"
+
+        ui_apps:
+            "#app{$sql_ui_apps[@ns]}":                      # app_name
+                "#app{$app}":                               # ui_app_ver
+                    namespace: "@ns"
+                    app_name: "@@app"
+                    ui_app_ver: "@app"
+                    ui_app_spec: "$app.app_spec"
+
+                    ui_deployments:
+                        "#dp{$sql_ui_routes[@ns][@@app][@app]}":                                # runtime_name
+                            "#dp{$dp}":                                                         # ui_route_name
+                                namespace: "@ns"
+                                app_name: "@@app"
+                                ui_app_ver: "@app"
+                                runtime_name: "@@dp"
+                                ui_route_name: "@dp"
+                                ui_route_spec: "$dp.ui_route_spec"
