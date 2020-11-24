@@ -17,9 +17,9 @@ import NotFoundView from 'app-x/views/errors/NotFoundView'
 
 const routes = {
     '/': () => <Home/>,
-    '/appx/login': () => <HeaderLayout><SignInSide/></HeaderLayout>,
-    '/appx/console': () => <ConsoleLayout><NotFoundView/></ConsoleLayout>,
-    '/404': () => <HeaderLayout><NotFoundView/></HeaderLayout>,
+    '/appbuilder/login': () => <HeaderLayout><SignInSide/></HeaderLayout>,
+    '/appbuilder/console': () => <ConsoleLayout><NotFoundView/></ConsoleLayout>,
+    '/appbuilder/404': () => <ConsoleLayout><NotFoundView/></ConsoleLayout>,
 }
 
 //console.log(routes)

@@ -102,7 +102,7 @@ export default function SignInSide() {
       res => {
         // TODO
         console.log(res)
-        navigate('/appx/console')
+        navigate('/appbuilder/console')
         get_user_info(null)
       },
       err => {

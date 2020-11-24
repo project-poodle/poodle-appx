@@ -279,7 +279,7 @@ export default function Home() {
             color="primary"
             fullWidth
             startIcon={<SlideshowIcon />}
-            onClick={() => { navigate('/appx/login') }}
+            onClick={() => { navigate('/appbuilder/console') }}
             //href="/appx/login"
             size="large"
           >

@@ -59,7 +59,7 @@ const Header = ({
     logout(
       null,
       (res) => {
-        navigate('/appx/login')
+        navigate('/appbuilder/login')
         //console.log(res)
       },
       (err) => {
@@ -70,7 +70,7 @@ const Header = ({
   }
 
   if (!userToken || !userToken.token || !userToken.username) {
-    navigate('/appx/login')
+    navigate('/appbuilder/login')
   }
 
   // render
@@ -81,7 +81,7 @@ const Header = ({
       {...rest}
     >
       <Toolbar>
-        <A href="/appx/console" className={classes.inline}>
+        <A href="/appbuilder/console" className={classes.inline}>
           <Avatar className={classes.avatar}>
             <ViewQuiltRoundedIcon/>
           </Avatar>
