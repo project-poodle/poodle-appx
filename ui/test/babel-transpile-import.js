@@ -4,7 +4,7 @@ const fs = require('fs')
 //const escodegen = require('escodegen')
 //const { clone, cloneDeep } = require('lodash') // Import the clone, cleanDeep
 //const babel = require('@babel/standalone')
-const babel = require('@babel/core')
+const babel = require('@babel/standalone')
 const t = require("@babel/types")
 // console.log(t)
 
@@ -54,21 +54,17 @@ const parser = new ArgumentParser({
   description: 'transform import statement'
 })
 
-parser.add_argument('-f', '--filepath', { help: 'javascript code filepath' })
+parser.add_argument('-f1', '--filepath1', { help: 'javascript code filepath1' })
+parser.add_argument('-f2', '--filepath2', { help: 'javascript code filepath2' })
 args = parser.parse_args()
 
-// validate template file
-if (!fs.existsSync(args.filepath)) {
-    console.error("ERROR: filepath does NOT exist [" + args.filepath + "] !")
-    process.exit(1)
-}
-
-let code = fs.readFileSync(args.filepath, 'utf8')
+let code1 = fs.readFileSync(args.filepath1, 'utf8')
+let code2 = fs.readFileSync(args.filepath2, 'utf8')
 
 ////////////////////////////////////////////////////////////////////////////////
-let globalImports = {}
+//let globalImports = {}
 
-function importMapPlugin(import_maps) {
+function importMapPlugin(import_maps, globalImports) {
 
   return {
 
@@ -189,12 +185,20 @@ function importMapPlugin(import_maps) {
   }
 }
 
-const converted = babel.transform(code, {
+const converted1 = babel.transform(code1, {
   plugins: [
-    importMapPlugin(default_import_maps)
+    importMapPlugin(default_import_maps, {})
+  ]
+})
+
+const converted2 = babel.transform(code2, {
+  plugins: [
+    importMapPlugin(default_import_maps, {})
   ]
 })
 
 console.log('------------------------------')
-console.log(converted.code)
+console.log(converted1.code)
+console.log('------------------------------')
+console.log(converted2.code)
 console.log('------------------------------')

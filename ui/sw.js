@@ -52,6 +52,8 @@ function getTranspiler(request) {
         //console.log(Transpile)
         let url = new URL(request.url)
         let importMaps = null
+        console.log(`Service Worker: url.pathname [${url.pathname}]`)
+        console.log(`Service Worker: importMappings key [${Object.keys(importMappings)}]`)
         let foundPrefix = Object.keys(importMappings).find(prefix => url.pathname.startsWith(prefix))
         if (foundPrefix) {
           importMaps = importMappings[foundPrefix]

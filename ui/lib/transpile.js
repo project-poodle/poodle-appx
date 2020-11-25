@@ -1,7 +1,9 @@
-import * as acorn from 'acorn'
-import jsx from 'acorn-jsx'
-import escodegen from 'escodegen'
-import Babel from '@babel/standalone'
+//import * as acorn from 'acorn'
+//import jsx from 'acorn-jsx'
+//import escodegen from 'escodegen'
+//import Babel from '@babel/standalone'
+import babel from "@babel/standalone"
+import t from "@babel/types"
 import { clone, cloneDeep } from 'lodash' // Import the clone, cleanDeep
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,109 +20,151 @@ const babelConf = {
 const default_import_maps = {
   imports: {
     "app-x/": "/app-x/",
-    "self/": "/ui/sys/appx/base/internal/"
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// primitive test
-function isPrimitive(test) {
-    return (test !== Object(test))
-}
+// transpile import map
+function importMapPlugin(import_maps, globalImports) {
 
-////////////////////////////////////////////////////////////////////////////////
-// traverse
-function traverse(input, import_maps) {
+  return {
 
-  if (!('imports' in import_maps)) {
-    return input
-  }
+    visitor: {
 
-  if (isPrimitive(input)) {
-
-    return input
-
-  } else if (Array.isArray(input)) {
-
-    let result = []
-
-    for (let child of input) {
-
-        result.push(traverse(child, import_maps))
-    }
-
-    return result
-
-  } else if (typeof input === 'object' && input !== null) {
-
-    let result = {}
-
-    if (('type' in input)
-        && (input.type == 'ImportDeclaration')
-        && ('source' in input)
-        && ('type' in input.source)
-        && (input.source.type == 'Literal')
-        && ('value' in input.source)
-      ) {
-
-      let src_val = input.source.value
-      if (src_val.startsWith('.') || src_val.startsWith('/')) {
-        return input
-      }
-
-      result = cloneDeep(input)
-
-      let found = false
-      Object.keys(import_maps.imports).map(key => {
-
-        if (found) {
-          return
-        } else if (src_val == key) {
-          found = true
-          result.source.value = import_maps.imports[key]
-        } else if (key.endsWith('/') && src_val.startsWith(key)) {
-          found = true
-          result.source.value = import_maps.imports[key] + src_val.substring(key.length)
+      Program:{
+        exit(path, state) {
+          //console.log(`exit`)
+          Object.keys(globalImports).map(importKey => {
+            let module_path = globalImports[importKey]
+            path.unshiftContainer(
+              'body',
+              t.importDeclaration(
+                [
+                  t.importSpecifier(
+                    t.identifier('default'),
+                    t.identifier(importKey)
+                  )
+                ],
+                t.stringLiteral(module_path)
+              )
+            )
+          })
         }
-      })
+      },
 
-      if (!found) {
-        throw new Error('unrecognized import source [' + src_val + ']. Available import maps are: [' + Object.keys(import_maps.imports) + ']')
-      }
+      ImportDeclaration(path) {
 
-    } else {
+        console.log(`INFO: import_maps [${JSON.stringify(import_maps)}]`)
+        if (!import_maps) {
+            return
+        }
 
-      for (let key in input) {
-        result[key] = traverse(input[key], import_maps)
+        // in this example change all the variable `n` to `x`
+        if (path.isImportDeclaration()) {
+
+          let src_val = path.node.source.value
+
+          // do not transform relative path
+          if (src_val.startsWith('.') || src_val.startsWith('/')) {
+            return
+          }
+
+          let found = false
+
+          // check 'imports'
+          if (import_maps.imports) {
+            Object.keys(import_maps.imports).map(key => {
+              if (found) {
+                return
+              } else if (src_val == key) {
+                found = true
+                path.node.source.value = import_maps.imports[key]
+              } else if (key.endsWith('/') && src_val.startsWith(key)) {
+                found = true
+                path.node.source.value = import_maps.imports[key] + src_val.substring(key.length)
+              }
+            })
+          }
+
+          // check 'libs'
+          if (!found && import_maps.libs) {
+            Object.keys(import_maps.libs).map(lib_key => {
+              const lib = import_maps.libs[lib_key]
+              if (found) {
+                return
+              } else if (lib.modules) {
+                lib.modules.map(module_name => {
+
+                  if (found) {
+
+                    return
+
+                  } else if (src_val.startsWith(module_name)) {
+
+                    found = true
+
+                    // add lib.path to global imports
+                    globalImports[lib_key] = lib.path
+                    //console.log(globalImports)
+
+                    path.replaceWith(
+                      t.variableDeclaration('const', [
+                        t.variableDeclarator(
+
+                          t.objectPattern(
+
+                            path.node.specifiers.map(specifier => {
+                              if (specifier.type == 'ImportDefaultSpecifier') {
+                                return t.objectProperty(
+                                  t.identifier('default'),
+                                  t.identifier(specifier.local.name),
+                                )
+                              } else {
+                                return t.objectProperty(
+                                  t.identifier(specifier.imported.name),
+                                  t.identifier(specifier.local.name),
+                                )
+                              }
+                            })
+                          ),
+
+                          t.memberExpression(
+                            t.identifier(lib_key),
+                            t.stringLiteral(module_name),
+                            true
+                          )
+                        ),
+                      ])
+                    );
+                  }
+                })
+              }
+            })
+          }
+
+          if (!found) {
+            throw new Error('ERROR: import cannot be resolved [' + src_val + '].')
+          }
+        }
       }
     }
-
-    return result
-
-  } else if (input == null) {
-
-    return null
-
-  } else {
-
-    throw new Error(`Unrecognized input source [${input}]`)
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 export default function transpile(input, import_maps) {
 
   try {
     //console.log(input)
-    var output = Babel.transform(input, babelConf).code;
-    //console.log(output)
-    const JSXParser = acorn.Parser.extend(jsx())
-    let ast_tree = JSXParser.parse(output, {ecmaVersion: 2020, sourceType: "module"})
-    //console.log(JSON.stringify(ast_tree, null, 4))
-    let converted_tree = traverse(ast_tree, import_maps || default_import_maps)
-    //console.log(JSON.stringify(converted_tree, null, 4))
-    let converted = escodegen.generate(converted_tree)
-    //console.log(converted)
-    return converted
+    var output = babel.transform(input, {
+      ...babelConf,
+      plugins: [
+        importMapPlugin(import_maps || default_import_maps, {})
+      ],
+    })
+    //console.log(output.code)
+    return output.code
 
   } catch (err) {
 

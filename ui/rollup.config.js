@@ -30,7 +30,8 @@ const plugins = [
   replace({
     //exclude: 'package.json',
     include: 'node_modules/**',  // Default: undefined
-    'process.env.NODE_ENV': JSON.stringify('development')
+    'process.env.NODE_ENV': JSON.stringify('development'),
+    'process.env.BABEL_TYPES_8_BREAKING': null
   }),
   //terser(),
   html()

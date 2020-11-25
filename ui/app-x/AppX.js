@@ -1,6 +1,7 @@
 //import 'react-perfect-scrollbar/dist/css/styles.css';
 const React = lib['react']
 const { useRoutes } = lib['hookrouter']
+//import React, { useRoutes } from 'react'
 const PropTypes = lib['prop-types']
 const MaterialUI = lib['@material-ui/core']
 const { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
