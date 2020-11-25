@@ -4,7 +4,7 @@
 //import Babel from '@babel/standalone'
 import babel from "@babel/standalone"
 import t from "@babel/types"
-import { clone, cloneDeep } from 'lodash' // Import the clone, cleanDeep
+//import { clone, cloneDeep } from 'lodash' // Import the clone, cleanDeep
 
 ////////////////////////////////////////////////////////////////////////////////
 // babel conf
