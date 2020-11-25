@@ -77,13 +77,10 @@
           //console.log(navigator.serviceWorker)
           //console.log(reg)
           console.log(regActive.active)
-          //reg.active.onstatechange = e => {
-          //  console.log(e)
-          //}
           registerImportMaps(regActive.active, BASE_PATH, IMPORT_MAPS)
           // Listen to messages from service workers.
           regActive.active.addEventListener('message', function(event) {
-              console.log("Got reply from service worker: " + event.data)
+              console.log("Got message from service worker: " + event.data)
           })
         })
       }).catch((error) => {

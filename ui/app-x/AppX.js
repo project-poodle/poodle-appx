@@ -17,8 +17,8 @@ import routes from 'app-x/routes.js'
 
 const AppX = (props) => {
 
-  console.log(React)
-  console.log(React.default)
+  //console.log(React)
+  //console.log(React.default)
 
   const routeResult = useRoutes(routes)
 
