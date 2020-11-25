@@ -78,7 +78,7 @@ function importMapPlugin(import_maps, globalImports) {
 
       ImportDeclaration(path) {
 
-        console.log(`INFO: import_maps [${JSON.stringify(import_maps)}]`)
+        // console.log(`INFO: import_maps [${JSON.stringify(import_maps)}]`)
         if (!import_maps) {
             return
         }
