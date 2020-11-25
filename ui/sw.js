@@ -1,4 +1,3 @@
-//importScripts('/lib/babel.js')
 importScripts('/dist/lib/transpile.js')
 
 const importMappings = {}
@@ -30,9 +29,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('message', event => {
   switch (event.data.type) {
     case "importMaps":
-      if ('baseurl' in event.data && 'importMaps' in event.data) {
-        importMaps[event.data.baseurl] = event.data.importMaps
-        console.log(`Service Worker: updated [${event.data.baseurl}] importMaps to ${event.data.importMaps}`)
+      if ('basePath' in event.data && 'importMaps' in event.data) {
+        importMappings[event.data.basePath] = {...event.data.importMaps }
+        console.log(`Service Worker: updated [${event.data.basePath}] importMaps to ${JSON.stringify(importMappings[event.data.basePath])}`)
       } else {
         console.log(`Service Worker: unrecognized importMaps message - ${event.data}`)
       }
@@ -50,11 +49,10 @@ function getTranspiler(request) {
     fetch(request)
       .then(response => response.text())
       .then(body => {
-        //var output = Babel.transform(body, babelConf).code;
-        //console.log(output)
         //console.log(Transpile)
+        let url = new URL(request.url)
         let importMaps = null
-        let foundPrefix = Object.keys(importMappings).find(prefix => request.url.startsWith(prefix))
+        let foundPrefix = Object.keys(importMappings).find(prefix => url.pathname.startsWith(prefix))
         if (foundPrefix) {
           importMaps = importMappings[foundPrefix]
         }
@@ -62,6 +60,7 @@ function getTranspiler(request) {
         // console.log(transpiled)
         resolve(new Response(
           'import {default as lib} from "/dist/lib/main.js";\n'
+          //+ 'import {default as material} from "/dist/lib/material.js";\n'
           + transpiledCode,
           {
             headers: {'Content-Type': 'application/javascript'}
@@ -80,7 +79,7 @@ function getTranspiler(request) {
 // intercept fetch event
 self.addEventListener('fetch', function(event) {
 
-  const {request: {url}} = event;
+  const { request: {url} } = event;
   //console.log(`Service Worker: fetch event ${url}`)
 
   const isExcluded = excludeDirs.reduce((r, dir) => (r || url.includes(dir)), false)

@@ -1,5 +1,5 @@
 // package.json config
-import pkg from '../package.json'
+// import pkg from '../package.json'
 // react core
 import * as react from 'react'
 import * as reactDom from 'react-dom'
@@ -27,7 +27,6 @@ import reflectPropTypes from './reflectPropTypes'
 
 // export module as library
 export default {
-  "pkg": pkg,
   "react": react,
   "react-dom": reactDom,
   "prop-types": propTypes,     // override original propTypes?

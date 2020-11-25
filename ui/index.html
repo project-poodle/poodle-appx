@@ -16,6 +16,31 @@
 
 <script type="module">
 
+  {{#APPX_ENV}}
+  const IMPORT_MAPS = {{#IMPORT_MAPS}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/IMPORT_MAPS}};
+  const RELATIVE_URL = "{{{RELATIVE_URL}}}";
+
+  {{#IMPORT_MAPS}}
+    {{#libs}}
+      {{#KEY_VALUE}}
+          import { default as {{{key}}} } from "{{{value.path}}}";
+          IMPORT_MAPS["libs"]["{{{key}}}"]["modules"] = Object.keys({{{key}}})
+      {{/KEY_VALUE}}
+    {{/libs}}
+  {{/IMPORT_MAPS}}
+
+  {{/APPX_ENV}}
+
+  let BASE_PATH = window.location.pathname;
+  if (window.location.pathname.endsWith(RELATIVE_URL)) {
+    BASE_PATH = window.location.pathname.substring(0, window.location.pathname.length - RELATIVE_URL.length)
+    BASE_PATH = (BASE_PATH + '/').replace(/\/+/g, '/')
+  }
+
+  console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
+  IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_PATH })
+
+  // whether has registration step
   let hasRegStep = false;
 
   (function() {
@@ -29,7 +54,17 @@
       return
     }
 
+    function registerImportMaps(controller, basePath, importMaps) {
+      console.log(`INFO: sending 'importMaps' [${basePath}] to service worker`)
+      controller.postMessage({
+        type: 'importMaps',
+        basePath: basePath,
+        importMaps: importMaps
+      })
+    }
+
     if (!navigator.serviceWorker.controller) {
+
       hasRegStep = true
       // register service worker
       navigator.serviceWorker.register('/sw.js', {scope: '/'})
@@ -45,6 +80,7 @@
           //reg.active.onstatechange = e => {
           //  console.log(e)
           //}
+          registerImportMaps(regActive.active, BASE_PATH, IMPORT_MAPS)
           // Listen to messages from service workers.
           regActive.active.addEventListener('message', function(event) {
               console.log("Got reply from service worker: " + event.data)
@@ -54,25 +90,15 @@
         // registration failed
         console.log('Service Worker: registration failed - ' + error)
       })
+
+    } else {
+
+      registerImportMaps(navigator.serviceWorker.controller, BASE_PATH, IMPORT_MAPS)
     }
 
-    //if (navigator.serviceWorker.controller) {
-    //  // Yes, send our controller a message.
-    //  console.log("Sending 'hi' to controller");
-    //  navigator.serviceWorker.controller.postMessage({
-    //    type: 'importMaps',
-    //    baseurl: 'http://localhost:3000',
-    //    importMaps: {
-    //      imports: {
-    //        "app-x/": "http://localhost:3001/app-x/",
-    //        "self/": "/ui/sys/appx/base/internal/"
-    //      }
-    //    }
-    //  })
-    //}
   })()
 
-  import { default as lib } from "/dist/lib/main.js"
+  //import { default as lib } from "/dist/lib/main.js"
 
   // render function
   async function render() {
@@ -80,8 +106,8 @@
     import('/app-x/AppX').then(appx => {
       const AppX = appx.default
       //console.log(App)
-      lib['react-dom'].render(
-          lib['react'].createElement(AppX, null),
+      main['react-dom'].render(
+          main['react'].createElement(AppX, null),
           document.getElementById('root')
       )
     })

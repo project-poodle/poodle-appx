@@ -50,7 +50,9 @@ export default [
   },
 
   {
-    input: 'lib/main.js',
+    input: [
+      'lib/main.js',
+    ],
     output: [
       {
         dir: pkg.dist,

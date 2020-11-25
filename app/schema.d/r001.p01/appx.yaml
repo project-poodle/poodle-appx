@@ -337,7 +337,8 @@ ui_app:
               imports:
                   app-x/: /app-x/
               libs:
-                  main: /dist/lib/main.js
+                  main:
+                      path: /dist/lib/main.js
           comment: "initialize"
 
 ######################################################################
