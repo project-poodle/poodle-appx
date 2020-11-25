@@ -1,4 +1,5 @@
-const { createStore } = lib.redux
+//const { createStore } = lib.redux
+import { createStore } from 'redux'
 import rootReducer from 'app-x/redux/reducer'
 
 const store = createStore(rootReducer)

@@ -83,8 +83,8 @@ function importMapPlugin(import_maps, globalImports) {
               t.importDeclaration(
                 [
                   t.importSpecifier(
+                    t.identifier(importKey),
                     t.identifier('default'),
-                    t.identifier(importKey)
                   )
                 ],
                 t.stringLiteral(module_path)
@@ -133,7 +133,7 @@ function importMapPlugin(import_maps, globalImports) {
 
                     return
 
-                  } else if (src_val.startsWith(module_name)) {
+                  } else if (src_val == module_name) {
 
                     found = true
 
@@ -141,35 +141,38 @@ function importMapPlugin(import_maps, globalImports) {
                     globalImports[lib_key] = lib.path
                     //console.log(globalImports)
 
-                    path.replaceWith(
-                      t.variableDeclaration('const', [
-                        t.variableDeclarator(
-
-                          t.objectPattern(
-
-                            path.node.specifiers.map(specifier => {
-                              if (specifier.type == 'ImportDefaultSpecifier') {
-                                return t.objectProperty(
-                                  t.identifier('default'),
-                                  t.identifier(specifier.local.name),
-                                )
-                              } else {
-                                return t.objectProperty(
+                    path.replaceWithMultiple(
+                      path.node.specifiers.map(specifier => {
+                        if (specifier.type == 'ImportDefaultSpecifier') {
+                          return t.variableDeclaration('const', [
+                            t.variableDeclarator(
+                              t.identifier(specifier.local.name),
+                              t.memberExpression(
+                                t.identifier(lib_key),
+                                t.stringLiteral(module_name),
+                                true
+                              )
+                            )
+                          ])
+                        } else {
+                          return t.variableDeclaration('const', [
+                            t.variableDeclarator(
+                              t.objectPattern([
+                                t.objectProperty(
                                   t.identifier(specifier.imported.name),
                                   t.identifier(specifier.local.name),
                                 )
-                              }
-                            })
-                          ),
-
-                          t.memberExpression(
-                            t.identifier(lib_key),
-                            t.stringLiteral(module_name),
-                            true
-                          )
-                        ),
-                      ])
-                    );
+                              ]),
+                              t.memberExpression(
+                                t.identifier(lib_key),
+                                t.stringLiteral(module_name),
+                                true
+                              )
+                            )
+                          ])
+                        }
+                      })
+                    )
                   }
                 })
               }

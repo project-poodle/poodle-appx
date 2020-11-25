@@ -1,7 +1,9 @@
-const React = lib.react
-const { useState } = lib.react
-const PropTypes = lib['prop-types']
-const { makeStyles } = lib['@material-ui/core']
+// const React = lib.react
+import React from 'react'
+import { useState } from 'react'
+import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core'
+
 import NavBar from 'app-x/pages/layouts/consoleLayout/NavBar'
 import Header from 'app-x/pages/layouts/consoleLayout/Header'
 

@@ -1,8 +1,8 @@
 //import { createStyles, makeStyles } from '@material-ui/core';
 //import MaterialUI from '@material-ui/core';
-const MaterialUI = lib['@material-ui/core'];
-
-const  { createStyles, makeStyles } = MaterialUI;
+//const MaterialUI = lib['@material-ui/core'];
+//const  { createStyles, makeStyles } = MaterialUI;
+import { createStyles, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles(() => createStyles({
   '@global': {

@@ -1,5 +1,7 @@
-const React = lib.react
-const { SvgIcon } = lib['@material-ui/core']
+// const React = lib.react
+import React from 'react'
+// const { SvgIcon } = lib['@material-ui/core']
+import { SvgIcon } from '@material-ui/core'
 
 const Google = (props) => {
   return (

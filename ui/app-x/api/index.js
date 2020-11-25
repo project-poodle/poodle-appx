@@ -1,4 +1,6 @@
-const axios = lib.axios
+//const axios = lib.axios
+import axios from 'axios'
+
 import store from 'app-x/redux/store'
 
 var api_base_url = '/appx/api'

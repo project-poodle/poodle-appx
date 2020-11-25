@@ -61,9 +61,9 @@ function getTranspiler(request) {
         let transpiledCode = Transpile(body, importMaps)
         // console.log(transpiled)
         resolve(new Response(
-          'import {default as lib} from "/dist/lib/main.js";\n'
-          //+ 'import {default as material} from "/dist/lib/material.js";\n'
-          + transpiledCode,
+          //'import {default as lib} from "/dist/lib/main.js";\n' +
+          //'import {default as material} from "/dist/lib/material.js";\n' +
+          transpiledCode,
           {
             headers: {'Content-Type': 'application/javascript'}
           }

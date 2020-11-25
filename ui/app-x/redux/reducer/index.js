@@ -1,4 +1,5 @@
-const { combineReducers } = lib.redux
+// const { combineReducers } = lib.redux
+import { combineReducers } from 'redux'
 import userReducer from 'app-x/redux/reducer/userReducer'
 import msgReducer from 'app-x/redux/reducer/msgReducer'
 

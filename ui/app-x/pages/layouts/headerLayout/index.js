@@ -1,8 +1,11 @@
-const React = lib.react
+//const React = lib.react
+import React from 'react'
 //import { Outlet } from 'react-router-dom';
-const { makeStyles } = lib['@material-ui/core']
+// const { makeStyles } = lib['@material-ui/core']
+import { makeStyles } from '@material-ui/core'
+// const PropTypes = lib['prop-types']
+import PropTypes from 'prop-types'
 
-const PropTypes = lib['prop-types']
 import Header from 'app-x/pages/layouts/headerLayout/Header';
 
 const useStyles = makeStyles((theme) => ({

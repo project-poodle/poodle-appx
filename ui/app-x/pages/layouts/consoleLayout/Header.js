@@ -1,10 +1,11 @@
-const React = lib.react
-const { useState } = lib.react
-const { connect } = lib['react-redux']
-const { A, navigate } = lib['hookrouter']
-const PropTypes = lib['prop-types']
-const clsx = lib.clsx.default
-const {
+// const React = lib.react
+import React from 'react'
+import { useState } from 'react'
+import { connect } from 'react-redux'
+import { A, navigate } from 'hookrouter'
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import {
   Avatar,
   Typography,
   AppBar,
@@ -14,13 +15,13 @@ const {
   IconButton,
   Toolbar,
   makeStyles
-} = lib['@material-ui/core']
-const { ViewQuiltRounded : ViewQuiltRoundedIcon } = lib['@material-ui/icons']
-const {
-  Menu: MenuIcon,
-  NotificationsOutlined: NotificationsIcon,
-  ExitToApp: ExitToApp
-} = lib['@material-ui/icons']
+} from '@material-ui/core'
+import { ViewQuiltRounded as ViewQuiltRoundedIcon } from '@material-ui/icons'
+import {
+  Menu as MenuIcon,
+  NotificationsOutlined as NotificationsIcon,
+  ExitToApp as ExitToApp
+} from '@material-ui/icons'
 
 import { logout, get_app_context, get_user_info } from 'app-x/api'
 

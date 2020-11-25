@@ -1,8 +1,12 @@
-const React = lib.react
-const { useState } = lib.react
-const { A, navigate } = lib.hookrouter
-const PropTypes = lib['prop-types']
-const {
+// const React = lib.react
+import React from 'react'
+// const { useState } = lib.react
+import { useState } from 'react'
+// const { A, navigate } = lib.hookrouter
+import { A, navigate } from 'hookrouter'
+// const PropTypes = lib['prop-types']
+import PropTypes from 'prop-types'
+import {
   Avatar,
   Box,
   Button,
@@ -12,17 +16,17 @@ const {
   List,
   Typography,
   makeStyles
-} = lib['@material-ui/core']
-const {
-  AlertCircle: AlertCircleIcon,
-  BarChart: BarChartIcon,
-  Lock: LockIcon,
-  Settings: SettingsIcon,
-  ShoppingBag: ShoppingBagIcon,
-  User: UserIcon,
-  UserPlus: UserPlusIcon,
-  Users: UsersIcon
-} = lib['react-feather']
+} from '@material-ui/core'
+import {
+  AlertCircle as AlertCircleIcon,
+  BarChart as BarChartIcon,
+  Lock as LockIcon,
+  Settings as SettingsIcon,
+  ShoppingBag as ShoppingBagIcon,
+  User as UserIcon,
+  UserPlus as UserPlusIcon,
+  Users as UsersIcon
+} from 'react-feather'
 
 import NavItem from 'app-x/pages/layouts/consoleLayout/NavBar/NavItem'
 

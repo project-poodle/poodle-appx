@@ -1,8 +1,12 @@
-const React = lib.react
-const  { useState } = lib.react
+// const React = lib.react
+import React from 'react'
+// const  { useState } = lib.react
+import { useState } from 'react'
 //import React, { useState } from 'react'
-const { navigate } = lib.hookrouter
-const {
+// const { navigate } = lib.hookrouter
+import { navigate } from 'hookrouter'
+
+import {
   Avatar,
   Button,
   CssBaseline,
@@ -13,8 +17,8 @@ const {
   Grid,
   Typography,
   makeStyles
-} = lib['@material-ui/core']
-const { LockOutlined : LockOutlinedIcon } = lib['@material-ui/icons']
+} from '@material-ui/core'
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 
 import FacebookIcon from 'app-x/icons/Facebook'
 import GoogleIcon from 'app-x/icons/Google'

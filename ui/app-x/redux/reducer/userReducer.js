@@ -1,4 +1,5 @@
-const _ = lib.lodash // Import the entire lodash library
+// const _ = lib.lodash // Import the entire lodash library
+import _ from 'lodash'
 
 const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
 

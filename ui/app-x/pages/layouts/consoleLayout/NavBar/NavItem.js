@@ -1,14 +1,18 @@
-const React = lib.react
-const { useState } = lib.react
-const { A, navigate } = lib.hookrouter
-const PropTypes = lib['prop-types']
-const clsx = lib.clsx.default
-const {
+//const React = lib.react
+import React from 'react'
+// const { useState } = lib.react
+import { useState } from 'react'
+// const { A, navigate } = lib.hookrouter
+import { A, navigate } from 'hookrouter'
+// const PropTypes = lib['prop-types']
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import {
   Icon,
   Button,
   ListItem,
   makeStyles
-} = lib['@material-ui/core']
+} from '@material-ui/core'
 
 
 const useStyles = makeStyles((theme) => ({

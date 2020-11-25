@@ -1,9 +1,10 @@
 //import MaterialUI from '@material-ui/core';
-const MaterialUI = lib['@material-ui/core']
+//const MaterialUI = lib['@material-ui/core']
 
 import typography from 'app-x/theme/topography.js'
 
-const { createMuiTheme, colors } = MaterialUI;
+//const { createMuiTheme, colors } = MaterialUI;
+import { createMuiTheme, colors } from '@material-ui/core'
 
 const theme = createMuiTheme({
   palette: {

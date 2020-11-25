@@ -1,11 +1,14 @@
-const React = lib['react']
-const { navigate } = lib['hookrouter']
-const MaterialUI = lib['@material-ui/core']
-const MaterialIcons = lib['@material-ui/icons']
+//const React = lib['react']
+// const { useEffect } = React
+import React, { useEffect } from 'react'
 
-const { useEffect } = React
-const { Box, Button, Grid, CssBaseline, makeStyles } = MaterialUI
-const { Slideshow: SlideshowIcon, MenuBook: MenuBookIcon } = MaterialIcons
+//const { navigate } = lib['hookrouter']
+import { navigate } from 'hookrouter'
+
+//const MaterialUI = lib['@material-ui/core']
+//const MaterialIcons = lib['@material-ui/icons']
+import { Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
+import { Slideshow as SlideshowIcon, MenuBook as MenuBookIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
 

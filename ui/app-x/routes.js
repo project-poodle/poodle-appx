@@ -1,5 +1,6 @@
 //import React from 'react'
-const React = lib['react']
+// const React = lib['react']
+import React from 'react'
 //import DashboardLayout from './layouts/DashboardLayout'
 //import MainLayout from './layouts/MainLayout'
 //import AccountView from './views/account/AccountView'

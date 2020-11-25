@@ -1,11 +1,15 @@
-const React = lib.react
-const { A } = lib.hookrouter
-const  { Avatar, Typography } = lib['@material-ui/core']
-const { ViewQuiltRounded : ViewQuiltRoundedIcon } = lib['@material-ui/icons']
+//const React = lib.react
+import React from 'react'
+//const { A } = lib.hookrouter
+import { A } from 'hookrouter'
+// const  { Avatar, Typography } = lib['@material-ui/core']
+import { Avatar, Typography } from '@material-ui/core'
+// const { ViewQuiltRounded : ViewQuiltRoundedIcon } = lib['@material-ui/icons']
+import { ViewQuiltRounded as ViewQuiltRoundedIcon } from '@material-ui/icons'
 //import clsx from 'clsx'
 // import PropTypes from 'prop-types'
-const { Box } = lib['@material-ui/core']
-const { AppBar, Toolbar, makeStyles } = lib['@material-ui/core']
+import { Box } from '@material-ui/core'
+import { AppBar, Toolbar, makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
