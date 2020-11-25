@@ -23,12 +23,12 @@ const AppX = (props) => {
   const routeResult = useRoutes(routes)
 
   return (
-    <div>
+    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}
+         {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}
       </ThemeProvider>
-    </div>
+    </Provider>
   )
 }
 
