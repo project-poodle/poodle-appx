@@ -78,7 +78,7 @@ app.use('/',
         if (url_comps.length > 1 && fs.existsSync(path.join(rootDir, url_comps[1]))) {
             next()
         } else {
-            res.type('html'),sendFile(path.join(rootDir, 'index.html'))
+            res.type('html').sendFile(path.join(rootDir, 'index.html'))
         }
     }
 )
