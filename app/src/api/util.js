@@ -48,8 +48,16 @@ function get_api_spec(context, req, res) {
 
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
-
-    let obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", context.obj_name]
+    let obj_prop = [
+        //"object",
+        context.namespace,
+        "runtimes",
+        context.runtime_name,
+        "deployments",
+        context.app_name,
+        "objs",
+        context.obj_name
+    ]
     let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
         let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
@@ -96,8 +104,16 @@ function parse_for_sql(context, req, res) {
 
     // console.log(cache.get_cache_for('object'))
     let cache_obj = cache.get_cache_for('object')
-
-    let obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", context.obj_name]
+    let obj_prop = [
+        //"object",
+        context.namespace,
+        "runtimes",
+        context.runtime_name,
+        "deployments",
+        context.app_name,
+        "objs",
+        context.obj_name
+    ]
     let obj = objPath.get(cache_obj, obj_prop)
     if (!obj) {
         let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`

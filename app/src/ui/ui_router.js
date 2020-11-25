@@ -8,6 +8,54 @@ const { handle_html } = require('./html')
 const ELEM_ROUTE_PREFIX = "/_elem/"
 
 /**
+ * get_ui_deployment
+ */
+function get_ui_deployment(req, res) {
+
+    let context = req.context
+
+    let cache_ui_deployment = cache.get_cache_for('ui_deployment')
+    //console.log(JSON.stringify(cache_ui_deployment, null, 4))
+
+    let dp_prop = [
+        context.namespace,
+        "ui_apps",
+        context.app_name,
+        context.ui_app_ver,
+        "ui_deployments",
+        context.runtime_name
+    ]
+    let ui_deployment = objPath.get(cache_ui_deployment, dp_prop)
+    if (!ui_deployment) {
+        let msg = `ERROR: ui_deployment not found - [${JSON.stringify(context)}] !`
+        log_deployment_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        req.fatal = true
+        return
+    }
+
+    let ui_deployment_spec = objPath.get(ui_deployment, ["ui_deployment_spec"])
+    if (!ui_deployment_spec) {
+        let msg = `ERROR: ui_deployment_spec not found - [${JSON.stringify(context)}] !`
+        log_deployment_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        req.fatal = true
+        return null
+    }
+
+    let ui_app_spec = objPath.get(ui_deployment, ["ui_app_spec"])
+    if (!ui_app_spec) {
+        let msg = `ERROR: ui_app_spec not found - [${JSON.stringify(context)}] !`
+        log_elem_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        req.fatal = true
+        return null
+    }
+
+    return ui_deployment
+}
+
+/**
  * get_ui_element
  */
 function get_ui_element(req, res) {
@@ -18,7 +66,6 @@ function get_ui_element(req, res) {
     //console.log(JSON.stringify(cache_ui_element, null, 4))
 
     let elem_prop = [
-        "ui_element",
         context.namespace,
         "ui_apps",
         context.app_name,
@@ -59,7 +106,6 @@ function get_ui_route(req, res) {
     //console.log(JSON.stringify(cache_ui_element, null, 4))
 
     let route_prop = [
-        "ui_route",
         context.namespace,
         "ui_apps",
         context.app_name,
@@ -94,23 +140,36 @@ function get_ui_route(req, res) {
  */
 function handle_element(req, res) {
 
+    // check ui_deployment
+    let ui_deployment = get_ui_deployment(req, res)
+    if (req.fatal) {
+        return
+    }
+
     // check ui_element
     let ui_element = get_ui_element(req, res)
     if (req.fatal) {
         return
     }
 
-    req.context = Object.assign({}, req.context, { ui_element: ui_element })
+    req.context = Object.assign(
+        {},
+        req.context,
+        {
+            ui_deployment: ui_deployment,
+            ui_element: ui_element
+        }
+    )
     //console.log(req.context)
 
     // handle request by verb
     switch(ui_element.ui_element_type) {
         case "html":
-            handle_html(req.context, req, res)
+            handle_html(req, res)
             return
 
         case "js":
-            handle_js(req.context, req, res)
+            handle_js(req, res)
             return
 
         default:
@@ -150,6 +209,36 @@ function handle_route(req, res) {
     // handle root element '/'
     handle_element(req, res)
     return
+}
+
+/**
+ * log_deployment_status
+ */
+const log_deployment_status = (deployment_context, status, message) => {
+
+    db.query_sync(`INSERT INTO ui_deployment_status
+                    (
+                        namespace,
+                        app_name,
+                        ui_app_ver,
+                        runtime_name,
+                        ui_deployment_status
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?, ?,
+                        JSON_OBJECT('status', ?, 'message', ?)
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        ui_deployment_status=VALUES(ui_deployment_status)`,
+                    [
+                        deployment_context.namespace,
+                        deployment_context.app_name,
+                        deployment_context.ui_app_ver,
+                        deployment_context.runtime_name,
+                        status,
+                        message
+                    ])
 }
 
 /**

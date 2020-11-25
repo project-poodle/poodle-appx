@@ -5,7 +5,7 @@ ui_element:
       ui_element_name: /
       ui_element_type: html
       ui_element_spec:
-          template: /index.html
+          path: /index.html
           data:
               title: Design Your Own Apps with App-X
           element:
