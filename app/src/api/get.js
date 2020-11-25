@@ -108,7 +108,16 @@ function parse_get(context, req, res) {
             let join_type = join_spec['type']
 
             // find join obj
-            let join_obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", join_name]
+            let join_obj_prop = [
+                //"object",
+                context.namespace,
+                "runtimes",
+                context.runtime_name,
+                "deployments",
+                context.app_name,
+                "objs",
+                join_name
+            ]
             let join_obj = objPath.get(cache_obj, join_obj_prop)
             if (!join_obj) {
                 let msg = `ERROR: failed to retrieve join obj [${join_name}] !`
@@ -170,7 +179,16 @@ function parse_get(context, req, res) {
                 let lookup_name = lookup_tables[i]
 
                 // lookup_obj
-                let lookup_obj_prop = ["object", context.namespace, "runtimes", context.runtime_name, "deployments", context.app_name, "objs", lookup_name]
+                let lookup_obj_prop = [
+                    //"object",
+                    context.namespace,
+                    "runtimes",
+                    context.runtime_name,
+                    "deployments",
+                    context.app_name,
+                    "objs",
+                    lookup_name
+                ]
                 let lookup_obj = objPath.get(cache_obj, lookup_obj_prop)
                 if (!lookup_obj) {
                     let msg = `ERROR: failed to retrieve lookup obj [${lookup_name}] !`
