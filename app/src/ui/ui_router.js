@@ -437,7 +437,7 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                     })
                 }
 
-                console.log(elem_result)
+                // console.log(elem_result)
                 // redirect to new js path
                 router.get(js_route_path, (req, res) => {
                     let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')

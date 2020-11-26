@@ -15,7 +15,7 @@ function isPrimitive(test) {
     return (test !== Object(test))
 }
 
-function process_primitive(input) {
+function process_primitive(input, process_context) {
 
   switch (typeof input) {
     case 'string':
@@ -35,7 +35,7 @@ function process_primitive(input) {
   }
 }
 
-function process_object(input) {
+function process_object(input, process_context) {
 
   if (typeof input != 'object') {
     throw new Error(`ERROR: input is not object [${typeof input}] [${input}]`)
@@ -44,7 +44,7 @@ function process_object(input) {
   if (Array.isArray(input)) {
     return t.arrayExpression(
       input.map(row => {
-        return isPrimitive(row) ? process_primitive(row) : process_object(row)
+        return isPrimitive(row) ? process_primitive(row) : process_object(row, process_context)
       })
     )
   } else {
@@ -53,7 +53,7 @@ function process_object(input) {
         const value = input[key]
         return t.objectProperty(
           t.stringLiteral(key),
-          isPrimitive(value) ? process_primitive(value) : process_object(value)
+          isPrimitive(value) ? process_primitive(value) : process_object(value, process_context)
         )
       })
     )
@@ -63,7 +63,7 @@ function process_object(input) {
 /**
  * process properties
  */
-function process_props(props, context) {
+function process_props(props, process_context) {
 
   if (! props) {
     return []
@@ -78,7 +78,7 @@ function process_props(props, context) {
         : t.jSXExpressionContainer(
             isPrimitive(prop)
               ? process_primitive(prop)
-                : process_object(prop)
+                : process_object(prop, process_context)
           )
     )
   })
@@ -110,12 +110,18 @@ function handle_react(req, res) {
         return
     }
 
-    const elem_paths = ui_element.ui_element_name.split("/")
-    const elem_name = elem_paths.pop()
-    console.log(elem_name)
+    const ui_elem_paths = ui_element.ui_element_name.split("/")
+    const ui_elem_name = ui_elem_paths.pop()
+    console.log(ui_elem_name)
 
     const props = ui_element.ui_element_spec.props
     const children = ui_element.ui_element_spec.children
+
+    const react_elem_paths = ui_element.ui_element_spec.name.split("/")
+    const react_elem_name = react_elem_paths.pop()
+    console.log(react_elem_name)
+
+    const process_context = {}
 
     const program = t.program(
       [
@@ -123,7 +129,7 @@ function handle_react(req, res) {
           'const',
           [
             t.variableDeclarator(
-              t.identifier(elem_name),
+              t.identifier(ui_elem_name),
               t.arrowFunctionExpression(
                 [
                   t.identifier('props'),
@@ -134,11 +140,11 @@ function handle_react(req, res) {
                     t.returnStatement(
                       t.jSXElement(
                         t.jSXOpeningElement(
-                          t.jSXIdentifier(elem_name),
-                          process_props(props)
+                          t.jSXIdentifier(react_elem_name),
+                          process_props(props, process_context)
                         ),
                         t.jSXClosingElement(
-                          t.jSXIdentifier(elem_name)
+                          t.jSXIdentifier(react_elem_name)
                         ),
                         children ? children.map(child => {
                           child
@@ -153,7 +159,7 @@ function handle_react(req, res) {
           ]
         ),
         t.exportDefaultDeclaration(
-          t.identifier(elem_name)
+          t.identifier(ui_elem_name)
         ),
       ],
       [], // program directives
