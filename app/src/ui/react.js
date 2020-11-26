@@ -16,7 +16,8 @@ function isPrimitive(test) {
     return (test !== Object(test))
 }
 
-function js_primitive(input, js_context) {
+// create primitive js ast
+function js_primitive(js_context, input) {
 
   switch (typeof input) {
     case 'string':
@@ -36,39 +37,101 @@ function js_primitive(input, js_context) {
   }
 }
 
-function js_object(input, js_context) {
+// create array js ast
+function js_array(js_context, input, return_array=false) {
+
+  if (!Array.isArray(input)) {
+    throw new Error(`ERROR: input is not array [${typeof input}] [${input}]`)
+  }
+
+  if (return_array) {
+    return input.map(row => {
+      return isPrimitive(row)
+        ? js_primitive(js_context, row)
+        : Array.isArray(row)
+          ? js_array(js_context, row)
+          : js_object(js_context, row)
+    })
+  } else {
+    return t.arrayExpression(
+      input.map(row => {
+        return isPrimitive(row)
+          ? js_primitive(js_context, row)
+          : Array.isArray(row)
+            ? js_array(js_context, row)
+            : js_object(js_context, row)
+      })
+    )
+  }
+}
+
+// create object js ast
+function js_object(js_context, input) {
 
   if (typeof input != 'object') {
     throw new Error(`ERROR: input is not object [${typeof input}] [${input}]`)
   }
 
   if (Array.isArray(input)) {
-    return t.arrayExpression(
-      input.map(row => {
-        return isPrimitive(row) ? js_primitive(row) : js_object(row, js_context)
-      })
-    )
+    throw new Error(`ERROR: input is an array [${typeof input}] [${input}]`)
+  }
+
+  if ('type' in input) {
+
+    if (input.type == 'react/element') {
+
+      return js_element(js_context, input)
+
+    } else {
+
+      throw new Error(`ERROR: unrecognized input.type [${input.type}] [${input}]`)
+    }
+
   } else {
+    // no 'type' is treated as json object
     return t.objectExpression(
       Object.keys(input).map(key => {
         const value = input[key]
         return t.objectProperty(
           t.stringLiteral(key),
-          isPrimitive(value) ? js_primitive(value) : js_object(value, js_context)
+          isPrimitive(value)
+            ? js_primitive(js_context, value)
+            : Array.isArray(value)
+              ? js_array(js_context, value)
+              : js_object(js_context, value)
         )
       })
     )
   }
 }
 
-function js_element(element, js_context) {
-  // TODO
+// create element js ast
+function js_element(js_context, input) {
+
+  if (!('type' in input) || input.type != 'react/element') {
+    throw new Error(`ERROR: input.type is not [react/element] [${input.type}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/element] [${input}]`)
+  }
+
+  js_reg_import(js_context, input.name)
+
+  return t.jSXElement(
+    t.jSXOpeningElement(
+      t.jSXIdentifier(input.name),
+      'props' in input ? js_props(js_context, input.props) : []
+    ),
+    t.jSXClosingElement(
+      t.jSXIdentifier(input.name),
+    ),
+    'children' in input ? js_array(js_context, input.children, true) : []
+  )
 }
 
-/**
- * process properties
- */
-function js_props(props, js_context) {
+// create props js ast
+function js_props(js_context, props) {
 
   if (! props) {
     return []
@@ -83,7 +146,9 @@ function js_props(props, js_context) {
         : t.jSXExpressionContainer(
             isPrimitive(prop)
               ? js_primitive(prop)
-                : js_object(prop, js_context)
+                : Array.isArray(prop)
+                  ? js_array(js_context, prop)
+                  : js_object(js_context, prop)
           )
     )
   })
@@ -92,49 +157,78 @@ function js_props(props, js_context) {
   return results
 }
 
-function js_reg_variable(js_context, variable_handle, variable_spec) {
+// register variables
+function js_reg_variable(js_context, variable_full_path, kind='const', do_import=false) {
 
-    let variable_name = variable_spec.name
-    let sequence_id=0
+    const variable_paths = variable_full_path.split('/')
+    let variable_qualified_name = (variable_paths.pop() || variable_paths.pop()).replace(/[^_a-zA-Z0-9]/g, '_')
+
+    // if variable is already registered, just return
+    if (variable_full_path in js_context.variables) {
+      return
+    }
 
     while (true) {
 
         const found = Object.keys(js_context.variables).find(key => {
             let spec = js_context.variables[key]
-            return spec.name == variable_name
+            return spec.name == variable_qualified_name
         })
 
+        // name conflict found
         if (found) {
-            sequence_id++
-            variable_name = variable_spec.name + '$' + sequence_id
+            // update conflicting variable names
+            Object.keys(js_context.variables).map(key => {
+                let variable_spec = js_context.variables[key]
+                if (variable_spec.name == variable_qualified_name) {
+                    if (variable_spec.path_prefix) {
+                        variable_spec.name = variable_spec.name + '$' + variable_spec.path_prefix.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+                    } else {
+                        // we have exhausted the full path, throw exception
+                        throw new Error(`ERROR: name resolution conflict [${variable_full_path}]`)
+                    }
+                }
+            })
+            // update our own variable name
+            if (variable_paths) {
+                variable_qualified_name = variable_qualified_name + '$' + variable_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+            } else {
+                // we have exhausted the full path, throw exception
+                throw new Error(`ERROR: name resolution conflict [${variable_full_path}]`)
+            }
         } else {
-            js_context.variables[variable_handle] = {
-                ...variable_spec,
-                name: variable_name,
-                origName: variable_spec.name
+            js_context.variables[variable_full_path] = {
+                kind: kind,
+                name: variable_qualified_name,
+                full_path: variable_full_path,
+                path_prefix: variable_paths
+            }
+            if (do_import) {
+                js_context.imports[variable_full_path] = variable_full_path
             }
             return js_context
         }
     }
 }
 
-function js_get_variable(js_context, variable_handle) {
+function js_reg_import(js_context, variable_full_path) {
 
-    if (variable_handle in js_context.variables) {
-        return js_context.variables[variable_handle]
-    } else {
-        throw new Error(`ERROR: unable to find variable handle [${variable_handle}]`)
-    }
+    js_reg_variable(js_context, variable_full_path, 'const', true)
 }
 
-function js_reg_import(js_context, variable_handle, import_path) {
+// get variable definition
+function js_get_variable(js_context, variable_full_path) {
 
-    js_context.imports[variable_handle] = import_path
+    if (variable_full_path in js_context.variables) {
+        return js_context.variables[variable_full_path]
+    } else {
+        throw new Error(`ERROR: unable to find variable [${variable_full_path}]`)
+    }
 }
 
 
 /**
- * handle_html
+ * handle_react
  */
 function handle_react(req, res) {
 
@@ -166,21 +260,21 @@ function handle_react(req, res) {
     }
 
     // ui_elem
-    const ui_elem_paths = ui_element.ui_element_name.split("/")
-    const ui_elem_name = ui_elem_paths.pop()
-    js_reg_variable(js_context, 'ui_elem_name', { type: 'const', name: ui_elem_name })
-    // console.log(js_get_variable(js_context, 'ui_elem_name'))
+    const ui_elem_name = ('self/' + ui_element.ui_element_name).replace(/\/+/g, '/')
+    js_reg_variable(js_context, ui_elem_name)
+    //console.log(js_get_variable(js_context, ui_elem_name))
 
     // base_elem
-    const base_elem_paths = ui_element.ui_element_spec.base.name.split("/")
-    const base_elem_name = base_elem_paths.pop()
-    js_reg_variable(js_context, 'base_elem_name', { type: 'const', name: base_elem_name })
-    js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.base.name)
+    //const base_elem_paths = ui_element.ui_element_spec.base.name.split("/")
+    //const base_elem_name = base_elem_paths.pop()
+    //const base_elem_name = ui_element.ui_element_spec.base.name
+    //js_reg_import(js_context, base_elem_name)
+    // js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.base.name)
     // console.log(js_get_variable(js_context, 'base_elem_name'))
 
     // props and children for base_elem
-    const props = ui_element.ui_element_spec.base.props
-    const children = ui_element.ui_element_spec.base.children
+    //const props = ui_element.ui_element_spec.base.props
+    //const children = ui_element.ui_element_spec.base.children
 
     //console.log(js_context)
 
@@ -193,7 +287,7 @@ function handle_react(req, res) {
           'const',
           [
             t.variableDeclarator(
-              t.identifier(js_get_variable(js_context, 'ui_elem_name').name),
+              t.identifier(ui_elem_name),
               t.arrowFunctionExpression(
                 [
                   t.identifier('props'),
@@ -202,19 +296,17 @@ function handle_react(req, res) {
                 t.blockStatement(
                   [
                     t.returnStatement(
-                      t.jSXElement(
-                        t.jSXOpeningElement(
-                          t.jSXIdentifier(js_get_variable(js_context, 'base_elem_name').name),
-                          js_props(props, js_context)
-                        ),
-                        t.jSXClosingElement(
-                          t.jSXIdentifier(js_get_variable(js_context, 'base_elem_name').name)
-                        ),
-                        children ? children.map(child => {
-                          child
-                          // TODO - children
-                        }) : []
-                      )
+                      js_element(js_context, ui_element.ui_element_spec.base)
+                      //t.jSXElement(
+                      //  t.jSXOpeningElement(
+                      //    t.jSXIdentifier(js_get_variable(js_context, base_elem_name).name),
+                      //    js_props(js_context, props)
+                      //  ),
+                      //  t.jSXClosingElement(
+                      //    t.jSXIdentifier(js_get_variable(js_context, base_elem_name).name)
+                      //  ),
+                      //  children ? js_array(js_context, children, true) : []
+                      //)
                     )
                   ]
                 )
@@ -237,6 +329,8 @@ function handle_react(req, res) {
     }
     //console.log(wrapped)
 
+    console.log(js_context)
+
     // add imports and other context to the code
     traverse(wrapped, {
       Program: {
@@ -258,6 +352,16 @@ function handle_react(req, res) {
               )
             )
           })
+        }
+      },
+      Identifier(path) {
+        if (path.node.name in js_context.variables) {
+          path.node.name = js_context.variables[path.node.name].name
+        }
+      },
+      JSXIdentifier(path) {
+        if (path.node.name in js_context.variables) {
+          path.node.name = js_context.variables[path.node.name].name
         }
       }
     })
