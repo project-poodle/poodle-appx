@@ -250,6 +250,14 @@ function handle_react(req, res) {
         return
     }
 
+    if (! ('type' in ui_element.ui_element_spec.base) || ui_element.ui_element_spec.base.type != 'react/element') {
+        res.status(422).json({
+            status: FAILURE,
+            message: `ERROR: unrecognized ui_element_spec.base.type [${ui_element.ui_element_spec.base.type}]`
+        })
+        return
+    }
+
     // import maps
     const importMaps = ui_deployment.ui_app_spec.importMaps
 
@@ -263,23 +271,6 @@ function handle_react(req, res) {
     const ui_elem_name = ('self/' + ui_element.ui_element_name).replace(/\/+/g, '/')
     js_reg_variable(js_context, ui_elem_name)
     //console.log(js_get_variable(js_context, ui_elem_name))
-
-    // base_elem
-    //const base_elem_paths = ui_element.ui_element_spec.base.name.split("/")
-    //const base_elem_name = base_elem_paths.pop()
-    //const base_elem_name = ui_element.ui_element_spec.base.name
-    //js_reg_import(js_context, base_elem_name)
-    // js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.base.name)
-    // console.log(js_get_variable(js_context, 'base_elem_name'))
-
-    // props and children for base_elem
-    //const props = ui_element.ui_element_spec.base.props
-    //const children = ui_element.ui_element_spec.base.children
-
-    //console.log(js_context)
-
-    //js_add_obj(js_context, 'react_elem_name', react_elem_name)
-    //js_add_import(js_context, react_elem_name, importMaps)
 
     const program = t.program(
       [
@@ -297,16 +288,6 @@ function handle_react(req, res) {
                   [
                     t.returnStatement(
                       js_element(js_context, ui_element.ui_element_spec.base)
-                      //t.jSXElement(
-                      //  t.jSXOpeningElement(
-                      //    t.jSXIdentifier(js_get_variable(js_context, base_elem_name).name),
-                      //    js_props(js_context, props)
-                      //  ),
-                      //  t.jSXClosingElement(
-                      //    t.jSXIdentifier(js_get_variable(js_context, base_elem_name).name)
-                      //  ),
-                      //  children ? js_array(js_context, children, true) : []
-                      //)
                     )
                   ]
                 )
