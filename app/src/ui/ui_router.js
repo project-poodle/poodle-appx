@@ -4,6 +4,7 @@ const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
 const { handle_html } = require('./html')
+const { handle_react } = require('./react')
 
 const ELEM_ROUTE_PREFIX = "/_elem/"
 
@@ -162,14 +163,14 @@ function handle_element(req, res) {
     )
     //console.log(req.context)
 
-    // handle request by verb
+    // handle request by element type
     switch(ui_element.ui_element_type) {
         case "html":
             handle_html(req, res)
             return
 
-        case "js":
-            handle_js(req, res)
+        case "react":
+            handle_react(req, res)
             return
 
         default:
@@ -392,7 +393,9 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             ui_element_name: elem_result.ui_element_name
         }
 
-        router.get(ELEM_ROUTE_PREFIX + elem_result.ui_element_name.replace(/\/+/g, '/'), (req, res) => {
+        const route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
+        //console.log(route_path)
+        router.get(route_path, (req, res) => {
 
             req.context = Object.assign({}, {ui_element: elem_context}, req.context)
             handle_element(req, res)

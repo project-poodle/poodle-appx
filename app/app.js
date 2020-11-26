@@ -58,14 +58,14 @@ const { authenticator } = require("./src/auth")
 // initialize router --- Note: perform this step only after db_pool is initialized
 const { api_dispatcher } = require('./src/api/api_dispatcher')
 
-app.use('/appx/api', bodyParser.json())
-app.use('/appx/api', authenticator, api_dispatcher)
+app.use('/api', bodyParser.json())
+app.use('/api', authenticator, api_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize ui router --- Note: perform this step only after db_pool is initialized
 const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 
-app.use('/appx/ui', ui_dispatcher)
+app.use('/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
 // static files

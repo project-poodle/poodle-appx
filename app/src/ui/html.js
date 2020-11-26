@@ -62,7 +62,7 @@ const KEY_VALUE = function() {
             let results = ''
             Object.keys(data).map(key => {
                 let newData = { ...data, key: key, value: data[key] }
-                console.log(newData)
+                // console.log(newData)
                 let result = Mustache.render(text, newData)
                 // console.log(result)
                 results += result
@@ -77,7 +77,7 @@ const KEY_VALUE = function() {
  */
 function handle_html(req, res) {
 
-    const { ui_deployment, ui_element, ui_route } = req.context
+    const { ui_deployment, ui_element } = req.context
 
     if (! ('ui_app_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_app_spec) ) {
         res.status(422).json({
