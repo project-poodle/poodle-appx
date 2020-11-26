@@ -7,11 +7,11 @@ import PropTypes from 'prop-types'
 import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Provider } from 'react-redux'
 
-import theme from 'app-x/theme'
+// import theme from 'app-x/theme'
 import GlobalStyles from 'app-x/components/GlobalStyles'
 import HeaderLayout from 'app-x/pages/layouts/headerLayout'
 import NotFoundView from 'app-x/views/errors/NotFoundView'
-import store from 'app-x/redux/store'
+// import store from 'app-x/redux/store'
 
 // import routes from 'app-x/routes.js'
 
@@ -19,10 +19,10 @@ import store from 'app-x/redux/store'
 const App = (props, children) => {
 
   // process redux store
-  import redux_store from props.redux_provider
+  // import redux_store from props.redux_provider
 
   // process theme
-  import theme_provider from props.theme_provider
+  // import theme_provider from props.theme_provider
 
   // process routes
   const routes = {}
@@ -35,7 +35,7 @@ const App = (props, children) => {
   const not_found = props.not_found || (<HeaderLayout><NotFoundView/></HeaderLayout>)
 
   return (
-    <Provider store={props.redux_provider}>
+    <Provider store={props.redux_store_provider}>
       <ThemeProvider theme={props.theme_provider}>
         <GlobalStyles />
          {routeResult || not_found}
@@ -45,8 +45,8 @@ const App = (props, children) => {
 }
 
 App.propTypes = {
-  redux_provider: PropTypes.string.isRequired,
-  theme_provider: PropTypes.string.isRequired,
+  redux_store_provider: PropTypes.object.isRequired,
+  theme_provider: PropTypes.object.isRequired,
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       route: PropTypes.string.isRequired,

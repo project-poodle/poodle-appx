@@ -24,7 +24,7 @@ ui_element:
               name: app-x/apps/MUI_route_theme_redux
               # name: app-x/AppX
               props:
-                  redux_provider:
+                  redux_store_provider:
                       type: js/module
                       name: app-x/redux/store
                   theme_provider:
