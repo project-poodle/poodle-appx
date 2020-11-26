@@ -31,7 +31,8 @@ ui_element:
                       type: react/element
                       name: app-x/pages/layouts/headerLayout
                       children:
-                          - name: app-x/views/errors/NotFoundView
+                          - type: react/element
+                            name: app-x/views/errors/NotFoundView
 
     - namespace: sys
       app_name: appx

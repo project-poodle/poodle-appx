@@ -15,7 +15,8 @@ ui_route:
           type: react/element
           name: app-x/pages/layouts/headerLayout
           children:
-              - name: app-x/pages/auth/SigninSide
+              - type: react/element
+                name: app-x/pages/auth/SigninSide
 
     - namespace: sys
       app_name: appx
@@ -25,7 +26,8 @@ ui_route:
           type: react/element
           name: app-x/pages/layouts/consoleLayout
           children:
-              - name: app-x/views/errors/NotFoundView
+              - type: react/element
+                name: app-x/views/errors/NotFoundView
 
     - namespace: sys
       app_name: appx
@@ -35,4 +37,5 @@ ui_route:
           type: react/element
           name: app-x/pages/layouts/headerLayout
           children:
-              - name: app-x/views/errors/NotFoundView
+              - type: react/element
+                name: app-x/views/errors/NotFoundView
