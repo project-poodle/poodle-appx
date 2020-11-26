@@ -419,10 +419,7 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                     // route path without '/' will add '/'
                     let redirect_url = (req.baseUrl + js_route_path).replace(/\/+/g, '/')
                     router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
-                        res.status(301).redirect(redirect_url).json({
-                            status: SUCCESS,
-                            message: `INFO: redirect to [${redirect_url}]`
-                        })
+                        res.status(301).redirect(redirect_url)
                     })
                     new_js_route_path = js_route_path + 'index.js'
                     router.get(new_js_route_path, (req, res) => {
@@ -451,10 +448,7 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                 // redirect to new js path
                 router.get(js_route_path, (req, res) => {
                     let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')
-                    res.status(301).redirect(redirect_url).json({
-                        status: SUCCESS,
-                        message: `INFO: redirect to [${redirect_url}]`
-                    })
+                    res.status(301).redirect(redirect_url)
                 })
             }
 
