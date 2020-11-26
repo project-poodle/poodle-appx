@@ -14,7 +14,7 @@ const {
     js_reg_variable,
     js_get_variable,
     jsx_element,
-    js_props
+    jsx_props
 } = require('./util')
 
 // console.log(generate)

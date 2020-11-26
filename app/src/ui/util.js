@@ -78,20 +78,7 @@ function js_object(js_context, input) {
 
     } else if (input.type == 'js/module') {
 
-      // TODO - handle js/module
-      return t.objectExpression(
-        Object.keys(input).map(key => {
-          const value = input[key]
-          return t.objectProperty(
-            t.stringLiteral(key),
-            isPrimitive(value)
-              ? js_primitive(js_context, value)
-              : Array.isArray(value)
-                ? js_array(js_context, value)
-                : js_object(js_context, value)
-          )
-        })
-      )
+      return js_module(js_context, input)
 
     } else {
 
@@ -116,7 +103,23 @@ function js_object(js_context, input) {
   }
 }
 
-// create element js ast
+// create js module ast
+function js_module(js_context, input) {
+
+  if (!('type' in input) || input.type != 'js/module') {
+    throw new Error(`ERROR: input.type is not [js/module] [${input.type}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [js/module] [${input}]`)
+  }
+
+  js_reg_import(js_context, input.name)
+
+  return t.identifier(input.name)
+}
+
+// create jsx element ast
 function jsx_element(js_context, input) {
 
   if (!('type' in input) || input.type != 'jsx/element') {
@@ -132,7 +135,7 @@ function jsx_element(js_context, input) {
   return t.jSXElement(
     t.jSXOpeningElement(
       t.jSXIdentifier(input.name),
-      'props' in input ? js_props(js_context, input.props) : []
+      'props' in input ? jsx_props(js_context, input.props) : []
     ),
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
@@ -141,8 +144,8 @@ function jsx_element(js_context, input) {
   )
 }
 
-// create props js ast
-function js_props(js_context, props) {
+// create jsx props ast
+function jsx_props(js_context, props) {
 
   if (! props) {
     return []
@@ -246,5 +249,5 @@ module.exports = {
     js_reg_variable: js_reg_variable,
     js_get_variable: js_get_variable,
     jsx_element: jsx_element,
-    js_props: js_props
+    jsx_props: jsx_props
 }
