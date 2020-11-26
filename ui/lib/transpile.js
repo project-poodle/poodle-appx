@@ -163,6 +163,10 @@ function importMapPlugin(import_maps, globalImports) {
                         }
                       })
                     )
+                  } else if (src_val.startsWith(module_name + '/')) {
+
+                    // TODO
+                    throw new Error('ERROR: submodule not yet implemented [' + src_val + '].')
                   }
                 })
               }
