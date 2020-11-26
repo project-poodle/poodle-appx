@@ -70,7 +70,7 @@ function getTranspiler(request) {
           //'import {default as material} from "/dist/lib/material.js";\n' +
           transpiledCode,
           {
-            headers: {'Content-Type': 'application/javascript'}
+            headers: {'Content-Type': 'application/javascript; charset=utf-8'}
           }
         ))
       }).catch(error => {
