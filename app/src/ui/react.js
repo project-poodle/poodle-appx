@@ -62,7 +62,7 @@ function js_object(input, js_context) {
 }
 
 function js_element(element, js_context) {
-
+  // TODO
 }
 
 /**
@@ -230,13 +230,14 @@ function handle_react(req, res) {
       "module"
     )
 
-    // this is to handle a bug that babel/traverse do not work standalone on program
+    // this is to handle a bug that @babel/traverse do not work on standalone program
     const wrapped = {
         type: "File",
         program: program
     }
     //console.log(wrapped)
 
+    // add imports and other context to the code
     traverse(wrapped, {
       Program: {
         exit(path) {
@@ -261,6 +262,7 @@ function handle_react(req, res) {
       }
     })
 
+    // generate code
     const output = generate(program, {}, {})
 
     res.status(200).type('application/javascript').send(output.code)
