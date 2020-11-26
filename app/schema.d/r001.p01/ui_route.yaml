@@ -4,35 +4,35 @@ ui_route:
       ui_app_ver: internal
       ui_route_name: /
       ui_route_spec:
-          element:
-              name: self/pages/landing/Home
+          type: react/element
+          name: self/pages/landing/Home
 
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
       ui_route_name: /login
       ui_route_spec:
-          element:
-              name: app-x/pages/layouts/headerLayout
-              children:
-                  - name: app-x/pages/auth/SigninSide
+          type: react/element
+          name: app-x/pages/layouts/headerLayout
+          children:
+              - name: app-x/pages/auth/SigninSide
 
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
       ui_route_name: /console
       ui_route_spec:
-          element:
-              name: app-x/pages/layouts/consoleLayout
-              children:
-                  - name: app-x/views/errors/NotFoundView
+          type: react/element
+          name: app-x/pages/layouts/consoleLayout
+          children:
+              - name: app-x/views/errors/NotFoundView
 
     - namespace: sys
       app_name: appx
       ui_app_ver: internal
       ui_route_name: /404
       ui_route_spec:
-          element:
-              name: app-x/pages/layouts/headerLayout
-              children:
-                  - name: app-x/views/errors/NotFoundView
+          type: react/element
+          name: app-x/pages/layouts/headerLayout
+          children:
+              - name: app-x/views/errors/NotFoundView

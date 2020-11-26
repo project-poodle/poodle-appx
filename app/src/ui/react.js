@@ -61,6 +61,10 @@ function js_object(input, js_context) {
   }
 }
 
+function js_element(element, js_context) {
+
+}
+
 /**
  * process properties
  */
@@ -144,10 +148,10 @@ function handle_react(req, res) {
         return
     }
 
-    if (! ('ui_element_spec' in ui_element) || ! ('element' in ui_element.ui_element_spec) ) {
+    if (! ('ui_element_spec' in ui_element) || ! ('base' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
+            message: `ERROR: ui_element_spec.base not defined [${ui_element}]`
         })
         return
     }
@@ -168,15 +172,15 @@ function handle_react(req, res) {
     // console.log(js_get_variable(js_context, 'ui_elem_name'))
 
     // base_elem
-    const base_elem_paths = ui_element.ui_element_spec.element.name.split("/")
+    const base_elem_paths = ui_element.ui_element_spec.base.name.split("/")
     const base_elem_name = base_elem_paths.pop()
     js_reg_variable(js_context, 'base_elem_name', { type: 'const', name: base_elem_name })
-    js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.element.name)
+    js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.base.name)
     // console.log(js_get_variable(js_context, 'base_elem_name'))
 
     // props and children for base_elem
-    const props = ui_element.ui_element_spec.element.props
-    const children = ui_element.ui_element_spec.element.children
+    const props = ui_element.ui_element_spec.base.props
+    const children = ui_element.ui_element_spec.base.children
 
     //console.log(js_context)
 

@@ -169,19 +169,21 @@ function handle_element(req, res) {
     //console.log(req.context)
 
     // handle request by element type
-    switch(ui_element.ui_element_type) {
-        case "html":
-            handle_html(req, res)
-            return
+    if (ui_element.ui_element_type == 'html' || ui_element.ui_element_type.startsWith('html/')) {
 
-        case "react":
-            handle_react(req, res)
-            return
+        handle_html(req, res)
+        return
 
-        default:
-            let msg = `ERROR: unsupported ui element type [${ui_element.ui_element_type}] - [${JSON.stringify(ui_element)}]`
-            res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-            return
+    } else if (ui_element.ui_element_type == 'react' || ui_element.ui_element_type.startsWith('react/')) {
+
+        handle_react(req, res)
+        return
+
+    } else {
+
+        let msg = `ERROR: unsupported ui element type [${ui_element.ui_element_type}] - [${JSON.stringify(ui_element)}]`
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        return
     }
 }
 
@@ -401,7 +403,10 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
         //console.log(route_path)
 
         // add index.js if directory; add .js if no suffix
-        if (JAVASCRIPT_TYPES.includes(elem_result.ui_element_type)) {
+        if (JAVASCRIPT_TYPES.includes(elem_result.ui_element_type)
+            || JAVASCRIPT_TYPES.find(row => elem_result.ui_element_type.startsWith(row + '/'))) {
+
+            // console.log(elem_result)
 
             // JAVASCRIPT types, ensure route has .js suffix
             let js_route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
