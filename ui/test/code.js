@@ -15,8 +15,8 @@ const AppX = (props, children) => {
   const routeResult = useRoutes(routes)
 
   return (
-    <Provider store={store}>
-    </Provider>
+    <Provider$1 store={store}>
+    </Provider$1>
   )
 }
 

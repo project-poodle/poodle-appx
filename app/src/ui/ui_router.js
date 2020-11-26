@@ -429,9 +429,19 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })
+                    source_js_route_path = js_route_path + 'index.source'
+                    router.get(source_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_element(req, res)
+                    })
                 } else {
                     new_js_route_path = js_route_path + '.js'
                     router.get(new_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_element(req, res)
+                    })
+                    source_js_route_path = js_route_path + '.source'
+                    router.get(source_js_route_path, (req, res) => {
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })

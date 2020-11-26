@@ -17,15 +17,20 @@ ui_element:
       ui_element_name: /AppX
       ui_element_type: react
       ui_element_spec:
-          name: app-x/apps/MUI_route_theme_redux
-          props:
-              redux_provider: app-x/redux/store
-              theme_provider: app-x/theme
-              not_found_view:
-                  element:
-                      name: app-x/pages/layouts/headerLayout
-                      children:
-                          - name: app-x/views/errors/NotFoundView
+          propTypes:
+              title: PropTypes.string.isRequired
+          element:
+              #name: app-x/apps/MUI_route_theme_redux
+              name: app-x/AppX
+              props:
+                  redux_provider: app-x/redux/store
+                  theme_provider: app-x/theme
+                  routes: self/routes
+                  not_found_view:
+                      element:
+                          name: app-x/pages/layouts/headerLayout
+                          children:
+                              - name: app-x/views/errors/NotFoundView
 
     - namespace: sys
       app_name: appx

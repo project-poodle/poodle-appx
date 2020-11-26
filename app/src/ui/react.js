@@ -5,6 +5,7 @@ const Mustache = require('mustache')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
+const traverse = require('@babel/traverse').default
 const t = require("@babel/types")
 
 // console.log(generate)
@@ -15,7 +16,7 @@ function isPrimitive(test) {
     return (test !== Object(test))
 }
 
-function process_primitive(input, process_context) {
+function js_primitive(input, js_context) {
 
   switch (typeof input) {
     case 'string':
@@ -35,7 +36,7 @@ function process_primitive(input, process_context) {
   }
 }
 
-function process_object(input, process_context) {
+function js_object(input, js_context) {
 
   if (typeof input != 'object') {
     throw new Error(`ERROR: input is not object [${typeof input}] [${input}]`)
@@ -44,7 +45,7 @@ function process_object(input, process_context) {
   if (Array.isArray(input)) {
     return t.arrayExpression(
       input.map(row => {
-        return isPrimitive(row) ? process_primitive(row) : process_object(row, process_context)
+        return isPrimitive(row) ? js_primitive(row) : js_object(row, js_context)
       })
     )
   } else {
@@ -53,7 +54,7 @@ function process_object(input, process_context) {
         const value = input[key]
         return t.objectProperty(
           t.stringLiteral(key),
-          isPrimitive(value) ? process_primitive(value) : process_object(value, process_context)
+          isPrimitive(value) ? js_primitive(value) : js_object(value, js_context)
         )
       })
     )
@@ -63,7 +64,7 @@ function process_object(input, process_context) {
 /**
  * process properties
  */
-function process_props(props, process_context) {
+function js_props(props, js_context) {
 
   if (! props) {
     return []
@@ -77,8 +78,8 @@ function process_props(props, process_context) {
         ? t.stringLiteral(prop) // TODO
         : t.jSXExpressionContainer(
             isPrimitive(prop)
-              ? process_primitive(prop)
-                : process_object(prop, process_context)
+              ? js_primitive(prop)
+                : js_object(prop, js_context)
           )
     )
   })
@@ -86,6 +87,47 @@ function process_props(props, process_context) {
   // console.log(results)
   return results
 }
+
+function js_reg_variable(js_context, variable_handle, variable_spec) {
+
+    let variable_name = variable_spec.name
+    let sequence_id=0
+
+    while (true) {
+
+        const found = Object.keys(js_context.variables).find(key => {
+            let spec = js_context.variables[key]
+            return spec.name == variable_name
+        })
+
+        if (found) {
+            sequence_id++
+            variable_name = variable_spec.name + '$' + sequence_id
+        } else {
+            js_context.variables[variable_handle] = {
+                ...variable_spec,
+                name: variable_name,
+                origName: variable_spec.name
+            }
+            return js_context
+        }
+    }
+}
+
+function js_get_variable(js_context, variable_handle) {
+
+    if (variable_handle in js_context.variables) {
+        return js_context.variables[variable_handle]
+    } else {
+        throw new Error(`ERROR: unable to find variable handle [${variable_handle}]`)
+    }
+}
+
+function js_reg_import(js_context, variable_handle, import_path) {
+
+    js_context.imports[variable_handle] = import_path
+}
+
 
 /**
  * handle_html
@@ -102,26 +144,44 @@ function handle_react(req, res) {
         return
     }
 
-    if (! ('ui_element_spec' in ui_element) || ! ('name' in ui_element.ui_element_spec) ) {
+    if (! ('ui_element_spec' in ui_element) || ! ('element' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_element_spec.name not defined [${ui_element}]`
+            message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
         })
         return
     }
 
+    // import maps
+    const importMaps = ui_deployment.ui_app_spec.importMaps
+
+    // process context
+    const js_context = {
+        variables: {},
+        imports: {},
+    }
+
+    // ui_elem
     const ui_elem_paths = ui_element.ui_element_name.split("/")
     const ui_elem_name = ui_elem_paths.pop()
-    console.log(ui_elem_name)
+    js_reg_variable(js_context, 'ui_elem_name', { type: 'const', name: ui_elem_name })
+    // console.log(js_get_variable(js_context, 'ui_elem_name'))
 
-    const props = ui_element.ui_element_spec.props
-    const children = ui_element.ui_element_spec.children
+    // base_elem
+    const base_elem_paths = ui_element.ui_element_spec.element.name.split("/")
+    const base_elem_name = base_elem_paths.pop()
+    js_reg_variable(js_context, 'base_elem_name', { type: 'const', name: base_elem_name })
+    js_reg_import(js_context, 'base_elem_name', ui_element.ui_element_spec.element.name)
+    // console.log(js_get_variable(js_context, 'base_elem_name'))
 
-    const react_elem_paths = ui_element.ui_element_spec.name.split("/")
-    const react_elem_name = react_elem_paths.pop()
-    console.log(react_elem_name)
+    // props and children for base_elem
+    const props = ui_element.ui_element_spec.element.props
+    const children = ui_element.ui_element_spec.element.children
 
-    const process_context = {}
+    //console.log(js_context)
+
+    //js_add_obj(js_context, 'react_elem_name', react_elem_name)
+    //js_add_import(js_context, react_elem_name, importMaps)
 
     const program = t.program(
       [
@@ -129,7 +189,7 @@ function handle_react(req, res) {
           'const',
           [
             t.variableDeclarator(
-              t.identifier(ui_elem_name),
+              t.identifier(js_get_variable(js_context, 'ui_elem_name').name),
               t.arrowFunctionExpression(
                 [
                   t.identifier('props'),
@@ -140,11 +200,11 @@ function handle_react(req, res) {
                     t.returnStatement(
                       t.jSXElement(
                         t.jSXOpeningElement(
-                          t.jSXIdentifier(react_elem_name),
-                          process_props(props, process_context)
+                          t.jSXIdentifier(js_get_variable(js_context, 'base_elem_name').name),
+                          js_props(props, js_context)
                         ),
                         t.jSXClosingElement(
-                          t.jSXIdentifier(react_elem_name)
+                          t.jSXIdentifier(js_get_variable(js_context, 'base_elem_name').name)
                         ),
                         children ? children.map(child => {
                           child
@@ -165,6 +225,37 @@ function handle_react(req, res) {
       [], // program directives
       "module"
     )
+
+    // this is to handle a bug that babel/traverse do not work standalone on program
+    const wrapped = {
+        type: "File",
+        program: program
+    }
+    //console.log(wrapped)
+
+    traverse(wrapped, {
+      Program: {
+        exit(path) {
+          //console.log(`exit`)
+          Object.keys(js_context.imports).map(importKey => {
+            let import_name = js_context.variables[importKey].name
+            let import_path = js_context.imports[importKey]
+            path.unshiftContainer(
+              'body',
+              t.importDeclaration(
+                [
+                  t.importSpecifier(
+                    t.identifier(import_name),
+                    t.identifier('default'),
+                  )
+                ],
+                t.stringLiteral(import_path)
+              )
+            )
+          })
+        }
+      }
+    })
 
     const output = generate(program, {}, {})
 
