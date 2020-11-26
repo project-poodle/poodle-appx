@@ -4,12 +4,12 @@ const db = require('../db/db')
 const cache = require('../cache/cache')
 const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
 const { handle_html } = require('./html')
-const { handle_react } = require('./react')
+const { handle_jsx } = require('./jsx')
 
 const ELEM_ROUTE_PREFIX = "/_elem/"
 
 const JAVASCRIPT_TYPES = [
-  "react",
+  "jsx",
   "js"
 ]
 
@@ -174,9 +174,9 @@ function handle_element(req, res) {
         handle_html(req, res)
         return
 
-    } else if (ui_element.ui_element_type == 'react' || ui_element.ui_element_type.startsWith('react/')) {
+    } else if (ui_element.ui_element_type == 'jsx' || ui_element.ui_element_type.startsWith('jsx/')) {
 
-        handle_react(req, res)
+        handle_jsx(req, res)
         return
 
     } else {

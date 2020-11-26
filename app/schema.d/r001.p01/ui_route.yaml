@@ -4,7 +4,7 @@ ui_route:
       ui_app_ver: internal
       ui_route_name: /
       ui_route_spec:
-          type: react/element
+          type: jsx/element
           name: self/pages/landing/Home
 
     - namespace: sys
@@ -12,10 +12,10 @@ ui_route:
       ui_app_ver: internal
       ui_route_name: /login
       ui_route_spec:
-          type: react/element
+          type: jsx/element
           name: app-x/pages/layouts/headerLayout
           children:
-              - type: react/element
+              - type: jsx/element
                 name: app-x/pages/auth/SigninSide
 
     - namespace: sys
@@ -23,10 +23,10 @@ ui_route:
       ui_app_ver: internal
       ui_route_name: /console
       ui_route_spec:
-          type: react/element
+          type: jsx/element
           name: app-x/pages/layouts/consoleLayout
           children:
-              - type: react/element
+              - type: jsx/element
                 name: app-x/views/errors/NotFoundView
 
     - namespace: sys
@@ -34,8 +34,8 @@ ui_route:
       ui_app_ver: internal
       ui_route_name: /404
       ui_route_spec:
-          type: react/element
+          type: jsx/element
           name: app-x/pages/layouts/headerLayout
           children:
-              - type: react/element
+              - type: jsx/element
                 name: app-x/views/errors/NotFoundView
