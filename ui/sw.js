@@ -48,8 +48,12 @@ function getTranspiler(request) {
   let p = new Promise((resolve, reject) => {
 
     fetch(request)
-      .then(response => response.text())
-      .then(body => {
+      .then(response => {
+        var result=response.text();
+        // console.log(response.headers);
+        return result
+      }).then(body => {
+        //console.log(body)
         //console.log(Transpile)
         let url = new URL(request.url)
         let importMaps = null

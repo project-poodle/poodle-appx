@@ -8,6 +8,11 @@ const { handle_react } = require('./react')
 
 const ELEM_ROUTE_PREFIX = "/_elem/"
 
+const JAVASCRIPT_TYPES = [
+  "react",
+  "js"
+]
+
 /**
  * get_ui_deployment
  */
@@ -393,13 +398,65 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             ui_element_name: elem_result.ui_element_name
         }
 
-        const route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
         //console.log(route_path)
-        router.get(route_path, (req, res) => {
 
-            req.context = Object.assign({}, {ui_element: elem_context}, req.context)
-            handle_element(req, res)
-        })
+        // add index.js if directory; add .js if no suffix
+        if (JAVASCRIPT_TYPES.includes(elem_result.ui_element_type)) {
+
+            // JAVASCRIPT types, ensure route has .js suffix
+            let js_route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
+            if (js_route_path.endsWith('.js') || js_route_path.endsWith('.jsx')) {
+
+                router.get(js_route_path, (req, res) => {
+                    req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                    handle_element(req, res)
+                })
+
+            } else {
+
+                let new_js_route_path = js_route_path
+                if (js_route_path.endsWith('/') && js_route_path != '/') {
+                    // route path without '/' will add '/'
+                    let redirect_url = (req.baseUrl + js_route_path).replace(/\/+/g, '/')
+                    router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
+                        res.status(301).redirect(redirect_url).json({
+                            status: SUCCESS,
+                            message: `INFO: redirect to [${redirect_url}]`
+                        })
+                    })
+                    new_js_route_path = js_route_path + 'index.js'
+                    router.get(new_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_element(req, res)
+                    })
+                } else {
+                    new_js_route_path = js_route_path + '.js'
+                    router.get(new_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_element(req, res)
+                    })
+                }
+
+                console.log(elem_result)
+                // redirect to new js path
+                router.get(js_route_path, (req, res) => {
+                    let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')
+                    res.status(301).redirect(redirect_url).json({
+                        status: SUCCESS,
+                        message: `INFO: redirect to [${redirect_url}]`
+                    })
+                })
+            }
+
+        } else {
+
+            // none JAVASCRIPT types - handles normally
+            const route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
+            router.get(route_path, (req, res) => {
+                req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                handle_element(req, res)
+            })
+        }
 
         log_elem_status(elem_context,
             SUCCESS,
