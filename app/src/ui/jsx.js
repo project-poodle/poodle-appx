@@ -10,9 +10,8 @@ const {
     js_primitive,
     js_array,
     js_object,
-    js_reg_import,
-    js_reg_variable,
-    js_get_variable,
+    reg_js_variable,
+    get_js_variable,
     jsx_element,
     jsx_props
 } = require('./util')
@@ -61,8 +60,8 @@ function handle_jsx(req, res) {
 
     // ui_elem
     const ui_elem_name = ('self/' + ui_element.ui_element_name).replace(/\/+/g, '/')
-    js_reg_variable(js_context, ui_elem_name)
-    //console.log(js_get_variable(js_context, ui_elem_name))
+    reg_js_variable(js_context, ui_elem_name)
+    //console.log(get_js_variable(js_context, ui_elem_name))
 
     const program = t.program(
       [
