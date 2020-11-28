@@ -52,7 +52,7 @@ function js_array(js_context, input) {
 
   return t.arrayExpression(
     input.map(row => {
-      return js_process(row)
+      return js_process(js_context, row)
     })
   )
 }
@@ -76,7 +76,7 @@ function js_object(is_context, input) {
       const value = input[key]
       return t.objectProperty(
         t.stringLiteral(key),
-        js_process(value)
+        js_process(js_context, value)
       )
     })
   )
@@ -93,7 +93,7 @@ function js_import(js_context, input) {
     throw new Error(`ERROR: input.name missing in [js/import] [${JSON.stringify(input)}]`)
   }
 
-  reg_js_import(input.name)
+  reg_js_import(js_context, input.name)
 
   // do we need to return anything?
   return t.identifier(input.name)
@@ -144,7 +144,7 @@ function js_variable(js_context, input) {
     [
       t.variableDeclarator(
         t.identifier(input.name),
-        js_process(input.value)
+        js_process(js_context, input.value)
       )
     ]
   )
@@ -200,7 +200,7 @@ function js_function(js_context, input) {
   }
 
   return t.arrowFunctionExpression(
-    input.params ? input.params.map(param => js_process(param)) : [],
+    input.params ? input.params.map(param => js_process(js_context, param)) : [],
     js_block(input.data),
     input.async ? true : false
   )
@@ -219,7 +219,7 @@ function js_call(js_context, input) {
 
   return t.callExpression(
     t.identifier(input.name),
-    input.params ? input.params.map(param => js_process(param)) : []
+    input.params ? input.params.map(param => js_process(js_context, param)) : []
   )
 }
 
@@ -234,7 +234,7 @@ function jsx_element(js_context, input) {
     throw new Error(`ERROR: input.name missing in [jsx/element] [${JSON.stringify(input)}]`)
   }
 
-  js_reg_import(js_context, input.name)
+  reg_js_import(js_context, input.name)
 
   return t.jSXElement(
     t.jSXOpeningElement(
@@ -270,7 +270,7 @@ function jsx_element_props(js_context, props) {
       typeof prop == 'string'
         ? t.stringLiteral(prop) // TODO
         : t.jSXExpressionContainer(
-            js_process(prop)
+            js_process(js_context, prop)
           )
     )
   })
@@ -293,7 +293,7 @@ function jsx_element_children(js_context, children) {
     throw new Error(`ERROR: input is not array [${typeof children}] [${JSON.stringify(children)}]`)
   }
 
-  return children.map(row => js_process(row))
+  return children.map(row => js_process(js_context, row))
 }
 
 // process input
@@ -309,37 +309,37 @@ function js_process(js_context, input) {
 
   if (! ('type' in input)) {
     // no 'type' is treated as json object
-    return js_object(input)
+    return js_object(js_context, input)
   }
 
   // 'type' is presented in the json object
   if (input.type == 'js/import') {
 
-    return js_export(input)
+    return js_import(js_context, input)
 
   } else if (input.type == 'js/export') {
 
-    return js_export(input)
+    return js_export(js_context, input)
 
   } else if (input.type == 'js/variable') {
 
-    return js_variable(input)
+    return js_variable(js_context, input)
 
   } else if (input.type == 'js/expression') {
 
-    return js_expression(input)
+    return js_expression(js_context, input)
 
   } else if (input.type == 'js/block') {
 
-    return js_block(input)
+    return js_block(js_context, input)
 
   } else if (input.type == 'js/function') {
 
-    return js_function(input)
+    return js_function(js_context, input)
 
   } else if (input.type == 'js/call') {
 
-    return js_call(input)
+    return js_call(js_context, input)
 
   } else if (input.type == 'js/call/transform') {
 
@@ -438,17 +438,17 @@ function get_js_variable(js_context, variable_full_path) {
 // export
 module.exports = {
   js_process: js_process,
-  js_primitive: js_primitive,
   js_array: js_array,
   js_object: js_object,
-  js_export: js_expirt,
+  js_primitive: js_primitive,
+  js_import: js_import,
+  js_export: js_export,
   js_variable: js_variable,
   js_expression: js_expression,
   js_block: js_block,
   js_function: js_function,
   js_call: js_call,
   jsx_element: jsx_element,
-  jsx_element_props: jsx_element_props,
   reg_js_variable: reg_js_variable,
   get_js_variable: get_js_variable,
 }
