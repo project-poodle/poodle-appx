@@ -36,7 +36,7 @@ function js_primitive(js_context, input) {
 // create array js ast
 // js_array is true - will return result as an array of data
 // js_array is false - will return arrayExpression
-function js_array(js_context, input, return_array=false) {
+function js_array(js_context, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
@@ -50,17 +50,11 @@ function js_array(js_context, input, return_array=false) {
     throw new Error(`ERROR: input is not array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  if (return_array) {
-    return input.map(row => {
+  return t.arrayExpression(
+    input.map(row => {
       return js_process(row)
     })
-  } else {
-    return t.arrayExpression(
-      input.map(row => {
-        return js_process(row)
-      })
-    )
-  }
+  )
 }
 
 function js_object(is_context, input) {
