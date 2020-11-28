@@ -29,7 +29,7 @@ ui_element:
                       name: app-x/redux/store
                   theme_provider:
                       type: js/import
-                      name: app-x/theme@default
+                      name: app-x/theme@dark
                   routes: self/routes
                   not_found_view:
                       type: jsx/element

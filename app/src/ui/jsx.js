@@ -4,16 +4,13 @@ const objPath = require("object-path")
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
-const traverse = require('@babel/traverse').default
 const t = require("@babel/types")
 const {
-    js_primitive,
-    js_array,
-    js_object,
     reg_js_variable,
     get_js_variable,
     jsx_element,
-    jsx_props
+    js_process,
+    js_resolve
 } = require('./util')
 
 // console.log(generate)
@@ -63,83 +60,46 @@ function handle_jsx(req, res) {
     reg_js_variable(js_context, ui_elem_name)
     //console.log(get_js_variable(js_context, ui_elem_name))
 
-    const program = t.program(
-      [
-        t.variableDeclaration(
-          'const',
-          [
-            t.variableDeclarator(
-              t.identifier(ui_elem_name),
-              t.arrowFunctionExpression(
-                [
-                  t.identifier('props'),
-                  t.identifier('children'),
-                ],
-                t.blockStatement(
+    const ast_tree = t.file(
+      t.program(
+        [
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier(ui_elem_name),
+                t.arrowFunctionExpression(
                   [
-                    t.returnStatement(
-                      jsx_element(js_context, ui_element.ui_element_spec.base)
-                    )
-                  ]
+                    t.identifier('props'),
+                    t.identifier('children'),
+                  ],
+                  t.blockStatement(
+                    [
+                      t.returnStatement(
+                        jsx_element(js_context, ui_element.ui_element_spec.base)
+                      )
+                    ]
+                  )
                 )
               )
-            )
-          ]
-        ),
-        t.exportDefaultDeclaration(
-          t.identifier(ui_elem_name)
-        ),
-      ],
-      [], // program directives
-      "module"
+            ]
+          ),
+          t.exportDefaultDeclaration(
+            t.identifier(ui_elem_name)
+          ),
+        ],
+        [], // program directives
+        "module"
+      )
     )
-
-    // this is to handle a bug that @babel/traverse do not work on standalone program
-    const wrapped = {
-        type: "File",
-        program: program
-    }
-    //console.log(wrapped)
 
     console.log(js_context)
 
-    // add imports and other context to the code
-    traverse(wrapped, {
-      Program: {
-        exit(path) {
-          //console.log(`exit`)
-          Object.keys(js_context.imports).map(importKey => {
-            let import_name = js_context.variables[importKey].name
-            let import_path = js_context.imports[importKey]
-            path.unshiftContainer(
-              'body',
-              t.importDeclaration(
-                [
-                  t.importSpecifier(
-                    t.identifier(import_name),
-                    t.identifier('default'),
-                  )
-                ],
-                t.stringLiteral(import_path)
-              )
-            )
-          })
-        }
-      },
-      Identifier(path) {
-        if (path.node.name in js_context.variables) {
-          path.node.name = js_context.variables[path.node.name].name
-        }
-      },
-      JSXIdentifier(path) {
-        if (path.node.name in js_context.variables) {
-          path.node.name = js_context.variables[path.node.name].name
-        }
-      }
-    })
+    // resolve imports and variables in the ast_tree
+    js_resolve(js_context, ast_tree)
 
     // generate code
-    const output = generate(program, {}, {})
+    const output = generate(ast_tree, {}, {})
 
     res.status(200).type('application/javascript').send(output.code)
 }

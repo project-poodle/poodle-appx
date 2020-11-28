@@ -1,7 +1,7 @@
 //const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 //const babel = require('@babel/standalone')
 //const generate = require('@babel/generator').default
-//const traverse = require('@babel/traverse').default
+const traverse = require('@babel/traverse').default
 const { parse, parseExpression } = require('@babel/parser')
 const t = require("@babel/types")
 
@@ -366,11 +366,49 @@ function js_process(js_context, input) {
   }
 }
 
+function js_resolve(js_context, ast_tree) {
+  // add imports and other context to the code
+  traverse(ast_tree, {
+    Program: {
+      exit(path) {
+        //console.log(`exit`)
+        Object.keys(js_context.imports).map(importKey => {
+          let import_name = js_context.variables[importKey].name
+          let import_path = js_context.imports[importKey]
+          path.unshiftContainer(
+            'body',
+            t.importDeclaration(
+              [
+                t.importSpecifier(
+                  t.identifier(import_name),
+                  t.identifier('default'),
+                )
+              ],
+              t.stringLiteral(import_path)
+            )
+          )
+        })
+      }
+    },
+    Identifier(path) {
+      if (path.node.name in js_context.variables) {
+        path.node.name = js_context.variables[path.node.name].name
+      }
+    },
+    JSXIdentifier(path) {
+      if (path.node.name in js_context.variables) {
+        path.node.name = js_context.variables[path.node.name].name
+      }
+    }
+  })
+}
+
 // register variables
 function reg_js_variable(js_context, variable_full_path, kind='const', do_import=false) {
 
-    const variable_paths = variable_full_path.split('/')
-    let variable_qualified_name = (variable_paths.pop() || variable_paths.pop()).replace(/[^_a-zA-Z0-9]/g, '_')
+    let variable_prefix_paths = variable_full_path.split('/')
+    variable_prefix_paths = variable_prefix_paths.concat(variable_prefix_paths.pop().split('@'))
+    let variable_qualified_name = variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
 
     // if variable is already registered, just return
     if (variable_full_path in js_context.variables) {
@@ -399,8 +437,8 @@ function reg_js_variable(js_context, variable_full_path, kind='const', do_import
                 }
             })
             // update our own variable name
-            if (variable_paths) {
-                variable_qualified_name = variable_qualified_name + '$' + variable_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+            if (variable_prefix_paths) {
+                variable_qualified_name = variable_qualified_name + '$' + variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
             } else {
                 // we have exhausted the full path, throw exception
                 throw new Error(`ERROR: name resolution conflict [${variable_full_path}]`)
@@ -410,7 +448,7 @@ function reg_js_variable(js_context, variable_full_path, kind='const', do_import
                 kind: kind,
                 name: variable_qualified_name,
                 full_path: variable_full_path,
-                path_prefix: variable_paths
+                path_prefix: variable_prefix_paths
             }
             if (do_import) {
                 js_context.imports[variable_full_path] = variable_full_path
@@ -438,6 +476,7 @@ function get_js_variable(js_context, variable_full_path) {
 // export
 module.exports = {
   js_process: js_process,
+  js_resolve: js_resolve,
   js_array: js_array,
   js_object: js_object,
   js_primitive: js_primitive,
