@@ -10,6 +10,7 @@ const excludeDirs = [
   '/dist/',
   '/api/',
   '/appx/api/',
+  // '/ui/',
   // '/appx/ui/',
   // '/import-maps/'
 ]
@@ -42,6 +43,25 @@ self.addEventListener('message', event => {
   }
 })
 
+// transpile body
+function sw_transpile(body, dataUrl) {
+  //console.log(body)
+  //console.log(Transpile)
+  let url = new URL(dataUrl)
+  //console.log(url)
+  let importMaps = null
+  //console.log(`Service Worker: url.pathname [${url.pathname}]`)
+  //console.log(`Service Worker: importMappings key [${Object.keys(importMappings)}]`)
+  let foundPrefix = Object.keys(importMappings).find(prefix => url.pathname.startsWith(prefix))
+  if (foundPrefix) {
+    importMaps = importMappings[foundPrefix]
+  }
+  //console.log(body)
+  let transpiledCode = Transpile(body, importMaps)
+  // console.log(transpiledCode)
+  return transpiledCode
+}
+
 // parse js/jsx with Babel
 function getTranspiler(request) {
 
@@ -53,21 +73,8 @@ function getTranspiler(request) {
         // console.log(response.headers);
         return result
       }).then(body => {
-        //console.log(body)
-        //console.log(Transpile)
-        let url = new URL(request.url)
-        let importMaps = null
-        //console.log(`Service Worker: url.pathname [${url.pathname}]`)
-        //console.log(`Service Worker: importMappings key [${Object.keys(importMappings)}]`)
-        let foundPrefix = Object.keys(importMappings).find(prefix => url.pathname.startsWith(prefix))
-        if (foundPrefix) {
-          importMaps = importMappings[foundPrefix]
-        }
-        let transpiledCode = Transpile(body, importMaps)
-        // console.log(transpiledCode)
-        resolve(new Response(
-          //'import {default as lib} from "/dist/lib/main.js";\n' +
-          //'import {default as material} from "/dist/lib/material.js";\n' +
+        const transpiledCode = sw_transpile(body, request.url)
+        resolve(new Response (
           transpiledCode,
           {
             headers: {'Content-Type': 'application/javascript; charset=utf-8'}
@@ -111,12 +118,12 @@ self.addEventListener('fetch', function(event) {
 
         fetch(event.request)
           .then(response => {
-
+            // console.log(response.url)
             if (response.status == 404) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: redirect [${url}] transpile [${response.url}index.js]`)
+                console.log(`Service Worker: redirect [${url}] transpile [index.js]`)
                 newRequest = new Request(response.url + 'index.js')
 
                 let newParser = getTranspiler(newRequest)
@@ -130,7 +137,7 @@ self.addEventListener('fetch', function(event) {
 
               } else if (!response.url.endsWith('.js') && !response.url.endsWith('.jsx')) {
 
-                console.log(`Service Worker: redirect [${url}] transpile [${response.url}.js]`)
+                console.log(`Service Worker: redirect [${url}] transpile [.js]`)
                 newRequest = new Request(response.url + '.js')
 
                 let newParser = getTranspiler(newRequest)
@@ -146,6 +153,21 @@ self.addEventListener('fetch', function(event) {
                 // redirect condition not met, just return
                 resolve(response)
               }
+
+            } else if (response.url.endsWith('.js') || response.url.endsWith('.jsx')) {
+
+              response.text().then(body => {
+                const transpiledCode = sw_transpile(body, response.url)
+                resolve(new Response (
+                  transpiledCode,
+                  {
+                    headers: {'Content-Type': 'application/javascript; charset=utf-8'}
+                  }
+                ))
+              }).catch(error => {
+                // reject
+                reject(error)
+              })
 
             } else {
               // no 404, just return

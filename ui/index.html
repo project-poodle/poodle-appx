@@ -17,16 +17,17 @@
 
   {{{init_js}}}
 
-  // import { default as main } from '/dist/lib/main.js'
-
   // render function
   function render() {
 
-    import('/app-x/AppX').then(appx => {
-      const AppX = appx.default
-      //console.log(App)
+    const entry_point = (window.appx.BASE_PATH + "{{{entry_point}}}").replace(/\/+/g, '/')
+    console.log(entry_point)
+
+    import(entry_point).then(app_module => {
+      const app = app_module.default
+      //console.log(app)
       main['react-dom'].render(
-          main['react'].createElement(AppX, null),
+          main['react'].createElement(app, null),
           document.getElementById('root')
       )
     })

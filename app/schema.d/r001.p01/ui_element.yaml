@@ -29,7 +29,7 @@ ui_element:
                       name: app-x/redux/store
                   theme_provider:
                       type: js/import
-                      name: app-x/theme|dark
+                      name: app-x/theme
                   routes:
                       type: jsx/route
                   not_found_view:
@@ -94,53 +94,55 @@ ui_element:
       ui_element_name: /pages/landing/Home
       ui_element_type: jsx/element
       ui_element_spec:
-          name: app-x/pages/landing/Home
-          props:
-              youtube_playlist:
-                  - vid: 'vzR0dsZeQsY' # natural
-                    start: 6
-                    end: -1
-                  - vid: 'HHBsvKnCkwI' # city
-                    start: 0
-                    end: -1
-                  - vid: 'RQ18TpXxbzU' # flower
-                    start: 6
-                    end: -1
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 0
-                    end: 8
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 47
-                    end: 338
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 375
-                    end: 512
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 554
-                    end: 596
-                  - vid: '_f43Gl_6hkc' # ocean waves
-                    start: 0
-                    end: -1
-                  - vid: '-hcXR9aMTxI' # trees
-                    start: 0
-                    end: 135
-                  - vid: 'wnhvanMdx4s' # space
-                    start: 0
-                    end: 103
-                  - vid: 'wnhvanMdx4s' # space
-                    start: 263
-                    end: 336
-                  - vid: 'xRFrjAVH1uQ' # scene
-                    start: 18
-                    end: 400
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 0
-                    end: 63
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 99
-                    end: 546
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 1990
-                    end: 2050
-                  - vid: 'vOxmsqd8f58' # water drop
-                    start: 0
+          base:
+              type: jsx/element
+              name: app-x/pages/landing/Home
+              props:
+                  youtube_playlist:
+                      - vid: 'vzR0dsZeQsY' # natural
+                        start: 6
+                        end: -1
+                      - vid: 'HHBsvKnCkwI' # city
+                        start: 0
+                        end: -1
+                      - vid: 'RQ18TpXxbzU' # flower
+                        start: 6
+                        end: -1
+                      - vid: 'k5obtOZe4ZQ' # people
+                        start: 0
+                        end: 8
+                      - vid: 'k5obtOZe4ZQ' # people
+                        start: 47
+                        end: 338
+                      - vid: 'k5obtOZe4ZQ' # people
+                        start: 375
+                        end: 512
+                      - vid: 'k5obtOZe4ZQ' # people
+                        start: 554
+                        end: 596
+                      - vid: '_f43Gl_6hkc' # ocean waves
+                        start: 0
+                        end: -1
+                      - vid: '-hcXR9aMTxI' # trees
+                        start: 0
+                        end: 135
+                      - vid: 'wnhvanMdx4s' # space
+                        start: 0
+                        end: 103
+                      - vid: 'wnhvanMdx4s' # space
+                        start: 263
+                        end: 336
+                      - vid: 'xRFrjAVH1uQ' # scene
+                        start: 18
+                        end: 400
+                      - vid: 'zRpazyH1WzI' # compilation
+                        start: 0
+                        end: 63
+                      - vid: 'zRpazyH1WzI' # compilation
+                        start: 99
+                        end: 546
+                      - vid: 'zRpazyH1WzI' # compilation
+                        start: 1990
+                        end: 2050
+                      - vid: 'vOxmsqd8f58' # water drop
+                        start: 0

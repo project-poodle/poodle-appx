@@ -20,13 +20,17 @@ if (window.location.pathname.endsWith(RELATIVE_URL)) {
   BASE_PATH = (BASE_PATH + '/').replace(/\/+/g, '/')
 }
 
+const BASE_ELEM_PATH = BASE_PATH + '_elem/'
+IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_ELEM_PATH })
+
 console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
-IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_PATH })
+console.log(`INFO: BASE_ELEM_PATH is [${BASE_ELEM_PATH}]`)
 
 window.appx = globalThis.appx = {
   IMPORT_MAPS: IMPORT_MAPS,
   RELATIVE_URL: RELATIVE_URL,
   BASE_PATH: BASE_PATH,
+  BASE_ELEM_PATH: BASE_ELEM_PATH,
   SKIP_REG_STEP: false
 };
 

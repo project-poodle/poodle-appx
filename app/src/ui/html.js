@@ -118,6 +118,7 @@ function handle_html(req, res) {
                     IMPORT_MAPS: ui_deployment.ui_app_spec.importMaps,
                 },
                 data: ui_element.ui_element_spec.data,
+                entry_point: '/_elem/AppX',
             }
 
             context.init_js = Mustache.render(initjs_content, context)

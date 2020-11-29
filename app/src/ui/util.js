@@ -58,7 +58,7 @@ function js_array(js_context, input) {
   )
 }
 
-function js_object(is_context, input) {
+function js_object(js_context, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
