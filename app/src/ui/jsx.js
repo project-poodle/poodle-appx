@@ -90,14 +90,14 @@ function handle_jsx(req, res) {
       delete ui_element.ui_element_spec.styles.type
 
       reg_js_import(js_context, '@material-ui/core|makeStyles')
-      // reg_js_import(js_context, 'local/useStyles')
+      reg_js_variable(js_context, 'local/useStyles')
 
       block_statements.push(
         t.variableDeclaration(
           'const',
           [
             t.variableDeclarator(
-              t.identifier('$useStyles'),
+              t.identifier('local/useStyles'),
               t.callExpression(
                 t.identifier('@material-ui/core|makeStyles'),
                 [
@@ -120,7 +120,7 @@ function handle_jsx(req, res) {
             t.variableDeclarator(
               t.identifier('styles'),
               t.callExpression(
-                t.identifier('$useStyles'),
+                t.identifier('local/useStyles'),
                 []
               )
             )
