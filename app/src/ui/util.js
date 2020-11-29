@@ -13,6 +13,16 @@ function isPrimitive(test) {
     return (test !== Object(test))
 }
 
+// reserved test
+function isReserved(test) {
+  try {
+    eval('var ' + test + ' = 1');
+    return false
+  } catch {
+    return true
+  }
+}
+
 // create primitive js ast
 function js_primitive(js_context, input) {
 
@@ -431,20 +441,66 @@ function js_resolve(js_context, ast_tree) {
     Program: {
       exit(path) {
         //console.log(`exit`)
+        const import_statements = []
         Object.keys(js_context.imports).map(importKey => {
+          // get basic information of import registration
+          // console.log(js_context.imports[importKey])
           let import_name = js_context.variables[importKey].name
-          let import_path = js_context.imports[importKey]
-          path.unshiftContainer(
-            'body',
+          let import_path = js_context.imports[importKey].path
+          let sub_vars = js_context.imports[importKey].sub_vars
+          // process import statement, then process sub_vars
+          import_statements.unshift(
             t.importDeclaration(
               [
-                t.importSpecifier(
-                  t.identifier(import_name),
-                  t.identifier('default'),
+                t.importNamespaceSpecifier(
+                  t.identifier(import_name)
                 )
               ],
               t.stringLiteral(import_path)
             )
+          )
+          // process import statement, then process sub_vars
+          Object.keys(sub_vars).forEach((sub_var_key, i) => {
+            // compute sub_var_name and sub_var_value
+            let sub_var_value = sub_vars[sub_var_key]
+            if (! sub_var_value) {
+              return
+            }
+            //console.log(sub_var_value)
+            // get sub_var variable registration
+            let sub_var_name = js_context.variables[importKey + '|' + sub_var_key].name
+            // compose sub_var_expression
+            let sub_var_expression = t.memberExpression(
+              t.identifier(import_name),
+              t.stringLiteral(sub_var_value.shift()),
+              true
+            )
+            while (sub_var_value.length) {
+              sub_var_expression = t.memberExpression(
+                sub_var_expression,
+                t.stringLiteral(sub_var_value.shift()),
+                true
+              )
+            }
+            // add sub_var declarations to the body
+            import_statements.unshift(
+              t.variableDeclaration(
+                'const',
+                [
+                  t.variableDeclarator(
+                    t.identifier(sub_var_name),
+                    sub_var_expression
+                  )
+                ]
+              )
+            )
+          })
+        })
+        //
+        import_statements.forEach((import_statement, i) => {
+          path.unshiftContainer(
+            'body',
+            import_statement
           )
         })
       }
@@ -463,11 +519,22 @@ function js_resolve(js_context, ast_tree) {
 }
 
 // register variables
-function reg_js_variable(js_context, variable_full_path, kind='const', do_import=false) {
+function reg_js_variable(js_context, variable_full_path, kind='const', suggested_name=null) {
 
-    let variable_prefix_paths = variable_full_path.split('/')
-    variable_prefix_paths = variable_prefix_paths.concat(variable_prefix_paths.pop().split('|'))
+    let import_path = variable_full_path.split('|')[0]
+    let sub_vars = variable_full_path.split('|')
+    sub_vars.shift()
+
+    let variable_prefix_paths = import_path.split('/')
+    variable_prefix_paths = variable_prefix_paths.concat(sub_vars)
+    if (suggested_name) {
+      variable_prefix_paths.push(suggested_name)
+    }
+    // console.log(variable_prefix_paths)
     let variable_qualified_name = variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+    if (isReserved(variable_qualified_name)) {
+      variable_qualified_name = variable_qualified_name + '$' + variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+    }
 
     // if variable is already registered, just return
     if (variable_full_path in js_context.variables) {
@@ -487,7 +554,7 @@ function reg_js_variable(js_context, variable_full_path, kind='const', do_import
             Object.keys(js_context.variables).map(key => {
                 let variable_spec = js_context.variables[key]
                 if (variable_spec.name == variable_qualified_name) {
-                    if (variable_spec.path_prefix) {
+                    if (variable_spec.path_prefix.length) {
                         variable_spec.name = variable_spec.name + '$' + variable_spec.path_prefix.pop().replace(/[^_a-zA-Z0-9]/g, '_')
                     } else {
                         // we have exhausted the full path, throw exception
@@ -509,17 +576,31 @@ function reg_js_variable(js_context, variable_full_path, kind='const', do_import
                 full_path: variable_full_path,
                 path_prefix: variable_prefix_paths
             }
-            if (do_import) {
-                js_context.imports[variable_full_path] = variable_full_path
-            }
             return js_context
         }
     }
 }
 
-function reg_js_import(js_context, variable_full_path) {
+function reg_js_import(js_context, variable_full_path, suggested_name=null) {
 
-    reg_js_variable(js_context, variable_full_path, 'const', true)
+    let import_path = variable_full_path.split('|')[0]
+    let sub_vars = variable_full_path.split('|')
+    sub_vars.shift()
+
+    reg_js_variable(js_context, import_path, 'const', suggested_name)
+    reg_js_variable(js_context, variable_full_path, 'const', suggested_name)
+
+    if (!(import_path in js_context.imports)) {
+      js_context.imports[import_path] = {
+        suggested_name: suggested_name,
+        path: import_path,
+        sub_vars: {}
+      }
+    }
+
+    if (sub_vars.length) {
+      js_context.imports[import_path].sub_vars[sub_vars.join('|')] = sub_vars
+    }
 }
 
 // get variable definition
@@ -548,5 +629,5 @@ module.exports = {
   js_call: js_call,
   jsx_element: jsx_element,
   reg_js_variable: reg_js_variable,
-  get_js_variable: get_js_variable,
+  reg_js_import: reg_js_import,
 }

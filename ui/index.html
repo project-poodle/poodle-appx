@@ -21,7 +21,7 @@
   function render() {
 
     const entry_point = (window.appx.BASE_PATH + "{{{entry_point}}}").replace(/\/+/g, '/')
-    console.log(entry_point)
+    console.log(`INFO: entry_point [${entry_point}]`)
 
     import(entry_point).then(app_module => {
       const app = app_module.default

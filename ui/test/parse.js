@@ -24,7 +24,7 @@ let code = fs.readFileSync(args.filepath, 'utf8')
 console.log('------------------------------')
 console.log('parse [' + args.filepath + ']')
 //const JSXParser = acorn.Parser.extend(jsx())
-let ast_tree = parseExpression(code, {
+let ast_tree = parse(code, {
   sourceType: 'module',
   plugins: [
     'jsx'

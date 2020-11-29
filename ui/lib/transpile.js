@@ -144,6 +144,17 @@ function importMapPlugin(import_maps, globalImports) {
                               )
                             )
                           ])
+                        } else if (specifier.type == 'ImportNamespaceSpecifier') {
+                          return t.variableDeclaration('const', [
+                            t.variableDeclarator(
+                              t.identifier(specifier.local.name),
+                              t.memberExpression(
+                                t.identifier(lib_key),
+                                t.stringLiteral(module_name),
+                                true
+                              )
+                            )
+                          ])
                         } else {
                           return t.variableDeclaration('const', [
                             t.variableDeclarator(

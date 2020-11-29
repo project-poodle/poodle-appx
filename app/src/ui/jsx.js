@@ -7,7 +7,7 @@ const generate = require('@babel/generator').default
 const t = require("@babel/types")
 const {
     reg_js_variable,
-    get_js_variable,
+    reg_js_import,
     jsx_element,
     js_process,
     js_resolve
@@ -63,6 +63,10 @@ function handle_jsx(req, res) {
     reg_js_variable(js_context, ui_elem_name)
     //console.log(get_js_variable(js_context, ui_elem_name))
 
+    reg_js_import(js_context, 'react', 'React')
+    reg_js_import(js_context, 'react-dom', 'ReactDOM')
+
+    // create ast tree for the program
     const ast_tree = t.file(
       t.program(
         [

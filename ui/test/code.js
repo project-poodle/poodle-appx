@@ -1,3 +1,4 @@
+import * as React from 'react'
 
 const a = {
   a: 1,
