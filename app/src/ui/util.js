@@ -155,7 +155,9 @@ function js_variable(js_context, input) {
     [
       t.variableDeclarator(
         t.identifier(input.name),
-        js_process(js_context, input.value)
+        isPrimitive(input.expression)
+          ? js_expression(js_context, input.expression)
+          : js_process(js_context, input.expression)
       )
     ]
   )
@@ -164,15 +166,29 @@ function js_variable(js_context, input) {
 // create expression ast
 function js_expression(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/expression') {
-    throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
+  let data = ''
+  if (typeof input == 'string' && input.trim().startsWith('`') && input.trim().endsWith('`')) {
+
+    data = input
+
+  } else if (isPrimitive(input)) {
+
+    return js_primitive(js_context, input)
+
+  } else {
+
+    if (!('type' in input) || input.type != 'js/expression') {
+      throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
+    }
+
+    if (! ('data' in input)) {
+      throw new Error(`ERROR: input.data missing in [js/expression] [${JSON.stringify(input)}]`)
+    }
+
+    data = input.data
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/expression] [${JSON.stringify(input)}]`)
-  }
-
-  return parseExpression(input.data)
+  return parseExpression(data)
 }
 
 // create block ast (allow return outside of function)
