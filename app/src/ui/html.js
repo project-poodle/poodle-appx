@@ -121,8 +121,7 @@ function handle_html(req, res) {
             }
 
             context.init_js = Mustache.render(initjs_content, context)
-
-            console.log(console.init_js)
+            // console.log(context.init_js)
 
             // render the html_content
             let rendered = Mustache.render(html_content, context)

@@ -64,7 +64,11 @@ window.appx = globalThis.appx = {
         //console.log(navigator.serviceWorker)
         //console.log(reg)
         console.log(regActive.active)
-        registerImportMaps(regActive.active, BASE_PATH, IMPORT_MAPS)
+        setTimeout(
+          () => registerImportMaps(regActive.active, BASE_PATH, IMPORT_MAPS),
+          // () => registerImportMaps(navigator.serviceWorker.controller, BASE_PATH, IMPORT_MAPS),
+          500
+        )
         // Listen to messages from service workers.
         regActive.active.addEventListener('message', function(event) {
             console.log("Got message from service worker: " + event.data)
