@@ -87,10 +87,26 @@ function handle_html(req, res) {
         return
     }
 
-    if (! ('ui_element_spec' in ui_element) || ! ('path' in ui_element.ui_element_spec) ) {
+    if (! ('ui_element_spec' in ui_element) ) {
+      res.status(422).json({
+          status: FAILURE,
+          message: `ERROR: ui_element_spec not defined [${ui_element}]`
+      })
+      return
+    }
+
+    if (! ('path' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
             message: `ERROR: ui_element_spec.path not defined [${ui_element}]`
+        })
+        return
+    }
+
+    if (! ('entry' in ui_element.ui_element_spec) ) {
+        res.status(422).json({
+            status: FAILURE,
+            message: `ERROR: ui_element_spec.entry not defined [${ui_element}]`
         })
         return
     }
@@ -117,8 +133,8 @@ function handle_html(req, res) {
                     RELATIVE_URL: req.url,
                     IMPORT_MAPS: ui_deployment.ui_app_spec.importMaps,
                 },
+                entry: ui_element.ui_element_spec.entry,
                 data: ui_element.ui_element_spec.data,
-                entry_point: '/_elem/AppX',
             }
 
             context.init_js = Mustache.render(initjs_content, context)

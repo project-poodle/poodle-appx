@@ -20,10 +20,9 @@
   // render function
   function render() {
 
-    const entry_point = (window.appx.BASE_PATH + "{{{entry_point}}}").replace(/\/+/g, '/')
-    console.log(`INFO: entry_point [${entry_point}]`)
+    console.log(`INFO: entry path [${window.appx.ENTRY_ELEM_PATH}]`)
 
-    import(entry_point).then(app_module => {
+    import(window.appx.ENTRY_ELEM_PATH).then(app_module => {
       const app = app_module.default
       //console.log(app)
       main['react-dom'].render(

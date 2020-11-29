@@ -6,10 +6,9 @@ ui_element:
       ui_element_type: html
       ui_element_spec:
           path: /index.html
+          entry: /AppX
           data:
               title: Design Your Own Apps with App-X
-          element:
-              name: self/AppX
 
     - namespace: sys
       app_name: appx
@@ -44,7 +43,8 @@ ui_element:
                   margin: "1px"
                       #type: js/expression
                       #data: "$R('app-x/theme|default').spacing(1)"
-
+          snippet: |+
+              console.log(this)
 
     - namespace: sys
       app_name: appx
@@ -205,3 +205,5 @@ ui_element:
                   position: fixed
                   bottom: "10%"
                   zIndex: 0
+          snippet: |+
+              console.log(this)
