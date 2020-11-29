@@ -29,8 +29,9 @@ ui_element:
                       name: app-x/redux/store
                   theme_provider:
                       type: js/import
-                      name: app-x/theme@dark
-                  routes: self/routes
+                      name: app-x/theme|dark
+                  routes:
+                      type: jsx/route
                   not_found_view:
                       type: jsx/element
                       name: app-x/pages/layouts/headerLayout

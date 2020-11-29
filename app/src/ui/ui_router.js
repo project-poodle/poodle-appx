@@ -335,12 +335,18 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                     AND ui_route.app_name = ui_deployment.app_name
                     AND ui_route.ui_app_ver = ui_deployment.ui_app_ver
                 WHERE
-                    ui_route.namespace = '${namespace}'
-                    AND ui_deployment.runtime_name = '${runtime_name}'
-                    AND ui_route.app_name = '${app_name}'
-                    AND ui_route.ui_app_ver = '${ui_app_ver}'
+                    ui_route.namespace = ?
+                    AND ui_deployment.runtime_name = ?
+                    AND ui_route.app_name = ?
+                    AND ui_route.ui_app_ver = ?
                     AND ui_route.deleted=0
-                    AND ui_deployment.deleted=0`)
+                    AND ui_deployment.deleted=0`,
+                [
+                    namespace,
+                    runtime_name,
+                    app_name,
+                    ui_app_ver
+                ])
 
     let router = express.Router()
 
@@ -383,12 +389,18 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                     AND ui_element.app_name = ui_deployment.app_name
                     AND ui_element.ui_app_ver = ui_deployment.ui_app_ver
                 WHERE
-                    ui_element.namespace = '${namespace}'
-                    AND ui_deployment.runtime_name = '${runtime_name}'
-                    AND ui_element.app_name = '${app_name}'
-                    AND ui_element.ui_app_ver = '${ui_app_ver}'
+                    ui_element.namespace = ?
+                    AND ui_deployment.runtime_name = ?
+                    AND ui_element.app_name = ?
+                    AND ui_element.ui_app_ver = ?
                     AND ui_element.deleted=0
-                    AND ui_deployment.deleted=0`)
+                    AND ui_deployment.deleted=0`,
+                [
+                    namespace,
+                    runtime_name,
+                    app_name,
+                    ui_app_ver
+                ])
 
     elem_results.forEach((elem_result) => {
 
@@ -420,9 +432,9 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             } else {
 
                 let new_js_route_path = js_route_path
-                if (js_route_path.endsWith('/') && js_route_path != '/') {
+                if (js_route_path.endsWith('/')) {
                     // route path without '/' will add '/'
-                    let redirect_url = (req.baseUrl + js_route_path).replace(/\/+/g, '/')
+                    // let redirect_url = (req.baseUrl + js_route_path).replace(/\/+/g, '/')
                     router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
                         res.status(301).redirect(redirect_url)
                     })
@@ -439,11 +451,13 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                 } else {
                     new_js_route_path = js_route_path + '.js'
                     router.get(new_js_route_path, (req, res) => {
+                        console.log(req.baseUrl)
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })
                     source_js_route_path = js_route_path + '.source'
                     router.get(source_js_route_path, (req, res) => {
+                        console.log(req.baseUrl)
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })

@@ -4,6 +4,7 @@
 const traverse = require('@babel/traverse').default
 const { parse, parseExpression } = require('@babel/parser')
 const t = require("@babel/types")
+const db = require('../db/db')
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,8 +136,8 @@ function js_variable(js_context, input) {
     throw new Error(`ERROR: input.name missing in [js/variable] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.value missing in [js/variable] [${JSON.stringify(input)}]`)
+  if (! ('expression' in input)) {
+    throw new Error(`ERROR: input.expression missing in [js/variable] [${JSON.stringify(input)}]`)
   }
 
   return t.variableDeclaration(
@@ -296,6 +297,59 @@ function jsx_element_children(js_context, children) {
   return children.map(row => js_process(js_context, row))
 }
 
+// create jsx route ast
+function jsx_route(js_context, input) {
+
+  if (!('type' in input) || input.type != 'jsx/route') {
+    throw new Error(`ERROR: input.type is not [jsx/route] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (!('appx' in js_context) || !('ui_deployment' in js_context.appx)) {
+    throw new Error(`ERROR: context missing appx.ui_deployment [${JSON.stringify(js_context)}]`)
+  }
+
+  const { ui_deployment } = js_context.appx
+
+  let route_results = db.query_sync(`SELECT
+                  ui_route.namespace,
+                  ui_route.app_name,
+                  ui_route.ui_app_ver,
+                  ui_deployment.runtime_name,
+                  ui_deployment.ui_deployment_spec,
+                  ui_route.ui_route_name,
+                  ui_route.ui_route_spec,
+                  ui_route.create_time,
+                  ui_route.update_time
+              FROM ui_route
+              JOIN ui_deployment
+                  ON ui_route.namespace = ui_deployment.namespace
+                  AND ui_route.app_name = ui_deployment.app_name
+                  AND ui_route.ui_app_ver = ui_deployment.ui_app_ver
+              WHERE
+                  ui_route.namespace = ?
+                  AND ui_deployment.runtime_name = ?
+                  AND ui_route.app_name = ?
+                  AND ui_route.ui_app_ver = ?
+                  AND ui_route.deleted=0
+                  AND ui_deployment.deleted=0`,
+              [
+                  ui_deployment.namespace,
+                  ui_deployment.runtime_name,
+                  ui_deployment.app_name,
+                  ui_deployment.ui_app_ver
+              ])
+
+  // console.log(route_results)
+  return t.objectExpression(
+    route_results.map(route => {
+      return t.objectProperty(
+        t.stringLiteral(route.ui_route_name),
+        js_process(js_context, route.ui_route_spec)
+      )
+    })
+  )
+}
+
 // process input
 function js_process(js_context, input) {
 
@@ -355,6 +409,10 @@ function js_process(js_context, input) {
 
     return jsx_element(js_context, input)
 
+  } else if (input.type == 'jsx/route') {
+
+    return jsx_route(js_context, input)
+
   } else if (input.type == 'jsx/control') {
 
     // TODO
@@ -407,7 +465,7 @@ function js_resolve(js_context, ast_tree) {
 function reg_js_variable(js_context, variable_full_path, kind='const', do_import=false) {
 
     let variable_prefix_paths = variable_full_path.split('/')
-    variable_prefix_paths = variable_prefix_paths.concat(variable_prefix_paths.pop().split('@'))
+    variable_prefix_paths = variable_prefix_paths.concat(variable_prefix_paths.pop().split('|'))
     let variable_qualified_name = variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
 
     // if variable is already registered, just return

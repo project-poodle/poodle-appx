@@ -1,5 +1,5 @@
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 const objPath = require("object-path")
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const babel = require('@babel/standalone')
@@ -12,8 +12,10 @@ const {
     js_process,
     js_resolve
 } = require('./util')
+const db = require('../db/db')
 
 // console.log(generate)
+
 
 /**
  * handle_jsx
@@ -53,6 +55,7 @@ function handle_jsx(req, res) {
     const js_context = {
         variables: {},
         imports: {},
+        appx: req.context
     }
 
     // ui_elem
@@ -93,7 +96,7 @@ function handle_jsx(req, res) {
       )
     )
 
-    console.log(js_context)
+    // console.log(js_context)
 
     // resolve imports and variables in the ast_tree
     js_resolve(js_context, ast_tree)
