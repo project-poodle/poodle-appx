@@ -22,7 +22,6 @@ ui_element:
           base:
               type: jsx/element
               name: app-x/apps/MUI_route_theme_redux
-              # name: app-x/AppX
               props:
                   redux_store_provider:
                       type: js/import
@@ -96,7 +95,7 @@ ui_element:
       ui_element_spec:
           base:
               type: jsx/element
-              name: app-x/pages/landing/Home
+              name: app-x/pages/landing/YouTube_bg_fs
               props:
                   youtube_playlist:
                       - vid: 'vzR0dsZeQsY' # natural
@@ -146,3 +145,97 @@ ui_element:
                         end: 2050
                       - vid: 'vOxmsqd8f58' # water drop
                         start: 0
+              children:
+                  - type: jsx/element
+                    name: "@material-ui/core|Grid"
+                    props:
+                        container: true
+                        spacing: 2
+                        className: "classes.grid"
+                    children:
+                        - type: jsx/element
+                          name: "@material-ui/core|CssBaseline"
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: false
+                              sm: 1
+                              md: 1
+                              lg: 2
+                              xl: 3
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: 12
+                              sm: 5
+                              md: 4
+                              lg: 3
+                              xl: 2
+                          children:
+                              - type: jsx/element
+                                name: "@material-ui/core|Button"
+                                props:
+                                    variant: contained
+                                    color: primary
+                                    fullWidth: true
+                                    startIcon:
+                                        type: jsx/element
+                                        name: "@material-ui/icons|MenuBook"
+                                    onClick:
+                                        type: js/function
+                                        body: "navigate('/docs')"
+                                    size: large
+                                children:
+                                    - "Getting Started"
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: false
+                              md: 1
+                              lg: 1
+                              xl: 1
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: false
+                              md: 1
+                              lg: 1
+                              xl: 1
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: 12
+                              sm: 5
+                              md: 4
+                              lg: 3
+                              xl: 2
+                          children:
+                              - type: jsx/element
+                                name: "@material-ui/core|Button"
+                                props:
+                                    variant: contained
+                                    color: primary
+                                    fullWidth: true
+                                    startIcon:
+                                        type: jsx/element
+                                        name: "@material-ui/icons|Slideshow"
+                                    onClick:
+                                        type: js/function
+                                        body: "navigate('/console')"
+                                    size: large
+                                children:
+                                    - "Live Demo"
+                        - type: jsx/element
+                          name: "@material-ui/core|Grid"
+                          props:
+                              item: true
+                              xs: false
+                              sm: 1
+                              md: 1
+                              lg: 2
+                              xl: 3

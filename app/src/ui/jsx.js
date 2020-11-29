@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const objPath = require("object-path")
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const prettier = require("prettier")
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
 const t = require("@babel/types")
@@ -108,7 +109,9 @@ function handle_jsx(req, res) {
     // generate code
     const output = generate(ast_tree, {}, {})
 
-    res.status(200).type('application/javascript').send(output.code)
+    const prettified = prettier.format(output.code, { semi: false, parser: "babel" })
+
+    res.status(200).type('application/javascript').send(prettified)
 }
 
 // export

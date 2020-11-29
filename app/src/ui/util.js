@@ -178,15 +178,24 @@ function js_expression(js_context, input) {
 // create block ast (allow return outside of function)
 function js_block(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/expression') {
-    throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
+  let data = ''
+  if (typeof input == 'string') {
+
+    data = input
+
+  } else {
+    if (!('type' in input) || input.type != 'js/block') {
+      throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
+    }
+
+    if (! ('data' in input)) {
+      throw new Error(`ERROR: input.data missing in [js/block] [${JSON.stringify(input)}]`)
+    }
+
+    data = input.data
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/block] [${JSON.stringify(input)}]`)
-  }
-
-  const program = parse(input.data, {
+  const program = parse(data, {
     // sourceType: 'module', // do not support module here
     allowReturnOutsideFunction: true, // allow return in the block statement
     plugins: [
@@ -212,7 +221,7 @@ function js_function(js_context, input) {
 
   return t.arrowFunctionExpression(
     input.params ? input.params.map(param => js_process(js_context, param)) : [],
-    js_block(input.data),
+    js_block(js_context, input.body),
     input.async ? true : false
   )
 }
@@ -305,7 +314,13 @@ function jsx_element_children(js_context, children) {
     throw new Error(`ERROR: input is not array [${typeof children}] [${JSON.stringify(children)}]`)
   }
 
-  return children.map(row => js_process(js_context, row))
+  return children.map(row => {
+    if (typeof row == 'string') {
+      return t.jSXText(row)
+    } else {
+      return js_process(js_context, row)
+    }
+  })
 }
 
 // create jsx route ast
