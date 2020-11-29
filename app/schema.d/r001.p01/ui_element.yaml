@@ -40,7 +40,7 @@ ui_element:
                             name: app-x/views/errors/NotFoundView
           code:
               type: js/block
-              data: |
+              data: |+
                   const useStyles = makeStyles((theme) => ({
                     root: {
                       height: '100%',
