@@ -49,24 +49,4 @@ routes: PropTypes.arrayOf(
     element: PropTypes.function.isRequired
   })
 ).isRequired,
-
-// routes
-const routeResult = useRoutes(props.routes)
-
-return (
-  <Provider store={props.redux_store_provider}>
-    <ThemeProvider theme={props.theme_provider}>
-      <GlobalStyles />
-      {routeResult || not_found}
-    </ThemeProvider>
-  </Provider>
-)
-
-// original
-<Provider store={store}>
-  <ThemeProvider theme={theme}>
-    <GlobalStyles />
-     {routeResult || <HeaderLayout><NotFoundView/></HeaderLayout>}
-  </ThemeProvider>
-</Provider>
 */

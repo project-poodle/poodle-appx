@@ -37,54 +37,13 @@ ui_element:
                       children:
                           - type: jsx/element
                             name: app-x/views/errors/NotFoundView
-          code:
-              type: js/block
-              data: |+
-                  const useStyles = makeStyles((theme) => ({
-                    root: {
-                      height: '100%',
-                    },
-                    image: {
-                      backgroundImage: 'url(https://source.unsplash.com/random)',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundColor:
-                        theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    },
-                    paper: {
-                      margin: theme.spacing(12, 4),
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    },
-                    facebook: {
-                      backgroundColor: '#4267B2',
-                    },
-                    google: {
-                      backgroundColor: '#DB4437',
-                    },
-                    avatar: {
-                      margin: theme.spacing(1),
-                      backgroundColor: theme.palette.secondary.main,
-                    },
-                    line: {
-                      margin: theme.spacing(1),
-                    },
-                    error: {
-                      margin: theme.spacing(1),
-                      color: theme.palette.text.error,
-                    },
-                    button: {
-                      margin: theme.spacing(1),
-                    },
-                    form: {
-                      width: '100%', // Fix IE 11 issue.
-                      margin: theme.spacing(1),
-                    },
-                  }))
-
-                  const classes = useStyles()
+          styles:
+              root:
+                  height: "100%"
+              button:
+                  margin: "1px"
+                      #type: js/expression
+                      #data: "$R('app-x/theme|default').spacing(1)"
 
 
     - namespace: sys
@@ -151,7 +110,9 @@ ui_element:
                     props:
                         container: true
                         spacing: 2
-                        className: "classes.grid"
+                        className:
+                            type: js/expression
+                            data: "styles.grid"
                     children:
                         - type: jsx/element
                           name: "@material-ui/core|CssBaseline"
@@ -185,7 +146,7 @@ ui_element:
                                         name: "@material-ui/icons|MenuBook"
                                     onClick:
                                         type: js/function
-                                        body: "navigate('/docs')"
+                                        body: "$R('hookrouter|navigate')('/docs')"
                                     size: large
                                 children:
                                     - "Getting Started"
@@ -226,7 +187,7 @@ ui_element:
                                         name: "@material-ui/icons|Slideshow"
                                     onClick:
                                         type: js/function
-                                        body: "navigate('/console')"
+                                        body: "$R('hookrouter|navigate')('/console')"
                                     size: large
                                 children:
                                     - "Live Demo"
@@ -239,3 +200,8 @@ ui_element:
                               md: 1
                               lg: 2
                               xl: 3
+          styles:
+              grid:
+                  position: fixed
+                  bottom: "10%"
+                  zIndex: 0

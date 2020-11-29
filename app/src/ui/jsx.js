@@ -67,6 +67,75 @@ function handle_jsx(req, res) {
     reg_js_import(js_context, 'react', true, 'React')
     reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
+    /*
+    const useStyles = makeStyles((theme) => ({
+
+      paper: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      }
+    }))
+    */
+
+    // create block statement
+    const block_statements = []
+
+    // if styles exist, handle styles
+    if (ui_element.ui_element_spec.styles) {
+
+      // console.log(ui_element.ui_element_spec.styles)
+      delete ui_element.ui_element_spec.styles.type
+
+      reg_js_import(js_context, '@material-ui/core|makeStyles')
+      // reg_js_import(js_context, 'local/useStyles')
+
+      block_statements.push(
+        t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.identifier('$useStyles'),
+              t.callExpression(
+                t.identifier('@material-ui/core|makeStyles'),
+                [
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('theme')
+                    ],
+                    js_process(js_context, ui_element.ui_element_spec.styles)
+                  )
+                ]
+              )
+            )
+          ]
+        )
+      )
+      block_statements.push(
+        t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.identifier('styles'),
+              t.callExpression(
+                t.identifier('$useStyles'),
+                []
+              )
+            )
+          ]
+        )
+      )
+    }
+
+    // return statement
+    block_statements.push(
+      t.returnStatement(
+        jsx_element(js_context, ui_element.ui_element_spec.base)
+      )
+    )
+
     // create ast tree for the program
     const ast_tree = t.file(
       t.program(
@@ -81,11 +150,7 @@ function handle_jsx(req, res) {
                     t.identifier('props')
                   ],
                   t.blockStatement(
-                    [
-                      t.returnStatement(
-                        jsx_element(js_context, ui_element.ui_element_spec.base)
-                      )
-                    ]
+                    block_statements
                   )
                 )
               )
@@ -107,6 +172,7 @@ function handle_jsx(req, res) {
 
     // generate code
     const output = generate(ast_tree, {}, {})
+    // console.log(output.code)
 
     const prettified = prettier.format(output.code, { semi: false, parser: "babel" })
 
