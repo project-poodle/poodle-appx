@@ -1,0 +1,84 @@
+{{#APPX_ENV}}
+
+const IMPORT_MAPS = {{#IMPORT_MAPS}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/IMPORT_MAPS}};
+const RELATIVE_URL = "{{{RELATIVE_URL}}}"
+
+{{#IMPORT_MAPS}}
+  {{#libs}}
+    {{#KEY_VALUE}}
+        import { default as {{{key}}} } from "{{{value.path}}}";
+        IMPORT_MAPS["libs"]["{{{key}}}"]["modules"] = Object.keys({{{key}}})
+    {{/KEY_VALUE}}
+  {{/libs}}
+{{/IMPORT_MAPS}}
+
+{{/APPX_ENV}}
+
+let BASE_PATH = window.location.pathname;
+if (window.location.pathname.endsWith(RELATIVE_URL)) {
+  BASE_PATH = window.location.pathname.substring(0, window.location.pathname.length - RELATIVE_URL.length)
+  BASE_PATH = (BASE_PATH + '/').replace(/\/+/g, '/')
+}
+
+console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
+IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_PATH })
+
+window.appx = globalThis.appx = {
+  IMPORT_MAPS: IMPORT_MAPS,
+  RELATIVE_URL: RELATIVE_URL,
+  BASE_PATH: BASE_PATH,
+  SKIP_REG_STEP: false
+};
+
+(function() {
+  "use strict"
+
+  if (!navigator.serviceWorker || !navigator.serviceWorker.register) {
+    document.body.value = `
+        This browser is not supported!
+        Use a latest version of Chrome, Edge, Safari, or Firefox to view this site.
+    `
+    return
+  }
+
+  function registerImportMaps(controller, basePath, importMaps) {
+    console.log(`INFO: sending 'importMaps' [${basePath}] to service worker`)
+    controller.postMessage({
+      type: 'importMaps',
+      basePath: basePath,
+      importMaps: importMaps
+    })
+  }
+
+  if (!navigator.serviceWorker.controller) {
+
+    window.appx.SKIP_REG_STEP = false
+    // register service worker
+    navigator.serviceWorker.register('/sw.js', {scope: '/'})
+    .then((reg) => {
+      // registration successful
+      console.log('Service Worker: registration succeeded. Scope is ' + reg.scope)
+      //console.log(reg)
+      navigator.serviceWorker.ready.then(regActive => {
+        console.log('Service Worker: ready')
+        //console.log(navigator.serviceWorker)
+        //console.log(reg)
+        console.log(regActive.active)
+        registerImportMaps(regActive.active, BASE_PATH, IMPORT_MAPS)
+        // Listen to messages from service workers.
+        regActive.active.addEventListener('message', function(event) {
+            console.log("Got message from service worker: " + event.data)
+        })
+      })
+    }).catch((error) => {
+      // registration failed
+      console.log('Service Worker: registration failed - ' + error)
+    })
+
+  } else {
+
+    registerImportMaps(navigator.serviceWorker.controller, BASE_PATH, IMPORT_MAPS)
+    window.appx.SKIP_REG_STEP = true
+  }
+
+})()

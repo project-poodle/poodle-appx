@@ -97,34 +97,39 @@ function handle_html(req, res) {
 
     // console.log(JSON.stringify(ui_deployment.ui_app_spec.importMaps, null, 4))
 
-    fs.readFile(path.join(rootDir, ui_element.ui_element_spec.path), "utf8", (err, content) => {
+    fs.readFile(path.join(rootDir, 'init.js'), "utf8", (err, initjs_content) => {
 
-        if (err) {
-            res.status(422).json({
-                status: FAILURE,
-                message: `ERROR: ui_element_spec.path not defined [${ui_element}]`
-            })
-            return
-        }
+        fs.readFile(path.join(rootDir, ui_element.ui_element_spec.path), "utf8", (err, html_content) => {
 
-        // context
-        let context = {
-            APPX_ENV: {
-                RENDER_JSON: RENDER_JSON,
-                KEY_VALUE: KEY_VALUE,
-                RELATIVE_URL: req.url,
-                IMPORT_MAPS: ui_deployment.ui_app_spec.importMaps,
-            },
-            data: ui_element.ui_element_spec.data
-        }
+            if (err) {
+                res.status(422).json({
+                    status: FAILURE,
+                    message: `ERROR: ui_element_spec.path not defined [${ui_element}]`
+                })
+                return
+            }
 
-        // console.log(context)
+            // context
+            let context = {
+                APPX_ENV: {
+                    RENDER_JSON: RENDER_JSON,
+                    KEY_VALUE: KEY_VALUE,
+                    RELATIVE_URL: req.url,
+                    IMPORT_MAPS: ui_deployment.ui_app_spec.importMaps,
+                },
+                data: ui_element.ui_element_spec.data,
+            }
 
-        // render the content
-        let rendered = Mustache.render(content, context)
+            context.init_js = Mustache.render(initjs_content, context)
 
-        // send back rendered content as html
-        res.status(200).type('html').send(rendered)
+            console.log(console.init_js)
+
+            // render the html_content
+            let rendered = Mustache.render(html_content, context)
+
+            // send back rendered html_content as html
+            res.status(200).type('html').send(rendered)
+        })
     })
 }
 

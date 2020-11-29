@@ -245,7 +245,7 @@ function jsx_element(js_context, input) {
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
     ),
-    jsx_element_children(input.children)
+    jsx_element_children(js_context, input.children)
   )
 }
 
@@ -282,6 +282,7 @@ function jsx_element_props(js_context, props) {
 // create jsx element children ast
 function jsx_element_children(js_context, children) {
 
+  // console.log(children)
   if (! children) {
     return []
   }
