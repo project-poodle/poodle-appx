@@ -33,7 +33,8 @@ self.addEventListener('message', event => {
     case "importMaps":
       if ('basePath' in event.data && 'importMaps' in event.data) {
         importMappings[event.data.basePath] = {...event.data.importMaps }
-        console.log(`Service Worker: updated [${event.data.basePath}] importMaps to ${JSON.stringify(importMappings[event.data.basePath])}`)
+        console.log(`Service Worker: updated [${event.data.basePath}] importMaps`)
+        console.log(importMappings[event.data.basePath])
       } else {
         console.log(`Service Worker: unrecognized importMaps message - ${event.data}`)
       }
