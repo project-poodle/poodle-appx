@@ -104,7 +104,7 @@ function js_import(js_context, input) {
     throw new Error(`ERROR: input.name missing in [js/import] [${JSON.stringify(input)}]`)
   }
 
-  reg_js_import(js_context, input.name)
+  reg_js_import(js_context, input.name, use_default=false)
 
   // do we need to return anything?
   return t.identifier(input.name)
@@ -245,7 +245,7 @@ function jsx_element(js_context, input) {
     throw new Error(`ERROR: input.name missing in [jsx/element] [${JSON.stringify(input)}]`)
   }
 
-  reg_js_import(js_context, input.name)
+  reg_js_import(js_context, input.name, use_default=true)
 
   return t.jSXElement(
     t.jSXOpeningElement(
@@ -355,7 +355,16 @@ function jsx_route(js_context, input) {
     route_results.map(route => {
       return t.objectProperty(
         t.stringLiteral(route.ui_route_name),
-        js_process(js_context, route.ui_route_spec)
+        t.arrowFunctionExpression(
+          [],
+          t.blockStatement(
+            [
+              t.returnStatement(
+                js_process(js_context, route.ui_route_spec)
+              )
+            ]
+          )
+        )
       )
     })
   )
@@ -449,16 +458,29 @@ function js_resolve(js_context, ast_tree) {
           let import_path = js_context.imports[importKey].path
           let sub_vars = js_context.imports[importKey].sub_vars
           // process import statement, then process sub_vars
-          import_statements.unshift(
-            t.importDeclaration(
-              [
-                t.importNamespaceSpecifier(
-                  t.identifier(import_name)
-                )
-              ],
-              t.stringLiteral(import_path)
+          if (js_context.imports[importKey].use_default) {
+            import_statements.unshift(
+              t.importDeclaration(
+                [
+                  t.ImportDefaultSpecifier(
+                    t.identifier(import_name)
+                  )
+                ],
+                t.stringLiteral(import_path)
+              )
             )
-          )
+          } else {
+            import_statements.unshift(
+              t.importDeclaration(
+                [
+                  t.importNamespaceSpecifier(
+                    t.identifier(import_name)
+                  )
+                ],
+                t.stringLiteral(import_path)
+              )
+            )
+          }
           // process import statement, then process sub_vars
           Object.keys(sub_vars).forEach((sub_var_key, i) => {
             // compute sub_var_name and sub_var_value
@@ -581,7 +603,7 @@ function reg_js_variable(js_context, variable_full_path, kind='const', suggested
     }
 }
 
-function reg_js_import(js_context, variable_full_path, suggested_name=null) {
+function reg_js_import(js_context, variable_full_path, use_default=false, suggested_name=null) {
 
     let import_path = variable_full_path.split('|')[0]
     let sub_vars = variable_full_path.split('|')
@@ -592,6 +614,7 @@ function reg_js_import(js_context, variable_full_path, suggested_name=null) {
 
     if (!(import_path in js_context.imports)) {
       js_context.imports[import_path] = {
+        use_default: use_default,
         suggested_name: suggested_name,
         path: import_path,
         sub_vars: {}

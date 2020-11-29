@@ -81,11 +81,15 @@ let variables = {
                     });
                     return 'JSON_ARRAY(' + results.join(', ') + ')'
                 } else {
-                    let results = []
-                    Object.keys(data).forEach((key) => {
-                        results.push('"' + key + '", ' + render_func(data[key], depth+1))
-                    });
-                    return 'JSON_OBJECT(' + results.join(', ') + ')'
+                    if (data) {
+                        let results = []
+                        Object.keys(data).forEach((key) => {
+                            results.push('"' + key + '", ' + render_func(data[key], depth+1))
+                        });
+                        return 'JSON_OBJECT(' + results.join(', ') + ')'
+                    } else {
+                        return 'null'
+                    }
                 }
             }
 

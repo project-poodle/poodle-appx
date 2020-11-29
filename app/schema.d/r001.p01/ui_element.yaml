@@ -26,7 +26,7 @@ ui_element:
               props:
                   redux_store_provider:
                       type: js/import
-                      name: app-x/redux/store
+                      name: app-x/redux/store|default
                   theme_provider:
                       type: js/import
                       name: app-x/theme|default

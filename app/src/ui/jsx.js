@@ -63,8 +63,8 @@ function handle_jsx(req, res) {
     reg_js_variable(js_context, ui_elem_name)
     //console.log(get_js_variable(js_context, ui_elem_name))
 
-    reg_js_import(js_context, 'react', 'React')
-    reg_js_import(js_context, 'react-dom', 'ReactDOM')
+    reg_js_import(js_context, 'react', true, 'React')
+    reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
     // create ast tree for the program
     const ast_tree = t.file(
