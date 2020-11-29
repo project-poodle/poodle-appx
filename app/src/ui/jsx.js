@@ -78,8 +78,7 @@ function handle_jsx(req, res) {
                 t.identifier(ui_elem_name),
                 t.arrowFunctionExpression(
                   [
-                    t.identifier('props'),
-                    t.identifier('children'),
+                    t.identifier('props')
                   ],
                   t.blockStatement(
                     [

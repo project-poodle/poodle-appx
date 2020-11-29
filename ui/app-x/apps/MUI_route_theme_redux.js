@@ -9,7 +9,7 @@ import GlobalStyles from 'app-x/components/GlobalStyles'
 import HeaderLayout from 'app-x/pages/layouts/headerLayout'
 import NotFoundView from 'app-x/views/errors/NotFoundView'
 
-const MUI_App = (props, children) => {
+const MUI_App = (props) => {
 
   // process not_found
   const not_found = props.not_found_view || (<HeaderLayout><NotFoundView/></HeaderLayout>)

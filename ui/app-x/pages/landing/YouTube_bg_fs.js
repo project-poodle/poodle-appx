@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Youtube_Landing(props, children) {
+export default function Youtube_Landing(props) {
 
   //console.log(useStyles)
   const classes = useStyles();
@@ -122,7 +122,7 @@ export default function Youtube_Landing(props, children) {
       }
   });
 
-  console.log(children)
+  console.log(props)
 
   return (
     <Box className="paper">
@@ -131,7 +131,7 @@ export default function Youtube_Landing(props, children) {
         </Box>
       </Box>
       <Box className={classes.paper}>
-        { }
+        { props.children }
       </Box>
     </Box>
   );
