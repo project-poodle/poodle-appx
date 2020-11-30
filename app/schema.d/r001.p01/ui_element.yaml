@@ -1,6 +1,6 @@
 ui_element:
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_element_name: /
       ui_element_type: html
@@ -11,7 +11,7 @@ ui_element:
               title: Design Your Own Apps with App-X
 
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_element_name: /AppX
       ui_element_type: jsx/element
@@ -47,7 +47,7 @@ ui_element:
               console.log(this)
 
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_element_name: /pages/landing/Home
       ui_element_type: jsx/element

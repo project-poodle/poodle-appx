@@ -79,10 +79,10 @@ function handle_html(req, res) {
 
     const { ui_deployment, ui_element } = req.context
 
-    if (! ('ui_app_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_app_spec) ) {
+    if (! ('ui_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_app_spec.importMaps not defined [${ui_deployment}]`
+            message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
         })
         return
     }
@@ -111,7 +111,8 @@ function handle_html(req, res) {
         return
     }
 
-    // console.log(JSON.stringify(ui_deployment.ui_app_spec.importMaps, null, 4))
+    // console.log(JSON.stringify(ui_deployment.ui_spec.importMaps, null, 4))
+    // console.log(req.context)
 
     fs.readFile(path.join(rootDir, 'init.js'), "utf8", (err, initjs_content) => {
 
@@ -131,7 +132,7 @@ function handle_html(req, res) {
                     RENDER_JSON: RENDER_JSON,
                     KEY_VALUE: KEY_VALUE,
                     RELATIVE_URL: req.url,
-                    IMPORT_MAPS: ui_deployment.ui_app_spec.importMaps,
+                    IMPORT_MAPS: ui_deployment.ui_spec.importMaps,
                 },
                 entry: ui_element.ui_element_spec.entry,
                 data: ui_element.ui_element_spec.data,

@@ -12,9 +12,9 @@ function load_ui_routers() {
 
     let dp_results = db.query_sync(`SELECT
                     ui_deployment.namespace,
-                    ui_deployment.runtime_name,
-                    ui_deployment.app_name,
-                    ui_deployment.ui_app_ver,
+                    ui_deployment.ui_name,
+                    ui_deployment.ui_deployment,
+                    ui_deployment.ui_ver,
                     ui_deployment.ui_deployment_spec
                 FROM ui_deployment
                 WHERE
@@ -22,9 +22,9 @@ function load_ui_routers() {
 
     dp_results.forEach((dp_result, i) => {
 
-        let router = load_ui_router(dp_result.namespace, dp_result.app_name, dp_result.runtime_name, dp_result.ui_app_ver)
+        let router = load_ui_router(dp_result.namespace, dp_result.ui_name, dp_result.ui_deployment)
 
-        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.runtime_name}/${dp_result.ui_app_ver}`
+        let route = `/${dp_result.namespace}/${dp_result.ui_name}/${dp_result.ui_deployment}`
 
         UI_ROUTES[route] = router
 
@@ -42,7 +42,7 @@ const ui_dispatcher = function (req, res, next) {
         url = req.originalUrl.substring(req.baseUrl.length)
     }
 
-    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/(${REGEX_VAR})\/(${REGEX_VAR}))\/`))
+    let match = url.match(new RegExp(`(\/(${REGEX_VAR})\/(${REGEX_VAR})\/(${REGEX_VAR}))\/`))
     if (match) {
         let router = UI_ROUTES[match[1]]
         if (!router) {
@@ -53,13 +53,11 @@ const ui_dispatcher = function (req, res, next) {
             }
             // process context
             let namespace = match[2]
-            let app_name = match[3]
-            let runtime_name = match[4]
-            let ui_app_ver = match[5]
+            let ui_name = match[3]
+            let ui_deployment = match[4]
             req.context.namespace = namespace
-            req.context.app_name = app_name
-            req.context.runtime_name = runtime_name
-            req.context.ui_app_ver = ui_app_ver
+            req.context.ui_name = ui_name
+            req.context.ui_deployment = ui_deployment
             //console.log(req.context)
             // process url
             req.baseUrl = req.baseUrl + match[1]

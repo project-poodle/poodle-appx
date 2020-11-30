@@ -63,9 +63,9 @@ app.use('/api', authenticator, api_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize ui router --- Note: perform this step only after db_pool is initialized
-//const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
+const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 
-//app.use('/ui', ui_dispatcher)
+app.use('/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
 // static files

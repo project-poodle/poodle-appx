@@ -1,6 +1,6 @@
 ui_route:
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_route_name: /
       ui_route_spec:
@@ -8,7 +8,7 @@ ui_route:
           name: self/pages/landing/Home
 
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_route_name: /login
       ui_route_spec:
@@ -19,7 +19,7 @@ ui_route:
                 name: app-x/pages/auth/SigninSide
 
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_route_name: /console
       ui_route_spec:
@@ -30,7 +30,7 @@ ui_route:
                 name: app-x/views/errors/NotFoundView
 
     - namespace: sys
-      ui_name: appx-ui
+      ui_name: appxui
       ui_ver: internal
       ui_route_name: /404
       ui_route_spec:

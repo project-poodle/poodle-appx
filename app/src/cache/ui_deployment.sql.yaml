@@ -25,11 +25,24 @@
         value: "$@"
 
 # ui_deployment
-- query: "SELECT *
+- query: "SELECT
+                ui_deployment.id,
+                ui_deployment.namespace,
+                ui_deployment.ui_name,
+                ui_deployment.ui_deployment,
+                ui_deployment.ui_ver,
+                ui.ui_spec,
+                ui_deployment.ui_deployment_spec,
+                ui_deployment.deleted
             FROM ui_deployment
+            JOIN ui
+                ON ui.namespace = ui_deployment.namespace
+                AND ui.ui_name = ui_deployment.ui_name
+                AND ui.ui_ver = ui_deployment.ui_ver
             WHERE
-                namespace = '{{params.namespace}}'
-                AND deleted = 0"
+                ui_deployment.namespace = '{{params.namespace}}'
+                AND ui_deployment.deleted = 0
+                AND ui.deleted = 0"
   map_def:
       - name: sql_ui_deployments
         key:

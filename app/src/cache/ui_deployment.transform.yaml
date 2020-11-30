@@ -19,4 +19,5 @@
                   ui_name: "@@dp"
                   ui_deployment: "@dp"
                   ui_ver: "$dp.ui_ver"
+                  ui_spec: "$dp.ui_spec"
                   ui_deployment_spec: "$dp.ui_deployment_spec"

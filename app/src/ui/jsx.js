@@ -25,10 +25,10 @@ function handle_jsx(req, res) {
 
     const { ui_deployment, ui_element } = req.context
 
-    if (! ('ui_app_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_app_spec) ) {
+    if (! ('ui_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_app_spec.importMaps not defined [${ui_deployment}]`
+            message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
         })
         return
     }
@@ -50,7 +50,7 @@ function handle_jsx(req, res) {
     }
 
     // import maps
-    const importMaps = ui_deployment.ui_app_spec.importMaps
+    const importMaps = ui_deployment.ui_spec.importMaps
 
     // process context
     const js_context = {

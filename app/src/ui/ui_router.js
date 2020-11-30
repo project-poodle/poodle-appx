@@ -25,11 +25,9 @@ function get_ui_deployment(req, res) {
 
     let dp_prop = [
         context.namespace,
-        "ui_apps",
-        context.app_name,
-        context.ui_app_ver,
         "ui_deployments",
-        context.runtime_name
+        context.ui_name,
+        context.ui_deployment
     ]
     let ui_deployment = objPath.get(cache_ui_deployment, dp_prop)
     if (!ui_deployment) {
@@ -49,9 +47,9 @@ function get_ui_deployment(req, res) {
         return null
     }
 
-    let ui_app_spec = objPath.get(ui_deployment, ["ui_app_spec"])
-    if (!ui_app_spec) {
-        let msg = `ERROR: ui_app_spec not found - [${JSON.stringify(context)}] !`
+    let ui_spec = objPath.get(ui_deployment, ["ui_spec"])
+    if (!ui_spec) {
+        let msg = `ERROR: ui_spec not found - [${JSON.stringify(context)}] !`
         log_elem_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
@@ -73,11 +71,10 @@ function get_ui_element(req, res) {
 
     let elem_prop = [
         context.namespace,
-        "ui_apps",
-        context.app_name,
-        context.ui_app_ver,
         "ui_deployments",
-        context.runtime_name,
+        context.ui_name,
+        context.ui_deployment,
+        "ui_elements",
         context.ui_element_name
     ]
     let elem = objPath.get(cache_ui_element, elem_prop)
@@ -113,11 +110,10 @@ function get_ui_route(req, res) {
 
     let route_prop = [
         context.namespace,
-        "ui_apps",
-        context.app_name,
-        context.ui_app_ver,
         "ui_deployments",
-        context.runtime_name,
+        context.ui_name,
+        context.ui_deployment,
+        "ui_routes",
         context.ui_route_name
     ]
     let route = objPath.get(cache_ui_route, route_prop)
@@ -169,7 +165,8 @@ function handle_element(req, res) {
     //console.log(req.context)
 
     // handle request by element type
-    if (ui_element.ui_element_type == 'html' || ui_element.ui_element_type.startsWith('html/')) {
+    if (ui_element.ui_element_type == 'html'
+        || ui_element.ui_element_type.startsWith('html/')) {
 
         handle_html(req, res)
         return
@@ -178,6 +175,11 @@ function handle_element(req, res) {
 
         handle_jsx(req, res)
         return
+
+      } else if (ui_element.ui_element_type == 'js' || ui_element.ui_element_type.startsWith('js/')) {
+
+          handle_js(req, res)
+          return
 
     } else {
 
@@ -206,9 +208,8 @@ function handle_route(req, res) {
         {
             ui_element: {
                 namespace: ui_route.namespace,
-                app_name: ui_route.app_name,
-                runtime_name: ui_route.runtime_name,
-                ui_app_ver: ui_route.ui_app_ver,
+                ui_name: ui_route.ui_name,
+                ui_deployment: ui_route.ui_deployment,
                 ui_element_name: '/'
             }
         }
@@ -224,26 +225,25 @@ function handle_route(req, res) {
  */
 const log_deployment_status = (deployment_context, status, message) => {
 
+    console.log(message)
     db.query_sync(`INSERT INTO ui_deployment_status
                     (
                         namespace,
-                        app_name,
-                        ui_app_ver,
-                        runtime_name,
+                        ui_name,
+                        ui_deployment,
                         ui_deployment_status
                     )
                     VALUES
                     (
-                        ?, ?, ?, ?,
+                        ?, ?, ?,
                         JSON_OBJECT('status', ?, 'message', ?)
                     )
                     ON DUPLICATE KEY UPDATE
                         ui_deployment_status=VALUES(ui_deployment_status)`,
                     [
                         deployment_context.namespace,
-                        deployment_context.app_name,
-                        deployment_context.ui_app_ver,
-                        deployment_context.runtime_name,
+                        deployment_context.ui_name,
+                        deployment_context.ui_deployment,
                         status,
                         message
                     ])
@@ -254,27 +254,26 @@ const log_deployment_status = (deployment_context, status, message) => {
  */
 const log_elem_status = (elem_context, status, message) => {
 
+    console.log(message)
     db.query_sync(`INSERT INTO ui_element_status
                     (
                         namespace,
-                        app_name,
-                        ui_app_ver,
-                        runtime_name,
+                        ui_name,
+                        ui_deployment,
                         ui_element_name,
                         ui_element_status
                     )
                     VALUES
                     (
-                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?,
                         JSON_OBJECT('status', ?, 'message', ?)
                     )
                     ON DUPLICATE KEY UPDATE
                         ui_element_status=VALUES(ui_element_status)`,
                     [
                         elem_context.namespace,
-                        elem_context.app_name,
-                        elem_context.ui_app_ver,
-                        elem_context.runtime_name,
+                        elem_context.ui_name,
+                        elem_context.ui_deployment,
                         elem_context.ui_element_name,
                         status,
                         message
@@ -286,27 +285,26 @@ const log_elem_status = (elem_context, status, message) => {
  */
 const log_route_status = (route_context, status, message) => {
 
+    console.log(message)
     db.query_sync(`INSERT INTO ui_route_status
                     (
                         namespace,
-                        app_name,
-                        ui_app_ver,
-                        runtime_name,
+                        ui_name,
+                        ui_deployment,
                         ui_route_name,
                         ui_route_status
                     )
                     VALUES
                     (
-                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?,
                         JSON_OBJECT('status', ?, 'message', ?)
                     )
                     ON DUPLICATE KEY UPDATE
                         ui_route_status=VALUES(ui_route_status)`,
                     [
                         route_context.namespace,
-                        route_context.app_name,
-                        route_context.ui_app_ver,
-                        route_context.runtime_name,
+                        route_context.ui_name,
+                        route_context.ui_deployment,
                         route_context.ui_route_name,
                         status,
                         message
@@ -316,14 +314,14 @@ const log_route_status = (route_context, status, message) => {
 /**
  * load_ui_router
  */
-function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
+function load_ui_router(namespace, ui_name, ui_deployment) {
 
     // query ui_route
     let route_results = db.query_sync(`SELECT
                     ui_route.namespace,
-                    ui_route.app_name,
-                    ui_route.ui_app_ver,
-                    ui_deployment.runtime_name,
+                    ui_route.ui_name,
+                    ui_route.ui_ver,
+                    ui_deployment.ui_deployment,
                     ui_deployment.ui_deployment_spec,
                     ui_route.ui_route_name,
                     ui_route.ui_route_spec,
@@ -332,21 +330,20 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                 FROM ui_route
                 JOIN ui_deployment
                     ON ui_route.namespace = ui_deployment.namespace
-                    AND ui_route.app_name = ui_deployment.app_name
-                    AND ui_route.ui_app_ver = ui_deployment.ui_app_ver
+                    AND ui_route.ui_name = ui_deployment.ui_name
+                    AND ui_route.ui_ver = ui_deployment.ui_ver
                 WHERE
                     ui_route.namespace = ?
-                    AND ui_deployment.runtime_name = ?
-                    AND ui_route.app_name = ?
-                    AND ui_route.ui_app_ver = ?
+                    AND ui_route.ui_name = ?
+                    AND ui_deployment.ui_deployment = ?
                     AND ui_route.deleted=0
                     AND ui_deployment.deleted=0`,
                 [
                     namespace,
-                    runtime_name,
-                    app_name,
-                    ui_app_ver
-                ])
+                    ui_name,
+                    ui_deployment,
+                ]
+    )
 
     let router = express.Router()
 
@@ -354,10 +351,9 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
 
         let route_context = {
             namespace: route_result.namespace,
-            app_name: route_result.app_name,
-            runtime_name: route_result.runtime_name,
-            ui_app_ver: route_result.ui_app_ver,
-            ui_route_name: route_result.ui_route_name
+            ui_name: route_result.ui_name,
+            ui_deployment: route_result.ui_deployment,
+            ui_route_name: route_result.ui_route_name,
         }
 
         router.get(route_result.ui_route_name.replace(/\/+/g, '/'), (req, res) => {
@@ -374,9 +370,9 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
     // query ui_element
     let elem_results = db.query_sync(`SELECT
                     ui_element.namespace,
-                    ui_element.app_name,
-                    ui_element.ui_app_ver,
-                    ui_deployment.runtime_name,
+                    ui_element.ui_name,
+                    ui_element.ui_ver,
+                    ui_deployment.ui_deployment,
                     ui_deployment.ui_deployment_spec,
                     ui_element.ui_element_name,
                     ui_element.ui_element_type,
@@ -386,32 +382,31 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                 FROM ui_element
                 JOIN ui_deployment
                     ON ui_element.namespace = ui_deployment.namespace
-                    AND ui_element.app_name = ui_deployment.app_name
-                    AND ui_element.ui_app_ver = ui_deployment.ui_app_ver
+                    AND ui_element.ui_name = ui_deployment.ui_name
+                    AND ui_element.ui_ver = ui_deployment.ui_ver
                 WHERE
                     ui_element.namespace = ?
-                    AND ui_deployment.runtime_name = ?
-                    AND ui_element.app_name = ?
-                    AND ui_element.ui_app_ver = ?
+                    AND ui_element.ui_name = ?
+                    AND ui_deployment.ui_deployment = ?
                     AND ui_element.deleted=0
                     AND ui_deployment.deleted=0`,
                 [
                     namespace,
-                    runtime_name,
-                    app_name,
-                    ui_app_ver
-                ])
+                    ui_name,
+                    ui_deployment,
+                ]
+    )
 
     elem_results.forEach((elem_result) => {
 
         let elem_context = {
             namespace: elem_result.namespace,
-            app_name: elem_result.app_name,
-            runtime_name: elem_result.runtime_name,
-            ui_app_ver: elem_result.ui_app_ver,
-            ui_element_name: elem_result.ui_element_name
+            ui_name: elem_result.ui_name,
+            ui_deployment: elem_result.ui_deployment,
+            ui_element_name: elem_result.ui_element_name,
         }
 
+        // console.log(elem_context)
         //console.log(route_path)
 
         // add index.js if directory; add .js if no suffix
@@ -487,6 +482,7 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
     // default route
     router.use('/', (req, res) => {
 
+        console.log(`default route [${req.url}]`)
         if (req.url.startsWith(ELEM_ROUTE_PREFIX)) {
             // return 404 if under ELEM_ROUTE_PREFIX
             res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
@@ -499,9 +495,8 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
                 {
                     ui_element: {
                         namespace: namespace,
-                        app_name: app_name,
-                        runtime_name: runtime_name,
-                        ui_app_ver: ui_app_ver,
+                        ui_name: ui_name,
+                        ui_deployment: ui_deployment,
                         ui_element_name: '/'
                     }
                 }

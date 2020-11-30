@@ -421,9 +421,9 @@ function jsx_route(js_context, input) {
 
   let route_results = db.query_sync(`SELECT
                   ui_route.namespace,
-                  ui_route.app_name,
-                  ui_route.ui_app_ver,
-                  ui_deployment.runtime_name,
+                  ui_route.ui_name,
+                  ui_route.ui_ver,
+                  ui_deployment.ui_deployment,
                   ui_deployment.ui_deployment_spec,
                   ui_route.ui_route_name,
                   ui_route.ui_route_spec,
@@ -432,21 +432,20 @@ function jsx_route(js_context, input) {
               FROM ui_route
               JOIN ui_deployment
                   ON ui_route.namespace = ui_deployment.namespace
-                  AND ui_route.app_name = ui_deployment.app_name
-                  AND ui_route.ui_app_ver = ui_deployment.ui_app_ver
+                  AND ui_route.ui_name = ui_deployment.ui_name
+                  AND ui_route.ui_ver = ui_deployment.ui_ver
               WHERE
                   ui_route.namespace = ?
-                  AND ui_deployment.runtime_name = ?
-                  AND ui_route.app_name = ?
-                  AND ui_route.ui_app_ver = ?
+                  AND ui_route.ui_name = ?
+                  AND ui_deployment.ui_deployment = ?
                   AND ui_route.deleted=0
                   AND ui_deployment.deleted=0`,
               [
                   ui_deployment.namespace,
-                  ui_deployment.runtime_name,
-                  ui_deployment.app_name,
-                  ui_deployment.ui_app_ver
-              ])
+                  ui_deployment.ui_name,
+                  ui_deployment.ui_deployment,
+              ]
+  )
 
   // console.log(route_results)
   return t.objectExpression(
