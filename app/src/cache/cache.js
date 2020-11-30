@@ -30,7 +30,7 @@ function init_cache() {
             if (! (cache_conf[name]['params'])) {
                 load_cache_for(name, null)
             }
-        });
+        })
 
     } catch (e) {
 
@@ -42,6 +42,10 @@ function init_cache() {
         let sleep = get_random_between(180, 360) * 1000
         setTimeout(() => { init_cache() }, sleep)
         // console.log(`INFO: init_cache - reconcile in ${Math.round(sleep/1000)} sec(s)`)
+
+        // console.log(JSON.stringify(get_cache_for('object'), null, 4))
+        // console.log(JSON.stringify(get_cache_for('ui_element'), null, 4))
+        // console.log(JSON.stringify(get_cache_for('ui_route'), null, 4))
     }
 }
 

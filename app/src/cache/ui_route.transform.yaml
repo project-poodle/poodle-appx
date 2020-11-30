@@ -2,20 +2,30 @@
     namespace: "@ns"
     namespace_spec: "$ns.namespace_spec"
 
-    ui_apps:
-        "#app{$sql_ui_apps[@ns]}":                      # app_name
-            "#app{$app}":                               # ui_app_ver
+    uis:
+        "#app{$sql_uis[@ns]}":                      # ui_name
+            "#app{$app}":                               # ui_ver
                 namespace: "@ns"
-                app_name: "@@app"
-                ui_app_ver: "@app"
-                ui_app_spec: "$app.ui_app_spec"
+                ui_name: "@@app"
+                ui_ver: "@app"
+                ui_spec: "$app.ui_spec"
 
-                ui_deployments:
-                    "#dp{$sql_ui_routes[@ns][@@app][@app]}":                                # runtime_name
-                        "#dp{$dp}":                                                         # ui_route_name
+    ui_deployments:
+        "#dp{$sql_ui_deployments[@ns]}":                                    # ui_name
+            "#dp{$dp}":                                                     # ui_deployment
+                namespace: "@ns"
+                ui_name: "@@dp"
+                ui_deployment: "@dp"
+                ui_ver: "$dp.ui_ver"
+                ui_deployment_spec: "$dp.ui_deployment_spec"
+
+                ui_routes:
+                    "#elem{$sql_ui_routes[@ns][@@dp][@dp]}":                # ui_route_name
                             namespace: "@ns"
-                            app_name: "@@app"
-                            ui_app_ver: "@app"
-                            runtime_name: "@@dp"
-                            ui_route_name: "@dp"
-                            ui_route_spec: "$dp.ui_route_spec"
+                            ui_name: "@@dp"
+                            ui_deployment: "@dp"
+                            ui_ver: "$dp.ui_ver"
+                            ui_deployment_spec: "$dp.ui_deployment_spec"
+                            ui_route_name: "@elem"
+                            ui_route_type: "$elem.ui_route_type"
+                            ui_route_spec: "$elem.ui_route_spec"

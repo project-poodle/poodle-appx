@@ -1,0 +1,22 @@
+"#ns{$sql_namespaces}":                                 # namespace
+    namespace: "@ns"
+    owner_scope: "$ns.owner_scope"
+    owner_name: "$ns.owner_name"
+    namespace_spec: "$ns.namespace_spec"
+
+    apps:
+        "#app{$sql_apps[@ns]}":                         # app_name
+            "#app{$app}":                               # app_ver
+                namespace: "@ns"
+                app_name: "@@app"
+                app_ver: "@app"
+                app_spec: "$app.app_spec"
+
+    app_runtimes:
+        "#rt{$sql_app_runtimes[@ns]}":                                                      # app_name
+            "#rt{$rt}":                                                                     # app_runtime
+                  namespace: "@ns"
+                  app_name: "@@rt"
+                  app_runtime: "@rt"
+                  app_ver: "$rt.app_ver"
+                  app_runtime_spec: "$rt.app_runtime_spec"

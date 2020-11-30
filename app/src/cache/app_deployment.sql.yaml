@@ -24,36 +24,41 @@
             - "$@.app_ver"
         value: "$@"
 
-# runtime
+# app_runtime
 - query: "SELECT *
-            FROM runtime
+            FROM app_runtime
             WHERE
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_runtimes
+      - name: sql_app_runtimes
         key:
             - "$@.namespace"
-            - "$@.runtime_name"
+            - "$@.app_name"
+            - "$@.app_runtime"
         value: "$@"
 
-# deployment
+# app_deployment
 - query: "SELECT *
-            FROM deployment
+            FROM app_deployment
             WHERE
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_deployments_by_runtime
+      - name: sql_app_deployments
         key:
             - "$@.namespace"
-            - "$@.runtime_name"
             - "$@.app_name"
+            - "$@.app_runtime"
+            - "$@.app_deployment"
         value: "$@"
 
-      - name: sql_deployments_by_app
+      - name: sql_app_deployments_by_app_ver_rev
         key:
             - "$@.namespace"
             - "$@.app_name"
-            - "$@.runtime_name"
+            - "$@.app_ver"
+            - "$@.app_rev"
+            - "$@.app_runtime"
+            - "$@.app_deployment"
         value: "$@"

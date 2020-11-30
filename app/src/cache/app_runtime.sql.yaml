@@ -10,38 +10,38 @@
             - "$@.namespace"
         value: "$@"
 
-# ui
+# app
 - query: "SELECT *
-            FROM ui
+            FROM app
             WHERE
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_uis
+      - name: sql_apps
         key:
             - "$@.namespace"
-            - "$@.ui_name"
-            - "$@.ui_ver"
+            - "$@.app_name"
+            - "$@.app_ver"
         value: "$@"
 
-# ui_deployment
+# app_runtime
 - query: "SELECT *
-            FROM ui_deployment
+            FROM app_runtime
             WHERE
                 namespace = '{{params.namespace}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_ui_deployments
+      - name: sql_app_runtimes
         key:
             - "$@.namespace"
-            - "$@.ui_name"
-            - "$@.ui_deployment"
+            - "$@.app_name"
+            - "$@.app_runtime"
         value: "$@"
 
-      - name: sql_ui_deployments_by_ui_ver
+      - name: sql_app_runtime_by_app_ver
         key:
             - "$@.namespace"
-            - "$@.ui_name"
-            - "$@.ui_ver"
-            - "$@.ui_deployment"
+            - "$@.app_name"
+            - "$@.app_ver"
+            - "$@.app_runtime"
         value: "$@"

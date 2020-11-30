@@ -30,7 +30,13 @@ namespace:
                   module: "../cache/cache"
                   method: "load_cache_for"
                   params:
-                      - '"deployment"'
+                      - '"app_runtime"'
+                      - namespace: "@ns"
+            - "$invoke":
+                  module: "../cache/cache"
+                  method: "load_cache_for"
+                  params:
+                      - '"app_deployment"'
                       - namespace: "@ns"
             - "$invoke":
                   module: "../cache/cache"
@@ -40,35 +46,47 @@ namespace:
                       - namespace: "@ns"
 
 ##################################################
-deployment:
+app_runtime:
     params:
         - namespace
-    sql_input: "deployment.sql.yaml"
-    transform: "deployment.transform.yaml"
+    sql_input: "app_runtime.sql.yaml"
+    transform: "app_runtime.transform.yaml"
+    reconcile:
+        min: 180
+        max: 360
+
+##################################################
+app_deployment:
+    params:
+        - namespace
+    sql_input: "app_deployment.sql.yaml"
+    transform: "app_deployment.transform.yaml"
     reconcile:
         min: 180
         max: 360
     trigger:
-        "#ns{$deployment}":
-            runtimes:
-                "#rt{$deployment[@ns]['runtimes']}":
-                    deployments:
-                        "#dp{$deployment[@ns]['runtimes'][@rt]['deployments']}":
+        "#ns{$app_deployment}":
+            app_deployments:
+                "#dp{$app_deployment[@ns]['app_deployments']}":   # app_name
+                    "#dp{$dp}":                                   # app_runtime
+                      "#dp{$dp}":                                 # app_deployment
                             "$invoke":
                                 module: "../cache/cache"
                                 method: "load_cache_for"
                                 params:
                                     - '"object"'
                                     - namespace: "@ns"
-                                      runtime_name: "@rt"
-                                      app_name: "@dp"
+                                      app_name: "@@@dp"
+                                      app_runtime: "@@dp"
+                                      app_deployment: "@dp"
 
 ##################################################
 object:
     params:
         - namespace
-        - runtime_name
         - app_name
+        - app_runtime
+        - app_deployment
     sql_input: "object.sql.yaml"
     transform: "object.transform.yaml"
     reconcile:
@@ -86,36 +104,32 @@ ui_deployment:
         max: 360
     trigger:
         "#ns{$ui_deployment}":
-            runtimes:
-                "#dp{$ui_deployment[@ns]['runtimes']}":
-                    "#dp{$dp}":
-                        "#dp{$dp}":
-                            - "$invoke":
-                                  module: "../cache/cache"
-                                  method: "load_cache_for"
-                                  params:
-                                      - '"ui_element"'
-                                      - namespace: "@ns"
-                                        runtime_name: "@@@dp"
-                                        app_name: "@@dp"
-                                        ui_app_ver: "@dp"
-                            - "$invoke":
-                                  module: "../cache/cache"
-                                  method: "load_cache_for"
-                                  params:
-                                      - '"ui_route"'
-                                      - namespace: "@ns"
-                                        runtime_name: "@@@dp"
-                                        app_name: "@@dp"
-                                        ui_app_ver: "@dp"
+            ui_deployments:
+                "#dp{$ui_deployment[@ns]['ui_deployments']}":   # ui_name
+                    "#dp{$dp}":                                 # ui_deployment
+                        - "$invoke":
+                              module: "../cache/cache"
+                              method: "load_cache_for"
+                              params:
+                                  - '"ui_element"'
+                                  - namespace: "@ns"
+                                    ui_name: "@@dp"
+                                    ui_deployment: "@dp"
+                        - "$invoke":
+                              module: "../cache/cache"
+                              method: "load_cache_for"
+                              params:
+                                  - '"ui_route"'
+                                  - namespace: "@ns"
+                                    ui_name: "@@dp"
+                                    ui_deployment: "@dp"
 
 ##################################################
 ui_element:
     params:
         - namespace
-        - runtime_name
-        - app_name
-        - ui_app_ver
+        - ui_name
+        - ui_deployment
     sql_input: "ui_element.sql.yaml"
     transform: "ui_element.transform.yaml"
     reconcile:
@@ -126,9 +140,8 @@ ui_element:
 ui_route:
     params:
         - namespace
-        - runtime_name
-        - app_name
-        - ui_app_ver
+        - ui_name
+        - ui_deployment
     sql_input: "ui_route.sql.yaml"
     transform: "ui_route.transform.yaml"
     reconcile:

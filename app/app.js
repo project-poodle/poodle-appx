@@ -50,22 +50,22 @@ app.use(session({
 
 //////////////////////////////////////////////////
 // initialize authenticator --- Note: perform this step only after db_pool is initialized
-const { authenticator } = require("./src/auth")
-//app.use(passport.initialize())
-//app.use(passport.session())
+//const { authenticator } = require("./src/auth")
+////app.use(passport.initialize())
+////app.use(passport.session())
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
-const { api_dispatcher } = require('./src/api/api_dispatcher')
+//const { api_dispatcher } = require('./src/api/api_dispatcher')
 
-app.use('/api', bodyParser.json())
-app.use('/api', authenticator, api_dispatcher)
+//app.use('/api', bodyParser.json())
+//app.use('/api', authenticator, api_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize ui router --- Note: perform this step only after db_pool is initialized
-const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
+//const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 
-app.use('/ui', ui_dispatcher)
+//app.use('/ui', ui_dispatcher)
 
 //////////////////////////////////////////////////
 // static files

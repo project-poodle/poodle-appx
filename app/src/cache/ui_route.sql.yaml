@@ -10,20 +10,20 @@
             - "$@.namespace"
         value: "$@"
 
-# ui_app
+# ui
 - query: "SELECT *
-            FROM ui_app
+            FROM ui
             WHERE
                 namespace = '{{params.namespace}}'
-                AND app_name = '{{params.app_name}}'
-                AND ui_app_ver = '{{params.ui_app_ver}}'
+                AND ui_name = '{{params.ui_name}}'
+                AND ui_ver = '{{params.ui_ver}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_ui_apps
+      - name: sql_uis
         key:
             - "$@.namespace"
-            - "$@.app_name"
-            - "$@.ui_app_ver"
+            - "$@.ui_name"
+            - "$@.ui_ver"
         value: "$@"
 
 # ui_deployment
@@ -31,34 +31,25 @@
             FROM ui_deployment
             WHERE
                 namespace = '{{params.namespace}}'
-                AND app_name = '{{params.app_name}}'
-                AND ui_app_ver = '{{params.ui_app_ver}}'
-                AND runtime_name = '{{params.runtime_name}}'
+                AND ui_name = '{{params.ui_name}}'
+                AND ui_deployment = '{{params.ui_deployment}}'
                 AND deleted = 0"
   map_def:
-      - name: sql_ui_deployments_by_runtime
+      - name: sql_ui_deployments
         key:
             - "$@.namespace"
-            - "$@.runtime_name"
-            - "$@.app_name"
-            - "$@.ui_app_ver"
+            - "$@.ui_name"
+            - "$@.ui_deployment"
         value: "$@"
 
-      - name: sql_ui_deployments_by_ui_app
-        key:
-            - "$@.namespace"
-            - "$@.app_name"
-            - "$@.ui_app_ver"
-            - "$@.runtime_name"
-        value: "$@"
 
 # ui_route
 - query: "SELECT
                 ui_route.id,
                 ui_route.namespace,
-                ui_deployment.runtime_name,
-                ui_route.app_name,
-                ui_route.ui_app_ver,
+                ui_route.ui_name,
+                ui_route.ui_ver,
+                ui_deployment.ui_deployment,
                 ui_route.ui_route_name,
                 ui_route.ui_route_spec,
                 ui_route.create_time,
@@ -67,21 +58,19 @@
             FROM ui_route
             JOIN ui_deployment
                 ON ui_route.namespace = ui_deployment.namespace
-                AND ui_route.app_name = ui_deployment.app_name
-                AND ui_route.ui_app_ver = ui_deployment.ui_app_ver
+                AND ui_route.ui_name = ui_deployment.ui_name
+                AND ui_route.ui_ver = ui_deployment.ui_ver
             WHERE
                 ui_route.namespace = '{{params.namespace}}'
-                AND ui_deployment.runtime_name = '{{params.runtime_name}}'
-                AND ui_route.app_name = '{{params.app_name}}'
-                AND ui_route.ui_app_ver = '{{params.ui_app_ver}}'
+                AND ui_route.ui_name = '{{params.ui_name}}'
+                AND ui_deployment.ui_deployment = '{{params.ui_deployment}}'
                 AND ui_route.deleted = 0
                 AND ui_deployment.deleted = 0"
   map_def:
       - name: sql_ui_routes
         key:
             - "$@.namespace"
-            - "$@.app_name"
-            - "$@.ui_app_ver"
-            - "$@.runtime_name"
+            - "$@.ui_name"
+            - "$@.ui_deployment"
             - "$@.ui_route_name"
         value: "$@"
