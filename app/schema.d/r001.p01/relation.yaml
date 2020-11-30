@@ -6,6 +6,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "namespace"
       objn_name: "namespace_status"
       relation_spec:
@@ -20,6 +21,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app"
       objn_name: "app_status"
       relation_spec:
@@ -38,6 +40,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_runtime"
       objn_name: "app_runtime_status"
       relation_spec:
@@ -56,6 +59,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_deployment"
       objn_name: "app_deployment_status"
       relation_spec:
@@ -76,6 +80,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "object"
       objn_name: "object_status"
       relation_spec:
@@ -96,6 +101,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "attr"
       objn_name: "attr_status"
       relation_spec:
@@ -118,6 +124,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "relation"
       objn_name: "relation_status"
       relation_spec:
@@ -140,6 +147,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "api"
       objn_name: "api_status"
       relation_spec:
@@ -164,6 +172,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "transform"
       objn_name: "transform_status"
       relation_spec:
@@ -196,6 +205,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui"
       objn_name: "ui_status"
       relation_spec:
@@ -214,6 +224,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui_deployment"
       objn_name: "ui_deployment_status"
       relation_spec:
@@ -232,6 +243,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui_element"
       objn_name: "ui_element_status"
       relation_spec:
@@ -252,6 +264,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui_route"
       objn_name: "ui_route_status"
       relation_spec:
@@ -276,6 +289,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "namespace"
       objn_name: "app"
       relation_spec:
@@ -293,6 +307,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app"
       objn_name: "app_runtime"
       relation_spec:
@@ -313,6 +328,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app"
       objn_name: "app_deployment"
       relation_spec:
@@ -334,6 +350,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_runtime"
       objn_name: "app_deployment"
       relation_spec:
@@ -356,6 +373,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app"
       objn_name: "obj"
       relation_spec:
@@ -376,6 +394,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_deployment"
       objn_name: "obj_status"
       relation_spec:
@@ -396,6 +415,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "obj"
       objn_name: "attr"
       relation_spec:
@@ -418,6 +438,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_deployment"
       objn_name: "attr_status"
       relation_spec:
@@ -439,6 +460,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "obj"
       objn_name: "relation"
       relation_spec:
@@ -461,6 +483,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_deployment"
       objn_name: "relation_status"
       relation_spec:
@@ -484,6 +507,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "obj"
       objn_name: "api"
       relation_spec:
@@ -507,6 +531,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "app_deployment"
       objn_name: "api_status"
       relation_spec:
@@ -531,6 +556,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "obj"
       objn_name: "transform"
       relation_spec:
@@ -560,6 +586,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "namespace"
       objn_name: "ui"
       relation_spec:
@@ -577,6 +604,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui"
       objn_name: "ui_deployment"
       relation_spec:
@@ -597,6 +625,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui"
       objn_name: "ui_element"
       relation_spec:
@@ -617,6 +646,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui_deployment"
       objn_name: "ui_element_status"
       relation_spec:
@@ -637,6 +667,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui"
       objn_name: "ui_route"
       relation_spec:
@@ -657,6 +688,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
+      app_rev: "default"
       obj_name: "ui_deployment"
       objn_name: "ui_route_status"
       relation_spec:

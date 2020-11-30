@@ -1,7 +1,8 @@
+const objPath = require("object-path")
 const express = require('express')
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { log_api_status, get_api_spec, SUCCESS, FAILURE } = require('./util')
+const { log_api_status, SUCCESS, FAILURE } = require('./util')
 const { handle_get } = require('./get')
 const { handle_upsert } = require('./upsert')
 const { handle_update } = require('./update')
@@ -10,6 +11,56 @@ const { handle_status } = require('./status')
 
 // track a list of endpoints
 // let endpoints = []
+
+/**
+ * get_api_spec
+ */
+function get_api_spec(context, req, res) {
+
+    let fatal = false
+
+    // console.log(cache.get_cache_for('object'))
+    let cache_obj = cache.get_cache_for('object')
+    let obj_prop = [
+        //"object",
+        context.namespace,
+        "app_deployments",
+        context.app_name,
+        context.app_deployment,
+        "objs",
+        context.obj_name
+    ]
+    let obj = objPath.get(cache_obj, obj_prop)
+    if (!obj) {
+        let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return
+    }
+
+    let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
+    if (!api_spec) {
+        let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
+        log_api_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return null
+    }
+
+    // check verb
+    let verb = objPath.get(api_spec, ["syntax", "verb"])
+    if (!verb) {
+        let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
+        log_api_status(context, FAILURE, msg)
+        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+        fatal = true
+        return null
+    }
+
+    return api_spec
+}
+
 
 function handle_req(req, res) {
 
@@ -74,31 +125,47 @@ function handle_req(req, res) {
     }
 }
 
-function load_api_router(namespace, app_name, runtime_name) {
+function load_api_router(namespace, app_name, app_deployment) {
 
     let api_results = db.query_sync(`SELECT
                     api.namespace,
                     api.app_name,
+                    app_deployment.app_deployment,
+                    app_runtime.app_runtime,
                     api.app_ver,
-                    deployment.runtime_name,
+                    api.app_rev,
                     api.obj_name,
                     api.api_method,
                     api.api_endpoint,
                     api.api_spec,
-                    deployment.deployment_spec,
+                    app_deployment.app_deployment_spec,
                     api.create_time,
                     api.update_time
                 FROM api
-                JOIN deployment
-                    ON api.namespace = deployment.namespace
-                    AND api.app_name = deployment.app_name
-                    AND api.app_ver = deployment.app_ver
+                JOIN app_deployment
+                    ON api.namespace = app_deployment.namespace
+                    AND api.app_name = app_deployment.app_name
+                    AND api.app_ver = app_deployment.app_ver
+                    AND api.app_rev = app_deployment.app_rev
+                JOIN app_runtime
+                    ON api.namespace = app_runtime.namespace
+                    AND api.app_name = app_runtime.app_name
+                    AND api.app_ver = app_runtime.app_ver
+                    AND app_deployment.app_runtime = app_runtime.app_runtime
                 WHERE
-                    api.namespace = '${namespace}'
-                    AND deployment.runtime_name = '${runtime_name}'
-                    AND api.app_name = '${app_name}'
+                    api.namespace = ?
+                    AND api.app_name = ?
+                    AND app_deployment.app_deployment = ?
                     AND api.deleted=0
-                    AND deployment.deleted=0`)
+                    AND app_deployment.deleted=0`,
+                [
+                    namespace,
+                    app_name,
+                    app_deployment
+                ]
+    )
+
+    // console.log(api_results)
 
     let router = express.Router()
 
@@ -107,7 +174,8 @@ function load_api_router(namespace, app_name, runtime_name) {
         let api_context = {
             namespace: api_result.namespace,
             app_name: api_result.app_name,
-            runtime_name: api_result.runtime_name,
+            app_deployment: api_result.app_deployment,
+            app_runtime: api_result.app_runtime,
             obj_name: api_result.obj_name,
             api_method: api_result.api_method,
             api_endpoint: api_result.api_endpoint

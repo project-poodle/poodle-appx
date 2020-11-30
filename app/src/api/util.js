@@ -10,13 +10,13 @@ const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
 /**
  * log_api_status
  */
-const log_api_status = (api_result, status, message) => {
+const log_api_status = (api_context, status, message) => {
 
     db.query_sync(`INSERT INTO api_status
                     (
                         namespace,
-                        runtime_name,
                         app_name,
+                        app_deployment,
                         obj_name,
                         api_method,
                         api_endpoint,
@@ -30,65 +30,14 @@ const log_api_status = (api_result, status, message) => {
                     ON DUPLICATE KEY UPDATE
                         api_status=VALUES(api_status)`,
                     [
-                        api_result.namespace,
-                        api_result.runtime_name,
-                        api_result.app_name,
-                        api_result.obj_name,
-                        api_result.api_method,
-                        api_result.api_endpoint
+                        api_context.namespace,
+                        api_context.app_name,
+                        api_context.app_deployment,
+                        api_context.obj_name,
+                        api_context.api_method,
+                        api_context.api_endpoint
                     ])
 }
-
-/**
- * get_api_spec
- */
-function get_api_spec(context, req, res) {
-
-    let fatal = false
-
-    // console.log(cache.get_cache_for('object'))
-    let cache_obj = cache.get_cache_for('object')
-    let obj_prop = [
-        //"object",
-        context.namespace,
-        "runtimes",
-        context.runtime_name,
-        "deployments",
-        context.app_name,
-        "objs",
-        context.obj_name
-    ]
-    let obj = objPath.get(cache_obj, obj_prop)
-    if (!obj) {
-        let msg = `ERROR: obj not found [${context.obj_name}] - [${JSON.stringify(context)}] !`
-        log_api_status(context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return
-    }
-
-    let api_spec = objPath.get(obj, ["apis_by_method", context.api_method, context.api_endpoint, "api_spec"])
-    if (!api_spec) {
-        let msg = `ERROR: api_spec not found - [${JSON.stringify(context)}] !`
-        log_api_status(context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return null
-    }
-
-    // check verb
-    let verb = objPath.get(api_spec, ["syntax", "verb"])
-    if (!verb) {
-        let msg = `ERROR: api syntax missing verb - [${JSON.stringify(api_spec)}] !`
-        log_api_status(context, FAILURE, msg)
-        res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
-        fatal = true
-        return null
-    }
-
-    return api_spec
-}
-
 
 /**
  * parse_upsert
@@ -107,10 +56,9 @@ function parse_for_sql(context, req, res) {
     let obj_prop = [
         //"object",
         context.namespace,
-        "runtimes",
-        context.runtime_name,
-        "deployments",
+        "app_deployment",
         context.app_name,
+        context.app_deployment,
         "objs",
         context.obj_name
     ]
@@ -324,7 +272,6 @@ function record_status_audit(id, status, req) {
 }
 
 module.exports = {
-    get_api_spec: get_api_spec,
     log_api_status: log_api_status,
     parse_for_sql: parse_for_sql,
     load_object: load_object,

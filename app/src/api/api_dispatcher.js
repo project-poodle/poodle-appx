@@ -13,8 +13,8 @@ function load_api_routers() {
     let dp_results = db.query_sync(`SELECT
                     app_deployment.namespace,
                     app_deployment.app_name,
-                    app_deployment.app_runtime,
                     app_deployment.app_deployment,
+                    app_deployment.app_runtime,
                     app_deployment.app_ver,
                     app_deployment.app_rev,
                     app_deployment.app_deployment_spec
@@ -24,9 +24,9 @@ function load_api_routers() {
 
     dp_results.forEach((dp_result, i) => {
 
-        let router = load_api_router(dp_result.namespace, dp_result.app_name, dp_result.app_runtime, dp_result.app_deployment)
+        let router = load_api_router(dp_result.namespace, dp_result.app_name, dp_result.app_deployment)
 
-        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.app_runtime}/${dp_result.app_deployment}`
+        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.app_deployment}`
 
         ROUTES[route] = router
 
@@ -53,7 +53,7 @@ const api_dispatcher = function (req, res, next) {
             // process context
             let namespace = match[2]
             let app_name = match[3]
-            let app_runtime = match[4]
+            let app_deployment = match[4]
             req.context.namespace = namespace
             req.context.app_name = app_name
             req.context.app_deployment = app_deployment

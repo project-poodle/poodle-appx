@@ -326,7 +326,7 @@ app_deployment:
       app_deployment: "base"
       app_runtime: "base"
       app_ver: "internal"
-      app_rev: "internal"
+      app_rev: "default"
       app_deployment_spec:
           comment: "initialize"
 

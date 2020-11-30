@@ -31,10 +31,9 @@ function parse_get(context, req, res) {
     let obj_prop = [
         //"object",
         context.namespace,
-        "runtimes",
-        context.runtime_name,
-        "deployments",
+        "app_deployments",
         context.app_name,
+        context.app_deployment,
         "objs",
         context.obj_name
     ]
@@ -111,10 +110,9 @@ function parse_get(context, req, res) {
             let join_obj_prop = [
                 //"object",
                 context.namespace,
-                "runtimes",
-                context.runtime_name,
-                "deployments",
+                "app_deployments",
                 context.app_name,
+                context.app_deployment,
                 "objs",
                 join_name
             ]
@@ -182,10 +180,9 @@ function parse_get(context, req, res) {
                 let lookup_obj_prop = [
                     //"object",
                     context.namespace,
-                    "runtimes",
-                    context.runtime_name,
-                    "deployments",
+                    "app_deployments",
                     context.app_name,
+                    context.app_deployment,
                     "objs",
                     lookup_name
                 ]

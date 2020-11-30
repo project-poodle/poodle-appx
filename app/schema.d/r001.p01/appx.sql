@@ -422,18 +422,17 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`relation_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_deployment`        VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `objn_name`             VARCHAR(32)             NOT NULL,
     `relation_status`       JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_runtime`, `app_deployment`, `obj_name`, `objn_name`),
-    PRIMARY KEY (`id`, `namespace`, `app_name`, `app_runtime`, `app_deployment`)
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_deployment`, `obj_name`, `objn_name`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `app_deployment`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`, `app_runtime`, `app_deployment`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `app_name`, `app_deployment`) PARTITIONS 20;
 
 CREATE TABLE `{{{global.schema_prefix}}}`.`api` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
@@ -458,7 +457,6 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`api_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_deployment`        VARCHAR(32)             NOT NULL,
     `obj_name`              VARCHAR(32)             NOT NULL,
     `api_method`            VARCHAR(15)             NOT NULL,
@@ -466,11 +464,11 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`api_status` (
     `api_status`            JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_runtime`, `app_deployment`, `obj_name`, `api_method`, `api_endpoint`),
-    PRIMARY KEY (`id`, `namespace`, `app_name`, `app_runtime`, `app_deployment`)
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_deployment`, `obj_name`, `api_method`, `api_endpoint`),
+    PRIMARY KEY (`id`, `namespace`, `app_name`, `app_deployment`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
-PARTITION BY KEY(`namespace`, `app_name`, `app_runtime`, `app_deployment`) PARTITIONS 20;
+PARTITION BY KEY(`namespace`, `app_name`, `app_deployment`) PARTITIONS 20;
 
 CREATE TABLE `{{{global.schema_prefix}}}`.`transform` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
