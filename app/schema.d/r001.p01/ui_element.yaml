@@ -20,16 +20,16 @@ ui_element:
               title: PropTypes.string.isRequired
           base:
               type: jsx/element
-              name: app-x/apps/MUI_route_theme_redux
+              name: app-x/apps/MUI_theme_redux
               props:
+                  routes:
+                      type: jsx/route
                   redux_store_provider:
                       type: js/import
                       name: app-x/redux/store|default
                   theme_provider:
                       type: js/import
                       name: app-x/theme|default
-                  routes:
-                      type: jsx/route
                   not_found_view:
                       type: jsx/element
                       name: app-x/pages/layouts/headerLayout
@@ -54,7 +54,7 @@ ui_element:
       ui_element_spec:
           base:
               type: jsx/element
-              name: app-x/pages/landing/YouTube_bg_fs
+              name: app-x/pages/landing/YouTube_fs
               props:
                   youtube_playlist:
                       - vid: 'vzR0dsZeQsY' # natural

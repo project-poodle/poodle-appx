@@ -485,7 +485,26 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
     })
 
     router.use('/', (req, res) => {
-        res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
+        if (req.url.startsWith(ELEM_ROUTE_PREFIX)) {
+            res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
+        } else {
+            // treat as '/' element
+            req.context = Object.assign({},
+                req.context,
+                {
+                    ui_element: {
+                        namespace: namespace,
+                        app_name: app_name,
+                        runtime_name: runtime_name,
+                        ui_app_ver: ui_app_ver,
+                        ui_element_name: '/'
+                    }
+                }
+            )
+
+            // handle root element '/'
+            handle_element(req, res)
+        }
     })
 
     return router

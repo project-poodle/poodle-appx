@@ -13,6 +13,14 @@ function isPrimitive(test) {
     return (test !== Object(test))
 }
 
+// capitalize string
+function capitalize(s) {
+  if (typeof s !== 'string') {
+    throw new Error(`ERROR: capitalize input is not string [${typeof s}]`)
+  }
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 // reserved test
 function isReserved(test) {
   try {
@@ -165,7 +173,7 @@ function js_variable(js_context, input) {
 
 function _js_parse_snippet(js_context, parsed) {
 
-  console.log(parsed)
+  // console.log(parsed)
 
   traverse(parsed, {
     // resolve call expressins with '$r' require syntax
@@ -326,7 +334,10 @@ function jsx_element(js_context, input) {
     throw new Error(`ERROR: input.name missing in [jsx/element] [${JSON.stringify(input)}]`)
   }
 
-  reg_js_import(js_context, input.name, use_default=true)
+  // capitalize qualified_name
+  const qualified_name = capitalize(input.name.split('/').pop().split('|').pop())
+
+  reg_js_import(js_context, input.name, use_default=true, suggested_name=qualified_name)
 
   return t.jSXElement(
     t.jSXOpeningElement(
@@ -637,8 +648,10 @@ function reg_js_variable(js_context, variable_full_path, kind='const', suggested
     let variable_prefix_paths = import_path.split('/')
     variable_prefix_paths = variable_prefix_paths.concat(sub_vars)
     if (suggested_name) {
-      variable_prefix_paths.push(suggested_name)
+      variable_prefix_paths.pop() // remove most qualified name
+      variable_prefix_paths.push(suggested_name) // add suggested_name
     }
+
     // console.log(variable_prefix_paths)
     let variable_qualified_name = variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
     if (isReserved(variable_qualified_name)) {
