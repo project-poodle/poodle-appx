@@ -1,6 +1,8 @@
 # relation
 relation:
     ######################################################################
+    # spec to status relationship
+    ######################################################################
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -44,6 +46,8 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
+              - src: "app_name"
+                tgt: "app_name"
               - src: "app_runtime"
                 tgt: "app_runtime"
           comment: "initialize: app_runtime -> app_runtime_status (1)"
@@ -64,8 +68,8 @@ relation:
                 tgt: "app_name"
               - src: "app_runtime"
                 tgt: "app_runtime"
-              - src: "app_ver"
-                tgt: "app_ver"
+              - src: "app_deployment"
+                tgt: "app_deployment"
           comment: "initialize: app_deployment -> app_deployment_status (1)"
 
     ######################################################################
@@ -84,8 +88,6 @@ relation:
                 tgt: "namespace"
               - src: "app_name"
                 tgt: "app_name"
-              - src: "app_ver"
-                tgt: "app_ver"
               - src: "obj_name"
                 tgt: "obj_name"
           comment: "initialize: obj -> obj_status (n)"
@@ -106,12 +108,32 @@ relation:
                 tgt: "namespace"
               - src: "app_name"
                 tgt: "app_name"
-              - src: "app_ver"
-                tgt: "app_ver"
               - src: "obj_name"
                 tgt: "obj_name"
               - src: "attr_name"
                 tgt: "attr_name"
+          comment: "initialize: attr -> attr_status (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "relation"
+      objn_name: "relation_status"
+      relation_spec:
+          kind:
+              type: "n"
+              attrs:
+                  - "app_runtime"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "app_name"
+                tgt: "app_name"
+              - src: "obj_name"
+                tgt: "obj_name"
+              - src: "objn_name"
+                tgt: "objn_name"
           comment: "initialize: attr -> attr_status (n)"
 
     ######################################################################
@@ -130,8 +152,6 @@ relation:
                 tgt: "namespace"
               - src: "app_name"
                 tgt: "app_name"
-              - src: "app_ver"
-                tgt: "app_ver"
               - src: "obj_name"
                 tgt: "obj_name"
               - src: "api_method"
@@ -160,6 +180,14 @@ relation:
                 tgt: "app_ver"
               - src: "obj_name"
                 tgt: "obj_name"
+              - src: "src_namespace"
+                tgt: "src_namespace"
+              - src: "src_app_name"
+                tgt: "src_app_name"
+              - src: "src_app_ver"
+                tgt: "src_app_ver"
+              - src: "src_obj_name"
+                tgt: "src_obj_name"
               - src: "transform_name"
                 tgt: "transform_name"
           comment: "initialize: transform -> transform_status (n)"
@@ -168,19 +196,19 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
-      objn_name: "ui_app_status"
+      obj_name: "ui"
+      objn_name: "ui_status"
       relation_spec:
           kind:
               type: "1"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "ui_app_name"
-                tgt: "ui_app_name"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
-          comment: "initialize: ui_app -> ui_app_status (1)"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_ver"
+                tgt: "ui_ver"
+          comment: "initialize: ui -> ui_status (1)"
 
     ######################################################################
     - namespace: "sys"
@@ -194,10 +222,10 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "ui_app_name"
-                tgt: "ui_app_name"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_deployment"
+                tgt: "ui_deployment"
           comment: "initialize: ui_deployment -> ui_deployment_status (1)"
 
     ######################################################################
@@ -210,18 +238,40 @@ relation:
           kind:
               type: "n"
               attrs:
-                  - "app_runtime"
+                  - "ui_deployment"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "ui_app_name"
-                tgt: "ui_app_name"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
+              - src: "ui_name"
+                tgt: "ui_name"
               - src: "ui_element_name"
                 tgt: "ui_element_name"
           comment: "initialize: ui_element -> ui_element_status (n)"
 
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_route"
+      objn_name: "ui_route_status"
+      relation_spec:
+          kind:
+              type: "n"
+              attrs:
+                  - "ui_deployment"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_route_name"
+                tgt: "ui_route_name"
+          comment: "initialize: ui_route -> ui_route_status (n)"
+
+
+
+    ######################################################################
+    # app relationship
     ######################################################################
     - namespace: "sys"
       app_name: "appx"
@@ -243,7 +293,7 @@ relation:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "namespace"
+      obj_name: "app"
       objn_name: "app_runtime"
       relation_spec:
           type:
@@ -253,7 +303,11 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-          comment: "initialize: namespace -> app_runtime (n)"
+              - src: "app_name"
+                tgt: "app_name"
+              - src: "app_ver"
+                tgt: "app_ver"
+          comment: "initialize: app -> app_runtime (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -266,6 +320,7 @@ relation:
               type: "n"
               attrs:
                   - "app_runtime"
+                  - "app_deployment"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -285,54 +340,17 @@ relation:
           type:
               type: "n"
               attrs:
-                  - "app_name"
-                  - "app_ver"
+                  - "app_deployment"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
+              - src: "app_name"
+                tgt: "app_name"
               - src: "app_runtime"
                 tgt: "app_runtime"
+              - src: "app_ver"
+                tgt: "app_ver"
           comment: "initialize: app_runtime -> app_deployment (n)"
-
-    ######################################################################
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "ui_app"
-      objn_name: "ui_deployment"
-      relation_spec:
-          type:
-              type: "n"
-              attrs:
-                  - "app_runtime"
-          attrs:
-              - src: "namespace"
-                tgt: "namespace"
-              - src: "app_name"
-                tgt: "app_name"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
-          comment: "initialize: ui_app -> ui_deployment (n)"
-
-    ######################################################################
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "app_deployment"
-      objn_name: "ui_deployment"
-      relation_spec:
-          type:
-              type: "n"
-              attrs:
-                  - "ui_app_ver"
-          attrs:
-              - src: "namespace"
-                tgt: "namespace"
-              - src: "app_name"
-                tgt: "app_name"
-              - src: "app_runtime"
-                tgt: "app_runtime"
-          comment: "initialize: app_deployment -> ui_deployment (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -344,7 +362,6 @@ relation:
           type:
               type: "n"
               attrs:
-                  - "app_runtime"
                   - "obj_name"
           attrs:
               - src: "namespace"
@@ -423,6 +440,51 @@ relation:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj"
+      objn_name: "relation"
+      relation_spec:
+          type:
+              type: "n"
+              attrs:
+                  - "objn_name"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "app_name"
+                tgt: "app_name"
+              - src: "app_ver"
+                tgt: "app_ver"
+              - src: "obj_name"
+                tgt: "obj_name"
+          comment: "initialize: obj -> relation (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "app_deployment"
+      objn_name: "relation_status"
+      relation_spec:
+          type:
+              type: "n"
+              attrs:
+                  - "obj_name"
+                  - "objn_name"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "app_name"
+                tgt: "app_name"
+              - src: "app_runtime"
+                tgt: "app_runtime"
+              - src: "app_deployment"
+                tgt: "app_deployment"
+          comment: "initialize: app_deployment -> relation_status (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "obj"
       objn_name: "api"
       relation_spec:
           type:
@@ -461,6 +523,8 @@ relation:
                 tgt: "app_name"
               - src: "app_runtime"
                 tgt: "app_runtime"
+              - src: "app_deployment"
+                tgt: "app_deployment"
           comment: "initialize: app_deployment -> api_status (n)"
 
     ######################################################################
@@ -474,6 +538,10 @@ relation:
               type: "n"
               attrs:
                   - "transform_name"
+                  - "src_namespace"
+                  - "src_app_name"
+                  - "src_app_ver"
+                  - "src_obj_name"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
@@ -485,32 +553,51 @@ relation:
                 tgt: "obj_name"
           comment: "initialize: obj -> transform (n)"
 
+
+    ######################################################################
+    # ui object relationship
     ######################################################################
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "app_deployment"
-      objn_name: "transform_status"
+      obj_name: "namespace"
+      objn_name: "ui"
       relation_spec:
           type:
               type: "n"
               attrs:
-                  - "obj_name"
-                  - "transform_name"
+                  - "ui"
+                  - "ui_ver"
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "app_name"
-                tgt: "app_name"
-              - src: "app_runtime"
-                tgt: "app_runtime"
-          comment: "initialize: app_deployment -> transform_status (n)"
+          comment: "initialize: namespace -> ui (n)"
 
     ######################################################################
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
+      objn_name: "ui_deployment"
+      relation_spec:
+          type:
+              type: "n"
+              attrs:
+                  - "ui_deployment"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_ver"
+                tgt: "ui_ver"
+          comment: "initialize: ui -> ui_deployment (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui"
       objn_name: "ui_element"
       relation_spec:
           type:
@@ -520,11 +607,11 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "app_name"
-                tgt: "app_name"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
-          comment: "initialize: ui_app -> ui_element (n)"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_ver"
+                tgt: "ui_ver"
+          comment: "initialize: ui -> ui_element (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -540,10 +627,48 @@ relation:
           attrs:
               - src: "namespace"
                 tgt: "namespace"
-              - src: "app_name"
-                tgt: "app_name"
-              - src: "app_runtime"
-                tgt: "app_runtime"
-              - src: "ui_app_ver"
-                tgt: "ui_app_ver"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_deployment"
+                tgt: "ui_deployment"
           comment: "initialize: ui_deployment -> ui_element_status (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui"
+      objn_name: "ui_route"
+      relation_spec:
+          type:
+              type: "n"
+              attrs:
+                  - "route_name"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_ver"
+                tgt: "ui_ver"
+          comment: "initialize: ui -> ui_route (n)"
+
+    ######################################################################
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_deployment"
+      objn_name: "ui_route_status"
+      relation_spec:
+          type:
+              type: "n"
+              attrs:
+                  - "route_name"
+          attrs:
+              - src: "namespace"
+                tgt: "namespace"
+              - src: "ui_name"
+                tgt: "ui_name"
+              - src: "ui_deployment"
+                tgt: "ui_deployment"
+          comment: "initialize: ui_deployment -> ui_route_status (n)"

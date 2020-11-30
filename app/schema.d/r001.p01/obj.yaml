@@ -51,18 +51,18 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "app_app_deployment"
+      obj_name: "app_deployment"
       obj_type: "spec"
       obj_spec:
-          comment: "initialize: app_app_deployment"
+          comment: "initialize: app_deployment"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "app_app_deployment_status"
+      obj_name: "app_deployment_status"
       obj_type: "status"
       obj_spec:
-          comment: "initialize: app_app_deployment_status"
+          comment: "initialize: app_deployment_status"
 
     - namespace: "sys"
       app_name: "appx"
@@ -83,22 +83,6 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "relation"
-      obj_type: "spec"
-      obj_spec:
-          comment: "initialize: relation"
-
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "relation_status"
-      obj_type: "status"
-      obj_spec:
-          comment: "initialize: relation_status"
-
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
       obj_name: "attr"
       obj_type: "spec"
       obj_spec:
@@ -111,6 +95,22 @@ obj:
       obj_type: "status"
       obj_spec:
           comment: "initialize: attr_status"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "relation"
+      obj_type: "spec"
+      obj_spec:
+          comment: "initialize: relation"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "relation_status"
+      obj_type: "status"
+      obj_spec:
+          comment: "initialize: relation_status"
 
     - namespace: "sys"
       app_name: "appx"

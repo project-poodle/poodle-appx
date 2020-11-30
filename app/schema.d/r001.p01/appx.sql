@@ -487,7 +487,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`transform` (
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_ver`, `obj_name`, `src_namespace`, `src_app_name`, `src_app_ver`, `src_obj_name`, `transform_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_ver`, `obj_name`, `transform_name`),
     PRIMARY KEY (`id`, `namespace`, `app_name`, `app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -507,7 +507,7 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`transform_status` (
     `transform_status`      JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_ver`, `obj_name`, `src_namespace`, `src_app_name`, `src_app_ver`, `src_obj_name`, `transform_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_ver`, `obj_name`, `transform_name`),
     PRIMARY KEY (`id`, `namespace`, `app_name`, `app_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
