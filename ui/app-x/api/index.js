@@ -3,53 +3,37 @@ import axios from 'axios'
 
 import store from 'app-x/redux/store'
 
-var api_base_url = '/appx/api'
-
-var app_context = {
-  namespace: 'sys',
-  app_name: 'appx',
-  runtime_name: 'base',
+function _check_app_context(app) {
+  if (!('namespace' in app)) {
+    console.error(`ERROR: app_context missing namespace`)
+  }
+  if (!('app_name' in app)) {
+    console.error(`ERROR: app_context missing app_name`)
+  }
+  if (!('app_runtime' in app)) {
+    console.error(`ERROR: app_context missing runtime_name`)
+  }
 }
 
-var appx_token = null
-
-function get_api_base_url() {
-  return api_base_url
-}
-
-function set_api_base_url(url) {
-  api_base_url = url
-}
-
-function get_app_context() {
-  return app_context
-}
-
-function set_app_context(context) {
-  app_context = context
-}
 
 // clear token information at local storage, and broadcast redux message
 function _handle_logout(app) {
   // update in memory appx_token to null
-  appx_token = null
   // save username and token as null
-  window.localStorage.setItem(`/app-x/${app.namespace}/${app.app_name}/userToken`, JSON.stringify({username: null, token: null}))
-  window.localStorage.setItem(`/app-x/${app.namespace}/${app.app_name}/userInfo`, JSON.stringify({username: null, user_info: null}))
+  window.localStorage.removeItem(`/app-x/${app.namespace}/${app.app_name}/userToken`)
+  window.localStorage.removeItem(`/app-x/${app.namespace}/${app.app_name}/userInfo`)
   // broadcast logout message
   store.dispatch({
     type: 'user/logout',
     namespace: app.namespace,
     app_name: app.app_name,
+    runtime_name: app.runtime_name,
   })
 }
 
 // login for app context
 function login(app, username, password, callback, handler) {
   //console.log(`INFO: api/login - ${realm} ${username} ${password}`)
-  if (!app) {
-    app = app_context
-  }
   axios
     .post(
       `/${api_base_url}/${app.namespace}/${app.app_name}/login`.replace(/\/+/g, '/'),

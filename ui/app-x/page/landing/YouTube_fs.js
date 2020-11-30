@@ -10,54 +10,55 @@ import { navigate } from 'hookrouter'
 import { Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Slideshow as SlideshowIcon, MenuBook as MenuBookIcon } from '@material-ui/icons'
 
-const useStyles = makeStyles((theme) => ({
-
-  paper: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-
-  videoBackground: {
-    background: "#555",
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: -99
-  },
-  videoForeground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    ['@media (min-aspect-ratio: 16/9)']: {
-      height: "500%",
-      top: "-200%",
-    },
-    ['@media (max-aspect-ratio: 16/9)']: {
-      width: "500%",
-      left: "-200%",
-    },
-  },
-
-  grid: {
-    position: "fixed",
-    bottom: "8%",
-    zIndex: 0
-  },
-}))
 
 export default function Youtube_Landing(props) {
 
-  //console.log(useStyles)
-  const classes = useStyles();
+  const useStyles = makeStyles((theme) => ({
 
-  //console.log(classes)
+    paper: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    },
+
+    videoBackground: {
+      background: "#555",
+      position: "fixed",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      zIndex: -99
+    },
+    videoForeground: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      ['@media (min-aspect-ratio: 16/9)']: {
+        height: "500%",
+        top: "-200%",
+      },
+      ['@media (max-aspect-ratio: 16/9)']: {
+        width: "500%",
+        left: "-200%",
+      },
+    },
+
+    grid: {
+      position: "fixed",
+      bottom: "8%",
+      zIndex: 0
+    },
+  }))
+
+  //console.log(useStyles)
+  const styles = useStyles();
+
+  //console.log(styles)
   var player = null;
 
   const videos = props.youtube_playlist;
@@ -126,11 +127,11 @@ export default function Youtube_Landing(props) {
 
   return (
     <Box className="paper">
-      <Box className={classes.videoBackground}>
-        <Box className={classes.videoForeground} id="video-foreground">
+      <Box className={styles.videoBackground}>
+        <Box className={styles.videoForeground} id="video-foreground">
         </Box>
       </Box>
-      <Box className={classes.paper}>
+      <Box className={styles.paper}>
         { props.children }
       </Box>
     </Box>

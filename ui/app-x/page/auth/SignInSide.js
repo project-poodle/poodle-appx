@@ -24,72 +24,72 @@ import FacebookIcon from 'app-x/icons/Facebook'
 import GoogleIcon from 'app-x/icons/Google'
 import { login, get_user_info } from 'app-x/api'
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        App-X.org
-      </Link>{' '}
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100%',
-  },
-  image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  paper: {
-    margin: theme.spacing(12, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  facebook: {
-    backgroundColor: '#4267B2',
-  },
-  google: {
-    backgroundColor: '#DB4437',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  line: {
-    margin: theme.spacing(1),
-  },
-  error: {
-    margin: theme.spacing(1),
-    color: theme.palette.text.error,
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    margin: theme.spacing(1),
-  },
-  grid: {
-    margin: theme.spacing(2, 0, 2),
-  },
-  submit: {
-    margin: theme.spacing(2, 0, 2),
-  },
-}));
-
 
 export default function SignInSide() {
 
-  const classes = useStyles()
+  function Copyright() {
+    return (
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Copyright © '}
+        <Link color="inherit" href="https://material-ui.com/">
+          App-X.org
+        </Link>{' '}
+        {new Date().getFullYear()}
+      </Typography>
+    );
+  }
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      height: '100%',
+    },
+    image: {
+      backgroundImage: 'url(https://source.unsplash.com/random)',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor:
+        theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+    paper: {
+      margin: theme.spacing(12, 4),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    facebook: {
+      backgroundColor: '#4267B2',
+    },
+    google: {
+      backgroundColor: '#DB4437',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    line: {
+      margin: theme.spacing(1),
+    },
+    error: {
+      margin: theme.spacing(1),
+      color: theme.palette.text.error,
+    },
+    button: {
+      margin: theme.spacing(1),
+    },
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      margin: theme.spacing(1),
+    },
+    grid: {
+      margin: theme.spacing(2, 0, 2),
+    },
+    submit: {
+      margin: theme.spacing(2, 0, 2),
+    },
+  }));
+
+  const styles = useStyles()
   //const history = useHistory()
   //const { history } = props
 
@@ -120,22 +120,22 @@ export default function SignInSide() {
   }
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component="main" className={styles.root}>
       <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} lg={8} className={classes.image} />
+      <Grid item xs={false} sm={4} md={7} lg={8} className={styles.image} />
       <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
+        <div className={styles.paper}>
+          <Avatar className={styles.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" className={classes.line}>
+          <Typography component="h1" variant="h5" className={styles.line}>
             Sign in to App-X
           </Typography>
-          <Grid container spacing={2} className={classes.grid}>
+          <Grid container spacing={2} className={styles.grid}>
               <Grid item xs={12}>
                 <Button
                   color="primary"
-                  className={classes.facebook}
+                  className={styles.facebook}
                   fullWidth
                   startIcon={<FacebookIcon />}
                   onClick={handleSubmit}
@@ -148,7 +148,7 @@ export default function SignInSide() {
               <Grid item xs={12}>
                 <Button
                   color="primary"
-                  className={classes.google}
+                  className={styles.google}
                   fullWidth
                   startIcon={<GoogleIcon />}
                   onClick={handleSubmit}
@@ -159,7 +159,7 @@ export default function SignInSide() {
                 </Button>
               </Grid>
           </Grid>
-          <form className={classes.form} noValidate>
+          <form className={styles.form} noValidate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -189,7 +189,7 @@ export default function SignInSide() {
             {
               displayErr ? (
                 <Grid item xs={12}>
-                  <Typography component="h1" variant="h5" className={classes.error}>
+                  <Typography component="h1" variant="h5" className={styles.error}>
                     {loginErr}
                   </Typography>
                 </Grid>
@@ -202,7 +202,7 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               size="large"
-              className={classes.submit}
+              className={styles.submit}
             >
               Sign In
             </Button>

@@ -35,34 +35,34 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       obj_type: "spec"
       obj_spec:
-          comment: "initialize: runtime"
+          comment: "initialize: app_runtime"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime_status"
+      obj_name: "app_runtime_status"
       obj_type: "status"
       obj_spec:
-          comment: "initialize: runtime_status"
+          comment: "initialize: app_runtime_status"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_app_deployment"
       obj_type: "spec"
       obj_spec:
-          comment: "initialize: deployment"
+          comment: "initialize: app_app_deployment"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment_status"
+      obj_name: "app_app_deployment_status"
       obj_type: "status"
       obj_spec:
-          comment: "initialize: deployment_status"
+          comment: "initialize: app_app_deployment_status"
 
     - namespace: "sys"
       app_name: "appx"
@@ -147,18 +147,18 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       obj_type: "spec"
       obj_spec:
-          comment: "initialize: ui_app"
+          comment: "initialize: ui"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app_status"
+      obj_name: "ui_status"
       obj_type: "status"
       obj_spec:
-          comment: "initialize: ui_app_status"
+          comment: "initialize: ui_status"
 
     - namespace: "sys"
       app_name: "appx"
@@ -191,3 +191,19 @@ obj:
       obj_type: "status"
       obj_spec:
           comment: "initialize: ui_element_status"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_route"
+      obj_type: "spec"
+      obj_spec:
+          comment: "initialize: ui_route"
+
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      obj_name: "ui_route_status"
+      obj_type: "status"
+      obj_spec:
+          comment: "initialize: ui_route_status"

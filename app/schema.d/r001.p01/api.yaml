@@ -198,222 +198,222 @@ api:
               desc: "post app status for :namespace / :app_name / :app_ver"
 
     ######################################################################
-    # runtime
+    # app_runtime
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/runtime"
+      api_endpoint: "/namespace/:namespace/app_runtime"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "runtime_status"
+                  - obj: "app_runtime_status"
                     type: "left"
                   - obj: "namespace"
           doc:
-              desc: "list runtimes for :namespace"
+              desc: "list app_runtimes for :namespace"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_runtime/:app_runtime"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "runtime_status"
+                  - obj: "app_runtime_status"
                     type: "left"
                   - obj: "namespace"
           doc:
-              desc: "get runtime for :namespace / :runtime_name"
+              desc: "get app_runtime for :namespace / :app_runtime"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert runtime for :namespace / :runtime_name"
+              desc: "upsert app_runtime for :namespace / :app_runtime"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update runtime for :namespace / :runtime_name"
+              desc: "update app_runtime for :namespace / :app_runtime"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime"
+      obj_name: "app_runtime"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete runtime for :namespace / :runtime_name (logical deletion)"
+              desc: "delete app_runtime for :namespace / :app_runtime (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "runtime_status"
+      obj_name: "app_runtime_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/runtime/:runtime_name/status"
+      api_endpoint: "/namespace/:namespace/app_runtime/:app_runtime/status"
       api_spec:
           permission: "app.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post runtime status for :namespace / :runtime_name"
+              desc: "post app_runtime status for :namespace / :app_runtime"
 
     ######################################################################
-    # deployment
+    # app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment"
+      api_endpoint: "/namespace/:namespace/app_deployment"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "deployment_status"
+                  - obj: "app_deployment_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list deployments for :namespace"
+              desc: "list app_deployments for :namespace"
     # list by :app_name
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "deployment_status"
+                  - obj: "app_deployment_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list deployments for :namespace / :app_name"
-    # list by :runtime_name
+              desc: "list app_deployments for :namespace / :app_name"
+    # list by :app_runtime
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app_runtime/:app_runtime"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "deployment_status"
+                  - obj: "app_deployment_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list deployments for :namespace / :runtime_name"
+              desc: "list app_deployments for :namespace / :app_runtime"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime"
       api_spec:
           permission: "app.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "deployment_status"
+                  - obj: "app_deployment_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "get deployment for :namespace / :runtime_name / :app_name"
+              desc: "get app_deployment for :namespace / :app_runtime / :app_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert deployment for :namespace / :runtime_name / :app_name"
+              desc: "upsert app_deployment for :namespace / :app_runtime / :app_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update deployment for :namespace / :runtime_name / :app_name"
+              desc: "update app_deployment for :namespace / :app_runtime / :app_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment"
+      obj_name: "app_deployment"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime"
       api_spec:
           permission: "app.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete deployment for :namespace / :runtime_name / :app_name (logical deletion)"
+              desc: "delete app_deployment for :namespace / :app_runtime / :app_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "deployment_status"
+      obj_name: "app_deployment_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/status"
       api_spec:
           permission: "app.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post deployment status for :namespace / :runtime_name / :app_name"
+              desc: "post app_deployment status for :namespace / :app_runtime / :app_name"
 
     ######################################################################
     # obj
@@ -432,13 +432,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list objs for :namespace / :app_name / :app_ver"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj"
       api_spec:
           permission: "app.read"
           syntax:
@@ -446,11 +446,11 @@ api:
               join:
                   - obj: "obj_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list deployment objs for :namespace / :runtime_name / :app_name"
+              desc: "list app_deployment objs for :namespace / :app_runtime / :app_name"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -467,13 +467,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "get obj for :namespace / :app_name / :app_ver / :obj_name"
-    # get by deployment
+    # get by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "obj"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name"
       api_spec:
           permission: "app.read"
           syntax:
@@ -481,11 +481,11 @@ api:
               join:
                   - obj: "obj_status"
                     type: "left"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "get deployment obj for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "get app_deployment obj for :namespace / :app_runtime / :app_name / :obj_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
@@ -531,13 +531,13 @@ api:
       app_ver: "internal"
       obj_name: "obj_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/status"
       api_spec:
           permission: "app.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post obj status for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "post obj status for :namespace / :app_runtime / :app_name / :obj_name"
 
     ######################################################################
     # relation
@@ -557,13 +557,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list relations for :namespace / :app_name / :app_ver"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/relation"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/relation"
       api_spec:
           permission: "app.read"
           syntax:
@@ -573,10 +573,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "list deployment relations for :namespace / :runtime_name / :app_name"
+              desc: "list app_deployment relations for :namespace / :app_runtime / :app_name"
     # list
     - namespace: "sys"
       app_name: "appx"
@@ -594,13 +594,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list relations for :namespace / :app_name / :app_ver / :obj_name"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/relation/:obj_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/relation/:obj_name"
       api_spec:
           permission: "app.read"
           syntax:
@@ -610,10 +610,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "list deployment relations for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "list app_deployment relations for :namespace / :app_runtime / :app_name / :obj_name"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -631,13 +631,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "get relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
-    # get by deployment
+    # get by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/relation/:obj_name/:objn_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/relation/:obj_name/:objn_name"
       api_spec:
           permission: "app.read"
           syntax:
@@ -647,10 +647,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "get deployment relation for :namespace / :runtime_name / :app_name / :obj_name / :objn_name"
+              desc: "get app_deployment relation for :namespace / :app_runtime / :app_name / :obj_name / :objn_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
@@ -696,7 +696,7 @@ api:
       app_ver: "internal"
       obj_name: "relation_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/relation/:obj_name/:objn_name/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/relation/:obj_name/:objn_name/status"
       api_spec:
           permission: "app.status"
           syntax:
@@ -722,13 +722,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list attrs for :namespace / :app_name / :app_ver / :obj_name"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/attr"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/attr"
       api_spec:
           permission: "app.read"
           syntax:
@@ -738,10 +738,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "list deployment attrs for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "list app_deployment attrs for :namespace / :app_runtime / :app_name / :obj_name"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -759,13 +759,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "get attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
-    # get by deployment
+    # get by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "attr"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/attr/:attr_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/attr/:attr_name"
       api_spec:
           permission: "app.read"
           syntax:
@@ -775,10 +775,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "get deployment attr for :namespace / :runtime_name / :app_name / :obj_name / :attr_name"
+              desc: "get app_deployment attr for :namespace / :app_runtime / :app_name / :obj_name / :attr_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
@@ -824,7 +824,7 @@ api:
       app_ver: "internal"
       obj_name: "attr_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/attr/:attr_name/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/attr/:attr_name/status"
       api_spec:
           permission: "app.status"
           syntax:
@@ -850,13 +850,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list apis for :namespace / :app_name / :app_ver / :obj_name"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/api"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/api"
       api_spec:
           permission: "app.read"
           syntax:
@@ -866,10 +866,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "list deployment apis for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "list app_deployment apis for :namespace / :app_runtime / :app_name / :obj_name"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -887,13 +887,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "get api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
-    # get by deployment
+    # get by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "api"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/api/:api_method/:api_endpoint"
       api_spec:
           permission: "app.read"
           syntax:
@@ -903,10 +903,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "get deployment api for :namespace / :runtime_name / :app_name / :obj_name / :api_method / :api_endpoint"
+              desc: "get app_deployment api for :namespace / :app_runtime / :app_name / :obj_name / :api_method / :api_endpoint"
     # upsert
     - namespace: "sys"
       app_name: "appx"
@@ -952,7 +952,7 @@ api:
       app_ver: "internal"
       obj_name: "api_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/api/:api_method/:api_endpoint/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/api/:api_method/:api_endpoint/status"
       api_spec:
           permission: "app.status"
           syntax:
@@ -978,13 +978,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "list transforms for :namespace / :app_name / :app_ver / :obj_name"
-    # list by deployment
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/transform"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/transform"
       api_spec:
           permission: "app.read"
           syntax:
@@ -994,10 +994,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "list deployment transforms for :namespace / :runtime_name / :app_name / :obj_name"
+              desc: "list app_deployment transforms for :namespace / :app_runtime / :app_name / :obj_name"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -1015,13 +1015,13 @@ api:
                   - obj: "namespace"
           doc:
               desc: "get transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
-    # get by deployment
+    # get by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "transform"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/transform/:transform_name"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/transform/:transform_name"
       api_spec:
           permission: "app.read"
           syntax:
@@ -1031,10 +1031,10 @@ api:
                     type: "left"
                   - obj: "obj"
                   - obj: "app"
-                  - obj: "runtime"
+                  - obj: "app_runtime"
                   - obj: "namespace"
           doc:
-              desc: "get deployment transform for :namespace / :runtime_name / :app_name / :obj_name / :transform_name"
+              desc: "get app_deployment transform for :namespace / :app_runtime / :app_name / :obj_name / :transform_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
@@ -1080,7 +1080,7 @@ api:
       app_ver: "internal"
       obj_name: "transform_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/deployment/app/:app_name/runtime/:runtime_name/obj/:obj_name/transform/:transform_name/status"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/app_runtime/:app_runtime/obj/:obj_name/transform/:transform_name/status"
       api_spec:
           permission: "app.status"
           syntax:
@@ -1089,109 +1089,109 @@ api:
               desc: "post transform status for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
 
     ######################################################################
-    # ui_app
+    # ui
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_app"
+      api_endpoint: "/namespace/:namespace/ui"
       api_spec:
           permission: "ui.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "ui_app_status"
+                  - obj: "ui_status"
                     type: "left"
                   - obj: "namespace"
           doc:
-              desc: "list ui_apps for :namespace"
+              desc: "list uis for :namespace"
     # list by :app_name
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name"
+      api_endpoint: "/namespace/:namespace/ui/:app_name"
       api_spec:
           permission: "ui.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "ui_app_status"
+                  - obj: "ui_status"
                     type: "left"
                   - obj: "namespace"
           doc:
-              desc: "list ui_apps for :namespace / :app_name"
+              desc: "list uis for :namespace / :app_name"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver"
       api_spec:
           permission: "ui.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "ui_app_status"
+                  - obj: "ui_status"
                     type: "left"
                   - obj: "namespace"
           doc:
-              desc: "get ui_app for :namespace / :app_name / :ui_app_ver"
+              desc: "get ui for :namespace / :app_name / :ui_ver"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert ui_app for :namespace / :app_name / :ui_app_ver"
+              desc: "upsert ui for :namespace / :app_name / :ui_ver"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update ui_app for :namespace / :app_name / :ui_app_ver"
+              desc: "update ui for :namespace / :app_name / :ui_ver"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app"
+      obj_name: "ui"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete app for :namespace / :app_name / :ui_app_ver (logical deletion)"
+              desc: "delete app for :namespace / :app_name / :ui_ver (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_app_status"
+      obj_name: "ui_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/status"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/status"
       api_spec:
           permission: "ui.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post ui_app status for :namespace / :app_name / :ui_app_ver"
+              desc: "post ui status for :namespace / :app_name / :ui_ver"
 
     ######################################################################
     # ui_deployment
@@ -1208,9 +1208,9 @@ api:
               join:
                   - obj: "ui_deployment_status"
                     type: "left"
-                  - obj: "ui_app"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "ui"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
@@ -1221,7 +1221,7 @@ api:
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1229,20 +1229,20 @@ api:
               join:
                   - obj: "ui_deployment_status"
                     type: "left"
-                  - obj: "ui_app"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "ui"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
               desc: "list ui_deployments for :namespace / :app_name"
-    # list by :runtime_name
+    # list by :app_runtime
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1250,20 +1250,20 @@ api:
               join:
                   - obj: "ui_deployment_status"
                     type: "left"
-                  - obj: "ui_app"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "ui"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list ui_deployments for :namespace / :runtime_name"
-    # list by :app_name and :runtime_name
+              desc: "list ui_deployments for :namespace / :app_runtime"
+    # list by :app_name and :app_runtime
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1271,20 +1271,20 @@ api:
               join:
                   - obj: "ui_deployment_status"
                     type: "left"
-                  - obj: "ui_app"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "ui"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list ui_deployments for :namespace / :app_name / :runtime_name"
+              desc: "list ui_deployments for :namespace / :app_name / :app_runtime"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1292,65 +1292,65 @@ api:
               join:
                   - obj: "ui_deployment_status"
                     type: "left"
-                  - obj: "ui_app"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "ui"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "get ui_deployment for :namespace / :app_name / :ui_app_ver / :runtime_name"
+              desc: "get ui_deployment for :namespace / :app_name / :ui_ver / :app_runtime"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert ui_deployment for :namespace / :app_name / :ui_app_ver / :runtime_name"
+              desc: "upsert ui_deployment for :namespace / :app_name / :ui_ver / :app_runtime"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update ui_deployment for :namespace / :app_name / :ui_app_ver / :runtime_name"
+              desc: "update ui_deployment for :namespace / :app_name / :ui_ver / :app_runtime"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete ui_deployment for :namespace / :app_name / :ui_app_ver / :runtime_name (logical deletion)"
+              desc: "delete ui_deployment for :namespace / :app_name / :ui_ver / :app_runtime (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_deployment_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name/status"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime/status"
       api_spec:
           permission: "ui.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post ui_deployment status for :namespace / :app_name / :ui_app_ver / :runtime_name"
+              desc: "post ui_deployment status for :namespace / :app_name / :ui_ver / :app_runtime"
 
     ######################################################################
     # ui_element
@@ -1359,23 +1359,23 @@ api:
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/ui_element"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/ui_element"
       api_spec:
           permission: "ui.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "ui_app"
+                  - obj: "ui"
                   - obj: "namespace"
           doc:
-              desc: "list ui_elements for :namespace / :app_name / :ui_app_ver"
-    # list by deployment
+              desc: "list ui_elements for :namespace / :app_name / :ui_ver"
+    # list by app_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name/ui_element"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime/ui_element"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1383,37 +1383,37 @@ api:
               join:
                   - obj: "ui_element_status"
                     type: "left"
-                  - obj: "ui_app"
+                  - obj: "ui"
                   - obj: "ui_deployment"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "list ui_deployment of ui_elements for :namespace / :app_name / :ui_app_ver / :runtime_name"
+              desc: "list ui_deployment of ui_elements for :namespace / :app_name / :ui_ver / :app_runtime"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/ui_element/:element_name"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/ui_element/:element_name"
       api_spec:
           permission: "ui.read"
           syntax:
               verb: "get"
               join:
-                  - obj: "ui_app"
+                  - obj: "ui"
                   - obj: "namespace"
           doc:
-              desc: "get obj for :namespace / :app_name / :ui_app_ver / :element_name"
+              desc: "get obj for :namespace / :app_name / :ui_ver / :element_name"
     # get by ui_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name/ui_element/:element_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime/ui_element/:element_name"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1421,63 +1421,63 @@ api:
               join:
                   - obj: "ui_element_status"
                     type: "left"
-                  - obj: "ui_app"
+                  - obj: "ui"
                   - obj: "ui_deployment"
-                  - obj: "deployment"
-                  - obj: "runtime"
+                  - obj: "app_deployment"
+                  - obj: "app_runtime"
                   - obj: "app"
                   - obj: "namespace"
           doc:
-              desc: "get ui_element for :namespace / :app_name / :ui_app_ver / :runtime_name / :element_name"
+              desc: "get ui_element for :namespace / :app_name / :ui_ver / :app_runtime / :element_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/ui_element/:element_name"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/ui_element/:element_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert ui_element for :namespace / :app_name / :ui_app_ver / :element_name"
+              desc: "upsert ui_element for :namespace / :app_name / :ui_ver / :element_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/ui_element/:element_name"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/ui_element/:element_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update ui_element for :namespace / :app_name / :ui_app_ver / :element_name"
+              desc: "update ui_element for :namespace / :app_name / :ui_ver / :element_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/ui_app/:app_name/:ui_app_ver/ui_element/:element_name"
+      api_endpoint: "/namespace/:namespace/ui/:app_name/:ui_ver/ui_element/:element_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete ui_element for :namespace / :app_name / :ui_app_ver / :element_name (logical deletion)"
+              desc: "delete ui_element for :namespace / :app_name / :ui_ver / :element_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       obj_name: "ui_element_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui_app/:app_name/:ui_app_ver/runtime/:runtime_name/ui_element/:element_name/status"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:app_name/:ui_ver/app_runtime/:app_runtime/ui_element/:element_name/status"
       api_spec:
           permission: "ui.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post ui_element status for :namespace / :app_name / :ui_app_ver / :runtime_name / :element_name"
+              desc: "post ui_element status for :namespace / :app_name / :ui_ver / :app_runtime / :element_name"

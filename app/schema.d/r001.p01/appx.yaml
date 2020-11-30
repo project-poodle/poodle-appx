@@ -309,30 +309,34 @@ app:
           comment: "initialize"
 
 ######################################################################
-# runtime
-runtime:
-    - namespace: "sys"
-      runtime_name: "base"
-      runtime_spec:
-          comment: "initialize"
-
-######################################################################
-# deployment
-deployment:
+# app_runtime
+app_runtime:
     - namespace: "sys"
       app_name: "appx"
-      runtime_name: "base"
+      app_runtime: "base"
       app_ver: "internal"
-      deployment_spec:
+      app_runtime_spec:
           comment: "initialize"
 
 ######################################################################
-# ui_app
-ui_app:
+# app_deployment
+app_deployment:
     - namespace: "sys"
       app_name: "appx"
-      ui_app_ver: "internal"
-      ui_app_spec:
+      app_runtime: "base"
+      app_deployment: "base"
+      app_ver: "internal"
+      app_rev: "internal"
+      app_deployment_spec:
+          comment: "initialize"
+
+######################################################################
+# ui
+ui:
+    - namespace: "sys"
+      ui_name: "appx-ui"
+      ui_ver: "internal"
+      ui_spec:
           importMaps:
               imports:
                   app-x/: /app-x/
@@ -345,8 +349,8 @@ ui_app:
 # ui_deployment
 ui_deployment:
     - namespace: "sys"
-      app_name: "appx"
-      runtime_name: "base"
-      ui_app_ver: "internal"
+      ui_name: "appx-ui"
+      ui_deployment: "base"
+      ui_ver: "internal"
       ui_deployment_spec:
           comment: "initialize"
