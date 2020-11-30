@@ -42,7 +42,7 @@ ui_element:
               button:
                   margin: "1px"
                       #type: js/expression
-                      #data: "$R('app-x/theme|default').spacing(1)"
+                      #data: "$r('app-x/theme|default').spacing(1)"
           snippet: |+
               console.log(this)
 
@@ -146,7 +146,7 @@ ui_element:
                                         name: "@material-ui/icons|MenuBook"
                                     onClick:
                                         type: js/function
-                                        body: "$R('hookrouter|navigate')('/docs')"
+                                        body: "$r('hookrouter|navigate')('/docs')"
                                     size: large
                                 children:
                                     - "Getting Started"
@@ -187,7 +187,7 @@ ui_element:
                                         name: "@material-ui/icons|Slideshow"
                                     onClick:
                                         type: js/function
-                                        body: "$R('hookrouter|navigate')('/console')"
+                                        body: "$r('hookrouter|navigate')('/console')"
                                     size: large
                                 children:
                                     - "Live Demo"

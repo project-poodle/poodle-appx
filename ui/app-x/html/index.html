@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>{{{data.title}}}</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
+<script type="module">
+
+  {{{init_js}}}
+
+  // render function
+  function render() {
+
+    console.log(`INFO: entry path [${window.appx.ENTRY_ELEM_PATH}]`)
+
+    import(window.appx.ENTRY_ELEM_PATH).then(app_module => {
+      const app = app_module.default
+      //console.log(app)
+      main['react-dom'].render(
+          main['react'].createElement(app, null),
+          document.getElementById('root')
+      )
+    })
+  }
+
+  // wait for service worker registration, or render immediately
+  if (window.appx.SKIP_REG_STEP) {
+    render()
+  } else {
+    setTimeout(render, 1500)
+  }
+
+</script>
+</html>

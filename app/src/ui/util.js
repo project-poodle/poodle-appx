@@ -163,6 +163,43 @@ function js_variable(js_context, input) {
   )
 }
 
+function _js_parse_snippet(js_context, parsed) {
+
+  console.log(parsed)
+
+  traverse(parsed, {
+    // resolve call expressins with '$r' require syntax
+    //   $r('app-x/router|navigate')
+    CallExpression(path) {
+      // log callee
+      //console.log(path.node.callee)
+      //console.log(path.node.arguments)
+      // check if matches '$r' require syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name == '$r'
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // register and import '$r' require syntax
+        const name = path.node.arguments[0].value
+        reg_js_import(js_context, name)
+        path.replaceWith(t.identifier(name))
+      }
+    },
+    // register all variable declarators with 'local' prefix
+    VariableDeclarator(path) {
+      if (t.isIdentifier(path.node.id)) {
+        // register variable defined by local snippet
+        const newName = 'snippet/' + path.node.id.name
+        reg_js_import(js_context, newName)
+        path.node.id.name = newName
+      }
+    }
+  })
+
+  // parsed object is already modified, return same object for convinience
+  return parsed
+}
+
 // create expression ast
 function js_expression(js_context, input) {
 
@@ -188,7 +225,23 @@ function js_expression(js_context, input) {
     data = input.data
   }
 
-  return parseExpression(data)
+  const parsed = parseExpression(data)
+
+  // parse user code snippet
+  _js_parse_snippet(
+    js_context,
+    t.file(
+      t.program(
+        [
+          t.returnStatement(
+            parsed
+          )
+        ]
+      )
+    )
+  )
+
+  return parsed
 }
 
 // create block ast (allow return outside of function)
@@ -218,6 +271,9 @@ function js_block(js_context, input) {
       // 'jsx', // do not support jsx here
     ]
   })
+
+  // parse user code snippet
+  _js_parse_snippet(js_context, program)
 
   return t.blockStatement(
     program.program.body
