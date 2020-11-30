@@ -353,4 +353,10 @@ ui_deployment:
       ui_deployment: "base"
       ui_ver: "internal"
       ui_deployment_spec:
+          apiMaps:
+              appx:
+                  rootUrl: /api/
+                  namespace: sys
+                  app_name: appx
+                  app_deployment: base
           comment: "initialize"

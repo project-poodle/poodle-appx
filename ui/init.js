@@ -1,7 +1,9 @@
 {{#APPX_ENV}}
 
 const IMPORT_MAPS = {{#IMPORT_MAPS}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/IMPORT_MAPS}};
+const API_MAPS = {{#API_MAPS}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/API_MAPS}};
 const RELATIVE_URL = "{{{RELATIVE_URL}}}"
+
 
 {{#IMPORT_MAPS}}
   {{#libs}}
@@ -31,6 +33,7 @@ console.log(`INFO: ENTRY_ELEM_PATH is [${ENTRY_ELEM_PATH}]`)
 
 window.appx = globalThis.appx = {
   IMPORT_MAPS: IMPORT_MAPS,
+  API_MAPS: API_MAPS,
   RELATIVE_URL: RELATIVE_URL,
   BASE_PATH: BASE_PATH,
   BASE_ELEM_PATH: BASE_ELEM_PATH,

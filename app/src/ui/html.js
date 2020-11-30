@@ -79,6 +79,7 @@ function handle_html(req, res) {
 
     const { ui_deployment, ui_element } = req.context
 
+    // check for importMaps
     if (! ('ui_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_spec) ) {
         res.status(422).json({
             status: FAILURE,
@@ -87,6 +88,16 @@ function handle_html(req, res) {
         return
     }
 
+    // check for apiMaps
+    if (! ('ui_deployment_spec' in ui_deployment) || ! ('apiMaps' in ui_deployment.ui_deployment_spec) ) {
+        res.status(422).json({
+            status: FAILURE,
+            message: `ERROR: ui_deployment_spec.importMaps not defined [${ui_deployment}]`
+        })
+        return
+    }
+
+    // check for ui_element_spec
     if (! ('ui_element_spec' in ui_element) ) {
       res.status(422).json({
           status: FAILURE,
@@ -95,6 +106,7 @@ function handle_html(req, res) {
       return
     }
 
+    // check for ui_element_spec.path
     if (! ('path' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
@@ -103,6 +115,7 @@ function handle_html(req, res) {
         return
     }
 
+    // check for ui_element_spec.entry
     if (! ('entry' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
@@ -110,9 +123,6 @@ function handle_html(req, res) {
         })
         return
     }
-
-    // console.log(JSON.stringify(ui_deployment.ui_spec.importMaps, null, 4))
-    // console.log(req.context)
 
     fs.readFile(path.join(rootDir, 'init.js'), "utf8", (err, initjs_content) => {
 
@@ -133,6 +143,7 @@ function handle_html(req, res) {
                     KEY_VALUE: KEY_VALUE,
                     RELATIVE_URL: req.url,
                     IMPORT_MAPS: ui_deployment.ui_spec.importMaps,
+                    API_MAPS: ui_deployment.ui_deployment_spec.apiMaps,
                 },
                 entry: ui_element.ui_element_spec.entry,
                 data: ui_element.ui_element_spec.data,
