@@ -146,7 +146,7 @@ ui_element:
                                         name: "@material-ui/icons|MenuBook"
                                     onClick:
                                         type: js/function
-                                        body: "$r('hookrouter|navigate')('/docs')"
+                                        body: "$r('app-x/router|navigate')('/docs')"
                                     size: large
                                 children:
                                     - "Getting Started"
@@ -187,7 +187,7 @@ ui_element:
                                         name: "@material-ui/icons|Slideshow"
                                     onClick:
                                         type: js/function
-                                        body: "$r('hookrouter|navigate')('/console')"
+                                        body: "$r('app-x/router|navigate')('/console')"
                                     size: large
                                 children:
                                     - "Live Demo"

@@ -1,7 +1,7 @@
 //import 'react-perfect-scrollbar/dist/css/styles.css';
 //const React = lib['react']
 import React from 'react'
-import { useRoutes } from 'hookrouter'
+import { useRoutes } from 'app-x/router'
 import PropTypes from 'prop-types'
 import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Provider } from 'react-redux'

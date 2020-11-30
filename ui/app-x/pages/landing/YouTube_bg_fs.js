@@ -122,7 +122,7 @@ export default function Youtube_Landing(props) {
       }
   });
 
-  console.log(props)
+  // console.log(props)
 
   return (
     <Box className="paper">

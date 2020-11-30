@@ -1,6 +1,6 @@
 //import 'react-perfect-scrollbar/dist/css/styles.css';
 import React from 'react'
-import { useRoutes } from 'hookrouter'
+import { useRoutes } from 'app-x/router'
 import PropTypes from 'prop-types'
 import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Provider } from 'react-redux'
@@ -15,13 +15,7 @@ const MUI_App = (props) => {
   const not_found = props.not_found_view || (<HeaderLayout><NotFoundView/></HeaderLayout>)
 
   // process routes
-  const absoluteRoutes = {}
-  Object.keys(props.routes).map(route_key => {
-    const absolutePath = (window.appx.BASE_PATH + route_key).replace(/\/+/g, '/')
-    absoluteRoutes[absolutePath] = props.routes[route_key]
-  })
-
-  const routeResult = useRoutes(absoluteRoutes)
+  const routeResult = useRoutes(props.routes)
 
   return (
     <Provider store={props.redux_store_provider}>
