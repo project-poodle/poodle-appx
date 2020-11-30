@@ -484,11 +484,16 @@ function load_ui_router(namespace, app_name, runtime_name, ui_app_ver) {
             `INFO: element published successfully [${JSON.stringify(elem_context)}] !`)
     })
 
+    // default route
     router.use('/', (req, res) => {
+
         if (req.url.startsWith(ELEM_ROUTE_PREFIX)) {
+            // return 404 if under ELEM_ROUTE_PREFIX
             res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
+
         } else {
-            // treat as '/' element
+
+            // treat as '/' element for all other paths
             req.context = Object.assign({},
                 req.context,
                 {
