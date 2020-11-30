@@ -323,8 +323,8 @@ app_runtime:
 app_deployment:
     - namespace: "sys"
       app_name: "appx"
-      app_runtime: "base"
       app_deployment: "base"
+      app_runtime: "base"
       app_ver: "internal"
       app_rev: "internal"
       app_deployment_spec:

@@ -49,7 +49,6 @@
         key:
             - "$@.namespace"
             - "$@.app_name"
-            - "$@.app_runtime"
             - "$@.app_deployment"
         value: "$@"
 

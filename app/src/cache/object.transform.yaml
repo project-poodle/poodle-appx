@@ -11,101 +11,100 @@
                 app_spec: "$app.app_spec"
 
     app_deployments:
-        "#dp{$sql_objs[@ns]}":                                                                # app_name
-            "#dp{$dp}":                                                                       # app_runtime
-                "#dp{$dp}":                                                                   # app_deployment
-                    namespace: "@ns"
-                    app_name: "@@@dp"
-                    app_runtime: "@@dp"
-                    app_deployment: "@dp"
-                    app_ver: "$dp.app_ver"
-                    app_rev: "$dp.app_rev"
-                    app_deployment_spec: "$dp.app_deployment_spec"
+        "#dp{$sql_app_deployments[@ns]}":                                             # app_name
+            "#dp{$dp}":                                                               # app_deployment
+                namespace: "@ns"
+                app_name: "@@dp"
+                app_deployment: "@dp"
+                app_runtime: "$dp.app_runtime"
+                app_ver: "$dp.app_ver"
+                app_rev: "$dp.app_rev"
+                app_deployment_spec: "$dp.app_deployment_spec"
 
-                    objs:
-                        "#obj{$sql_objs[@ns][@@@dp][@@dp][@dp]}":                             # obj_name
-                            namespace: "@ns"
-                            app_name: "@@@dp"
-                            app_runtime: "@@dp"
-                            app_deployment: "@dp"
-                            app_ver: "$dp.app_ver"
-                            app_rev: "$dp.app_rev"
-                            obj_name: "@obj"
-                            obj_type: "$obj.obj_type"
-                            obj_spec: "$obj.obj_spec"
+                objs:
+                    "#obj{$sql_objs[@ns][@@dp][@dp]}":                                # obj_name
+                        namespace: "@ns"
+                        app_name: "@@dp"
+                        app_deployment: "@dp"
+                        app_runtime: "$dp.app_runtime"
+                        app_ver: "$dp.app_ver"
+                        app_rev: "$dp.app_rev"
+                        obj_name: "@obj"
+                        obj_type: "$obj.obj_type"
+                        obj_spec: "$obj.obj_spec"
 
-                            attrs:
-                                "#attr{$sql_attrs[@ns][@@@dp][@@dp][@dp][@obj]}":             # attr_name
+                        attrs:
+                            "#attr{$sql_attrs[@ns][@@dp][@dp][@obj]}":                # attr_name
+                                namespace: "@ns"
+                                app_name: "@@dp"
+                                app_deployment: "@dp"
+                                app_runtime: "$dp.app_runtime"
+                                app_ver: "$dp.app_ver"
+                                app_rev: "$dp.app_rev"
+                                obj_name: "@obj"
+                                attr_name: "@attr"
+                                attr_spec: "$attr.attr_spec"
+
+                        relations_1ton:
+                            "#rel{$sql_relations_1ton[@ns][@@dp][@dp][@obj]}":        # objn_name
+                                namespace: "@ns"
+                                app_name: "@@dp"
+                                app_deployment: "@dp"
+                                app_runtime: "$dp.app_runtime"
+                                app_ver: "$dp.app_ver"
+                                app_rev: "$dp.app_rev"
+                                obj_name: "@obj"
+                                objn_name: "@rel"
+                                relation_spec: "$rel.relation_spec"
+
+                        relations_nto1:
+                            "#rel{$sql_relations_nto1[@ns][@@dp][@dp][@obj]}":        # obj_name
+                                namespace: "@ns"
+                                app_name: "@@dp"
+                                app_deployment: "@dp"
+                                app_runtime: "$dp.app_runtime"
+                                app_ver: "$dp.app_ver"
+                                app_rev: "$dp.app_rev"
+                                objn_name: "@obj"
+                                obj_name: "@rel"
+                                relation_spec: "$rel.relation_spec"
+
+                        apis_by_method:
+                            "#api{$sql_apis_by_method[@ns][@@dp][@dp][@obj]}":        # api_method
+                                "#api{$api}":                                         # api_endpoint
                                     namespace: "@ns"
-                                    app_name: "@@@dp"
-                                    app_runtime: "@@dp"
+                                    app_name: "@@dp"
                                     app_deployment: "@dp"
+                                    app_runtime: "$dp.app_runtime"
                                     app_ver: "$dp.app_ver"
                                     app_rev: "$dp.app_rev"
                                     obj_name: "@obj"
-                                    attr_name: "@attr"
-                                    attr_spec: "$attr.attr_spec"
+                                    api_method: "@@api"
+                                    api_endpoint: "@api"
+                                    api_spec: "$api.api_spec"
 
-                            relations_1ton:
-                                "#rel{$sql_relations_1ton[@ns][@@@dp][@@dp][@dp][@obj]}":     # objn_name
+                        apis_by_endpoint:
+                            "#api{$sql_apis_by_endpoint[@ns][@@dp][@dp][@obj]}":      # api_endpoint
+                                "#api{$api}":                                         # api_method
                                     namespace: "@ns"
-                                    app_name: "@@@dp"
-                                    app_runtime: "@@dp"
+                                    app_name: "@@dp"
                                     app_deployment: "@dp"
+                                    app_runtime: "$dp.app_runtime"
                                     app_ver: "$dp.app_ver"
                                     app_rev: "$dp.app_rev"
                                     obj_name: "@obj"
-                                    objn_name: "@rel"
-                                    relation_spec: "$rel.relation_spec"
+                                    api_endpoint: "@@api"
+                                    api_method: "@api"
+                                    api_spec: "$api.api_spec"
 
-                            relations_nto1:
-                                "#rel{$sql_relations_nto1[@ns][@@@dp][@@dp][@dp][@obj]}":     # obj_name
-                                    namespace: "@ns"
-                                    app_name: "@@@dp"
-                                    app_runtime: "@@dp"
-                                    app_deployment: "@dp"
-                                    app_ver: "$dp.app_ver"
-                                    app_rev: "$dp.app_rev"
-                                    objn_name: "@obj"
-                                    obj_name: "@rel"
-                                    relation_spec: "$rel.relation_spec"
-
-                            apis_by_method:
-                                "#api{$sql_apis_by_method[@ns][@@@dp][@@dp][@dp][@obj]}":     # api_method
-                                    "#api{$api}":                                             # api_endpoint
-                                        namespace: "@ns"
-                                        app_name: "@@@dp"
-                                        app_runtime: "@@dp"
-                                        app_deployment: "@dp"
-                                        app_ver: "$dp.app_ver"
-                                        app_rev: "$dp.app_rev"
-                                        obj_name: "@obj"
-                                        api_method: "@@api"
-                                        api_endpoint: "@api"
-                                        api_spec: "$api.api_spec"
-
-                            apis_by_endpoint:
-                                "#api{$sql_apis_by_endpoint[@ns][@@@dp][@@dp][@dp][@obj]}":   # api_endpoint
-                                    "#api{$api}":                                             # api_method
-                                        namespace: "@ns"
-                                        app_name: "@@@dp"
-                                        app_runtime: "@@dp"
-                                        app_deployment: "@dp"
-                                        app_ver: "$dp.app_ver"
-                                        app_rev: "$dp.app_rev"
-                                        obj_name: "@obj"
-                                        api_endpoint: "@@api"
-                                        api_method: "@api"
-                                        api_spec: "$api.api_spec"
-
-                            transforms:
-                                "#tf{$sql_transforms[@ns][@@@dp][@@dp][@dp][@obj]}":          # transform_name
-                                    namespace: "@ns"
-                                    app_name: "@@@dp"
-                                    app_runtime: "@@dp"
-                                    app_deployment: "@dp"
-                                    app_ver: "$dp.app_ver"
-                                    app_rev: "$dp.app_rev"
-                                    obj_name: "@obj"
-                                    transform_name: "@tf"
-                                    transform_spec: "$tf.transform_spec"
+                        transforms:
+                            "#tf{$sql_transforms[@ns][@@dp][@dp][@obj]}":             # transform_name
+                                namespace: "@ns"
+                                app_name: "@@dp"
+                                app_deployment: "@dp"
+                                app_runtime: "$dp.app_runtime"
+                                app_ver: "$dp.app_ver"
+                                app_rev: "$dp.app_rev"
+                                obj_name: "@obj"
+                                transform_name: "@tf"
+                                transform_spec: "$tf.transform_spec"

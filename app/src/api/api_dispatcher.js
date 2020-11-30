@@ -11,24 +11,26 @@ const ROUTES = {}
 function load_api_routers() {
 
     let dp_results = db.query_sync(`SELECT
-                    deployment.namespace,
-                    deployment.runtime_name,
-                    deployment.app_name,
-                    deployment.app_ver,
-                    deployment.deployment_spec
-                FROM deployment
+                    app_deployment.namespace,
+                    app_deployment.app_name,
+                    app_deployment.app_runtime,
+                    app_deployment.app_deployment,
+                    app_deployment.app_ver,
+                    app_deployment.app_rev,
+                    app_deployment.app_deployment_spec
+                FROM app_deployment
                 WHERE
-                    deployment.deleted=0`)
+                    app_deployment.deleted=0`)
 
     dp_results.forEach((dp_result, i) => {
 
-        let router = load_api_router(dp_result.namespace, dp_result.app_name, dp_result.runtime_name)
+        let router = load_api_router(dp_result.namespace, dp_result.app_name, dp_result.app_runtime, dp_result.app_deployment)
 
-        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.runtime_name}`
+        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.app_runtime}/${dp_result.app_deployment}`
 
         ROUTES[route] = router
 
-        console.log(`INFO: loaded API routes for API deployment [${route}]`)
+        console.log(`INFO: loaded API routes for API app_deployment [${route}]`)
     });
 }
 
@@ -51,10 +53,10 @@ const api_dispatcher = function (req, res, next) {
             // process context
             let namespace = match[2]
             let app_name = match[3]
-            let runtime_name = match[4]
+            let app_runtime = match[4]
             req.context.namespace = namespace
             req.context.app_name = app_name
-            req.context.runtime_name = runtime_name
+            req.context.app_deployment = app_deployment
             //console.log(req.context)
             // process url
             req.baseUrl = req.baseUrl + match[1]

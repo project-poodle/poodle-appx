@@ -50,7 +50,7 @@ app.use(session({
 
 //////////////////////////////////////////////////
 // initialize authenticator --- Note: perform this step only after db_pool is initialized
-//const { authenticator } = require("./src/auth")
+const { authenticator } = require("./src/auth")
 ////app.use(passport.initialize())
 ////app.use(passport.session())
 

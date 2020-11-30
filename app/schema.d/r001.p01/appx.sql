@@ -308,15 +308,15 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`app_deployment` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_deployment`        VARCHAR(32)             NOT NULL,
+    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_ver`               VARCHAR(32)             NOT NULL,
     `app_rev`               VARCHAR(32)             NOT NULL,
     `app_deployment_spec`   JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_runtime`, `app_deployment`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_deployment`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -325,12 +325,12 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`app_deployment_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(15)             NOT NULL,
-    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_deployment`        VARCHAR(32)             NOT NULL,
+    `app_runtime`           VARCHAR(9)              NOT NULL,
     `app_deployment_status` JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_runtime`, `app_deployment`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`, `app_deployment`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -881,8 +881,8 @@ INSERT INTO
     (
         `namespace`,
         `app_name`,
-        `app_runtime`,
         `app_deployment`,
+        `app_runtime`,
         `app_ver`,
         `app_rev`,
         `app_deployment_spec`
@@ -891,13 +891,14 @@ INSERT INTO
     (
         '{{{namespace}}}',
         '{{{app_name}}}',
-        '{{{app_runtime}}}',
         '{{{app_deployment}}}',
+        '{{{app_runtime}}}',
         '{{{app_ver}}}',
         '{{{app_rev}}}',
         {{#app_deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_deployment_spec}}
     )
     ON DUPLICATE KEY UPDATE
+        app_runtime=VALUES(app_runtime),
         app_ver=VALUES(app_ver),
         app_rev=VALUES(app_rev),
         app_deployment_spec=VALUES(app_deployment_spec);
