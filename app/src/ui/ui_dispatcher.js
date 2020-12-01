@@ -28,7 +28,7 @@ function load_ui_routers() {
 
         UI_ROUTES[route] = router
 
-        console.log(`INFO: loaded UI routes for UI deployment [${route}]`)
+        console.log(`INFO: loaded UI routes for UI deployments [${route}]`)
     })
 }
 

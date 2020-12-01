@@ -12,6 +12,7 @@ const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
  */
 const log_api_status = (api_context, status, message) => {
 
+    // console.log(message)
     db.query_sync(`INSERT INTO api_status
                     (
                         namespace,

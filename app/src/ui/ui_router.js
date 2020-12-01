@@ -224,7 +224,7 @@ function handle_route(req, res) {
  */
 const log_deployment_status = (deployment_context, status, message) => {
 
-    console.log(message)
+    // console.log(message)
     db.query_sync(`INSERT INTO ui_deployment_status
                     (
                         namespace,
@@ -253,7 +253,7 @@ const log_deployment_status = (deployment_context, status, message) => {
  */
 const log_elem_status = (elem_context, status, message) => {
 
-    console.log(message)
+    // console.log(message)
     db.query_sync(`INSERT INTO ui_element_status
                     (
                         namespace,
@@ -284,7 +284,7 @@ const log_elem_status = (elem_context, status, message) => {
  */
 const log_route_status = (route_context, status, message) => {
 
-    console.log(message)
+    // console.log(message)
     db.query_sync(`INSERT INTO ui_route_status
                     (
                         namespace,
@@ -477,7 +477,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
     // default route
     router.use('/', (req, res) => {
 
-        console.log(`default route [${req.url}]`)
+        // console.log(`default route [${req.url}]`)
         if (req.url.startsWith(ELEM_ROUTE_PREFIX)) {
             // return 404 if under ELEM_ROUTE_PREFIX
             res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
