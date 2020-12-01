@@ -35,12 +35,3 @@ MUI_App.propTypes = {
 }
 
 export default MUI_App;
-
-/*
-routes: PropTypes.arrayOf(
-  PropTypes.shape({
-    route: PropTypes.string.isRequired,
-    element: PropTypes.function.isRequired
-  })
-).isRequired,
-*/

@@ -63,7 +63,7 @@ export default function Youtube_Landing(props) {
 
   const videos = props.youtube_playlist;
 
-  window.onYouTubeIframeAPIReady = () => {
+  function init_player() {
 
     console.log(`INFO: onYouTubeIframeAPIReady`)
     let idx = Math.floor(Math.random() * videos.length)
@@ -111,15 +111,28 @@ export default function Youtube_Landing(props) {
     });
   }
 
+  window.onYouTubeIframeAPIReady = () => {
+    init_player()
+  }
+
   useEffect(() => {
       var aScript = document.createElement('script');
       aScript.type = 'text/javascript';
-      aScript.src = "https://www.youtube.com/iframe_api";
+      aScript.id = 'youtube_background';
+      aScript.src = 'https://www.youtube.com/iframe_api';
 
-      document.head.appendChild(aScript);
-      aScript.onload = function() {
-        console.log(`INFO: ${aScript.src} loaded`)
-        //console.log(window.YT)
+      if (!document.getElementById('youtube_background')) {
+        document.head.appendChild(aScript);
+        aScript.onload = function() {
+          console.log(`INFO: ${aScript.src} loaded`)
+          // console.log(window.YT)
+          // console.log(player)
+        }
+      } else {
+        // console.log(window.YT)
+        // console.log(player)
+        console.log(`INFO: restart player`)
+        init_player()
       }
   });
 

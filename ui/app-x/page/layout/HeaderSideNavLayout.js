@@ -43,9 +43,13 @@ const HeaderSideNavLayout = (props) => {
 
   const { header, sideNav, children } = props
 
+  console.log(header)
+  console.log(sideNav)
+  console.log(children)
+
   return (
     <div className={styles.root}>
-      <Header onMobileNavOpen={() => setMobileNavOpen(true)} />
+      { header }
       <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
