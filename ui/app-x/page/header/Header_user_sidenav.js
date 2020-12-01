@@ -60,15 +60,15 @@ const Header_user_sidenav = (props) => {
           ...data,
           t: new Date()
         })
+        // recurring check if successful
+        setTimeout(
+          self_check,
+          Math.floor((Math.random() * 60) + 120) * 1000
+        )
       },
       (error) => {
         navigate(props.loginUrl)
       }
-    )
-    // recurring check
-    setTimeout(
-      self_check,
-      Math.floor((Math.random() * 60) + 120) * 1000
     )
   }
 

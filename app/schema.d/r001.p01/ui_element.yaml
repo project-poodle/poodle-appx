@@ -242,7 +242,6 @@ ui_element:
                   copyright: app-x.org
                   consoleUrl: /console
 
-
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -259,7 +258,7 @@ ui_element:
               sideNavHandler:
                   type: js/function
                   body: |
-                      // states.mobileNav.setOpen(!states.mobileNav.open)
+                      states.mobileNav.setOpen(!states.mobileNav.open)
           element:
               type: react/element
               name: app-x/page/layout/HeaderSideNavLayout
@@ -285,8 +284,7 @@ ui_element:
                       props:
                           isMobileNavOpen:
                               type: js/expression
-                              data: "true"
-                              oldData: states.mobileNav.open
+                              data: states.mobileNav.open
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView
