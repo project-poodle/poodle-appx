@@ -1,4 +1,5 @@
 const fs = require('fs')
+const url = require('url')
 const path = require('path');
 const objPath = require("object-path")
 const prettier = require("prettier")
@@ -142,7 +143,7 @@ function handle_html(req, res) {
                 APPX_ENV: {
                     RENDER_JSON: RENDER_JSON,
                     KEY_VALUE: KEY_VALUE,
-                    RELATIVE_URL: req.url,
+                    RELATIVE_URL: url.parse(req.url).pathname,
                     IMPORT_MAPS: ui_deployment.ui_spec.importMaps,
                     API_MAPS: ui_deployment.ui_deployment_spec.apiMaps,
                 },
