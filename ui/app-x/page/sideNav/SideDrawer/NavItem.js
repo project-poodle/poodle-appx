@@ -1,10 +1,6 @@
-//const React = lib.react
 import React from 'react'
-// const { useState } = lib.react
 import { useState } from 'react'
-// const { A, navigate } = lib.hookrouter
-import { A, navigate } from 'hookrouter'
-// const PropTypes = lib['prop-types']
+import { A, navigate } from 'app-x/router'
 import PropTypes from 'prop-types'
 import {
   Icon,
@@ -14,42 +10,43 @@ import {
 } from '@material-ui/core'
 
 
-const useStyles = makeStyles((theme) => ({
-  item: {
-    display: 'flex',
-    paddingTop: 0,
-    paddingBottom: 0
-  },
-  button: {
-    color: theme.palette.text.secondary,
-    fontWeight: theme.typography.fontWeightMedium,
-    justifyContent: 'flex-start',
-    letterSpacing: 0,
-    padding: '10px 8px',
-    textTransform: 'none',
-    width: '100%'
-  },
-  icon: {
-    marginRight: theme.spacing(1)
-  },
-  title: {
-    marginRight: 'auto'
-  },
-  active: {
-    color: theme.palette.primary.main,
-    '& $title': {
-      fontWeight: theme.typography.fontWeightMedium
-    },
-    '& $icon': {
-      color: theme.palette.primary.main
-    }
-  }
-}));
-
 const NavItem = (props) => {
+
+  const useStyles = makeStyles((theme) => ({
+    item: {
+      display: 'flex',
+      paddingTop: 0,
+      paddingBottom: 0
+    },
+    button: {
+      color: theme.palette.text.secondary,
+      fontWeight: theme.typography.fontWeightMedium,
+      justifyContent: 'flex-start',
+      letterSpacing: 0,
+      padding: '10px 8px',
+      textTransform: 'none',
+      width: '100%'
+    },
+    icon: {
+      marginRight: theme.spacing(1)
+    },
+    title: {
+      marginRight: 'auto'
+    },
+    active: {
+      color: theme.palette.primary.main,
+      '& $title': {
+        fontWeight: theme.typography.fontWeightMedium
+      },
+      '& $icon': {
+        color: theme.palette.primary.main
+      }
+    }
+  }))
+
   const classes = useStyles();
 
-  const { href, icon: Icon, title, ...rest } = props
+  const { href, titleIcon: Icon, title, ...rest } = props
 
   //console.log(`INFO: [${href}] [${title}]`)
 
@@ -75,14 +72,13 @@ const NavItem = (props) => {
         </Button>
       </A>
     </ListItem>
-  );
-};
+  )
+}
 
 NavItem.propTypes = {
-  //className: PropTypes.string,
+  title: PropTypes.string,
+  titleIcon: PropTypes.elementType,
   href: PropTypes.string,
-  icon: PropTypes.elementType,
-  title: PropTypes.string
-};
+}
 
-export default NavItem;
+export default NavItem

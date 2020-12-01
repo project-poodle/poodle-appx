@@ -38,44 +38,44 @@ const user = {
 
 const items = [
   {
+    title: 'Dashboard',
+    titleIcon: BarChartIcon,
     href: '/app/dashboard',
-    icon: BarChartIcon,
-    title: 'Dashboard'
   },
   {
+    title: 'Customers',
+    titleIcon: UsersIcon,
     href: '/app/customers',
-    icon: UsersIcon,
-    title: 'Customers'
   },
   {
+    title: 'Products',
+    titleIcon: ShoppingBagIcon,
     href: '/app/products',
-    icon: ShoppingBagIcon,
-    title: 'Products'
   },
   {
     href: '/app/account',
-    icon: UserIcon,
+    titleIcon: UserIcon,
     title: 'Account'
   },
   {
+    title: 'Settings',
+    titleIcon: SettingsIcon,
     href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Settings'
   },
   {
+    title: 'Login',
+    titleIcon: LockIcon,
     href: '/login',
-    icon: LockIcon,
-    title: 'Login'
   },
   {
+    title: 'Register',
+    titleIcon: UserPlusIcon,
     href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
   },
   {
+    title: 'Error',
+    titleIcon: AlertCircleIcon,
     href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
   }
 ];
 
@@ -99,13 +99,6 @@ const NavBar = (props) => {
 
   const classes = useStyles();
   //const location = useLocation();
-
-  //useEffect(() => {
-  //  if (openMobile && onMobileClose) {
-  //    onMobileClose();
-  //  }
-  //  // eslint-disable-next-line react-hooks/exhaustive-deps
-  //}, [location.pathname]);
 
   const { onMobileClose, isMobileNavOpen } = props
 
@@ -149,7 +142,7 @@ const NavBar = (props) => {
               href={item.href}
               key={item.title}
               title={item.title}
-              icon={item.icon}
+              titleIcon={item.titleIcon}
             />
           ))}
         </List>
