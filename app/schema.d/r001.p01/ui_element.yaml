@@ -18,17 +18,17 @@ ui_element:
       ui_element_spec:
           propTypes:
               title: PropTypes.string.isRequired
-          base:
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+              #button:
+              #    margin: "1px"
+              #        #type: js/expression
+              #        #data: "$r('app-x/theme.default').spacing(1)"
+          element:
               type: react/element
               name: app-x/app/MUI_theme_redux
-              styles:
-                  type: mui/style
-                  root:
-                      height: "100%"
-                  #button:
-                  #    margin: "1px"
-                  #        #type: js/expression
-                  #        #data: "$r('app-x/theme.default').spacing(1)"
               props:
                   routes:
                       type: appx/route
@@ -61,19 +61,19 @@ ui_element:
       ui_element_name: /page/landing/Home
       ui_element_type: react/element
       ui_element_spec:
-          base:
+          styles:
+              type: mui/style
+              grid:
+                  position: fixed
+                  bottom: "10%"
+                  zIndex: 0
+          snippet:
+              type: js/block
+              data: |+
+                  console.log(props)
+          element:
               type: react/element
               name: app-x/page/landing/YouTube_fs
-              styles:
-                  type: mui/style
-                  grid:
-                      position: fixed
-                      bottom: "10%"
-                      zIndex: 0
-              snippet:
-                  type: js/block
-                  data: |+
-                      console.log(props)
               props:
                   youtube_playlist:
                       - vid: 'vzR0dsZeQsY' # natural
@@ -226,13 +226,13 @@ ui_element:
       ui_element_name: /page/auth/Login
       ui_element_type: react/element
       ui_element_spec:
-          base:
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+          element:
               type: react/element
               name: app-x/page/auth/SignInSide
-              styles:
-                  type: mui/style
-                  root:
-                      height: "100%"
               props:
                   app_name: appx
                   title: Sign in to App-X
@@ -246,60 +246,27 @@ ui_element:
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
-      ui_element_name: /page/header/ConsoleHeader
-      ui_element_type: react/element
-      ui_element_spec:
-          propTypes:
-              handlers:
-                  sideNavHandler: PropTypes.func.isRequired
-          base:
-              type: react/element
-              name: app-x/page/header/Header_user_sidenav
-              styles:
-                  type: mui/style
-                  root:
-                      height: "100%"
-              props:
-                  appName: appx
-                  title: App Builder
-                  titleIcon:
-                      type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                  homeUrl: '/console'
-                  loginUrl: '/login'
-                  handlers:
-                      sideNavHandler:
-                          type: js/expression
-                          data: props.handlers.sideNavHandler
-
-    - namespace: sys
-      ui_name: appxui
-      ui_ver: internal
       ui_element_name: /page/Console
       ui_element_type: react/element
       ui_element_spec:
-          base:
+          states:
+              mobileNav:
+                  type: react/state
+                  name: open
+                  setter: setOpen
+                  init: false
+          handlers:
+              sideNavHandler:
+                  type: js/function
+                  body: |
+                      // states.mobileNav.setOpen(!states.mobileNav.open)
+          element:
               type: react/element
               name: app-x/page/layout/HeaderSideNavLayout
-              states:
-                  mobileNav:
-                      type: react/state
-                      name: open
-                      setter: setOpen
-                      init: false
-              handlers:
-                  sideNavHandler:
-                      type: js/function
-                      body: |
-                          states.mobileNav.setOpen(!states.mobileNav.open)
               props:
                   header:
                       type: react/element
                       name: app-x/page/header/Header_user_sidenav
-                      styles:
-                          type: mui/style
-                          root:
-                              height: "100%"
                       props:
                           appName: appx
                           title: App Builder
@@ -318,7 +285,8 @@ ui_element:
                       props:
                           isMobileNavOpen:
                               type: js/expression
-                              data: states.isMobileNavOpen
+                              data: "true"
+                              oldData: states.mobileNav.open
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView

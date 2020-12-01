@@ -11,7 +11,8 @@ const {
     reg_js_import,
     react_element,
     js_process,
-    js_resolve_ids
+    js_resolve_ids,
+    isPrimitive,
 } = require('./util')
 const db = require('../db/db')
 
@@ -33,18 +34,18 @@ function handle_react(req, res) {
         return
     }
 
-    if (! ('ui_element_spec' in ui_element) || ! ('base' in ui_element.ui_element_spec) ) {
+    if (! ('ui_element_spec' in ui_element) || ! ('element' in ui_element.ui_element_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_element_spec.base not defined [${ui_element}]`
+            message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
         })
         return
     }
 
-    if (! ('type' in ui_element.ui_element_spec.base) || ui_element.ui_element_spec.base.type != 'react/element') {
+    if (! ('type' in ui_element.ui_element_spec.element) || ui_element.ui_element_spec.element.type != 'react/element') {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: unrecognized ui_element_spec.base.type [${ui_element.ui_element_spec.base.type}]`
+            message: `ERROR: unrecognized ui_element_spec.element.type [${ui_element.ui_element_spec.element.type}]`
         })
         return
     }
@@ -67,6 +68,36 @@ function handle_react(req, res) {
     reg_js_import(js_context, 'react', true, 'React')
     reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
+    const input = ui_element.ui_element_spec
+
+    // check if there are any block statements
+    const block_statements = []
+    Object.keys(input).map(key => {
+      // ignore type / name / props / children
+      if (key === 'type' || key === 'element' || key === 'propTypes') {
+        return
+      }
+      // check if input[key] is 'js/block'
+      if (!isPrimitive(input[key]) && input[key].type === 'js/block') {
+        // adds each of the block statement
+        block_statements.push(...(js_process(js_context, input[key]).body))
+
+      } else {
+        // process input[key] and assign to declared variable
+        block_statements.push(
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier(key),
+                js_process(js_context, input[key])
+              )
+            ]
+          )
+        )
+      }
+    })
+
     // create ast tree for the program
     const ast_tree = t.file(
       t.program(
@@ -76,7 +107,19 @@ function handle_react(req, res) {
             [
               t.variableDeclarator(
                 t.identifier(ui_elem_name),
-                react_element(js_context, ui_element.ui_element_spec.base)
+                t.arrowFunctionExpression(
+                  [
+                    t.identifier('props')
+                  ],
+                  t.blockStatement(
+                    [
+                      ...block_statements,
+                      t.returnStatement(
+                        react_element(js_context, ui_element.ui_element_spec.element)
+                      )
+                    ]
+                  )
+                )
               )
             ]
           ),

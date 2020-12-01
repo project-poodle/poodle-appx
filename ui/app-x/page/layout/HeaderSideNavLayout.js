@@ -39,9 +39,9 @@ const HeaderSideNavLayout = (props) => {
 
   const { header, sideNav, children } = props
 
-  console.log(header)
-  console.log(sideNav)
-  console.log(children)
+  // console.log(header)
+  // console.log(sideNav)
+  // console.log(children)
 
   return (
     <div className={styles.root}>

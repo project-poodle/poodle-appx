@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Box, Avatar, Typography, AppBar, Toolbar, makeStyles } from '@material-ui/core'
 
 
-const Header = (props) => {
+const Header_plain = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -47,10 +47,10 @@ const Header = (props) => {
   )
 }
 
-Header.propTypes = {
+Header_plain.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
 }
 
-export default Header;
+export default Header_plain;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+// import { useState } from 'react'
 import { connect } from 'react-redux'
 import { A, navigate } from 'app-x/router'
 import PropTypes from 'prop-types'
@@ -21,21 +21,13 @@ import {
 
 import { logout, me } from 'app-x/api'
 
+/*
 setInterval(() => {
   me(app_name)
 }, Math.floor((Math.random() * 60) + 120) * 1000)
+*/
 
-
-const Header = (props) => {
-
-  const {
-    appName,
-    homeUrl,
-    loginUrl,
-    handlers,
-    reducers,
-    ...rest
-  } = props
+const Header_user_sidenav = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -65,26 +57,26 @@ const Header = (props) => {
   }
 
   const styles = useStyles()
-  const [notifications] = useState([])
 
   // check that userToken exist and is valid, otherwise, navigate to login
-  if (!reducers
-      || !reducers.user
-      || !reducers.user.userToken
-      || !reducers.user.userToken.token
-      || !reducers.user.userToken.username) {
-    navigate(loginUrl)
+  /*
+  if (!props.reducers
+      || !props.reducers.user
+      || !props.reducers.user.userToken
+      || !props.reducers.user.userToken.token
+      || !props.reducers.user.userToken.username) {
+    navigate(props.loginUrl)
   }
+  */
 
   // render
   return (
     <AppBar
       className={styles.root}
       elevation={0}
-      {...rest}
     >
       <Toolbar>
-        <A href={homeUrl} className={styles.inline}>
+        <A href={props.homeUrl} className={styles.inline}>
           <Avatar className={styles.avatar}>
             { props.titleIcon }
           </Avatar>
@@ -102,7 +94,7 @@ const Header = (props) => {
         <Hidden mdUp>
           <IconButton
             color="inherit"
-            onClick={handlers.sideNavHandler}
+            onClick={() => {props.handlers.sideNavHandler()}}
           >
             <MenuIcon />
           </IconButton>
@@ -112,7 +104,7 @@ const Header = (props) => {
   );
 };
 
-Header.propTypes = {
+Header_user_sidenav.propTypes = {
   appName: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
@@ -133,15 +125,8 @@ Header.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   //console.log(state)
   //console.log(ownProps)
-  let app_context = get_app_context()
-  if (! ('namespace' in app_context) || !('app_name' in app_context)) {
-    return {}
-  }
-  if (!(app_context.namespace in state.userReducer)
-      || !(app_context.app_name in state.userReducer[app_context.namespace])) {
-    return {}
-  }
-  const userReducer = state.userReducer[app_context.namespace][app_context.app_name]
+  const app_name = ownProps.appName
+  const userReducer = state.userReducer[app_name]
 
   const userState = {}
   if ('userToken' in userState) {
@@ -172,5 +157,5 @@ const mapDispatchToProps = (dispatch) => {
   return {}
 }
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Header)
-export default Header
+export default connect(mapStateToProps, mapDispatchToProps)(Header_user_sidenav)
+// export default Header_user_sidenav

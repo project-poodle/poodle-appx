@@ -358,6 +358,7 @@ function react_element(js_context, input) {
     react_element_children(js_context, input.children)
   )
 
+/*
   // check if there are any block statements
   const block_statements = []
   Object.keys(input).map(key => {
@@ -402,9 +403,10 @@ function react_element(js_context, input) {
       )
     )
   } else {
+*/
     // return react element
     return react_element
-  }
+  //}
 }
 
 // create jsx element props ast
@@ -958,4 +960,5 @@ module.exports = {
   react_element: react_element,
   reg_js_variable: reg_js_variable,
   reg_js_import: reg_js_import,
+  isPrimitive: isPrimitive,
 }
