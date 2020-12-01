@@ -12,7 +12,7 @@ const default_import_maps = {
     "self/": "http://localhost:3001/ui/sys/appx/base/current/"
   },
   libs: {
-    "main": {
+    main: {
       path: "../dist/lib/main.js",
       modules: [
         "react",

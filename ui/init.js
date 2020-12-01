@@ -31,7 +31,7 @@ console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
 console.log(`INFO: BASE_ELEM_PATH is [${BASE_ELEM_PATH}]`)
 console.log(`INFO: ENTRY_ELEM_PATH is [${ENTRY_ELEM_PATH}]`)
 
-window.appx = globalThis.appx = {
+globalThis.appx = {
   IMPORT_MAPS: IMPORT_MAPS,
   API_MAPS: API_MAPS,
   RELATIVE_URL: RELATIVE_URL,
@@ -63,7 +63,7 @@ window.appx = globalThis.appx = {
 
   if (!navigator.serviceWorker.controller) {
 
-    window.appx.SKIP_REG_STEP = false
+    globalThis.appx.SKIP_REG_STEP = false
     // register service worker
     navigator.serviceWorker.register('/sw.js', {scope: '/'})
     .then((reg) => {
@@ -93,7 +93,7 @@ window.appx = globalThis.appx = {
   } else {
 
     registerImportMaps(navigator.serviceWorker.controller, BASE_PATH, IMPORT_MAPS)
-    window.appx.SKIP_REG_STEP = true
+    globalThis.appx.SKIP_REG_STEP = true
   }
 
 })()

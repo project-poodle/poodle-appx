@@ -14,47 +14,70 @@ ui_element:
       ui_name: appxui
       ui_ver: internal
       ui_element_name: /AppX
-      ui_element_type: jsx/element
+      ui_element_type: react/element
       ui_element_spec:
           propTypes:
               title: PropTypes.string.isRequired
           base:
-              type: jsx/element
-              name: app-x/apps/MUI_theme_redux
+              type: react/element
+              name: app-x/app/MUI_theme_redux
+              styles:
+                  type: mui/style
+                  root:
+                      height: "100%"
+                  #button:
+                  #    margin: "1px"
+                  #        #type: js/expression
+                  #        #data: "$r('app-x/theme.default').spacing(1)"
+              snippet:
+                  type: js/block
+                  data: |+
+                      console.log(this)
               props:
                   routes:
-                      type: jsx/route
+                      type: appx/route
                   redux_store_provider:
                       type: js/import
-                      name: app-x/redux/store|default
+                      name: app-x/redux/store.default
                   theme_provider:
                       type: js/import
-                      name: app-x/theme|default
+                      name: app-x/theme.default
                   not_found_view:
-                      type: jsx/element
-                      name: app-x/pages/layouts/headerLayout
+                      type: react/element
+                      name: app-x/page/layout/HeaderLayout
+                      props:
+                          header:
+                              type: react/element
+                              name: app-x/page/header/Header_plain
+                              props:
+                                  title: App-X
+                                  titleIcon:
+                                      type: react/element
+                                      name: "@material-ui/icons.ViewQuiltRounded"
+                                  homeUrl: '/'
                       children:
-                          - type: jsx/element
-                            name: app-x/views/errors/NotFoundView
-          styles:
-              root:
-                  height: "100%"
-              button:
-                  margin: "1px"
-                      #type: js/expression
-                      #data: "$r('app-x/theme|default').spacing(1)"
-          snippet: |+
-              console.log(this)
+                          - type: react/element
+                            name: app-x/view/error/NotFoundView
 
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
-      ui_element_name: /pages/landing/Home
-      ui_element_type: jsx/element
+      ui_element_name: /page/landing/Home
+      ui_element_type: react/element
       ui_element_spec:
           base:
-              type: jsx/element
-              name: app-x/pages/landing/YouTube_fs
+              type: react/element
+              name: app-x/page/landing/YouTube_fs
+              styles:
+                  type: mui/style
+                  grid:
+                      position: fixed
+                      bottom: "10%"
+                      zIndex: 0
+              snippet:
+                  type: js/block
+                  data: |+
+                      console.log(this)
               props:
                   youtube_playlist:
                       - vid: 'vzR0dsZeQsY' # natural
@@ -105,8 +128,8 @@ ui_element:
                       - vid: 'vOxmsqd8f58' # water drop
                         start: 0
               children:
-                  - type: jsx/element
-                    name: "@material-ui/core|Grid"
+                  - type: react/element
+                    name: "@material-ui/core.Grid"
                     props:
                         container: true
                         spacing: 2
@@ -114,10 +137,10 @@ ui_element:
                             type: js/expression
                             data: "styles.grid"
                     children:
-                        - type: jsx/element
-                          name: "@material-ui/core|CssBaseline"
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.CssBaseline"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: false
@@ -125,8 +148,8 @@ ui_element:
                               md: 1
                               lg: 2
                               xl: 3
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: 12
@@ -135,39 +158,39 @@ ui_element:
                               lg: 3
                               xl: 2
                           children:
-                              - type: jsx/element
-                                name: "@material-ui/core|Button"
+                              - type: react/element
+                                name: "@material-ui/core.Button"
                                 props:
                                     variant: contained
                                     color: primary
                                     fullWidth: true
                                     startIcon:
-                                        type: jsx/element
-                                        name: "@material-ui/icons|MenuBook"
+                                        type: react/element
+                                        name: "@material-ui/icons.MenuBook"
                                     onClick:
                                         type: js/function
-                                        body: "$r('app-x/router|navigate')('/docs')"
+                                        body: "$r('app-x/router.navigate')('/docs')"
                                     size: large
                                 children:
                                     - "Getting Started"
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: false
                               md: 1
                               lg: 1
                               xl: 1
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: false
                               md: 1
                               lg: 1
                               xl: 1
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: 12
@@ -176,23 +199,23 @@ ui_element:
                               lg: 3
                               xl: 2
                           children:
-                              - type: jsx/element
-                                name: "@material-ui/core|Button"
+                              - type: react/element
+                                name: "@material-ui/core.Button"
                                 props:
                                     variant: contained
                                     color: primary
                                     fullWidth: true
                                     startIcon:
-                                        type: jsx/element
-                                        name: "@material-ui/icons|Slideshow"
+                                        type: react/element
+                                        name: "@material-ui/icons.Slideshow"
                                     onClick:
                                         type: js/function
-                                        body: "$r('app-x/router|navigate')('/console')"
+                                        body: "$r('app-x/router.navigate')('/console')"
                                     size: large
                                 children:
                                     - "Live Demo"
-                        - type: jsx/element
-                          name: "@material-ui/core|Grid"
+                        - type: react/element
+                          name: "@material-ui/core.Grid"
                           props:
                               item: true
                               xs: false
@@ -200,10 +223,3 @@ ui_element:
                               md: 1
                               lg: 2
                               xl: 3
-          styles:
-              grid:
-                  position: fixed
-                  bottom: "10%"
-                  zIndex: 0
-          snippet: |+
-              console.log(this)

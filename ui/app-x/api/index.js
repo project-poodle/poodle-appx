@@ -1,42 +1,118 @@
 //const axios = lib.axios
 import axios from 'axios'
-
 import store from 'app-x/redux/store'
 
-function _check_app_context(app) {
-  if (!('namespace' in app)) {
-    console.error(`ERROR: app_context missing namespace`)
+// compute base path from app_name
+function _get_base_path(app_name) {
+  if (!globalThis.AppX.API_MAPS) {
+    throw new Error(`ERROR: AppX.API_MAPS not set`)
   }
-  if (!('app_name' in app)) {
-    console.error(`ERROR: app_context missing app_name`)
+
+  if (typeof app_name != 'string') {
+    throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
-  if (!('app_runtime' in app)) {
-    console.error(`ERROR: app_context missing runtime_name`)
+
+  if (! (app_name in globalThis.AppX.API_MAPS)) {
+    throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
+  }
+
+  if (! ('rootPath' in globalThis.AppX.API_MAPS[app_name])) {
+    throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
+  }
+
+  let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
+
+  // deployment is optional
+  if ('deployment' in globalThis.AppX.API_MAPS[app_name])) {
+    const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
+    if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
+      throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
+    }
+
+    basePath += '/' + deployment.namespace + '/' + deployment.app_name + '/' + deployment.app_name_deployment
+  }
+
+  basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
+
+  return basePath
+}
+
+// compute auth base path from app_name
+function _get_auth_base_path(app_name) {
+  // validity check
+  if (!globalThis.AppX.API_MAPS) {
+    throw new Error(`ERROR: AppX.API_MAPS not set`)
+  }
+
+  if (typeof app_name != 'string') {
+    throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
+  }
+
+  if (! (app_name in globalThis.AppX.API_MAPS)) {
+    throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
+  }
+
+  if (! ('rootPath' in globalThis.AppX.API_MAPS[app_name])) {
+    throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
+  }
+
+  let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
+
+  // deployment is optional
+  if ('deployment' in globalThis.AppX.API_MAPS[app_name])) {
+    const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
+    if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
+      throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
+    }
+
+    basePath += '/' + deployment.namespace + '/' + deployment.app_name
+  }
+
+  basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
+
+  return basePath
+}
+
+// get user token from redux store
+function _get_user_token(app_name) {
+  let user_state = store.getState().userReducer
+  let token = null
+  let username = null
+  if (app_name in user_state && 'userToken' in user_state[app_name]) {
+    username = user_state[app_name].userToken.username
+    token = user_state[app_name].userToken.token
+  }
+  //console.log(username, token)
+  return {
+    username: username,
+    token: token,
   }
 }
 
-
 // clear token information at local storage, and broadcast redux message
-function _handle_logout(app) {
-  // update in memory appx_token to null
+function _handle_logout(app_name) {
+
+  // get base path
+  const basePath = _get_auth_base_path(app_name)
+
   // save username and token as null
-  window.localStorage.removeItem(`/app-x/${app.namespace}/${app.app_name}/userToken`)
-  window.localStorage.removeItem(`/app-x/${app.namespace}/${app.app_name}/userInfo`)
+  globalThis.localStorage.removeItem(`/app-x/${app_name}/userToken`)
+  globalThis.localStorage.removeItem(`/app-x/${app_name}/userInfo`)
   // broadcast logout message
   store.dispatch({
     type: 'user/logout',
-    namespace: app.namespace,
-    app_name: app.app_name,
-    runtime_name: app.runtime_name,
+    app_name: app_name.app_name,
   })
 }
 
-// login for app context
-function login(app, username, password, callback, handler) {
+// login for app_name context
+function login(app_name, username, password, callback, handler) {
+  // get base path
+  const basePath = _get_auth_base_path(app_name)
   //console.log(`INFO: api/login - ${realm} ${username} ${password}`)
   axios
     .post(
-      `/${api_base_url}/${app.namespace}/${app.app_name}/login`.replace(/\/+/g, '/'),
+      basePath + 'login',
       {
         username: username,
         password: password
@@ -46,13 +122,12 @@ function login(app, username, password, callback, handler) {
         // login successful, let's record the realm and token
         let ret_token = res.data.token
         // save username and token
-        window.localStorage.setItem(`/app-x/${app.namespace}/${app.app_name}/userToken`,
+        globalThis.localStorage.setItem(`/app-x/${app_name}/userToken`,
           JSON.stringify({username: username, token: ret_token}))
         // broadcast login message
         store.dispatch({
           type: 'user/login',
-          namespace: app.namespace,
-          app_name: app.app_name,
+          app_name: app_name,
           userToken: {
             username: username,
             token: ret_token,
@@ -77,7 +152,7 @@ function login(app, username, password, callback, handler) {
     .catch((err) => {
       console.log(err.stack)
       if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app)
+        _handle_logout(app_name)
       }
       let res = {
         status: 'error',
@@ -93,31 +168,15 @@ function login(app, username, password, callback, handler) {
     })
 }
 
-function _get_user_token(app) {
-  let app_state = store.getState().userReducer
-  let token = null
-  let username = null
-  if (app.namespace in app_state && app.app_name in app_state[app.namespace] && 'userToken' in app_state[app.namespace][app.app_name]) {
-    username = app_state[app.namespace][app.app_name].userToken.username
-    token = app_state[app.namespace][app.app_name].userToken.token
-  }
-  //console.log(username, token)
-  return {
-    username: username,
-    token: token,
-  }
-}
-
-// logout for app context
-function logout(app, callback, handler) {
+// logout for app_name context
+function logout(app_name, callback, handler) {
+  // get base path
+  const basePath = _get_auth_base_path(app_name)
   //console.log(`INFO: api/logout - ${realm} ${username}`)
-  if (!app) {
-    app = app_context
-  }
-  let { username, token } = _get_user_token(app)
+  let { username, token } = _get_user_token(app_name)
   return axios
     .post(
-      `/${api_base_url}/${app.namespace}/${app.app_name}/logout`.replace(/\/+/g, '/'),
+      basePath + 'logout',
       {
         username: username,
       },
@@ -129,7 +188,7 @@ function logout(app, callback, handler) {
     )
     .then((res) => {
       if ('data' in res && 'status' in res.data) {
-        _handle_logout(app)
+        _handle_logout(app_name)
         if (callback) {
           callback(res.data)
         }
@@ -149,7 +208,7 @@ function logout(app, callback, handler) {
     .catch((err) => {
       console.log(err.stack)
       if ('status' in err.response && err.response.status === 401) {
-        _handle_logout(app)
+        _handle_logout(app_name)
       }
       let res = {
         status: 'error',
@@ -165,16 +224,18 @@ function logout(app, callback, handler) {
     })
 }
 
-// logout for app context
-function get_user_info(app, callback, handler) {
+// get self information
+function me(app_name, callback, handler) {
+  // get base path
+  const basePath = _get_auth_base_path(app_name)
   //console.log(`INFO: api/logout - ${realm} ${username}`)
-  if (!app) {
-    app = app_context
+  if (!app_name) {
+    app_name = app_name_context
   }
-  let { username, token } = _get_user_token(app)
+  const { username, token } = _get_user_token(app_name)
   return axios
     .post(
-      `/${api_base_url}/${app.namespace}/${app.app_name}/user`.replace(/\/+/g, '/'),
+      basePath + 'user',
       {
         username: username,
       },
@@ -187,12 +248,11 @@ function get_user_info(app, callback, handler) {
     .then((res) => {
       if ('data' in res && 'status' in res.data && 'user' in res.data) {
         // save username and token
-        window.localStorage.setItem(`/app-x/${app.namespace}/${app.app_name}/userInfo`, JSON.stringify(res.data.user))
+        globalThis.localStorage.setItem(`/app-x/${app_name}/userInfo`, JSON.stringify(res.data.user))
         // broadcast login message
         store.dispatch({
           type: 'user/info',
-          namespace: app.namespace,
-          app_name: app.app_name,
+          app_name: app_name,
           username: username,
           userInfo: res.data.user
         })
@@ -215,7 +275,7 @@ function get_user_info(app, callback, handler) {
     .catch((err) => {
       console.log(err.stack)
       if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app)
+        _handle_logout(app_name)
       }
       let res = {
         status: 'error',
@@ -231,21 +291,24 @@ function get_user_info(app, callback, handler) {
     })
 }
 
-// request for app context
-function request(app, conf, callback, handler) {
-  //console.log(`INFO: api/request - ${app} ${conf}`)
+// request for app_name context
+function request(app_name, conf, callback, handler) {
+  // get base path
+  const basePath = _get_base_path(app_name)
+  const { username, token } = _get_user_token(app_name)
+  //console.log(`INFO: api/request - ${app_name} ${conf}`)
   let req = { ...conf }
   if ('url' in conf) {
-    req.url = `/${api_base_url}/${app.namespace}/${app.app_name}/${app.runtime_name}/${conf.url}`.replace(/\/+/g, '/')
+    req.url = `${basePath}/${conf.url}`.replace(/\/+/g, '/')
   }
   if ('headers' in conf) {
     req.headers = {
       ...conf.headers,
-      'Authorization': `AppX ${appx_token}`
+      'Authorization': `AppX ${token}`
     }
   } else {
     req.headers = {
-      'Authorization': `AppX ${appx_token}`
+      'Authorization': `AppX ${token}`
     }
   }
   return axios(req)
@@ -270,7 +333,7 @@ function request(app, conf, callback, handler) {
     })
     .catch((err) => {
       if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app)
+        _handle_logout(app_name)
       }
       let res = {
         status: 'error',
@@ -284,9 +347,9 @@ function request(app, conf, callback, handler) {
     })
 }
 
-function get(app, url, callback, handler) {
+function get(app_name, url, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'get',
       url: url,
@@ -296,9 +359,9 @@ function get(app, url, callback, handler) {
   )
 }
 
-function head(app, url, callback, handler) {
+function head(app_name, url, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'head',
       url: url,
@@ -308,9 +371,9 @@ function head(app, url, callback, handler) {
   )
 }
 
-function post(app, url, data, callback, handler) {
+function post(app_name, url, data, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'post',
       url: url,
@@ -321,9 +384,9 @@ function post(app, url, data, callback, handler) {
   )
 }
 
-function put(app, url, data, callback, handler) {
+function put(app_name, url, data, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'put',
       url: url,
@@ -334,9 +397,9 @@ function put(app, url, data, callback, handler) {
   )
 }
 
-function patch(app, url, data, callback, handler) {
+function patch(app_name, url, data, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'patch',
       url: url,
@@ -347,9 +410,9 @@ function patch(app, url, data, callback, handler) {
   )
 }
 
-function del(app, url, callback, handler) {
+function del(app_name, url, callback, handler) {
   return request(
-    app,
+    app_name,
     {
       method: 'delete',
       url: url,
@@ -360,13 +423,9 @@ function del(app, url, callback, handler) {
 }
 
 export {
-  get_api_base_url,
-  set_api_base_url,
-  get_app_context,
-  set_app_context,
   login,
   logout,
-  get_user_info,
+  me,
   get,
   head,
   post,

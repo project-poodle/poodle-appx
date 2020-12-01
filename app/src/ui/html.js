@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path');
 const objPath = require("object-path")
+const prettier = require("prettier")
 const Mustache = require('mustache')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 
@@ -155,8 +156,11 @@ function handle_html(req, res) {
             // render the html_content
             let rendered = Mustache.render(html_content, context)
 
+            // prettify
+            const prettified = prettier.format(rendered, { semi: false, parser: "html" })
+
             // send back rendered html_content as html
-            res.status(200).type('html').send(rendered)
+            res.status(200).type('html').send(prettified)
         })
     })
 }

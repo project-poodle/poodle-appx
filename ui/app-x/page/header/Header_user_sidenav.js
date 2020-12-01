@@ -19,14 +19,23 @@ import {
   ExitToApp as ExitToApp
 } from '@material-ui/icons'
 
-import { logout, get_app_context, get_user_info } from 'app-x/api'
+import { logout, me } from 'app-x/api'
 
 setInterval(() => {
-  get_user_info(null)
+  me(app_name)
 }, Math.floor((Math.random() * 60) + 120) * 1000)
 
 
 const Header = (props) => {
+
+  const {
+    appName,
+    homeUrl,
+    loginUrl,
+    handlers,
+    reducers,
+    ...rest
+  } = props
 
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -43,11 +52,10 @@ const Header = (props) => {
   }));
 
   function handleLogout() {
-    props.handlers.logoutHandler(
-      null,
+    logout(
+      props.appName,
       (res) => {
-        navigate('/login')
-        //console.log(res)
+        navigate(props.loginUrl)
       },
       (err) => {
         // TODO
@@ -58,14 +66,6 @@ const Header = (props) => {
 
   const styles = useStyles()
   const [notifications] = useState([])
-
-  const {
-    homeUrl,
-    loginUrl,
-    handlers,
-    reducers,
-    ...rest
-  } = props
 
   // check that userToken exist and is valid, otherwise, navigate to login
   if (!reducers
@@ -86,7 +86,7 @@ const Header = (props) => {
       <Toolbar>
         <A href={homeUrl} className={styles.inline}>
           <Avatar className={styles.avatar}>
-            { props.icon }
+            { props.titleIcon }
           </Avatar>
           <Typography variant="h4" display="inline" color="secondary" noWrap className={styles.text}>
             { props.title }
@@ -102,7 +102,7 @@ const Header = (props) => {
         <Hidden mdUp>
           <IconButton
             color="inherit"
-            onClick={props.handlers.sideNavHandler}
+            onClick={handlers.sideNavHandler}
           >
             <MenuIcon />
           </IconButton>
@@ -113,20 +113,20 @@ const Header = (props) => {
 };
 
 Header.propTypes = {
+  appName: PropTyps.string.isRequired,
   title: PropTyps.string.isRequired,
-  icon: PropTyps.element.isRequired,
+  titleIcon: PropTyps.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
   loginUrl: PropTypes.string.isRequired,
-  handlers: PropTypes.shape(
-    logoutHandler: PropTypes.func.isRequired,
+  handlers: PropTypes.shape({
     sideNavHandler: PropTypes.func.isRequired
-  ),
-  reducers: PropTyps.shape(
-    user: PropTypes.shape(
+  }),
+  reducers: PropTyps.shape({
+    user: PropTypes.shape({
       userToken: PropTypes.object,
-      userInfo: PropTypes.object,
-    )
-  )
+      userInfo: PropTypes.object
+    })
+  })
 }
 
 // state to props
@@ -161,9 +161,10 @@ const mapStateToProps = (state, ownProps) => {
     : {
         reducers: {
           user: userState
+        }
       }
 
-  return updateState
+  return userState
 }
 
 // dispatch to props

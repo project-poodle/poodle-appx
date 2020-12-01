@@ -6,14 +6,14 @@ import {
 
 // check base path exist, or log error
 function check_base_path() {
-  if (!window.appx.BASE_PATH) {
-    console.error(`appx.BASE_PATH not set`)
+  if (!globalThis.appx.BASE_PATH) {
+    console.error(`ERROR: appx.BASE_PATH not set`)
   }
 }
 
 // compute new url based on input
 function compute_url(inputUrl) {
-  const newUrl = (window.appx.BASE_PATH + inputUrl).replace(/\/+/g, '/')
+  const newUrl = (globalThis.appx.BASE_PATH + inputUrl).replace(/\/+/g, '/')
   return newUrl
 }
 

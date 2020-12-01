@@ -8,8 +8,8 @@ import { Provider } from 'react-redux'
 
 import theme from 'app-x/theme'
 import GlobalStyles from 'app-x/components/GlobalStyles'
-import HeaderLayout from 'app-x/pages/layouts/headerLayout'
-import NotFoundView from 'app-x/views/errors/NotFoundView'
+import HeaderLayout from 'app-x/page/layout/Header_plain'
+import NotFoundView from 'app-x/view/error/NotFoundView'
 
 import store from 'app-x/redux/store'
 import routes from 'app-x/routes.js'
@@ -22,7 +22,7 @@ const App = (props, children) => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-         {routeResult || (<HeaderLayout><NotFoundView/></HeaderLayout>)}
+         {routeResult || (<Header_plain><NotFoundView/></Header_plain>)}
       </ThemeProvider>
     </Provider>
   )

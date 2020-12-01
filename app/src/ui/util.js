@@ -1,10 +1,18 @@
-//const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 //const babel = require('@babel/standalone')
 //const generate = require('@babel/generator').default
 const traverse = require('@babel/traverse').default
 const { parse, parseExpression } = require('@babel/parser')
 const t = require("@babel/types")
 const db = require('../db/db')
+
+const PATH_SEPARATOR = '/'
+const VARIABLE_SEPARATOR = '.'
+
+const SPECIAL_CHARACTER = /[^_a-zA-Z0-9]/g
+
+const REQUIRE_FUNCTION = '$r'
+const SNIPPET_PREFIX = 'snippet' + PATH_SEPARATOR
+const STATE_PREFIX = 'state' + PATH_SEPARATOR
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,20 +23,20 @@ function isPrimitive(test) {
 
 // capitalize string
 function capitalize(s) {
-  if (typeof s !== 'string') {
-    throw new Error(`ERROR: capitalize input is not string [${typeof s}]`)
-  }
-  return s.charAt(0).toUpperCase() + s.slice(1)
+    if (typeof s !== 'string') {
+        throw new Error(`ERROR: capitalize input is not string [${typeof s}]`)
+    }
+    return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 // reserved test
 function isReserved(test) {
-  try {
-    eval('var ' + test + ' = 1');
-    return false
-  } catch {
-    return true
-  }
+    try {
+        eval('var ' + test + ' = 1')
+        return false
+    } catch {
+        return true
+    }
 }
 
 // create primitive js ast
@@ -42,7 +50,7 @@ function js_primitive(js_context, input) {
     case 'boolean':
       return t.booleanLiteral(input)
     case 'object':
-      if (input == null) {
+      if (input === null) {
         return t.nullLiteral()
       } else {
         throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
@@ -61,7 +69,7 @@ function js_array(js_context, input) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
   }
 
-  if (typeof input != 'object') {
+  if (typeof input !== 'object') {
     throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
@@ -82,7 +90,7 @@ function js_object(js_context, input) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
   }
 
-  if (typeof input != 'object') {
+  if (typeof input !== 'object') {
     throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
@@ -104,7 +112,7 @@ function js_object(js_context, input) {
 // create import ast
 function js_import(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/import') {
+  if (!('type' in input) || input.type !== 'js/import') {
     throw new Error(`ERROR: input.type is not [js/import] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -121,7 +129,7 @@ function js_import(js_context, input) {
 // create export ast
 function js_export(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/export') {
+  if (!('type' in input) || input.type !== 'js/export') {
     throw new Error(`ERROR: input.type is not [js/export] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -146,7 +154,7 @@ function js_export(js_context, input) {
 // create variable declaration ast
 function js_variable(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/variable') {
+  if (!('type' in input) || input.type !== 'js/variable') {
     throw new Error(`ERROR: input.type is not [js/variable] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -176,28 +184,28 @@ function _js_parse_snippet(js_context, parsed) {
   // console.log(parsed)
 
   traverse(parsed, {
-    // resolve call expressins with '$r' require syntax
+    // resolve call expressins with REQUIRE_FUNCTION require syntax
     //   $r('app-x/router|navigate')
     CallExpression(path) {
       // log callee
       //console.log(path.node.callee)
       //console.log(path.node.arguments)
-      // check if matches '$r' require syntax
+      // check if matches REQUIRE_FUNCTION require syntax
       if (t.isIdentifier(path.node.callee)
-          && path.node.callee.name == '$r'
+          && path.node.callee.name === REQUIRE_FUNCTION
           && path.node.arguments.length > 0
           && t.isStringLiteral(path.node.arguments[0])) {
-        // register and import '$r' require syntax
+        // register and import REQUIRE_FUNCTION require syntax
         const name = path.node.arguments[0].value
         reg_js_import(js_context, name)
         path.replaceWith(t.identifier(name))
       }
     },
-    // register all variable declarators with 'local' prefix
+    // register all variable declarators with 'snippet' prefix
     VariableDeclarator(path) {
       if (t.isIdentifier(path.node.id)) {
         // register variable defined by local snippet
-        const newName = 'snippet/' + path.node.id.name
+        const newName = SNIPPET_PREFIX + path.node.id.name
         reg_js_import(js_context, newName)
         path.node.id.name = newName
       }
@@ -212,7 +220,7 @@ function _js_parse_snippet(js_context, parsed) {
 function js_expression(js_context, input) {
 
   let data = ''
-  if (typeof input == 'string' && input.trim().startsWith('`') && input.trim().endsWith('`')) {
+  if (typeof input === 'string' && input.trim().startsWith('`') && input.trim().endsWith('`')) {
 
     data = input
 
@@ -222,7 +230,7 @@ function js_expression(js_context, input) {
 
   } else {
 
-    if (!('type' in input) || input.type != 'js/expression') {
+    if (!('type' in input) || input.type !== 'js/expression') {
       throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
     }
 
@@ -256,12 +264,12 @@ function js_expression(js_context, input) {
 function js_block(js_context, input) {
 
   let data = ''
-  if (typeof input == 'string') {
+  if (typeof input === 'string') {
 
     data = input
 
   } else {
-    if (!('type' in input) || input.type != 'js/block') {
+    if (!('type' in input) || input.type !== 'js/block') {
       throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
     }
 
@@ -291,7 +299,7 @@ function js_block(js_context, input) {
 // create array function ast
 function js_function(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/function') {
+  if (!('type' in input) || input.type !== 'js/function') {
     throw new Error(`ERROR: input.type is not [js/function] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -309,7 +317,7 @@ function js_function(js_context, input) {
 // create call ast
 function js_call(js_context, input) {
 
-  if (!('type' in input) || input.type != 'js/function') {
+  if (!('type' in input) || input.type !== 'js/function') {
     throw new Error(`ERROR: input.type is not [js/call] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -324,41 +332,82 @@ function js_call(js_context, input) {
 }
 
 // create jsx element ast
-function jsx_element(js_context, input) {
+function react_element(js_context, input) {
 
-  if (!('type' in input) || input.type != 'jsx/element') {
-    throw new Error(`ERROR: input.type is not [jsx/element] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input.type !== 'react/element') {
+    throw new Error(`ERROR: input.type is not [react/element] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
-    throw new Error(`ERROR: input.name missing in [jsx/element] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.name missing in [react/element] [${JSON.stringify(input)}]`)
   }
 
-  // capitalize qualified_name
-  const qualified_name = capitalize(input.name.split('/').pop().split('|').pop())
+  // capitalize element name and register
+  const parsed_var = _parse_var_full_path(input.name)
+  const capitalized_name = capitalize(parsed_var.full_paths.pop())
 
-  reg_js_import(js_context, input.name, use_default=true, suggested_name=qualified_name)
+  reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
 
-  return t.jSXElement(
+  // create react element with props and children
+  const react_element = t.jSXElement(
     t.jSXOpeningElement(
       t.jSXIdentifier(input.name),
-      'props' in input ? jsx_element_props(js_context, input.props) : []
+      'props' in input ? react_element_props(js_context, input.props) : []
     ),
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
     ),
-    jsx_element_children(js_context, input.children)
+    react_element_children(js_context, input.children)
   )
+
+  // check if there are any block statements
+  const block_statements = []
+  Object.keys(input).map(key => {
+    if (key === 'type' || key === 'name' || key === 'props' || key === 'children') {
+      return
+    }
+    block_statements.push(
+      t.variableDeclaration(
+        'const',
+        [
+          t.variableDeclarator(
+            t.identifier(key),
+            js_process(js_context, input[key])
+          )
+        ]
+      )
+    )
+  })
+
+  // if we have block_statements
+  if (block_statements.length > 0) {
+    return t.arrowFunctionExpression(
+      [
+        t.identifier('props')
+      ],
+      t.blockStatement(
+        [
+          ...block_statements,
+          t.returnStatement(
+            react_element
+          )
+        ]
+      )
+    )
+  } else {
+    // return react element
+    return react_element
+  }
 }
 
 // create jsx element props ast
-function jsx_element_props(js_context, props) {
+function react_element_props(js_context, props) {
 
   if (! props) {
     return []
   }
 
-  if (typeof props != 'object') {
+  if (typeof props !== 'object') {
     throw new Error(`ERROR: input is not object [${typeof props}] [${JSON.stringify(props)}]`)
   }
 
@@ -370,7 +419,7 @@ function jsx_element_props(js_context, props) {
     const prop = props[prop_key]
     return t.jSXAttribute(
       t.jSXIdentifier(prop_key),
-      typeof prop == 'string'
+      typeof prop === 'string'
         ? t.stringLiteral(prop) // TODO
         : t.jSXExpressionContainer(
             js_process(js_context, prop)
@@ -382,14 +431,14 @@ function jsx_element_props(js_context, props) {
 }
 
 // create jsx element children ast
-function jsx_element_children(js_context, children) {
+function react_element_children(js_context, children) {
 
   // console.log(children)
   if (! children) {
     return []
   }
 
-  if (typeof children != 'object') {
+  if (typeof children !== 'object') {
     throw new Error(`ERROR: input is not object [${typeof children}] [${JSON.stringify(children)}]`)
   }
 
@@ -398,7 +447,7 @@ function jsx_element_children(js_context, children) {
   }
 
   return children.map(row => {
-    if (typeof row == 'string') {
+    if (typeof row === 'string') {
       return t.jSXText(row)
     } else {
       return js_process(js_context, row)
@@ -406,11 +455,78 @@ function jsx_element_children(js_context, children) {
   })
 }
 
-// create jsx route ast
-function jsx_route(js_context, input) {
+// create react state ast
+function react_state(js_context, input) {
 
-  if (!('type' in input) || input.type != 'jsx/route') {
-    throw new Error(`ERROR: input.type is not [jsx/route] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input.type !== 'react/state') {
+    throw new Error(`ERROR: input.type is not [react/state] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/state] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('setter' in input)) {
+    throw new Error(`ERROR: input.setter missing in [react/state] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('init' in input)) {
+    throw new Error(`ERROR: input.init missing in [react/state] [${JSON.stringify(input)}]`)
+  }
+
+  // register react.useState
+  reg_js_import(js_context, 'react.useState')
+
+  return t.callExpression(
+    t.arrowFunctionExpression(
+      [],
+      t.blockStatement(
+        [
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.arrayPattern(
+                  [
+                    t.identifier(input.name),
+                    t.identifier(input.setter)
+                  ]
+                ),
+                t.callExpression(
+                  t.identifier('react.useState'),
+                  [
+                    js_process(js_context, input.init)
+                  ]
+                )
+              )
+            ]
+          ),
+          t.returnStatement(
+            t.objectExpression(
+              [
+                t.objectProperty(
+                  t.stringLiteral(input.name),
+                  t.identifier(input.name)
+                ),
+                t.objectProperty(
+                  t.stringLiteral(input.setter),
+                  t.identifier(input.setter)
+                )
+              ]
+            )
+          )
+        ]
+      )
+    ),
+    []
+  )
+}
+
+// create jsx route ast
+function appx_route(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'appx/route') {
+    throw new Error(`ERROR: input.type is not [appx/route] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
   if (!('appx' in js_context) || !('ui_deployment' in js_context.appx)) {
@@ -484,70 +600,75 @@ function js_process(js_context, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type == 'js/import') {
+  if (input.type === 'js/import') {
 
     return js_import(js_context, input)
 
-  } else if (input.type == 'js/export') {
+  } else if (input.type === 'js/export') {
 
     return js_export(js_context, input)
 
-  } else if (input.type == 'js/variable') {
+  } else if (input.type === 'js/variable') {
 
     return js_variable(js_context, input)
 
-  } else if (input.type == 'js/expression') {
+  } else if (input.type === 'js/expression') {
 
     return js_expression(js_context, input)
 
-  } else if (input.type == 'js/block') {
+  } else if (input.type === 'js/block') {
 
     return js_block(js_context, input)
 
-  } else if (input.type == 'js/function') {
+  } else if (input.type === 'js/function') {
 
     return js_function(js_context, input)
 
-  } else if (input.type == 'js/call') {
+  } else if (input.type === 'js/call') {
 
     return js_call(js_context, input)
 
-  } else if (input.type == 'js/call/transform') {
+  } else if (input.type === 'js/transform') {
 
     // TODO
     throw new Error(`ERROR: unsupported input.type [${input.type}]`)
 
-  } else if (input.type == 'js/call/trigger') {
+  } else if (input.type === 'js/trigger') {
 
     // TODO
     throw new Error(`ERROR: unsupported input.type [${input.type}]`)
 
-  } else if (input.type == 'jsx/element') {
+  } else if (input.type === 'react/element') {
 
-    return jsx_element(js_context, input)
+    return react_element(js_context, input)
 
-  } else if (input.type == 'jsx/route') {
+  } else if (input.type === 'react/state') {
 
-    return jsx_route(js_context, input)
+    return react_state(js_context, input)
 
-  } else if (input.type == 'jsx/control') {
+  } else if (input.type === 'jsx/control') {
 
     // TODO
     throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+
+  } else if (input.type === 'appx/route') {
+
+    return appx_route(js_context, input)
 
   } else {
 
-    throw new Error(`ERROR: unrecognized input.type [${input.type}]`)
+    throw new Error(`ERROR: unrecognized input.type [${input.type}] [${JSON.stringify(input)}]`)
   }
 }
 
-function js_resolve(js_context, ast_tree) {
+function js_resolve_ids(js_context, ast_tree) {
   // add imports and other context to the code
   traverse(ast_tree, {
     Program: {
       exit(path) {
-        //console.log(`exit`)
         const import_statements = []
+        ////////////////////////////////////////////////////////////
+        // process import statement first, prior to process sub_vars
         Object.keys(js_context.imports).map(importKey => {
           // get basic information of import registration
           // console.log(js_context.imports[importKey])
@@ -578,16 +699,17 @@ function js_resolve(js_context, ast_tree) {
               )
             )
           }
-          // process import statement, then process sub_vars
+          ////////////////////////////////////////////////////////////
+          // we have processed import statement, now process sub_vars
           Object.keys(sub_vars).forEach((sub_var_key, i) => {
             // compute sub_var_name and sub_var_value
             let sub_var_value = sub_vars[sub_var_key]
-            if (! sub_var_value) {
+            if (! sub_var_value.length) {
               return
             }
             //console.log(sub_var_value)
             // get sub_var variable registration
-            let sub_var_name = js_context.variables[importKey + '|' + sub_var_key].name
+            let sub_var_name = js_context.variables[importKey + VARIABLE_SEPARATOR + sub_var_key].name
             // compose sub_var_expression
             let sub_var_expression = t.memberExpression(
               t.identifier(import_name),
@@ -615,7 +737,8 @@ function js_resolve(js_context, ast_tree) {
             )
           })
         })
-        //
+        ////////////////////////////////////////////////////////////
+        // add import statements to program body
         import_statements.forEach((import_statement, i) => {
           path.unshiftContainer(
             'body',
@@ -627,101 +750,142 @@ function js_resolve(js_context, ast_tree) {
     Identifier(path) {
       if (path.node.name in js_context.variables) {
         path.node.name = js_context.variables[path.node.name].name
+      } else {
+        // TODO - do we want to resolve all the identifier here
+        // console.error(`ERROR: unable to resolve [${path.node.name}]`)
       }
     },
     JSXIdentifier(path) {
       if (path.node.name in js_context.variables) {
         path.node.name = js_context.variables[path.node.name].name
+      } else {
+        // TODO - do we want to resolve all the identifier here
+        // console.error(`ERROR: unable to resolve [${path.node.name}]`)
       }
     }
   })
 }
 
+// parse variable full path
+function _parse_var_full_path(var_full_path) {
+
+  let import_paths = var_full_path.split(PATH_SEPARATOR)
+  let sub_vars = import_paths[import_paths.length - 1].split(VARIABLE_SEPARATOR)
+
+  // add first sub_var to import_path
+  import_paths[import_paths.length - 1] = sub_vars.shift()
+
+  return {
+    full_paths: [].concat(import_paths, sub_vars),
+    import_paths: import_paths,
+    sub_vars: sub_vars
+  }
+}
+
 // register variables
-function reg_js_variable(js_context, variable_full_path, kind='const', suggested_name=null) {
-
-    let import_path = variable_full_path.split('|')[0]
-    let sub_vars = variable_full_path.split('|')
-    sub_vars.shift()
-
-    let variable_prefix_paths = import_path.split('/')
-    variable_prefix_paths = variable_prefix_paths.concat(sub_vars)
-    if (suggested_name) {
-      variable_prefix_paths.pop() // remove most qualified name
-      variable_prefix_paths.push(suggested_name) // add suggested_name
-    }
-
-    // console.log(variable_prefix_paths)
-    let variable_qualified_name = variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
-    if (isReserved(variable_qualified_name)) {
-      variable_qualified_name = variable_qualified_name + '$' + variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
-    }
+function reg_js_variable(js_context, var_full_path, kind='const', suggested_name=null) {
 
     // if variable is already registered, just return
-    if (variable_full_path in js_context.variables) {
+    if (var_full_path in js_context.variables) {
       return
+    }
+
+    // parse variable
+    const parsed_var = _parse_var_full_path(var_full_path)
+
+    let var_prefix = [].concat(parsed_var.full_paths)
+    if (suggested_name) {
+      var_prefix.pop() // remove most qualified name
+      var_prefix.push(suggested_name) // add suggested_name
+    }
+
+    // get starting var_name
+    let var_name = var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
+    if (isReserved(var_name)) {
+      var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
     }
 
     while (true) {
 
+        // check for name conflict
         const found = Object.keys(js_context.variables).find(key => {
             let spec = js_context.variables[key]
-            return spec.name == variable_qualified_name
+            return spec.name === var_name
         })
 
         // name conflict found
         if (found) {
             // update conflicting variable names
             Object.keys(js_context.variables).map(key => {
-                let variable_spec = js_context.variables[key]
-                if (variable_spec.name == variable_qualified_name) {
-                    if (variable_spec.path_prefix.length) {
-                        variable_spec.name = variable_spec.name + '$' + variable_spec.path_prefix.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+                let var_spec = js_context.variables[key]
+                if (var_spec.name === var_name) {
+                    if (var_spec.var_prefix.length) {
+                        var_spec.name = var_spec.name + '$' + var_spec.var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
                     } else {
                         // we have exhausted the full path, throw exception
-                        throw new Error(`ERROR: name resolution conflict [${variable_full_path}]`)
+                        throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
                     }
                 }
             })
             // update our own variable name
-            if (variable_prefix_paths) {
-                variable_qualified_name = variable_qualified_name + '$' + variable_prefix_paths.pop().replace(/[^_a-zA-Z0-9]/g, '_')
+            if (var_prefix) {
+                var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
             } else {
                 // we have exhausted the full path, throw exception
-                throw new Error(`ERROR: name resolution conflict [${variable_full_path}]`)
+                throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
             }
         } else {
-            js_context.variables[variable_full_path] = {
+            js_context.variables[var_full_path] = {
                 kind: kind,
-                name: variable_qualified_name,
-                full_path: variable_full_path,
-                path_prefix: variable_prefix_paths
+                name: var_name,
+                var_full_path: var_full_path,
+                var_prefix: var_prefix
             }
             return js_context
         }
     }
 }
 
-function reg_js_import(js_context, variable_full_path, use_default=false, suggested_name=null) {
+function reg_js_import(js_context, var_full_path, use_default=false, suggested_name=null) {
 
-    let import_path = variable_full_path.split('|')[0]
-    let sub_vars = variable_full_path.split('|')
-    sub_vars.shift()
-
-    reg_js_variable(js_context, import_path, 'const', suggested_name)
-    reg_js_variable(js_context, variable_full_path, 'const', suggested_name)
-
-    if (!(import_path in js_context.imports)) {
-      js_context.imports[import_path] = {
-        use_default: use_default,
-        suggested_name: suggested_name,
-        path: import_path,
-        sub_vars: {}
-      }
+    // if variable is already registered, just return
+    if (var_full_path in js_context.imports) {
+      return
     }
 
-    if (sub_vars.length) {
-      js_context.imports[import_path].sub_vars[sub_vars.join('|')] = sub_vars
+    // parse variable
+    const parsed_var = _parse_var_full_path(var_full_path)
+
+    // import_path
+    const import_path = parsed_var.import_paths.join(PATH_SEPARATOR)
+
+    if (import_path !== var_full_path) {
+        // if import_path is different from variable_full_path, suggested_name applies only to the variable
+        reg_js_variable(js_context, import_path, 'const', null)
+        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
+    } else {
+        // if import path is same as variable_full_path, suggested_name applies to both
+        // reg_js_variable(js_context, import_path, 'const', suggested_name)
+        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
+    }
+
+    // update import data
+    if (!(import_path in js_context.imports)) {
+        js_context.imports[import_path] = {
+            use_default: use_default,
+            suggested_name: suggested_name,
+            path: import_path,
+            sub_vars: {}
+        }
+    }
+
+    // update sub_vars for import
+    let sub_vars = [].concat(parsed_var.sub_vars)
+    if (sub_vars.length !== 0) {
+        // compute sub_var_name and sub_var_full_path
+        const sub_var_name = sub_vars.join(VARIABLE_SEPARATOR)
+        // register as import sub_var and as variable
+        js_context.imports[import_path].sub_vars[sub_var_name] = parsed_var.sub_vars
     }
 }
 
@@ -738,7 +902,7 @@ function get_js_variable(js_context, variable_full_path) {
 // export
 module.exports = {
   js_process: js_process,
-  js_resolve: js_resolve,
+  js_resolve_ids: js_resolve_ids,
   js_array: js_array,
   js_object: js_object,
   js_primitive: js_primitive,
@@ -749,7 +913,7 @@ module.exports = {
   js_block: js_block,
   js_function: js_function,
   js_call: js_call,
-  jsx_element: jsx_element,
+  react_element: react_element,
   reg_js_variable: reg_js_variable,
   reg_js_import: reg_js_import,
 }

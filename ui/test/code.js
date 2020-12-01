@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+const [ state, setSatte ]  = useState()
+
 const a = {
   a: 1,
   b: 2,

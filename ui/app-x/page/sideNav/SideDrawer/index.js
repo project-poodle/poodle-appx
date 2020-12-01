@@ -28,7 +28,7 @@ import {
   Users as UsersIcon
 } from 'react-feather'
 
-import NavItem from 'app-x/pages/layouts/consoleLayout/NavBar/NavItem'
+import NavItem from 'app-x/page/layout/sideNav/SideDrawer/NavItem'
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
@@ -79,23 +79,24 @@ const items = [
   }
 ];
 
-const useStyles = makeStyles(() => ({
-  mobileDrawer: {
-    width: 256
-  },
-  desktopDrawer: {
-    width: 256,
-    top: 64,
-    height: 'calc(100% - 64px)'
-  },
-  avatar: {
-    cursor: 'pointer',
-    width: 64,
-    height: 64
-  }
-}));
-
 const NavBar = ({ onMobileClose, openMobile }) => {
+
+  const useStyles = makeStyles(() => ({
+    mobileDrawer: {
+      width: 256
+    },
+    desktopDrawer: {
+      width: 256,
+      top: 64,
+      height: 'calc(100% - 64px)'
+    },
+    avatar: {
+      cursor: 'pointer',
+      width: 64,
+      height: 64
+    }
+  }));
+
   const classes = useStyles();
   //const location = useLocation();
 
@@ -174,8 +175,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <Drawer
           anchor="left"
           classes={{ paper: classes.mobileDrawer }}
-          onClose={onMobileClose}
-          open={openMobile}
+          open={props.isMobileNavOpen}
           variant="temporary"
         >
           {content}
@@ -196,13 +196,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 };
 
 NavBar.propTypes = {
-  onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool
-};
+  // onMobileClose: PropTypes.func,
+  isMobileNavOpen: PropTypes.bool
+}
 
 NavBar.defaultProps = {
-  onMobileClose: () => {},
-  openMobile: false
-};
+  isMobileNavOpen: false
+}
 
 export default NavBar;

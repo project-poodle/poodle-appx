@@ -20,11 +20,10 @@
   // render function
   function render() {
 
-    console.log(`INFO: entry path [${window.appx.ENTRY_ELEM_PATH}]`)
+    console.log(`INFO: entry path [${globalThis.appx.ENTRY_ELEM_PATH}]`)
 
-    import(window.appx.ENTRY_ELEM_PATH).then(app_module => {
+    import(globalThis.appx.ENTRY_ELEM_PATH).then(app_module => {
       const app = app_module.default
-      //console.log(app)
       main['react-dom'].render(
           main['react'].createElement(app, null),
           document.getElementById('root')
@@ -33,7 +32,7 @@
   }
 
   // wait for service worker registration, or render immediately
-  if (window.appx.SKIP_REG_STEP) {
+  if (globalThis.appx.SKIP_REG_STEP) {
     render()
   } else {
     setTimeout(render, 1500)

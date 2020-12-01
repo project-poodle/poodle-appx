@@ -9,9 +9,9 @@ const t = require("@babel/types")
 const {
     reg_js_variable,
     reg_js_import,
-    jsx_element,
+    react_element,
     js_process,
-    js_resolve
+    js_resolve_ids
 } = require('./util')
 const db = require('../db/db')
 
@@ -19,9 +19,9 @@ const db = require('../db/db')
 
 
 /**
- * handle_jsx
+ * handle_react
  */
-function handle_jsx(req, res) {
+function handle_react(req, res) {
 
     const { ui_deployment, ui_element } = req.context
 
@@ -41,7 +41,7 @@ function handle_jsx(req, res) {
         return
     }
 
-    if (! ('type' in ui_element.ui_element_spec.base) || ui_element.ui_element_spec.base.type != 'jsx/element') {
+    if (! ('type' in ui_element.ui_element_spec.base) || ui_element.ui_element_spec.base.type != 'react/element') {
         res.status(422).json({
             status: FAILURE,
             message: `ERROR: unrecognized ui_element_spec.base.type [${ui_element.ui_element_spec.base.type}]`
@@ -67,19 +67,6 @@ function handle_jsx(req, res) {
     reg_js_import(js_context, 'react', true, 'React')
     reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    /*
-    const useStyles = makeStyles((theme) => ({
-
-      paper: {
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      }
-    }))
-    */
-
     // create block statement
     const block_statements = []
 
@@ -89,7 +76,7 @@ function handle_jsx(req, res) {
       // console.log(ui_element.ui_element_spec.styles)
       delete ui_element.ui_element_spec.styles.type
 
-      reg_js_import(js_context, '@material-ui/core|makeStyles')
+      reg_js_import(js_context, '@material-ui/core.makeStyles')
       reg_js_variable(js_context, 'styles')
 
       block_statements.push(
@@ -100,7 +87,7 @@ function handle_jsx(req, res) {
               t.identifier('styles'),
               t.callExpression(
                 t.callExpression(
-                  t.identifier('@material-ui/core|makeStyles'),
+                  t.identifier('@material-ui/core.makeStyles'),
                   [
                     t.arrowFunctionExpression(
                       [
@@ -121,7 +108,7 @@ function handle_jsx(req, res) {
     // return statement
     block_statements.push(
       t.returnStatement(
-        jsx_element(js_context, ui_element.ui_element_spec.base)
+        react_element(js_context, ui_element.ui_element_spec.base)
       )
     )
 
@@ -157,7 +144,7 @@ function handle_jsx(req, res) {
     // console.log(js_context)
 
     // resolve imports and variables in the ast_tree
-    js_resolve(js_context, ast_tree)
+    js_resolve_ids(js_context, ast_tree)
 
     // generate code
     const output = generate(ast_tree, {}, {})
@@ -170,5 +157,5 @@ function handle_jsx(req, res) {
 
 // export
 module.exports = {
-    handle_jsx: handle_jsx
+    handle_react: handle_react
 }

@@ -1,4 +1,4 @@
-                 import React, { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { A, navigate } from 'hookrouter'
 import PropTypes from 'prop-types'
 import {

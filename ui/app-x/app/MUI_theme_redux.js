@@ -6,13 +6,13 @@ import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@mate
 import { Provider } from 'react-redux'
 
 import GlobalStyles from 'app-x/components/GlobalStyles'
-import HeaderLayout from 'app-x/pages/layouts/headerLayout'
-import NotFoundView from 'app-x/views/errors/NotFoundView'
+import HeaderLayout from 'app-x/page/layout/Header_plain'
+import NotFoundView from 'app-x/view/error/NotFoundView'
 
 const MUI_App = (props) => {
 
   // process not_found
-  const not_found = props.not_found_view || (<HeaderLayout><NotFoundView/></HeaderLayout>)
+  const not_found = props.not_found_view || (<Header_plain><NotFoundView/></Header_plain>)
 
   // process routes
   const routeResult = useRoutes(props.routes)
