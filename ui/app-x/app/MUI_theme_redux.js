@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Provider } from 'react-redux'
 
-import GlobalStyles from 'app-x/components/GlobalStyles'
-import HeaderLayout from 'app-x/page/layout/Header_plain'
+import GlobalStyles from 'app-x/theme/GlobalStyles'
+import HeaderLayout from 'app-x/page/header/Header_plain'
 import NotFoundView from 'app-x/view/error/NotFoundView'
 
 const MUI_App = (props) => {

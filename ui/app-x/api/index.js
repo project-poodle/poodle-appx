@@ -23,7 +23,7 @@ function _get_base_path(app_name) {
   let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.AppX.API_MAPS[app_name])) {
+  if ('deployment' in globalThis.AppX.API_MAPS[app_name]) {
     const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
@@ -59,7 +59,7 @@ function _get_auth_base_path(app_name) {
   let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.AppX.API_MAPS[app_name])) {
+  if ('deployment' in globalThis.AppX.API_MAPS[app_name]) {
     const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)

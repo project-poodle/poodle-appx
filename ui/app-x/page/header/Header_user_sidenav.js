@@ -113,15 +113,15 @@ const Header = (props) => {
 };
 
 Header.propTypes = {
-  appName: PropTyps.string.isRequired,
-  title: PropTyps.string.isRequired,
-  titleIcon: PropTyps.element.isRequired,
+  appName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  titleIcon: PropTypes.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
   loginUrl: PropTypes.string.isRequired,
   handlers: PropTypes.shape({
     sideNavHandler: PropTypes.func.isRequired
   }),
-  reducers: PropTyps.shape({
+  reducers: PropTypes.shape({
     user: PropTypes.shape({
       userToken: PropTypes.object,
       userInfo: PropTypes.object

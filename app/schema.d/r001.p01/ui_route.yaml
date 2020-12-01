@@ -64,7 +64,7 @@ ui_route:
                               data: handlers.sideNavHandler
               sideNav:
                   type: react/element
-                  name: app-x/page/sideNav/NavBar
+                  name: app-x/page/sideNav/SideDrawer
                   props:
                       isMobileNavOpen:
                           type: js/expression

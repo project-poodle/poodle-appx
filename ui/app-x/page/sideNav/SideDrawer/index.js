@@ -28,7 +28,7 @@ import {
   Users as UsersIcon
 } from 'react-feather'
 
-import NavItem from 'app-x/page/layout/sideNav/SideDrawer/NavItem'
+import NavItem from 'app-x/page/sideNav/SideDrawer/NavItem'
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',

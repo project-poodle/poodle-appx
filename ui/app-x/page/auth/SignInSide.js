@@ -20,9 +20,9 @@ import {
 } from '@material-ui/core'
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 
-import FacebookIcon from 'app-x/icons/Facebook'
-import GoogleIcon from 'app-x/icons/Google'
-import { login, get_user_info } from 'app-x/api'
+import FacebookIcon from 'app-x/icon/Facebook'
+import GoogleIcon from 'app-x/icon/Google'
+import { login, me } from 'app-x/api'
 
 
 export default function SignInSide() {
@@ -107,7 +107,7 @@ export default function SignInSide() {
         // TODO
         console.log(res)
         navigate('/appbuilder/console')
-        get_user_info(null)
+        me(null)
       },
       err => {
         // TODO

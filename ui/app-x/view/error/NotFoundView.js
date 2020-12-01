@@ -3,7 +3,7 @@ import React from 'react'
 // const { Box, Container, Typography, makeStyles } = lib['@material-ui/core']
 import { Box, Container, Typography, makeStyles } from '@material-ui/core'
 
-import Page from 'app-x/components/Page'
+import Page from 'app-x/component/Page'
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -63,7 +63,7 @@ const HeaderSideNavLayout = (props) => {
 
 HeaderSideNavLayout.propTypes = {
   header: PropTypes.element.isRequired,
-  sideNav: Property.element.isRequired,
+  sideNav: PropTypes.element.isRequired,
   children: PropTypes.element.isRequired
 }
 
