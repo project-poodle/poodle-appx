@@ -67,51 +67,6 @@ function handle_react(req, res) {
     reg_js_import(js_context, 'react', true, 'React')
     reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    // create block statement
-    const block_statements = []
-
-    // if styles exist, handle styles
-    if (ui_element.ui_element_spec.styles) {
-
-      // console.log(ui_element.ui_element_spec.styles)
-      delete ui_element.ui_element_spec.styles.type
-
-      reg_js_import(js_context, '@material-ui/core.makeStyles')
-      reg_js_variable(js_context, 'styles')
-
-      block_statements.push(
-        t.variableDeclaration(
-          'const',
-          [
-            t.variableDeclarator(
-              t.identifier('styles'),
-              t.callExpression(
-                t.callExpression(
-                  t.identifier('@material-ui/core.makeStyles'),
-                  [
-                    t.arrowFunctionExpression(
-                      [
-                        t.identifier('theme')
-                      ],
-                      js_process(js_context, ui_element.ui_element_spec.styles)
-                    )
-                  ]
-                ),
-                []
-              )
-            )
-          ]
-        )
-      )
-    }
-
-    // return statement
-    block_statements.push(
-      t.returnStatement(
-        react_element(js_context, ui_element.ui_element_spec.base)
-      )
-    )
-
     // create ast tree for the program
     const ast_tree = t.file(
       t.program(
@@ -121,14 +76,7 @@ function handle_react(req, res) {
             [
               t.variableDeclarator(
                 t.identifier(ui_elem_name),
-                t.arrowFunctionExpression(
-                  [
-                    t.identifier('props')
-                  ],
-                  t.blockStatement(
-                    block_statements
-                  )
-                )
+                react_element(js_context, ui_element.ui_element_spec.base)
               )
             ]
           ),

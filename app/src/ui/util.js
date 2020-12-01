@@ -363,20 +363,29 @@ function react_element(js_context, input) {
   // check if there are any block statements
   const block_statements = []
   Object.keys(input).map(key => {
+    // ignore type / name / props / children
     if (key === 'type' || key === 'name' || key === 'props' || key === 'children') {
       return
     }
-    block_statements.push(
-      t.variableDeclaration(
-        'const',
-        [
-          t.variableDeclarator(
-            t.identifier(key),
-            js_process(js_context, input[key])
-          )
-        ]
+    // check if input[key] is 'js/block'
+    if (!isPrimitive(input[key]) && input[key].type === 'js/block') {
+      // adds each of the block statement
+      block_statements.push(...(js_process(js_context, input[key]).body))
+
+    } else {
+      // process input[key] and assign to declared variable
+      block_statements.push(
+        t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.identifier(key),
+              js_process(js_context, input[key])
+            )
+          ]
+        )
       )
-    )
+    }
   })
 
   // if we have block_statements
@@ -522,6 +531,37 @@ function react_state(js_context, input) {
   )
 }
 
+// create mui style expression
+function mui_style(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'mui/style') {
+    throw new Error(`ERROR: input.type is not [mui/style] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  // register material ui makeStyles
+  reg_js_import(js_context, '@material-ui/core.makeStyles')
+
+  // prepare styles object
+  const styles = { ...input }
+  delete styles.type
+
+  // return function call
+  return t.callExpression(
+    t.callExpression(
+      t.identifier('@material-ui/core.makeStyles'),
+      [
+        t.arrowFunctionExpression(
+          [
+            t.identifier('theme')
+          ],
+          js_process(js_context, styles)
+        )
+      ]
+    ),
+    []
+  )
+}
+
 // create jsx route ast
 function appx_route(js_context, input) {
 
@@ -646,7 +686,11 @@ function js_process(js_context, input) {
 
     return react_state(js_context, input)
 
-  } else if (input.type === 'jsx/control') {
+  } else if (input.type === 'mui/style') {
+
+    return mui_style(js_context, input)
+
+  } else if (input.type === 'mui/control') {
 
     // TODO
     throw new Error(`ERROR: unsupported input.type [${input.type}]`)
