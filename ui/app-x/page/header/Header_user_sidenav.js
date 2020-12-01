@@ -53,12 +53,7 @@ const Header_user_sidenav = (props) => {
 
   const styles = useStyles()
 
-  // check if we can successfully access api
-  me(props.appName, () => {}, (error) => {
-    navigate(props.loginUrl)
-  })
-
-  setInterval(() => {
+  function self_check() {
     me(props.appName,
       (data) => {
         console.log({
@@ -70,7 +65,14 @@ const Header_user_sidenav = (props) => {
         navigate(props.loginUrl)
       }
     )
-  }, Math.floor((Math.random() * 60) + 120) * 1000)
+    // recurring check
+    setTimeout(
+      self_check,
+      Math.floor((Math.random() * 60) + 120) * 1000
+    )
+  }
+
+  self_check()
 
   // check that userToken exist and is valid, otherwise, navigate to login
   /*
