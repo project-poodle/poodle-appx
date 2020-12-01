@@ -65,12 +65,12 @@ export default function Youtube_Landing(props) {
 
   function init_player() {
 
-    console.log(`INFO: onYouTubeIframeAPIReady`)
+    console.log(`INFO: playing youtube video`)
     let idx = Math.floor(Math.random() * videos.length)
     let video = videos[idx]
     let start = 'start' in video ? video.start : 0
     let end = 'end' in video ? video.end : -1
-    console.log(`INFO: YT start ${JSON.stringify(video)}`)
+    // console.log(`INFO: YT start ${JSON.stringify(video)}`)
 
     player = new window.YT.Player('video-foreground', {
       videoId: video.vid, // YouTube Video ID
@@ -100,12 +100,12 @@ export default function Youtube_Landing(props) {
             let s = 'start' in v ? v.start : 0
             let e = 'end' in v ? v.end : -1
             player.cueVideoById({videoId:v.vid, startSeconds:s, endSeconds:e})
-            console.log(`INFO: YT cued ${JSON.stringify(v)}`)
+            // console.log(`INFO: YT cued ${JSON.stringify(v)}`)
             player.playVideo()
           }
         },
         onPlaybackQualityChange: function(e) {
-          console.log(`INFO: ${e.data}`)
+          //console.log(`INFO: ${e.data}`)
         }
       }
     });
@@ -131,7 +131,6 @@ export default function Youtube_Landing(props) {
       } else {
         // console.log(window.YT)
         // console.log(player)
-        console.log(`INFO: restart player`)
         init_player()
       }
   });

@@ -32,7 +32,7 @@ ui_element:
               snippet:
                   type: js/block
                   data: |+
-                      console.log(this)
+                      console.log(props)
               props:
                   routes:
                       type: appx/route
@@ -77,7 +77,7 @@ ui_element:
               snippet:
                   type: js/block
                   data: |+
-                      console.log(this)
+                      console.log(props)
               props:
                   youtube_playlist:
                       - vid: 'vzR0dsZeQsY' # natural
