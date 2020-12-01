@@ -219,3 +219,25 @@ ui_element:
                               md: 1
                               lg: 2
                               xl: 3
+
+    - namespace: sys
+      ui_name: appxui
+      ui_ver: internal
+      ui_element_name: /page/auth/Login
+      ui_element_type: react/element
+      ui_element_spec:
+          base:
+              type: react/element
+              name: app-x/page/auth/SignInSide
+              styles:
+                  type: mui/style
+                  root:
+                      height: "100%"
+              props:
+                  app_name: appx
+                  title: Sign in to App-X
+                  titleIcon:
+                      type: react/element
+                      name: '@material-ui/icons.LockOutlined'
+                  copyright: app-x.org
+                  consoleUrl: /console

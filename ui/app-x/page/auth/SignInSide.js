@@ -1,10 +1,7 @@
-// const React = lib.react
 import React from 'react'
-// const  { useState } = lib.react
 import { useState } from 'react'
-//import React, { useState } from 'react'
-// const { navigate } = lib.hookrouter
-import { navigate } from 'hookrouter'
+import PropTypes from 'prop-types'
+import { navigate } from 'app-x/router'
 
 import {
   Avatar,
@@ -18,23 +15,21 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core'
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 
 import FacebookIcon from 'app-x/icon/Facebook'
 import GoogleIcon from 'app-x/icon/Google'
 import { login, me } from 'app-x/api'
 
 
-export default function SignInSide() {
+const SignInSide = (props) => {
 
   function Copyright() {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="https://material-ui.com/">
-          App-X.org
-        </Link>{' '}
-        {new Date().getFullYear()}
+        {'Copyright  '}
+          { props.copyright }
+          {'  ©  '}
+          {new Date().getFullYear()}
       </Typography>
     );
   }
@@ -99,24 +94,23 @@ export default function SignInSide() {
   const [displayErr, setDisplayErr] = useState(false)
 
   function handleSubmit(event) {
+    event.preventDefault()
     login(
-      null,
+      props.app_name,
       username,
       password,
       res => {
         // TODO
         console.log(res)
-        navigate('/appbuilder/console')
+        navigate(props.consoleUrl)
         me(null)
       },
       err => {
         // TODO
-        console.log(err.stack)
         setLoginErr(err.message)
         setDisplayErr(true)
       }
     )
-    event.preventDefault()
   }
 
   return (
@@ -126,10 +120,10 @@ export default function SignInSide() {
       <Grid item xs={12} sm={8} md={5} lg={4} component={Paper} elevation={6} square>
         <div className={styles.paper}>
           <Avatar className={styles.avatar}>
-            <LockOutlinedIcon />
+            { props.titleIcon }
           </Avatar>
           <Typography component="h1" variant="h5" className={styles.line}>
-            Sign in to App-X
+            { props.title }
           </Typography>
           <Grid container spacing={2} className={styles.grid}>
               <Grid item xs={12}>
@@ -159,7 +153,7 @@ export default function SignInSide() {
                 </Button>
               </Grid>
           </Grid>
-          <form className={styles.form} noValidate>
+          <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -215,3 +209,13 @@ export default function SignInSide() {
     </Grid>
   )
 }
+
+SignInSide.propTypes = {
+  app_name: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  titleIcon: PropTypes.element.isRequired,
+  copyright: PropTypes.string.isRequired,
+  consoleUrl: PropTypes.string.isRequired,
+}
+
+export default SignInSide

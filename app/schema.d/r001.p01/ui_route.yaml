@@ -26,7 +26,7 @@ ui_route:
                       homeUrl: '/'
           children:
               - type: react/element
-                name: app-x/page/auth/SigninSide
+                name: self/page/auth/Login
 
     - namespace: sys
       ui_name: appxui

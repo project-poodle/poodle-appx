@@ -4,7 +4,7 @@ import store from 'app-x/redux/store'
 
 // compute base path from app_name
 function _get_base_path(app_name) {
-  if (!globalThis.AppX.API_MAPS) {
+  if (!globalThis.appx.API_MAPS) {
     throw new Error(`ERROR: AppX.API_MAPS not set`)
   }
 
@@ -12,24 +12,24 @@ function _get_base_path(app_name) {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (app_name in globalThis.AppX.API_MAPS)) {
+  if (! (app_name in globalThis.appx.API_MAPS)) {
     throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
   }
 
-  if (! ('rootPath' in globalThis.AppX.API_MAPS[app_name])) {
+  if (! ('rootPath' in globalThis.appx.API_MAPS[app_name])) {
     throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
   }
 
-  let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
+  let basePath = globalThis.appx.API_MAPS[app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.AppX.API_MAPS[app_name]) {
-    const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
-    if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
+  if ('deployment' in globalThis.appx.API_MAPS[app_name]) {
+    const deployment = globalThis.appx.API_MAPS[app_name]['deployment']
+    if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
 
-    basePath += '/' + deployment.namespace + '/' + deployment.app_name + '/' + deployment.app_name_deployment
+    basePath += '/' + deployment.namespace + '/' + deployment.app_name + '/' + deployment.app_deployment
   }
 
   basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
@@ -40,7 +40,7 @@ function _get_base_path(app_name) {
 // compute auth base path from app_name
 function _get_auth_base_path(app_name) {
   // validity check
-  if (!globalThis.AppX.API_MAPS) {
+  if (!globalThis.appx.API_MAPS) {
     throw new Error(`ERROR: AppX.API_MAPS not set`)
   }
 
@@ -48,20 +48,20 @@ function _get_auth_base_path(app_name) {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (app_name in globalThis.AppX.API_MAPS)) {
+  if (! (app_name in globalThis.appx.API_MAPS)) {
     throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
   }
 
-  if (! ('rootPath' in globalThis.AppX.API_MAPS[app_name])) {
+  if (! ('rootPath' in globalThis.appx.API_MAPS[app_name])) {
     throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
   }
 
-  let basePath = globalThis.AppX.API_MAPS[app_name]['rootPath']
+  let basePath = globalThis.appx.API_MAPS[app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.AppX.API_MAPS[app_name]) {
-    const deployment = globalThis.AppX.API_MAPS[app_name]['deployment']
-    if (!deployment.namespace || !deployment.app_name || !deployment.app_name_deployment) {
+  if ('deployment' in globalThis.appx.API_MAPS[app_name]) {
+    const deployment = globalThis.appx.API_MAPS[app_name]['deployment']
+    if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
 
