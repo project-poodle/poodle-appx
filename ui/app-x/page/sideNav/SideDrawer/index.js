@@ -79,7 +79,7 @@ const items = [
   }
 ];
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = (props) => {
 
   const useStyles = makeStyles(() => ({
     mobileDrawer: {
@@ -106,6 +106,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   //  }
   //  // eslint-disable-next-line react-hooks/exhaustive-deps
   //}, [location.pathname]);
+
+  const { onMobileClose, openMobile } = props
 
   const content = (
     <Box
@@ -196,7 +198,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 };
 
 NavBar.propTypes = {
-  // onMobileClose: PropTypes.func,
   isMobileNavOpen: PropTypes.bool
 }
 

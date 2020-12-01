@@ -241,3 +241,84 @@ ui_element:
                       name: '@material-ui/icons.LockOutlined'
                   copyright: app-x.org
                   consoleUrl: /console
+
+
+    - namespace: sys
+      ui_name: appxui
+      ui_ver: internal
+      ui_element_name: /page/header/ConsoleHeader
+      ui_element_type: react/element
+      ui_element_spec:
+          propTypes:
+              handlers:
+                  sideNavHandler: PropTypes.func.isRequired
+          base:
+              type: react/element
+              name: app-x/page/header/Header_user_sidenav
+              styles:
+                  type: mui/style
+                  root:
+                      height: "100%"
+              props:
+                  appName: appx
+                  title: App Builder
+                  titleIcon:
+                      type: react/element
+                      name: "@material-ui/icons.ViewQuiltRounded"
+                  homeUrl: '/console'
+                  loginUrl: '/login'
+                  handlers:
+                      sideNavHandler:
+                          type: js/expression
+                          data: props.handlers.sideNavHandler
+
+    - namespace: sys
+      ui_name: appxui
+      ui_ver: internal
+      ui_element_name: /page/Console
+      ui_element_type: react/element
+      ui_element_spec:
+          base:
+              type: react/element
+              name: app-x/page/layout/HeaderSideNavLayout
+              states:
+                  mobileNav:
+                      type: react/state
+                      name: open
+                      setter: setOpen
+                      init: false
+              handlers:
+                  sideNavHandler:
+                      type: js/function
+                      body: |
+                          states.mobileNav.setOpen(!states.mobileNav.open)
+              props:
+                  header:
+                      type: react/element
+                      name: app-x/page/header/Header_user_sidenav
+                      styles:
+                          type: mui/style
+                          root:
+                              height: "100%"
+                      props:
+                          appName: appx
+                          title: App Builder
+                          titleIcon:
+                              type: react/element
+                              name: "@material-ui/icons.ViewQuiltRounded"
+                          homeUrl: '/console'
+                          loginUrl: '/login'
+                          handlers:
+                              sideNavHandler:
+                                  type: js/expression
+                                  data: handlers.sideNavHandler
+                  sideNav:
+                      type: react/element
+                      name: app-x/page/sideNav/SideDrawer
+                      props:
+                          isMobileNavOpen:
+                              type: js/expression
+                              data: states.isMobileNavOpen
+              children:
+                  - type: react/element
+                    name: app-x/view/error/NotFoundView

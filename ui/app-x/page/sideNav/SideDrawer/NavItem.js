@@ -6,7 +6,6 @@ import { useState } from 'react'
 import { A, navigate } from 'hookrouter'
 // const PropTypes = lib['prop-types']
 import PropTypes from 'prop-types'
-import clsx from 'clsx'
 import {
   Icon,
   Button,
@@ -56,7 +55,7 @@ const NavItem = (props) => {
 
   return (
     <ListItem
-      className={clsx(classes.item)}
+      className={classes.item}
       disableGutters
       {...rest}
     >

@@ -34,44 +34,7 @@ ui_route:
       ui_route_name: /console
       ui_route_spec:
           type: react/element
-          name: app-x/page/layout/HeaderSideNavLayout
-          states:
-              mobileNav:
-                  type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-          handlers:
-              sideNavHandler:
-                  type: js/function
-                  body: |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
-          props:
-              header:
-                  type: react/element
-                  name: app-x/page/header/Header_user_sidenav
-                  props:
-                      appName: appx
-                      title: App Builder
-                      titleIcon:
-                          type: react/element
-                          name: "@material-ui/icons.ViewQuiltRounded"
-                      homeUrl: '/console'
-                      loginUrl: '/login'
-                      handlers:
-                          sideNavHandler:
-                              type: js/expression
-                              data: handlers.sideNavHandler
-              sideNav:
-                  type: react/element
-                  name: app-x/page/sideNav/SideDrawer
-                  props:
-                      isMobileNavOpen:
-                          type: js/expression
-                          data: states.isMobileNavOpen
-          children:
-              - type: react/element
-                name: app-x/view/error/NotFoundView
+          name: self/page/Console
 
     - namespace: sys
       ui_name: appxui

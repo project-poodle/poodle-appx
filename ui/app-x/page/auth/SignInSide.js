@@ -103,7 +103,7 @@ const SignInSide = (props) => {
         // TODO
         console.log(res)
         navigate(props.consoleUrl)
-        me(null)
+        me(props.app_name)
       },
       err => {
         // TODO
