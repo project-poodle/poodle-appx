@@ -177,7 +177,7 @@ const NavBar = (props) => {
         <Drawer
           anchor="left"
           classes={{ paper: classes.mobileDrawer }}
-          onMobileClose={props.onMobileClose}
+          onClose={props.onMobileClose}
           open={props.isMobileNavOpen}
           variant="temporary"
         >
