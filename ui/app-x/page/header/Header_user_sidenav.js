@@ -21,11 +21,6 @@ import {
 
 import { logout, me } from 'app-x/api'
 
-/*
-setInterval(() => {
-  me(app_name)
-}, Math.floor((Math.random() * 60) + 120) * 1000)
-*/
 
 const Header_user_sidenav = (props) => {
 
@@ -57,6 +52,25 @@ const Header_user_sidenav = (props) => {
   }
 
   const styles = useStyles()
+
+  // check if we can successfully access api
+  me(props.appName, () => {}, (error) => {
+    navigate(props.loginUrl)
+  })
+
+  setInterval(() => {
+    me(props.appName,
+      (data) => {
+        console.log({
+          ...data,
+          t: new Date()
+        })
+      },
+      (error) => {
+        navigate(props.loginUrl)
+      }
+    )
+  }, Math.floor((Math.random() * 60) + 120) * 1000)
 
   // check that userToken exist and is valid, otherwise, navigate to login
   /*
