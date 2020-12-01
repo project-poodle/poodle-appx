@@ -11,8 +11,6 @@ const VARIABLE_SEPARATOR = '.'
 const SPECIAL_CHARACTER = /[^_a-zA-Z0-9]/g
 
 const REQUIRE_FUNCTION = '$r'
-const SNIPPET_PREFIX = 'snippet' + PATH_SEPARATOR
-const STATE_PREFIX = 'state' + PATH_SEPARATOR
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -205,9 +203,9 @@ function _js_parse_snippet(js_context, parsed) {
     VariableDeclarator(path) {
       if (t.isIdentifier(path.node.id)) {
         // register variable defined by local snippet
-        const newName = SNIPPET_PREFIX + path.node.id.name
-        reg_js_import(js_context, newName)
-        path.node.id.name = newName
+        const nodeName = path.node.id.name
+        reg_js_import(js_context, nodeName)
+        path.node.id.name = nodeName
       }
     }
   })
