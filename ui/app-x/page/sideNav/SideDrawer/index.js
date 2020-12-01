@@ -107,7 +107,7 @@ const NavBar = (props) => {
   //  // eslint-disable-next-line react-hooks/exhaustive-deps
   //}, [location.pathname]);
 
-  const { onMobileClose, openMobile } = props
+  const { onMobileClose, isMobileNavOpen } = props
 
   const content = (
     <Box
@@ -177,6 +177,7 @@ const NavBar = (props) => {
         <Drawer
           anchor="left"
           classes={{ paper: classes.mobileDrawer }}
+          onMobileClose={props.onMobileClose}
           open={props.isMobileNavOpen}
           variant="temporary"
         >

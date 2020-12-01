@@ -285,6 +285,9 @@ ui_element:
                           isMobileNavOpen:
                               type: js/expression
                               data: states.mobileNav.open
+                          onMobileClose:
+                              type: js/expression
+                              data: handlers.sideNavHandler
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView
