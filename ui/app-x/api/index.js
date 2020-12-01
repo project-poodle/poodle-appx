@@ -101,7 +101,7 @@ function _handle_logout(app_name) {
   // broadcast logout message
   store.dispatch({
     type: 'user/logout',
-    app_name: app_name.app_name,
+    app_name: app_name,
   })
 }
 
