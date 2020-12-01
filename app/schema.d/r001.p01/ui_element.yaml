@@ -70,7 +70,7 @@ ui_element:
           snippet:
               type: js/block
               data: |+
-                  console.log(props)
+                  // console.log(props)
           element:
               type: react/element
               name: app-x/page/landing/YouTube_fs
