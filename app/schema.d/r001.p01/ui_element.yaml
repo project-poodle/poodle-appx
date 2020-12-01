@@ -29,10 +29,6 @@ ui_element:
                   #    margin: "1px"
                   #        #type: js/expression
                   #        #data: "$r('app-x/theme.default').spacing(1)"
-              snippet:
-                  type: js/block
-                  data: |+
-                      console.log(props)
               props:
                   routes:
                       type: appx/route
