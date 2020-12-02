@@ -241,7 +241,6 @@ ui_element:
                       name: '@material-ui/icons.LockOutlined'
                   unsplashCollections:
                       - 827751          # architecture
-                      - 175083          # patterns-and-textures
                       - 219941          # architecture buildings spaces
                       - 542909          # snow ice and winter
                       - 1922729         # beautiful shots from above
@@ -249,7 +248,8 @@ ui_element:
                       - 562095          # wilderness artifacts
                       - 1023843         # tiny people in a big world
                       - 543765          # metro
-                      - 148982          # mountain-majesty
+                      - 148982          # mountain majesty
+                      - 349521          # road-to nowhere
                   copyright: app-x.org
                   consoleUrl: /console
 
