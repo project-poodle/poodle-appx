@@ -16,12 +16,13 @@ const GlobalStyles = () => {
         width: '100%'
       },
       body: {
-        backgroundColor: '#f4f6f8',
+        // backgroundColor: '#f4f6f8',
         height: '100%',
         width: '100%'
       },
       a: {
-        textDecoration: 'none'
+        textDecoration: 'none',
+        color: 'inherit'
       },
       '#root': {
         height: '100%',

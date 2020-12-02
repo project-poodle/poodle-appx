@@ -4,7 +4,7 @@ import { createMuiTheme, colors } from '@material-ui/core'
 const theme = createMuiTheme({
   palette: {
     background: {
-      dark: '#F4F6F8',
+      // dark: '#F4F6F8',
       default: colors.common.white,
       paper: colors.common.white
     },
@@ -12,11 +12,11 @@ const theme = createMuiTheme({
       main: colors.blue[800]
     },
     secondary: {
-      main: colors.lightBlue[800]
+      main: colors.lightBlue[500]
     },
     text: {
       primary: colors.blueGrey[900],
-      secondary: colors.blueGrey[600],
+      secondary: colors.blueGrey[500],
       error: colors.red[900],
     }
   },

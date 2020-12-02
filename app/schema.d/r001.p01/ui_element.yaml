@@ -375,8 +375,6 @@ ui_element:
                                                                 name: '@material-ui/icons.Dashboard'
                                                         - type: react/element
                                                           name: '@material-ui/core.Typography'
-                                                          props:
-                                                              color: textPrimary
                                                           children:
                                                               - Dashboard
                                             - type: react/element
@@ -396,8 +394,6 @@ ui_element:
                                                                 name: '@material-ui/icons.PersonOutline'
                                                         - type: react/element
                                                           name: '@material-ui/core.Typography'
-                                                          props:
-                                                              color: textPrimary
                                                           children:
                                                               - Customers
                                             - type: react/element
@@ -417,8 +413,6 @@ ui_element:
                                                                 name: '@material-ui/icons.LocalOffer'
                                                         - type: react/element
                                                           name: '@material-ui/core.Typography'
-                                                          props:
-                                                              color: textPrimary
                                                           children:
                                                               - Products
               children:
