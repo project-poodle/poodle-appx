@@ -34,12 +34,14 @@ const SignInSide = (props) => {
     );
   }
 
+  const collection = props.unsplashCollections[Math.floor(Math.random() * props.unsplashCollections.length)]
+
   const useStyles = makeStyles((theme) => ({
     root: {
       height: '100%',
     },
     image: {
-      backgroundImage: 'url(https://source.unsplash.com/random)',
+      backgroundImage: 'url(https://source.unsplash.com/collection/' + collection.toString() + ')',
       backgroundRepeat: 'no-repeat',
       backgroundColor:
         theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -214,6 +216,7 @@ SignInSide.propTypes = {
   app_name: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
+  unsplashCollections: PropTypes.arrayOf(PropTypes.number).isRequired,
   copyright: PropTypes.string.isRequired,
   consoleUrl: PropTypes.string.isRequired,
 }
