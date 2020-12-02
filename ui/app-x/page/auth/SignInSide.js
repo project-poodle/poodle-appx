@@ -26,9 +26,9 @@ const SignInSide = (props) => {
   function Copyright() {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
-        {'Copyright  '}
+        {'Copyright © '}
           { props.copyright }
-          {'  ©  '}
+          {'  '}
           {new Date().getFullYear()}
       </Typography>
     );
@@ -124,7 +124,7 @@ const SignInSide = (props) => {
           <Avatar className={styles.avatar}>
             { props.titleIcon }
           </Avatar>
-          <Typography component="h1" variant="h5" className={styles.line}>
+          <Typography component="h1" variant="h6" className={styles.line}>
             { props.title }
           </Typography>
           <Grid container spacing={2} className={styles.grid}>
@@ -185,7 +185,7 @@ const SignInSide = (props) => {
             {
               displayErr ? (
                 <Grid item xs={12}>
-                  <Typography component="h1" variant="h5" className={styles.error}>
+                  <Typography component="h1" variant="subtitle1" className={styles.error}>
                     {loginErr}
                   </Typography>
                 </Grid>
