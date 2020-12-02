@@ -105,4 +105,5 @@ dist
 
 # Runtime directories
 conf.d/
+log.d/
 

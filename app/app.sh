@@ -7,7 +7,9 @@ export BASE_DIR=${CURR_DIR}
 source ${BASE_DIR}/common.d/func.sh
 popd > /dev/null
 
+LOG_DIR="${BASE_DIR}/log.d/appx"
+find "${LOG_DIR}" -mtime +7 -exec rm {} \;
 
-LOG_FILE="/var/log/appx/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
+LOG_FILE="${LOG_DIR}/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
 
 exec ${NODE} ${BASE_DIR}/app.js "$@" 2>&1 | tee ${LOG_FILE}

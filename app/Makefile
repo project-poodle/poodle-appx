@@ -5,7 +5,7 @@ build:
 	npm install
 
 init:
-	sudo ./init.d/init.sh ./init.d/init.yaml
+	./init.d/init.sh ./init.d/init.yaml
 	./schema.d/r001.p01/run.sh
 
 test:

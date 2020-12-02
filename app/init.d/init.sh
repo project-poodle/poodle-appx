@@ -19,7 +19,7 @@ export BASE_DIR=${CURR_DIR}/..
 source ${BASE_DIR}/common.d/func.sh
 popd > /dev/null
 
-check_root
+# check_root
 
 
 ##############################
@@ -29,7 +29,7 @@ mkdir -p /tmp/$$
 
 echo "--------------------"
 mkdir -p ${BASE_DIR}/conf.d
-chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${BASE_DIR}/conf.d
+# chown ${appx__init__service_id_appx}:${appx__init__service_grp_appx} ${BASE_DIR}/conf.d
 chmod 755 ${BASE_DIR}/conf.d
 
 umask 077
@@ -45,13 +45,13 @@ export INIT_YAML=/tmp/$$/init.yaml
 parse_yaml "${INIT_YAML}" > /tmp/$$/env.sh
 source /tmp/$$/env.sh
 
-echo "--------------------"
-eval_template -t ${CURR_DIR}/`uname`/init.template.sh -y1 ${INIT_YAML} > /tmp/$$/init.`uname`.sh
-if [ $? -ne 0 ]; then
-    echo "ERROR: failed to generate init.`uname`.yaml ! --- [/tmp/$$/]"
-    exit 1
-fi
-bash -x /tmp/$$/init.`uname`.sh > /tmp/$$/init.`uname`.log
+# echo "--------------------"
+# eval_template -t ${CURR_DIR}/`uname`/init.template.sh -y1 ${INIT_YAML} > /tmp/$$/init.`uname`.sh
+# if [ $? -ne 0 ]; then
+#     echo "ERROR: failed to generate init.`uname`.yaml ! --- [/tmp/$$/]"
+#     exit 1
+# fi
+# bash -x /tmp/$$/init.`uname`.sh > /tmp/$$/init.`uname`.log
 
 echo "--------------------"
 MYSQL_ADMIN_FILE=${BASE_DIR}/conf.d/mysql_admin.json
@@ -60,12 +60,14 @@ if [ $? -ne 0 ]; then
     echo "ERROR: failed to generate ${MYSQL_ADMIN_FILE} ! --- [/tmp/$$/]"
     exit 1
 fi
-chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
+# chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
 chmod 644 ${MYSQL_ADMIN_FILE}
 
-mkdir -p /var/log/appx-mysql/
-chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} /var/log/appx-mysql/
-chmod -R go-rwx /var/log/appx-mysql/
+# LOG_DIR_MYSQL=/var/log/appx-mysql/
+LOG_DIR_MYSQL=${BASE_DIR}/log.d/appx-mysql/
+mkdir -p ${LOG_DIR_MYSQL}
+# chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${LOG_DIR_MYSQL}
+chmod -R go-rwx ${BASE_DIR}
 
 
 echo "--------------------"
@@ -75,12 +77,13 @@ if [ $? -ne 0 ]; then
     echo "ERROR: failed to generate ${MYSQL_APPX_FILE} ! --- [/tmp/$$/]"
     exit 1
 fi
-chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
+# chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MYSQL_APPX_FILE}
 chmod 644 ${MYSQL_APPX_FILE}
 
-mkdir -p /var/log/appx/
-chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} /var/log/appx/
-chmod -R go=rX /var/log/appx/
+LOG_DIR=${BASE_DIR}/log.d/appx/
+mkdir -p ${LOG_DIR}
+# chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LOG_DIR}
+chmod -R go=rX ${LOG_DIR}
 
 echo "--------------------"
 LDAP_APPX_FILE=${BASE_DIR}/conf.d/ldap_appx.json
@@ -89,7 +92,7 @@ if [ $? -ne 0 ]; then
     echo "ERROR: failed to generate ${LDAP_APPX_FILE} ! --- [/tmp/$$/]"
     exit 1
 fi
-chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LDAP_APPX_FILE}
+# chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${LDAP_APPX_FILE}
 chmod 644 ${LDAP_APPX_FILE}
 
 echo "--------------------"

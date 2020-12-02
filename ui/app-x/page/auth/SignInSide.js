@@ -101,7 +101,7 @@ const SignInSide = (props) => {
       password,
       res => {
         // TODO
-        console.log(res)
+        //console.log(res)
         navigate(props.consoleUrl)
         me(props.app_name)
       },
