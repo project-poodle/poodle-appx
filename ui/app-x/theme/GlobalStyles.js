@@ -16,7 +16,7 @@ const GlobalStyles = () => {
         width: '100%'
       },
       body: {
-        // backgroundColor: '#f4f6f8',
+        backgroundColor: '#F4F6F8',
         height: '100%',
         width: '100%'
       },
