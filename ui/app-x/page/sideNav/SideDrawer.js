@@ -28,7 +28,7 @@ import {
   Users as UsersIcon
 } from 'react-feather'
 
-import NavItem from 'app-x/page/sideNav/SideDrawer/NavItem'
+// import NavItem from 'app-x/page/sideNav/SideDrawer/NavItem'
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
@@ -79,7 +79,7 @@ const items = [
   }
 ];
 
-const NavBar = (props) => {
+const SideDrawer = (props) => {
 
   const useStyles = makeStyles(() => ({
     mobileDrawer: {
@@ -129,12 +129,12 @@ const NavBar = (props) => {
   );
 };
 
-NavBar.propTypes = {
+SideDrawer.propTypes = {
   isMobileNavOpen: PropTypes.bool
 }
 
-NavBar.defaultProps = {
+SideDrawer.defaultProps = {
   isMobileNavOpen: false
 }
 
-export default NavBar;
+export default SideDrawer;
