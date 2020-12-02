@@ -344,7 +344,13 @@ function react_element(js_context, input) {
   const parsed_var = _parse_var_full_path(input.name)
   const capitalized_name = capitalize(parsed_var.full_paths.pop())
 
-  reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
+  if (parsed_var.sub_vars.length > 0) {
+    // do not use default import if we are importing sub_var
+    reg_js_import(js_context, input.name, use_default=false, suggested_name=capitalized_name)
+  } else {
+    // use default import if we are importing top element
+    reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
+  }
 
   // create react element with props and children
   const react_element = t.jSXElement(

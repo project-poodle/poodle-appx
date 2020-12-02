@@ -15,6 +15,7 @@ const NavItem = (props) => {
   const useStyles = makeStyles((theme) => ({
     item: {
       display: 'flex',
+      width: '100%',
       paddingTop: 0,
       paddingBottom: 0
     },

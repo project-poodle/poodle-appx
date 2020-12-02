@@ -102,68 +102,6 @@ const NavBar = (props) => {
 
   const { onMobileClose, isMobileNavOpen } = props
 
-  const content = (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-    >
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        p={2}
-      >
-        <A href="/app/account">
-          <Avatar
-            className={classes.avatar}
-            src={user.avatar}
-          />
-        </A>
-        <Typography
-          className={classes.name}
-          color="textPrimary"
-          variant="h5"
-        >
-          {user.name}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-          {user.jobTitle}
-        </Typography>
-      </Box>
-      <Divider />
-      <Box p={2}>
-        <List>
-          {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              titleIcon={item.titleIcon}
-            />
-          ))}
-        </List>
-      </Box>
-      <Box flexGrow={1} />
-      <Box
-        p={2}
-        m={2}
-        bgcolor="background.dark"
-      >
-        <Typography
-          align="center"
-          gutterBottom
-          variant="h4"
-        >
-          Have Questions?
-        </Typography>
-      </Box>
-    </Box>
-  );
-
   return (
     <>
       <Hidden mdUp>
@@ -174,7 +112,7 @@ const NavBar = (props) => {
           open={props.isMobileNavOpen}
           variant="temporary"
         >
-          {content}
+          {props.children}
         </Drawer>
       </Hidden>
       <Hidden smDown>
@@ -184,7 +122,7 @@ const NavBar = (props) => {
           open
           variant="persistent"
         >
-          {content}
+          {props.children}
         </Drawer>
       </Hidden>
     </>

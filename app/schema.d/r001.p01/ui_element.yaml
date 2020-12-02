@@ -259,6 +259,9 @@ ui_element:
       ui_element_name: /page/Console
       ui_element_type: react/element
       ui_element_spec:
+          styles:
+              navTitle:
+                  color: TODO
           states:
               mobileNav:
                   type: react/state
@@ -282,7 +285,7 @@ ui_element:
                           title: App Builder
                           titleIcon:
                               type: react/element
-                              name: "@material-ui/icons.ViewQuiltRounded"
+                              name: '@material-ui/icons.ViewQuiltRounded'
                           homeUrl: '/console'
                           loginUrl: '/login'
                           handlers:
@@ -299,6 +302,125 @@ ui_element:
                           onMobileClose:
                               type: js/expression
                               data: handlers.sideNavHandler
+                      children:
+                          - type: react/element
+                            name: '@material-ui/core.Box'
+                            props:
+                                height: 100%
+                                display: flex
+                                flexDirection: column
+                            children:
+                                - type: react/element
+                                  name: '@material-ui/core.Box'
+                                  props:
+                                      p: 2
+                                      alignItems: center
+                                      display: flex
+                                      flexDirection: column
+                                  children:
+                                      - type: react/element
+                                        name: 'app-x/router.A'
+                                        props:
+                                            href: /app/account
+                                        children:
+                                            - type: react/element
+                                              name: '@material-ui/core.Box'
+                                              props:
+                                                  p: 2
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/core.Avatar'
+                                                    props:
+                                                        src: /static/images/avatars/avatar_6.png
+                                      - type: react/element
+                                        name: '@material-ui/core.Typography'
+                                        props:
+                                            color: textPrimary
+                                            variant: h5
+                                        children:
+                                            - Katarina Smith
+                                      - type: react/element
+                                        name: '@material-ui/core.Typography'
+                                        props:
+                                            color: textSecondary
+                                            variant: body2
+                                        children:
+                                            - Senior Developer
+                                # divider
+                                - type: react/element
+                                  name: '@material-ui/core.Divider'
+                                # divider
+                                - type: react/element
+                                  name: '@material-ui/core.Box'
+                                  props:
+                                      p: 1
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.List'
+                                        children:
+                                            - type: react/element
+                                              name: 'app-x/router.A'
+                                              props:
+                                                  href: /app/dashboard
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/core.ListItem'
+                                                    props:
+                                                        button: true
+                                                    children:
+                                                        - type: react/element
+                                                          name: '@material-ui/core.ListItemIcon'
+                                                          children:
+                                                              - type: react/element
+                                                                name: '@material-ui/icons.Dashboard'
+                                                        - type: react/element
+                                                          name: '@material-ui/core.Typography'
+                                                          props:
+                                                              color: textPrimary
+                                                          children:
+                                                              - Dashboard
+                                            - type: react/element
+                                              name: 'app-x/router.A'
+                                              props:
+                                                  href: /app/customers
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/core.ListItem'
+                                                    props:
+                                                        button: true
+                                                    children:
+                                                        - type: react/element
+                                                          name: '@material-ui/core.ListItemIcon'
+                                                          children:
+                                                              - type: react/element
+                                                                name: '@material-ui/icons.PersonOutline'
+                                                        - type: react/element
+                                                          name: '@material-ui/core.Typography'
+                                                          props:
+                                                              color: textPrimary
+                                                          children:
+                                                              - Customers
+                                            - type: react/element
+                                              name: 'app-x/router.A'
+                                              props:
+                                                  href: /app/products
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/core.ListItem'
+                                                    props:
+                                                        button: true
+                                                    children:
+                                                        - type: react/element
+                                                          name: '@material-ui/core.ListItemIcon'
+                                                          children:
+                                                              - type: react/element
+                                                                name: '@material-ui/icons.LocalOffer'
+                                                        - type: react/element
+                                                          name: '@material-ui/core.Typography'
+                                                          props:
+                                                              color: textPrimary
+                                                          children:
+                                                              - Products
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView
