@@ -260,6 +260,7 @@ ui_element:
       ui_element_type: react/element
       ui_element_spec:
           styles:
+              type: mui/style
               navTitle:
                   color: TODO
           states:
@@ -348,20 +349,91 @@ ui_element:
                                             - Senior Developer
                                 # divider
                                 - type: react/element
-                                  name: '@material-ui/core.Divider'
+                                  name: '@material-ui/core.Box'
+                                  props:
+                                      p: 2
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.Divider'
+                                # divider
+                                - type: react/element
+                                  name: 'app-x/router.A'
+                                  props:
+                                      href: /app/dashboard
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.ListItem'
+                                        props:
+                                            button: true
+                                        children:
+                                            - type: react/element
+                                              name: '@material-ui/core.ListItemIcon'
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/icons.Dashboard'
+                                            - type: react/element
+                                              name: '@material-ui/core.Typography'
+                                              children:
+                                                  - Dashboard
+                                - type: react/element
+                                  name: 'app-x/router.A'
+                                  props:
+                                      href: /app/customers
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.ListItem'
+                                        props:
+                                            button: true
+                                        children:
+                                            - type: react/element
+                                              name: '@material-ui/core.ListItemIcon'
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/icons.PersonOutline'
+                                            - type: react/element
+                                              name: '@material-ui/core.Typography'
+                                              children:
+                                                  - Customers
+                                - type: react/element
+                                  name: 'app-x/router.A'
+                                  props:
+                                      href: /app/products
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.ListItem'
+                                        props:
+                                            button: true
+                                        children:
+                                            - type: react/element
+                                              name: '@material-ui/core.ListItemIcon'
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/icons.LocalOffer'
+                                            - type: react/element
+                                              name: '@material-ui/core.Typography'
+                                              children:
+                                                  - Products
                                 # divider
                                 - type: react/element
                                   name: '@material-ui/core.Box'
                                   props:
-                                      p: 1
+                                      p: 2
                                   children:
                                       - type: react/element
-                                        name: '@material-ui/core.List'
+                                        name: '@material-ui/core.Divider'
+                                # divider
+                                - type: react/element
+                                  name: '@material-ui/core.Box'
+                                  children:
+                                      - type: react/element
+                                        name: '@material-ui/core.Accordion'
                                         children:
                                             - type: react/element
-                                              name: 'app-x/router.A'
+                                              name: '@material-ui/core.AccordionSummary'
                                               props:
-                                                  href: /app/dashboard
+                                                  expandIcon:
+                                                      type: react/element
+                                                      name: '@material-ui/icons.ExpandMore'
                                               children:
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItem'
@@ -372,49 +444,51 @@ ui_element:
                                                           name: '@material-ui/core.ListItemIcon'
                                                           children:
                                                               - type: react/element
-                                                                name: '@material-ui/icons.Dashboard'
+                                                                name: '@material-ui/icons.ViewList'
                                                         - type: react/element
                                                           name: '@material-ui/core.Typography'
                                                           children:
-                                                              - Dashboard
+                                                              - UI Elements
                                             - type: react/element
-                                              name: 'app-x/router.A'
-                                              props:
-                                                  href: /app/customers
+                                              name: '@material-ui/core.AccordionDetails'
                                               children:
                                                   - type: react/element
-                                                    name: '@material-ui/core.ListItem'
+                                                    name: '@material-ui/core.Typography'
                                                     props:
-                                                        button: true
+                                                        variant: body2
                                                     children:
-                                                        - type: react/element
-                                                          name: '@material-ui/core.ListItemIcon'
-                                                          children:
-                                                              - type: react/element
-                                                                name: '@material-ui/icons.PersonOutline'
-                                                        - type: react/element
-                                                          name: '@material-ui/core.Typography'
-                                                          children:
-                                                              - Customers
+                                                        - "We are going to show a list of ui details here"
+                                      - type: react/element
+                                        name: '@material-ui/core.Accordion'
+                                        children:
                                             - type: react/element
-                                              name: 'app-x/router.A'
+                                              name: '@material-ui/core.AccordionSummary'
                                               props:
-                                                  href: /app/products
+                                                  expandIcon:
+                                                      type: react/element
+                                                      name: '@material-ui/icons.ExpandMore'
                                               children:
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItem'
-                                                    props:
-                                                        button: true
                                                     children:
                                                         - type: react/element
                                                           name: '@material-ui/core.ListItemIcon'
                                                           children:
                                                               - type: react/element
-                                                                name: '@material-ui/icons.LocalOffer'
+                                                                name: '@material-ui/icons.SwapHoriz'
                                                         - type: react/element
                                                           name: '@material-ui/core.Typography'
                                                           children:
-                                                              - Products
+                                                              - UI Routes
+                                            - type: react/element
+                                              name: '@material-ui/core.AccordionDetails'
+                                              children:
+                                                  - type: react/element
+                                                    name: '@material-ui/core.Typography'
+                                                    props:
+                                                        variant: body2
+                                                    children:
+                                                        - "We are going to show a list of route details here"
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView
