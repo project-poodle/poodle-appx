@@ -38,7 +38,7 @@ const Header_plain = (props) => {
           <Avatar className={styles.avatar}>
             { titleIcon }
           </Avatar>
-          <Typography variant="h4" display="inline" color="secondary" noWrap className={styles.text}>
+          <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
             { title }
           </Typography>
         </A>

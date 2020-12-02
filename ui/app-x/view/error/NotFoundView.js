@@ -38,14 +38,14 @@ const NotFoundView = () => {
           <Typography
             align="center"
             color="textPrimary"
-            variant="h1"
+            variant="h4"
           >
             404: The page you are looking for isn’t here
           </Typography>
           <Typography
             align="center"
             color="textPrimary"
-            variant="subtitle2"
+            variant="subtitle1"
           >
             You either tried some shady route or you came here by mistake.
             Whichever it is, try using the navigation

@@ -1,10 +1,5 @@
-//import MaterialUI from '@material-ui/core';
-//const MaterialUI = lib['@material-ui/core']
-
-import typography from 'app-x/theme/topography'
-
-//const { createMuiTheme, colors } = MaterialUI;
 import { createMuiTheme, colors } from '@material-ui/core'
+// import typography from 'app-x/theme/topography'
 
 const theme = createMuiTheme({
   palette: {
@@ -28,7 +23,7 @@ const theme = createMuiTheme({
   shape: {
       borderRadius: 0,
   },
-  typography
+  // typography
 })
 
 export default theme

@@ -336,7 +336,7 @@ ui_element:
                                         name: '@material-ui/core.Typography'
                                         props:
                                             color: textPrimary
-                                            variant: h5
+                                            variant: h6
                                         children:
                                             - Katarina Smith
                                       - type: react/element
