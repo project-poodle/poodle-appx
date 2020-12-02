@@ -240,8 +240,6 @@ ui_element:
                       type: react/element
                       name: '@material-ui/icons.LockOutlined'
                   unsplashCollections:
-                      - 827751          # architecture
-                      - 219941          # architecture buildings spaces
                       - 542909          # snow ice and winter
                       - 1922729         # beautiful shots from above
                       - 852718          # vibrant blackouts (oled)
@@ -250,6 +248,8 @@ ui_element:
                       - 543765          # metro
                       - 148982          # mountain majesty
                       - 349521          # road-to nowhere
+                      - 427860          # view angle
+                      - 353649          # sea me now
                   copyright: app-x.org
                   consoleUrl: /console
 
