@@ -36,14 +36,25 @@ const default_import_maps = {
         "react-router-dom",
         "react-helmet",
         "react-feather",
-        "@material-ui/core",
-        "@material-ui/icons",
-        "@material-ui/styles",
         "clsx",
         "lodash",
         "axios",
       ]
-    }
+    },
+    "mui": {
+      path: "/dist/lib/mui.js",
+      modules: [
+        "@material-ui/core",
+        "@material-ui/icons",
+        "@material-ui/styles",
+      ]
+    },
+    "antd": {
+      path: "/dist/lib/antd.js",
+      modules: [
+        "antd",
+      ]
+    },
   }
 }
 
@@ -112,6 +123,7 @@ function importMapPlugin(import_maps, globalImports) {
 
           // check 'libs'
           if (!found && import_maps.libs) {
+
             Object.keys(import_maps.libs).map(lib_key => {
               const lib = import_maps.libs[lib_key]
               if (found) {
@@ -123,9 +135,12 @@ function importMapPlugin(import_maps, globalImports) {
 
                     return
 
-                  } else if (src_val == module_name) {
+                  }
+
+                  if (src_val == module_name) {
 
                     found = true
+                    // console.log(lib_key, module_name)
 
                     // add lib.path to global imports
                     globalImports[lib_key] = lib.path
@@ -177,6 +192,7 @@ function importMapPlugin(import_maps, globalImports) {
                   } else if (src_val.startsWith(module_name + '/')) {
 
                     // TODO
+                    //console.log(lib_key, module_name)
                     throw new Error('ERROR: submodule not yet implemented [' + src_val + '].')
                   }
                 })
@@ -185,7 +201,7 @@ function importMapPlugin(import_maps, globalImports) {
           }
 
           if (!found) {
-            throw new Error('ERROR: import cannot be resolved [' + src_val + '].')
+            throw new Error('ERROR: import cannot be resolved [' + src_val + '].' + JSON.stringify(import_maps, null, 4))
           }
         }
       }

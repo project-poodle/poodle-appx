@@ -343,6 +343,10 @@ ui:
               libs:
                   main:
                       path: /dist/lib/main.js
+                  mui:
+                      path: /dist/lib/mui.js
+                  antd:
+                      path: /dist/lib/antd.js
           comment: "initialize"
 
 ######################################################################

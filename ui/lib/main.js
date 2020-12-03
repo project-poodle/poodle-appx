@@ -15,9 +15,11 @@ import * as reactRouterDom from 'react-router-dom'
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
 // material ui
-import * as materialUI from '@material-ui/core'
-import * as materialIcons from '@material-ui/icons'
-import * as materialStyles from '@material-ui/styles'
+//import * as materialUI from '@material-ui/core'
+//import * as materialIcons from '@material-ui/icons'
+//import * as materialStyles from '@material-ui/styles'
+// ant design
+//import * as antd from 'antd'
 // utilities
 import * as clsx from 'clsx'
 import * as lodash from 'lodash'
@@ -38,9 +40,10 @@ export default {
   "react-router-dom": reactRouterDom,
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
-  "@material-ui/core": materialUI,
-  "@material-ui/icons": materialIcons,
-  "@material-ui/styles": materialStyles,
+  //"@material-ui/core": materialUI,
+  //"@material-ui/icons": materialIcons,
+  //"@material-ui/styles": materialStyles,
+  //"antd": antd,
   "clsx": clsx,
   "lodash": lodash,
   "axios": axios

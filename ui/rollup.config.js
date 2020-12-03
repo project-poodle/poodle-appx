@@ -53,6 +53,8 @@ export default [
   {
     input: [
       'lib/main.js',
+      'lib/mui.js',
+      'lib/antd.js',
     ],
     output: [
       {
