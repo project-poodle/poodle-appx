@@ -3,7 +3,9 @@ import html from '@rollup/plugin-html'
 import replace from '@rollup/plugin-replace'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
-//import { terser } from "rollup-plugin-terser";
+// import css from 'rollup-plugin-import-css'
+import postcss from 'rollup-plugin-postcss'
+//import { terser } from "rollup-plugin-terser"
 const pkg = require('./package.json')
 
 const plugins = [
@@ -32,6 +34,10 @@ const plugins = [
     include: 'node_modules/**',  // Default: undefined
     'process.env.NODE_ENV': JSON.stringify('development'),
     'process.env.BABEL_TYPES_8_BREAKING': null
+  }),
+  //css(),
+  postcss({
+    plugins: []
   }),
   //terser(),
   html()
