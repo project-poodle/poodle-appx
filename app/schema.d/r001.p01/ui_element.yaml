@@ -399,7 +399,7 @@ ui_element:
                                                     name: '@material-ui/core.ListItemIcon'
                                                     children:
                                                         - type: react/element
-                                                          name: '@material-ui/icons.Dashboard'
+                                                          name: '@material-ui/icons.ViewModule'
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItemText'
                                                     props:
@@ -418,7 +418,7 @@ ui_element:
                                                     name: '@material-ui/core.ListItemIcon'
                                                     children:
                                                         - type: react/element
-                                                          name: '@material-ui/icons.PersonOutline'
+                                                          name: '@material-ui/icons.Link'
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItemText'
                                                     props:
@@ -437,7 +437,7 @@ ui_element:
                                                     name: '@material-ui/core.ListItemIcon'
                                                     children:
                                                         - type: react/element
-                                                          name: '@material-ui/icons.LocalOffer'
+                                                          name: '@material-ui/icons.VerticalAlignCenter'
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItemText'
                                                     props:
@@ -486,7 +486,7 @@ ui_element:
                                                     name: '@material-ui/core.ListItemIcon'
                                                     children:
                                                         - type: react/element
-                                                          name: '@material-ui/icons.ViewList'
+                                                          name: '@material-ui/icons.WidgetsOutlined'
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItemText'
                                                     props:
@@ -529,7 +529,7 @@ ui_element:
                                                     name: '@material-ui/core.ListItemIcon'
                                                     children:
                                                         - type: react/element
-                                                          name: '@material-ui/icons.SwapHoriz'
+                                                          name: '@material-ui/icons.AllOutOutlined'
                                                   - type: react/element
                                                     name: '@material-ui/core.ListItemText'
                                                     props:
