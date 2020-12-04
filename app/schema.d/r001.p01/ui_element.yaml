@@ -401,9 +401,9 @@ ui_element:
                                                         - type: react/element
                                                           name: '@material-ui/icons.Dashboard'
                                                   - type: react/element
-                                                    name: '@material-ui/core.Typography'
-                                                    children:
-                                                        - Objects
+                                                    name: '@material-ui/core.ListItemText'
+                                                    props:
+                                                        primary: Objects
                                       - type: react/element
                                         name: 'app-x/router.A'
                                         props:
@@ -420,9 +420,9 @@ ui_element:
                                                         - type: react/element
                                                           name: '@material-ui/icons.PersonOutline'
                                                   - type: react/element
-                                                    name: '@material-ui/core.Typography'
-                                                    children:
-                                                        - Relations
+                                                    name: '@material-ui/core.ListItemText'
+                                                    props:
+                                                        primary: Relations
                                       - type: react/element
                                         name: 'app-x/router.A'
                                         props:
@@ -439,9 +439,9 @@ ui_element:
                                                         - type: react/element
                                                           name: '@material-ui/icons.LocalOffer'
                                                   - type: react/element
-                                                    name: '@material-ui/core.Typography'
-                                                    children:
-                                                        - APIs
+                                                    name: '@material-ui/core.ListItemText'
+                                                    props:
+                                                        primary: APIs
                                 # divider
                                 - type: react/element
                                   name: '@material-ui/core.Box'
@@ -488,9 +488,9 @@ ui_element:
                                                         - type: react/element
                                                           name: '@material-ui/icons.ViewList'
                                                   - type: react/element
-                                                    name: '@material-ui/core.Typography'
-                                                    children:
-                                                        - UI Elements
+                                                    name: '@material-ui/core.ListItemText'
+                                                    props:
+                                                        primary: UI Elements
                                                   - type: react/element
                                                     name: '@material-ui/icons.ExpandMore'
                                             - type: react/element
@@ -531,9 +531,9 @@ ui_element:
                                                         - type: react/element
                                                           name: '@material-ui/icons.SwapHoriz'
                                                   - type: react/element
-                                                    name: '@material-ui/core.Typography'
-                                                    children:
-                                                        - UI Routes
+                                                    name: '@material-ui/core.ListItemText'
+                                                    props:
+                                                        primary: UI Routes
                                                   - type: react/element
                                                     name: '@material-ui/icons.ExpandMore'
                                             - type: react/element

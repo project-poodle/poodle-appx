@@ -30,63 +30,14 @@ import {
 
 // import NavItem from 'app-x/page/sideNav/SideDrawer/NavItem'
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-}
-
-const items = [
-  {
-    title: 'Dashboard',
-    titleIcon: BarChartIcon,
-    href: '/app/dashboard',
-  },
-  {
-    title: 'Customers',
-    titleIcon: UsersIcon,
-    href: '/app/customers',
-  },
-  {
-    title: 'Products',
-    titleIcon: ShoppingBagIcon,
-    href: '/app/products',
-  },
-  {
-    href: '/app/account',
-    titleIcon: UserIcon,
-    title: 'Account'
-  },
-  {
-    title: 'Settings',
-    titleIcon: SettingsIcon,
-    href: '/app/settings',
-  },
-  {
-    title: 'Login',
-    titleIcon: LockIcon,
-    href: '/login',
-  },
-  {
-    title: 'Register',
-    titleIcon: UserPlusIcon,
-    href: '/register',
-  },
-  {
-    title: 'Error',
-    titleIcon: AlertCircleIcon,
-    href: '/404',
-  }
-];
-
 const SideDrawer = (props) => {
 
   const useStyles = makeStyles(() => ({
     mobileDrawer: {
-      width: 256
+      width: 300
     },
     desktopDrawer: {
-      width: 256,
+      width: 300,
       top: 64,
       height: 'calc(100% - 64px)'
     },
