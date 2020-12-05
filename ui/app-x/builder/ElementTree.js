@@ -193,8 +193,6 @@ const ElementTree = (props) => {
 
   return (
     <DirectoryTree
-      //className="draggable-tree"
-      //style={{width: '100%'}}
       className={styles.tree}
       expandedKeys={expandedKeys}
       // defaultExpandAll
