@@ -135,24 +135,41 @@ const transformTreeData = (data) => {
   return treeData
 }
 
+const loaded = {
+  namespace: null,
+  ui_name: null,
+  ui_deployment: null,
+  api_data: [],
+}
+
+
 const ElementTree = (props) => {
 
-  const [ tData, setTData ] = useState([])
+  const [ tData, setTData ] = useState(loaded.api_data)
   const [ expandedKeys, setExpandedKeys ] = useState([])
   //console.log(tData)
 
-  api.get(
-    'appx',
-    `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element`,
-    data => {
-      console.log(data)
-      const apiData = transformTreeData(data)
-      setTData(apiData)
-    },
-    error => {
-      console.error(error)
-    }
-  )
+  if (loaded.api_data == null
+      || loaded.namespace != props.namespace
+      || loaded.ui_name != props.ui_name
+      || loaded.ui_deployment != props.ui_deployment) {
+
+    api.get(
+      'appx',
+      `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element`,
+      data => {
+        loaded.api_data = transformTreeData(data)
+        loaded.namespace = props.namespace
+        loaded.ui_name = props.ui_name
+        loaded.ui_deployment = props.ui_deployment
+        console.log(loaded)
+        setTData(loaded.api_data)
+      },
+      error => {
+        console.error(error)
+      }
+    )
+  }
 
   const styles = makeStyles((theme) => ({
     tree: {
