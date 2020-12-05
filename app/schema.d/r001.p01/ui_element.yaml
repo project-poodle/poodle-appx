@@ -1,4 +1,5 @@
 ui_element:
+    ############################################################
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -10,6 +11,7 @@ ui_element:
           data:
               title: Design Your Own Apps with App-X
 
+    ############################################################
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -55,6 +57,7 @@ ui_element:
                           - type: react/element
                             name: app-x/view/error/NotFoundView
 
+    ############################################################
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -220,6 +223,7 @@ ui_element:
                               lg: 2
                               xl: 3
 
+    ############################################################
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -253,6 +257,7 @@ ui_element:
                   copyright: app-x.org
                   consoleUrl: /console
 
+    ############################################################
     - namespace: sys
       ui_name: appxui
       ui_ver: internal
@@ -261,22 +266,10 @@ ui_element:
       ui_element_spec:
           styles:
               type: mui/style
-              navTitle:
-                  color: TODO
               root:
                   width: 100%
           states:
               mobileNav:
-                  type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-              uiElementNav:
-                  type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-              uiRouteNav:
                   type: react/state
                   name: open
                   setter: setOpen
@@ -369,79 +362,7 @@ ui_element:
                                         name: '@material-ui/core.Divider'
                                 # divider
                                 - type: react/element
-                                  name: '@material-ui/core.List'
-                                  props:
-                                      component: nav
-                                      aria-labelledby: App Builder
-                                      className:
-                                          type: js/expression
-                                          data: styles.root
-                                      subheader:
-                                          type: react/element
-                                          name: '@material-ui/core.ListSubheader'
-                                          props:
-                                              component: div
-                                              id: nested-list-subheader
-                                          children:
-                                              - App Builder
-                                  children:
-                                      - type: react/element
-                                        name: 'app-x/router.A'
-                                        props:
-                                            href: /app/dashboard
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.ListItem'
-                                              props:
-                                                  button: true
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemIcon'
-                                                    children:
-                                                        - type: react/element
-                                                          name: '@material-ui/icons.ViewModule'
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemText'
-                                                    props:
-                                                        primary: Objects
-                                      - type: react/element
-                                        name: 'app-x/router.A'
-                                        props:
-                                            href: /app/customers
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.ListItem'
-                                              props:
-                                                  button: true
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemIcon'
-                                                    children:
-                                                        - type: react/element
-                                                          name: '@material-ui/icons.Link'
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemText'
-                                                    props:
-                                                        primary: Relations
-                                      - type: react/element
-                                        name: 'app-x/router.A'
-                                        props:
-                                            href: /app/products
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.ListItem'
-                                              props:
-                                                  button: true
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemIcon'
-                                                    children:
-                                                        - type: react/element
-                                                          name: '@material-ui/icons.VerticalAlignCenter'
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemText'
-                                                    props:
-                                                        primary: APIs
+                                  name: 'self/nav/appNav'
                                 # divider
                                 - type: react/element
                                   name: '@material-ui/core.Box'
@@ -452,106 +373,218 @@ ui_element:
                                         name: '@material-ui/core.Divider'
                                 # divider
                                 - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  children:
-                                      - type: react/element
-                                        name: '@material-ui/core.List'
-                                        props:
-                                            component: nav
-                                            aria-labelledby: UI Builder
-                                            className:
-                                                type: js/expression
-                                                data: styles.root
-                                            subheader:
-                                                type: react/element
-                                                name: '@material-ui/core.ListSubheader'
-                                                props:
-                                                    component: div
-                                                    id: nested-list-subheader
-                                                children:
-                                                    - UI Builder
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.ListItem'
-                                              props:
-                                                  button: true
-                                                  onClick:
-                                                      type: js/expression
-                                                      data: |
-                                                          () => {
-                                                            states.uiElementNav.setOpen(!states.uiElementNav.open)
-                                                          }
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemIcon'
-                                                    children:
-                                                        - type: react/element
-                                                          name: '@material-ui/icons.WidgetsOutlined'
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemText'
-                                                    props:
-                                                        primary: UI Elements
-                                                  - type: react/element
-                                                    name: '@material-ui/icons.ExpandMore'
-                                            - type: react/element
-                                              name: '@material-ui/core.Collapse'
-                                              props:
-                                                  in:
-                                                      type: js/expression
-                                                      data: |
-                                                          states.uiElementNav.open
-                                                  unmountOnExit: true
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.Box'
-                                                    props:
-                                                        p: 1
-                                                    children:
-                                                        - type: react/element
-                                                          name: 'app-x/builder/ElementTree'
-                                      # divider
-                                      # divider
-                                      - type: react/element
-                                        name: '@material-ui/core.Box'
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.ListItem'
-                                              props:
-                                                  button: true
-                                                  onClick:
-                                                      type: js/expression
-                                                      data: |
-                                                          () => {
-                                                            states.uiRouteNav.setOpen(!states.uiRouteNav.open)
-                                                          }
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemIcon'
-                                                    children:
-                                                        - type: react/element
-                                                          name: '@material-ui/icons.AllOutOutlined'
-                                                  - type: react/element
-                                                    name: '@material-ui/core.ListItemText'
-                                                    props:
-                                                        primary: UI Routes
-                                                  - type: react/element
-                                                    name: '@material-ui/icons.ExpandMore'
-                                            - type: react/element
-                                              name: '@material-ui/core.Collapse'
-                                              props:
-                                                  in:
-                                                      type: js/expression
-                                                      data: |
-                                                          states.uiRouteNav.open
-                                                  unmountOnExit: true
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.Box'
-                                                    props:
-                                                        p: 1
-                                                    children:
-                                                        - type: react/element
-                                                          name: 'app-x/builder/ElementTree'
+                                  name: 'self/nav/uiNav'
               children:
                   - type: react/element
                     name: app-x/view/error/NotFoundView
+
+    ############################################################
+    - namespace: sys
+      ui_name: appxui
+      ui_ver: internal
+      ui_element_name: /nav/appNav
+      ui_element_type: react/element
+      ui_element_spec:
+          styles:
+              type: mui/style
+              root:
+                  width: 100%
+          element:
+              type: react/element
+              name: '@material-ui/core.List'
+              props:
+                  component: nav
+                  aria-labelledby: App Builder
+                  className:
+                      type: js/expression
+                      data: styles.root
+                  subheader:
+                      type: react/element
+                      name: '@material-ui/core.ListSubheader'
+                      props:
+                          component: div
+                          id: nested-list-subheader
+                      children:
+                          - App Builder
+              children:
+                  - type: react/element
+                    name: 'app-x/router.A'
+                    props:
+                        href: /app/dashboard
+                    children:
+                        - type: react/element
+                          name: '@material-ui/core.ListItem'
+                          props:
+                              button: true
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.ListItemIcon'
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/icons.ViewModule'
+                              - type: react/element
+                                name: '@material-ui/core.ListItemText'
+                                props:
+                                    primary: Objects
+                  - type: react/element
+                    name: 'app-x/router.A'
+                    props:
+                        href: /app/customers
+                    children:
+                        - type: react/element
+                          name: '@material-ui/core.ListItem'
+                          props:
+                              button: true
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.ListItemIcon'
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/icons.Link'
+                              - type: react/element
+                                name: '@material-ui/core.ListItemText'
+                                props:
+                                    primary: Relations
+                  - type: react/element
+                    name: 'app-x/router.A'
+                    props:
+                        href: /app/products
+                    children:
+                        - type: react/element
+                          name: '@material-ui/core.ListItem'
+                          props:
+                              button: true
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.ListItemIcon'
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/icons.VerticalAlignCenter'
+                              - type: react/element
+                                name: '@material-ui/core.ListItemText'
+                                props:
+                                    primary: APIs
+
+    ############################################################
+    - namespace: sys
+      ui_name: appxui
+      ui_ver: internal
+      ui_element_name: /nav/uiNav
+      ui_element_type: react/element
+      ui_element_spec:
+          styles:
+              type: mui/style
+              root:
+                  width: 100%
+          states:
+              uiElementNav:
+                  type: react/state
+                  name: open
+                  setter: setOpen
+                  init: false
+              uiRouteNav:
+                  type: react/state
+                  name: open
+                  setter: setOpen
+                  init: false
+          element:
+              type: react/element
+              name: '@material-ui/core.Box'
+              props:
+                  className:
+                      type: js/expression
+                      data: styles.root
+              children:
+                  - type: react/element
+                    name: '@material-ui/core.List'
+                    props:
+                        component: nav
+                        aria-labelledby: UI Builder
+                        className:
+                            type: js/expression
+                            data: styles.root
+                        subheader:
+                            type: react/element
+                            name: '@material-ui/core.ListSubheader'
+                            props:
+                                component: div
+                                id: nested-list-subheader
+                            children:
+                                - UI Builder
+                    children:
+                        - type: react/element
+                          name: '@material-ui/core.ListItem'
+                          props:
+                              button: true
+                              onClick:
+                                  type: js/expression
+                                  data: |
+                                      () => {
+                                        states.uiElementNav.setOpen(!states.uiElementNav.open)
+                                      }
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.ListItemIcon'
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/icons.WidgetsOutlined'
+                              - type: react/element
+                                name: '@material-ui/core.ListItemText'
+                                props:
+                                    primary: UI Elements
+                              - type: react/element
+                                name: '@material-ui/icons.ExpandMore'
+                        - type: react/element
+                          name: '@material-ui/core.Collapse'
+                          props:
+                              in:
+                                  type: js/expression
+                                  data: |
+                                      states.uiElementNav.open
+                              unmountOnExit: true
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.Box'
+                                props:
+                                    p: 1
+                                children:
+                                    - type: react/element
+                                      name: 'app-x/builder/ElementTree'
+                        - type: react/element
+                          name: '@material-ui/core.ListItem'
+                          props:
+                              button: true
+                              onClick:
+                                  type: js/expression
+                                  data: |
+                                      () => {
+                                        states.uiRouteNav.setOpen(!states.uiRouteNav.open)
+                                      }
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.ListItemIcon'
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/icons.AllOutOutlined'
+                              - type: react/element
+                                name: '@material-ui/core.ListItemText'
+                                props:
+                                    primary: UI Routes
+                              - type: react/element
+                                name: '@material-ui/icons.ExpandMore'
+                        - type: react/element
+                          name: '@material-ui/core.Collapse'
+                          props:
+                              in:
+                                  type: js/expression
+                                  data: |
+                                      states.uiRouteNav.open
+                              unmountOnExit: true
+                          children:
+                              - type: react/element
+                                name: '@material-ui/core.Box'
+                                props:
+                                    p: 1
+                                children:
+                                    - type: react/element
+                                      name: 'app-x/builder/ElementTree'

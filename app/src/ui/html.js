@@ -29,13 +29,13 @@ const RENDER_JSON = function() {
             let results = []
             data.forEach((value) => {
                 results.push(process(value, depth+1))
-            });
+            })
             return '[ ' + results.join(', ') + ' ]'
         } else {
             let results = []
             Object.keys(data).forEach((key) => {
                 results.push('"' + key + '": ' + process(data[key], depth+1))
-            });
+            })
             return '{ ' + results.join(', ') + ' }'
         }
     }
