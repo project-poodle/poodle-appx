@@ -9,7 +9,7 @@ const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
 
 const SPECIAL_CHARACTER = /[^_a-zA-Z0-9]/g
-
+const JSX_CONTEXT = 'JSX_CONTEXT'
 const REQUIRE_FUNCTION = '$r'
 
 
@@ -214,6 +214,28 @@ function _js_parse_snippet(js_context, parsed) {
   return parsed
 }
 
+// parse expression with support of '$r' syntax
+function _js_parse_expression(js_context, data) {
+
+  const parsed = parseExpression(data)
+
+  // parse user code snippet
+  _js_parse_snippet(
+    js_context,
+    t.file(
+      t.program(
+        [
+          t.returnStatement(
+            parsed
+          )
+        ]
+      )
+    )
+  )
+
+  return parsed
+}
+
 // create expression ast
 function js_expression(js_context, input) {
 
@@ -239,21 +261,7 @@ function js_expression(js_context, input) {
     data = input.data
   }
 
-  const parsed = parseExpression(data)
-
-  // parse user code snippet
-  _js_parse_snippet(
-    js_context,
-    t.file(
-      t.program(
-        [
-          t.returnStatement(
-            parsed
-          )
-        ]
-      )
-    )
-  )
+  const parsed = _js_parse_expression(js_context, data)
 
   return parsed
 }
@@ -329,6 +337,82 @@ function js_call(js_context, input) {
   )
 }
 
+// create switch ast
+function js_switch(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'js/switch') {
+    throw new Error(`ERROR: input.type is not [js/switch] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('children' in input)) {
+    throw new Error(`ERROR: input.children missing in [js/switch] [${JSON.stringify(input)}]`)
+  }
+
+  if (! Array.isArray(input.children)) {
+    throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
+  }
+
+  // create default return statement
+  let ifElseStatements = t.returnStatement(
+    t.nullLiteral()
+  )
+  if ('default' in input) {
+    ifElseStatements = t.returnStatement(
+      js_process(js_context, input.default)
+    )
+  }
+
+  // stack the conditions
+  [...input.children].reverse().map(child => {
+    if (! ('condition' in child)) {
+      throw new Error(`ERROR: input child missing [condition] [${JSON.stringify(child)}]`)
+    }
+    if (! ('data' in child)) {
+      throw new Error(`ERROR: input child missing [data] [${JSON.stringify(child)}]`)
+    }
+    // stack if/else statement
+    ifElseStatements = t.ifStatement(
+      _js_parse_expression(js_context, child.condition),
+      t.returnStatement(
+        js_process(js_context, child.data)
+      ),
+      ifElseStatements
+    )
+  })
+
+  if (js_context.JSX_CONTEXT) {
+
+    return t.jSXExpressionContainer(
+      t.callExpression(
+        t.functionExpression(
+          null,
+          [],
+          t.blockStatement(
+            [
+              ifElseStatements
+            ]
+          )
+        ),
+        []
+      )
+    )
+  } else {
+
+    return t.callExpression(
+      t.functionExpression(
+        null,
+        [],
+        t.blockStatement(
+          [
+            ifElseStatements
+          ]
+        )
+      ),
+      []
+    )
+  }
+}
+
 // create jsx element ast
 function react_element(js_context, input) {
 
@@ -356,12 +440,18 @@ function react_element(js_context, input) {
   const react_element = t.jSXElement(
     t.jSXOpeningElement(
       t.jSXIdentifier(input.name),
-      'props' in input ? react_element_props(js_context, input.props) : []
+      'props' in input ? react_element_props(
+        { ...js_context, JSX_CONTEXT: true },
+        input.props
+      ) : []
     ),
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
     ),
-    react_element_children(js_context, input.children)
+    react_element_children(
+      { ...js_context, JSX_CONTEXT: true },
+      input.children
+    )
   )
 
 /*
@@ -629,6 +719,129 @@ function appx_route(js_context, input) {
   )
 }
 
+// parse variable full path
+function _parse_var_full_path(var_full_path) {
+
+  let import_paths = var_full_path.split(PATH_SEPARATOR)
+  let sub_vars = import_paths[import_paths.length - 1].split(VARIABLE_SEPARATOR)
+
+  // add first sub_var to import_path
+  import_paths[import_paths.length - 1] = sub_vars.shift()
+
+  return {
+    full_paths: [].concat(import_paths, sub_vars),
+    import_paths: import_paths,
+    sub_vars: sub_vars
+  }
+}
+
+// register variables
+function reg_js_variable(js_context, var_full_path, kind='const', suggested_name=null) {
+
+    // if variable is already registered, just return
+    if (var_full_path in js_context.variables) {
+      return
+    }
+
+    // parse variable
+    const parsed_var = _parse_var_full_path(var_full_path)
+
+    let var_prefix = [].concat(parsed_var.full_paths)
+    if (suggested_name) {
+      var_prefix.pop() // remove most qualified name
+      var_prefix.push(suggested_name) // add suggested_name
+    }
+
+    // get starting var_name
+    let var_name = var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
+    if (isReserved(var_name)) {
+      var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
+    }
+
+    while (true) {
+
+        // check for name conflict
+        const found = Object.keys(js_context.variables).find(key => {
+            let spec = js_context.variables[key]
+            return spec.name === var_name
+        })
+
+        // name conflict found
+        if (found) {
+            // update conflicting variable names
+            Object.keys(js_context.variables).map(key => {
+                let var_spec = js_context.variables[key]
+                if (var_spec.name === var_name) {
+                    if (var_spec.var_prefix.length) {
+                        var_spec.name = var_spec.name + '$' + var_spec.var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
+                    } else {
+                        // we have exhausted the full path, throw exception
+                        throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
+                    }
+                }
+            })
+            // update our own variable name
+            if (var_prefix) {
+                var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
+            } else {
+                // we have exhausted the full path, throw exception
+                throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
+            }
+        } else {
+            js_context.variables[var_full_path] = {
+                kind: kind,
+                name: var_name,
+                var_full_path: var_full_path,
+                var_prefix: var_prefix
+            }
+            return js_context
+        }
+    }
+}
+
+function reg_js_import(js_context, var_full_path, use_default=false, suggested_name=null) {
+
+    // if variable is already registered, just return
+    if (var_full_path in js_context.imports) {
+      return
+    }
+
+    // parse variable
+    const parsed_var = _parse_var_full_path(var_full_path)
+
+    // import_path
+    const import_path = parsed_var.import_paths.join(PATH_SEPARATOR)
+
+    if (import_path !== var_full_path) {
+        // if import_path is different from variable_full_path, suggested_name applies only to the variable
+        reg_js_variable(js_context, import_path, 'const', null)
+        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
+    } else {
+        // if import path is same as variable_full_path, suggested_name applies to both
+        // reg_js_variable(js_context, import_path, 'const', suggested_name)
+        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
+    }
+
+    // update import data
+    if (!(import_path in js_context.imports)) {
+        js_context.imports[import_path] = {
+            use_default: use_default,
+            suggested_name: suggested_name,
+            path: import_path,
+            sub_vars: {}
+        }
+    }
+
+    // update sub_vars for import
+    let sub_vars = [].concat(parsed_var.sub_vars)
+    if (sub_vars.length !== 0) {
+        // compute sub_var_name and sub_var_full_path
+        const sub_var_name = sub_vars.join(VARIABLE_SEPARATOR)
+        // register as import sub_var and as variable
+        js_context.imports[import_path].sub_vars[sub_var_name] = parsed_var.sub_vars
+    }
+}
+
 // process input
 function js_process(js_context, input) {
 
@@ -673,6 +886,18 @@ function js_process(js_context, input) {
   } else if (input.type === 'js/call') {
 
     return js_call(js_context, input)
+
+  } else if (input.type === 'js/switch') {
+
+    return js_switch(js_context, input)
+
+  } else if (input.type === 'js/map') {
+
+    return js_map(js_context, input)
+
+  } else if (input.type === 'js/reduce') {
+
+    return js_reduce(js_context, input)
 
   } else if (input.type === 'js/transform') {
 
@@ -814,139 +1039,6 @@ function js_resolve_ids(js_context, ast_tree) {
       }
     }
   })
-}
-
-// parse variable full path
-function _parse_var_full_path(var_full_path) {
-
-  let import_paths = var_full_path.split(PATH_SEPARATOR)
-  let sub_vars = import_paths[import_paths.length - 1].split(VARIABLE_SEPARATOR)
-
-  // add first sub_var to import_path
-  import_paths[import_paths.length - 1] = sub_vars.shift()
-
-  return {
-    full_paths: [].concat(import_paths, sub_vars),
-    import_paths: import_paths,
-    sub_vars: sub_vars
-  }
-}
-
-// register variables
-function reg_js_variable(js_context, var_full_path, kind='const', suggested_name=null) {
-
-    // if variable is already registered, just return
-    if (var_full_path in js_context.variables) {
-      return
-    }
-
-    // parse variable
-    const parsed_var = _parse_var_full_path(var_full_path)
-
-    let var_prefix = [].concat(parsed_var.full_paths)
-    if (suggested_name) {
-      var_prefix.pop() // remove most qualified name
-      var_prefix.push(suggested_name) // add suggested_name
-    }
-
-    // get starting var_name
-    let var_name = var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
-    if (isReserved(var_name)) {
-      var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
-    }
-
-    while (true) {
-
-        // check for name conflict
-        const found = Object.keys(js_context.variables).find(key => {
-            let spec = js_context.variables[key]
-            return spec.name === var_name
-        })
-
-        // name conflict found
-        if (found) {
-            // update conflicting variable names
-            Object.keys(js_context.variables).map(key => {
-                let var_spec = js_context.variables[key]
-                if (var_spec.name === var_name) {
-                    if (var_spec.var_prefix.length) {
-                        var_spec.name = var_spec.name + '$' + var_spec.var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
-                    } else {
-                        // we have exhausted the full path, throw exception
-                        throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
-                    }
-                }
-            })
-            // update our own variable name
-            if (var_prefix) {
-                var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
-            } else {
-                // we have exhausted the full path, throw exception
-                throw new Error(`ERROR: name resolution conflict [${var_full_path}]`)
-            }
-        } else {
-            js_context.variables[var_full_path] = {
-                kind: kind,
-                name: var_name,
-                var_full_path: var_full_path,
-                var_prefix: var_prefix
-            }
-            return js_context
-        }
-    }
-}
-
-function reg_js_import(js_context, var_full_path, use_default=false, suggested_name=null) {
-
-    // if variable is already registered, just return
-    if (var_full_path in js_context.imports) {
-      return
-    }
-
-    // parse variable
-    const parsed_var = _parse_var_full_path(var_full_path)
-
-    // import_path
-    const import_path = parsed_var.import_paths.join(PATH_SEPARATOR)
-
-    if (import_path !== var_full_path) {
-        // if import_path is different from variable_full_path, suggested_name applies only to the variable
-        reg_js_variable(js_context, import_path, 'const', null)
-        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
-    } else {
-        // if import path is same as variable_full_path, suggested_name applies to both
-        // reg_js_variable(js_context, import_path, 'const', suggested_name)
-        reg_js_variable(js_context, var_full_path, 'const', suggested_name)
-    }
-
-    // update import data
-    if (!(import_path in js_context.imports)) {
-        js_context.imports[import_path] = {
-            use_default: use_default,
-            suggested_name: suggested_name,
-            path: import_path,
-            sub_vars: {}
-        }
-    }
-
-    // update sub_vars for import
-    let sub_vars = [].concat(parsed_var.sub_vars)
-    if (sub_vars.length !== 0) {
-        // compute sub_var_name and sub_var_full_path
-        const sub_var_name = sub_vars.join(VARIABLE_SEPARATOR)
-        // register as import sub_var and as variable
-        js_context.imports[import_path].sub_vars[sub_var_name] = parsed_var.sub_vars
-    }
-}
-
-// get variable definition
-function get_js_variable(js_context, variable_full_path) {
-
-    if (variable_full_path in js_context.variables) {
-        return js_context.variables[variable_full_path]
-    } else {
-        throw new Error(`ERROR: unable to find variable [${variable_full_path}]`)
-    }
 }
 
 // export

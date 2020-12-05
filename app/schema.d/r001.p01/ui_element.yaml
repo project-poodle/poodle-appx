@@ -532,8 +532,16 @@ ui_element:
                                 name: '@material-ui/core.ListItemText'
                                 props:
                                     primary: UI Elements
-                              - type: react/element
-                                name: '@material-ui/icons.ExpandMore'
+                              - type: js/switch
+                                children:
+                                    - condition: 'states.uiElementNav.open'
+                                      data:
+                                          type: react/element
+                                          name: '@material-ui/icons.ExpandLess'
+                                    - condition: '!states.uiElementNav.open'
+                                      data:
+                                          type: react/element
+                                          name: '@material-ui/icons.ExpandMore'
                         - type: react/element
                           name: '@material-ui/core.Collapse'
                           props:
@@ -570,8 +578,16 @@ ui_element:
                                 name: '@material-ui/core.ListItemText'
                                 props:
                                     primary: UI Routes
-                              - type: react/element
-                                name: '@material-ui/icons.ExpandMore'
+                              - type: js/switch
+                                children:
+                                    - condition: 'states.uiRouteNav.open'
+                                      data:
+                                          type: react/element
+                                          name: '@material-ui/icons.ExpandLess'
+                                    - condition: '!states.uiRouteNav.open'
+                                      data:
+                                          type: react/element
+                                          name: '@material-ui/icons.ExpandMore'
                         - type: react/element
                           name: '@material-ui/core.Collapse'
                           props:
