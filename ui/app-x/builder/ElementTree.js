@@ -22,53 +22,7 @@ const treeData = [
       },
     ],
   },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true,
-      },
-    ],
-  },
 ]
-
-
-const ElementTree = (props) => {
-
-  const useStyles = makeStyles((theme) => ({
-    root: {},
-    toolbar: {
-      height: 64
-    },
-  }))
-
-  const onSelect = (keys, event) => {
-    console.log('Trigger Select', keys, event)
-  }
-
-  const onExpand = () => {
-    console.log('Trigger Expand')
-  }
-
-  return (
-    <DirectoryTree
-      // multiple
-      draggable
-      defaultExpandAll
-      onSelect={onSelect}
-      onExpand={onExpand}
-      treeData={treeData}
-    />
-  );
-}
 */
 
 const initData = [];
@@ -82,7 +36,7 @@ const generateData = (_level, _preKey, _tns) => {
   const children = [];
   for (let i = 0; i < x; i++) {
     const key = `${preKey}-${i}`;
-    tns.push({ title: key, key });
+    tns.push({ title: key, key: key, isLeaf: _level<0 });
     if (i < y) {
       children.push(key);
     }
@@ -107,67 +61,123 @@ const ElementTree = (props) => {
     },
   }))()
 
-  const [ gData, setGData ] = useState(initData)
-  const [ expandedKeys, setExpandedKeys ] = useState(['0-0', '0-0-0', '0-0-0-0'])
-  //console.log(gData)
+  const [ tData, setTData ] = useState(initData)
+  const [ expandedKeys, setExpandedKeys ] = useState(['0-0', '0-0-0', '0-0-1', '0-1'])
+  //console.log(tData)
 
-  const onDragEnter = info => {
-    console.log(info)
-    // expandedKeys 需要受控时设置
-    // this.setState({
-    //   expandedKeys: info.expandedKeys,
-    // });
+  // traverse method
+  const traverse = (data, key, callback) => {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].key === key) {
+        return callback(data[i], i, data)
+      }
+      if (data[i].children) {
+        traverse(data[i].children, key, callback)
+      }
+    }
   }
 
+  // select
+  const onSelect = key => {
+    //console.log(key)
+    traverse(tData, key[0], (item, index, arr) => {
+      if (!item.isLeaf) {
+        console.log(item)
+        const idx = expandedKeys.indexOf(item.key)
+        if (idx < 0) {
+          // expand non-leaf node if not already
+          // console.log(`expand ${item.key}`, [...expandedKeys, item.key])
+          setExpandedKeys(
+            [...expandedKeys, item.key]
+          )
+        } else {
+          // collapse leaf node if already expanded
+          const newKeys = [...expandedKeys]
+          newKeys.splice(idx, 1)
+          //console.log(`remove ${item.key}`, newKeys)
+          setExpandedKeys(newKeys)
+        }
+      }
+    })
+  }
+
+  // drag enter
+  const onDragEnter = info => {
+    // expandedKeys
+    if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
+      // console.log([...info.expandedKeys, info.node.key])
+      setExpandedKeys(
+        [...info.expandedKeys, info.node.key]
+      )
+    }
+  }
+
+  // drop
   const onDrop = info => {
     console.log(info)
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
-    const dropPos = info.node.props.pos.split('-')
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
+    // const dropPos = info.node.props.pos.split('-')
+    // const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
+    const dropPosition = info.dropPosition
 
-    const loop = (data, key, callback) => {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].key === key) {
-          return callback(data[i], i, data);
+    // check if drop key is leaf
+    let isLeaf = false
+    if (!info.dropToGap) {
+      // Drop on the content
+      traverse(tData, dropKey, item => {
+        if (item.isLeaf) {
+          isLeaf = true
         }
-        if (data[i].children) {
-          loop(data[i].children, key, callback);
-        }
-      }
+      })
     }
-    const data = [...gData]
+
+    // if leaf, do not process
+    if (isLeaf) {
+      return
+    }
+
+    // replicate data
+    const data = [...tData]
 
     // Find dragObject
-    let dragObj;
-    loop(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1);
-      dragObj = item;
+    let dragObj
+    traverse(data, dragKey, (item, index, arr) => {
+      arr.splice(index, 1)
+      dragObj = item
     })
 
     if (!info.dropToGap) {
       // Drop on the content
-      loop(data, dropKey, item => {
-        item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
-      });
+      traverse(data, dropKey, item => {
+        // console.log(item)
+        item.children = item.children || []
+        // where to insert
+        // console.log(expandedKeys)
+        item.children.unshift(dragObj)
+        if (!expandedKeys.includes(item.key)) {
+          console.log([...expandedKeys, item.key])
+          setExpandedKeys(
+            [...expandedKeys, item.key]
+          )
+        }
+      })
     } else if (
       (info.node.props.children || []).length > 0 && // Has children
       info.node.props.expanded && // Is expanded
       dropPosition === 1 // On the bottom gap
     ) {
-      loop(data, dropKey, item => {
+      traverse(data, dropKey, item => {
         item.children = item.children || [];
-        // where to insert 示例添加到头部，可以是随意位置
-        item.children.unshift(dragObj);
+        // where to insert
+        item.children.unshift(dragObj)
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
       });
     } else {
       let ar;
       let i;
-      loop(data, dropKey, (item, index, arr) => {
+      traverse(data, dropKey, (item, index, arr) => {
         ar = arr;
         i = index;
       });
@@ -178,7 +188,7 @@ const ElementTree = (props) => {
       }
     }
 
-    setGData(data)
+    setTData(data)
   }
 
   return (
@@ -186,13 +196,14 @@ const ElementTree = (props) => {
       //className="draggable-tree"
       //style={{width: '100%'}}
       className={styles.tree}
-      defaultExpandedKeys={expandedKeys}
+      expandedKeys={expandedKeys}
       // defaultExpandAll
       draggable
       blockNode
+      onSelect={onSelect}
       onDragEnter={onDragEnter}
       onDrop={onDrop}
-      treeData={gData}
+      treeData={tData}
     />
   )
 }
