@@ -182,7 +182,7 @@ const ElementTree = (props) => {
   }
 
   return (
-    <Tree
+    <DirectoryTree
       //className="draggable-tree"
       //style={{width: '100%'}}
       className={styles.tree}
