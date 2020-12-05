@@ -314,8 +314,23 @@ function js_function(js_context, input) {
   }
 
   return t.arrowFunctionExpression(
-    input.params ? input.params.map(param => js_process(js_context, param)) : [],
-    js_block(js_context, input.body),
+    input.params
+      ? input.params.map(
+        param => js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: false
+          },
+          param
+        ))
+      : [],
+    js_block(
+      {
+        ...js_context,
+        JSX_CONTEXT: false
+      },
+      input.body
+    ),
     input.async ? true : false
   )
 }
@@ -333,7 +348,14 @@ function js_call(js_context, input) {
 
   return t.callExpression(
     t.identifier(input.name),
-    input.params ? input.params.map(param => js_process(js_context, param)) : []
+    input.params ? input.params.map(
+      param => js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false
+        },
+        param))
+     : []
   )
 }
 
@@ -358,7 +380,13 @@ function js_switch(js_context, input) {
   )
   if ('default' in input) {
     ifElseStatements = t.returnStatement(
-      js_process(js_context, input.default)
+      js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false
+        },
+        input.default
+      )
     )
   }
 
@@ -374,42 +402,647 @@ function js_switch(js_context, input) {
     ifElseStatements = t.ifStatement(
       _js_parse_expression(js_context, child.condition),
       t.returnStatement(
-        js_process(js_context, child.data)
+        js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: false
+          },
+          child.data
+        )
       ),
       ifElseStatements
     )
   })
 
-  if (js_context.JSX_CONTEXT) {
-
-    return t.jSXExpressionContainer(
-      t.callExpression(
-        t.functionExpression(
-          null,
-          [],
-          t.blockStatement(
-            [
-              ifElseStatements
-            ]
-          )
-        ),
-        []
+  // generate call expression
+  const callExpression = t.callExpression(
+    t.functionExpression(
+      null,
+      [],
+      t.blockStatement(
+        [
+          ifElseStatements
+        ]
       )
+    ),
+    []
+  )
+
+  // return with context
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      callExpression
     )
   } else {
+    callExpression
+  }
+}
 
-    return t.callExpression(
-      t.functionExpression(
-        null,
-        [],
-        t.blockStatement(
-          [
-            ifElseStatements
-          ]
-        )
-      ),
-      []
+// create js map ast
+function js_map(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'js/map') {
+    throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('input' in input)) {
+    throw new Error(`ERROR: input.input missing in [js/map] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('mapper' in input)) {
+    throw new Error(`ERROR: input.mapper missing in [js/map] [${JSON.stringify(input)}]`)
+  }
+
+  // process input expression
+  const inputExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.input
+  )
+
+  // process mapper expression
+  const mapperExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.mapper
+  )
+
+  // process call expression
+  const callExpression = t.callExpression(
+    t.functionExpression(
+      null,
+      [],
+      t.blockStatement(
+        [
+          // const input = inputExpression
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier('input'),
+                inputExpression
+              )
+            ]
+          ),
+          // check if input is null, array, or object, or neither
+          t.ifStatement(
+            // !input (input is null or undefined)
+            t.unaryExpression(
+              '!',
+              t.identifier(input)
+            ),
+            // return null
+            t.returnStatement(
+              t.nullLiteral
+            ),
+            // else if
+            t.ifStatement(
+              t.callExpression(
+                // Array.isArray(input)
+                t.memberExpression(
+                  t.identifier('Array'),
+                  t.identifier('isArray')
+                ),
+                t.identifier('input')
+              ),
+              // return input.map((item, key) => { ... })
+              t.returnStatement(
+                t.callExpression(
+                  t.memberExpression(
+                    t.identifier('input'),
+                    t.identifier('map')
+                  ),
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('item'),
+                      t.identifier('key')
+                    ],
+                    t.blockStatement(
+                      [
+                        // return ...mapper
+                        t.returnStatement(
+                          mapperExpression
+                        )
+                      ]
+                    )
+                  )
+                )
+              ),
+              // else if
+              t.ifStatement(
+                // typeof input == 'object'
+                t.binaryExpression(
+                  "===",
+                  t.unaryExpression(
+                    "typeof",
+                    t.identifier('input')
+                  ),
+                  t.stringLiteral('object')
+                ),
+                t.blockStatement(
+                  [
+                    // Object.keys(input).map(key => { ... })
+                    t.callExpression(
+                      t.memberExpression(
+                        t.callExpression(
+                          t.memberExpression(
+                            t.identifier('Object'),
+                            t.identifier('keys')
+                          ),
+                          [
+                            t.identifier('input'),
+                          ]
+                        ),
+                        t.identifier('map')
+                      ),
+                      [
+                        t.arrowFunctionExpression(
+                          [
+                            t.identifier('key'),
+                            t.blockStatement(
+                              [
+                                // const item = input[key]
+                                t.variableDeclaration(
+                                  'const',
+                                  [
+                                    t.variableDeclarator(
+                                      t.identifier('item'),
+                                      t.memberExpression(
+                                        t.identifier('input'),
+                                        t.identifier('key'),
+                                        computed=true
+                                      )
+                                    )
+                                  ]
+                                ),
+                                // return ...mapper
+                                t.returnStatement(
+                                  mapperExpression
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    ),
+                  ]
+                ),
+                // else
+                t.throwStatement(
+                  // throw new Error(`ERROR mapper input is neither Array nor Object [typeof input]`)
+                  t.newExpression(
+                    t.identifier('Error'),
+                    [
+                      t.binaryExpression(
+                        '+'.
+                        t.stringLiteral(
+                          'ERROR: mapper input is neither Array nor Object ['
+                        ),
+                        t.binaryExpression(
+                          '+',
+                          t.parenthesizedExpression(
+                            t.unaryExpression(
+                              'typeof',
+                              t.identifier(input)
+                            )
+                          ),
+                          ']'
+                        )
+                      )
+                    ]
+                  )
+                )
+              )
+            )
+          )
+        ]
+      )
+    ),
+    []
+  )
+
+  // return with context
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      callExpression
     )
+  } else {
+    callExpression
+  }
+}
+
+// create js reduce ast
+function js_reduce(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'js/reduce') {
+    throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('input' in input)) {
+    throw new Error(`ERROR: input.input missing in [js/reduce] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('reducer' in input)) {
+    throw new Error(`ERROR: input.reducer missing in [js/reduce] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('init' in input)) {
+    throw new Error(`ERROR: input.init missing in [js/reduce] [${JSON.stringify(input)}]`)
+  }
+
+  // process input expression
+  const inputExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.input
+  )
+
+  // process mapper expression
+  const reducerExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.reducer
+  )
+
+  // process init expression
+  const initExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.init
+  )
+
+  // process call expression
+  const callExpression = t.callExpression(
+    t.functionExpression(
+      null,
+      [],
+      t.blockStatement(
+        [
+          // const input = inputExpression
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier('input'),
+                inputExpression
+              )
+            ]
+          ),
+          // check if input is null, array, or object, or neither
+          t.ifStatement(
+            // !input (input is null or undefined)
+            t.unaryExpression(
+              '!',
+              t.identifier(input)
+            ),
+            // return null
+            t.returnStatement(
+              t.nullLiteral
+            ),
+            // else if
+            t.ifStatement(
+              t.callExpression(
+                // Array.isArray(input)
+                t.memberExpression(
+                  t.identifier('Array'),
+                  t.identifier('isArray')
+                ),
+                t.identifier('input')
+              ),
+              // return input.map((item, key) => { ... })
+              t.returnStatement(
+                t.callExpression(
+                  t.memberExpression(
+                    t.identifier('input'),
+                    t.identifier('reduce')
+                  ),
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('result'),
+                      t.identifier('item'),
+                      t.identifier('key')
+                    ],
+                    t.blockStatement(
+                      [
+                        // return ...reducer
+                        t.returnStatement(
+                          reducerExpression
+                        )
+                      ]
+                    )
+                  ),
+                  initExpression
+                )
+              ),
+              // else if
+              t.ifStatement(
+                // typeof input == 'object'
+                t.binaryExpression(
+                  "===",
+                  t.unaryExpression(
+                    "typeof",
+                    t.identifier('input')
+                  ),
+                  t.stringLiteral('object')
+                ),
+                t.blockStatement(
+                  [
+                    // Object.keys(input).map(key => { ... })
+                    t.callExpression(
+                      t.memberExpression(
+                        t.callExpression(
+                          t.memberExpression(
+                            t.identifier('Object'),
+                            t.identifier('keys')
+                          ),
+                          [
+                            t.identifier('input'),
+                          ]
+                        ),
+                        t.identifier('reduce')
+                      ),
+                      [
+                        t.arrowFunctionExpression(
+                          [
+                            t.identifier('result'),
+                            t.identifier('key')
+                          ],
+                          t.blockStatement(
+                            [
+                              // const item = input[key]
+                              t.variableDeclaration(
+                                'const',
+                                [
+                                  t.variableDeclarator(
+                                    t.identifier('item'),
+                                    t.memberExpression(
+                                      t.identifier('input'),
+                                      t.identifier('key'),
+                                      computed=true
+                                    )
+                                  )
+                                ]
+                              ),
+                              // return ...reducer
+                              t.returnStatement(
+                                reduceExpression
+                              )
+                            ]
+                          )
+                        ),
+                        initExpression
+                      ]
+                    ),
+                  ]
+                ),
+                // else
+                t.throwStatement(
+                  // throw new Error(`ERROR mapper input is neither Array nor Object [typeof input]`)
+                  t.newExpression(
+                    t.identifier('Error'),
+                    [
+                      t.binaryExpression(
+                        '+'.
+                        t.stringLiteral(
+                          'ERROR: reducer input is neither Array nor Object ['
+                        ),
+                        t.binaryExpression(
+                          '+',
+                          t.parenthesizedExpression(
+                            t.unaryExpression(
+                              'typeof',
+                              t.identifier(input)
+                            )
+                          ),
+                          ']'
+                        )
+                      )
+                    ]
+                  )
+                )
+              )
+            )
+          )
+        ]
+      )
+    ),
+    []
+  )
+
+  // return with context
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      callExpression
+    )
+  } else {
+    callExpression
+  }
+}
+
+// create js reduce ast
+function js_filter(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'js/reduce') {
+    throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('input' in input)) {
+    throw new Error(`ERROR: input.input missing in [js/filter] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('filter' in input)) {
+    throw new Error(`ERROR: input.reducer missing in [js/filter] [${JSON.stringify(input)}]`)
+  }
+
+  // process input expression
+  const inputExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.input
+  )
+
+  // process filter expression
+  const filterExpression = js_process(
+    {
+      ...js_context,
+      JSX_CONTEXT: false
+    },
+    input.filter
+  )
+
+  // process call expression
+  const callExpression = t.callExpression(
+    t.functionExpression(
+      null,
+      [],
+      t.blockStatement(
+        [
+          // const input = inputExpression
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier('input'),
+                inputExpression
+              )
+            ]
+          ),
+          // check if input is null, array, or object, or neither
+          t.ifStatement(
+            // !input (input is null or undefined)
+            t.unaryExpression(
+              '!',
+              t.identifier(input)
+            ),
+            // return null
+            t.returnStatement(
+              t.nullLiteral
+            ),
+            // else if
+            t.ifStatement(
+              t.callExpression(
+                // Array.isArray(input)
+                t.memberExpression(
+                  t.identifier('Array'),
+                  t.identifier('isArray')
+                ),
+                t.identifier('input')
+              ),
+              // return input.map((item, key) => { ... })
+              t.returnStatement(
+                t.callExpression(
+                  t.memberExpression(
+                    t.identifier('input'),
+                    t.identifier('filter')
+                  ),
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('item'),
+                      t.identifier('key')
+                    ],
+                    t.blockStatement(
+                      [
+                        // return ...filter
+                        t.returnStatement(
+                          filterExpression
+                        )
+                      ]
+                    )
+                  )
+                )
+              ),
+              // else if
+              t.ifStatement(
+                // typeof input == 'object'
+                t.binaryExpression(
+                  "===",
+                  t.unaryExpression(
+                    "typeof",
+                    t.identifier('input')
+                  ),
+                  t.stringLiteral('object')
+                ),
+                t.blockStatement(
+                  [
+                    // Object.keys(input).map(key => { ... })
+                    t.callExpression(
+                      t.memberExpression(
+                        t.callExpression(
+                          t.memberExpression(
+                            t.identifier('Object'),
+                            t.identifier('keys')
+                          ),
+                          [
+                            t.identifier('input'),
+                          ]
+                        ),
+                        t.identifier('filter')
+                      ),
+                      [
+                        t.arrowFunctionExpression(
+                          [
+                            t.identifier('key'),
+                            t.blockStatement(
+                              [
+                                // const item = input[key]
+                                t.variableDeclaration(
+                                  'const',
+                                  [
+                                    t.variableDeclarator(
+                                      t.identifier('item'),
+                                      t.memberExpression(
+                                        t.identifier('input'),
+                                        t.identifier('key'),
+                                        computed=true
+                                      )
+                                    )
+                                  ]
+                                ),
+                                // return ...filter
+                                t.returnStatement(
+                                  filterExpression
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    ),
+                  ]
+                ),
+                // else
+                t.throwStatement(
+                  // throw new Error(`ERROR mapper input is neither Array nor Object [typeof input]`)
+                  t.newExpression(
+                    t.identifier('Error'),
+                    [
+                      t.binaryExpression(
+                        '+'.
+                        t.stringLiteral(
+                          'ERROR: filter input is neither Array nor Object ['
+                        ),
+                        t.binaryExpression(
+                          '+',
+                          t.parenthesizedExpression(
+                            t.unaryExpression(
+                              'typeof',
+                              t.identifier(input)
+                            )
+                          ),
+                          ']'
+                        )
+                      )
+                    ]
+                  )
+                )
+              )
+            )
+          )
+        ]
+      )
+    ),
+    []
+  )
+
+  // return with context
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      callExpression
+    )
+  } else {
+    callExpression
   }
 }
 
@@ -898,6 +1531,10 @@ function js_process(js_context, input) {
   } else if (input.type === 'js/reduce') {
 
     return js_reduce(js_context, input)
+
+  } else if (input.type === 'js/filter') {
+
+    return js_filter(js_context, input)
 
   } else if (input.type === 'js/transform') {
 
