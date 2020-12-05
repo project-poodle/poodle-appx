@@ -8,6 +8,7 @@ import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-des
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+// import ReactSvg from 'app-x/icon/react.svg'
 
 const PATH_SEPARATOR = '/'
 
@@ -93,7 +94,8 @@ const transformTreeData = (data) => {
     let icon = <FileOutlined />
     switch (ui_element.ui_element_type) {
       case 'react/element':
-        icon = <CodepenOutlined />
+        // icon = <CodepenOutlined />
+        icon = <ReactIcon />
         break
       case 'html':
         icon = <ContainerOutlined />
