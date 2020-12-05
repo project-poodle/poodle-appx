@@ -1224,7 +1224,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_route_status"
       attr_name: "namespace"
       attr_spec:
           key: true
@@ -1232,7 +1232,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_route_status"
       attr_name: "ui_name"
       attr_spec:
           key: true
@@ -1240,7 +1240,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_route_status"
       attr_name: "ui_deployment"
       attr_spec:
           key: true
@@ -1248,7 +1248,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_route_status"
       attr_name: "ui_route_name"
       attr_spec:
           key: true
@@ -1256,7 +1256,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_route_status"
       attr_name: "ui_route_status"
       attr_spec:
           key: false

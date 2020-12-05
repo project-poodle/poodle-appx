@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core'
+import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
 import { Tree } from 'antd'
 const { DirectoryTree } = Tree
+import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
+
+import * as api from 'app-x/api'
+import ReactIcon from 'app-x/icon/React'
+
+const PATH_SEPARATOR = '/'
 
 /*
 const treeData = [
@@ -23,22 +30,21 @@ const treeData = [
     ],
   },
 ]
-*/
 
-const initData = [];
-const x = 3;
-const y = 2;
-const z = 1;
+const initData = []
+const x = 3
+const y = 2
+const z = 1
 const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || initData;
+  const preKey = _preKey || '0'
+  const tns = _tns || initData
 
-  const children = [];
+  const children = []
   for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({ title: key, key: key, isLeaf: _level<0 });
+    const key = `${preKey}-${i}`
+    tns.push({ title: key, key: key, isLeaf: _level<0 })
     if (i < y) {
-      children.push(key);
+      children.push(key)
     }
   }
   if (_level < 0) {
@@ -46,14 +52,107 @@ const generateData = (_level, _preKey, _tns) => {
   }
   const level = _level - 1;
   children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-generateData(z);
+    tns[index].children = []
+    return generateData(level, key, tns[index].children)
+  })
+}
+generateData(z)
+*/
 
+// traverse method
+const traverse = (data, key, callback) => {
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].key === key) {
+      return callback(data[i], i, data)
+    }
+    if (data[i].children) {
+      traverse(data[i].children, key, callback)
+    }
+  }
+}
+
+// generate tree data
+const transformTreeData = (data) => {
+
+  const treeData = []
+
+  data.map(ui_element => {
+
+    let currParent = treeData
+    let currKey = PATH_SEPARATOR
+
+    const name = ui_element.ui_element_name
+    const subPaths = name.split(PATH_SEPARATOR)
+
+    let subName = subPaths.shift()
+    if (subName != '') {
+      // if name does not start with '/', ignore
+      return
+    }
+
+    let icon = <FileOutlined />
+    switch (ui_element.ui_element_type) {
+      case 'react/element':
+        icon = <CodepenOutlined />
+        break
+      case 'html':
+        icon = <ContainerOutlined />
+        break
+    }
+
+    while (subPaths.length) {
+
+      subName = subPaths.shift()
+      if (subName == '') {
+        // ignore empty subname
+        continue
+      }
+
+      let found = currParent.find(treeNode => treeNode.title == subName)
+      if (!found) {
+        if (subPaths.length == 0) {
+          found = {
+            title: subName,
+            key: (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/'),
+            isLeaf: true,
+            icon: icon,
+            data: ui_element,
+          }
+        } else {
+          found = {
+            title: subName,
+            key: (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/'),
+            children: [],
+          }
+        }
+        currParent.push(found)
+      }
+
+      currParent = found.children
+    }
+  })
+
+  return treeData
+}
 
 const ElementTree = (props) => {
+
+  const [ tData, setTData ] = useState([])
+  const [ expandedKeys, setExpandedKeys ] = useState([])
+  //console.log(tData)
+
+  api.get(
+    'appx',
+    `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element`,
+    data => {
+      console.log(data)
+      const apiData = transformTreeData(data)
+      setTData(apiData)
+    },
+    error => {
+      console.error(error)
+    }
+  )
 
   const styles = makeStyles((theme) => ({
     tree: {
@@ -61,28 +160,12 @@ const ElementTree = (props) => {
     },
   }))()
 
-  const [ tData, setTData ] = useState(initData)
-  const [ expandedKeys, setExpandedKeys ] = useState(['0-0', '0-0-0', '0-0-1', '0-1'])
-  //console.log(tData)
-
-  // traverse method
-  const traverse = (data, key, callback) => {
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].key === key) {
-        return callback(data[i], i, data)
-      }
-      if (data[i].children) {
-        traverse(data[i].children, key, callback)
-      }
-    }
-  }
-
   // select
   const onSelect = key => {
     //console.log(key)
     traverse(tData, key[0], (item, index, arr) => {
       if (!item.isLeaf) {
-        console.log(item)
+        // console.log(item)
         const idx = expandedKeys.indexOf(item.key)
         if (idx < 0) {
           // expand non-leaf node if not already
@@ -168,23 +251,23 @@ const ElementTree = (props) => {
       dropPosition === 1 // On the bottom gap
     ) {
       traverse(data, dropKey, item => {
-        item.children = item.children || [];
+        item.children = item.children || []
         // where to insert
         item.children.unshift(dragObj)
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
-      });
+      })
     } else {
-      let ar;
-      let i;
+      let ar
+      let i
       traverse(data, dropKey, (item, index, arr) => {
-        ar = arr;
-        i = index;
+        ar = arr
+        i = index
       });
       if (dropPosition === -1) {
-        ar.splice(i, 0, dragObj);
+        ar.splice(i, 0, dragObj)
       } else {
-        ar.splice(i + 1, 0, dragObj);
+        ar.splice(i + 1, 0, dragObj)
       }
     }
 
@@ -204,6 +287,12 @@ const ElementTree = (props) => {
       treeData={tData}
     />
   )
+}
+
+ElementTree.propTypes = {
+  namespace: PropTypes.string.isRequired,
+  ui_name: PropTypes.string.isRequired,
+  ui_deployment: PropTypes.string.isRequired,
 }
 
 export default ElementTree

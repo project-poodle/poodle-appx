@@ -53,6 +53,7 @@ const default_import_maps = {
       path: "/dist/lib/antd.js",
       modules: [
         "antd",
+        "@ant-design/icons",
       ]
     },
   }

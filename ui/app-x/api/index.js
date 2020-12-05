@@ -311,7 +311,8 @@ function request(app_name, conf, callback, handler) {
       'Authorization': `AppX ${token}`
     }
   }
-  return axios(req)
+  return axios
+    .request(req)
     .then((res) => {
       if ('data' in res) {
         if ('status' in res.data) {

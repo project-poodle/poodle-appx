@@ -209,12 +209,12 @@ function handle_route(req, res) {
                 namespace: ui_route.namespace,
                 ui_name: ui_route.ui_name,
                 ui_deployment: ui_route.ui_deployment,
-                ui_element_name: '/'
+                ui_element_name: '/index'
             }
         }
     )
 
-    // handle root element '/'
+    // handle root element '/index'
     handle_element(req, res)
     return
 }
@@ -492,7 +492,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                         namespace: namespace,
                         ui_name: ui_name,
                         ui_deployment: ui_deployment,
-                        ui_element_name: '/'
+                        ui_element_name: '/index'
                     }
                 }
             )

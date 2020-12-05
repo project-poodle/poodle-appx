@@ -140,7 +140,7 @@ function parse_get(context, req, res) {
                 if (! (join_attr in select_attrs)) {
                     select_attrs[`${join_attr}`] = `\`${join_name}\`.\`${join_attr}\``
                 }
-            });
+            })
 
             // process join obj type
             let join_obj_type = objPath.get(join_obj, `obj_type`)
@@ -240,14 +240,16 @@ function parse_get(context, req, res) {
                         return
                     }
 
-                    let src = `\`${context.obj_name}\`.\`${rel_attr.src}\``
-                    let tgt = `\`${join_name}\`.\`${rel_attr.tgt}\``
+                    let srcAttr = rel_attr.src
+                    let tgtAttr = rel_attr.tgt
 
                     relation_attrs.push({
-                        src: src,
-                        tgt: tgt
+                        srcObj: lookup_obj.obj_name,
+                        srcAttr: srcAttr,
+                        tgtObj: join_obj.obj_name,
+                        tgtAttr: tgtAttr
                     })
-                });
+                })
 
                 // we are here if relation_spec is found
                 if (relation_attrs.length == 0) {
@@ -260,10 +262,10 @@ function parse_get(context, req, res) {
 
                 // append join table attrs
                 if (! (join_name in join_tables)) {
-                        join_tables[join_name] = {
-                            type: join_type,
-                            attrs: []
-                        }
+                    join_tables[join_name] = {
+                        type: join_type,
+                        attrs: []
+                    }
                 }
                 join_tables[join_name].attrs = join_tables[join_name].attrs.concat(relation_attrs)
             }
@@ -276,7 +278,7 @@ function parse_get(context, req, res) {
                 fatal = true
                 return { fatal: fatal, status: FAILURE, error: msg }
             }
-        });
+        })
     }
 
     // cut short if fatal
@@ -302,7 +304,7 @@ function parse_get(context, req, res) {
         }
 
         where_clauses.push(where_clause)
-    });
+    })
 
     // process query string
     let queries = req.query || {}
@@ -395,7 +397,7 @@ function parse_get(context, req, res) {
 
             where_clauses.push(where_clause)
         }
-    });
+    })
 
     // return result
     return {
@@ -437,9 +439,9 @@ function handle_get(context, req, res) {
         }
         sql = sql + ` ON \`${join_name}\`.\`deleted\` = 0`
         join_table.attrs.forEach((join_attr, i) => {
-            sql = sql + ` AND ${join_attr.src} = ${join_attr.tgt}`
-        });
-    });
+            sql = sql + ` AND \`${join_attr.srcObj}\`.\`${join_attr.srcAttr}\` = \`${join_attr.tgtObj}\`.${join_attr.tgtAttr}`
+        })
+    })
 
     // where statement
     sql = sql + ` WHERE \`${context.obj_name}\`.\`deleted\` = 0`
@@ -452,7 +454,7 @@ function handle_get(context, req, res) {
             sql = sql + ` AND ${where_clause.attr} = ?`
         }
         sql_params.push(`${where_clause.value}`)
-    });
+    })
 
     // sort
     if (parsed.order_bys.length != 0) {
@@ -469,7 +471,7 @@ function handle_get(context, req, res) {
             } else {
                 sql = sql + ` ${order_by.attr} ${order_by.order}`
             }
-        });
+        })
     }
 
     // limit
