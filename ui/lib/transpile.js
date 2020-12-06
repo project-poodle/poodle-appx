@@ -39,6 +39,7 @@ const default_import_maps = {
         "clsx",
         "lodash",
         "axios",
+        "uuid",
       ]
     },
     "mui": {

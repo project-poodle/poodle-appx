@@ -24,6 +24,7 @@ import * as reactFeather from 'react-feather'
 import * as clsx from 'clsx'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
+import * as uuid from 'uuid'
 // reflective prop types
 import reflectPropTypes from './reflectPropTypes'
 
@@ -46,5 +47,6 @@ export default {
   //"antd": antd,
   "clsx": clsx,
   "lodash": lodash,
-  "axios": axios
+  "axios": axios,
+  "uuid": uuid,
 }

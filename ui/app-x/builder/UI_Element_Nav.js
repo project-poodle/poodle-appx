@@ -145,7 +145,7 @@ const loaded = {
 }
 
 
-const ElementTree = (props) => {
+const UI_Element_Nav = (props) => {
 
   const [ tData, setTData ] = useState(loaded.api_data)
   const [ expandedKeys, setExpandedKeys ] = useState([])
@@ -179,11 +179,19 @@ const ElementTree = (props) => {
     },
   }))()
 
+  // expand/collapse
+  const onExpand = keys => {
+    setExpandedKeys(keys)
+  }
+
   // select
   const onSelect = key => {
     //console.log(key)
     traverse(tData, key[0], (item, index, arr) => {
-      if (!item.isLeaf) {
+      if (item.isLeaf) {
+        // console.log(item)
+        props.handlers.handleElementSelected(item.data)
+      } else {
         // console.log(item)
         const idx = expandedKeys.indexOf(item.key)
         if (idx < 0) {
@@ -300,6 +308,7 @@ const ElementTree = (props) => {
       // defaultExpandAll
       draggable
       blockNode
+      onExpand={onExpand}
       onSelect={onSelect}
       onDragEnter={onDragEnter}
       onDrop={onDrop}
@@ -308,10 +317,13 @@ const ElementTree = (props) => {
   )
 }
 
-ElementTree.propTypes = {
+UI_Element_Nav.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
+  handlers: PropTypes.shape({
+    handleElementSelected: PropTypes.func.isRequired
+  }),
 }
 
-export default ElementTree
+export default UI_Element_Nav

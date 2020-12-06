@@ -274,11 +274,41 @@ ui_element:
                   name: open
                   setter: setOpen
                   init: false
+              builder:
+                  type: react/state
+                  name: data
+                  setter: setData
+                  init:
+                      ui_builder_type: ui_element
+                      ui_element_name: /page/Console
+                      ui_route_name: ''
           handlers:
               sideNavHandler:
                   type: js/function
                   body: |
                       states.mobileNav.setOpen(!states.mobileNav.open)
+              handleElementSelected:
+                  type: js/function
+                  params:
+                      - event
+                  body: |
+                      states.builder.setData({
+                          ui_builder_type: 'ui_element',
+                          ui_element_name: event.ui_element_name,
+                          ui_route_name: '',
+                      })
+                      console.log(event)
+                      console.log(states.builder.data)
+              handleRouteSelected:
+                  type: js/function
+                  params:
+                      - event
+                  body: |
+                      states.builder.setData({
+                          ui_builder_type: 'ui_route',
+                          ui_element_name: '',
+                          ui_route_name: event.ui_route_name,
+                      })
           element:
               type: react/element
               name: app-x/page/layout/HeaderSideNavLayout
@@ -374,9 +404,30 @@ ui_element:
                                 # divider
                                 - type: react/element
                                   name: 'self/nav/uiNav'
+                                  props:
+                                      handlers:
+                                          handleElementSelected:
+                                              type: js/expression
+                                              data: handlers.handleElementSelected
+                                          handleRouteSelected:
+                                              type: js/expression
+                                              data: handlers.handleRouteSelected
               children:
                   - type: react/element
-                    name: app-x/view/error/NotFoundView
+                    name: app-x/builder/UI_Builder
+                    props:
+                        namespace: sys
+                        ui_name: appxui
+                        ui_deployment: base
+                        ui_builder_type:
+                            type: js/expression
+                            data: states.builder.data.ui_builder_type
+                        ui_element_name:
+                            type: js/expression
+                            data: states.builder.data.ui_element_name
+                        ui_route_name:
+                            type: js/expression
+                            data: states.builder.data.ui_route_name
 
     ############################################################
     - namespace: sys
@@ -487,6 +538,13 @@ ui_element:
                   name: open
                   setter: setOpen
                   init: false
+          handlers:
+              handleElementSelected:
+                  type: js/expression
+                  data: props.handleElementSelected
+              handleRouteSelected:
+                  type: js/expression
+                  data: props.handleRouteSelected
           element:
               type: react/element
               name: '@material-ui/core.Box'
@@ -557,11 +615,14 @@ ui_element:
                                     p: 1
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/ElementTree'
+                                      name: 'app-x/builder/UI_Element_Nav'
                                       props:
                                           namespace: sys
                                           ui_name: appxui
                                           ui_deployment: base
+                                          handlers:
+                                              type: js/expression
+                                              data: props.handlers
                         - type: react/element
                           name: '@material-ui/core.ListItem'
                           props:
@@ -607,8 +668,11 @@ ui_element:
                                     p: 1
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/ElementTree'
+                                      name: 'app-x/builder/UI_Element_Nav'
                                       props:
                                           namespace: sys
                                           ui_name: appxui
                                           ui_deployment: base
+                                          handlers:
+                                              type: js/expression
+                                              data: props.handlers

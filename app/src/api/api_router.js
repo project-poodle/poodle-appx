@@ -13,6 +13,25 @@ const { handle_status } = require('./status')
 // let endpoints = []
 
 /**
+ * decode params
+ */
+function decode_params(params) {
+
+  const result = {}
+  Object.keys(params).map(paramKey => {
+    const paramValue = params[paramKey]
+    if (paramValue.startsWith('base64:')) {
+      console.log(paramValue)
+      const decodedValue = Buffer.from(paramValue.substring('base64:'.length), 'base64').toString('utf8')
+      result[paramKey] = decodedValue
+    } else {
+      result[paramKey] = paramValue
+    }
+  })
+  return result
+}
+
+/**
  * get_api_spec
  */
 function get_api_spec(context, req, res) {
@@ -60,7 +79,6 @@ function get_api_spec(context, req, res) {
 
     return api_spec
 }
-
 
 function handle_req(req, res) {
 
@@ -187,6 +205,7 @@ function load_api_router(namespace, app_name, app_deployment) {
 
                 router.get(api_result.api_endpoint, (req, res) => {
 
+                    req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
                     handle_req(req, res)
                 })
@@ -197,6 +216,7 @@ function load_api_router(namespace, app_name, app_deployment) {
             case "post":
                 router.post(api_result.api_endpoint, (req, res) => {
 
+                    req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
                     handle_req(req, res)
                 })
@@ -207,6 +227,7 @@ function load_api_router(namespace, app_name, app_deployment) {
             case "put":
                 router.put(api_result.api_endpoint, (req, res) => {
 
+                    req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
                     handle_req(req, res)
                 })
@@ -217,6 +238,7 @@ function load_api_router(namespace, app_name, app_deployment) {
             case "delete":
                 router.delete(api_result.api_endpoint, (req, res) => {
 
+                    req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
                     handle_req(req, res)
                 })

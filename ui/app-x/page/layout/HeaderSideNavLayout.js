@@ -20,7 +20,7 @@ const HeaderSideNavLayout = (props) => {
       overflow: 'hidden',
       paddingTop: 64,
       [theme.breakpoints.up('md')]: {
-        paddingLeft: 256
+        paddingLeft: 300
       }
     },
     contentContainer: {

@@ -316,13 +316,8 @@ function js_function(js_context, input) {
   return t.arrowFunctionExpression(
     input.params
       ? input.params.map(
-        param => js_process(
-          {
-            ...js_context,
-            JSX_CONTEXT: false
-          },
-          param
-        ))
+          param => t.identifier(param)
+        )
       : [],
     js_block(
       {
@@ -446,7 +441,7 @@ function js_map(js_context, input) {
   }
 
   if (! ('input' in input)) {
-    throw new Error(`ERROR: input.input missing in [js/map] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.children missing in [js/map] [${JSON.stringify(input)}]`)
   }
 
   if (! ('mapper' in input)) {
@@ -459,7 +454,7 @@ function js_map(js_context, input) {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.input
+    input.children
   )
 
   // process mapper expression
@@ -643,7 +638,7 @@ function js_reduce(js_context, input) {
   }
 
   if (! ('input' in input)) {
-    throw new Error(`ERROR: input.input missing in [js/reduce] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.children missing in [js/reduce] [${JSON.stringify(input)}]`)
   }
 
   if (! ('reducer' in input)) {
@@ -660,7 +655,7 @@ function js_reduce(js_context, input) {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.input
+    input.children
   )
 
   // process mapper expression
@@ -857,7 +852,7 @@ function js_filter(js_context, input) {
   }
 
   if (! ('input' in input)) {
-    throw new Error(`ERROR: input.input missing in [js/filter] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.children missing in [js/filter] [${JSON.stringify(input)}]`)
   }
 
   if (! ('filter' in input)) {
@@ -870,7 +865,7 @@ function js_filter(js_context, input) {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.input
+    input.children
   )
 
   // process filter expression
