@@ -27,7 +27,7 @@ _appx_meta:
 # realm
 _realm:
     - realm: "appx"
-      realm_key: "UNHEX(CONCAT(SUBSTRING(PASSWORD(CAST(RAND() * 1000 * 1000 as CHAR)), 2, 32), SUBSTRING(PASSWORD(CAST(RAND() * 1000 as CHAR)), 2, 32)))"
+      realm_key: "UNHEX(CONCAT(SUBSTRING(MD5(CAST(RAND() * 1000 * 1000 as CHAR)), 2, 32), SUBSTRING(MD5(CAST(RAND() * 1000 as CHAR)), 2, 32)))"
       realm_spec:
           comment: "initialize [appx] realm"
 
@@ -36,7 +36,7 @@ _realm:
 _realm_user:
     - realm: "appx"
       username: "{{{MYSQL_CONF.appx_node_user}}}"
-      password: 'PASSWORD("{{{MYSQL_CONF.appx_node_pass}}}")'
+      password: 'MD5("{{{MYSQL_CONF.appx_node_pass}}}")'
       user_spec:
           comment: "initialize admin user: {{{MYSQL_CONF.appx_node_user}}}"
 

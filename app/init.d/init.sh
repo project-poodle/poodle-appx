@@ -96,7 +96,7 @@ fi
 chmod 644 ${LDAP_APPX_FILE}
 
 echo "--------------------"
-eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
+eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED WITH mysql_native_password BY '${appx__init__mysql_node_pass}'"
 if [ $? -ne 0 ]; then
     echo "ERROR: mysql failed to create user: ${appx__init__mysql_node_user} ! --- [/tmp/$$/]"
     exit 1
