@@ -34,6 +34,7 @@ const default_import_maps = {
         "hookrouter",
         "react-router",
         "react-router-dom",
+        "react-hook-form",
         "react-helmet",
         "react-feather",
         "clsx",

@@ -11,6 +11,8 @@ import * as redux from 'redux'
 import * as hookrouter from 'hookrouter'
 import * as reactRouter from 'react-router'
 import * as reactRouterDom from 'react-router-dom'
+// form
+import * as reactHookForm from 'react-hook-form'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
@@ -39,6 +41,7 @@ export default {
   "hookrouter": hookrouter,
   "react-router": reactRouter,
   "react-router-dom": reactRouterDom,
+  "react-hook-form": reactHookForm,
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
   //"@material-ui/core": materialUI,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Box, makeStyles } from '@material-ui/core'
+import { Box, Container, Grid, makeStyles } from '@material-ui/core'
 import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
 import { Layout, Tree } from 'antd'
 const { DirectoryTree } = Tree
@@ -10,6 +10,7 @@ import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-des
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import ReactElementTree from 'app-x/builder/ReactElementTree'
+import PropEditor from 'app-x/builder/PropEditor'
 
 
 const PATH_SEPARATOR = '/'
@@ -27,10 +28,16 @@ const UI_Builder = (props) => {
       width: '100%',
       padding: 0,
     },
-    footerBox: {
+    box: {
       minHeight: 200,
-      // maxHeight: 300
+      height: '100%',
+      minWidth: 300,
       backgroundColor: theme.palette.background.paper,
+      border: 1,
+      borderStyle: 'solid',
+      //borderColor: 'text.secondary',
+      borderColor: theme.palette.divider,
+      m: 1,
     }
   }))()
 
@@ -38,14 +45,24 @@ const UI_Builder = (props) => {
     <Layout className={styles.builder}>
       <Content>Content</Content>
       <Footer className={styles.footer}>
-        <Box className={styles.footerBox}>
-          <ReactElementTree
-            namespace={props.namespace}
-            ui_name={props.ui_name}
-            ui_deployment={props.ui_deployment}
-            ui_element_name={props.ui_element_name}
-          />
-        </Box>
+        <Grid container>
+          <Grid item xs={12} sm={6}>
+            <Box className={styles.box}>
+              <ReactElementTree
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Box className={styles.box}>
+              <PropEditor>
+              </PropEditor>
+            </Box>
+          </Grid>
+        </Grid>
       </Footer>
     </Layout>
   )
