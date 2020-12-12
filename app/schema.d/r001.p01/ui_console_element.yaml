@@ -1,7 +1,7 @@
 ui_element:
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /index
       ui_element_type: html
@@ -13,7 +13,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /AppX
       ui_element_type: react/element
@@ -24,10 +24,6 @@ ui_element:
               type: mui/style
               root:
                   height: "100%"
-              #button:
-              #    margin: "1px"
-              #        #type: js/expression
-              #        #data: "$r('app-x/theme.default').spacing(1)"
           element:
               type: react/element
               name: app-x/app/MUI_theme_redux
@@ -59,7 +55,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /page/landing/Home
       ui_element_type: react/element
@@ -229,7 +225,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /page/auth/Login
       ui_element_type: react/element
@@ -262,7 +258,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /page/auth/SignInForm
       ui_element_type: react/element
@@ -512,7 +508,7 @@ ui_element:
                           default: null
                           children:
                               - condition: states.error.value
-                                data:
+                                result:
                                     type: react/element
                                     name: '@material-ui/core.Grid'
                                     props:
@@ -562,423 +558,191 @@ ui_element:
                                     - type: js/expression
                                       data: new Date().getFullYear()
 
-
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: console
       ui_ver: internal
       ui_element_name: /page/Console
       ui_element_type: react/element
       ui_element_spec:
           styles:
               type: mui/style
-              root:
-                  width: 100%
+              container:
+                  # width: 100%
+                  # alignItems: center
+                  # display: flex
+                  # justifyContent: center
+              box:
+                  display: flex
+                  # flexShrink: 1
+                  # flexDirection: row
+                  flexWrap: wrap
+                  justifyContent: space-evenly
+                  padding:
+                      type: js/expression
+                      data: theme.spacing(6, 4)
+              card:
+                  width: 320
+                  minWidth: 320
+                  maxWidth: 320
+                  margin:
+                      type: js/expression
+                      data: theme.spacing(4, 3)
           states:
-              mobileNav:
+              ui:
                   type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-              builder:
-                  type: react/state
-                  name: data
-                  setter: setData
-                  init:
-                      ui_builder_type: ui_element
-                      ui_element_name: /page/Console
-                      ui_route_name: ''
-          handlers:
-              sideNavHandler:
-                  type: js/function
-                  body: |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
-              handleElementSelected:
-                  type: js/function
-                  params:
-                      - event
-                  body: |
-                      states.builder.setData({
-                          ui_builder_type: 'ui_element',
-                          ui_element_name: event.ui_element_name,
-                          ui_route_name: '',
-                      })
-                      console.log(event)
-                      console.log(states.builder.data)
-              handleRouteSelected:
-                  type: js/function
-                  params:
-                      - event
-                  body: |
-                      states.builder.setData({
-                          ui_builder_type: 'ui_route',
-                          ui_element_name: '',
-                          ui_route_name: event.ui_route_name,
-                      })
+                  name: deployments
+                  setter: setDeployments
+                  init: []
+          snippet:
+              type: js/snippet
+              data: |
+                  $r('app-x/api.get')(
+                      'appx',
+                      '/ui/ui_deployment'
+                  ).then(data => {
+                      states.ui.setDeployments(data)
+                  }).catch(err => {
+                      console.log(err)
+                      // TODO
+                  })
           element:
               type: react/element
-              name: app-x/page/layout/HeaderSideNavLayout
+              name: app-x/page/layout/HeaderLayout
               props:
                   header:
                       type: react/element
-                      name: app-x/page/header/Header_user_sidenav
+                      name: app-x/page/header/Header_user
                       props:
                           appName: appx
-                          title: App Builder
+                          title: App-X
                           titleIcon:
                               type: react/element
-                              name: '@material-ui/icons.ViewQuiltRounded'
+                              name: "@material-ui/icons.ViewQuiltRounded"
                           homeUrl: '/console'
                           loginUrl: '/login'
-                          handlers:
-                              sideNavHandler:
-                                  type: js/expression
-                                  data: handlers.sideNavHandler
-                  sideNav:
-                      type: react/element
-                      name: app-x/page/sideNav/SideDrawer
-                      props:
-                          isMobileNavOpen:
-                              type: js/expression
-                              data: states.mobileNav.open
-                          onMobileClose:
-                              type: js/expression
-                              data: handlers.sideNavHandler
-                      children:
-                          - type: react/element
-                            name: '@material-ui/core.Box'
-                            props:
-                                height: 100%
-                                display: flex
-                                flexDirection: column
-                            children:
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 2
-                                      alignItems: center
-                                      display: flex
-                                      flexDirection: column
-                                  children:
-                                      - type: react/element
-                                        name: 'app-x/router.A'
-                                        props:
-                                            href: /app/account
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.Box'
-                                              props:
-                                                  p: 2
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.Avatar'
-                                                    props:
-                                                        src: /static/images/avatars/avatar_6.png
-                                      - type: react/element
-                                        name: '@material-ui/core.Typography'
-                                        props:
-                                            color: textPrimary
-                                            variant: h6
-                                        children:
-                                            - Katarina Smith
-                                      - type: react/element
-                                        name: '@material-ui/core.Typography'
-                                        props:
-                                            color: textSecondary
-                                            variant: body2
-                                        children:
-                                            - Senior Developer
-                                # divider
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 0
-                                  children:
-                                      - type: react/element
-                                        name: '@material-ui/core.Divider'
-                                # divider
-                                - type: react/element
-                                  name: 'self/nav/appNav'
-                                # divider
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 0
-                                  children:
-                                      - type: react/element
-                                        name: '@material-ui/core.Divider'
-                                # divider
-                                - type: react/element
-                                  name: 'self/nav/uiNav'
-                                  props:
-                                      handlers:
-                                          handleElementSelected:
-                                              type: js/expression
-                                              data: handlers.handleElementSelected
-                                          handleRouteSelected:
-                                              type: js/expression
-                                              data: handlers.handleRouteSelected
               children:
                   - type: react/element
-                    name: app-x/builder/UI_Builder
+                    name: '@material-ui/core.Container'
                     props:
-                        namespace: sys
-                        ui_name: ui
-                        ui_deployment: base
-                        ui_builder_type:
-                            type: js/expression
-                            data: states.builder.data.ui_builder_type
-                        ui_element_name:
-                            type: js/expression
-                            data: states.builder.data.ui_element_name
-                        ui_route_name:
-                            type: js/expression
-                            data: states.builder.data.ui_route_name
-
-    ############################################################
-    - namespace: sys
-      ui_name: ui
-      ui_ver: internal
-      ui_element_name: /nav/appNav
-      ui_element_type: react/element
-      ui_element_spec:
-          styles:
-              type: mui/style
-              root:
-                  width: 100%
-          element:
-              type: react/element
-              name: '@material-ui/core.List'
-              props:
-                  component: nav
-                  aria-labelledby: App Builder
-                  className:
-                      type: js/expression
-                      data: styles.root
-                  subheader:
-                      type: react/element
-                      name: '@material-ui/core.ListSubheader'
-                      props:
-                          component: div
-                          id: nested-list-subheader
-                      children:
-                          - App Builder
-              children:
-                  - type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/dashboard
-                    children:
-                        - type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - type: react/element
-                                      name: '@material-ui/icons.ViewModule'
-                              - type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: Objects
-                  - type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/customers
-                    children:
-                        - type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - type: react/element
-                                      name: '@material-ui/icons.Link'
-                              - type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: Relations
-                  - type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/products
-                    children:
-                        - type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - type: react/element
-                                      name: '@material-ui/icons.VerticalAlignCenter'
-                              - type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: APIs
-
-    ############################################################
-    - namespace: sys
-      ui_name: ui
-      ui_ver: internal
-      ui_element_name: /nav/uiNav
-      ui_element_type: react/element
-      ui_element_spec:
-          styles:
-              type: mui/style
-              root:
-                  width: 100%
-          states:
-              uiElementNav:
-                  type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-              uiRouteNav:
-                  type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-          handlers:
-              handleElementSelected:
-                  type: js/expression
-                  data: props.handleElementSelected
-              handleRouteSelected:
-                  type: js/expression
-                  data: props.handleRouteSelected
-          element:
-              type: react/element
-              name: '@material-ui/core.Box'
-              props:
-                  className:
-                      type: js/expression
-                      data: styles.root
-              children:
-                  - type: react/element
-                    name: '@material-ui/core.List'
-                    props:
-                        component: nav
-                        aria-labelledby: UI Builder
                         className:
                             type: js/expression
-                            data: styles.root
-                        subheader:
-                            type: react/element
-                            name: '@material-ui/core.ListSubheader'
-                            props:
-                                component: div
-                                id: nested-list-subheader
-                            children:
-                                - UI Builder
+                            data: styles.container
                     children:
                         - type: react/element
-                          name: '@material-ui/core.ListItem'
+                          name: '@material-ui/core.Box'
                           props:
-                              button: true
-                              onClick:
+                              className:
                                   type: js/expression
-                                  data: |
-                                      () => {
-                                        states.uiElementNav.setOpen(!states.uiElementNav.open)
-                                      }
+                                  data: styles.box
                           children:
                               - type: react/element
-                                name: '@material-ui/core.ListItemIcon'
+                                name: '@material-ui/core.Card'
+                                props:
+                                    className:
+                                        type: js/expression
+                                        data: styles.card
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/icons.WidgetsOutlined'
+                                      name: '@material-ui/core.CardActionArea'
+                                      children:
+                                          - type: react/element
+                                            name: '@material-ui/core.CardContent'
+                                            children:
+                                                - type: react/element
+                                                  name: '@material-ui/core.Avatar'
+                                                  children:
+                                                      - type: react/element
+                                                        name: '@material-ui/icons.ViewQuiltRounded'
+                                                - type: react/element
+                                                  name: '@material-ui/core.Typography'
+                                                  children:
+                                                      - 'Card #1'
                               - type: react/element
-                                name: '@material-ui/core.ListItemText'
+                                name: '@material-ui/core.Card'
                                 props:
-                                    primary: UI Elements
-                              - type: js/switch
-                                children:
-                                    - condition: 'states.uiElementNav.open'
-                                      data:
-                                          type: react/element
-                                          name: '@material-ui/icons.ExpandLess'
-                                    - condition: '!states.uiElementNav.open'
-                                      data:
-                                          type: react/element
-                                          name: '@material-ui/icons.ExpandMore'
-                        - type: react/element
-                          name: '@material-ui/core.Collapse'
-                          props:
-                              in:
-                                  type: js/expression
-                                  data: |
-                                      states.uiElementNav.open
-                              unmountOnExit: true
-                          children:
-                              - type: react/element
-                                name: '@material-ui/core.Box'
-                                props:
-                                    p: 1
+                                    className:
+                                        type: js/expression
+                                        data: styles.card
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/UI_Element_Nav'
-                                      props:
-                                          namespace: sys
-                                          ui_name: ui
-                                          ui_deployment: base
-                                          handlers:
-                                              type: js/expression
-                                              data: props.handlers
-                        - type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                              onClick:
-                                  type: js/expression
-                                  data: |
-                                      () => {
-                                        states.uiRouteNav.setOpen(!states.uiRouteNav.open)
-                                      }
-                          children:
+                                      name: '@material-ui/core.CardActionArea'
+                                      children:
+                                          - type: react/element
+                                            name: '@material-ui/core.CardContent'
+                                            children:
+                                                - type: react/element
+                                                  name: '@material-ui/core.Avatar'
+                                                  children:
+                                                      - type: react/element
+                                                        name: '@material-ui/icons.ViewQuiltRounded'
+                                                - type: react/element
+                                                  name: '@material-ui/core.Typography'
+                                                  children:
+                                                      - 'Card #2'
                               - type: react/element
-                                name: '@material-ui/core.ListItemIcon'
+                                name: '@material-ui/core.Card'
+                                props:
+                                    className:
+                                        type: js/expression
+                                        data: styles.card
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/icons.AllOutOutlined'
+                                      name: '@material-ui/core.CardActionArea'
+                                      children:
+                                          - type: react/element
+                                            name: '@material-ui/core.CardContent'
+                                            children:
+                                                - type: react/element
+                                                  name: '@material-ui/core.Avatar'
+                                                  children:
+                                                      - type: react/element
+                                                        name: '@material-ui/icons.ViewQuiltRounded'
+                                                - type: react/element
+                                                  name: '@material-ui/core.Typography'
+                                                  children:
+                                                      - 'Card #3'
                               - type: react/element
-                                name: '@material-ui/core.ListItemText'
+                                name: '@material-ui/core.Card'
                                 props:
-                                    primary: UI Routes
-                              - type: js/switch
-                                children:
-                                    - condition: 'states.uiRouteNav.open'
-                                      data:
-                                          type: react/element
-                                          name: '@material-ui/icons.ExpandLess'
-                                    - condition: '!states.uiRouteNav.open'
-                                      data:
-                                          type: react/element
-                                          name: '@material-ui/icons.ExpandMore'
-                        - type: react/element
-                          name: '@material-ui/core.Collapse'
-                          props:
-                              in:
-                                  type: js/expression
-                                  data: |
-                                      states.uiRouteNav.open
-                              unmountOnExit: true
-                          children:
-                              - type: react/element
-                                name: '@material-ui/core.Box'
-                                props:
-                                    p: 1
+                                    className:
+                                        type: js/expression
+                                        data: styles.card
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/UI_Element_Nav'
-                                      props:
-                                          namespace: sys
-                                          ui_name: ui
-                                          ui_deployment: base
-                                          handlers:
-                                              type: js/expression
-                                              data: props.handlers
+                                      name: '@material-ui/core.CardActionArea'
+                                      children:
+                                          - type: react/element
+                                            name: '@material-ui/core.CardContent'
+                                            children:
+                                                - type: react/element
+                                                  name: '@material-ui/core.Avatar'
+                                                  children:
+                                                      - type: react/element
+                                                        name: '@material-ui/icons.ViewQuiltRounded'
+                                                - type: react/element
+                                                  name: '@material-ui/core.Typography'
+                                                  children:
+                                                      - 'Card #4'
+                              - type: react/element
+                                name: '@material-ui/core.Card'
+                                props:
+                                    className:
+                                        type: js/expression
+                                        data: styles.card
+                                children:
+                                    - type: react/element
+                                      name: '@material-ui/core.CardActionArea'
+                                      children:
+                                          - type: react/element
+                                            name: '@material-ui/core.CardContent'
+                                            children:
+                                                - type: react/element
+                                                  name: '@material-ui/core.Avatar'
+                                                  children:
+                                                      - type: react/element
+                                                        name: '@material-ui/icons.ViewQuiltRounded'
+                                                - type: react/element
+                                                  name: '@material-ui/core.Typography'
+                                                  children:
+                                                      - 'Card #5'

@@ -1,0 +1,58 @@
+ui_route:
+    - namespace: sys
+      ui_name: console
+      ui_ver: internal
+      ui_route_name: /
+      ui_route_spec:
+          type: react/element
+          name: self/page/landing/Home
+
+    - namespace: sys
+      ui_name: console
+      ui_ver: internal
+      ui_route_name: /login
+      ui_route_spec:
+          type: react/element
+          name: app-x/page/layout/HeaderLayout
+          props:
+              header:
+                  type: react/element
+                  name: app-x/page/header/Header_plain
+                  props:
+                      title: App-X
+                      titleIcon:
+                          type: react/element
+                          name: "@material-ui/icons.ViewQuiltRounded"
+                      homeUrl: '/'
+          children:
+              - type: react/element
+                name: self/page/auth/Login
+
+    - namespace: sys
+      ui_name: console
+      ui_ver: internal
+      ui_route_name: /404
+      ui_route_spec:
+          type: react/element
+          name: app-x/page/layout/HeaderLayout
+          props:
+              header:
+                  type: react/element
+                  name: app-x/page/header/Header_plain
+                  props:
+                      title: App-X
+                      titleIcon:
+                          type: react/element
+                          name: "@material-ui/icons.ViewQuiltRounded"
+                      homeUrl: '/'
+          children:
+              - type: react/element
+                name: app-x/view/error/NotFoundView
+
+    - namespace: sys
+      ui_name: console
+      ui_ver: internal
+      ui_route_name: /console
+      ui_route_spec:
+          type: react/element
+          name: self/page/Console

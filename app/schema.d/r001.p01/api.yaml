@@ -1188,6 +1188,23 @@ api:
       app_rev: "default"
       obj_name: "ui"
       api_method: "get"
+      api_endpoint: "/ui/ui_app"
+      api_spec:
+          permission: "ui.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "namespace"
+                  - obj: "ui_status"
+                    type: "left"
+          doc:
+              desc: "list all uis"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui"
+      api_method: "get"
       api_endpoint: "/namespace/:namespace/ui"
       api_spec:
           permission: "ui.read"
@@ -1300,6 +1317,25 @@ api:
       app_rev: "default"
       obj_name: "ui_deployment"
       api_method: "get"
+      api_endpoint: "/ui/ui_deployment"
+      api_spec:
+          permission: "ui.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "ui"
+                  - obj: "namespace"
+                  - obj: "ui_deployment_status"
+                    type: "left"
+          doc:
+              desc: "list all ui_deployments"
+    # list by :namespace
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui_deployment"
+      api_method: "get"
       api_endpoint: "/namespace/:namespace/ui_deployment"
       api_spec:
           permission: "ui.read"
@@ -1307,13 +1343,12 @@ api:
               verb: "get"
               join:
                   - obj: "ui"
-                  - obj: "ui_deployment"
                   - obj: "namespace"
                   - obj: "ui_deployment_status"
                     type: "left"
           doc:
               desc: "list ui_deployment for :namespace"
-    # list by :app_name
+    # list by :ui_name
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
@@ -1327,7 +1362,6 @@ api:
               verb: "get"
               join:
                   - obj: "ui"
-                  - obj: "ui_deployment"
                   - obj: "namespace"
                   - obj: "ui_deployment_status"
                     type: "left"
@@ -1347,9 +1381,6 @@ api:
               verb: "get"
               join:
                   - obj: "ui"
-                  - obj: "app_deployment"
-                  - obj: "app_runtime"
-                  - obj: "app"
                   - obj: "namespace"
                   - obj: "ui_deployment_status"
                     type: "left"
@@ -1369,7 +1400,6 @@ api:
               verb: "get"
               join:
                   - obj: "ui"
-                  - obj: "ui_deployment"
                   - obj: "namespace"
                   - obj: "ui_deployment_status"
                     type: "left"

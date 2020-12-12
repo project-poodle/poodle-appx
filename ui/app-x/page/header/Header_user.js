@@ -1,5 +1,4 @@
 import React from 'react'
-// import { useState } from 'react'
 import { connect } from 'react-redux'
 import { A, navigate } from 'app-x/router'
 import PropTypes from 'prop-types'
@@ -22,7 +21,7 @@ import {
 import { logout, me } from 'app-x/api'
 
 
-const Header_user_sidenav = (props) => {
+const Header_user = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {},
@@ -74,17 +73,6 @@ const Header_user_sidenav = (props) => {
 
   self_check()
 
-  // check that userToken exist and is valid, otherwise, navigate to login
-  /*
-  if (!props.reducers
-      || !props.reducers.user
-      || !props.reducers.user.userToken
-      || !props.reducers.user.userToken.token
-      || !props.reducers.user.userToken.username) {
-    navigate(props.loginUrl)
-  }
-  */
-
   // render
   return (
     <AppBar
@@ -92,6 +80,7 @@ const Header_user_sidenav = (props) => {
       elevation={0}
     >
       <Toolbar>
+        { props.prefix }
         <A href={props.homeUrl} className={styles.inline}>
           <Avatar className={styles.avatar}>
             { props.titleIcon }
@@ -101,34 +90,28 @@ const Header_user_sidenav = (props) => {
           </Typography>
         </A>
         <Box flexGrow={1} />
+        { props.content }
         <IconButton
           color="inherit"
           onClick={() => { handleLogout() }}
         >
           <ExitToApp />
         </IconButton>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            onClick={() => {props.handlers.sideNavHandler()}}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Hidden>
+        { props.suffix }
       </Toolbar>
     </AppBar>
   );
 };
 
-Header_user_sidenav.propTypes = {
+Header_user.propTypes = {
   appName: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
   loginUrl: PropTypes.string.isRequired,
-  handlers: PropTypes.shape({
-    sideNavHandler: PropTypes.func.isRequired
-  }),
+  prefix: PropTypes.element,
+  content: PropTypes.element,
+  suffix: PropTypes.element,
   reducers: PropTypes.shape({
     user: PropTypes.shape({
       userToken: PropTypes.object,
@@ -173,5 +156,5 @@ const mapDispatchToProps = (dispatch) => {
   return {}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header_user_sidenav)
-// export default Header_user_sidenav
+export default connect(mapStateToProps, mapDispatchToProps)(Header_user)
+// export default Header_user

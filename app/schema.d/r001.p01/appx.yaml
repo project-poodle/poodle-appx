@@ -333,6 +333,39 @@ app_deployment:
 ######################################################################
 # ui
 ui:
+    # console
+    - namespace: "sys"
+      ui_name: "console"
+      ui_ver: "internal"
+      ui_spec:
+          importMaps:
+              imports:
+                  app-x/: /app-x/
+              libs:
+                  main:
+                      path: /dist/lib/main.js
+                  mui:
+                      path: /dist/lib/mui.js
+                  antd:
+                      path: /dist/lib/antd.js
+          comment: "initialize"
+    # service builder
+    - namespace: "sys"
+      ui_name: "service"
+      ui_ver: "internal"
+      ui_spec:
+          importMaps:
+              imports:
+                  app-x/: /app-x/
+              libs:
+                  main:
+                      path: /dist/lib/main.js
+                  mui:
+                      path: /dist/lib/mui.js
+                  antd:
+                      path: /dist/lib/antd.js
+          comment: "initialize"
+    # ui builder
     - namespace: "sys"
       ui_name: "ui"
       ui_ver: "internal"
@@ -352,6 +385,35 @@ ui:
 ######################################################################
 # ui_deployment
 ui_deployment:
+    # console
+    - namespace: "sys"
+      ui_name: "console"
+      ui_deployment: "base"
+      ui_ver: "internal"
+      ui_deployment_spec:
+          apiMaps:
+              appx:
+                  rootPath: /api/
+                  deployment:
+                      namespace: sys
+                      app_name: appx
+                      app_deployment: base
+          comment: "initialize"
+    # service builder
+    - namespace: "sys"
+      ui_name: "service"
+      ui_deployment: "base"
+      ui_ver: "internal"
+      ui_deployment_spec:
+          apiMaps:
+              appx:
+                  rootPath: /api/
+                  deployment:
+                      namespace: sys
+                      app_name: appx
+                      app_deployment: base
+          comment: "initialize"
+    # ui builder
     - namespace: "sys"
       ui_name: "ui"
       ui_deployment: "base"
