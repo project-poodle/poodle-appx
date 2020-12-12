@@ -350,6 +350,23 @@ ui:
                       path: /dist/lib/antd.js
           description: "App-X Console"
           comment: "initialize"
+    # auth editor
+    - namespace: "sys"
+      ui_name: "auth"
+      ui_ver: "internal"
+      ui_spec:
+          importMaps:
+              imports:
+                  app-x/: /app-x/
+              libs:
+                  main:
+                      path: /dist/lib/main.js
+                  mui:
+                      path: /dist/lib/mui.js
+                  antd:
+                      path: /dist/lib/antd.js
+          description: "App-X Auth Editor"
+          comment: "initialize"
     # service builder
     - namespace: "sys"
       ui_name: "service"
@@ -391,6 +408,20 @@ ui_deployment:
     # console
     - namespace: "sys"
       ui_name: "console"
+      ui_deployment: "base"
+      ui_ver: "internal"
+      ui_deployment_spec:
+          apiMaps:
+              appx:
+                  rootPath: /api/
+                  deployment:
+                      namespace: sys
+                      app_name: appx
+                      app_deployment: base
+          comment: "initialize"
+    # auth editor
+    - namespace: "sys"
+      ui_name: "auth"
       ui_deployment: "base"
       ui_ver: "internal"
       ui_deployment_spec:

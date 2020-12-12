@@ -580,14 +580,14 @@ ui_element:
                   justifyContent: space-evenly
                   padding:
                       type: js/expression
-                      data: theme.spacing(6, 4)
+                      data: theme.spacing(6, 3)
               card:
                   width: 360
                   minWidth: 360
                   maxWidth: 360
                   margin:
                       type: js/expression
-                      data: theme.spacing(4, 3)
+                      data: theme.spacing(3, 2)
               cardContent:
                   margin:
                       type: js/expression
