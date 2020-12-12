@@ -668,19 +668,28 @@ function js_reduce(js_context, input) {
   )
 
   // process mapper expression
-  const reducerExpression = js_process(
-    js_context,
-    input.reducer
-  )
+  const reducerExpression =
+    (typeof input.reducer === 'string')
+      ? _js_parse_expression(js_context, input.reducer)
+      : js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: false
+          },
+          input.reducer
+        )
 
   // process init expression
-  const initExpression = js_process(
-    {
-      ...js_context,
-      JSX_CONTEXT: false
-    },
-    input.init
-  )
+  const initExpression =
+    (typeof input.init === 'string')
+      ? _js_parse_expression(js_context, input.init)
+      : js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: false
+          },
+          input.init
+        )
 
   // process call expression
   const callExpression = t.callExpression(
@@ -879,13 +888,16 @@ function js_filter(js_context, input) {
   )
 
   // process filter expression
-  const filterExpression = js_process(
-    {
-      ...js_context,
-      JSX_CONTEXT: false
-    },
-    input.filter
-  )
+  const filterExpression =
+    (typeof input.filter === 'string')
+      ? _js_parse_expression(js_context, input.filter)
+      : js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: false
+          },
+          input.filter
+        )
 
   // process call expression
   const callExpression = t.callExpression(
@@ -1200,7 +1212,7 @@ function react_element_children(js_context, children) {
     } else {
       return js_process(js_context, row)
     }
-  })
+  }).flat()
 }
 
 // create react state ast
@@ -1269,6 +1281,48 @@ function react_state(js_context, input) {
     []
   )
 }
+
+// create react effect block ast (do not allow return outside of function)
+function react_effect(js_context, input) {
+
+  if (!('type' in input) || input.type !== 'react/effect') {
+    throw new Error(`ERROR: input.type is not [react/effect] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('data' in input)) {
+    throw new Error(`ERROR: input.data missing in [react/effect] [${JSON.stringify(input)}]`)
+  }
+
+  const program = parse(input.data, {
+    // sourceType: 'module', // do not support module here
+    // allowReturnOutsideFunction: true, // allow return in the block statement
+    plugins: [
+      'jsx', // support jsx here
+    ]
+  })
+
+  // register react useEffect
+  reg_js_import(js_context, 'react.useEffect')
+
+  // parse user code snippet
+  _js_parse_snippet(js_context, program)
+
+  return t.callExpression(
+    t.identifier('react.useEffect'),
+    [
+      t.arrowFunctionExpression(
+        [],
+        t.blockStatement(
+          program.program.body
+        )
+      ),
+      t.arrayExpression(
+        []
+      )
+    ]
+  )
+}
+
 
 // create mui style expression
 function mui_style(js_context, input) {
@@ -1571,6 +1625,10 @@ function js_process(js_context, input) {
   } else if (input.type === 'react/state') {
 
     return react_state(js_context, input)
+
+  } else if (input.type === 'react/effect') {
+
+    return react_effect(js_context, input)
 
   } else if (input.type === 'mui/style') {
 

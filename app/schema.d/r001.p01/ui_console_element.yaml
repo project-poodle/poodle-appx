@@ -66,8 +66,8 @@ ui_element:
                   position: fixed
                   bottom: "10%"
                   zIndex: 0
-          snippet:
-              type: js/block
+          effect:
+              type: react/effect
               data: |+
                   // console.log(props)
           element:
@@ -594,8 +594,8 @@ ui_element:
                   name: deployments
                   setter: setDeployments
                   init: []
-          snippet:
-              type: js/block
+          effect:
+              type: react/effect
               data: |
                   $r('app-x/api.get')(
                       'appx',
@@ -610,176 +610,161 @@ ui_element:
                   )
           element:
               type: react/element
-              name: app-x/page/layout/HeaderLayout
+              name: '@material-ui/core.Container'
               props:
-                  header:
-                      type: react/element
-                      name: app-x/page/header/Header_user
-                      props:
-                          appName: appx
-                          title: App-X
-                          titleIcon:
-                              type: react/element
-                              name: "@material-ui/icons.ViewQuiltRounded"
-                          homeUrl: '/console'
-                          loginUrl: '/login'
+                  className:
+                      type: js/expression
+                      data: styles.container
               children:
                   - type: react/element
-                    name: '@material-ui/core.Container'
+                    name: '@material-ui/core.Box'
                     props:
                         className:
                             type: js/expression
-                            data: styles.container
+                            data: styles.box
                     children:
+                        - type: js/map
+                          data:
+                              type: js/filter
+                              data:
+                                  type: js/expression
+                                  data: states.ui.deployments
+                              filter: |
+                                  !(item.namespace == 'sys' && item.ui_name == 'console')
+                          result:
+                              type: react/element
+                              name: '@material-ui/core.Card'
+                              props:
+                                  className:
+                                      type: js/expression
+                                      data: styles.card
+                              children:
+                                  - type: react/element
+                                    name: '@material-ui/core.CardActionArea'
+                                    children:
+                                        - type: react/element
+                                          name: '@material-ui/core.CardContent'
+                                          children:
+                                              - type: react/element
+                                                name: '@material-ui/core.Avatar'
+                                                children:
+                                                    - type: react/element
+                                                      name: '@material-ui/icons.ViewQuiltRounded'
+                                              - type: react/element
+                                                name: '@material-ui/core.Typography'
+                                                children:
+                                                    - type: js/expression
+                                                      data: item.ui_name
+                                                    - type: js/expression
+                                                      data: item.ui_deployment
+                        # hard coded result
                         - type: react/element
-                          name: '@material-ui/core.Box'
+                          name: '@material-ui/core.Card'
                           props:
                               className:
                                   type: js/expression
-                                  data: styles.box
+                                  data: styles.card
                           children:
-                              - type: js/map
-                                data:
-                                    type: js/filter
-                                    data:
-                                        type: js/expression
-                                        data: states.ui.deployments
-                                    filter: |
-                                        !(item.namespace == 'sys' && item.ui_name == 'console')
-                                result:
-                                    type: react/element
-                                    name: '@material-ui/core.Card'
-                                    props:
-                                        className:
-                                            type: js/expression
-                                            data: styles.card
-                                    children:
-                                        - type: react/element
-                                          name: '@material-ui/core.CardActionArea'
-                                          children:
-                                              - type: react/element
-                                                name: '@material-ui/core.CardContent'
-                                                children:
-                                                    - type: react/element
-                                                      name: '@material-ui/core.Avatar'
-                                                      children:
-                                                          - type: react/element
-                                                            name: '@material-ui/icons.ViewQuiltRounded'
-                                                    - type: react/element
-                                                      name: '@material-ui/core.Typography'
-                                                      children:
-                                                          - type: js/expression
-                                                            data: item.ui_name
-                                                          - type: js/expression
-                                                            data: item.ui_deployment
-                              # hard coded result
                               - type: react/element
-                                name: '@material-ui/core.Card'
-                                props:
-                                    className:
-                                        type: js/expression
-                                        data: styles.card
+                                name: '@material-ui/core.CardActionArea'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/core.CardActionArea'
+                                      name: '@material-ui/core.CardContent'
                                       children:
                                           - type: react/element
-                                            name: '@material-ui/core.CardContent'
+                                            name: '@material-ui/core.Avatar'
                                             children:
                                                 - type: react/element
-                                                  name: '@material-ui/core.Avatar'
-                                                  children:
-                                                      - type: react/element
-                                                        name: '@material-ui/icons.ViewQuiltRounded'
-                                                - type: react/element
-                                                  name: '@material-ui/core.Typography'
-                                                  children:
-                                                      - 'Card #1'
+                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                          - type: react/element
+                                            name: '@material-ui/core.Typography'
+                                            children:
+                                                - 'Card #1'
+                        - type: react/element
+                          name: '@material-ui/core.Card'
+                          props:
+                              className:
+                                  type: js/expression
+                                  data: styles.card
+                          children:
                               - type: react/element
-                                name: '@material-ui/core.Card'
-                                props:
-                                    className:
-                                        type: js/expression
-                                        data: styles.card
+                                name: '@material-ui/core.CardActionArea'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/core.CardActionArea'
+                                      name: '@material-ui/core.CardContent'
                                       children:
                                           - type: react/element
-                                            name: '@material-ui/core.CardContent'
+                                            name: '@material-ui/core.Avatar'
                                             children:
                                                 - type: react/element
-                                                  name: '@material-ui/core.Avatar'
-                                                  children:
-                                                      - type: react/element
-                                                        name: '@material-ui/icons.ViewQuiltRounded'
-                                                - type: react/element
-                                                  name: '@material-ui/core.Typography'
-                                                  children:
-                                                      - 'Card #2'
+                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                          - type: react/element
+                                            name: '@material-ui/core.Typography'
+                                            children:
+                                                - 'Card #2'
+                        - type: react/element
+                          name: '@material-ui/core.Card'
+                          props:
+                              className:
+                                  type: js/expression
+                                  data: styles.card
+                          children:
                               - type: react/element
-                                name: '@material-ui/core.Card'
-                                props:
-                                    className:
-                                        type: js/expression
-                                        data: styles.card
+                                name: '@material-ui/core.CardActionArea'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/core.CardActionArea'
+                                      name: '@material-ui/core.CardContent'
                                       children:
                                           - type: react/element
-                                            name: '@material-ui/core.CardContent'
+                                            name: '@material-ui/core.Avatar'
                                             children:
                                                 - type: react/element
-                                                  name: '@material-ui/core.Avatar'
-                                                  children:
-                                                      - type: react/element
-                                                        name: '@material-ui/icons.ViewQuiltRounded'
-                                                - type: react/element
-                                                  name: '@material-ui/core.Typography'
-                                                  children:
-                                                      - 'Card #3'
+                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                          - type: react/element
+                                            name: '@material-ui/core.Typography'
+                                            children:
+                                                - 'Card #3'
+                        - type: react/element
+                          name: '@material-ui/core.Card'
+                          props:
+                              className:
+                                  type: js/expression
+                                  data: styles.card
+                          children:
                               - type: react/element
-                                name: '@material-ui/core.Card'
-                                props:
-                                    className:
-                                        type: js/expression
-                                        data: styles.card
+                                name: '@material-ui/core.CardActionArea'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/core.CardActionArea'
+                                      name: '@material-ui/core.CardContent'
                                       children:
                                           - type: react/element
-                                            name: '@material-ui/core.CardContent'
+                                            name: '@material-ui/core.Avatar'
                                             children:
                                                 - type: react/element
-                                                  name: '@material-ui/core.Avatar'
-                                                  children:
-                                                      - type: react/element
-                                                        name: '@material-ui/icons.ViewQuiltRounded'
-                                                - type: react/element
-                                                  name: '@material-ui/core.Typography'
-                                                  children:
-                                                      - 'Card #4'
+                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                          - type: react/element
+                                            name: '@material-ui/core.Typography'
+                                            children:
+                                                - 'Card #4'
+                        - type: react/element
+                          name: '@material-ui/core.Card'
+                          props:
+                              className:
+                                  type: js/expression
+                                  data: styles.card
+                          children:
                               - type: react/element
-                                name: '@material-ui/core.Card'
-                                props:
-                                    className:
-                                        type: js/expression
-                                        data: styles.card
+                                name: '@material-ui/core.CardActionArea'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/core.CardActionArea'
+                                      name: '@material-ui/core.CardContent'
                                       children:
                                           - type: react/element
-                                            name: '@material-ui/core.CardContent'
+                                            name: '@material-ui/core.Avatar'
                                             children:
                                                 - type: react/element
-                                                  name: '@material-ui/core.Avatar'
-                                                  children:
-                                                      - type: react/element
-                                                        name: '@material-ui/icons.ViewQuiltRounded'
-                                                - type: react/element
-                                                  name: '@material-ui/core.Typography'
-                                                  children:
-                                                      - 'Card #5'
+                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                          - type: react/element
+                                            name: '@material-ui/core.Typography'
+                                            children:
+                                                - 'Card #5'
