@@ -348,6 +348,7 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+          description: "App-X Console"
           comment: "initialize"
     # service builder
     - namespace: "sys"
@@ -364,6 +365,7 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+          description: "App-X Service Builder"
           comment: "initialize"
     # ui builder
     - namespace: "sys"
@@ -380,6 +382,7 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+          description: "App-X UI Builder"
           comment: "initialize"
 
 ######################################################################
