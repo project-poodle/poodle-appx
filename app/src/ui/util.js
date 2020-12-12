@@ -396,8 +396,8 @@ function js_switch(js_context, input) {
     if (! ('condition' in child)) {
       throw new Error(`ERROR: input child missing [condition] [${JSON.stringify(child)}]`)
     }
-    if (! ('data' in child)) {
-      throw new Error(`ERROR: input child missing [data] [${JSON.stringify(child)}]`)
+    if (! ('result' in child)) {
+      throw new Error(`ERROR: input child missing [result] [${JSON.stringify(child)}]`)
     }
     // stack if/else statement
     ifElseStatements = t.ifStatement(
@@ -408,7 +408,7 @@ function js_switch(js_context, input) {
             ...js_context,
             JSX_CONTEXT: false
           },
-          child.data
+          child.result
         )
       ),
       ifElseStatements
@@ -446,30 +446,27 @@ function js_map(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('input' in input)) {
-    throw new Error(`ERROR: input.children missing in [js/map] [${JSON.stringify(input)}]`)
+  if (! ('data' in input)) {
+    throw new Error(`ERROR: input.data missing in [js/map] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('mapper' in input)) {
-    throw new Error(`ERROR: input.mapper missing in [js/map] [${JSON.stringify(input)}]`)
+  if (! ('result' in input)) {
+    throw new Error(`ERROR: input.result missing in [js/map] [${JSON.stringify(input)}]`)
   }
 
   // process input expression
-  const inputExpression = js_process(
+  const dataExpression = js_process(
     {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.children
+    input.data
   )
 
   // process mapper expression
-  const mapperExpression = js_process(
-    {
-      ...js_context,
-      JSX_CONTEXT: false
-    },
-    input.mapper
+  const resultExpression = js_process(
+    js_context,
+    input.result
   )
 
   // process call expression
@@ -484,8 +481,8 @@ function js_map(js_context, input) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier('input'),
-                inputExpression
+                t.identifier('data'),
+                dataExpression
               )
             ]
           ),
@@ -494,11 +491,11 @@ function js_map(js_context, input) {
             // !input (input is null or undefined)
             t.unaryExpression(
               '!',
-              t.identifier(input)
+              t.identifier('data')
             ),
             // return null
             t.returnStatement(
-              t.nullLiteral
+              t.nullLiteral()
             ),
             // else if
             t.ifStatement(
@@ -508,29 +505,33 @@ function js_map(js_context, input) {
                   t.identifier('Array'),
                   t.identifier('isArray')
                 ),
-                t.identifier('input')
+                [
+                  t.identifier('data')
+                ]
               ),
               // return input.map((item, key) => { ... })
               t.returnStatement(
                 t.callExpression(
                   t.memberExpression(
-                    t.identifier('input'),
+                    t.identifier('data'),
                     t.identifier('map')
                   ),
-                  t.arrowFunctionExpression(
-                    [
-                      t.identifier('item'),
-                      t.identifier('key')
-                    ],
-                    t.blockStatement(
+                  [
+                    t.arrowFunctionExpression(
                       [
-                        // return ...mapper
-                        t.returnStatement(
-                          mapperExpression
-                        )
-                      ]
+                        t.identifier('item'),
+                        t.identifier('key')
+                      ],
+                      t.blockStatement(
+                        [
+                          // return ...mapper
+                          t.returnStatement(
+                            resultExpression
+                          )
+                        ]
+                      )
                     )
-                  )
+                  ]
                 )
               ),
               // else if
@@ -540,30 +541,32 @@ function js_map(js_context, input) {
                   "===",
                   t.unaryExpression(
                     "typeof",
-                    t.identifier('input')
+                    t.identifier('data')
                   ),
                   t.stringLiteral('object')
                 ),
                 t.blockStatement(
                   [
                     // Object.keys(input).map(key => { ... })
-                    t.callExpression(
-                      t.memberExpression(
-                        t.callExpression(
-                          t.memberExpression(
-                            t.identifier('Object'),
-                            t.identifier('keys')
+                    t.returnStatement(
+                      t.callExpression(
+                        t.memberExpression(
+                          t.callExpression(
+                            t.memberExpression(
+                              t.identifier('Object'),
+                              t.identifier('keys')
+                            ),
+                            [
+                              t.identifier('data'),
+                            ]
                           ),
-                          [
-                            t.identifier('input'),
-                          ]
+                          t.identifier('map')
                         ),
-                        t.identifier('map')
-                      ),
-                      [
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('key'),
+                        [
+                          t.arrowFunctionExpression(
+                            [
+                              t.identifier('key')
+                            ],
                             t.blockStatement(
                               [
                                 // const item = input[key]
@@ -573,7 +576,7 @@ function js_map(js_context, input) {
                                     t.variableDeclarator(
                                       t.identifier('item'),
                                       t.memberExpression(
-                                        t.identifier('input'),
+                                        t.identifier('data'),
                                         t.identifier('key'),
                                         computed=true
                                       )
@@ -582,14 +585,14 @@ function js_map(js_context, input) {
                                 ),
                                 // return ...mapper
                                 t.returnStatement(
-                                  mapperExpression
+                                  resultExpression
                                 )
                               ]
                             )
-                          ]
-                        )
-                      ]
-                    ),
+                          )
+                        ]
+                      )
+                    )
                   ]
                 ),
                 // else
@@ -599,19 +602,19 @@ function js_map(js_context, input) {
                     t.identifier('Error'),
                     [
                       t.binaryExpression(
-                        '+'.
+                        '+',
                         t.stringLiteral(
-                          'ERROR: mapper input is neither Array nor Object ['
+                          'ERROR: mapper input data is neither Array nor Object ['
                         ),
                         t.binaryExpression(
                           '+',
                           t.parenthesizedExpression(
                             t.unaryExpression(
                               'typeof',
-                              t.identifier(input)
+                              t.identifier('data')
                             )
                           ),
-                          ']'
+                          t.stringLiteral(']')
                         )
                       )
                     ]
@@ -643,8 +646,8 @@ function js_reduce(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('input' in input)) {
-    throw new Error(`ERROR: input.children missing in [js/reduce] [${JSON.stringify(input)}]`)
+  if (! ('data' in input)) {
+    throw new Error(`ERROR: input.data missing in [js/reduce] [${JSON.stringify(input)}]`)
   }
 
   if (! ('reducer' in input)) {
@@ -656,20 +659,17 @@ function js_reduce(js_context, input) {
   }
 
   // process input expression
-  const inputExpression = js_process(
+  const dataExpression = js_process(
     {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.children
+    input.data
   )
 
   // process mapper expression
   const reducerExpression = js_process(
-    {
-      ...js_context,
-      JSX_CONTEXT: false
-    },
+    js_context,
     input.reducer
   )
 
@@ -694,8 +694,8 @@ function js_reduce(js_context, input) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier('input'),
-                inputExpression
+                t.identifier('data'),
+                dataExpression
               )
             ]
           ),
@@ -704,7 +704,7 @@ function js_reduce(js_context, input) {
             // !input (input is null or undefined)
             t.unaryExpression(
               '!',
-              t.identifier(input)
+              t.identifier('data')
             ),
             // return null
             t.returnStatement(
@@ -718,13 +718,15 @@ function js_reduce(js_context, input) {
                   t.identifier('Array'),
                   t.identifier('isArray')
                 ),
-                t.identifier('input')
+                [
+                  t.identifier('data')
+                ]
               ),
               // return input.map((item, key) => { ... })
               t.returnStatement(
                 t.callExpression(
                   t.memberExpression(
-                    t.identifier('input'),
+                    t.identifier('data'),
                     t.identifier('reduce')
                   ),
                   t.arrowFunctionExpression(
@@ -752,58 +754,60 @@ function js_reduce(js_context, input) {
                   "===",
                   t.unaryExpression(
                     "typeof",
-                    t.identifier('input')
+                    t.identifier('data')
                   ),
                   t.stringLiteral('object')
                 ),
                 t.blockStatement(
                   [
                     // Object.keys(input).map(key => { ... })
-                    t.callExpression(
-                      t.memberExpression(
-                        t.callExpression(
-                          t.memberExpression(
-                            t.identifier('Object'),
-                            t.identifier('keys')
-                          ),
-                          [
-                            t.identifier('input'),
-                          ]
-                        ),
-                        t.identifier('reduce')
-                      ),
-                      [
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('result'),
-                            t.identifier('key')
-                          ],
-                          t.blockStatement(
+                    t.returnStatement(
+                      t.callExpression(
+                        t.memberExpression(
+                          t.callExpression(
+                            t.memberExpression(
+                              t.identifier('Object'),
+                              t.identifier('keys')
+                            ),
                             [
-                              // const item = input[key]
-                              t.variableDeclaration(
-                                'const',
-                                [
-                                  t.variableDeclarator(
-                                    t.identifier('item'),
-                                    t.memberExpression(
-                                      t.identifier('input'),
-                                      t.identifier('key'),
-                                      computed=true
-                                    )
-                                  )
-                                ]
-                              ),
-                              // return ...reducer
-                              t.returnStatement(
-                                reduceExpression
-                              )
+                              t.identifier('data'),
                             ]
-                          )
+                          ),
+                          t.identifier('reduce')
                         ),
-                        initExpression
-                      ]
-                    ),
+                        [
+                          t.arrowFunctionExpression(
+                            [
+                              t.identifier('result'),
+                              t.identifier('key')
+                            ],
+                            t.blockStatement(
+                              [
+                                // const item = input[key]
+                                t.variableDeclaration(
+                                  'const',
+                                  [
+                                    t.variableDeclarator(
+                                      t.identifier('item'),
+                                      t.memberExpression(
+                                        t.identifier('input'),
+                                        t.identifier('key'),
+                                        computed=true
+                                      )
+                                    )
+                                  ]
+                                ),
+                                // return ...reducer
+                                t.returnStatement(
+                                  reduceExpression
+                                )
+                              ]
+                            )
+                          ),
+                          initExpression
+                        ]
+                      )
+                    )
                   ]
                 ),
                 // else
@@ -813,19 +817,19 @@ function js_reduce(js_context, input) {
                     t.identifier('Error'),
                     [
                       t.binaryExpression(
-                        '+'.
+                        '+',
                         t.stringLiteral(
-                          'ERROR: reducer input is neither Array nor Object ['
+                          'ERROR: reducer input data is neither Array nor Object ['
                         ),
                         t.binaryExpression(
                           '+',
                           t.parenthesizedExpression(
                             t.unaryExpression(
                               'typeof',
-                              t.identifier(input)
+                              t.identifier('data')
                             )
                           ),
-                          ']'
+                          t.stringLiteral(']')
                         )
                       )
                     ]
@@ -857,8 +861,8 @@ function js_filter(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('input' in input)) {
-    throw new Error(`ERROR: input.children missing in [js/filter] [${JSON.stringify(input)}]`)
+  if (! ('data' in input)) {
+    throw new Error(`ERROR: input.data missing in [js/filter] [${JSON.stringify(input)}]`)
   }
 
   if (! ('filter' in input)) {
@@ -866,12 +870,12 @@ function js_filter(js_context, input) {
   }
 
   // process input expression
-  const inputExpression = js_process(
+  const dataExpression = js_process(
     {
       ...js_context,
       JSX_CONTEXT: false
     },
-    input.children
+    input.data
   )
 
   // process filter expression
@@ -895,8 +899,8 @@ function js_filter(js_context, input) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier('input'),
-                inputExpression
+                t.identifier('data'),
+                dataExpression
               )
             ]
           ),
@@ -905,7 +909,7 @@ function js_filter(js_context, input) {
             // !input (input is null or undefined)
             t.unaryExpression(
               '!',
-              t.identifier(input)
+              t.identifier('data')
             ),
             // return null
             t.returnStatement(
@@ -919,29 +923,33 @@ function js_filter(js_context, input) {
                   t.identifier('Array'),
                   t.identifier('isArray')
                 ),
-                t.identifier('input')
+                [
+                  t.identifier('data')
+                ]
               ),
               // return input.map((item, key) => { ... })
               t.returnStatement(
                 t.callExpression(
                   t.memberExpression(
-                    t.identifier('input'),
+                    t.identifier('data'),
                     t.identifier('filter')
                   ),
-                  t.arrowFunctionExpression(
-                    [
-                      t.identifier('item'),
-                      t.identifier('key')
-                    ],
-                    t.blockStatement(
+                  [
+                    t.arrowFunctionExpression(
                       [
-                        // return ...filter
-                        t.returnStatement(
-                          filterExpression
-                        )
-                      ]
+                        t.identifier('item'),
+                        t.identifier('key')
+                      ],
+                      t.blockStatement(
+                        [
+                          // return ...filter
+                          t.returnStatement(
+                            filterExpression
+                          )
+                        ]
+                      )
                     )
-                  )
+                  ]
                 )
               ),
               // else if
@@ -951,30 +959,32 @@ function js_filter(js_context, input) {
                   "===",
                   t.unaryExpression(
                     "typeof",
-                    t.identifier('input')
+                    t.identifier('data')
                   ),
                   t.stringLiteral('object')
                 ),
                 t.blockStatement(
                   [
                     // Object.keys(input).map(key => { ... })
-                    t.callExpression(
-                      t.memberExpression(
-                        t.callExpression(
-                          t.memberExpression(
-                            t.identifier('Object'),
-                            t.identifier('keys')
+                    t.returnStatement(
+                      t.callExpression(
+                        t.memberExpression(
+                          t.callExpression(
+                            t.memberExpression(
+                              t.identifier('Object'),
+                              t.identifier('keys')
+                            ),
+                            [
+                              t.identifier('input'),
+                            ]
                           ),
-                          [
-                            t.identifier('input'),
-                          ]
+                          t.identifier('filter')
                         ),
-                        t.identifier('filter')
-                      ),
-                      [
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('key'),
+                        [
+                          t.arrowFunctionExpression(
+                            [
+                              t.identifier('key'),
+                            ],
                             t.blockStatement(
                               [
                                 // const item = input[key]
@@ -984,7 +994,7 @@ function js_filter(js_context, input) {
                                     t.variableDeclarator(
                                       t.identifier('item'),
                                       t.memberExpression(
-                                        t.identifier('input'),
+                                        t.identifier('data'),
                                         t.identifier('key'),
                                         computed=true
                                       )
@@ -997,10 +1007,10 @@ function js_filter(js_context, input) {
                                 )
                               ]
                             )
-                          ]
-                        )
-                      ]
-                    ),
+                          )
+                        ]
+                      )
+                    )
                   ]
                 ),
                 // else
@@ -1010,19 +1020,19 @@ function js_filter(js_context, input) {
                     t.identifier('Error'),
                     [
                       t.binaryExpression(
-                        '+'.
+                        '+',
                         t.stringLiteral(
-                          'ERROR: filter input is neither Array nor Object ['
+                          'ERROR: filter input data is neither Array nor Object ['
                         ),
                         t.binaryExpression(
                           '+',
                           t.parenthesizedExpression(
                             t.unaryExpression(
                               'typeof',
-                              t.identifier(input)
+                              t.identifier('data')
                             )
                           ),
-                          ']'
+                          t.stringLiteral(']')
                         )
                       )
                     ]
@@ -1521,6 +1531,10 @@ function js_process(js_context, input) {
     return js_call(js_context, input)
 
   } else if (input.type === 'js/switch') {
+
+    return js_switch(js_context, input)
+
+  } else if (input.type === 'js/iterate') {
 
     return js_switch(js_context, input)
 
