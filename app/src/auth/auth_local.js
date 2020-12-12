@@ -16,7 +16,7 @@ function findLocalUserWithPass(realm, username, password, table, fields) {
                 WHERE
                     ${fields.realm}=?
                     AND ${fields.username}=?
-                    AND ${fields.password}=MD5(?)
+                    AND ${fields.password}=SHA2(?, 256)
                     AND deleted=0`
 
     // console.log(sql, [realm, username, password])

@@ -114,14 +114,14 @@ CHARACTER SET utf8 COLLATE utf8_bin;
 -- realm to app mapping --
 CREATE TABLE `{{{global.schema_prefix}}}`.`_realm_app` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
-    `realm`                 VARCHAR(32)             NOT NULL,
     `namespace`             VARCHAR(32)             NOT NULL,
     `app_name`              VARCHAR(32)             NOT NULL,
+    `realm`                 VARCHAR(32)             NOT NULL,
     `realm_app_spec`        JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`realm`, `namespace`, `app_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `app_name`),
     PRIMARY KEY (`id`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
@@ -728,19 +728,20 @@ INSERT INTO
 INSERT INTO
     `{{{global.schema_prefix}}}`.`_realm_app`
     (
-        `realm`,
         `namespace`,
         `app_name`,
+        `realm`,
         `realm_app_spec`
     )
     VALUES
     (
-        '{{{realm}}}',
         '{{{namespace}}}',
         '{{{app_name}}}',
+        '{{{realm}}}',
         {{#realm_app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_app_spec}}
     )
     ON DUPLICATE KEY UPDATE
+        realm=values(realm),
         realm_app_spec=VALUES(realm_app_spec);
 {{/.}}
 {{/_realm_app}}

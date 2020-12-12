@@ -49,10 +49,13 @@ app.use(session({
 */
 
 //////////////////////////////////////////////////
-// initialize authenticator --- Note: perform this step only after db_pool is initialized
-const { authenticator } = require("./src/auth")
+// initialize auth_dispatcher and authenticator --- Note: perform this step only after db_pool is initialized
+const { auth_dispatcher, authenticator } = require("./src/auth")
 ////app.use(passport.initialize())
 ////app.use(passport.session())
+
+app.use('/auth', bodyParser.json())
+app.use('/auth', auth_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
@@ -71,16 +74,19 @@ app.use('/ui', ui_dispatcher)
 // static files
 const rootDir = path.join(__dirname, '../ui/')
 app.use('/',
-    express.static(rootDir),
     (req, res, next) => {
+        // console.log(req.url)
         let url_comps = req.url.split('/')
-        //console.log(url_comps)
-        if (url_comps.length > 1 && fs.existsSync(path.join(rootDir, url_comps[1]))) {
+        // console.log(url_comps)
+        if (req.url === '/') {
+          res.status(301).redirect('/ui/sys/console/base/')
+        } else if (url_comps.length > 1 && fs.existsSync(path.join(rootDir, url_comps[1]))) {
             next()
         } else {
-            res.type('html').sendFile(path.join(rootDir, 'index.html'))
+          res.status(301).redirect('/ui/sys/console/base/')
         }
-    }
+    },
+    express.static(rootDir)
 )
 
 //////////////////////////////////////////////////
