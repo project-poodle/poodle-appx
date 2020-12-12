@@ -275,13 +275,13 @@ ui_element:
                   position: fixed
                   top: 0
                   right: 0
-                  width: 400
+                  width: 432
                   margin:
                       type: js/expression
-                      data: theme.spacing(12, 5)
+                      data: theme.spacing(12, 3)
                   padding:
                       type: js/expression
-                      data: theme.spacing(6, 2)
+                      data: theme.spacing(6, 3)
                   display: flex
                   flexDirection: column
                   alignItems: center
