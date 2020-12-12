@@ -1,4 +1,5 @@
-import React from 'react'
+import _ from 'lodash'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { A, navigate } from 'app-x/router'
 import PropTypes from 'prop-types'
@@ -38,40 +39,54 @@ const Header_user = (props) => {
   }));
 
   function handleLogout() {
-    logout(
-      props.appName,
-      (res) => {
-        navigate(props.loginUrl)
-      },
-      (err) => {
-        // TODO
-        console.log(err.stack)
-      }
-    )
+    Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+      Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
+        logout(
+          props.realm,
+          (res) => {
+            navigate(props.loginUrl)
+          },
+          (err) => {
+            // TODO
+            console.log(err.stack)
+          }
+        )
+      })
+    })
   }
 
   const styles = useStyles()
 
-  function self_check() {
-    me(props.appName,
-      (data) => {
-        console.log({
-          ...data,
-          t: new Date()
-        })
-        // recurring check if successful
-        //setTimeout(
-        //  self_check,
-        //  Math.floor((Math.random() * 60) + 120) * 1000
-        //)
-      },
-      (error) => {
-        navigate(props.loginUrl)
-      }
-    )
-  }
+  useEffect(() => {
+    function self_check(namespace, app_name) {
+      me(
+        namespace,
+        app_name,
+        (data) => {
+          console.log({
+            ...data,
+            t: new Date()
+          })
+          // recurring check if successful
+          //setTimeout(
+          //  self_check,
+          //  Math.floor((Math.random() * 60) + 120) * 1000
+          //)
+        },
+        (error) => {
+          navigate(props.loginUrl)
+        }
+      )
+    }
 
-  self_check()
+    Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+      Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
+        if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
+          self_check(namespace, app_name)
+        }
+      })
+    })
+  }, [])
 
   // render
   return (
@@ -104,7 +119,6 @@ const Header_user = (props) => {
 };
 
 Header_user.propTypes = {
-  appName: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
@@ -114,41 +128,63 @@ Header_user.propTypes = {
   suffix: PropTypes.element,
   reducers: PropTypes.shape({
     user: PropTypes.shape({
-      userToken: PropTypes.object,
-      userInfo: PropTypes.object
+      realm: PropTypes.string,
+      username: PropTypes.string,
+      token: PropTypes.string
+    }),
+    role: PropTypes.shape({
+      namespace: PropTypes.string,
+      app_name: PropTypes.string,
+      realm: PropTypes.string,
+      username: PropTypes.string,
+      data: PropTypes.object
     })
-  })
+  }),
+  realm: PropTypes.string,
 }
 
 // state to props
 const mapStateToProps = (state, ownProps) => {
   //console.log(state)
   //console.log(ownProps)
-  const app_name = ownProps.appName
-  const userReducer = state.userReducer[app_name]
 
-  const userState = {}
-  if ('userToken' in userState) {
-    userState.userToken = userReducer.userToken
-  }
-  if ('userInfo' in userState) {
-    userState.userInfo = userReducer.userInfo
+  const updateState = {
+    reducers: {
+      user: ownProps.reducers && ownProps.reducers.user ? ownProps.reducers.user : {},
+      role: ownProps.reducers && ownProps.reducers.role ? ownProps.reducers.role : {}
+    },
+    realm: ownProps.realm
   }
 
-  let updateState = ownProps.reducers
-    ? {
-        reducers: {
-          ...ownProps.reducers,
-          user: userState // update user from existing props
-        }
+  // update role reducers
+  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+    Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
+      if (! (namespace in updateState.reducers.role)) {
+        updateState.reducers.role[namespace] = {}
       }
-    : {
-        reducers: {
-          user: userState
+      if (namespace in state.roleReducer && app_name in state.roleReducer[namespace]) {
+        updateState.reducers.role[namespace][app_name] = {
+          namespace: namespace,
+          app_name: app_name,
+          realm: state.roleReducer[namespace][app_name].realm,
+          username: state.roleReducer[namespace][app_name].username,
+          data: _.cloneDeep(state.roleReducer[namespace][app_name].username),
         }
+        // update realm
+        updateState.realm = state.roleReducer[namespace][app_name].realm
       }
+    })
+  })
 
-  return userState
+  // update user reducers
+  if (updateState.realm in state.userReducer) {
+    updateState.reducers.user.realm = state.userReducer[updateState.realm].realm
+    updateState.reducers.user.username = state.userReducer[updateState.realm].username
+    updateState.reducers.user.token = state.userReducer[updateState.realm].token
+  }
+
+  // return updateState
+  return updateState
 }
 
 // dispatch to props

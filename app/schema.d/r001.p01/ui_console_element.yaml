@@ -350,16 +350,23 @@ ui_element:
                   body: |
                       event.preventDefault()
                       $r('app-x/api.login')(
-                          'appx',
+                          'core',
                           states.username.value,
                           states.password.value,
                           res => {
-                              // TODO
                               // console.log(res)
+                              Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+                                  Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
+                                      if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
+                                          // console.log(namespace, app_name)
+                                          $r('app-x/api.me')(
+                                              namespace,
+                                              app_name
+                                          )
+                                      }
+                                  })
+                              })
                               $r('app-x/router.navigate')(props.consoleUrl)
-                              $r('app-x/api.me')(
-                                  'appx'
-                              )
                           },
                           err => {
                               // TODO
@@ -609,6 +616,7 @@ ui_element:
               type: react/effect
               data: |
                   $r('app-x/api.get')(
+                      'sys',
                       'appx',
                       '/ui/ui_deployment',
                       data => {

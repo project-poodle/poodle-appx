@@ -195,7 +195,12 @@ function loginUserWithPass(req, res) {
 
                 // console.log(sql, [realm, token, username, JSON.stringify(token_spec)])
                 db.query_sync(sql, [realm, token, username, JSON.stringify(token_spec)])
-                res.status(200).json({status: 'ok', realm: realm, username: username, token: token})
+                res.status(200).json({
+                    status: 'ok',
+                    realm: realm,
+                    username: username,
+                    token: token
+                })
             })
 
         } else {
@@ -239,7 +244,12 @@ function logoutUser(req, res) {
         let sql = `DELETE FROM _realm_token WHERE realm=? AND username=? AND token=?`
 
         db.query_sync(sql, [realm, username, token])
-        res.status(200).json({status: 'ok', realm: realm, username: username, token: token})
+        res.status(200).json({
+            status: 'ok',
+            realm: realm,
+            username: username,
+            token: token
+        })
 
     } catch (err) {
 

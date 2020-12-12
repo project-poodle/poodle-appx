@@ -2,29 +2,37 @@
 import axios from 'axios'
 import store from 'app-x/redux/store'
 
-// compute base path from app_name
-function _get_base_path(app_name) {
+// compute base path from namespace and app_name
+function _get_base_path(namespace, app_name) {
   if (!globalThis.appx.API_MAPS) {
-    throw new Error(`ERROR: AppX.API_MAPS not set`)
+    throw new Error(`ERROR: appx.API_MAPS not set`)
+  }
+
+  if (typeof namespace != 'string') {
+    throw new Error(`ERROR: namespace is not string [${typeof namespace}]`)
   }
 
   if (typeof app_name != 'string') {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (app_name in globalThis.appx.API_MAPS)) {
-    throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
+  if (! (namespace in globalThis.appx.API_MAPS)) {
+    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}]`)
   }
 
-  if (! ('rootPath' in globalThis.appx.API_MAPS[app_name])) {
-    throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
+  if (! (app_name in globalThis.appx.API_MAPS[namespace])) {
+    throw new Error(`ERROR: appx.API_MAPS[${namespace}] missing [${app_name}]`)
   }
 
-  let basePath = globalThis.appx.API_MAPS[app_name]['rootPath']
+  if (! ('rootPath' in globalThis.appx.API_MAPS[namespace][app_name])) {
+    throw new Error(`ERROR: rootPath missing in appx.API_MAPS[${namespace}][${app_name}]`)
+  }
+
+  let basePath = globalThis.appx.API_MAPS[namespace][app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.appx.API_MAPS[app_name]) {
-    const deployment = globalThis.appx.API_MAPS[app_name]['deployment']
+  if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
+    const deployment = globalThis.appx.API_MAPS[namespace][app_name]['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
@@ -37,30 +45,38 @@ function _get_base_path(app_name) {
   return basePath
 }
 
-// compute auth base path from app_name
-function _get_auth_base_path(app_name) {
+// compute app auth base path from namespace and app_name
+function _get_app_auth_base_path(namespace, app_name) {
   // validity check
   if (!globalThis.appx.API_MAPS) {
-    throw new Error(`ERROR: AppX.API_MAPS not set`)
+    throw new Error(`ERROR: appx.API_MAPS not set`)
+  }
+
+  if (typeof namespace != 'string') {
+    throw new Error(`ERROR: namespace is not string [${typeof namespace}]`)
   }
 
   if (typeof app_name != 'string') {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (app_name in globalThis.appx.API_MAPS)) {
-    throw new Error(`ERROR: AppX.API_MAPS missing [${app_name}]`)
+  if (! (namespace in globalThis.appx.API_MAPS)) {
+    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}]`)
   }
 
-  if (! ('rootPath' in globalThis.appx.API_MAPS[app_name])) {
-    throw new Error(`ERROR: rootPath missing in AppX.API_MAPS[${app_name}]`)
+  if (! (app_name in globalThis.appx.API_MAPS[namespace])) {
+    throw new Error(`ERROR: appx.API_MAPS[${namespace}] missing [${app_name}]`)
   }
 
-  let basePath = globalThis.appx.API_MAPS[app_name]['rootPath']
+  if (! ('rootPath' in globalThis.appx.API_MAPS[namespace][app_name])) {
+    throw new Error(`ERROR: rootPath missing in appx.API_MAPS[${namespace}][${app_name}]`)
+  }
+
+  let basePath = globalThis.appx.API_MAPS[namespace][app_name]['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.appx.API_MAPS[app_name]) {
-    const deployment = globalThis.appx.API_MAPS[app_name]['deployment']
+  if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
+    const deployment = globalThis.appx.API_MAPS[namespace][app_name]['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
@@ -73,47 +89,148 @@ function _get_auth_base_path(app_name) {
   return basePath
 }
 
-// get user token from redux store
-function _get_user_token(app_name) {
+// compute global auth base path
+function _get_global_auth_base_path(realm) {
+  // validity check
+  if (!globalThis.appx.API_MAPS) {
+    throw new Error(`ERROR: appx.API_MAPS not set`)
+  }
+
+  if (typeof realm != 'string') {
+    throw new Error(`ERROR: realm is not string [${typeof realm}]`)
+  }
+
+  if (! ('sys' in globalThis.appx.API_MAPS) || ! ('auth' in globalThis.appx.API_MAPS['sys'])) {
+    throw new Error(`ERROR: appx.API_MAPS missing [sys][auth]`)
+  }
+
+  if (! ('rootPath' in globalThis.appx.API_MAPS['sys']['auth'])) {
+    throw new Error(`ERROR: rootPath missing in appx.API_MAPS[sys][auth]`)
+  }
+
+  let basePath = globalThis.appx.API_MAPS['sys']['auth']['rootPath']
+
+  basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
+
+  return basePath
+}
+
+// get user token from redux store by realm
+function _get_token_by_realm(realm) {
   let user_state = store.getState().userReducer
   let token = null
   let username = null
-  if (app_name in user_state && 'userToken' in user_state[app_name]) {
-    username = user_state[app_name].userToken.username
-    token = user_state[app_name].userToken.token
+  if (realm in user_state && 'username' in user_state[realm] && 'token' in user_state[realm]) {
+    username = user_state[realm].username
+    token = user_state[realm].token
   }
   //console.log(username, token)
   return {
+    realm: realm,
+    username: username,
+    token: token,
+  }
+}
+
+// get user token from redux store by namespace and app_name
+function _get_token_by_app(namespace, app_name, callback, handler) {
+  // roleReducer
+  let role_state = store.getState().roleReducer
+  let realm = null
+  let username = null
+  let token = null
+  if (namespace in role_state
+      && app_name in role_state[namespace]
+      && 'realm' in role_state[namespace][app_name]
+      && 'username' in role_state[namespace][app_name]) {
+    realm = role_state[namespace][app_name].realm
+    username = role_state[namespace][app_name].username
+  }
+  if (realm != null) {
+    // userReducer
+    let user_state = store.getState().userReducer
+    if (realm in user_state
+        && 'token' in user_state[realm]
+        && 'username' in user_state[realm]) {
+      token = user_state[realm].token
+      username = user_state[realm].username
+      if (callback) {
+        callback({
+          realm: realm,
+          username: username,
+          token: token
+        })
+      }
+    } else {
+      if (handler) {
+        handler(`ERROR: unable to find token for realm [${realm}]`)
+      }
+    }
+  } else {
+    realm(
+      namespace,
+      app_name,
+      data => {
+        realm = data.realm
+        let user_state = store.getState().userReducer
+        if (realm in user_state
+            && 'token' in user_state[realm]
+            && 'username' in user_state[realm]) {
+          token = user_state[realm].token
+          username = user_state[realm].username
+          if (callback) {
+            callback({
+              realm: realm,
+              username: username,
+              token: token
+            })
+          }
+        } else {
+          if (handler) {
+            handler(`ERROR: unable to find token for realm [${realm}]`)
+          }
+        }
+      },
+      err => {
+        if (handler) {
+          handler(err)
+        }
+      }
+    )
+  }
+  //console.log(username, token)
+  return {
+    realm: realm,
     username: username,
     token: token,
   }
 }
 
 // clear token information at local storage, and broadcast redux message
-function _handle_logout(app_name) {
+function _handle_logout(realm) {
 
   // get base path
-  const basePath = _get_auth_base_path(app_name)
+  const basePath = _get_global_auth_base_path(realm)
 
   // save username and token as null
-  globalThis.localStorage.removeItem(`/app-x/${app_name}/userToken`)
-  globalThis.localStorage.removeItem(`/app-x/${app_name}/userInfo`)
+  globalThis.localStorage.removeItem(`/app-x/realm/${realm}/`)
   // broadcast logout message
   store.dispatch({
     type: 'user/logout',
-    app_name: app_name,
+    realm: realm,
   })
 }
 
 // login for app_name context
-function login(app_name, username, password, callback, handler) {
+function login(realm, username, password, callback, handler) {
   // get base path
-  const basePath = _get_auth_base_path(app_name)
+  const basePath = _get_global_auth_base_path(realm)
   //console.log(`INFO: api/login - ${realm} ${username} ${password}`)
   axios
     .post(
       basePath + 'login',
       {
+        realm: realm,
         username: username,
         password: password
       })
@@ -122,16 +239,19 @@ function login(app_name, username, password, callback, handler) {
         // login successful, let's record the realm and token
         let ret_token = res.data.token
         // save username and token
-        globalThis.localStorage.setItem(`/app-x/${app_name}/userToken`,
-          JSON.stringify({username: username, token: ret_token}))
+        globalThis.localStorage.setItem(`/app-x/realm/${realm}`,
+            JSON.stringify({
+                realm: realm,
+                username: username,
+                token: ret_token
+            })
+        )
         // broadcast login message
         store.dispatch({
           type: 'user/login',
-          app_name: app_name,
-          userToken: {
-            username: username,
-            token: ret_token,
-          }
+          realm: realm,
+          username: username,
+          token: ret_token,
         })
         if (callback) {
           callback(res.data)
@@ -152,7 +272,7 @@ function login(app_name, username, password, callback, handler) {
     .catch((err) => {
       console.log(err.stack)
       if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app_name)
+        _handle_logout(realm)
       }
       let res = {
         status: 'error',
@@ -169,15 +289,16 @@ function login(app_name, username, password, callback, handler) {
 }
 
 // logout for app_name context
-function logout(app_name, callback, handler) {
+function logout(realm, callback, handler) {
   // get base path
-  const basePath = _get_auth_base_path(app_name)
+  const basePath = _get_global_auth_base_path(realm)
   //console.log(`INFO: api/logout - ${realm} ${username}`)
-  let { username, token } = _get_user_token(app_name)
+  let { username, token } = _get_token_by_realm(realm)
   return axios
     .post(
       basePath + 'logout',
       {
+        realm: realm,
         username: username,
       },
       {
@@ -188,7 +309,7 @@ function logout(app_name, callback, handler) {
     )
     .then((res) => {
       if ('data' in res && 'status' in res.data) {
-        _handle_logout(app_name)
+        _handle_logout(realm)
         if (callback) {
           callback(res.data)
         }
@@ -208,8 +329,50 @@ function logout(app_name, callback, handler) {
     .catch((err) => {
       console.log(err.stack)
       if ('status' in err.response && err.response.status === 401) {
-        _handle_logout(app_name)
+        _handle_logout(realm)
       }
+      let res = {
+        status: 'error',
+        message: err.toString(),
+        data: err.response,
+      }
+      if ('response' in err && 'data' in err.response) {
+        res = { ...res, ...err.response.data }
+      }
+      if (handler) {
+        handler(res)
+      }
+    })
+}
+
+// get realm
+function realm(namespace, app_name, callback, handler) {
+  // get base path
+  const basePath = _get_app_auth_base_path(namespace, app_name)
+  return axios
+    .get(
+      basePath + 'realm'
+    )
+    .then((res) => {
+      if ('data' in res && 'status' in res.data && 'realm' in res.data) {
+        if (callback) {
+          callback(res.data)
+        }
+      } else {
+        let ret = {
+          status: 'error',
+          message: `ERROR: missing status or realm in response`,
+          data: res
+        }
+        if (handler) {
+          handler(ret)
+        } else {
+          console.log(ret)
+        }
+      }
+    })
+    .catch((err) => {
+      console.log(err.stack)
       let res = {
         status: 'error',
         message: err.toString(),
@@ -225,58 +388,86 @@ function logout(app_name, callback, handler) {
 }
 
 // get self information
-function me(app_name, callback, handler) {
-  // get base path
-  const basePath = _get_auth_base_path(app_name)
-  //console.log(`INFO: api/logout - ${realm} ${username}`)
-  if (!app_name) {
-    app_name = app_name_context
-  }
-  const { username, token } = _get_user_token(app_name)
-  return axios
-    .post(
-      basePath + 'user',
-      {
-        username: username,
-      },
-      {
-        headers: {
-          'Authorization': `AppX ${token}`
-        }
-      }
-    )
-    .then((res) => {
-      if ('data' in res && 'status' in res.data && 'user' in res.data) {
-        // save username and token
-        globalThis.localStorage.setItem(`/app-x/${app_name}/userInfo`, JSON.stringify(res.data.user))
-        // broadcast login message
-        store.dispatch({
-          type: 'user/info',
-          app_name: app_name,
-          username: username,
-          userInfo: res.data.user
+function me(namespace, app_name, callback, handler) {
+  realm(
+    namespace,
+    app_name,
+    data => {
+      //console.log(data)
+      const realm = data.realm
+      // get base path
+      const basePath = _get_app_auth_base_path(namespace, app_name)
+      //console.log(`INFO: api/logout - ${realm} ${username}`)
+      const { username, token } = _get_token_by_realm(realm)
+      return axios
+        .post(
+          basePath + 'me',
+          {
+            username: username,
+          },
+          {
+            headers: {
+              'Authorization': `AppX ${token}`
+            }
+          }
+        )
+        .then((res) => {
+          if ('data' in res && 'status' in res.data && 'user' in res.data) {
+            // save username and token
+            globalThis.localStorage.setItem(`/app-x/role/${namespace}/${app_name}`,
+                JSON.stringify({
+                    namespace: namespace,
+                    app_name: app_name,
+                    realm: realm,
+                    username: username,
+                    data: res.data.user,
+                })
+            )
+            // broadcast login message
+            store.dispatch({
+              type: 'role/info',
+              namespace: namespace,
+              app_name: app_name,
+              realm: realm,
+              username: username,
+              data: res.data.user,
+            })
+            if (callback) {
+              callback(res.data)
+            }
+          } else {
+            let ret = {
+              status: 'error',
+              message: `ERROR: missing status or user info in response`,
+              data: res
+            }
+            if (handler) {
+              handler(ret)
+            } else {
+              console.log(ret)
+            }
+          }
         })
-        if (callback) {
-          callback(res.data)
-        }
-      } else {
-        let ret = {
-          status: 'error',
-          message: `ERROR: missing status or user info in response`,
-          data: res
-        }
-        if (handler) {
-          handler(ret)
-        } else {
-          console.log(ret)
-        }
-      }
-    })
-    .catch((err) => {
+        .catch((err) => {
+          console.log(err.stack)
+          if (err.response && 'status' in err.response && err.response.status === 401) {
+            _handle_logout(realm)
+          }
+          let res = {
+            status: 'error',
+            message: err.toString(),
+            data: err.response,
+          }
+          if ('response' in err && 'data' in err.response) {
+            res = { ...res, ...err.response.data }
+          }
+          if (handler) {
+            handler(res)
+          }
+        })
+    },
+    err => {
       console.log(err.stack)
-      if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app_name)
-      }
       let res = {
         status: 'error',
         message: err.toString(),
@@ -288,68 +479,82 @@ function me(app_name, callback, handler) {
       if (handler) {
         handler(res)
       }
-    })
+    }
+  )
 }
 
 // request for app_name context
-function request(app_name, conf, callback, handler) {
+function request(namespace, app_name, conf, callback, handler) {
   // get base path
-  const basePath = _get_base_path(app_name)
-  const { username, token } = _get_user_token(app_name)
-  //console.log(`INFO: api/request - ${app_name} ${conf}`)
-  let req = { ...conf }
-  if ('url' in conf) {
-    req.url = `${basePath}/${conf.url}`.replace(/\/+/g, '/')
-  }
-  if ('headers' in conf) {
-    req.headers = {
-      ...conf.headers,
-      'Authorization': `AppX ${token}`
-    }
-  } else {
-    req.headers = {
-      'Authorization': `AppX ${token}`
-    }
-  }
-  return axios
-    .request(req)
-    .then((res) => {
-      if ('data' in res) {
-        if ('status' in res.data) {
-          if (res.data.status === 'ok') {
-            callback(res.data)
-          } else {
-            handler(res.data)
-          }
-        } else {
-          callback(res.data)
+  const basePath = _get_base_path(namespace, app_name)
+  _get_token_by_app(
+    namespace,
+    app_name,
+    data => {
+      //console.log(data)
+      const realm = data.realm
+      const username = data.username
+      const token = data.token
+      // handle request
+      let req = { ...conf }
+      if ('url' in conf) {
+        req.url = `${basePath}/${conf.url}`.replace(/\/+/g, '/')
+      }
+      if ('headers' in conf) {
+        req.headers = {
+          ...conf.headers,
+          'Authorization': `AppX ${token}`
         }
       } else {
-        handler({
-          status: `error`,
-          message: `ERROR: empty response data`,
-          data: res
+        req.headers = {
+          'Authorization': `AppX ${token}`
+        }
+      }
+      return axios
+        .request(req)
+        .then((res) => {
+          if ('data' in res) {
+            if ('status' in res.data) {
+              if (res.data.status === 'ok') {
+                callback(res.data)
+              } else {
+                handler(res.data)
+              }
+            } else {
+              callback(res.data)
+            }
+          } else {
+            handler({
+              status: `error`,
+              message: `ERROR: empty response data`,
+              data: res
+            })
+          }
         })
-      }
-    })
-    .catch((err) => {
-      if (err.response && 'status' in err.response && err.response.status === 401) {
-        _handle_logout(app_name)
-      }
-      let res = {
-        status: 'error',
-        message: err.toString(),
-        data: err.response,
-      }
-      if ('response' in err && 'data' in err.response) {
-        res = { ...res, ...err.response.data }
-      }
-      handler(res)
-    })
+        .catch((err) => {
+          if (err.response && 'status' in err.response && err.response.status === 401) {
+            _handle_logout(realm)
+          }
+          let res = {
+            status: 'error',
+            message: err.toString(),
+            data: err.response,
+          }
+          if ('response' in err && 'data' in err.response) {
+            res = { ...res, ...err.response.data }
+          }
+          handler(res)
+        })
+    },
+    err => {
+      console.log(err.stack)
+    }
+  )
 }
 
-function get(app_name, url, callback, handler) {
+function get(namespace, app_name, url, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'get',
@@ -360,8 +565,9 @@ function get(app_name, url, callback, handler) {
   )
 }
 
-function head(app_name, url, callback, handler) {
+function head(namespace, app_name, url, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'head',
@@ -372,8 +578,9 @@ function head(app_name, url, callback, handler) {
   )
 }
 
-function post(app_name, url, data, callback, handler) {
+function post(namespace, app_name, url, data, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'post',
@@ -385,8 +592,9 @@ function post(app_name, url, data, callback, handler) {
   )
 }
 
-function put(app_name, url, data, callback, handler) {
+function put(namespace, app_name, url, data, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'put',
@@ -398,8 +606,9 @@ function put(app_name, url, data, callback, handler) {
   )
 }
 
-function patch(app_name, url, data, callback, handler) {
+function patch(namespace, app_name, url, data, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'patch',
@@ -411,8 +620,9 @@ function patch(app_name, url, data, callback, handler) {
   )
 }
 
-function del(app_name, url, callback, handler) {
+function del(namespace, app_name, url, callback, handler) {
   return request(
+    namespace,
     app_name,
     {
       method: 'delete',
@@ -426,6 +636,7 @@ function del(app_name, url, callback, handler) {
 export {
   login,
   logout,
+  realm,
   me,
   get,
   head,

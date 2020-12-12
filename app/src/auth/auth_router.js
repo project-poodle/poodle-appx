@@ -61,6 +61,7 @@ function _handle_logout(req, res) {
             return
         }
 
+        /*
         if (! ('token' in req.body)) {
             res.status(422).json({
                 status: FAILURE,
@@ -68,6 +69,7 @@ function _handle_logout(req, res) {
             })
             return
         }
+        */
 
         // realm
         const realm = req.body.realm

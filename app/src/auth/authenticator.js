@@ -62,7 +62,9 @@ const authenticator = function (req, res, next) {
 
       res.status(200).json({
           status: SUCCESS,
-          realm: realm
+          namespace: namespace,
+          app_name: app_name,
+          realm: realm,
       })
       return
     }
@@ -113,7 +115,13 @@ const authenticator = function (req, res, next) {
                 // console.log(req.context)
                 if (action_name == 'user' || action_name == 'me') {
 
-                  res.status(200).json({ status: 'ok', user: req.user})
+                  res.status(200).json({
+                      status: 'ok',
+                      namespace: namespace,
+                      app_name: app_name,
+                      realm: realm,
+                      user: req.user
+                  })
                   return
 
                 } else if (action_name == 'logout') {
@@ -166,7 +174,13 @@ const authenticator = function (req, res, next) {
                 // console.log(req.context)
                 if (action_name == 'user' || action_name == 'me') {
 
-                  res.status(200).json({ status: 'ok', user: req.user})
+                  res.status(200).json({
+                      status: 'ok',
+                      namespace: namespace,
+                      app_name: app_name,
+                      realm: realm,
+                      user: req.user
+                  })
                   return
 
                 } else if (action_name == 'logout') {
