@@ -16,7 +16,7 @@ export default function Youtube_Landing(props) {
   const useStyles = makeStyles((theme) => ({
 
     paper: {
-      position: "absolute",
+      position: "fixed",
       top: 0,
       right: 0,
       bottom: 0,

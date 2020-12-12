@@ -263,7 +263,13 @@ function js_expression(js_context, input) {
 
   const parsed = _js_parse_expression(js_context, data)
 
-  return parsed
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      parsed
+    )
+  } else {
+    return parsed
+  }
 }
 
 // create block ast (allow return outside of function)
@@ -429,7 +435,7 @@ function js_switch(js_context, input) {
       callExpression
     )
   } else {
-    callExpression
+    return callExpression
   }
 }
 
@@ -1082,55 +1088,41 @@ function react_element(js_context, input) {
     )
   )
 
-/*
-  // check if there are any block statements
-  const block_statements = []
-  Object.keys(input).map(key => {
-    // ignore type / name / props / children
-    if (key === 'type' || key === 'name' || key === 'props' || key === 'children') {
-      return
-    }
-    // check if input[key] is 'js/block'
-    if (!isPrimitive(input[key]) && input[key].type === 'js/block') {
-      // adds each of the block statement
-      block_statements.push(...(js_process(js_context, input[key]).body))
+  // return react element
+  return react_element
+}
 
-    } else {
-      // process input[key] and assign to declared variable
-      block_statements.push(
-        t.variableDeclaration(
-          'const',
-          [
-            t.variableDeclarator(
-              t.identifier(key),
-              js_process(js_context, input[key])
-            )
-          ]
-        )
-      )
-    }
-  })
+// create jsx html element ast
+function react_html(js_context, input) {
 
-  // if we have block_statements
-  if (block_statements.length > 0) {
-    return t.arrowFunctionExpression(
-      [
-        t.identifier('props')
-      ],
-      t.blockStatement(
-        [
-          ...block_statements,
-          t.returnStatement(
-            react_element
-          )
-        ]
-      )
+  if (!('type' in input) || input.type !== 'react/html') {
+    throw new Error(`ERROR: input.type is not [react/html] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/html] [${JSON.stringify(input)}]`)
+  }
+
+  // create react element with props and children
+  const react_element = t.jSXElement(
+    t.jSXOpeningElement(
+      t.jSXIdentifier(input.name),
+      'props' in input ? react_element_props(
+        { ...js_context, JSX_CONTEXT: true },
+        input.props
+      ) : []
+    ),
+    t.jSXClosingElement(
+      t.jSXIdentifier(input.name),
+    ),
+    react_element_children(
+      { ...js_context, JSX_CONTEXT: true },
+      input.children
     )
-  } else {
-*/
-    // return react element
-    return react_element
-  //}
+  )
+
+  // return react element
+  return react_element
 }
 
 // create jsx element props ast
@@ -1149,14 +1141,27 @@ function react_element_props(js_context, props) {
   }
 
   const results = Object.keys(props).map(prop_key => {
+    // process syntax
+    let syntax = null
     const prop = props[prop_key]
+    if (typeof prop == 'string') {
+      syntax = t.stringLiteral(prop)
+    } else {
+      const processed = js_process(
+        { ...js_context, JSX_CONTEXT: false },
+        prop
+      )
+      if (t.isJSXExpressionContainer(processed)) {
+        syntax = processed
+      } else {
+        syntax = t.jSXExpressionContainer(processed)
+      }
+      //syntax = processed
+    }
+    // return
     return t.jSXAttribute(
       t.jSXIdentifier(prop_key),
-      typeof prop === 'string'
-        ? t.stringLiteral(prop) // TODO
-        : t.jSXExpressionContainer(
-            js_process(js_context, prop)
-          )
+      syntax
     )
   })
 
@@ -1544,6 +1549,10 @@ function js_process(js_context, input) {
   } else if (input.type === 'react/element') {
 
     return react_element(js_context, input)
+
+  } else if (input.type === 'react/html') {
+
+    return react_html(js_context, input)
 
   } else if (input.type === 'react/state') {
 

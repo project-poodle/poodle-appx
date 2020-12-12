@@ -334,7 +334,7 @@ app_deployment:
 # ui
 ui:
     - namespace: "sys"
-      ui_name: "appxui"
+      ui_name: "ui"
       ui_ver: "internal"
       ui_spec:
           importMaps:
@@ -353,7 +353,7 @@ ui:
 # ui_deployment
 ui_deployment:
     - namespace: "sys"
-      ui_name: "appxui"
+      ui_name: "ui"
       ui_deployment: "base"
       ui_ver: "internal"
       ui_deployment_spec:
