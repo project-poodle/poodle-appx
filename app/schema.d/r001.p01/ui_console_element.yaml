@@ -390,7 +390,7 @@ ui_element:
                             data: styles.avatar
                     children:
                         - type: react/element
-                          name: '@material-ui/icons.LockOutlined'
+                          name: '@material-ui/icons.ViewQuiltRounded'
                   - type: react/element
                     name: '@material-ui/core.Typography'
                     props:
