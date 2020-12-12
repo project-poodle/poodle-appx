@@ -640,8 +640,12 @@ ui_element:
                           children:
                               - type: js/map
                                 data:
-                                    type: js/expression
-                                    data: states.ui.deployments
+                                    type: js/filter
+                                    data:
+                                        type: js/expression
+                                        data: states.ui.deployments
+                                    filter: |
+                                        !(item.namespace == 'sys' && item.ui_name == 'console')
                                 result:
                                     type: react/element
                                     name: '@material-ui/core.Card'

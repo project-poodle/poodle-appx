@@ -635,7 +635,7 @@ function js_map(js_context, input) {
       callExpression
     )
   } else {
-    callExpression
+    return callExpression
   }
 }
 
@@ -708,7 +708,7 @@ function js_reduce(js_context, input) {
             ),
             // return null
             t.returnStatement(
-              t.nullLiteral
+              t.nullLiteral()
             ),
             // else if
             t.ifStatement(
@@ -850,14 +850,14 @@ function js_reduce(js_context, input) {
       callExpression
     )
   } else {
-    callExpression
+    return callExpression
   }
 }
 
 // create js reduce ast
 function js_filter(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/reduce') {
+  if (!('type' in input) || input.type !== 'js/filter') {
     throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
@@ -866,7 +866,7 @@ function js_filter(js_context, input) {
   }
 
   if (! ('filter' in input)) {
-    throw new Error(`ERROR: input.reducer missing in [js/filter] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.filter missing in [js/filter] [${JSON.stringify(input)}]`)
   }
 
   // process input expression
@@ -913,7 +913,7 @@ function js_filter(js_context, input) {
             ),
             // return null
             t.returnStatement(
-              t.nullLiteral
+              t.nullLiteral()
             ),
             // else if
             t.ifStatement(
@@ -1053,7 +1053,7 @@ function js_filter(js_context, input) {
       callExpression
     )
   } else {
-    callExpression
+    return callExpression
   }
 }
 
