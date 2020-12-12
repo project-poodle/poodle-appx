@@ -582,9 +582,9 @@ ui_element:
                       type: js/expression
                       data: theme.spacing(6, 4)
               card:
-                  width: 320
-                  minWidth: 320
-                  maxWidth: 320
+                  width: 360
+                  minWidth: 360
+                  maxWidth: 360
                   margin:
                       type: js/expression
                       data: theme.spacing(4, 3)
@@ -646,6 +646,9 @@ ui_element:
                               type: react/element
                               name: '@material-ui/core.Card'
                               props:
+                                  key:
+                                      type: js/expression
+                                      data: item.id
                                   className:
                                       type: js/expression
                                       data: styles.card
