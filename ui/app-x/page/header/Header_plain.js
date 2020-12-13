@@ -25,7 +25,7 @@ const Header_plain = (props) => {
 
   const styles = useStyles()
 
-  const { title, titleIcon, homeUrl, ...rest } = props
+  const { title, titleIcon, rootUrl, baseUrl, ...rest } = props
 
   return (
     <AppBar
@@ -34,14 +34,16 @@ const Header_plain = (props) => {
       {...rest}
     >
       <Toolbar className={styles.toolbar}>
-        <A href={ homeUrl } className={styles.inline}>
+        <A href={ rootUrl } className={styles.inline}>
           <Avatar className={styles.avatar}>
             { titleIcon }
           </Avatar>
         </A>
-        <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
-          { title }
-        </Typography>
+        <A href={ baseUrl } className={styles.inline}>
+          <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
+            { title }
+          </Typography>
+        </A>
       </Toolbar>
     </AppBar>
   )
@@ -50,7 +52,8 @@ const Header_plain = (props) => {
 Header_plain.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
-  homeUrl: PropTypes.string.isRequired,
+  rootUrl: PropTypes.string.isRequired,
+  baseUrl: PropTypes.string.isRequired,
 }
 
 export default Header_plain;

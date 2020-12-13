@@ -48,7 +48,8 @@ ui_element:
                                   titleIcon:
                                       type: react/element
                                       name: "@material-ui/icons.ViewQuiltRounded"
-                                  homeUrl: '/'
+                                  rootUrl: '/'
+                                  baseUrl: '/'
                       children:
                           - type: react/element
                             name: app-x/view/error/NotFoundView

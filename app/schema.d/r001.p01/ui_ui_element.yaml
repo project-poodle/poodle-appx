@@ -64,7 +64,8 @@ ui_element:
                   titleIcon:
                       type: react/element
                       name: "@material-ui/icons.ViewQuiltRounded"
-                  homeUrl: '/console'
+                  rootUrl: '/console'
+                  baseUrl: '/'
                   authUrl: '/login'
                   authDeployment:
                       namespace: sys

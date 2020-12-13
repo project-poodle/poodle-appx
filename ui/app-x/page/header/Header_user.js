@@ -119,7 +119,7 @@ const Header_user = (props) => {
                   namespace={props.authDeployment.namespace}
                   ui_name={props.authDeployment.ui_name}
                   ui_deployment={props.authDeployment.ui_deployment}
-                  href={props.homeUrl}
+                  href={props.rootUrl}
                   className={styles.inline}
               >
                 <Avatar className={styles.avatar}>
@@ -129,16 +129,18 @@ const Header_user = (props) => {
             )
             :
             (
-              <A href={props.homeUrl} className={styles.inline}>
+              <A href={props.rootUrl} className={styles.inline}>
                 <Avatar className={styles.avatar}>
                   { props.titleIcon }
                 </Avatar>
               </A>
             )
         }
-        <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
-          { props.title }
-        </Typography>
+        <A href={props.baseUrl} className={styles.inline}>
+          <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
+            { props.title }
+          </Typography>
+        </A>
         <Box flexGrow={1} />
         { props.content }
         <IconButton
@@ -156,7 +158,8 @@ const Header_user = (props) => {
 Header_user.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
-  homeUrl: PropTypes.string.isRequired,
+  rootUrl: PropTypes.string.isRequired,
+  baseUrl: PropTypes.string.isRequired,
   authUrl: PropTypes.string.isRequired,
   authDeployment: PropTypes.shape({
     namespace: PropTypes.string.isRequired,

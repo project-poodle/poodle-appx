@@ -23,7 +23,8 @@ ui_route:
                       titleIcon:
                           type: react/element
                           name: "@material-ui/icons.ViewQuiltRounded"
-                      homeUrl: '/'
+                      rootUrl: '/'
+                      baseUrl: '/'
           children:
               - type: react/element
                 name: self/page/auth/Login
@@ -44,7 +45,8 @@ ui_route:
                       titleIcon:
                           type: react/element
                           name: "@material-ui/icons.ViewQuiltRounded"
-                      homeUrl: '/'
+                      rootUrl: '/'
+                      baseUrl: '/'
           children:
               - type: react/element
                 name: app-x/view/error/NotFoundView
@@ -66,7 +68,8 @@ ui_route:
                       titleIcon:
                           type: react/element
                           name: "@material-ui/icons.ViewQuiltRounded"
-                      homeUrl: '/console'
+                      rootUrl: '/console'
+                      baseUrl: '/console'
                       authUrl: '/login'
           children:
               - type: react/element
