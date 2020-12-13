@@ -434,7 +434,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                 if (js_route_path.endsWith('/')) {
                     // route path without '/' will add '/'
                     router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
-                        res.status(301).redirect(redirect_url)
+                        res.status(302).redirect(redirect_url)
                     })
                     // route path add 'index.js' and 'index.source'
                     new_js_route_path = js_route_path + 'index.js'
@@ -464,7 +464,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                 // redirect to new js path
                 router.get(js_route_path, (req, res) => {
                     let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')
-                    res.status(301).redirect(redirect_url)
+                    res.status(302).redirect(redirect_url)
                 })
             }
         }

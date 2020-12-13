@@ -587,7 +587,7 @@ ui_element:
                   justifyContent: space-evenly
                   padding:
                       type: js/expression
-                      data: theme.spacing(6, 3)
+                      data: theme.spacing(4, 2)
               card:
                   width: 360
                   minWidth: 360
@@ -665,40 +665,68 @@ ui_element:
                                     name: '@material-ui/core.CardActionArea'
                                     children:
                                         - type: react/element
-                                          name: '@material-ui/core.CardContent'
+                                          name: app-x/router.HLink
+                                          props:
+                                              namespace:
+                                                  type: js/expression
+                                                  data: item.namespace
+                                              ui_name:
+                                                  type: js/expression
+                                                  data: item.ui_name
+                                              ui_deployment:
+                                                  type: js/expression
+                                                  data: item.ui_deployment
+                                              href: '/'
                                           children:
                                               - type: react/element
-                                                name: '@material-ui/core.Avatar'
-                                                props:
-                                                    className:
-                                                        type: js/expression
-                                                        data: styles.avatar
+                                                name: '@material-ui/core.CardContent'
                                                 children:
                                                     - type: react/element
-                                                      name: '@material-ui/icons.ViewQuiltRounded'
-                                              - type: react/element
-                                                name: '@material-ui/core.Typography'
-                                                props:
-                                                    variant: body2
-                                                    className:
-                                                        type: js/expression
-                                                        data: styles.cardContent
-                                                children:
-                                                    - type: js/expression
-                                                      data: item.namespace
-                                                    - ' / '
-                                                    - type: js/expression
-                                                      data: item.ui_name
-                                                    - ' / '
-                                                    - type: js/expression
-                                                      data: item.ui_deployment
-                                              - type: react/element
-                                                name: '@material-ui/core.Typography'
-                                                props:
-                                                    variant: h6
-                                                    className:
-                                                        type: js/expression
-                                                        data: styles.cardContent
-                                                children:
-                                                    - type: js/expression
-                                                      data: item.ui_spec.description
+                                                      name: '@material-ui/core.Avatar'
+                                                      props:
+                                                          className:
+                                                              type: js/expression
+                                                              data: styles.avatar
+                                                      children:
+                                                          - type: react/element
+                                                            name: '@material-ui/icons.ViewQuiltRounded'
+                                                    - type: react/element
+                                                      name: '@material-ui/core.Typography'
+                                                      props:
+                                                          variant: body2
+                                                          className:
+                                                              type: js/expression
+                                                              data: styles.cardContent
+                                                      children:
+                                                          - type: js/expression
+                                                            data: item.namespace
+                                                          - ' / '
+                                                          - type: js/expression
+                                                            data: item.ui_name
+                                                          - ' / '
+                                                          - type: js/expression
+                                                            data: item.ui_deployment
+                                                    - type: react/element
+                                                      name: '@material-ui/core.Typography'
+                                                      props:
+                                                          variant: h6
+                                                          className:
+                                                              type: js/expression
+                                                              data: styles.cardContent
+                                                      children:
+                                                          - type: js/expression
+                                                            data: item.ui_spec.description
+                                  - type: react/element
+                                    name: '@material-ui/core.CardActions'
+                                    children:
+                                        - type: react/element
+                                          name: '@material-ui/core.Button'
+                                          props:
+                                              size: small
+                                              color: primary
+                                              # variant: contained
+                                              className:
+                                                  type: js/expression
+                                                  data: styles.cardContent
+                                          children:
+                                              - Details

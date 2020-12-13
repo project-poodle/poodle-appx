@@ -365,7 +365,7 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
-          description: "App-X Auth Editor"
+          description: "App-X Role Editor"
           comment: "initialize"
     # service builder
     - namespace: "sys"

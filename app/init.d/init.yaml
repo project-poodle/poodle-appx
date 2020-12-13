@@ -31,3 +31,7 @@ appx:
         ldap_base_dn: 'dc=app-x,dc=org'
         ldap_bind_user: 'cn=guest,ou=people,dc=app-x,dc=org'
         ldap_bind_pass: "{{{appx.init.appx_node_pass}}}"
+        # root endpoints
+        auth_root: '/auth'
+        api_root: '/api'
+        ui_root: '/ui'

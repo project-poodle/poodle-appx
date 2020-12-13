@@ -9,9 +9,11 @@ const parser = new ArgumentParser({
 });
 
 parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
+parser.add_argument('-m', '--mount', { help: 'mount config file', required: true });
 args = parser.parse_args();
 
 let db_conf_options = JSON.parse(fs.readFileSync(args.conf))
+let mount_options = JSON.parse(fs.readFileSync(args.mount))
 
 //////////////////////////////////////////////////
 // check database connectivity
@@ -53,40 +55,63 @@ app.use(session({
 const { auth_dispatcher, authenticator } = require("./src/auth")
 ////app.use(passport.initialize())
 ////app.use(passport.session())
-
-app.use('/auth', bodyParser.json())
-app.use('/auth', auth_dispatcher)
+// auth endpoints
+app.use(mount_options.auth_root, bodyParser.json())
+app.use(mount_options.auth_root,
+  (req, res, next) => {
+    req.mount_options = mount_options;
+    next();
+  },
+  auth_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize router --- Note: perform this step only after db_pool is initialized
 const { api_dispatcher } = require('./src/api/api_dispatcher')
-
-app.use('/api', bodyParser.json())
-app.use('/api', authenticator, api_dispatcher)
+// api endpoints
+app.use(mount_options.api_root, bodyParser.json())
+app.use(mount_options.api_root,
+  (req, res, next) => {
+    req.mount_options = mount_options;
+    next();
+  },
+  authenticator,
+  api_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize ui router --- Note: perform this step only after db_pool is initialized
 const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
-
-app.use('/ui', ui_dispatcher)
+// ui endpoints
+app.use(mount_options.ui_root,
+  (req, res, next) => {
+    req.mount_options = mount_options;
+    next();
+  },
+  ui_dispatcher)
 
 //////////////////////////////////////////////////
 // static files
-const rootDir = path.join(__dirname, '../ui/')
+const staticRootDir = path.join(__dirname, '../ui/')
+// app.use('/app-x/', express.static(staticRootDir + 'app-x/'))
+// app.use('/dist/', express.static(staticRootDir + 'dist/'))
+// app.use('/static/', express.static(staticRootDir + 'static/'))
+// app.use('/sw.js', express.static(staticRootDir + 'sw.js'))
+
+//////////////////////////////////////////////////
+// redirect everything else to landing page
 app.use('/',
     (req, res, next) => {
-        // console.log(req.url)
-        let url_comps = req.url.split('/')
-        // console.log(url_comps)
-        if (req.url === '/') {
-          res.status(301).redirect('/ui/sys/console/base/')
-        } else if (url_comps.length > 1 && fs.existsSync(path.join(rootDir, url_comps[1]))) {
+        if (req.url.startsWith('/app-x/')
+            || req.url.startsWith('/dist/')
+            || req.url.startsWith('/static/')
+            || req.url == '/sw.js') {
+            // handle static files
             next()
         } else {
-          res.status(301).redirect('/ui/sys/console/base/')
+          res.status(302).redirect(mount_options.ui_root + '/sys/console/base/')
         }
     },
-    express.static(rootDir)
+    // service worker needs to be at the root
+    express.static(staticRootDir)
 )
 
 //////////////////////////////////////////////////

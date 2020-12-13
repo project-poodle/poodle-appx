@@ -143,6 +143,9 @@ function handle_html(req, res) {
                 APPX_ENV: {
                     RENDER_JSON: RENDER_JSON,
                     KEY_VALUE: KEY_VALUE,
+                    AUTH_ROOT: req.mount_options.auth_root,
+                    API_ROOT: req.mount_options.api_root,
+                    UI_ROOT: req.mount_options.ui_root,
                     RELATIVE_URL: url.parse(req.url).pathname,
                     IMPORT_MAPS: ui_deployment.ui_spec.importMaps,
                     API_MAPS: ui_deployment.ui_deployment_spec.apiMaps,

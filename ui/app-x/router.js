@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   useRoutes as _useRoutes,
   navigate as _navigate,
@@ -8,6 +9,19 @@ import {
 function check_base_path() {
   if (!globalThis.appx.BASE_PATH) {
     console.error(`ERROR: appx.BASE_PATH not set`)
+  }
+}
+
+// check root path exist, or log error
+function check_root_path() {
+  if (!globalThis.appx.AUTH_ROOT) {
+    console.error(`ERROR: appx.AUTH_ROOT not set`)
+  }
+  if (!globalThis.appx.API_ROOT) {
+    console.error(`ERROR: appx.API_ROOT not set`)
+  }
+  if (!globalThis.appx.UI_ROOT) {
+    console.error(`ERROR: appx.UI_ROOT not set`)
   }
 }
 
@@ -45,6 +59,14 @@ const navigate = (url => {
   }
 })
 
+// hard navigate to new url
+const hnavigate = (nameapce, ui_name, ui_deployment, url) => {
+  check_root_path()
+  // compute new url
+  const new_url = (globalThis.appx.UI_ROOT + '/' + namespace + '/' + ui_name + '/' + ui_deployment + '/' + url).replace(/\/+/g, '/')
+  window.location.href = new_url
+}
+
 // map hookrouter|A to new url
 const A = (props) => {
   check_base_path()
@@ -57,8 +79,24 @@ const A = (props) => {
   return _A(newProps)
 }
 
+// hard link to other ui deployments
+const HLink = (props) => {
+  check_root_path()
+
+  const { namespace, ui_name, ui_deployment, href, ...rest } = props
+
+  const new_href = (globalThis.appx.UI_ROOT + '/' + namespace + '/' + ui_name + '/' + ui_deployment + '/' + href).replace(/\/+/g, '/')
+
+  return (
+    <a href={new_href} {...rest}>
+      { props.children}
+    </a>
+  )
+}
+
 export {
   useRoutes,
   navigate,
   A,
+  HLink,
 }

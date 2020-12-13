@@ -1,5 +1,5 @@
 run:
-	while true; do ./app.sh -c ./conf.d/mysql_appx.json; date; sleep 1; done
+	while true; do ./app.sh -c ./conf.d/mysql_appx.json -m ./conf.d/mount_appx.json; date; sleep 1; done
 
 build:
 	npm install

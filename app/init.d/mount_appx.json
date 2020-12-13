@@ -1,0 +1,5 @@
+{
+  "auth_root": "{{{appx.init.auth_root}}}",
+  "api_root": "{{{appx.init.api_root}}}",
+  "ui_root": "{{{appx.init.ui_root}}}"
+}

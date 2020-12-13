@@ -96,6 +96,16 @@ fi
 chmod 644 ${LDAP_APPX_FILE}
 
 echo "--------------------"
+MOUNT_APPX_FILE=${BASE_DIR}/conf.d/mount_appx.json
+eval_template -t ${CURR_DIR}/mount_appx.json -y1 ${INIT_YAML} > ${MOUNT_APPX_FILE}
+if [ $? -ne 0 ]; then
+    echo "ERROR: failed to generate ${MOUNT_APPX_FILE} ! --- [/tmp/$$/]"
+    exit 1
+fi
+# chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MOUNT_APPX_FILE}
+chmod 644 ${MOUNT_APPX_FILE}
+
+echo "--------------------"
 eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED WITH mysql_native_password BY '${appx__init__mysql_node_pass}'"
 if [ $? -ne 0 ]; then
     eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
