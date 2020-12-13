@@ -143,7 +143,7 @@ ui_element:
                   setter: setData
                   init:
                       ui_builder_type: ui_element
-                      ui_element_name: /uiNav
+                      ui_element_name: /nav/uiNav
                       ui_route_name: ''
           handlers:
               handleElementSelected:
