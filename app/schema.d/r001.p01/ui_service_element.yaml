@@ -43,10 +43,6 @@ ui_element:
                           header:
                               type: react/element
                               name: self/page/header/Header_user
-                              props:
-                                  suffix:
-                                      type: react/element
-                                      name: '@material-ui/icons.MenuBook'
                       children:
                           - type: react/element
                             name: app-x/view/error/NotFoundView
@@ -55,78 +51,91 @@ ui_element:
     - namespace: sys
       ui_name: service
       ui_ver: internal
-      ui_element_name: /Service
+      ui_element_name: /page/header/Header_user
       ui_element_type: react/element
       ui_element_spec:
           propTypes:
-              title: PropTypes.string.isRequired
-          styles:
-              type: mui/style
-              root:
-                  height: "100%"
+              suffix: PropTypes.element
           element:
               type: react/element
-              name: app-x/app/MUI_theme_redux
+              name: app-x/page/header/Header_user
               props:
-                  routes:
-                      type: appx/route
-                  redux_store_provider:
-                      type: js/import
-                      name: app-x/redux/store.default
-                  theme_provider:
-                      type: js/import
-                      name: app-x/theme.default
-                  not_found_view:
+                  title: Service Builder
+                  titleIcon:
                       type: react/element
-                      name: app-x/page/layout/HeaderLayout
-                      props:
-                          header:
-                              type: react/element
-                              name: app-x/page/header/Header_plain
-                              props:
-                                  title: App-X
-                                  titleIcon:
-                                      type: react/element
-                                      name: "@material-ui/icons.ViewQuiltRounded"
-                                  homeUrl: '/'
-                      children:
-                          - type: react/element
-                            name: app-x/view/error/NotFoundView
-
-              children:
-                  - type: react/element
-                    name: app-x/builder/UI_Builder
-                    props:
-                        namespace: sys
-                        ui_name: ui
-                        ui_deployment: base
-                        ui_builder_type:
-                            type: js/expression
-                            data: states.builder.data.ui_builder_type
-                        ui_element_name:
-                            type: js/expression
-                            data: states.builder.data.ui_element_name
-                        ui_route_name:
-                            type: js/expression
-                            data: states.builder.data.ui_route_name
+                      name: "@material-ui/icons.ViewQuiltRounded"
+                  homeUrl: '/console'
+                  authUrl: '/login'
+                  authDeployment:
+                      namespace: sys
+                      ui_name: console
+                      ui_deployment: base
+                  suffix:
+                      type: js/expression
+                      data: props.suffix
 
     ############################################################
     - namespace: sys
       ui_name: service
       ui_ver: internal
-      ui_element_name: /page/UI_Builder
+      ui_element_name: /page/Console
       ui_element_type: react/element
       ui_element_spec:
-          styles:
-              type: mui/style
-              root:
-                  width: 100%
           states:
               mobileNav:
                   type: react/state
                   name: open
                   setter: setOpen
                   init: false
+          handlers:
+              sideNavHandler:
+                  type: js/function
+                  body: |
+                      states.mobileNav.setOpen(!states.mobileNav.open)
+          element:
+              type: react/element
+              name: app-x/page/layout/HeaderLayout
+              props:
+                  header:
+                      type: react/element
+                      name: self/page/header/Header_user
+                      props:
+                          suffix:
+                              type: react/element
+                              name: '@material-ui/core.Hidden'
+                              props:
+                                  mdUp: true
+                              children:
+                                  - type: react/element
+                                    name: '@material-ui/core.IconButton'
+                                    props:
+                                        color: inherit
+                                        onClick:
+                                            type: js/expression
+                                            data: handlers.sideNavHandler
+                                    children:
+                                        - type: react/element
+                                          name: '@material-ui/icons.Menu'
+              children:
+                  - type: react/element
+                    name: self/page/Builder
+                    props:
+                        isMobileNavOpen:
+                            type: js/expression
+                            data: states.mobileNav.open
+                        handlers:
+                            sideNavHandler:
+                                type: js/expression
+                                data: handlers.sideNavHandler
+
+    ############################################################
+    - namespace: sys
+      ui_name: service
+      ui_ver: internal
+      ui_element_name: /page/Builder
+      ui_element_type: react/element
+      ui_element_spec:
+          states:
               builder:
                   type: react/state
                   name: data
@@ -136,10 +145,6 @@ ui_element:
                       ui_element_name: /page/Console
                       ui_route_name: ''
           handlers:
-              sideNavHandler:
-                  type: js/function
-                  body: |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
               handleElementSelected:
                   type: js/function
                   params:
@@ -164,123 +169,24 @@ ui_element:
                       })
           element:
               type: react/element
-              name: app-x/page/layout/HeaderSideNavLayout
+              name: 'app-x/page/layout/SideNavLayout'
               props:
-                  header:
-                      type: react/element
-                      name: app-x/page/header/Header_user_sidenav
-                      props:
-                          appName: appx
-                          title: App Builder
-                          titleIcon:
-                              type: react/element
-                              name: '@material-ui/icons.ViewQuiltRounded'
-                          homeUrl: '/console'
-                          authUrl: '/login'
-                          handlers:
-                              sideNavHandler:
-                                  type: js/expression
-                                  data: handlers.sideNavHandler
+                  isMobileNavOpen:
+                      type: js/expression
+                      data: props.isMobileNavOpen
+                  onMobileClose:
+                      type: js/expression
+                      data: props.handlers.sideNavHandler
                   sideNav:
                       type: react/element
-                      name: app-x/page/sideNav/SideDrawer
+                      name: '@material-ui/core.Box'
                       props:
-                          isMobileNavOpen:
-                              type: js/expression
-                              data: states.mobileNav.open
-                          onMobileClose:
-                              type: js/expression
-                              data: handlers.sideNavHandler
+                          height: 100%
+                          display: flex
+                          flexDirection: column
                       children:
                           - type: react/element
-                            name: '@material-ui/core.Box'
-                            props:
-                                height: 100%
-                                display: flex
-                                flexDirection: column
-                            children:
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 2
-                                      alignItems: center
-                                      display: flex
-                                      flexDirection: column
-                                  children:
-                                      - type: react/element
-                                        name: 'app-x/router.A'
-                                        props:
-                                            href: /app/account
-                                        children:
-                                            - type: react/element
-                                              name: '@material-ui/core.Box'
-                                              props:
-                                                  p: 2
-                                              children:
-                                                  - type: react/element
-                                                    name: '@material-ui/core.Avatar'
-                                                    props:
-                                                        src: /static/images/avatars/avatar_6.png
-                                      - type: react/element
-                                        name: '@material-ui/core.Typography'
-                                        props:
-                                            color: textPrimary
-                                            variant: h6
-                                        children:
-                                            - Katarina Smith
-                                      - type: react/element
-                                        name: '@material-ui/core.Typography'
-                                        props:
-                                            color: textSecondary
-                                            variant: body2
-                                        children:
-                                            - Senior Developer
-                                # divider
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 0
-                                  children:
-                                      - type: react/element
-                                        name: '@material-ui/core.Divider'
-                                # divider
-                                - type: react/element
-                                  name: 'self/nav/appNav'
-                                # divider
-                                - type: react/element
-                                  name: '@material-ui/core.Box'
-                                  props:
-                                      p: 0
-                                  children:
-                                      - type: react/element
-                                        name: '@material-ui/core.Divider'
-                                # divider
-                                - type: react/element
-                                  name: 'self/nav/uiNav'
-                                  props:
-                                      handlers:
-                                          handleElementSelected:
-                                              type: js/expression
-                                              data: handlers.handleElementSelected
-                                          handleRouteSelected:
-                                              type: js/expression
-                                              data: handlers.handleRouteSelected
-              children:
-                  - type: react/element
-                    name: app-x/builder/UI_Builder
-                    props:
-                        namespace: sys
-                        ui_name: ui
-                        ui_deployment: base
-                        ui_builder_type:
-                            type: js/expression
-                            data: states.builder.data.ui_builder_type
-                        ui_element_name:
-                            type: js/expression
-                            data: states.builder.data.ui_element_name
-                        ui_route_name:
-                            type: js/expression
-                            data: states.builder.data.ui_route_name
+                            name: 'self/nav/appNav'
 
     ############################################################
     - namespace: sys

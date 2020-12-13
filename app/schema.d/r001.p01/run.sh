@@ -44,6 +44,8 @@ eval_template -t ${CURR_DIR}/appx.sql \
               -y9 ${CURR_DIR}/ui_service_route.yaml \
               -y10 ${CURR_DIR}/ui_ui_element.yaml \
               -y11 ${CURR_DIR}/ui_ui_route.yaml \
+              -y12 ${CURR_DIR}/ui_auth_element.yaml \
+              -y13 ${CURR_DIR}/ui_auth_route.yaml \
               > /tmp/$$/appx.sql
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"

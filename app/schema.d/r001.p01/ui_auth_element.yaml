@@ -1,0 +1,121 @@
+ui_element:
+    ############################################################
+    - namespace: sys
+      ui_name: auth
+      ui_ver: internal
+      ui_element_name: /index
+      ui_element_type: html
+      ui_element_spec:
+          path: /index.html
+          entry: /Router
+          data:
+              title: Design Your Own Apps with App-X
+
+    ############################################################
+    - namespace: sys
+      ui_name: auth
+      ui_ver: internal
+      ui_element_name: /Router
+      ui_element_type: react/element
+      ui_element_spec:
+          propTypes:
+              title: PropTypes.string.isRequired
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+          element:
+              type: react/element
+              name: app-x/app/MUI_theme_redux
+              props:
+                  routes:
+                      type: appx/route
+                  redux_store_provider:
+                      type: js/import
+                      name: app-x/redux/store.default
+                  theme_provider:
+                      type: js/import
+                      name: app-x/theme.default
+                  not_found_view:
+                      type: react/element
+                      name: app-x/page/layout/HeaderLayout
+                      props:
+                          header:
+                              type: react/element
+                              name: self/page/header/Header_user
+                      children:
+                          - type: react/element
+                            name: app-x/view/error/NotFoundView
+
+    ############################################################
+    - namespace: sys
+      ui_name: auth
+      ui_ver: internal
+      ui_element_name: /page/header/Header_user
+      ui_element_type: react/element
+      ui_element_spec:
+          propTypes:
+              suffix: PropTypes.element
+          element:
+              type: react/element
+              name: app-x/page/header/Header_user
+              props:
+                  title: Role Editor
+                  titleIcon:
+                      type: react/element
+                      name: "@material-ui/icons.ViewQuiltRounded"
+                  homeUrl: '/console'
+                  authUrl: '/login'
+                  authDeployment:
+                      namespace: sys
+                      ui_name: console
+                      ui_deployment: base
+                  suffix:
+                      type: js/expression
+                      data: props.suffix
+
+    ############################################################
+    - namespace: sys
+      ui_name: auth
+      ui_ver: internal
+      ui_element_name: /page/Console
+      ui_element_type: react/element
+      ui_element_spec:
+          states:
+              mobileNav:
+                  type: react/state
+                  name: open
+                  setter: setOpen
+                  init: false
+          handlers:
+              sideNavHandler:
+                  type: js/function
+                  body: |
+                      states.mobileNav.setOpen(!states.mobileNav.open)
+          element:
+              type: react/element
+              name: app-x/page/layout/HeaderLayout
+              props:
+                  header:
+                      type: react/element
+                      name: self/page/header/Header_user
+                      props:
+                          suffix:
+                              type: react/element
+                              name: '@material-ui/core.Hidden'
+                              props:
+                                  mdUp: true
+                              children:
+                                  - type: react/element
+                                    name: '@material-ui/core.IconButton'
+                                    props:
+                                        color: inherit
+                                        onClick:
+                                            type: js/expression
+                                            data: handlers.sideNavHandler
+                                    children:
+                                        - type: react/element
+                                          name: '@material-ui/icons.Menu'
+              children:
+                  - type: react/element
+                    name: app-x/view/error/NotFoundView
