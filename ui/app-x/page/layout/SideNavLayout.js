@@ -2,7 +2,7 @@
 import React from 'react'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core'
+import { Box, makeStyles } from '@material-ui/core'
 
 import SideDrawer from 'app-x/page/layout/SideDrawer'
 
@@ -13,14 +13,14 @@ const SideNavLayout = (props) => {
       backgroundColor: theme.palette.background.dark,
       display: 'flex',
       height: '100%',
+      width: '100%',
       overflow: 'hidden',
-      width: '100%'
     },
     wrapper: {
       display: 'flex',
       flex: '1 1 auto',
       overflow: 'hidden',
-      paddingTop: 64,
+      // paddingTop: 64,
       [theme.breakpoints.up('md')]: {
         paddingLeft: 300
       }
@@ -28,12 +28,12 @@ const SideNavLayout = (props) => {
     contentContainer: {
       display: 'flex',
       flex: '1 1 auto',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
     content: {
       flex: '1 1 auto',
       height: '100%',
-      overflow: 'auto'
+      overflow: 'auto',
     }
   }))
 
@@ -44,7 +44,7 @@ const SideNavLayout = (props) => {
   // console.log(children)
 
   return (
-    <>
+    <div className={styles.root}>
       <SideDrawer
         isMobileNavOpen={props.isMobileNavOpen}
         onMobileClose={props.onMobileClose}
@@ -58,7 +58,7 @@ const SideNavLayout = (props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

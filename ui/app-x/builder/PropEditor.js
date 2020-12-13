@@ -7,6 +7,7 @@ const PropEditor = (props) => {
   const styles = makeStyles((theme) => ({
     box: {
       minHeight: 200,
+      height: '100%',
       // maxHeight: 300
       backgroundColor: theme.palette.background.paper,
     }

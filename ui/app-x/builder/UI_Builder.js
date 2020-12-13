@@ -29,23 +29,30 @@ const UI_Builder = (props) => {
     },
     box: {
       minHeight: 200,
-      height: '100%',
+      // height: '100%',
       minWidth: 300,
       backgroundColor: theme.palette.background.paper,
       border: 1,
       borderStyle: 'solid',
-      //borderColor: 'text.secondary',
       borderColor: theme.palette.divider,
-      m: 1,
+    },
+    content: {
+      height: '100%',
+      width: '100%',
+      padding: 0,
     }
   }))()
 
   return (
     <Layout className={styles.builder}>
-      <Content>Content</Content>
+      <Content className={styles.content}>
+        <Container>
+          Content
+        </Container>
+      </Content>
       <Footer className={styles.footer}>
         <Grid container>
-          <Grid item xs={12} sm={6}>
+          <Grid item sm={12} md={6}>
             <Box className={styles.box}>
               <ReactElementTree
                 namespace={props.namespace}
@@ -55,7 +62,7 @@ const UI_Builder = (props) => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item sm={12} md={6}>
             <Box className={styles.box}>
               <PropEditor>
               </PropEditor>
