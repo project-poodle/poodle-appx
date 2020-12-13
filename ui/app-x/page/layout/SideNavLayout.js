@@ -21,7 +21,7 @@ const SideNavLayout = (props) => {
       flex: '1 1 auto',
       overflow: 'hidden',
       // paddingTop: 64,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         paddingLeft: 300
       }
     },

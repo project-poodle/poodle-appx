@@ -105,7 +105,7 @@ ui_element:
                               type: react/element
                               name: '@material-ui/core.Hidden'
                               props:
-                                  mdUp: true
+                                  lgUp: true
                               children:
                                   - type: react/element
                                     name: '@material-ui/core.IconButton'

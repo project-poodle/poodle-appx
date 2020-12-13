@@ -55,7 +55,7 @@ const SideDrawer = (props) => {
 
   return (
     <>
-      <Hidden mdUp>
+      <Hidden lgUp>
         <Drawer
           anchor="left"
           classes={{ paper: classes.mobileDrawer }}
@@ -66,7 +66,7 @@ const SideDrawer = (props) => {
           {props.children}
         </Drawer>
       </Hidden>
-      <Hidden smDown>
+      <Hidden mdDown>
         <Drawer
           anchor="left"
           classes={{ paper: classes.desktopDrawer }}
