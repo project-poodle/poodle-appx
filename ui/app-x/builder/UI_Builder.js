@@ -52,7 +52,7 @@ const UI_Builder = (props) => {
       </Content>
       <Footer className={styles.footer}>
         <Grid container>
-          <Grid item sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Box className={styles.box}>
               <ReactElementTree
                 namespace={props.namespace}
@@ -62,7 +62,7 @@ const UI_Builder = (props) => {
               />
             </Box>
           </Grid>
-          <Grid item sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <Box className={styles.box}>
               <PropEditor>
               </PropEditor>

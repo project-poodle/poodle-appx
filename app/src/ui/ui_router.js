@@ -5,6 +5,7 @@ const cache = require('../cache/cache')
 const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
 const { handle_html } = require('./html')
 const { handle_react } = require('./react')
+const { handle_render } = require('./render')
 
 const ELEM_ROUTE_PREFIX = "/_elem/"
 
@@ -447,6 +448,11 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })
+                    render_js_route_path = js_route_path + 'index.html'
+                    router.get(render_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_render(req, res)
+                    })
                 } else {
                     // route path without '.js' will add '.js' and '.source'
                     new_js_route_path = js_route_path + '.js'
@@ -458,6 +464,11 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                     router.get(source_js_route_path, (req, res) => {
                         req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
+                    })
+                    render_js_route_path = js_route_path + '.html'
+                    router.get(render_js_route_path, (req, res) => {
+                        req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                        handle_render(req, res)
                     })
                 }
 

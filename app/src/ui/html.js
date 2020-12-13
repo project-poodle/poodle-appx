@@ -94,7 +94,7 @@ function handle_html(req, res) {
     if (! ('ui_deployment_spec' in ui_deployment) || ! ('apiMaps' in ui_deployment.ui_deployment_spec) ) {
         res.status(422).json({
             status: FAILURE,
-            message: `ERROR: ui_deployment_spec.importMaps not defined [${ui_deployment}]`
+            message: `ERROR: ui_deployment_spec.apiMaps not defined [${ui_deployment}]`
         })
         return
     }
@@ -128,12 +128,20 @@ function handle_html(req, res) {
 
     fs.readFile(path.join(rootDir, 'init.js'), "utf8", (err, initjs_content) => {
 
+        if (err) {
+            res.status(422).json({
+                status: FAILURE,
+                message: `ERROR: cannot read init.js`
+            })
+            return
+        }
+
         fs.readFile(path.join(rootDir, ui_element.ui_element_spec.path), "utf8", (err, html_content) => {
 
             if (err) {
                 res.status(422).json({
                     status: FAILURE,
-                    message: `ERROR: ui_element_spec.path not defined [${ui_element}]`
+                    message: `ERROR: cannot read ui_element_spec.path [${ui_element}]`
                 })
                 return
             }
@@ -171,5 +179,7 @@ function handle_html(req, res) {
 
 // export
 module.exports = {
-    handle_html: handle_html
+    handle_html: handle_html,
+    RENDER_JSON: RENDER_JSON,
+    KEY_VALUE: KEY_VALUE,
 }
