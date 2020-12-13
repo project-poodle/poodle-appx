@@ -26,7 +26,7 @@ _appx_meta:
 ######################################################################
 # realm
 _realm:
-    - realm: "core"
+    - realm: "main"
       realm_key: "UNHEX(CONCAT(SUBSTRING(SHA2(CAST(RAND() * 1000 * 1000 as CHAR), 256), 2, 32), SUBSTRING(SHA2(CAST(RAND() * 1000 as CHAR), 256), 2, 32)))"
       realm_spec:
           comment: "initialize [appx] realm"
@@ -34,7 +34,7 @@ _realm:
 ######################################################################
 # user
 _realm_user:
-    - realm: "core"
+    - realm: "main"
       username: "{{{MYSQL_CONF.appx_node_user}}}"
       password: 'SHA2("{{{MYSQL_CONF.appx_node_pass}}}", 256)'
       user_spec:
@@ -44,7 +44,7 @@ _realm_user:
 # _realm_module
 _realm_module:
     # local auth
-    - realm: "core"
+    - realm: "main"
       module_name: "00.appx.local"
       module_pattern: "^(.+)\\@LOCAL$"
       module_spec:
@@ -58,7 +58,7 @@ _realm_module:
                   password: password
           comment: "initialize auth module [appx.local]"
     # ldap auth
-    - realm: "core"
+    - realm: "main"
       module_name: "10.appx.ldap"
       module_priority: 10
       module_pattern: "^(.+)\\@LDAP$"
@@ -74,7 +74,7 @@ _realm_module:
               group_name_match: 1
           comment: "initialize auth module [appx.ldap_user]"
     # google auth
-    - realm: "core"
+    - realm: "main"
       module_name: "20.appx.google"
       module_pattern: "^(.+)$"
       module_spec:
@@ -85,7 +85,7 @@ _realm_module:
               some_other_key: "some_other_key"
           comment: "initialize auth module [appx.google]"
     # facebook auth
-    - realm: "core"
+    - realm: "main"
       module_name: "21.appx.facebook"
       module_pattern: "^(.+)$"
       module_spec:
@@ -96,7 +96,7 @@ _realm_module:
               some_other_key: "some_other_key"
           comment: "initialize auth module [appx.facebook]"
     # github auth
-    - realm: "core"
+    - realm: "main"
       module_name: "22.appx.github"
       module_pattern: "^(.+)$"
       module_spec:
@@ -112,7 +112,7 @@ _realm_module:
 _realm_app:
     - namespace: "sys"
       app_name: "appx"
-      realm: "core"
+      realm: "main"
       realm_app_spec:
           comment: "initialize auth app realm"
 
@@ -294,7 +294,7 @@ _auth_func_perm:
 # namespace
 namespace:
     - namespace: "sys"
-      owner_realm: "core"
+      owner_realm: "main"
       owner_name: "{{{MYSQL_CONF.appx_node_user}}}@LOCAL"
       namespace_spec:
           comment: "initialize"

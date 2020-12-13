@@ -167,7 +167,7 @@ function _get_token_by_app(namespace, app_name, callback, handler) {
       }
     }
   } else {
-    realm(
+    lookupRealm(
       namespace,
       app_name,
       data => {
@@ -222,7 +222,7 @@ function _handle_logout(realm) {
 }
 
 // login for app_name context
-function login(realm, username, password, callback, handler) {
+const login = (realm, username, password, callback, handler) => {
   // get base path
   const basePath = _get_global_auth_base_path(realm)
   //console.log(`INFO: api/login - ${realm} ${username} ${password}`)
@@ -289,7 +289,7 @@ function login(realm, username, password, callback, handler) {
 }
 
 // logout for app_name context
-function logout(realm, callback, handler) {
+const logout = (realm, callback, handler) => {
   // get base path
   const basePath = _get_global_auth_base_path(realm)
   //console.log(`INFO: api/logout - ${realm} ${username}`)
@@ -345,8 +345,8 @@ function logout(realm, callback, handler) {
     })
 }
 
-// get realm
-function realm(namespace, app_name, callback, handler) {
+// lookup realm
+const lookupRealm = (namespace, app_name, callback, handler) => {
   // get base path
   const basePath = _get_app_auth_base_path(namespace, app_name)
   return axios
@@ -388,8 +388,8 @@ function realm(namespace, app_name, callback, handler) {
 }
 
 // get self information
-function me(namespace, app_name, callback, handler) {
-  realm(
+const me = (namespace, app_name, callback, handler) => {
+  lookupRealm(
     namespace,
     app_name,
     data => {
@@ -484,7 +484,7 @@ function me(namespace, app_name, callback, handler) {
 }
 
 // request for app_name context
-function request(namespace, app_name, conf, callback, handler) {
+const request = (namespace, app_name, conf, callback, handler) => {
   // get base path
   const basePath = _get_base_path(namespace, app_name)
   _get_token_by_app(
@@ -552,7 +552,7 @@ function request(namespace, app_name, conf, callback, handler) {
   )
 }
 
-function get(namespace, app_name, url, callback, handler) {
+const get = (namespace, app_name, url, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -565,7 +565,7 @@ function get(namespace, app_name, url, callback, handler) {
   )
 }
 
-function head(namespace, app_name, url, callback, handler) {
+const head = (namespace, app_name, url, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -578,7 +578,7 @@ function head(namespace, app_name, url, callback, handler) {
   )
 }
 
-function post(namespace, app_name, url, data, callback, handler) {
+const post = (namespace, app_name, url, data, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -592,7 +592,7 @@ function post(namespace, app_name, url, data, callback, handler) {
   )
 }
 
-function put(namespace, app_name, url, data, callback, handler) {
+const put = (namespace, app_name, url, data, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -606,7 +606,7 @@ function put(namespace, app_name, url, data, callback, handler) {
   )
 }
 
-function patch(namespace, app_name, url, data, callback, handler) {
+const patch = (namespace, app_name, url, data, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -620,7 +620,7 @@ function patch(namespace, app_name, url, data, callback, handler) {
   )
 }
 
-function del(namespace, app_name, url, callback, handler) {
+const del = (namespace, app_name, url, callback, handler) => {
   return request(
     namespace,
     app_name,
@@ -636,7 +636,7 @@ function del(namespace, app_name, url, callback, handler) {
 export {
   login,
   logout,
-  realm,
+  lookupRealm,
   me,
   get,
   head,

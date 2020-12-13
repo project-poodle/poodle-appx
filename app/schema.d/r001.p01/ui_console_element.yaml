@@ -350,7 +350,7 @@ ui_element:
                   body: |
                       event.preventDefault()
                       $r('app-x/api.login')(
-                          'core',
+                          'main',
                           states.username.value,
                           states.password.value,
                           res => {
