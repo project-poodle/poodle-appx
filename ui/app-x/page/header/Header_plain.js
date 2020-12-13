@@ -38,10 +38,10 @@ const Header_plain = (props) => {
           <Avatar className={styles.avatar}>
             { titleIcon }
           </Avatar>
-          <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
-            { title }
-          </Typography>
         </A>
+        <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
+          { title }
+        </Typography>
       </Toolbar>
     </AppBar>
   )

@@ -67,7 +67,7 @@ ui_route:
                           type: react/element
                           name: "@material-ui/icons.ViewQuiltRounded"
                       homeUrl: '/console'
-                      loginUrl: '/login'
+                      authUrl: '/login'
           children:
               - type: react/element
                 name: self/page/Console

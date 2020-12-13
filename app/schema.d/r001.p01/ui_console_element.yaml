@@ -7,7 +7,7 @@ ui_element:
       ui_element_type: html
       ui_element_spec:
           path: /index.html
-          entry: /AppX
+          entry: /Router
           data:
               title: Design Your Own Apps with App-X
 
@@ -15,7 +15,7 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /AppX
+      ui_element_name: /Router
       ui_element_type: react/element
       ui_element_spec:
           propTypes:
@@ -227,7 +227,7 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/auth/Login
+      ui_element_name: /page/landing/Unsplash_bg
       ui_element_type: react/element
       ui_element_spec:
           styles:
@@ -249,6 +249,24 @@ ui_element:
                       - 349521          # road-to nowhere
                       - 427860          # view angle
                       - 353649          # sea me now
+              children:
+                  - type: js/expression
+                    data: props.children
+
+    ############################################################
+    - namespace: sys
+      ui_name: console
+      ui_ver: internal
+      ui_element_name: /page/auth/Login
+      ui_element_type: react/element
+      ui_element_spec:
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+          element:
+              type: react/element
+              name: self/page/landing/Unsplash_bg
               children:
                   - type: react/element
                     name: self/page/auth/SignInForm
@@ -592,9 +610,13 @@ ui_element:
                   width: 360
                   minWidth: 360
                   maxWidth: 360
+                  zIndex: 0
                   margin:
                       type: js/expression
                       data: theme.spacing(3, 2)
+                  backgroundColor:
+                      type: js/expression
+                      data: theme.palette.background.paper
               cardContent:
                   margin:
                       type: js/expression
@@ -629,104 +651,107 @@ ui_element:
                   )
           element:
               type: react/element
-              name: '@material-ui/core.Container'
-              props:
-                  className:
-                      type: js/expression
-                      data: styles.container
+              name: self/page/landing/Unsplash_bg
               children:
                   - type: react/element
-                    name: '@material-ui/core.Box'
+                    name: '@material-ui/core.Container'
                     props:
                         className:
                             type: js/expression
-                            data: styles.box
+                            data: styles.container
                     children:
-                        - type: js/map
-                          data:
-                              type: js/filter
-                              data:
+                        - type: react/element
+                          name: '@material-ui/core.Box'
+                          props:
+                              className:
                                   type: js/expression
-                                  data: states.ui.deployments
-                              filter: |
-                                  !(item.namespace == 'sys' && item.ui_name == 'console')
-                          result:
-                              type: react/element
-                              name: '@material-ui/core.Card'
-                              props:
-                                  key:
-                                      type: js/expression
-                                      data: item.id
-                                  className:
-                                      type: js/expression
-                                      data: styles.card
-                              children:
-                                  - type: react/element
-                                    name: '@material-ui/core.CardActionArea'
+                                  data: styles.box
+                          children:
+                              - type: js/map
+                                data:
+                                    type: js/filter
+                                    data:
+                                        type: js/expression
+                                        data: states.ui.deployments
+                                    filter: |
+                                        !(item.namespace == 'sys' && item.ui_name == 'console')
+                                result:
+                                    type: react/element
+                                    name: '@material-ui/core.Card'
+                                    props:
+                                        key:
+                                            type: js/expression
+                                            data: item.id
+                                        className:
+                                            type: js/expression
+                                            data: styles.card
                                     children:
                                         - type: react/element
-                                          name: app-x/router.HLink
-                                          props:
-                                              namespace:
-                                                  type: js/expression
-                                                  data: item.namespace
-                                              ui_name:
-                                                  type: js/expression
-                                                  data: item.ui_name
-                                              ui_deployment:
-                                                  type: js/expression
-                                                  data: item.ui_deployment
-                                              href: '/'
+                                          name: '@material-ui/core.CardActionArea'
                                           children:
                                               - type: react/element
-                                                name: '@material-ui/core.CardContent'
+                                                name: app-x/router.HLink
+                                                props:
+                                                    namespace:
+                                                        type: js/expression
+                                                        data: item.namespace
+                                                    ui_name:
+                                                        type: js/expression
+                                                        data: item.ui_name
+                                                    ui_deployment:
+                                                        type: js/expression
+                                                        data: item.ui_deployment
+                                                    href: '/'
                                                 children:
                                                     - type: react/element
-                                                      name: '@material-ui/core.Avatar'
-                                                      props:
-                                                          className:
-                                                              type: js/expression
-                                                              data: styles.avatar
+                                                      name: '@material-ui/core.CardContent'
                                                       children:
                                                           - type: react/element
-                                                            name: '@material-ui/icons.ViewQuiltRounded'
-                                                    - type: react/element
-                                                      name: '@material-ui/core.Typography'
-                                                      props:
-                                                          variant: body2
-                                                          className:
-                                                              type: js/expression
-                                                              data: styles.cardContent
-                                                      children:
-                                                          - type: js/expression
-                                                            data: item.namespace
-                                                          - ' / '
-                                                          - type: js/expression
-                                                            data: item.ui_name
-                                                          - ' / '
-                                                          - type: js/expression
-                                                            data: item.ui_deployment
-                                                    - type: react/element
-                                                      name: '@material-ui/core.Typography'
-                                                      props:
-                                                          variant: h6
-                                                          className:
-                                                              type: js/expression
-                                                              data: styles.cardContent
-                                                      children:
-                                                          - type: js/expression
-                                                            data: item.ui_spec.description
-                                  - type: react/element
-                                    name: '@material-ui/core.CardActions'
-                                    children:
+                                                            name: '@material-ui/core.Avatar'
+                                                            props:
+                                                                className:
+                                                                    type: js/expression
+                                                                    data: styles.avatar
+                                                            children:
+                                                                - type: react/element
+                                                                  name: '@material-ui/icons.ViewQuiltRounded'
+                                                          - type: react/element
+                                                            name: '@material-ui/core.Typography'
+                                                            props:
+                                                                variant: body2
+                                                                className:
+                                                                    type: js/expression
+                                                                    data: styles.cardContent
+                                                            children:
+                                                                - type: js/expression
+                                                                  data: item.namespace
+                                                                - ' / '
+                                                                - type: js/expression
+                                                                  data: item.ui_name
+                                                                - ' / '
+                                                                - type: js/expression
+                                                                  data: item.ui_deployment
+                                                          - type: react/element
+                                                            name: '@material-ui/core.Typography'
+                                                            props:
+                                                                variant: h6
+                                                                className:
+                                                                    type: js/expression
+                                                                    data: styles.cardContent
+                                                            children:
+                                                                - type: js/expression
+                                                                  data: item.ui_spec.description
                                         - type: react/element
-                                          name: '@material-ui/core.Button'
-                                          props:
-                                              size: small
-                                              color: primary
-                                              # variant: contained
-                                              className:
-                                                  type: js/expression
-                                                  data: styles.cardContent
+                                          name: '@material-ui/core.CardActions'
                                           children:
-                                              - Details
+                                              - type: react/element
+                                                name: '@material-ui/core.Button'
+                                                props:
+                                                    size: small
+                                                    color: primary
+                                                    # variant: contained
+                                                    className:
+                                                        type: js/expression
+                                                        data: styles.cardContent
+                                                children:
+                                                    - Details

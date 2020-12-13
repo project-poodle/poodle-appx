@@ -30,6 +30,10 @@ const SignInSide = (props) => {
     root: {
       height: '100%',
       width: '100%',
+      zIndex: -1,
+    },
+    foreground: {
+      zIndex: 0,
     },
     image: {
       position: 'fixed',
@@ -52,7 +56,7 @@ const SignInSide = (props) => {
     <Box component="main" className={styles.root}>
       <CssBaseline />
       <Box className={styles.image} />
-      <Box>
+      <Box className={styles.foreground}>
         { props.children }
       </Box>
     </Box>

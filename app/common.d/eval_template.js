@@ -1,18 +1,19 @@
 const fs = require('fs')
 const util = require('util')
+const _ = require('lodash')
 const objPath = require('object-path')
 const YAML = require('yaml')
 const Mustache = require('mustache')
 const { ArgumentParser } = require('argparse')
 
-const MAX_COUNT = 20
+const MAX_COUNT = 30
 
 const parser = new ArgumentParser({
   description: 'evaluate template with one or more input variable files (YAML or JSON)'
 });
 
 parser.add_argument('-t',       '--template',       { help: 'template file', required: true });
-for (let i = 1; i < MAX_COUNT; i++) {
+for (let i = 1; i <= MAX_COUNT; i++) {
     parser.add_argument('-y'  +i,   '--yaml_file'  +i, { help: 'yaml variable file '+i });
     parser.add_argument('-ys' +i,   '--yaml_scope' +i, { help: 'yaml variable scope '+i });
     parser.add_argument('-j'  +i,   '--json_file'  +i, { help: 'json variable file '+i });
@@ -100,6 +101,45 @@ let variables = {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// primitive test
+function isPrimitive(test) {
+    return (test !== Object(test))
+}
+
+// merge two json
+function merge(json1, json2) {
+
+    if (isPrimitive(json1) || isPrimitive(json2)) {
+        throw new Error(`ERROR: input json is primitive - json1 [` + (typeof json1) + `], json2 [` + (typeof json2) + `]`)
+    }
+
+    if (Array.isArray(json1) != Array.isArray(json2)) {
+        throw new Error(`ERROR: array type not match - json1 ` + JSON.stringify(json1, null, 4) + `, json2 ` + JSON.stringify(json2, null, 4))
+    }
+
+    // handle array case
+    if (Array.isArray(json1)) {
+        return [].concat(_.cloneDeep(json1), _.cloneDeep(json2))
+    }
+
+    // handle object case
+    const result = _.cloneDeep(json1)
+    Object.keys(json2).map(key => {
+        if (key in json1) {
+            if (isPrimitive(json1[key]) && isPrimitive(json2[key])) {
+                result[key] = json2[key]
+            } else {
+                result[key] = merge(json1[key], json2[key])
+            }
+        } else {
+            result[key] = json2[key]
+        }
+    })
+
+    return result
+}
+
 // initialize variables
 let variable_initialized = false
 for (let i = 1; i < MAX_COUNT; i++) {
@@ -115,7 +155,7 @@ for (let i = 1; i < MAX_COUNT; i++) {
         if (args['yaml_scope'+i] != undefined) {
             variables[args['yaml_scope'+i]] = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
         } else {
-            variables = Object.assign({}, variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
+            variables = merge(variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
         }
 
         variable_initialized = true
@@ -132,7 +172,7 @@ for (let i = 1; i < MAX_COUNT; i++) {
         if (args['json_scope'+i] != undefined) {
             variables[args['json_scope'+i]] = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
         } else {
-            variables = Object.assign({}, variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
+            variables = merge(variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
         }
 
         variable_initialized = true

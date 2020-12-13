@@ -157,6 +157,7 @@ const UI_Element_Nav = (props) => {
       || loaded.ui_deployment != props.ui_deployment) {
 
     api.get(
+      'sys',
       'appx',
       `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element`,
       data => {

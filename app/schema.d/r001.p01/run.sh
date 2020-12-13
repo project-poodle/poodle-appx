@@ -38,8 +38,12 @@ eval_template -t ${CURR_DIR}/appx.sql \
               -y3 ${CURR_DIR}/relation.yaml \
               -y4 ${CURR_DIR}/attr.yaml \
               -y5 ${CURR_DIR}/api.yaml \
-              -y7 ${CURR_DIR}/ui_console_element.yaml \
-              -y6 ${CURR_DIR}/ui_console_route.yaml \
+              -y6 ${CURR_DIR}/ui_console_element.yaml \
+              -y7 ${CURR_DIR}/ui_console_route.yaml \
+              -y8 ${CURR_DIR}/ui_service_element.yaml \
+              -y9 ${CURR_DIR}/ui_service_route.yaml \
+              -y10 ${CURR_DIR}/ui_ui_element.yaml \
+              -y11 ${CURR_DIR}/ui_ui_route.yaml \
               > /tmp/$$/appx.sql
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to evaluate template !"

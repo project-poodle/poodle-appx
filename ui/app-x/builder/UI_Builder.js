@@ -7,7 +7,6 @@ const { DirectoryTree } = Tree
 const { Header, Footer, Sider, Content } = Layout
 import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
 
-import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import ReactElementTree from 'app-x/builder/ReactElementTree'
 import PropEditor from 'app-x/builder/PropEditor'

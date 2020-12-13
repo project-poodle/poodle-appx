@@ -136,6 +136,7 @@ const ReactElementTree = (props) => {
     const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
     // console.log(url)
     api.get(
+      'sys',
       'appx',
       url,
       data => {

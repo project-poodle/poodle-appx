@@ -7,9 +7,49 @@ ui_element:
       ui_element_type: html
       ui_element_spec:
           path: /index.html
-          entry: /Service
+          entry: /Router
           data:
               title: Design Your Own Apps with App-X
+
+    ############################################################
+    - namespace: sys
+      ui_name: service
+      ui_ver: internal
+      ui_element_name: /Router
+      ui_element_type: react/element
+      ui_element_spec:
+          propTypes:
+              title: PropTypes.string.isRequired
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+          element:
+              type: react/element
+              name: app-x/app/MUI_theme_redux
+              props:
+                  routes:
+                      type: appx/route
+                  redux_store_provider:
+                      type: js/import
+                      name: app-x/redux/store.default
+                  theme_provider:
+                      type: js/import
+                      name: app-x/theme.default
+                  not_found_view:
+                      type: react/element
+                      name: app-x/page/layout/HeaderLayout
+                      props:
+                          header:
+                              type: react/element
+                              name: self/page/header/Header_user
+                              props:
+                                  suffix:
+                                      type: react/element
+                                      name: '@material-ui/icons.MenuBook'
+                      children:
+                          - type: react/element
+                            name: app-x/view/error/NotFoundView
 
     ############################################################
     - namespace: sys
@@ -72,7 +112,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: service
       ui_ver: internal
       ui_element_name: /page/UI_Builder
       ui_element_type: react/element
@@ -136,7 +176,7 @@ ui_element:
                               type: react/element
                               name: '@material-ui/icons.ViewQuiltRounded'
                           homeUrl: '/console'
-                          loginUrl: '/login'
+                          authUrl: '/login'
                           handlers:
                               sideNavHandler:
                                   type: js/expression
@@ -244,7 +284,7 @@ ui_element:
 
     ############################################################
     - namespace: sys
-      ui_name: ui
+      ui_name: service
       ui_ver: internal
       ui_element_name: /nav/appNav
       ui_element_type: react/element

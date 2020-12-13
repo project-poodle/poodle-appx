@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { A, navigate } from 'app-x/router'
+import { A, HLink, navigate, hnavigate } from 'app-x/router'
 import PropTypes from 'prop-types'
 import {
   Avatar,
@@ -38,17 +38,32 @@ const Header_user = (props) => {
     },
   }));
 
+  // redirect for logout
+  function redirectLogout() {
+    if (props.authDeployment) {
+      hnavigate(
+        props.authDeployment.namespace,
+        props.authDeployment.ui_name,
+        props.authDeployment.ui_deployment,
+        props.authUrl,
+      )
+    } else {
+      navigate(props.authUrl)
+    }
+  }
+
   function handleLogout() {
     Object.keys(globalThis.appx.API_MAPS).map(namespace => {
       Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
         logout(
           props.realm,
           (res) => {
-            navigate(props.loginUrl)
+            redirectLogout()
           },
           (err) => {
             // TODO
             console.log(err.stack)
+            redirectLogout()
           }
         )
       })
@@ -74,7 +89,7 @@ const Header_user = (props) => {
           //)
         },
         (error) => {
-          navigate(props.loginUrl)
+          redirectLogout()
         }
       )
     }
@@ -96,14 +111,34 @@ const Header_user = (props) => {
     >
       <Toolbar>
         { props.prefix }
-        <A href={props.homeUrl} className={styles.inline}>
-          <Avatar className={styles.avatar}>
-            { props.titleIcon }
-          </Avatar>
-          <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
-            { props.title }
-          </Typography>
-        </A>
+        {
+          props.authDeployment
+            ?
+            (
+              <HLink
+                  namespace={props.authDeployment.namespace}
+                  ui_name={props.authDeployment.ui_name}
+                  ui_deployment={props.authDeployment.ui_deployment}
+                  href={props.homeUrl}
+                  className={styles.inline}
+              >
+                <Avatar className={styles.avatar}>
+                  { props.titleIcon }
+                </Avatar>
+              </HLink>
+            )
+            :
+            (
+              <A href={props.homeUrl} className={styles.inline}>
+                <Avatar className={styles.avatar}>
+                  { props.titleIcon }
+                </Avatar>
+              </A>
+            )
+        }
+        <Typography variant="h6" display="inline" color="secondary" noWrap className={styles.text}>
+          { props.title }
+        </Typography>
         <Box flexGrow={1} />
         { props.content }
         <IconButton
@@ -122,7 +157,12 @@ Header_user.propTypes = {
   title: PropTypes.string.isRequired,
   titleIcon: PropTypes.element.isRequired,
   homeUrl: PropTypes.string.isRequired,
-  loginUrl: PropTypes.string.isRequired,
+  authUrl: PropTypes.string.isRequired,
+  authDeployment: PropTypes.shape({
+    namespace: PropTypes.string.isRequired,
+    ui_name: PropTypes.string.isRequired,
+    ui_deployment: PropTypes.string.isRequired,
+  }), // authDeployment is not required
   prefix: PropTypes.element,
   content: PropTypes.element,
   suffix: PropTypes.element,

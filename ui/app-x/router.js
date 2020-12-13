@@ -60,7 +60,7 @@ const navigate = (url => {
 })
 
 // hard navigate to new url
-const hnavigate = (nameapce, ui_name, ui_deployment, url) => {
+const hnavigate = (namespace, ui_name, ui_deployment, url) => {
   check_root_path()
   // compute new url
   const new_url = (globalThis.appx.UI_ROOT + '/' + namespace + '/' + ui_name + '/' + ui_deployment + '/' + url).replace(/\/+/g, '/')
@@ -97,6 +97,7 @@ const HLink = (props) => {
 export {
   useRoutes,
   navigate,
+  hnavigate,
   A,
   HLink,
 }

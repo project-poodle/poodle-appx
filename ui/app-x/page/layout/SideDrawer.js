@@ -81,7 +81,8 @@ const SideDrawer = (props) => {
 };
 
 SideDrawer.propTypes = {
-  isMobileNavOpen: PropTypes.bool
+  isMobileNavOpen: PropTypes.bool,
+  onMobileClose: PropTypes.func,
 }
 
 SideDrawer.defaultProps = {

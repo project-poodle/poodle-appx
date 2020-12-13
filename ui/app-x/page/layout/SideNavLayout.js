@@ -4,7 +4,9 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core'
 
-const HeaderSideNavLayout = (props) => {
+import SideDrawer from 'app-x/page/layout/SideDrawer'
+
+const SideNavLayout = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,30 +39,33 @@ const HeaderSideNavLayout = (props) => {
 
   const styles = useStyles()
 
-  const { header, sideNav, children } = props
-
-  // console.log(header)
+  // const { sideNav, children } = props
   // console.log(sideNav)
   // console.log(children)
 
   return (
-    <div className={styles.root}>
-      { header }
-      { sideNav }
+    <>
+      <SideDrawer
+        isMobileNavOpen={props.isMobileNavOpen}
+        onMobileClose={props.onMobileClose}
+      >
+        { props.sideNav }
+      </SideDrawer>
       <div className={styles.wrapper}>
         <div className={styles.contentContainer}>
           <div className={styles.content}>
-          { children }
+          { props.children }
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
-HeaderSideNavLayout.propTypes = {
-  header: PropTypes.element.isRequired,
+SideNavLayout.propTypes = {
   sideNav: PropTypes.element.isRequired,
+  isMobileNavOpen: PropTypes.bool,
+  onMobileClose: PropTypes.func,
 }
 
-export default HeaderSideNavLayout;
+export default SideNavLayout;

@@ -5,12 +5,12 @@ const path = require('path');
 // process cli arguments
 const { ArgumentParser } = require('argparse')
 const parser = new ArgumentParser({
-    description: 'launch appx rest api server'
-});
+    description: 'launch appx server'
+})
 
-parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true });
-parser.add_argument('-m', '--mount', { help: 'mount config file', required: true });
-args = parser.parse_args();
+parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true })
+parser.add_argument('-m', '--mount', { help: 'mount config file', required: true })
+args = parser.parse_args()
 
 let db_conf_options = JSON.parse(fs.readFileSync(args.conf))
 let mount_options = JSON.parse(fs.readFileSync(args.mount))
@@ -27,10 +27,8 @@ const cache = require('./src/cache/cache')
 //////////////////////////////////////////////////
 // initialize express
 const express = require('express')
-const cookieParser = require('cookie-parser')
+// const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-//const session = require("express-session")
-//const MySQLStore = require('express-mysql-session')(session);
 
 // express app
 const app = express()
@@ -38,17 +36,6 @@ const app = express()
 //app.configure(function() {
 //    app.use(express.cookieParser())
 //})
-
-/*
-// initialize sessions
-let sessionStore = new MySQLStore(db_conf_options);
-app.use(session({
-    store: sessionStore,
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false
-}))
-*/
 
 //////////////////////////////////////////////////
 // initialize auth_dispatcher and authenticator --- Note: perform this step only after db_pool is initialized
@@ -59,8 +46,8 @@ const { auth_dispatcher, authenticator } = require("./src/auth")
 app.use(mount_options.auth_root, bodyParser.json())
 app.use(mount_options.auth_root,
   (req, res, next) => {
-    req.mount_options = mount_options;
-    next();
+    req.mount_options = mount_options
+    next()
   },
   auth_dispatcher)
 
@@ -71,8 +58,8 @@ const { api_dispatcher } = require('./src/api/api_dispatcher')
 app.use(mount_options.api_root, bodyParser.json())
 app.use(mount_options.api_root,
   (req, res, next) => {
-    req.mount_options = mount_options;
-    next();
+    req.mount_options = mount_options
+    next()
   },
   authenticator,
   api_dispatcher)
@@ -83,21 +70,15 @@ const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 // ui endpoints
 app.use(mount_options.ui_root,
   (req, res, next) => {
-    req.mount_options = mount_options;
-    next();
+    req.mount_options = mount_options
+    next()
   },
   ui_dispatcher)
 
 //////////////////////////////////////////////////
-// static files
+// initialize static files and launch page
 const staticRootDir = path.join(__dirname, '../ui/')
-// app.use('/app-x/', express.static(staticRootDir + 'app-x/'))
-// app.use('/dist/', express.static(staticRootDir + 'dist/'))
-// app.use('/static/', express.static(staticRootDir + 'static/'))
-// app.use('/sw.js', express.static(staticRootDir + 'sw.js'))
-
-//////////////////////////////////////////////////
-// redirect everything else to landing page
+// static files and launch page
 app.use('/',
     (req, res, next) => {
         if (req.url.startsWith('/app-x/')
@@ -107,6 +88,7 @@ app.use('/',
             // handle static files
             next()
         } else {
+          // redirect everything else to landing page
           res.status(302).redirect(mount_options.ui_root + '/sys/console/base/')
         }
     },
