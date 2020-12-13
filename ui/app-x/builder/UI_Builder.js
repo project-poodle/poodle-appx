@@ -39,16 +39,31 @@ const UI_Builder = (props) => {
     content: {
       height: '100%',
       width: '100%',
+      padding: theme.spacing(3, 3),
+      border: 1,
+      borderStyle: 'solid',
+      borderColor: theme.palette.divider,
+    },
+    iframe: {
+      height: '100%',
+      width: '100%',
       padding: 0,
+      margin: 0,
     }
   }))()
+
+  const iframeUrl =
+    globalThis.appx.UI_ROOT
+    + '/' + props.namespace
+    + '/' + props.ui_name
+    + '/' + props.ui_deployment
+    + '/_elem' + props.ui_element_name + '.html'
 
   return (
     <Layout className={styles.builder}>
       <Content className={styles.content}>
-        <Container>
-          Content
-        </Container>
+        <iframe src={iframeUrl} className={styles.iframe}>
+        </iframe>
       </Content>
       <Footer className={styles.footer}>
         <Grid container>
