@@ -49,6 +49,7 @@ const UI_Builder = (props) => {
       width: '100%',
       padding: 0,
       margin: 0,
+      borderStyle: 'dashed'
     }
   }))()
 
