@@ -213,7 +213,7 @@ function _handle_logout(realm) {
   const basePath = _get_global_auth_base_path(realm)
 
   // save username and token as null
-  globalThis.localStorage.removeItem(`/app-x/realm/${realm}/`)
+  globalThis.localStorage.removeItem(`/app-x/realm/${realm}`)
   // broadcast logout message
   store.dispatch({
     type: 'user/logout',
