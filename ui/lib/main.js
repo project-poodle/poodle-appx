@@ -32,6 +32,7 @@ import * as monacoEditor from '@monaco-editor/react'
 //import * as antd from 'antd'
 // utilities
 import * as clsx from 'clsx'
+import * as yaml from 'yaml'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
@@ -71,6 +72,7 @@ export default {
   //"@material-ui/styles": materialStyles,
   //"antd": antd,
   "clsx": clsx,
+  "yaml": yaml,
   "lodash": lodash,
   "axios": axios,
   "uuid": uuid,

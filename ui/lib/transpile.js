@@ -42,6 +42,7 @@ const default_import_maps = {
         //"react-ace",
         //"ace-builds",
         "clsx",
+        "yaml",
         "lodash",
         "axios",
         "uuid",

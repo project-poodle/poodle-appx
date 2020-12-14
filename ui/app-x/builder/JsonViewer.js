@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import YAML from 'yaml'
 import {
   Box,
   Container,
@@ -7,32 +8,37 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core'
-
-//import { default as AceEditor } from "react-ace"
-//import aceBuilds from "ace-builds"
-//import "ace-builds-src-noconflict/mode-java"
-//import "ace-builds-src-noconflict/theme-github"
-//import "ace-builds-src-noconflict/ext-language_tools"
 import { default as Editor } from '@monaco-editor/react'
 
-const SourceCode = (props) => {
+import * as api from 'app-x/api'
 
-  const [ code, setCode ] = useState('')
+const JsonViewer = (props) => {
+
+  const [ json, setJson ] = useState('')
 
   useEffect(() => {
 
     const ui_root = globalThis.appx.UI_ROOT
 
-    const url = `/${ui_root}/${props.namespace}/${props.ui_name}/${props.ui_deployment}/_elem/${props.ui_element_name}.source`.replace(/\/+/g, '/')
+    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
 
-    console.log(url)
-    fetch(url)
-      .then(response => response.text())
-      .then(data => {
+    api.get(
+      'sys',
+      'appx',
+      url,
+      data => {
         console.log(data)
-        setCode(data)
-      })
-      .catch(error => {
+        if (Array.isArray(data)) {
+          data = data[0]
+        }
+
+        if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+          setYaml('')
+        }
+
+        setJson(JSON.stringify(data.ui_element_spec, null, 2))
+      },
+      error => {
         console.error(error)
       })
 
@@ -54,12 +60,13 @@ const SourceCode = (props) => {
       onScroll={e => e.stopPropagation()}
       >
       <Editor
-        language="javascript"
+        language="json"
         options={{
           readOnly: true,
           wordWrap: 'on',
           wrappingIndent: 'deepIndent',
           scrollBeyondLastLine: false,
+          //tabIndex: 2,
         }}
         // height="60vh"
         // mode="javascript"
@@ -68,18 +75,18 @@ const SourceCode = (props) => {
         // theme="github"
         // mode='javascript'
         // readOnly={true}
-        value={code}
+        value={json}
         >
       </Editor>
     </Box>
   )
 }
 
-SourceCode.propTypes = {
+JsonViewer.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default SourceCode
+export default JsonViewer

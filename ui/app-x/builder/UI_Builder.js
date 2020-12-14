@@ -25,7 +25,9 @@ import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-lay
 
 import ReactIcon from 'app-x/icon/React'
 import SyntaxTree from 'app-x/builder/SyntaxTree'
-import SourceCode from 'app-x/builder/SourceCode'
+import SourceViewer from 'app-x/builder/SourceViewer'
+import YamlViewer from 'app-x/builder/YamlViewer'
+import JsonViewer from 'app-x/builder/JsonViewer'
 import PropEditor from 'app-x/builder/PropEditor'
 
 /*
@@ -245,9 +247,15 @@ const UI_Builder = (props) => {
           >
           <TabContext value={tabValue}>
             <Box>
-              <TabList onChange={handleChange}>
+              <TabList
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="on"
+                >
                 <Tab label="Widget" value="iframe"/>
-                <Tab label="Source Code" value="source"/ >
+                <Tab label="Code" value="code"/ >
+                <Tab label="YAML" value="yaml"/ >
+                <Tab label="JSON" value="json"/ >
               </TabList>
             </Box>
             <Box className={styles.tabPanel}>
@@ -255,8 +263,24 @@ const UI_Builder = (props) => {
                 <iframe src={iframeUrl} className={styles.iframe}>
                 </iframe>
               </TabPanel>
-              <TabPanel value="source" className={styles.root}>
-                <SourceCode
+              <TabPanel value="code" className={styles.root}>
+                <SourceViewer
+                  namespace={props.namespace}
+                  ui_name={props.ui_name}
+                  ui_deployment={props.ui_deployment}
+                  ui_element_name={props.ui_element_name}
+                />
+              </TabPanel>
+              <TabPanel value="yaml" className={styles.root}>
+                <YamlViewer
+                  namespace={props.namespace}
+                  ui_name={props.ui_name}
+                  ui_deployment={props.ui_deployment}
+                  ui_element_name={props.ui_element_name}
+                />
+              </TabPanel>
+              <TabPanel value="json" className={styles.root}>
+                <JsonViewer
                   namespace={props.namespace}
                   ui_name={props.ui_name}
                   ui_deployment={props.ui_deployment}
