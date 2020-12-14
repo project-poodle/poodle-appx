@@ -49,6 +49,16 @@ const UI_Builder = (props) => {
       borderStyle: 'dotted',
       borderColor: theme.palette.divider,
     },
+    iframeContent: {
+      height: '100%',
+      width: '100%',
+      backgroundColor: theme.palette.background.paper,
+      // overflow: 'scroll',
+      // border
+      border: 0,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
+    },
     iframe: {
       height: '100%',
       width: '100%',
@@ -175,7 +185,7 @@ const UI_Builder = (props) => {
       cols={{lg: 12, md: 12, sm: 6, xs: 6}}
     >
       <Box key="iframe" className={styles.box}>
-        <Box className={styles.content}>
+        <Box className={styles.iframeContent}>
           <iframe src={iframeUrl} className={styles.iframe}>
           </iframe>
         </Box>

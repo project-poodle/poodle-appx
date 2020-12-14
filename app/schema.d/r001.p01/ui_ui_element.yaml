@@ -428,7 +428,7 @@ ui_element:
                             data: layout
                         cols: 12
                         rowHeight: 30
-                        width: 900
+                        width: 800
                     children:
                         - type: react/element
                           name: '@material-ui/core.Box'

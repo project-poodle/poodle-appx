@@ -64,7 +64,7 @@ function parse_var_full_path(var_full_path) {
 function js_new_node(title, icon, data, isLeaf) {
   return {
     key: uuidv4(),
-    title: title ? title : (data ? (data.name ? data.name : 'title') : 'title'),
+    title: title ? title : (data ? (data.name ? data.name : '') : ''),
     icon: icon ? icon : <QuestionOutlined />,
     isLeaf: isLeaf ? true : false,
     data: data ? data : null,
