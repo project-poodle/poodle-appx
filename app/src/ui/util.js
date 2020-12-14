@@ -82,6 +82,7 @@ function js_array(js_context, input) {
   )
 }
 
+// create object ast
 function js_object(js_context, input) {
 
   if (isPrimitive(input)) {
@@ -394,10 +395,10 @@ function js_switch(js_context, input) {
   // stack the conditions
   [...input.children].reverse().map(child => {
     if (! ('condition' in child)) {
-      throw new Error(`ERROR: input child missing [condition] [${JSON.stringify(child)}]`)
+      throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
     }
     if (! ('result' in child)) {
-      throw new Error(`ERROR: input child missing [result] [${JSON.stringify(child)}]`)
+      throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
     }
     // stack if/else statement
     ifElseStatements = t.ifStatement(
@@ -1585,10 +1586,6 @@ function js_process(js_context, input) {
     return js_call(js_context, input)
 
   } else if (input.type === 'js/switch') {
-
-    return js_switch(js_context, input)
-
-  } else if (input.type === 'js/iterate') {
 
     return js_switch(js_context, input)
 

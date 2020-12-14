@@ -8,7 +8,7 @@ const { Header, Footer, Sider, Content } = Layout
 import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
 
 import ReactIcon from 'app-x/icon/React'
-import ReactElementTree from 'app-x/builder/ReactElementTree'
+import SyntaxTree from 'app-x/builder/SyntaxTree'
 import PropEditor from 'app-x/builder/PropEditor'
 
 
@@ -16,7 +16,7 @@ const PATH_SEPARATOR = '/'
 
 const UI_Builder = (props) => {
 
-  console.log(props)
+  // console.log(props)
 
   const styles = makeStyles((theme) => ({
     builder: {
@@ -28,13 +28,16 @@ const UI_Builder = (props) => {
       padding: 0,
     },
     box: {
-      minHeight: 200,
+      minHeight: 350,
+      height: 350,
       // height: '100%',
       minWidth: 300,
       backgroundColor: theme.palette.background.paper,
       border: 1,
       borderStyle: 'solid',
       borderColor: theme.palette.divider,
+      overflow: 'scroll',
+      // scroll: 'auto',
     },
     content: {
       height: '100%',
@@ -68,9 +71,9 @@ const UI_Builder = (props) => {
       </Content>
       <Footer className={styles.footer}>
         <Grid container>
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={7}>
             <Box className={styles.box}>
-              <ReactElementTree
+              <SyntaxTree
                 namespace={props.namespace}
                 ui_name={props.ui_name}
                 ui_deployment={props.ui_deployment}
@@ -78,7 +81,7 @@ const UI_Builder = (props) => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid item xs={12} sm={12} md={5}>
             <Box className={styles.box}>
               <PropEditor>
               </PropEditor>

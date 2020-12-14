@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core'
-import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
 import { Tree } from 'antd'
 const { DirectoryTree } = Tree
-import { Icon, FileOutlined, FileTextOutlined, ContainerOutlined, CodepenOutlined, SwitcherOutlined } from '@ant-design/icons'
+import {
+  Icon,
+} from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-// import ReactSvg from 'app-x/icon/react.svg'
+import { js_process } from 'app-x/builder/util'
 
-const PATH_SEPARATOR = '/'
-const VARIABLE_SEPARATOR = '.'
 
+////////////////////////////////////////////////////////////////////////////////
 // traverse method
 const traverse = (data, key, callback) => {
   for (let i = 0; i < data.length; i++) {
@@ -26,86 +26,34 @@ const traverse = (data, key, callback) => {
   }
 }
 
-// parse variable full path
-function parse_var_full_path(var_full_path) {
-
-  let import_paths = var_full_path.split(PATH_SEPARATOR)
-  let sub_vars = import_paths[import_paths.length - 1].split(VARIABLE_SEPARATOR)
-
-  // add first sub_var to import_path
-  import_paths[import_paths.length - 1] = sub_vars.shift()
-
-  return {
-    full_paths: [].concat(import_paths, sub_vars),
-    import_paths: import_paths,
-    sub_vars: sub_vars
-  }
-}
-
 // generate tree data
 const transformTreeData = (data) => {
 
-  const treeData = []
-  const expandKeys = []
+  try {
+    // process data
+    const js_context = {}
+    const processed = js_process(js_context, null, data)
 
-  if (Array.isArray(data)) {
-    data = data[0]
-  }
+    console.log(processed)
 
-  if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-    return { tree_data: [], expanded_keys: [] }
-  }
-
-  const element = data.ui_element_spec.element
-  if (!('type' in element) || element.type != 'react/element') {
-    return { tree_data: [], expanded_keys: [] }
-  }
-
-  function traverseElement(element, parentNode, func) {
-    const node = func(element, parentNode)
-    if (element.children) {
-      element.children.map(child => {
-        traverseElement(child, node, func)
-      })
-    }
-  }
-
-  traverseElement(element, null, (elem, parentNode) => {
-
-    const node = {
-      key: uuidv4(),
-      title: 'title',
-      icon: <FileOutlined />,
-      children: [],
-    }
-
-    if (typeof elem === 'string') {
-      node.title = elem.length > 32 ? elem.substring(0, 32) + '...' : elem
-      node.icon = <FileTextOutlined />
-    } else if (elem.type == 'react/element') {
-      const parsed = parse_var_full_path(elem.name)
-      node.title = parsed.full_paths.pop()
-      node.icon = <ReactIcon />
-      node.elemName = elem.name
-      node.elemProps = elem.props
-    } else if (elem.type == 'js/switch') {
-      node.title = 'Switch'
-      node.icon = <SwitcherOutlined />
+    // return processed result
+    if (processed.children) {
+      return {
+        tree_data: processed.children,
+        expanded_keys: js_context.expandKeys,
+      }
     } else {
-      return
+      return {
+        tree_data: [],
+        expanded_keys: [],
+      }
     }
+  } catch (err) {
 
-    expandKeys.push(node.key)
+    console.log(err.stack)
+    throw err
+  }
 
-    if (parentNode == null) {
-      treeData.push(node)
-    } else {
-      parentNode.children.push(node)
-    }
-    return node
-  })
-
-  return { tree_data: treeData, expanded_keys: expandKeys }
 }
 
 const loaded = {
@@ -119,9 +67,7 @@ const loaded = {
 }
 
 
-const ReactElementTree = (props) => {
-
-  console.log(props)
+const SyntaxTree = (props) => {
 
   const [ tData, setTData ] = useState(loaded.tree_data)
   const [ expandedKeys, setExpandedKeys ] = useState(loaded.expanded_keys)
@@ -141,7 +87,16 @@ const ReactElementTree = (props) => {
       url,
       data => {
         // console.log(data)
-        const transformed = transformTreeData(data)
+        if (Array.isArray(data)) {
+          data = data[0]
+        }
+
+        if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+          setTData([])
+          setExpandedKeys([])
+        }
+
+        const transformed = transformTreeData(data.ui_element_spec)
         loaded.api_data = data
         loaded.tree_data = transformed.tree_data
         loaded.expanded_keys = transformed.expanded_keys
@@ -149,7 +104,7 @@ const ReactElementTree = (props) => {
         loaded.ui_name = props.ui_name
         loaded.ui_deployment = props.ui_deployment
         loaded.ui_element_name = props.ui_element_name
-        console.log(loaded)
+        // console.log(loaded)
         setTData(loaded.tree_data)
         setExpandedKeys(loaded.expanded_keys)
       },
@@ -266,11 +221,11 @@ const ReactElementTree = (props) => {
   )
 }
 
-ReactElementTree.propTypes = {
+SyntaxTree.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default ReactElementTree
+export default SyntaxTree
