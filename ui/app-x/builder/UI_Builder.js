@@ -1,6 +1,20 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Box, Container, Grid, makeStyles } from '@material-ui/core'
+import {
+  Box,
+  Container,
+  Grid,
+  // Tabs,
+  Tab,
+  // TabPanel,
+  Typography,
+  makeStyles,
+} from '@material-ui/core'
+import {
+  TabContext,
+  TabList,
+  TabPanel,
+} from '@material-ui/lab'
 import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
 import { Layout, Tree } from 'antd'
 const { DirectoryTree } = Tree
@@ -11,10 +25,36 @@ import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-lay
 
 import ReactIcon from 'app-x/icon/React'
 import SyntaxTree from 'app-x/builder/SyntaxTree'
+import SourceCode from 'app-x/builder/SourceCode'
 import PropEditor from 'app-x/builder/PropEditor'
 
+/*
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-const PATH_SEPARATOR = '/'
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`wrapped-tabpanel-${index}`}
+      aria-labelledby={`wrapped-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+*/
 
 const UI_Builder = (props) => {
 
@@ -48,6 +88,11 @@ const UI_Builder = (props) => {
       border: 0,
       borderStyle: 'dotted',
       borderColor: theme.palette.divider,
+    },
+    tabPanel: {
+      width: '100%',
+      height: 'calc(100% - 64px)',
+      margin: theme.spacing(2, 0)
     },
     iframeContent: {
       height: '100%',
@@ -173,7 +218,13 @@ const UI_Builder = (props) => {
   }
   // console.log(GridLayout)
   const ResponsiveGridLayout = WidthProvider(Responsive);
-  console.log(ResponsiveGridLayout)
+  // console.log(ResponsiveGridLayout)
+
+  const [ tabValue, setTabValue ] = useState('iframe')
+
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  }
 
   return (
     <ResponsiveGridLayout
@@ -185,9 +236,35 @@ const UI_Builder = (props) => {
       cols={{lg: 12, md: 12, sm: 6, xs: 6}}
     >
       <Box key="iframe" className={styles.box}>
-        <Box className={styles.iframeContent}>
-          <iframe src={iframeUrl} className={styles.iframe}>
-          </iframe>
+        <Box
+          className={styles.iframeContent}
+          onClick={e => e.stopPropagation()}
+          onMouseDown={e => e.stopPropagation()}
+          onMouseUp={e => e.stopPropagation()}
+          onDrag={e => e.stopPropagation()}
+          >
+          <TabContext value={tabValue}>
+            <Box>
+              <TabList onChange={handleChange}>
+                <Tab label="Widget" value="iframe"/>
+                <Tab label="Source Code" value="source"/ >
+              </TabList>
+            </Box>
+            <Box className={styles.tabPanel}>
+              <TabPanel value="iframe" className={styles.root}>
+                <iframe src={iframeUrl} className={styles.iframe}>
+                </iframe>
+              </TabPanel>
+              <TabPanel value="source" className={styles.root}>
+                <SourceCode
+                  namespace={props.namespace}
+                  ui_name={props.ui_name}
+                  ui_deployment={props.ui_deployment}
+                  ui_element_name={props.ui_element_name}
+                />
+              </TabPanel>
+            </Box>
+          </TabContext>
         </Box>
       </Box>
       <Box key="navTree" className={styles.box}>

@@ -38,6 +38,9 @@ const default_import_maps = {
         "react-grid-layout",
         "react-helmet",
         "react-feather",
+        "@monaco-editor/react",
+        //"react-ace",
+        //"ace-builds",
         "clsx",
         "lodash",
         "axios",
@@ -50,6 +53,7 @@ const default_import_maps = {
         "@material-ui/core",
         "@material-ui/icons",
         "@material-ui/styles",
+        "@material-ui/lab",
       ]
     },
     "antd": {

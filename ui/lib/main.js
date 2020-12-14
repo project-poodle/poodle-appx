@@ -20,6 +20,10 @@ import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
+// editor
+import * as monacoEditor from '@monaco-editor/react'
+//import * as aceEditor from 'react-ace'
+//import * as aceBuilds from 'ace-builds'
 // material ui
 //import * as materialUI from '@material-ui/core'
 //import * as materialIcons from '@material-ui/icons'
@@ -57,6 +61,11 @@ export default {
   // react utilities
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
+  // editors
+  // "nomaco-editor": monacoEditor,
+  "@monaco-editor/react": monacoEditor,
+  //"react-ace": aceEditor,
+  //"ace-builds": aceBuilds,
   //"@material-ui/core": materialUI,
   //"@material-ui/icons": materialIcons,
   //"@material-ui/styles": materialStyles,
