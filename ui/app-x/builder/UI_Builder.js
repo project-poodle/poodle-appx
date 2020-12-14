@@ -32,18 +32,21 @@ const UI_Builder = (props) => {
       // height: 350,
       // height: '100%',
       // minWidth: 300,
-      backgroundColor: theme.palette.background.paper,
+      padding: theme.spacing(2, 2),
+      backgroundColor: theme.palette.background.dark,
+      // border
       border: 1,
-      borderStyle: 'solid',
+      borderStyle: 'dotted',
       borderColor: theme.palette.divider,
-      overflow: 'scroll',
     },
     content: {
       height: '100%',
       width: '100%',
-      padding: theme.spacing(3, 3),
-      border: 1,
-      borderStyle: 'solid',
+      backgroundColor: theme.palette.background.paper,
+      overflow: 'scroll',
+      // border
+      border: 0,
+      borderStyle: 'dotted',
       borderColor: theme.palette.divider,
     },
     iframe: {
@@ -51,7 +54,9 @@ const UI_Builder = (props) => {
       width: '100%',
       padding: 0,
       margin: 0,
-      borderStyle: 'dashed'
+      border: 2,
+      // borderColor: theme.palette.divider,
+      borderStyle: 'dashed',
     }
   }))()
 
@@ -69,19 +74,19 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 8,
-        h: 6,
+        h: 9,
       },
       {
         i: 'navTree',
         x: 8,
         y: 0,
         w: 4,
-        h: 4,
+        h: 7,
       },
       {
         i: 'propEditor',
         x: 8,
-        y: 4,
+        y: 7,
         w: 4,
         h: 2,
       },
@@ -92,19 +97,19 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 7,
-        h: 6,
+        h: 9,
       },
       {
         i: 'navTree',
         x: 7,
         y: 0,
         w: 5,
-        h: 4,
+        h: 7,
       },
       {
         i: 'propEditor',
         x: 7,
-        y: 4,
+        y: 7,
         w: 5,
         h: 2,
       },
@@ -115,7 +120,7 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 6,
-        h: 3,
+        h: 5,
       },
       {
         i: 'navTree',
@@ -138,7 +143,7 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 6,
-        h: 3,
+        h: 5,
       },
       {
         i: 'navTree',
@@ -164,25 +169,41 @@ const UI_Builder = (props) => {
     <ResponsiveGridLayout
       className={styles.root}
       layouts={layouts}
+      margin={[0, 0]}
+      rowHeight={100}
       breakpoints={{lg: 1200, md: 960, sm: 768, xs: 480}}
       cols={{lg: 12, md: 12, sm: 6, xs: 6}}
     >
-      <Box key="iframe">
+      <Box key="iframe" className={styles.box}>
         <Box className={styles.content}>
           <iframe src={iframeUrl} className={styles.iframe}>
           </iframe>
         </Box>
       </Box>
       <Box key="navTree" className={styles.box}>
-        <SyntaxTree
-          namespace={props.namespace}
-          ui_name={props.ui_name}
-          ui_deployment={props.ui_deployment}
-          ui_element_name={props.ui_element_name}
-        />
+        <Box
+          className={styles.content}
+          onClick={e => e.stopPropagation()}
+          onMouseDown={e => e.stopPropagation()}
+          onMouseUp={e => e.stopPropagation()}
+          onDrag={e => e.stopPropagation()}
+          >
+          <SyntaxTree
+            namespace={props.namespace}
+            ui_name={props.ui_name}
+            ui_deployment={props.ui_deployment}
+            ui_element_name={props.ui_element_name}
+          />
+        </Box>
       </Box>
       <Box key="propEditor" className={styles.box}>
-        <Box className={styles.content}>
+        <Box
+          className={styles.content}
+          onClick={e => e.stopPropagation()}
+          onMouseDown={e => e.stopPropagation()}
+          onMouseUp={e => e.stopPropagation()}
+          onDrag={e => e.stopPropagation()}
+          >
           propEditor
         </Box>
       </Box>
