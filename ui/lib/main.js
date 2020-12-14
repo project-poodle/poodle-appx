@@ -13,6 +13,10 @@ import * as reactRouter from 'react-router'
 import * as reactRouterDom from 'react-router-dom'
 // form
 import * as reactHookForm from 'react-hook-form'
+// layout
+import * as reactGridLayout from 'react-grid-layout'
+import react_grid_layout_css from 'react-grid-layout/css/styles.css'
+import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
@@ -32,16 +36,25 @@ import reflectPropTypes from './reflectPropTypes'
 
 // export module as library
 export default {
+  // react core
   "react": react,
   "react-dom": reactDom,
   "prop-types": propTypes,     // override original propTypes?
   "reflectPropTypes": reflectPropTypes,
+  // redux
   "react-redux": reactRedux,
   "redux": redux,
+  // routers
   "hookrouter": hookrouter,
   "react-router": reactRouter,
   "react-router-dom": reactRouterDom,
+  // form
   "react-hook-form": reactHookForm,
+  // grid layout
+  "react-grid-layout": reactGridLayout,
+  "react_grid_layout_css": react_grid_layout_css,
+  "react_resizable_css": react_resizable_css,
+  // react utilities
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
   //"@material-ui/core": materialUI,

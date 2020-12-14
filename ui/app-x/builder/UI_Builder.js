@@ -6,6 +6,8 @@ import { Layout, Tree } from 'antd'
 const { DirectoryTree } = Tree
 const { Header, Footer, Sider, Content } = Layout
 import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
+// import { default as GridLayout } from 'react-grid-layout'
+import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
 import SyntaxTree from 'app-x/builder/SyntaxTree'
@@ -19,25 +21,22 @@ const UI_Builder = (props) => {
   // console.log(props)
 
   const styles = makeStyles((theme) => ({
-    builder: {
+    root: {
       height: "100%",
       width: "100%",
-    },
-    footer: {
-      width: '100%',
-      padding: 0,
+      padding: theme.spacing(0),
+      margin: theme.spacing(0),
     },
     box: {
-      minHeight: 350,
-      height: 350,
+      // minHeight: 350,
+      // height: 350,
       // height: '100%',
-      minWidth: 300,
+      // minWidth: 300,
       backgroundColor: theme.palette.background.paper,
       border: 1,
       borderStyle: 'solid',
       borderColor: theme.palette.divider,
       overflow: 'scroll',
-      // scroll: 'auto',
     },
     content: {
       height: '100%',
@@ -63,33 +62,131 @@ const UI_Builder = (props) => {
     + '/' + props.ui_deployment
     + '/_elem' + props.ui_element_name + '.html'
 
+  const layouts = {
+    lg: [
+      {
+        i: 'iframe',
+        x: 0,
+        y: 0,
+        w: 12,
+        h: 4,
+      },
+      {
+        i: 'navTree',
+        x: 0,
+        y: 5,
+        w: 8,
+        h: 2,
+      },
+      {
+        i: 'propEditor',
+        x: 8,
+        y: 5,
+        w: 4,
+        h: 2,
+      },
+    ],
+    md: [
+      {
+        i: 'iframe',
+        x: 0,
+        y: 0,
+        w: 12,
+        h: 4,
+      },
+      {
+        i: 'navTree',
+        x: 0,
+        y: 5,
+        w: 8,
+        h: 2,
+      },
+      {
+        i: 'propEditor',
+        x: 8,
+        y: 5,
+        w: 4,
+        h: 2,
+      },
+    ],
+    sm: [
+      {
+        i: 'iframe',
+        x: 0,
+        y: 0,
+        w: 6,
+        h: 4,
+      },
+      {
+        i: 'navTree',
+        x: 0,
+        y: 5,
+        w: 6,
+        h: 2,
+      },
+      {
+        i: 'propEditor',
+        x: 7,
+        y: 5,
+        w: 6,
+        h: 2,
+      },
+    ],
+    xs: [
+      {
+        i: 'iframe',
+        x: 0,
+        y: 0,
+        w: 6,
+        h: 4,
+      },
+      {
+        i: 'navTree',
+        x: 0,
+        y: 5,
+        w: 6,
+        h: 2,
+      },
+      {
+        i: 'propEditor',
+        x: 7,
+        y: 5,
+        w: 6,
+        h: 2,
+      },
+    ],
+  }
+  // console.log(GridLayout)
+  const ResponsiveGridLayout = WidthProvider(Responsive);
+  console.log(ResponsiveGridLayout)
+
   return (
-    <Layout className={styles.builder}>
-      <Content className={styles.content}>
-        <iframe src={iframeUrl} className={styles.iframe}>
-        </iframe>
-      </Content>
-      <Footer className={styles.footer}>
-        <Grid container>
-          <Grid item xs={12} sm={12} md={7}>
-            <Box className={styles.box}>
-              <SyntaxTree
-                namespace={props.namespace}
-                ui_name={props.ui_name}
-                ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={12} md={5}>
-            <Box className={styles.box}>
-              <PropEditor>
-              </PropEditor>
-            </Box>
-          </Grid>
-        </Grid>
-      </Footer>
-    </Layout>
+    <ResponsiveGridLayout
+      className={styles.root}
+      layouts={layouts}
+      breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480}}
+      cols={{lg: 12, md: 12, sm: 6, xs: 6}}
+    >
+      <Box key="iframe">
+        <Box className={styles.content}>
+          <iframe src={iframeUrl} className={styles.iframe}>
+          </iframe>
+        </Box>
+      </Box>
+      <Box key="navTree" className={styles.box}>
+        <SyntaxTree
+          namespace={props.namespace}
+          ui_name={props.ui_name}
+          ui_deployment={props.ui_deployment}
+          ui_element_name={props.ui_element_name}
+        />
+      </Box>
+      <Box key="propEditor" className={styles.box}>
+        <Box className={styles.content}>
+          propEditor
+        </Box>
+      </Box>
+    </ResponsiveGridLayout>
   )
 }
 

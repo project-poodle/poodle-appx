@@ -370,3 +370,90 @@ ui_element:
                                           handlers:
                                               type: js/expression
                                               data: props.handlers
+
+
+    ############################################################
+    - namespace: sys
+      ui_name: ui
+      ui_ver: internal
+      ui_element_name: /GridLayoutTest
+      ui_element_type: react/element
+      ui_element_spec:
+          styles:
+              type: mui/style
+              root:
+                  height: "100%"
+                  width: "100%"
+              box:
+                  borderStyle: solid
+                  borderColor:
+                      type: js/expression
+                      data: theme.palette.divider
+          snippet:
+              type: js/block
+              data: |
+                // console.log($r('react-grid-layout.default'))
+          layout:
+              - i: a
+                x: 0
+                y: 0
+                w: 1
+                h: 2
+              - i: b
+                x: 1
+                y: 0
+                w: 3
+                h: 2
+              - i: c
+                x: 4
+                y: 0
+                w: 1
+                h: 2
+          element:
+              type: react/element
+              name: '@material-ui/core.Container'
+              props:
+                  className:
+                      type: js/expression
+                      data: styles.root
+              children:
+                  - type: react/element
+                    name: react-grid-layout.default
+                    props:
+                        className:
+                            type: js/expression
+                            data: styles.root
+                        layout:
+                            type: js/expression
+                            data: layout
+                        cols: 12
+                        rowHeight: 30
+                        width: 900
+                    children:
+                        - type: react/element
+                          name: '@material-ui/core.Box'
+                          props:
+                              key: a
+                              className:
+                                  type: js/expression
+                                  data: styles.box
+                          children:
+                              - a
+                        - type: react/element
+                          name: '@material-ui/core.Box'
+                          props:
+                              key: b
+                              className:
+                                  type: js/expression
+                                  data: styles.box
+                          children:
+                              - b
+                        - type: react/element
+                          name: '@material-ui/core.Box'
+                          props:
+                              key: c
+                              className:
+                                  type: js/expression
+                                  data: styles.box
+                          children:
+                              - c

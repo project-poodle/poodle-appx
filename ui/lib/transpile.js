@@ -35,6 +35,7 @@ const default_import_maps = {
         "react-router",
         "react-router-dom",
         "react-hook-form",
+        "react-grid-layout",
         "react-helmet",
         "react-feather",
         "clsx",
