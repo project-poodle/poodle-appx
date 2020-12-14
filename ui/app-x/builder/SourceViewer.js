@@ -62,7 +62,7 @@ const SourceViewer = (props) => {
           scrollBeyondLastLine: false,
           wrappingStrategy: 'advanced',
           minimap: {
-            enabled: false
+            enabled: true
           }
           //overviewRulerLanes: 0,
           //tabIndex: 2,
