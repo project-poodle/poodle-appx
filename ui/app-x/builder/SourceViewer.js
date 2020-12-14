@@ -60,7 +60,11 @@ const SourceViewer = (props) => {
           wordWrap: 'on',
           wrappingIndent: 'deepIndent',
           scrollBeyondLastLine: false,
-          overviewRulerLanes: 0,
+          wrappingStrategy: 'advanced',
+          minimap: {
+            enabled: false
+          }
+          //overviewRulerLanes: 0,
           //tabIndex: 2,
         }}
         // height="60vh"

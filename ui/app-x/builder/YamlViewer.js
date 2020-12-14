@@ -69,6 +69,10 @@ const YamlViewer = (props) => {
           wordWrap: 'on',
           wrappingIndent: 'deepIndent',
           scrollBeyondLastLine: false,
+          wrappingStrategy: 'advanced',
+          minimap: {
+            enabled: false
+          }
           //tabIndex: 2,
         }}
         // height="60vh"
