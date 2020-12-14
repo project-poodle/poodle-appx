@@ -58,7 +58,8 @@ const SourceCode = (props) => {
         options={{
           readOnly: true,
           wordWrap: 'on',
-          wrappingIndent: 'deepIndent'
+          wrappingIndent: 'deepIndent',
+          scrollBeyondLastLine: false,
         }}
         // height="60vh"
         // mode="javascript"
