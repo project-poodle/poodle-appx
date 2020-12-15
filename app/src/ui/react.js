@@ -66,7 +66,7 @@ function handle_react(req, res) {
     //console.log(get_js_variable(js_context, ui_elem_name))
 
     reg_js_import(js_context, 'react', true, 'React')
-    reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
+    //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
     const input = ui_element.ui_element_spec
 
