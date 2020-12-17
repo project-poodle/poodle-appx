@@ -27,6 +27,9 @@ const GlobalStyles = () => {
       '#root': {
         height: '100%',
         width: '100%'
+      },
+      '.ant-tabs-content': {
+        height: '100%', // fix ant tabs
       }
     }
   }))

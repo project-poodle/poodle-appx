@@ -703,7 +703,7 @@ function gen_mui_style(tree_context, treeNode) {
           topLevel: false,
         },
         child
-      ).data
+      )
       data[childResult.ref] = childResult.data
     })
   }
@@ -746,7 +746,10 @@ function gen_appx_route(tree_context, treeNode) {
 function gen_js(tree_context, treeNode) {
 
   if (!treeNode) {
-    return null
+    return {
+      ref: null,
+      data: null,
+    }
   }
 
   if (Array.isArray(treeNode)) {
