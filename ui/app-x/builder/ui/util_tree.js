@@ -4,13 +4,21 @@
 // lookup child by ref
 function _lookupChildByRef(treeNode, ref) {
   // lookup child by ref
-  treeNode.children.map(child => {
-    if (child.__ref === ref) {
+  const found = treeNode.children.map(child => {
+    // console.log(child.data.__ref)
+    // console.log(ref)
+    if (child.data.__ref === ref) {
+      // console.log(child)
       return child
     }
   })
-  // not found
-  return null
+  // check if found
+  if (found.length) {
+    return found[0]
+  } else {
+    // not found
+    return null
+  }
 }
 
 
@@ -59,6 +67,7 @@ function gen_js_primitive(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/primitive] [${treeNode.data.type}]`)
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: treeNode.data.data,
@@ -80,12 +89,19 @@ function gen_js_array(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/array] [${treeNode.data.type}]`)
   }
 
+  // array data
   const data = []
   treeNode.children.map(child => {
-    const childResult = gen_js(tree_context, child)
+    const childResult = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      child)
     data.push(childResult.data)
   })
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -107,12 +123,20 @@ function gen_js_object(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/object] [${treeNode.data.type}]`)
   }
 
+  // object data
   const data = {}
   treeNode.children.map(child => {
-    const childResult = gen_js(tree_context, child)
+    const childResult = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      child
+    )
     data[childResult.ref] = childResult.data
   })
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -134,12 +158,20 @@ function gen_js_import(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/import] [${treeNode.data.type}]`)
   }
 
-  return {
-    ref: treeNode.data.__ref,
-    data: {
-      type: treeNode.data.type,
-      name: treeNode.data.name,
+  // import data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+  }
+
+  // return
+  if (tree_context.topLevel) {
+    return {
+      ref: treeNode.data.__ref,
+      data: data,
     }
+  } else {
+    return data
   }
 }
 
@@ -158,12 +190,20 @@ function gen_js_expression(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/expression] [${treeNode.data.type}]`)
   }
 
-  return {
-    ref: treeNode.data.__ref,
-    data: {
-      type: treeNode.data.type,
-      data: treeNode.data.data,
+  // expression data
+  const data = {
+    type: treeNode.data.type,
+    data: treeNode.data.data,
+  }
+
+  // return
+  if (tree_context.topLevel) {
+    return {
+      ref: treeNode.data.__ref,
+      data: data,
     }
+  } else {
+    return data
   }
 }
 
@@ -182,12 +222,20 @@ function gen_js_block(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/block] [${treeNode.data.type}]`)
   }
 
-  return {
-    ref: treeNode.data.__ref,
-    data: {
-      type: treeNode.data.type,
-      data: treeNode.data.data,
+  // block data
+  const data = {
+    type: treeNode.data.type,
+    data: treeNode.data.data,
+  }
+
+  // return
+  if (tree_context.topLevel) {
+    return {
+      ref: treeNode.data.__ref,
+      data: data,
     }
+  } else {
+    return data
   }
 }
 
@@ -206,13 +254,21 @@ function gen_js_function(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/function] [${treeNode.data.type}]`)
   }
 
-  return {
-    ref: treeNode.data.__ref,
-    data: {
-      type: treeNode.data.type,
-      params: treeNode.data.params,
-      body: treeNode.data.body,
+  // function data
+  const data = {
+    type: treeNode.data.type,
+    params: treeNode.data.params,
+    body: treeNode.data.body,
+  }
+
+  // return
+  if (tree_context.topLevel) {
+    return {
+      ref: treeNode.data.__ref,
+      data: data,
     }
+  } else {
+    return data
   }
 }
 
@@ -252,15 +308,28 @@ function gen_js_switch(tree_context, treeNode) {
       // update data.children
       data.children.push({
         condition: child.data.condition,
-        result: gen_js(tree_context, child),
+        result: gen_js(
+          {
+            ...tree_context,
+            topLevel: false,
+          },
+          child
+        ).data,
       })
     })
   }
 
   if ('default' in treeNode.data) {
-    data.default = gen_js(tree_context, reeNode.data.default)
+    data.default = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      reeNode.data.default
+    ).data
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -295,10 +364,23 @@ function gen_js_map(tree_context, treeNode) {
   // generate data
   const data = {
     type: treeNode.data.type,
-    data: gen_js(tree_context, childData),
-    result: gen_js(tree_context, childResult),
+    data: gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childData
+    ).data,
+    result: gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childResult
+    ).data,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -337,11 +419,24 @@ function gen_js_reduce(tree_context, treeNode) {
   // generate data
   const data = {
     type: treeNode.data.type,
-    data: gen_js(tree_context, childData),
+    data: gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childData
+    ).data,
     reducer: treeNode.data.reducer,
-    init: gen_js(tree_context, childInit),
+    init: gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childInit
+    ).data,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -375,10 +470,17 @@ function gen_js_filter(tree_context, treeNode) {
   // generate data
   const data = {
     type: treeNode.data.type,
-    data: gen_js(tree_context, childData),
+    data: gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childData
+    ).data,
     filter: treeNode.data.filter,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -413,20 +515,37 @@ function gen_react_element(tree_context, treeNode) {
   // process props
   const childProps = _lookupChildByRef(treeNode, 'props')
   if (childProps) {
-    data.props = gen_js(tree_context, childProps)
+    data.props = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childProps
+    ).data
   }
 
   // process children
   if (treeNode.children.length) {
-    data.children = []
     treeNode.children.map(child => {
       // process only child with null ref
       if (child.data.__ref === null) {
-        data.children.push(gen_js(tree_context, child))
+        if (! ('children' in data)) {
+          data.children = []
+        }
+        data.children.push(
+          gen_js(
+            {
+              ...tree_context,
+              topLevel: false,
+            },
+            child
+          ).data
+        )
       }
     })
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -461,20 +580,37 @@ function gen_react_html(tree_context, treeNode) {
   // process props
   const childProps = _lookupChildByRef(treeNode, 'props')
   if (childProps) {
-    data.props = gen_js(tree_context, childProps)
+    data.props = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childProps
+    ).data
   }
 
   // process children
   if (treeNode.children.length) {
-    data.children = []
     treeNode.children.map(child => {
       // process only child with null ref
       if (child.data.__ref === null) {
-        data.children.push(gen_js(tree_context, child))
+        if (! ('children' in data)) {
+          data.children = []
+        }
+        data.children.push(
+          gen_js(
+            {
+              ...tree_context,
+              topLevel: false,
+            },
+            child
+          ).data
+        )
       }
     })
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -516,6 +652,7 @@ function gen_react_state(tree_context, treeNode) {
     init: treeNode.data.init,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -547,6 +684,7 @@ function gen_react_effect(tree_context, treeNode) {
     data: treeNode.data.data,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -575,11 +713,18 @@ function gen_mui_style(tree_context, treeNode) {
 
   if (treeNode.children.length) {
     treeNode.children.map(child => {
-      const childResult = gen_js(tree_context, child)
+      const childResult = gen_js(
+        {
+          ...tree_context,
+          topLevel: false,
+        },
+        child
+      ).data
       data[childResult.ref] = childResult.data
     })
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,
@@ -606,6 +751,7 @@ function gen_appx_route(tree_context, treeNode) {
     type: treeNode.data.type,
   }
 
+  // return
   return {
     ref: treeNode.data.__ref,
     data: data,

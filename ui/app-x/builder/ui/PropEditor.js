@@ -30,7 +30,7 @@ const PropEditor = (props) => {
   // console.log(treeNode)
   // console.log(parentNode)
 
-  const tree_context = {}
+  const tree_context = { topLevel: true }
   const generated = gen_js(tree_context, treeNode)
 
   const yamlDoc = new YAML.Document()
