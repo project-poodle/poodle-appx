@@ -84,8 +84,7 @@ function handle_react(req, res) {
 
       } else {
         // process input[key] and assign to declared variable
-        block_statements.push(
-          t.variableDeclaration(
+        const variableDeclaration = t.variableDeclaration(
             'const',
             [
               t.variableDeclarator(
@@ -94,9 +93,20 @@ function handle_react(req, res) {
               )
             ]
           )
+        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+        t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
+        block_statements.push(
+          variableDeclaration
         )
+        // add empty statement
+        //block_statements.push(
+        //  t.emptyStatement()
+        //)
       }
     })
+
+    // console.log(t.addComment)
+    // console.log(t.addComments)
 
     // create ast tree for the program
     const ast_tree = t.file(
