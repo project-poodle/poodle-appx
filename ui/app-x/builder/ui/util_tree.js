@@ -165,13 +165,9 @@ function gen_js_import(tree_context, treeNode) {
   }
 
   // return
-  if (tree_context.topLevel) {
-    return {
-      ref: treeNode.data.__ref,
-      data: data,
-    }
-  } else {
-    return data
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
   }
 }
 
@@ -197,13 +193,9 @@ function gen_js_expression(tree_context, treeNode) {
   }
 
   // return
-  if (tree_context.topLevel) {
-    return {
-      ref: treeNode.data.__ref,
-      data: data,
-    }
-  } else {
-    return data
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
   }
 }
 
@@ -229,13 +221,9 @@ function gen_js_block(tree_context, treeNode) {
   }
 
   // return
-  if (tree_context.topLevel) {
-    return {
-      ref: treeNode.data.__ref,
-      data: data,
-    }
-  } else {
-    return data
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
   }
 }
 
@@ -262,13 +250,9 @@ function gen_js_function(tree_context, treeNode) {
   }
 
   // return
-  if (tree_context.topLevel) {
-    return {
-      ref: treeNode.data.__ref,
-      data: data,
-    }
-  } else {
-    return data
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
   }
 }
 
