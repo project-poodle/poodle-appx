@@ -61,6 +61,12 @@ const PropEditor = (props) => {
       height: '100%',
       overflow: 'scroll',
     },
+    select: {
+      width: '100%',
+      padding: theme.spacing(2, 0, 2, 2),
+      display: 'flex',
+      alignItems: 'center',
+    },
   }))()
 
   // context

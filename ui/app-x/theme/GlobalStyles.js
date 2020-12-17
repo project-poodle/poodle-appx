@@ -30,6 +30,10 @@ const GlobalStyles = () => {
       },
       '.ant-tabs-content': {
         height: '100%', // fix ant tabs
+      },
+      '.MuiSelect-select.MuiSelect-select': {
+        display: 'flex',
+        alignItems: 'center',
       }
     }
   }))
