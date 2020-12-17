@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { js_parse } from 'app-x/builder/ui/util_parse'
+import { parse_js } from 'app-x/builder/ui/util_parse'
 import { tree_traverse, tree_lookup } from 'app-x/builder/ui/util_tree'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 
@@ -21,7 +21,7 @@ const transformTreeData = (data) => {
   try {
     // process data
     const js_context = { topLevel: true }
-    const processed = js_parse(js_context, null, null, data)
+    const processed = parse_js(js_context, null, null, data)
 
     console.log(processed)
 

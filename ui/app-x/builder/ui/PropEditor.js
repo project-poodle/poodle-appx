@@ -1,8 +1,9 @@
 import React, { useContext } from "react"
 import { useForm } from "react-hook-form"
+import YAML from 'yaml'
 import { Box, Container, Grid, makeStyles } from '@material-ui/core'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
-import { tree_traverse, tree_lookup } from 'app-x/builder/ui/util_tree'
+import { tree_traverse, tree_lookup, gen_js } from 'app-x/builder/ui/util_tree'
 
 const PropEditor = (props) => {
   // make styles
@@ -25,14 +26,22 @@ const PropEditor = (props) => {
   } = useContext(EditorProvider.Context)
 
   const treeNode = tree_lookup(treeData, selectedKey)
-  //console.log(treeData)
-  //console.log(treeNode)
+  const parentNode = treeNode ? tree_lookup(treeData, treeNode.parentKey) : null
+  // console.log(treeNode)
+  // console.log(parentNode)
+
+  const tree_context = {}
+  const generated = gen_js(tree_context, treeNode)
+
+  const yamlDoc = new YAML.Document()
+  yamlDoc.contents = generated
+  // console.log(yamlDoc.toString())
 
   const { register, handleSubmit, watch, errors } = useForm()
   return (
     <Box className={styles.box}>
       <pre>
-      { JSON.stringify(treeNode, null, 4) }
+      { yamlDoc.toString() }
       </pre>
     </Box>
   )

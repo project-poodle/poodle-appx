@@ -125,6 +125,12 @@ function parse_js_array(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
+    __childrenWithRef: {
+      enable: false
+    },
+    __childrenWithoutRef: {
+      enable: true
+    },
     type: 'js/array',
   }
 
@@ -134,10 +140,10 @@ function parse_js_array(js_context, parentKey, ref, input) {
   // js_context.expandedKeys.push(node.key)
 
   if (js_context.topLevel) {
-    const results = []
+
     input.map(item => {
-      results.push(
-        js_parse(
+      node.children.push(
+        parse_js(
           {
             ...js_context,
             topLevel: false,
@@ -149,10 +155,12 @@ function parse_js_array(js_context, parentKey, ref, input) {
       )
     })
 
-    return results
+    // return node with children
+    return node
+
   } else {
     node.children = input.map(item => {
-      return js_parse(
+      return parse_js(
         js_context,
         node.key,
         null,
@@ -182,7 +190,12 @@ function parse_js_object(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __requireChildRef: true,
+    __childrenWithRef: {
+      enable: true
+    },
+    __childrenWithoutRef: {
+      enable: false
+    },
     type: 'js/object',
   }
 
@@ -196,7 +209,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
     const results = []
     Object.keys(input).map(key => {
       results.push(
-        js_parse(
+        parse_js(
           {
             ...js_context,
             topLevel: false,
@@ -213,7 +226,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
     // return node with children
     Object.keys(input).map(key => {
       node.children.push(
-        js_parse(
+        parse_js(
           js_context,
           node.key,
           key,
@@ -359,7 +372,14 @@ function parse_js_switch(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __validChildRefs: [ 'default' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'default' ],
+    },
+    __childrenWithoutRef: {
+      enable: true,
+      extraProps: [ 'condition' ],
+    },
     type: input.type,
   }
 
@@ -379,7 +399,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     }
 
     // process result as child node
-    const childNode = js_parse(
+    const childNode = parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -397,7 +417,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
   // add default if exist
   if (input.default) {
     node.children.push(
-      js_parse(
+      parse_js(
         {
           ...js_context,
           topLevel: false,
@@ -434,8 +454,13 @@ function parse_js_map(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __requireChildRef: true,
-    __validChildRefs: [ 'data', 'result' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'data', 'result' ],
+    },
+    __childrenWithoutRef: {
+      enable: false,
+    },
     type: input.type,
   }
 
@@ -446,7 +471,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
 
   // add input.data
   node.children.push(
-    js_parse(
+    parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -459,7 +484,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
 
   // add input.result
   node.children.push(
-    js_parse(
+    parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -499,8 +524,13 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __requireChildRef: true,
-    __validChildRefs: [ 'data', 'int' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'data', 'init' ],
+    },
+    __childrenWithoutRef: {
+      enable: false,
+    },
     type: input.type,
     reducer: input.reducer,
   }
@@ -515,7 +545,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
 
   // add input.data
   node.children.push(
-    js_parse(
+    parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -528,7 +558,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
 
   // add input.init
   node.children.push(
-    js_parse(
+    parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -564,8 +594,13 @@ function parse_js_filter(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __requireChildRef: true,
-    __validChildRefs: [ 'data' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'data' ],
+    },
+    __childrenWithoutRef: {
+      enable: false,
+    },
     type: input.type,
     filter: input.filter,
   }
@@ -580,7 +615,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 
   // add input.data
   node.children.push(
-    js_parse(
+    parse_js(
       {
         ...js_context,
         topLevel: false,
@@ -614,7 +649,13 @@ function parse_react_element(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __validChildRefs: [ 'props' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'props' ],
+    },
+    __childrenWithoutRef: {
+      enable: true,
+    },
     type: input.type,
     name: input.name,
   }
@@ -627,7 +668,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
   // add input.props if exist
   if (input.props) {
     node.children.push(
-      js_parse(
+      parse_js(
         {
           ...js_context,
           topLevel: false,
@@ -647,7 +688,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
 
     input.children.map(child => {
       node.children.push(
-        js_parse(
+        parse_js(
           {
             ...js_context,
             topLevel: false,
@@ -683,7 +724,13 @@ function parse_react_html(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __validChildRefs: [ 'props' ],
+    __childrenWithRef: {
+      enable: true,
+      validRefs: [ 'props' ],
+    },
+    __childrenWithoutRef: {
+      enable: true,
+    },
     type: input.type,
     name: input.name,
   }
@@ -696,7 +743,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
   // add input.props if exist
   if (input.props) {
     node.children.push(
-      js_parse(
+      parse_js(
         {
           ...js_context,
           topLevel: false,
@@ -716,7 +763,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
 
     input.children.map(child => {
       node.children.push(
-        js_parse(
+        parse_js(
           {
             ...js_context,
             topLevel: false,
@@ -799,7 +846,12 @@ function parse_mui_style(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    __requireChildRef: true,
+    __childrenWithRef: {
+      enable: true,
+    },
+    __childrenWithoutRef: {
+      enable: false,
+    },
     type: input.type,
   }
 
@@ -814,7 +866,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
       return
     }
     node.children.push(
-      js_parse(
+      parse_js(
         {
           ...js_context,
           topLevel: false,
@@ -850,7 +902,7 @@ function parse_appx_route(js_context, parentKey, ref, input) {
 ////////////////////////////////////////////////////////////////////////////////
 
 // process input data and return tree data
-function js_parse(js_context, parentKey, ref, input) {
+function parse_js(js_context, parentKey, ref, input) {
 
   if (! ('expandedKeys' in js_context)) {
     js_context.expandedKeys = []
@@ -874,17 +926,6 @@ function js_parse(js_context, parentKey, ref, input) {
 
     return parse_js_import(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/export') {
-
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
-
-
-  } else if (input.type === 'js/variable') {
-
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
-
   } else if (input.type === 'js/expression') {
 
     return parse_js_expression(js_context, parentKey, ref, input)
@@ -896,11 +937,6 @@ function js_parse(js_context, parentKey, ref, input) {
   } else if (input.type === 'js/function') {
 
     return parse_js_function(js_context, parentKey, ref, input)
-
-  } else if (input.type === 'js/call') {
-
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
 
   } else if (input.type === 'js/switch') {
 
@@ -917,16 +953,6 @@ function js_parse(js_context, parentKey, ref, input) {
   } else if (input.type === 'js/filter') {
 
     return parse_js_filter(js_context, parentKey, ref, input)
-
-  } else if (input.type === 'js/transform') {
-
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
-
-  } else if (input.type === 'js/trigger') {
-
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
 
   } else if (input.type === 'react/element') {
 
@@ -964,5 +990,5 @@ function js_parse(js_context, parentKey, ref, input) {
 }
 
 export {
-  js_parse,
+  parse_js,
 }

@@ -1,3 +1,18 @@
+////////////////////////////////////////////////////////////////////////////////
+// utilities
+
+// lookup child by ref
+function _lookupChildByRef(treeNode, ref) {
+  // lookup child by ref
+  treeNode.children.map(child => {
+    if (child.__ref === ref) {
+      return child
+    }
+  })
+  // not found
+  return null
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // traverse method
@@ -29,47 +44,678 @@ function tree_lookup(data, key) {
   return null
 }
 
-function tree_gen_array(tree_context, treeData) {
+// generate js/primitive from tree
+function gen_js_primitive(tree_context, treeNode) {
 
-  if (!Array.isArray(treeData)) {
-    throw new Error(`ERROR: treeData is not array`)
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  const result = treeData.map(data => {
-    return tree_generate(tree_context, data)
-  })
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
 
-  return result
+  if (treeNode.data.type !== 'js/primitive') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/primitive] [${treeNode.data.type}]`)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: treeNode.data.data,
+  }
 }
 
-function tree_gen(tree_context, treeData) {
+// generate js/array from tree
+function gen_js_array(tree_context, treeNode) {
 
-  if (!treeData) {
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/array') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/array] [${treeNode.data.type}]`)
+  }
+
+  const data = []
+  treeNode.children.map(child => {
+    const childResult = gen_js(tree_context, child)
+    data.push(childResult.data)
+  })
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate js/object from tree
+function gen_js_object(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/object') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/object] [${treeNode.data.type}]`)
+  }
+
+  const data = {}
+  treeNode.children.map(child => {
+    const childResult = gen_js(tree_context, child)
+    data[childResult.ref] = childResult.data
+  })
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate js/import from tree
+function gen_js_import(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/import') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/import] [${treeNode.data.type}]`)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: {
+      type: treeNode.data.type,
+      name: treeNode.data.name,
+    }
+  }
+}
+
+// generate js/expression from tree
+function gen_js_expression(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/expression') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/expression] [${treeNode.data.type}]`)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: {
+      type: treeNode.data.type,
+      data: treeNode.data.data,
+    }
+  }
+}
+
+// generate js/block from tree
+function gen_js_block(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/block') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/block] [${treeNode.data.type}]`)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: {
+      type: treeNode.data.type,
+      data: treeNode.data.data,
+    }
+  }
+}
+
+// generate js/function from tree
+function gen_js_function(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/function') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/function] [${treeNode.data.type}]`)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: {
+      type: treeNode.data.type,
+      params: treeNode.data.params,
+      body: treeNode.data.body,
+    }
+  }
+}
+
+// generate js/switch from tree
+function gen_js_switch(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/switch') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/switch] [${treeNode.data.type}]`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    children: [],
+  }
+
+  // generate children with conditions
+  if (treeNode.children.length) {
+    treeNode.children.map(child => {
+      // verify that data exist in child
+      if (! ('data' in child)) {
+        throw new Error(`ERROR: [js/switch] child missing [data] i[${JSON.stringify(child)}]`)
+      }
+      // verify that condition exist in child.data
+      if (! ('condition' in child.data)) {
+        throw new Error(`ERROR: [js/switch] child.data missing [condition] [${JSON.stringify(child.data)}]`)
+      }
+      // result is the same object, no need to check
+      // update data.children
+      data.children.push({
+        condition: child.data.condition,
+        result: gen_js(tree_context, child),
+      })
+    })
+  }
+
+  if ('default' in treeNode.data) {
+    data.default = gen_js(tree_context, reeNode.data.default)
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate js/map from tree
+function gen_js_map(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/map') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/map] [${treeNode.data.type}]`)
+  }
+
+  const childData = _lookupChildByRef(treeNode, 'data')
+  if (! childData) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+  }
+
+  const childResult = _lookupChildByRef(treeNode, 'result')
+  if (! childResult) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    data: gen_js(tree_context, childData),
+    result: gen_js(tree_context, childResult),
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate js/reduce from tree
+function gen_js_reduce(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/reduce') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/reduce] [${treeNode.data.type}]`)
+  }
+
+  if (! ('reducer' in treeNode.data)) {
+    throw new Error(`ERROR: missing [reducer] in treeNode.data`)
+  }
+
+  const childData = _lookupChildByRef(treeNode, 'data')
+  if (! childData) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+  }
+
+  const childInit = _lookupChildByRef(treeNode, 'init')
+  if (! childResult) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    data: gen_js(tree_context, childData),
+    reducer: treeNode.data.reducer,
+    init: gen_js(tree_context, childInit),
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate js/filter from tree
+function gen_js_filter(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/filter') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/filter] [${treeNode.data.type}]`)
+  }
+
+  if (! ('filter' in treeNode.data)) {
+    throw new Error(`ERROR: missing [filter] in treeNode.data`)
+  }
+
+  const childData = _lookupChildByRef(treeNode, 'data')
+  if (! childData) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    data: gen_js(tree_context, childData),
+    filter: treeNode.data.filter,
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate react/element from tree
+function gen_react_element(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/element') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/element] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+  }
+
+  // process props
+  const childProps = _lookupChildByRef(treeNode, 'props')
+  if (childProps) {
+    data.props = gen_js(tree_context, childProps)
+  }
+
+  // process children
+  if (treeNode.children.length) {
+    data.children = []
+    treeNode.children.map(child => {
+      // process only child with null ref
+      if (child.data.__ref === null) {
+        data.children.push(gen_js(tree_context, child))
+      }
+    })
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate react/html from tree
+function gen_react_html(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/html') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/html] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+  }
+
+  // process props
+  const childProps = _lookupChildByRef(treeNode, 'props')
+  if (childProps) {
+    data.props = gen_js(tree_context, childProps)
+  }
+
+  // process children
+  if (treeNode.children.length) {
+    data.children = []
+    treeNode.children.map(child => {
+      // process only child with null ref
+      if (child.data.__ref === null) {
+        data.children.push(gen_js(tree_context, child))
+      }
+    })
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate react/state from tree
+function gen_react_state(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/state') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/state] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+  }
+
+  if (! ('setter' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [setter] in treeNode.data`)
+  }
+
+  if (! ('init' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [init] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+    setter: treeNode.data.setter,
+    init: treeNode.data.init,
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate react/effect from tree
+function gen_react_effect(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/effect') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/effect] [${treeNode.data.type}]`)
+  }
+
+  if (! ('data' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    data: treeNode.data.data,
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate mui/style from tree
+function gen_mui_style(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'mui/style') {
+    throw new Error(`ERROR: treeNode.data.type is not [mui/style] [${treeNode.data.type}]`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+  }
+
+  if (treeNode.children.length) {
+    treeNode.children.map(child => {
+      const childResult = gen_js(tree_context, child)
+      data[childResult.ref] = childResult.data
+    })
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate appx/route from tree
+function gen_appx_route(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'appx/route') {
+    throw new Error(`ERROR: treeNode.data.type is not [appx/route] [${treeNode.data.type}]`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+  }
+
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate data from tree
+function gen_js(tree_context, treeNode) {
+
+  if (!treeNode) {
     return null
   }
 
-  if (Array.isArray(treeData)) {
-    return tree_gen_array(tree_context, treeData)
+  if (Array.isArray(treeNode)) {
+    return gen_js_array(tree_context, treeNode)
   }
 
-  if (! ('data' in treeData)) {
-    throw new Error(`ERROR: missing data in treeData`)
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing data in treeNode`)
   }
 
-  if (! ('__prop' in treeData.data)) {
-    throw new Error(`ERROR: missing __prop in treeData.data`)
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing type in treeNode.data`)
   }
 
-  if (!tree_context.ignoreProp && treeData.data.__prop) {
-    const result = {}
-    result[treeData.data.__prop] = tree_gen(treeData.children)
+  if (! ('__ref' in treeNode.data)) {
+    throw new Error(`ERROR: missing __ref in treeNode.data`)
+  }
+
+  if (treeNode.data.type === 'js/primitive') {
+
+    return gen_js_primitive(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/array') {
+
+    return gen_js_array(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/object') {
+
+    return gen_js_object(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/import') {
+
+    return gen_js_import(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/expression') {
+
+    return gen_js_expression(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/block') {
+
+    return gen_js_block(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/function') {
+
+    return gen_js_function(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/switch') {
+
+    return gen_js_switch(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/map') {
+
+    return gen_js_map(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/reduce') {
+
+    return gen_js_reduce(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/filter') {
+
+    return gen_js_filter(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'react/element') {
+
+    return gen_react_element(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'react/html') {
+
+    return gen_react_html(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'react/state') {
+
+    return gen_react_state(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'react/effect') {
+
+    return gen_react_effect(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'mui/style') {
+
+    return gen_mui_style(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'mui/control') {
+
+    // TODO
+    throw new Error(`ERROR: unrecognized treeNode.data.type [${treeNode.data.type}] [${JSON.stringify(treeNode.data)}]`)
+
+  } else if (treeNode.data.type === 'appx/route') {
+
+    return gen_appx_route(tree_context, treeNode)
+
   } else {
 
+    throw new Error(`ERROR: unrecognized treeNode.data.type [${treeNode.data.type}] [${JSON.stringify(treeNode.data)}]`)
   }
 }
 
 export {
   tree_traverse,
   tree_lookup,
-  tree_gen,
+  gen_js,
 }

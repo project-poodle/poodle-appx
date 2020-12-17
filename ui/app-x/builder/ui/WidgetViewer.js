@@ -85,10 +85,10 @@ const WidgetViewer = (props) => {
           variant="scrollable"
           scrollButtons="on"
           >
-          <Tab label="Widget" value="iframe"/>
-          <Tab label="Code" value="code"/ >
-          <Tab label="YAML" value="yaml"/ >
-          <Tab label="JSON" value="json"/ >
+          <Tab size="small" label="Widget" value="iframe"/>
+          <Tab size="small" label="Code" value="code"/ >
+          <Tab size="small" label="YAML" value="yaml"/ >
+          <Tab size="small" label="JSON" value="json"/ >
         </TabList>
       </Box>
       <Box className={styles.tabPanel}>
