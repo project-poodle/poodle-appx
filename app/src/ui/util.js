@@ -100,10 +100,17 @@ function js_object(js_context, input) {
   return t.objectExpression(
     Object.keys(input).map(key => {
       const value = input[key]
-      return t.objectProperty(
-        t.stringLiteral(key),
-        js_process(js_context, value)
-      )
+      if (key.startsWith('...')) {
+        // handle spread syntax
+        return t.spreadElement(
+          js_process(js_context, value)
+        )
+      } else {
+        return t.objectProperty(
+          t.stringLiteral(key),
+          js_process(js_context, value)
+        )
+      }
     })
   )
 }

@@ -83,16 +83,16 @@ ui_element:
       ui_element_type: react/element
       ui_element_spec:
           states:
-              mobileNav:
+              ...navOpen:
                   type: react/state
-                  name: open
-                  setter: setOpen
+                  name: navOpen
+                  setter: setNavOpen
                   init: false
           handlers:
               sideNavHandler:
                   type: js/function
                   body: |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
+                      states.setNavOpen(!states.navOpen)
           element:
               type: react/element
               name: app-x/page/layout/HeaderLayout
@@ -123,7 +123,7 @@ ui_element:
                     props:
                         isMobileNavOpen:
                             type: js/expression
-                            data: states.mobileNav.open
+                            data: states.navOpen
                         handlers:
                             sideNavHandler:
                                 type: js/expression
@@ -198,7 +198,7 @@ ui_element:
                                         data: handlers.handleRouteSelected
               children:
                   - type: react/element
-                    name: app-x/builder/UI_Builder
+                    name: app-x/builder/ui/UI_Builder
                     props:
                         namespace: sys
                         ui_name: ui
@@ -309,7 +309,7 @@ ui_element:
                                     p: 1
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/UI_Element_Nav'
+                                      name: 'app-x/builder/ui/UI_Element_Nav'
                                       props:
                                           namespace: sys
                                           ui_name: ui
@@ -362,7 +362,7 @@ ui_element:
                                     p: 1
                                 children:
                                     - type: react/element
-                                      name: 'app-x/builder/UI_Element_Nav'
+                                      name: 'app-x/builder/ui/UI_Element_Nav'
                                       props:
                                           namespace: sys
                                           ui_name: ui

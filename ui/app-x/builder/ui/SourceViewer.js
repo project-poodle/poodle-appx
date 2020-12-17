@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import YAML from 'yaml'
 import {
   Box,
   Container,
@@ -8,40 +7,32 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core'
+
+//import { default as AceEditor } from "react-ace"
+//import aceBuilds from "ace-builds"
+//import "ace-builds-src-noconflict/mode-java"
+//import "ace-builds-src-noconflict/theme-github"
+//import "ace-builds-src-noconflict/ext-language_tools"
 import { default as Editor } from '@monaco-editor/react'
 
-import * as api from 'app-x/api'
+const SourceViewer = (props) => {
 
-const YamlViewer = (props) => {
-
-  const [ yaml, setYaml ] = useState('')
+  const [ code, setCode ] = useState('')
 
   useEffect(() => {
 
     const ui_root = globalThis.appx.UI_ROOT
 
-    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    const url = `/${ui_root}/${props.namespace}/${props.ui_name}/${props.ui_deployment}/_elem/${props.ui_element_name}.source`.replace(/\/+/g, '/')
 
-    api.get(
-      'sys',
-      'appx',
-      url,
-      data => {
-        console.log(data)
-        if (Array.isArray(data)) {
-          data = data[0]
-        }
-
-        if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          setYaml('')
-        }
-
-        const doc = new YAML.Document()
-        doc.contents = data.ui_element_spec
-        console.log(doc.toString())
-        setYaml(doc.toString())
-      },
-      error => {
+    console.log(url)
+    fetch(url)
+      .then(response => response.text())
+      .then(data => {
+        // console.log(data)
+        setCode(data)
+      })
+      .catch(error => {
         console.error(error)
       })
 
@@ -54,16 +45,13 @@ const YamlViewer = (props) => {
     },
   }))()
 
-  //console.log(aceBuilds)
-  console.log(Editor)
-
   return (
     <Box
       className={styles.editor}
       onScroll={e => e.stopPropagation()}
       >
       <Editor
-        language="yaml"
+        language="javascript"
         options={{
           readOnly: true,
           wordWrap: 'on',
@@ -71,8 +59,9 @@ const YamlViewer = (props) => {
           scrollBeyondLastLine: false,
           wrappingStrategy: 'advanced',
           minimap: {
-            enabled: false
+            enabled: true
           }
+          //overviewRulerLanes: 0,
           //tabIndex: 2,
         }}
         // height="60vh"
@@ -82,18 +71,18 @@ const YamlViewer = (props) => {
         // theme="github"
         // mode='javascript'
         // readOnly={true}
-        value={yaml}
+        value={code}
         >
       </Editor>
     </Box>
   )
 }
 
-YamlViewer.propTypes = {
+SourceViewer.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default YamlViewer
+export default SourceViewer

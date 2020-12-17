@@ -12,9 +12,9 @@ import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
 
-const JsonViewer = (props) => {
+const YamlViewer = (props) => {
 
-  const [ json, setJson ] = useState('')
+  const [ yaml, setYaml ] = useState('')
 
   useEffect(() => {
 
@@ -27,7 +27,7 @@ const JsonViewer = (props) => {
       'appx',
       url,
       data => {
-        console.log(data)
+        // console.log(data)
         if (Array.isArray(data)) {
           data = data[0]
         }
@@ -36,7 +36,10 @@ const JsonViewer = (props) => {
           setYaml('')
         }
 
-        setJson(JSON.stringify(data.ui_element_spec, null, 2))
+        const doc = new YAML.Document()
+        doc.contents = data.ui_element_spec
+        console.log(doc.toString())
+        setYaml(doc.toString())
       },
       error => {
         console.error(error)
@@ -51,16 +54,13 @@ const JsonViewer = (props) => {
     },
   }))()
 
-  //console.log(aceBuilds)
-  console.log(Editor)
-
   return (
     <Box
       className={styles.editor}
       onScroll={e => e.stopPropagation()}
       >
       <Editor
-        language="json"
+        language="yaml"
         options={{
           readOnly: true,
           wordWrap: 'on',
@@ -68,7 +68,7 @@ const JsonViewer = (props) => {
           scrollBeyondLastLine: false,
           wrappingStrategy: 'advanced',
           minimap: {
-            enabled: false
+            enabled: true
           }
           //tabIndex: 2,
         }}
@@ -79,18 +79,18 @@ const JsonViewer = (props) => {
         // theme="github"
         // mode='javascript'
         // readOnly={true}
-        value={json}
+        value={yaml}
         >
       </Editor>
     </Box>
   )
 }
 
-JsonViewer.propTypes = {
+YamlViewer.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default JsonViewer
+export default YamlViewer

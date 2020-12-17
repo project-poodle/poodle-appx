@@ -61,13 +61,14 @@ function parse_var_full_path(var_full_path) {
 }
 
 // create new node
-function js_new_node(title, icon, data, isLeaf) {
+function new_js_node(title, icon, data, parentKey, isLeaf) {
   return {
     key: uuidv4(),
-    title: title ? title : (data ? (data.name ? data.name : '') : ''),
+    parentKey: parentKey,
+    title: title ? title : (data ? (data.__ref ? data.__ref : '') : ''),
+    data: data ? data : null,
     icon: icon ? icon : <QuestionOutlined />,
     isLeaf: isLeaf ? true : false,
-    data: data ? data : null,
     children: isLeaf ? null : [],
   }
 }
@@ -76,13 +77,13 @@ function js_new_node(title, icon, data, isLeaf) {
 // processors
 
 // create primitive tree node
-function js_primitive(js_context, name, input) {
+function parse_js_primitive(js_context, parentKey, ref, input) {
 
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: 'js/primitive',
     data: input,
   }
@@ -90,14 +91,14 @@ function js_primitive(js_context, name, input) {
   switch (typeof input) {
     case 'string':
       const stringTitle = prefix + (input.length > 32 ? input.substring(0, 30) + '...' : input)
-      return js_new_node(stringTitle, <FontSizeOutlined />, data, true)
+      return new_js_node(stringTitle, <FontSizeOutlined />, data, parentKey, true)
     case 'number':
-      return js_new_node(prefix + input.toString(), <NumberOutlined />, data, true)
+      return new_js_node(prefix + input.toString(), <NumberOutlined />, data, parentKey, true)
     case 'boolean':
-      return js_new_node(prefix + input.toString(), <PoweroffOutlined />, data, true)
+      return new_js_node(prefix + input.toString(), <PoweroffOutlined />, data, parentKey, true)
     case 'object':
       if (input === null) {
-        return js_new_node(prefix + 'null', <MinusCircleOutlined />, data, true)
+        return new_js_node(prefix + 'null', <MinusCircleOutlined />, data, parentKey, true)
       } else {
         throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
       }
@@ -107,7 +108,7 @@ function js_primitive(js_context, name, input) {
 }
 
 // return array tree
-function js_array(js_context, name, input) {
+function parse_js_array(js_context, parentKey, ref, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
@@ -123,24 +124,48 @@ function js_array(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: 'js/array',
   }
 
-  const node = js_new_node(name, <MenuOutlined />, data, false)
+  const node = new_js_node(name, <MenuOutlined />, data, parentKey, false)
 
   // do not expand array by default
-  // js_context.expandKeys.push(node.key)
+  // js_context.expandedKeys.push(node.key)
 
-  node.children = input.map(item => {
-    return js_process(js_context, null, item)
-  })
+  if (js_context.topLevel) {
+    const results = []
+    input.map(item => {
+      results.push(
+        js_parse(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          null,
+          null,
+          item
+        )
+      )
+    })
 
-  return node
+    return results
+  } else {
+    node.children = input.map(item => {
+      return js_parse(
+        js_context,
+        node.key,
+        null,
+        item
+      )
+    })
+
+    return node
+  }
 }
 
 // create object tree
-function js_object(js_context, name, input) {
+function parse_js_object(js_context, parentKey, ref, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
@@ -156,27 +181,53 @@ function js_object(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __requireChildRef: true,
     type: 'js/object',
   }
 
-  const node = js_new_node(name, <ApartmentOutlined />, data, false)
+  const node = new_js_node(name, <ApartmentOutlined />, data, parentKey, false)
 
   // do not expand object by default
-  // js_context.expandKeys.push(node.key)
+  // js_context.expandedKeys.push(node.key)
 
-  // return children sorted
-  Object.keys(input).sort().map(key => {
-    node.children.push(
-      js_process(js_context, key, input[key])
-    )
-  })
+  if (js_context.topLevel) {
+    // return children only
+    const results = []
+    Object.keys(input).map(key => {
+      results.push(
+        js_parse(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          null,
+          key,
+          input[key]
+        )
+      )
+    })
 
-  return node
+    return results
+  } else {
+    // return node with children
+    Object.keys(input).map(key => {
+      node.children.push(
+        js_parse(
+          js_context,
+          node.key,
+          key,
+          input[key]
+        )
+      )
+    })
+
+    return node
+  }
 }
 
 // create import tree node
-function js_import(js_context, name, input) {
+function parse_js_import(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/import') {
     throw new Error(`ERROR: input.type is not [js/import] [${input.type}] [${JSON.stringify(input)}]`)
@@ -187,25 +238,25 @@ function js_import(js_context, name, input) {
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
 
   const parsed = parse_var_full_path(input.name)
   const title = prefix + parsed.full_paths.pop()
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
-    data: input.name,
+    name: input.name,
   }
 
-  const node = js_new_node(title, <ImportOutlined />, data, true)
+  const node = new_js_node(title, <ImportOutlined />, data, parentKey, true)
 
   return node
 }
 
 // create expression tree node
-function js_expression(js_context, name, input) {
+function parse_js_expression(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/expression') {
     throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
@@ -217,22 +268,22 @@ function js_expression(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
     data: input.data,
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  const node = js_new_node(title, <PercentageOutlined />, data, true)
+  const node = new_js_node(title, <PercentageOutlined />, data, parentKey, true)
 
   return node
 }
 
 // create block ast (allow return outside of function)
-function js_block(js_context, name, input) {
+function parse_js_block(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/block') {
     throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
@@ -244,22 +295,22 @@ function js_block(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
     data: input.data,
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  const node = js_new_node(title, <CodepenOutlined />, data, true)
+  const node = new_js_node(title, <CodepenOutlined />, data, parentKey, true)
 
   return node
 }
 
 // create array function tree node
-function js_function(js_context, name, input) {
+function parse_js_function(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/function') {
     throw new Error(`ERROR: input.type is not [js/function] [${input.type}] [${JSON.stringify(input)}]`)
@@ -271,23 +322,23 @@ function js_function(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
     params: input.params,
     body: input.body,
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'function(' + (input.params ? input.params.join(', ') : '') +  ')'
 
-  const node = js_new_node(title, <FunctionOutlined />, data, true)
+  const node = new_js_node(title, <FunctionOutlined />, data, parentKey, true)
 
   return node
 }
 
 // create switch ast
-function js_switch(js_context, name, input) {
+function parse_js_switch(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/switch') {
     throw new Error(`ERROR: input.type is not [js/switch] [${input.type}] [${JSON.stringify(input)}]`)
@@ -302,19 +353,20 @@ function js_switch(js_context, name, input) {
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'Switch'
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __validChildRefs: [ 'default' ],
     type: input.type,
   }
 
-  const node = js_new_node(title, <SisternodeOutlined />, data, false)
+  const node = new_js_node(title, <SisternodeOutlined />, data, parentKey, false)
 
   // expand switch by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
   // add each conditions and results
   input.children.map(child => {
@@ -327,7 +379,15 @@ function js_switch(js_context, name, input) {
     }
 
     // process result as child node
-    const childNode = js_process(js_context, null, child.result)
+    const childNode = js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      null,
+      child.result
+    )
     // add condition data to childNode
     childNode.data.condition = child.condition
 
@@ -337,7 +397,15 @@ function js_switch(js_context, name, input) {
   // add default if exist
   if (input.default) {
     node.children.push(
-      js_process(js_context, 'default', input.default ? input.default : null)
+      js_parse(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'default',
+        input.default ? input.default : null
+      )
     )
   }
 
@@ -345,7 +413,7 @@ function js_switch(js_context, name, input) {
 }
 
 // create js map ast
-function js_map(js_context, name, input) {
+function parse_js_map(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/map') {
     throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
@@ -360,35 +428,53 @@ function js_map(js_context, name, input) {
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'Map'
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __requireChildRef: true,
+    __validChildRefs: [ 'data', 'result' ],
     type: input.type,
   }
 
-  const node = js_new_node(title, <SwapOutlined />, data, false)
+  const node = new_js_node(title, <SwapOutlined />, data, parentKey, false)
 
   // expand map by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
   // add input.data
   node.children.push(
-    js_process(js_context, 'data', input.data)
+    js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      'data',
+      input.data
+    )
   )
 
   // add input.result
   node.children.push(
-    js_process(js_context, 'result', input.result)
+    js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      'result',
+      input.result
+    )
   )
 
   return node
 }
 
 // create js reduce ast
-function js_reduce(js_context, name, input) {
+function parse_js_reduce(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/reduce') {
     throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
@@ -407,38 +493,57 @@ function js_reduce(js_context, name, input) {
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'Reduce'
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __requireChildRef: true,
+    __validChildRefs: [ 'data', 'int' ],
     type: input.type,
+    reducer: input.reducer,
   }
 
-  const node = js_new_node(title, <FullscreenExitOutlined />, data, false)
+  const node = new_js_node(title, <FullscreenExitOutlined />, data, parentKey, false)
 
   // input filter
   node.data.reducer = input.reducer
 
   // expand reduce by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
   // add input.data
   node.children.push(
-    js_process(js_context, 'data', input.data)
+    js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      'data',
+      input.data
+    )
   )
 
   // add input.init
   node.children.push(
-    js_process(js_context, 'init', input.init)
+    js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      'init',
+      input.init
+    )
   )
 
   return node
 }
 
 // create js reduce ast
-function js_filter(js_context, name, input) {
+function parse_js_filter(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/filter') {
     throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
@@ -453,33 +558,44 @@ function js_filter(js_context, name, input) {
   }
 
   // compute title
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'Filter'
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __requireChildRef: true,
+    __validChildRefs: [ 'data' ],
     type: input.type,
+    filter: input.filter,
   }
 
-  const node = js_new_node(title, <FilterOutlined />, data, false)
+  const node = new_js_node(title, <FilterOutlined />, data, parentKey, false)
 
   // input filter
   node.data.filter = input.filter
 
   // expand filter by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
   // add input.data
   node.children.push(
-    js_process(js_context, 'data', input.data)
+    js_parse(
+      {
+        ...js_context,
+        topLevel: false,
+      },
+      node.key,
+      'data',
+      input.data
+    )
   )
 
   return node
 }
 
 // create jsx element ast
-function react_element(js_context, name, input) {
+function parse_react_element(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'react/element') {
     throw new Error(`ERROR: input.type is not [react/element] [${input.type}] [${JSON.stringify(input)}]`)
@@ -492,24 +608,34 @@ function react_element(js_context, name, input) {
   // compute title
   const parsed = parse_var_full_path(input.name)
 
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + parsed.full_paths.pop()
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __validChildRefs: [ 'props' ],
     type: input.type,
+    name: input.name,
   }
 
-  const node = js_new_node(title, <ReactIcon />, data, false)
+  const node = new_js_node(title, <ReactIcon />, data, parentKey, false)
 
   // expand react element by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
-  // add input.props
+  // add input.props if exist
   if (input.props) {
     node.children.push(
-      js_process(js_context, 'props', input.props)
+      js_parse(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'props',
+        input.props
+      )
     )
   }
 
@@ -521,7 +647,15 @@ function react_element(js_context, name, input) {
 
     input.children.map(child => {
       node.children.push(
-        js_process(js_context, null, child)
+        js_parse(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          node.key,
+          null,
+          child
+        )
       )
     })
   }
@@ -530,7 +664,7 @@ function react_element(js_context, name, input) {
 }
 
 // create jsx html element ast
-function react_html(js_context, name, input) {
+function parse_react_html(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'react/html') {
     throw new Error(`ERROR: input.type is not [react/html] [${input.type}] [${JSON.stringify(input)}]`)
@@ -543,24 +677,36 @@ function react_html(js_context, name, input) {
   // compute title
   const parsed = parse_var_full_path(input.name)
 
-  const prefix = name ? name + ': ' : ''
+  const prefix = ref ? ref + ': ' : ''
   const title = prefix + parsed.full_paths.pop()
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __validChildRefs: [ 'props' ],
     type: input.type,
+    name: input.name,
   }
 
-  const node = js_new_node(title, <ContainerOutlined />, data, false)
+  const node = new_js_node(title, <ContainerOutlined />, data, parentKey, false)
 
   // expand react html by default
-  js_context.expandKeys.push(node.key)
+  js_context.expandedKeys.push(node.key)
 
-  // add input.props
-  node.children.push(
-    js_process(js_context, 'props', 'props' in input ? input.props : null)
-  )
+  // add input.props if exist
+  if (input.props) {
+    node.children.push(
+      js_parse(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'props',
+        input.props
+      )
+    )
+  }
 
   // add input.children
   if ('children' in input && input.children) {
@@ -570,7 +716,15 @@ function react_html(js_context, name, input) {
 
     input.children.map(child => {
       node.children.push(
-        js_process(js_context, null, child)
+        js_parse(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          node.key,
+          null,
+          child
+        )
       )
     })
   }
@@ -579,7 +733,7 @@ function react_html(js_context, name, input) {
 }
 
 // create react state ast
-function react_state(js_context, name, input) {
+function parse_react_state(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'react/state') {
     throw new Error(`ERROR: input.type is not [react/state] [${input.type}] [${JSON.stringify(input)}]`)
@@ -599,22 +753,20 @@ function react_state(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
-    data: {
-      name: input.name,
-      setter: input.setter,
-      init: input.init,
-    }
+    name: input.name,
+    setter: input.setter,
+    init: input.init,
   }
 
-  const node = js_new_node(name, <DatabaseOutlined />, data, true)
+  const node = new_js_node(name, <DatabaseOutlined />, data, parentKey, true)
 
   return node
 }
 
 // create react effect block ast (do not allow return outside of function)
-function react_effect(js_context, name, input) {
+function parse_react_effect(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'react/effect') {
     throw new Error(`ERROR: input.type is not [react/effect] [${input.type}] [${JSON.stringify(input)}]`)
@@ -626,19 +778,19 @@ function react_effect(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
     data: input.data,
   }
 
-  const node = js_new_node(name, <UngroupOutlined />, data, true)
+  const node = new_js_node(name, <UngroupOutlined />, data, parentKey, true)
 
   return node
 }
 
 
 // create mui style expression
-function mui_style(js_context, name, input) {
+function parse_mui_style(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'mui/style') {
     throw new Error(`ERROR: input.type is not [mui/style] [${input.type}] [${JSON.stringify(input)}]`)
@@ -646,22 +798,31 @@ function mui_style(js_context, name, input) {
 
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
+    __requireChildRef: true,
     type: input.type,
   }
 
-  const node = js_new_node(name, <FormatPainterOutlined />, data, false)
+  const node = new_js_node(name, <FormatPainterOutlined />, data, parentKey, false)
 
   // do not expand mui styles by default
-  // js_context.expandKeys.push(node.key)
+  // js_context.expandedKeys.push(node.key)
 
   // add all styles children
-  Object.keys(input).sort().map(key => {
+  Object.keys(input).map(key => {
     if (key == 'type') {
       return
     }
     node.children.push(
-      js_process(js_context, key, input[key])
+      js_parse(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        key,
+        input[key]
+      )
     )
   })
 
@@ -669,23 +830,19 @@ function mui_style(js_context, name, input) {
 }
 
 // create jsx route ast
-function appx_route(js_context, name, input) {
+function parse_appx_route(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'appx/route') {
     throw new Error(`ERROR: input.type is not [appx/route] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!('appx' in js_context) || !('ui_deployment' in js_context.appx)) {
-    throw new Error(`ERROR: context missing appx.ui_deployment [${JSON.stringify(js_context)}]`)
-  }
-
   // tree node data
   const data = {
-    name: name,
+    __ref: ref,
     type: input.type,
   }
 
-  const node = js_new_node(name, <AllOutOutlined />, data, true)
+  const node = new_js_node(name, <AllOutOutlined />, data, parentKey, true)
 
   return node
 }
@@ -693,29 +850,29 @@ function appx_route(js_context, name, input) {
 ////////////////////////////////////////////////////////////////////////////////
 
 // process input data and return tree data
-function js_process(js_context, name, input) {
+function js_parse(js_context, parentKey, ref, input) {
 
-  if (! ('expandKeys' in js_context)) {
-    js_context.expandKeys = []
+  if (! ('expandedKeys' in js_context)) {
+    js_context.expandedKeys = []
   }
 
   if (isPrimitive(input)) {
-    return js_primitive(js_context, name, input)
+    return parse_js_primitive(js_context, parentKey, ref, input)
   }
 
   if (Array.isArray(input)) {
-    return js_array(js_context, name, input)
+    return parse_js_array(js_context, parentKey, ref, input)
   }
 
   if (! ('type' in input)) {
     // no 'type' is treated as json object
-    return js_object(js_context, name, input)
+    return parse_js_object(js_context, parentKey, ref, input)
   }
 
   // 'type' is presented in the json object
   if (input.type === 'js/import') {
 
-    return js_import(js_context, name, input)
+    return parse_js_import(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/export') {
 
@@ -730,15 +887,15 @@ function js_process(js_context, name, input) {
 
   } else if (input.type === 'js/expression') {
 
-    return js_expression(js_context, name, input)
+    return parse_js_expression(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/block') {
 
-    return js_block(js_context, name, input)
+    return parse_js_block(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/function') {
 
-    return js_function(js_context, name, input)
+    return parse_js_function(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/call') {
 
@@ -747,19 +904,19 @@ function js_process(js_context, name, input) {
 
   } else if (input.type === 'js/switch') {
 
-    return js_switch(js_context, name, input)
+    return parse_js_switch(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/map') {
 
-    return js_map(js_context, name, input)
+    return parse_js_map(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/reduce') {
 
-    return js_reduce(js_context, name, input)
+    return parse_js_reduce(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/filter') {
 
-    return js_filter(js_context, name, input)
+    return parse_js_filter(js_context, parentKey, ref, input)
 
   } else if (input.type === 'js/transform') {
 
@@ -773,23 +930,23 @@ function js_process(js_context, name, input) {
 
   } else if (input.type === 'react/element') {
 
-    return react_element(js_context, name, input)
+    return parse_react_element(js_context, parentKey, ref, input)
 
   } else if (input.type === 'react/html') {
 
-    return react_html(js_context, name, input)
+    return parse_react_html(js_context, parentKey, ref, input)
 
   } else if (input.type === 'react/state') {
 
-    return react_state(js_context, name, input)
+    return parse_react_state(js_context, parentKey, ref, input)
 
   } else if (input.type === 'react/effect') {
 
-    return react_effect(js_context, name, input)
+    return parse_react_effect(js_context, parentKey, ref, input)
 
   } else if (input.type === 'mui/style') {
 
-    return mui_style(js_context, name, input)
+    return parse_mui_style(js_context, parentKey, ref, input)
 
   } else if (input.type === 'mui/control') {
 
@@ -798,7 +955,7 @@ function js_process(js_context, name, input) {
 
   } else if (input.type === 'appx/route') {
 
-    return appx_route(js_context, name, input)
+    return parse_appx_route(js_context, parentKey, ref, input)
 
   } else {
 
@@ -807,5 +964,5 @@ function js_process(js_context, name, input) {
 }
 
 export {
-  js_process,
+  js_parse,
 }

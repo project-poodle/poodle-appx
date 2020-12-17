@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core'
 import { Tree } from 'antd'
@@ -10,75 +10,47 @@ import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { js_process } from 'app-x/builder/util'
+import { js_parse } from 'app-x/builder/ui/util_parse'
+import { tree_traverse, tree_lookup } from 'app-x/builder/ui/util_tree'
+import EditorProvider from 'app-x/builder/ui/EditorProvider'
 
-
-////////////////////////////////////////////////////////////////////////////////
-// traverse method
-const traverse = (data, key, callback) => {
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].key === key) {
-      return callback(data[i], i, data)
-    }
-    if (data[i].children) {
-      traverse(data[i].children, key, callback)
-    }
-  }
-}
 
 // generate tree data
 const transformTreeData = (data) => {
 
   try {
     // process data
-    const js_context = {}
-    const processed = js_process(js_context, null, data)
+    const js_context = { topLevel: true }
+    const processed = js_parse(js_context, null, null, data)
 
     console.log(processed)
 
     // return processed result
-    if (processed.children) {
-      return {
-        tree_data: processed.children,
-        expanded_keys: js_context.expandKeys,
-      }
-    } else {
-      return {
-        tree_data: [],
-        expanded_keys: [],
-      }
+    return {
+      treeData: processed,
+      expandedKeys: js_context.expandedKeys,
     }
+
   } catch (err) {
 
     console.log(err.stack)
     throw err
   }
-
 }
-
-const loaded = {
-  namespace: null,
-  ui_name: null,
-  ui_deployment: null,
-  ui_element_name: null,
-  api_data: [],
-  tree_data: [],
-  expanded_keys: [],
-}
-
 
 const SyntaxTree = (props) => {
 
-  const [ tData, setTData ] = useState(loaded.tree_data)
-  const [ expandedKeys, setExpandedKeys ] = useState(loaded.expanded_keys)
-  //console.log(tData)
+    const {
+      treeData,
+      setTreeData,
+      expandedKeys,
+      setExpandedKeys,
+      selectedKey,
+      setSelectedKey
+    } = useContext(EditorProvider.Context)
+  // console.log(EditorProvider)
 
-  if (loaded.tree_data == null
-      || loaded.namespace != props.namespace
-      || loaded.ui_name != props.ui_name
-      || loaded.ui_deployment != props.ui_deployment
-      || loaded.ui_element_name != props.ui_element_name) {
-
+  useEffect(() => {
     const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
     // console.log(url)
     api.get(
@@ -92,27 +64,21 @@ const SyntaxTree = (props) => {
         }
 
         if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          setTData([])
+          setTreeData([])
           setExpandedKeys([])
         }
 
         const transformed = transformTreeData(data.ui_element_spec)
-        loaded.api_data = data
-        loaded.tree_data = transformed.tree_data
-        loaded.expanded_keys = transformed.expanded_keys
-        loaded.namespace = props.namespace
-        loaded.ui_name = props.ui_name
-        loaded.ui_deployment = props.ui_deployment
-        loaded.ui_element_name = props.ui_element_name
-        // console.log(loaded)
-        setTData(loaded.tree_data)
-        setExpandedKeys(loaded.expanded_keys)
+
+        setTreeData(transformed.treeData)
+        setExpandedKeys(transformed.expandedKeys)
       },
       error => {
         console.error(error)
       }
     )
-  }
+  }, [])
+
 
   const styles = makeStyles((theme) => ({
     tree: {
@@ -127,7 +93,12 @@ const SyntaxTree = (props) => {
 
   // select
   const onSelect = key => {
-    console.log(`select ${key}`)
+    // console.log(`selected ${key}`)
+    if (key.length) {
+      setSelectedKey(key[0])
+    } else {
+      setSelectedKey(null)
+    }
   }
 
   // drag enter
@@ -146,23 +117,21 @@ const SyntaxTree = (props) => {
     console.log(info)
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
-    // const dropPos = info.node.props.pos.split('-')
-    // const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
     const dropPosition = info.dropPosition
 
     // replicate data
-    const data = [...tData]
+    const data = [...treeData]
 
     // Find dragObject
     let dragObj
-    traverse(data, dragKey, (item, index, arr) => {
+    tree_traverse(data, dragKey, (item, index, arr) => {
       arr.splice(index, 1)
       dragObj = item
     })
 
     if (!info.dropToGap) {
       // Drop on the content
-      traverse(data, dropKey, item => {
+      tree_traverse(data, dropKey, item => {
         // console.log(item)
         item.children = item.children || []
         // where to insert
@@ -180,7 +149,7 @@ const SyntaxTree = (props) => {
       info.node.props.expanded && // Is expanded
       dropPosition === 1 // On the bottom gap
     ) {
-      traverse(data, dropKey, item => {
+      tree_traverse(data, dropKey, item => {
         item.children = item.children || []
         // where to insert
         item.children.unshift(dragObj)
@@ -190,7 +159,7 @@ const SyntaxTree = (props) => {
     } else {
       let ar
       let i
-      traverse(data, dropKey, (item, index, arr) => {
+      tree_traverse(data, dropKey, (item, index, arr) => {
         ar = arr
         i = index
       })
@@ -201,22 +170,21 @@ const SyntaxTree = (props) => {
       }
     }
 
-    setTData(data)
+    setTreeData(data)
   }
 
   return (
     <Tree
       className={styles.tree}
       expandedKeys={expandedKeys}
-      // autoExpandParent={true}
-      // defaultExpandAll
       draggable
       blockNode
       showIcon
+      onSelect={onSelect}
       onExpand={onExpand}
       onDragEnter={onDragEnter}
       onDrop={onDrop}
-      treeData={tData}
+      treeData={treeData}
     />
   )
 }
