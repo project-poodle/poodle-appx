@@ -6,6 +6,7 @@ import {
   Box,
   Container,
   Grid,
+  ListItemIcon,
   Typography,
   FormControl,
   InputLabel,
@@ -24,6 +25,8 @@ const { TabPane } = Tabs;
 import { default as Editor } from '@monaco-editor/react'
 // context provider
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
+// utilities
+import { lookup_icon } from 'app-x/builder/ui/util_parse'
 import { tree_traverse, tree_lookup, gen_js } from 'app-x/builder/ui/util_tree'
 
 const PropEditor = (props) => {
@@ -127,8 +130,22 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/primitive">js/primitive</MenuItem>
-                    <MenuItem value="js/expression">js/expression</MenuItem>
+                    <MenuItem value="js/primitive">
+                      <ListItemIcon>
+                        { lookup_icon('js/primitive') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/primitive
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="js/expression">
+                      <ListItemIcon>
+                        { lookup_icon('js/expression') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/expression
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -144,7 +161,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/array">js/array</MenuItem>
+                    <MenuItem value="js/array">
+                      <ListItemIcon>
+                        { lookup_icon('js/array') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/array
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
@@ -157,7 +181,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/object">js/object</MenuItem>
+                    <MenuItem value="js/object">
+                      <ListItemIcon>
+                        { lookup_icon('js/object') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/object
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
@@ -170,7 +201,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/import">js/import</MenuItem>
+                    <MenuItem value="js/import">
+                      <ListItemIcon>
+                        { lookup_icon('js/import') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/import
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -186,8 +224,22 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/primitive">js/primitive</MenuItem>
-                    <MenuItem value="js/expression">js/expression</MenuItem>
+                    <MenuItem value="js/primitive">
+                      <ListItemIcon>
+                        { lookup_icon('js/primitive') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/primitive
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="js/expression">
+                      <ListItemIcon>
+                        { lookup_icon('js/expression') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/expression
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -203,7 +255,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/block">js/expression</MenuItem>
+                    <MenuItem value="js/block">
+                      <ListItemIcon>
+                        { lookup_icon('js/block') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/block
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -219,7 +278,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/function">js/primitive</MenuItem>
+                    <MenuItem value="js/function">
+                      <ListItemIcon>
+                        { lookup_icon('js/function') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/function
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -238,7 +304,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/switch">js/switch</MenuItem>
+                    <MenuItem value="js/switch">
+                      <ListItemIcon>
+                        { lookup_icon('js/switch') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/switch
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
@@ -251,7 +324,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/map">js/map</MenuItem>
+                    <MenuItem value="js/map">
+                      <ListItemIcon>
+                        { lookup_icon('js/map') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/map
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
@@ -264,7 +344,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/reduce">js/reduce</MenuItem>
+                    <MenuItem value="js/reduce">
+                      <ListItemIcon>
+                        { lookup_icon('js/reduce') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/reduce
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -280,7 +367,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="js/filter">js/filter</MenuItem>
+                    <MenuItem value="js/filter">
+                      <ListItemIcon>
+                        { lookup_icon('js/filter') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/filter
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -296,8 +390,22 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="react/element">react/element</MenuItem>
-                    <MenuItem value="react/html">react/html</MenuItem>
+                    <MenuItem value="react/element">
+                      <ListItemIcon>
+                        { lookup_icon('react/element') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/element
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="react/html">
+                      <ListItemIcon>
+                        { lookup_icon('react/html') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/html
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -313,8 +421,22 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="react/element">react/element</MenuItem>
-                    <MenuItem value="react/html">react/html</MenuItem>
+                    <MenuItem value="react/element">
+                      <ListItemIcon>
+                        { lookup_icon('react/element') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/element
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="react/html">
+                      <ListItemIcon>
+                        { lookup_icon('react/html') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/html
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -330,7 +452,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="react/state">react/state</MenuItem>
+                    <MenuItem value="react/state">
+                      <ListItemIcon>
+                        { lookup_icon('react/state') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/state
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -352,7 +481,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="react/effect">react/effect</MenuItem>
+                    <MenuItem value="react/effect">
+                      <ListItemIcon>
+                        { lookup_icon('react/effect') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        react/effect
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
@@ -368,7 +504,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="mui/style">mui/style</MenuItem>
+                    <MenuItem value="mui/style">
+                      <ListItemIcon>
+                        { lookup_icon('mui/style') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        mui/style
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>
@@ -381,7 +524,14 @@ const PropEditor = (props) => {
               <Box>
                 <FormControl className={styles.formControl}>
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
-                    <MenuItem value="appx/route">appx/route</MenuItem>
+                    <MenuItem value="appx/route">
+                      <ListItemIcon>
+                        { lookup_icon('appx/route') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        appx/route
+                      </Typography>
+                    </MenuItem>
                   </TextField>
                 </FormControl>
               </Box>

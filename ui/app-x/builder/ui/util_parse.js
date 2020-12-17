@@ -38,6 +38,7 @@ import ReactIcon from 'app-x/icon/React'
 const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // primitive test
 function isPrimitive(test) {
@@ -57,6 +58,127 @@ function parse_var_full_path(var_full_path) {
     full_paths: [].concat(import_paths, sub_vars),
     import_paths: import_paths,
     sub_vars: sub_vars
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// lookup icon by type
+function lookup_icon(type) {
+  return lookup_icon_for_input({type: type, data: ''})
+}
+
+// lookup icon for input (input.type)
+function lookup_icon_for_input(input) {
+
+  function _primitive_icon(data) {
+    switch (typeof data) {
+      case 'string':
+        return <FontSizeOutlined />
+      case 'number':
+        return <NumberOutlined />
+      case 'boolean':
+        return <PoweroffOutlined />
+      case 'object':
+        if (input === null) {
+          return <MinusCircleOutlined />
+        } else {
+          throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+        }
+      default:
+        throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+    }
+  }
+
+  if (isPrimitive(input)) {
+    return _primitive_icon(input)
+  }
+
+  if (Array.isArray(input)) {
+    return <MenuOutlined />
+  }
+
+  if (! ('type' in input)) {
+    return <ApartmentOutlined />
+  }
+
+  // 'type' is presented in the json object
+  if (input.type === 'js/primitive') {
+
+    return _primitive_icon(input.data)
+
+  } else if (input.type === 'js/array') {
+
+    return  <MenuOutlined />
+
+  } else if (input.type === 'js/object') {
+
+    return <ApartmentOutlined />
+
+  } else if (input.type === 'js/import') {
+
+    return <ImportOutlined />
+
+  } else if (input.type === 'js/expression') {
+
+    return <PercentageOutlined />
+
+  } else if (input.type === 'js/block') {
+
+    return <CodepenOutlined />
+
+  } else if (input.type === 'js/function') {
+
+    return <FunctionOutlined />
+
+  } else if (input.type === 'js/switch') {
+
+    return <SisternodeOutlined />
+
+  } else if (input.type === 'js/map') {
+
+    return <SwapOutlined />
+
+  } else if (input.type === 'js/reduce') {
+
+    return <FullscreenExitOutlined />
+
+  } else if (input.type === 'js/filter') {
+
+    return <FilterOutlined />
+
+  } else if (input.type === 'react/element') {
+
+    return <ReactIcon />
+
+  } else if (input.type === 'react/html') {
+
+    return <ContainerOutlined />
+
+  } else if (input.type === 'react/state') {
+
+    return <DatabaseOutlined />
+
+  } else if (input.type === 'react/effect') {
+
+    return <UngroupOutlined />
+
+  } else if (input.type === 'mui/style') {
+
+    return <FormatPainterOutlined />
+
+  } else if (input.type === 'mui/control') {
+
+    // TODO
+    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+
+  } else if (input.type === 'appx/route') {
+
+    return <AllOutOutlined />
+
+  } else {
+
+    return <QuestionOutlined />
   }
 }
 
@@ -91,14 +213,14 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
   switch (typeof input) {
     case 'string':
       const stringTitle = prefix + (input.length > 32 ? input.substring(0, 30) + '...' : input)
-      return new_js_node(stringTitle, <FontSizeOutlined />, data, parentKey, true)
+      return new_js_node(stringTitle, lookup_icon_for_input(input), data, parentKey, true)
     case 'number':
-      return new_js_node(prefix + input.toString(), <NumberOutlined />, data, parentKey, true)
+      return new_js_node(prefix + input.toString(), lookup_icon_for_input(input), data, parentKey, true)
     case 'boolean':
-      return new_js_node(prefix + input.toString(), <PoweroffOutlined />, data, parentKey, true)
+      return new_js_node(prefix + input.toString(), lookup_icon_for_input(input), data, parentKey, true)
     case 'object':
       if (input === null) {
-        return new_js_node(prefix + 'null', <MinusCircleOutlined />, data, parentKey, true)
+        return new_js_node(prefix + 'null', lookup_icon_for_input(input), data, parentKey, true)
       } else {
         throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
       }
@@ -134,7 +256,7 @@ function parse_js_array(js_context, parentKey, ref, input) {
     type: 'js/array',
   }
 
-  const node = new_js_node(name, <MenuOutlined />, data, parentKey, false)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
 
   // do not expand array by default
   // js_context.expandedKeys.push(node.key)
@@ -199,7 +321,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
     type: 'js/object',
   }
 
-  const node = new_js_node(name, <ApartmentOutlined />, data, parentKey, false)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
 
   // do not expand object by default
   // js_context.expandedKeys.push(node.key)
@@ -263,7 +385,7 @@ function parse_js_import(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, <ImportOutlined />, data, parentKey, true)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -290,7 +412,7 @@ function parse_js_expression(js_context, parentKey, ref, input) {
   const prefix = ref ? ref + ': ' : ''
   const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  const node = new_js_node(title, <PercentageOutlined />, data, parentKey, true)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -317,7 +439,7 @@ function parse_js_block(js_context, parentKey, ref, input) {
   const prefix = ref ? ref + ': ' : ''
   const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  const node = new_js_node(title, <CodepenOutlined />, data, parentKey, true)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -345,7 +467,7 @@ function parse_js_function(js_context, parentKey, ref, input) {
   const prefix = ref ? ref + ': ' : ''
   const title = prefix + 'function(' + (input.params ? input.params.join(', ') : '') +  ')'
 
-  const node = new_js_node(title, <FunctionOutlined />, data, parentKey, true)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -383,7 +505,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(title, <SisternodeOutlined />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // expand switch by default
   js_context.expandedKeys.push(node.key)
@@ -464,7 +586,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(title, <SwapOutlined />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // expand map by default
   js_context.expandedKeys.push(node.key)
@@ -535,7 +657,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     reducer: input.reducer,
   }
 
-  const node = new_js_node(title, <FullscreenExitOutlined />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // input filter
   node.data.reducer = input.reducer
@@ -605,7 +727,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
     filter: input.filter,
   }
 
-  const node = new_js_node(title, <FilterOutlined />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // input filter
   node.data.filter = input.filter
@@ -660,7 +782,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, <ReactIcon />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // expand react element by default
   js_context.expandedKeys.push(node.key)
@@ -735,7 +857,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, <ContainerOutlined />, data, parentKey, false)
+  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
 
   // expand react html by default
   js_context.expandedKeys.push(node.key)
@@ -807,7 +929,7 @@ function parse_react_state(js_context, parentKey, ref, input) {
     init: input.init,
   }
 
-  const node = new_js_node(name, <DatabaseOutlined />, data, parentKey, true)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -830,7 +952,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
     data: input.data,
   }
 
-  const node = new_js_node(name, <UngroupOutlined />, data, parentKey, true)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -855,7 +977,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(name, <FormatPainterOutlined />, data, parentKey, false)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
 
   // do not expand mui styles by default
   // js_context.expandedKeys.push(node.key)
@@ -894,7 +1016,7 @@ function parse_appx_route(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(name, <AllOutOutlined />, data, parentKey, true)
+  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -991,4 +1113,5 @@ function parse_js(js_context, parentKey, ref, input) {
 
 export {
   parse_js,
+  lookup_icon,
 }
