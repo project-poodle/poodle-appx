@@ -190,12 +190,11 @@ function lookup_title_for_input(ref, input) {
   function _primitive_title(data) {
     switch (typeof data) {
       case 'string':
-        const stringTitle = prefix + (input.length > 32 ? input.substring(0, 30) + '...' : input)
-        return stringTitle
+        return prefix + (data.length > 32 ? data.substring(0, 30) + '...' : data)
       case 'number':
-        return prefix + input.toString()
+        return prefix + data.toString()
       case 'boolean':
-        return prefix + input.toString()
+        return prefix + data.toString()
       case 'object':
         if (input === null) {
           return prefix + 'null'
@@ -1214,7 +1213,11 @@ function parse_js(js_context, parentKey, ref, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/import') {
+  if (input.type === 'js/primitive') {
+
+    return parse_js_primitive(js_context, parentKey, ref, input.data)
+
+  } else if (input.type === 'js/import') {
 
     return parse_js_import(js_context, parentKey, ref, input)
 

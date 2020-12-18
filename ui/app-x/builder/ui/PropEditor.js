@@ -82,7 +82,7 @@ const PropEditor = (props) => {
 
   const treeNode = tree_lookup(treeData, selectedKey)
   const parentNode = treeNode ? tree_lookup(treeData, treeNode.parentKey) : null
-  // console.log(treeNode)
+  console.log(treeNode)
   // console.log(parentNode)
 
   // prop editor data
@@ -93,18 +93,30 @@ const PropEditor = (props) => {
   yamlDoc.contents = data
   // console.log(yamlDoc.toString())
 
-  // upgrade treeNode for the given treeData
-  function updateRef(refValue) {
+  // update treeNode for the given ref
+  function updateRef(newRef) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
-    lookupNode.data.__ref = refValue
+    lookupNode.data.__ref = newRef
     lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, lookupNode.data)
     lookupNode.icon = lookup_icon_for_input(lookupNode.data)
     setTreeData(resultTree)
   }
 
+  // upgrade treeNode for the given data
+  function updateData(newData) {
+    const resultTree = _.cloneDeep(treeData)
+    const lookupNode = tree_lookup(resultTree, selectedKey)
+    lookupNode.data = newData
+    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, lookupNode.data)
+    lookupNode.icon = lookup_icon_for_input(lookupNode.data)
+    setTreeData(resultTree)
+  }
 
+  // hook form
   const { register, handleSubmit, watch, errors } = useForm()
+
+  // render
   return (
     <Box className={styles.root}>
     {
@@ -154,7 +166,7 @@ const PropEditor = (props) => {
                     label="Type"
                     select={true}
                     value={treeNode.data.type}
-                    onChange={e => console.log(e.target.value)}
+                    onChange={e => updateData({...treeNode.data, type: e.target.value})}
                     >
                     <MenuItem value="js/primitive">
                       <ListItemIcon>
@@ -179,7 +191,7 @@ const PropEditor = (props) => {
                     name="data"
                     label="Data"
                     value={data}
-                    onChange={e => console.log(e.target.value)}
+                    onChange={e => updateData({...treeNode.data, data: e.target.value})}
                     />
                 </FormControl>
               </Box>
