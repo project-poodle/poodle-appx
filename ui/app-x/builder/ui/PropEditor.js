@@ -758,6 +758,7 @@ const PropEditor = (props) => {
                 className={styles.editor}
                 language="yaml"
                 options={{
+                  readOnly: true,
                   wordWrap: 'on',
                   wrappingIndent: 'deepIndent',
                   scrollBeyondLastLine: false,
