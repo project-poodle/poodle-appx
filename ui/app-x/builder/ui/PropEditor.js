@@ -104,7 +104,7 @@ const PropEditor = (props) => {
   }
 
   // upgrade treeNode for the given data
-  function updateData(newData) {
+  function updateNodeData(newData) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
     lookupNode.data = newData
@@ -148,7 +148,7 @@ const PropEditor = (props) => {
               <FormControl className={styles.formControl}>
                 <TextField
                   name="ref"
-                  label="Reference Name"
+                  label="Reference"
                   value={ref}
                   onChange={e => updateRef(e.target.value)}
                   />
@@ -166,7 +166,7 @@ const PropEditor = (props) => {
                     label="Type"
                     select={true}
                     value={treeNode.data.type}
-                    onChange={e => updateData({...treeNode.data, type: e.target.value})}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
                     >
                     <MenuItem value="js/primitive">
                       <ListItemIcon>
@@ -191,7 +191,7 @@ const PropEditor = (props) => {
                     name="data"
                     label="Data"
                     value={data}
-                    onChange={e => updateData({...treeNode.data, data: e.target.value})}
+                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
                     />
                 </FormControl>
               </Box>
