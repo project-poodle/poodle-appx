@@ -52,8 +52,8 @@ function tree_lookup(data, key) {
   return null
 }
 
-// generate js/primitive from tree
-function gen_js_primitive(tree_context, treeNode) {
+// generate js/string from tree
+function gen_js_string(tree_context, treeNode) {
 
   if (! ('data' in treeNode)) {
     throw new Error(`ERROR: missing [data] in treeNode`)
@@ -63,14 +63,80 @@ function gen_js_primitive(tree_context, treeNode) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
-  if (treeNode.data.type !== 'js/primitive') {
-    throw new Error(`ERROR: treeNode.data.type is not [js/primitive] [${treeNode.data.type}]`)
+  if (treeNode.data.type !== 'js/string') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/string] [${treeNode.data.type}]`)
   }
 
   // return
   return {
     ref: treeNode.data.__ref,
-    data: treeNode.data.data,
+    data: String(treeNode.data.data),
+  }
+}
+
+// generate js/number from tree
+function gen_js_number(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/number') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/number] [${treeNode.data.type}]`)
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: isNaN(Number(treeNode.data.data)) ? 0 : Number(treeNode.data.data),
+  }
+}
+
+// generate js/boolean from tree
+function gen_js_boolean(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/boolean') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/boolean] [${treeNode.data.type}]`)
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: Boolean(treeNode.data.data),
+  }
+}
+
+// generate js/null from tree
+function gen_js_null(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'js/null') {
+    throw new Error(`ERROR: treeNode.data.type is not [js/null] [${treeNode.data.type}]`)
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: null,
   }
 }
 
@@ -768,9 +834,21 @@ function gen_js(tree_context, treeNode) {
     throw new Error(`ERROR: missing __ref in treeNode.data`)
   }
 
-  if (treeNode.data.type === 'js/primitive') {
+  if (treeNode.data.type === 'js/string') {
 
-    return gen_js_primitive(tree_context, treeNode)
+    return gen_js_string(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/number') {
+
+    return gen_js_number(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/boolean') {
+
+    return gen_js_boolean(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'js/null') {
+
+    return gen_js_null(tree_context, treeNode)
 
   } else if (treeNode.data.type === 'js/array') {
 

@@ -103,9 +103,21 @@ function lookup_icon_for_input(input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/primitive') {
+  if (input.type === 'js/string') {
 
-    return _primitive_icon(input.data)
+    return <FontSizeOutlined />
+
+  } else if (input.type === 'js/number') {
+
+    return  <NumberOutlined />
+
+  } else if (input.type === 'js/boolean') {
+
+    return  <PoweroffOutlined />
+
+  } else if (input.type === 'js/null') {
+
+    return  <MinusCircleOutlined />
 
   } else if (input.type === 'js/array') {
 
@@ -196,7 +208,7 @@ function lookup_title_for_input(ref, input) {
       case 'boolean':
         return prefix + data.toString()
       case 'object':
-        if (input === null) {
+        if (data === null) {
           return prefix + 'null'
         } else {
           throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
@@ -219,9 +231,21 @@ function lookup_title_for_input(ref, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/primitive') {
+  if (input.type === 'js/string') {
 
-    return _primitive_title(input.data)
+    return _primitive_title(String(input.data))
+
+  } else if (input.type === 'js/number') {
+
+    return _primitive_title(isNaN(Number(input.data)) ? 0 : Number(input.data))
+
+  } else if (input.type === 'js/boolean') {
+
+    return _primitive_title(Boolean(input.data))
+
+  } else if (input.type === 'js/null') {
+
+    return _primitive_title(null)
 
   } else if (input.type === 'js/array') {
 
@@ -325,7 +349,7 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: 'js/primitive',
+    type: input === null ? 'js/null' : ('js/' + typeof input),
     data: input,
   }
 
@@ -1213,7 +1237,7 @@ function parse_js(js_context, parentKey, ref, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/primitive') {
+  if (input.type === 'js/string' || input.type === 'js/number' || input.type === 'js/boolean' || input.type === 'js/null') {
 
     return parse_js_primitive(js_context, parentKey, ref, input.data)
 

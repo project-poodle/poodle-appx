@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core'
-import { Tree } from 'antd'
+import {
+  Box,
+  Menu,
+  MenuItem,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles
+} from '@material-ui/core'
+import {
+  Tree,
+} from 'antd'
+import {
+  DeleteOutlined,
+} from '@ant-design/icons'
 const { DirectoryTree } = Tree
 import {
   Icon,
@@ -10,46 +23,34 @@ import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { parse_js } from 'app-x/builder/ui/util_parse'
+import { parse_js, lookup_icon_for_type } from 'app-x/builder/ui/util_parse'
 import { tree_traverse, tree_lookup } from 'app-x/builder/ui/util_tree'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 
 
-// generate tree data
-const transformTreeData = (data) => {
-
-  try {
-    // process data
-    const js_context = { topLevel: true }
-    const processed = parse_js(js_context, null, null, data)
-
-    console.log(processed)
-
-    // return processed result
-    return {
-      treeData: processed,
-      expandedKeys: js_context.expandedKeys,
-    }
-
-  } catch (err) {
-
-    console.log(err.stack)
-    throw err
-  }
-}
-
 const SyntaxTree = (props) => {
 
-    const {
-      treeData,
-      setTreeData,
-      expandedKeys,
-      setExpandedKeys,
-      selectedKey,
-      setSelectedKey
-    } = useContext(EditorProvider.Context)
-  // console.log(EditorProvider)
+  // context
+  const {
+    treeData,
+    setTreeData,
+    expandedKeys,
+    setExpandedKeys,
+    selectedKey,
+    setSelectedKey
+  } = useContext(EditorProvider.Context)
 
+  // styles
+  const styles = makeStyles((theme) => ({
+    tree: {
+      width: '100%',
+    },
+    menuItem: {
+      minWidth: 200,
+    },
+  }))()
+
+  // load data via api
   useEffect(() => {
     const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
     // console.log(url)
@@ -68,10 +69,13 @@ const SyntaxTree = (props) => {
           setExpandedKeys([])
         }
 
-        const transformed = transformTreeData(data.ui_element_spec)
+        const js_context = { topLevel: true }
+        const parsedTree = parse_js(js_context, null, null, data.ui_element_spec)
 
-        setTreeData(transformed.treeData)
-        setExpandedKeys(transformed.expandedKeys)
+        console.log(parsedTree)
+
+        setTreeData(parsedTree)
+        setExpandedKeys(js_context.expandedKeys)
       },
       error => {
         console.error(error)
@@ -79,12 +83,76 @@ const SyntaxTree = (props) => {
     )
   }, [])
 
+  // selected node
+  const selectedNode = tree_lookup(treeData, selectedKey)
+  const [ contextMenuOpen, setContextMenuOpen ] = useState(false)
+  const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
-  const styles = makeStyles((theme) => ({
-    tree: {
-      width: '100%'
-    },
-  }))()
+  // make context menu
+  const ContextMenu = (props) => {
+    // check selectedNode
+    if (!selectedNode) {
+      return null
+    }
+
+    return (
+      <Menu
+        keepMounted={true}
+        getContentAnchorEl={null}
+        anchorEl={contextAnchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        open={Boolean(contextAnchorEl)}
+        onClose={ e => setContextAnchorEl(null) }
+        >
+        {
+          (selectedNode.data.type === 'js/primitive')
+          &&
+          (
+            <MenuItem
+              dense={true}
+              className={styles.menuItem}
+              >
+              <ListItemIcon>
+                { lookup_icon_for_type('js/primitive') }
+              </ListItemIcon>
+              <ListItemText primary="Add js/primitive" />
+            </MenuItem>
+          )
+        }
+        {
+          (selectedNode.data.type === 'js/array')
+          &&
+          (
+            <MenuItem
+              dense={true}
+              className={styles.menuItem}
+              >
+              <ListItemIcon>
+                { lookup_icon_for_type('js/array') }
+              </ListItemIcon>
+              <ListItemText primary="Add js/array" />
+            </MenuItem>
+          )
+        }
+        <MenuItem
+          dense={true}
+          className={styles.menuItem}
+          >
+          <ListItemIcon>
+            <DeleteOutlined />
+          </ListItemIcon>
+          <ListItemText primary="Delete" />
+        </MenuItem>
+      </Menu>
+    )
+  }
 
   // expand/collapse
   const onExpand = keys => {
@@ -101,8 +169,18 @@ const SyntaxTree = (props) => {
     }
   }
 
+  // drag start
+  const onDragStart = info => {
+    //console.trace()
+    //console.log(info.node.key)
+    info.event.dataTransfer.setData("nodeKey", info.node.key)
+    // console.log(info.event)
+  }
+
   // drag enter
   const onDragEnter = info => {
+    console.trace()
+    console.log(info)
     // expandedKeys
     if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
       // console.log([...info.expandedKeys, info.node.key])
@@ -110,6 +188,11 @@ const SyntaxTree = (props) => {
         [...info.expandedKeys, info.node.key]
       )
     }
+  }
+
+  // drag enter
+  const onDragOver = info => {
+    //console.log(info)
   }
 
   // drop
@@ -173,19 +256,52 @@ const SyntaxTree = (props) => {
     setTreeData(data)
   }
 
+  const onRightClick = info => {
+    // console.log(info)
+    // set selected key
+    setSelectedKey(info.node.key)
+    // find draggable target, open context menu
+    let target = info.event.target
+    while (target.parentNode && !target.draggable) {
+      target = target.parentNode
+    }
+    setContextAnchorEl(target)
+    info.event.stopPropagation()
+    info.event.preventDefault()
+  }
+
+  const handleContextMenu = e => {
+    // console.log(e)
+    // console.log('Right click')
+    if (contextAnchorEl) {
+      setContextAnchorEl(null)
+    }
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
   return (
-    <Tree
-      className={styles.tree}
-      expandedKeys={expandedKeys}
-      draggable
-      blockNode
-      showIcon
-      onSelect={onSelect}
-      onExpand={onExpand}
-      onDragEnter={onDragEnter}
-      onDrop={onDrop}
-      treeData={treeData}
-    />
+    <Box
+      onContextMenu={handleContextMenu}
+      >
+      <Tree
+        className={styles.tree}
+        expandedKeys={expandedKeys}
+        selectedKeys={[selectedKey]}
+        draggable
+        blockNode
+        showIcon
+        onSelect={onSelect}
+        onExpand={onExpand}
+        onDragStart={onDragStart}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        onRightClick={onRightClick}
+        treeData={treeData}
+      />
+      <ContextMenu />
+    </Box>
   )
 }
 

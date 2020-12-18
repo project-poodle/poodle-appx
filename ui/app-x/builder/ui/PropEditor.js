@@ -82,7 +82,7 @@ const PropEditor = (props) => {
 
   const treeNode = tree_lookup(treeData, selectedKey)
   const parentNode = treeNode ? tree_lookup(treeData, treeNode.parentKey) : null
-  console.log(treeNode)
+  // console.log(treeNode)
   // console.log(parentNode)
 
   // prop editor data
@@ -156,7 +156,16 @@ const PropEditor = (props) => {
             )
           }
           {
-            (treeNode && treeNode.data && treeNode.data.type == 'js/primitive')
+            (treeNode && treeNode.data
+              &&
+              (
+                treeNode.data.type == 'js/string'
+                || treeNode.data.type == 'js/number'
+                || treeNode.data.type == 'js/boolean'
+                || treeNode.data.type == 'js/null'
+                || treeNode.data.type == 'js/expression'
+              )
+            )
             &&
             (
               <Box>
@@ -168,12 +177,36 @@ const PropEditor = (props) => {
                     value={treeNode.data.type}
                     onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
                     >
-                    <MenuItem value="js/primitive">
+                    <MenuItem value="js/string">
                       <ListItemIcon>
-                        { lookup_icon_for_type('js/primitive') }
+                        { lookup_icon_for_type('js/string') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
-                        js/primitive
+                        js/string
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="js/number">
+                      <ListItemIcon>
+                        { lookup_icon_for_type('js/number') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/number
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="js/boolean">
+                      <ListItemIcon>
+                        { lookup_icon_for_type('js/boolean') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/boolean
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem value="js/null">
+                      <ListItemIcon>
+                        { lookup_icon_for_type('js/null') }
+                      </ListItemIcon>
+                      <Typography variant="inherit" noWrap={true}>
+                        js/null
                       </Typography>
                     </MenuItem>
                     <MenuItem value="js/expression">
@@ -186,14 +219,21 @@ const PropEditor = (props) => {
                     </MenuItem>
                   </TextField>
                 </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="data"
-                    label="Data"
-                    value={data}
-                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
-                    />
-                </FormControl>
+                {
+                  (treeNode.data.type !== 'js/null')
+                  &&
+                  (
+                    <FormControl className={styles.formControl}>
+                      <TextField
+                        name="data"
+                        label={treeNode.data.type === 'js/expression' ? "Expression" : "Data"}
+                        value={treeNode.data.type === 'js/expression' ? data.data : data}
+                        multiline={treeNode.data.type === 'js/expression'}
+                        onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
+                        />
+                    </FormControl>
+                  )
+                }
               </Box>
             )
           }
@@ -278,49 +318,6 @@ const PropEditor = (props) => {
                     label="Name"
                     value={data.name}
                     onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
-                    />
-                </FormControl>
-              </Box>
-            )
-          }
-          {
-            (treeNode && treeNode.data && treeNode.data.type == 'js/expression')
-            &&
-            (
-              <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    value={treeNode.data.type}
-                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
-                    >
-                    <MenuItem value="js/primitive">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/primitive') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/primitive
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem value="js/expression">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/expression') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/expression
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="data"
-                    label="Expression"
-                    multiline={true}
-                    value={data.data}
-                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
                     />
                 </FormControl>
               </Box>
