@@ -203,7 +203,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/array">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/array') }
@@ -223,7 +229,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/object">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/object') }
@@ -243,7 +255,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/import">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/import') }
@@ -255,7 +273,12 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="name" label="Name" value={data.name} />
+                  <TextField
+                    name="name"
+                    label="Name"
+                    value={data.name}
+                    onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -266,7 +289,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/primitive">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/primitive') }
@@ -286,7 +315,13 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="data" label="Expression" multiline={true} value={data.data} />
+                  <TextField
+                    name="data"
+                    label="Expression"
+                    multiline={true}
+                    value={data.data}
+                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -297,7 +332,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/block">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/block') }
@@ -309,7 +350,13 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="data" label="Code Block" multiline={true} value={data.data} />
+                  <TextField
+                    name="data"
+                    label="Code Block"
+                    multiline={true}
+                    value={data.data}
+                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -320,7 +367,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/function">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/function') }
@@ -332,10 +385,21 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="params" label="Parameters" value={data.params} />
+                  <TextField
+                    name="params"
+                    label="Parameters"
+                    value={data.params}
+                    onChange={e => updateNodeData({...treeNode.data, params: e.target.value})}
+                    />
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="body" label="Body" multiline={true} value={data.body} />
+                  <TextField
+                    name="body"
+                    label="Body"
+                    multiline={true}
+                    value={data.body}
+                    onChange={e => updateNodeData({...treeNode.data, body: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -346,7 +410,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/switch">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/switch') }
@@ -366,7 +436,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/map">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/map') }
@@ -386,7 +462,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/reduce">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/reduce') }
@@ -398,7 +480,13 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="reducer" label="Reducer" multiline={true} value={data.reducer} />
+                  <TextField
+                    name="reducer"
+                    label="Reducer"
+                    multiline={true}
+                    value={data.reducer}
+                    onChange={e => updateNodeData({...treeNode.data, reducer: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -409,7 +497,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="js/filter">
                       <ListItemIcon>
                         { lookup_icon_for_type('js/filter') }
@@ -421,7 +515,13 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="filter" label="Filter" multiline={true} value={data.filter} />
+                  <TextField
+                    name="filter"
+                    label="Filter"
+                    multiline={true}
+                    value={data.filter}
+                    onChange={e => updateNodeData({...treeNode.data, filter: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -432,7 +532,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="react/element">
                       <ListItemIcon>
                         { lookup_icon_for_type('react/element') }
@@ -452,7 +558,12 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="name" label="Name" value={data.name} />
+                  <TextField
+                    name="name"
+                    label="Name"
+                    value={data.name}
+                    onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -463,7 +574,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="react/element">
                       <ListItemIcon>
                         { lookup_icon_for_type('react/element') }
@@ -483,7 +600,12 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="name" label="Name" value={data.name} />
+                  <TextField
+                    name="name"
+                    label="Name"
+                    value={data.name}
+                    onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -494,7 +616,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="react/state">
                       <ListItemIcon>
                         { lookup_icon_for_type('react/state') }
@@ -506,13 +634,29 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="name" label="Name" value={data.name} />
+                  <TextField
+                    name="name"
+                    label="Name"
+                    value={data.name}
+                    onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
+                    />
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="setter" label="Setter" value={data.setter} />
+                  <TextField
+                    name="setter"
+                    label="Setter"
+                    value={data.setter}
+                    onChange={e => updateNodeData({...treeNode.data, setter: e.target.value})}
+                    />
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="init" label="Init Value" multiline={true} value={data.init} />
+                  <TextField
+                    name="init"
+                    label="Initial Value"
+                    multiline={true}
+                    value={data.init}
+                    onChange={e => updateNodeData({...treeNode.data, init: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -523,7 +667,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="react/effect">
                       <ListItemIcon>
                         { lookup_icon_for_type('react/effect') }
@@ -535,7 +685,13 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="data" label="Effect" multiline={true} value={data.data} />
+                  <TextField
+                    name="data"
+                    label="Effect"
+                    multiline={true}
+                    value={data.data}
+                    onChange={e => updateNodeData({...treeNode.data, data: e.target.value})}
+                    />
                 </FormControl>
               </Box>
             )
@@ -546,7 +702,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="mui/style">
                       <ListItemIcon>
                         { lookup_icon_for_type('mui/style') }
@@ -566,7 +728,13 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
+                    >
                     <MenuItem value="appx/route">
                       <ListItemIcon>
                         { lookup_icon_for_type('appx/route') }
