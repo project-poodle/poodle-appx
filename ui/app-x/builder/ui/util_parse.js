@@ -64,7 +64,7 @@ function parse_var_full_path(var_full_path) {
 ////////////////////////////////////////////////////////////////////////////////
 
 // lookup icon by type
-function lookup_icon(type) {
+function lookup_icon_for_type(type) {
   return lookup_icon_for_input({type: type, data: ''})
 }
 
@@ -182,6 +182,126 @@ function lookup_icon_for_input(input) {
   }
 }
 
+// lookup title for input (input.type / input.name / input.data ...)
+function lookup_title_for_input(ref, input) {
+
+  const prefix = ref ? ref + ': ' : ''
+
+  function _primitive_title(data) {
+    switch (typeof data) {
+      case 'string':
+        const stringTitle = prefix + (input.length > 32 ? input.substring(0, 30) + '...' : input)
+        return stringTitle
+      case 'number':
+        return prefix + input.toString()
+      case 'boolean':
+        return prefix + input.toString()
+      case 'object':
+        if (input === null) {
+          return prefix + 'null'
+        } else {
+          throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+        }
+      default:
+        throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+    }
+  }
+
+  if (isPrimitive(input)) {
+    return _primitive_title(input)
+  }
+
+  if (Array.isArray(input)) {
+    return ref ? ref : ''
+  }
+
+  if (! ('type' in input)) {
+    return ref ? ref : ''
+  }
+
+  // 'type' is presented in the json object
+  if (input.type === 'js/primitive') {
+
+    return _primitive_title(input.data)
+
+  } else if (input.type === 'js/array') {
+
+    return ref ? ref : ''
+
+  } else if (input.type === 'js/object') {
+
+    return ref ? ref : ''
+
+  } else if (input.type === 'js/import') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
+
+  } else if (input.type === 'js/expression') {
+
+    return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+
+  } else if (input.type === 'js/block') {
+
+    return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+
+  } else if (input.type === 'js/function') {
+
+    return prefix + 'function(' + (input.params ? input.params.join(', ') : '') +  ')'
+
+  } else if (input.type === 'js/switch') {
+
+    return prefix + 'Switch'
+
+  } else if (input.type === 'js/map') {
+
+    return prefix + 'Map'
+
+  } else if (input.type === 'js/reduce') {
+
+    return prefix + 'Reduce'
+
+  } else if (input.type === 'js/filter') {
+
+    return prefix + 'Filter'
+
+  } else if (input.type === 'react/element') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
+
+  } else if (input.type === 'react/html') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
+
+  } else if (input.type === 'react/state') {
+
+    return prefix + input.name
+
+  } else if (input.type === 'react/effect') {
+
+    return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+
+  } else if (input.type === 'mui/style') {
+
+    return ref ? ref : ''
+
+  } else if (input.type === 'mui/control') {
+
+    // TODO
+    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+
+  } else if (input.type === 'appx/route') {
+
+    return ref ? ref : ''
+
+  } else {
+
+    return ref ? ref : ''
+  }
+}
+
 // create new node
 function new_js_node(title, icon, data, parentKey, isLeaf) {
   return {
@@ -212,15 +332,34 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
 
   switch (typeof input) {
     case 'string':
-      const stringTitle = prefix + (input.length > 32 ? input.substring(0, 30) + '...' : input)
-      return new_js_node(stringTitle, lookup_icon_for_input(input), data, parentKey, true)
+      return new_js_node(
+        lookup_title_for_input(ref, input),
+        lookup_icon_for_input(input),
+        data,
+        parentKey,
+        true)
     case 'number':
-      return new_js_node(prefix + input.toString(), lookup_icon_for_input(input), data, parentKey, true)
+      return new_js_node(
+        lookup_title_for_input(ref, input),
+        lookup_icon_for_input(input),
+        data,
+        parentKey,
+        true)
     case 'boolean':
-      return new_js_node(prefix + input.toString(), lookup_icon_for_input(input), data, parentKey, true)
+      return new_js_node(
+        lookup_title_for_input(ref, input),
+        lookup_icon_for_input(input),
+        data,
+        parentKey,
+        true)
     case 'object':
       if (input === null) {
-        return new_js_node(prefix + 'null', lookup_icon_for_input(input), data, parentKey, true)
+        return new_js_node(
+          lookup_title_for_input(ref, input),
+          lookup_icon_for_input(input),
+          data,
+          parentKey,
+          true)
       } else {
         throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
       }
@@ -256,7 +395,12 @@ function parse_js_array(js_context, parentKey, ref, input) {
     type: 'js/array',
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // do not expand array by default
   // js_context.expandedKeys.push(node.key)
@@ -321,7 +465,12 @@ function parse_js_object(js_context, parentKey, ref, input) {
     type: 'js/object',
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // do not expand object by default
   // js_context.expandedKeys.push(node.key)
@@ -372,12 +521,6 @@ function parse_js_import(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.name missing in [js/import] [${JSON.stringify(input)}]`)
   }
 
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-
-  const parsed = parse_var_full_path(input.name)
-  const title = prefix + parsed.full_paths.pop()
-
   // tree node data
   const data = {
     __ref: ref,
@@ -385,7 +528,12 @@ function parse_js_import(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
 
   return node
 }
@@ -408,16 +556,17 @@ function parse_js_expression(js_context, parentKey, ref, input) {
     data: input.data,
   }
 
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
-
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
 
   return node
 }
 
-// create block ast (allow return outside of function)
+// create block tree node (allow return outside of function)
 function parse_js_block(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/block') {
@@ -436,8 +585,7 @@ function parse_js_block(js_context, parentKey, ref, input) {
   }
 
   // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+  const title = lookup_title_for_input(ref, input)
 
   const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
@@ -463,16 +611,17 @@ function parse_js_function(js_context, parentKey, ref, input) {
     body: input.body,
   }
 
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + 'function(' + (input.params ? input.params.join(', ') : '') +  ')'
-
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
 
   return node
 }
 
-// create switch ast
+// create switch tree node
 function parse_js_switch(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/switch') {
@@ -486,10 +635,6 @@ function parse_js_switch(js_context, parentKey, ref, input) {
   if (! Array.isArray(input.children)) {
     throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
   }
-
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + 'Switch'
 
   // tree node data
   const data = {
@@ -505,7 +650,12 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // expand switch by default
   js_context.expandedKeys.push(node.key)
@@ -554,7 +704,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
   return node
 }
 
-// create js map ast
+// create js map tree node
 function parse_js_map(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/map') {
@@ -569,10 +719,6 @@ function parse_js_map(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.result missing in [js/map] [${JSON.stringify(input)}]`)
   }
 
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + 'Map'
-
   // tree node data
   const data = {
     __ref: ref,
@@ -586,7 +732,12 @@ function parse_js_map(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // expand map by default
   js_context.expandedKeys.push(node.key)
@@ -620,7 +771,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
   return node
 }
 
-// create js reduce ast
+// create js reduce tree node
 function parse_js_reduce(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/reduce') {
@@ -639,10 +790,6 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.init missing in [js/reduce] [${JSON.stringify(input)}]`)
   }
 
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + 'Reduce'
-
   // tree node data
   const data = {
     __ref: ref,
@@ -657,7 +804,12 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     reducer: input.reducer,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // input filter
   node.data.reducer = input.reducer
@@ -694,7 +846,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
   return node
 }
 
-// create js reduce ast
+// create js filter tree node
 function parse_js_filter(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'js/filter') {
@@ -708,10 +860,6 @@ function parse_js_filter(js_context, parentKey, ref, input) {
   if (! ('filter' in input)) {
     throw new Error(`ERROR: input.filter missing in [js/filter] [${JSON.stringify(input)}]`)
   }
-
-  // compute title
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + 'Filter'
 
   // tree node data
   const data = {
@@ -727,7 +875,12 @@ function parse_js_filter(js_context, parentKey, ref, input) {
     filter: input.filter,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // input filter
   node.data.filter = input.filter
@@ -751,7 +904,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
   return node
 }
 
-// create jsx element ast
+// create react element tree node
 function parse_react_element(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'react/element') {
@@ -761,12 +914,6 @@ function parse_react_element(js_context, parentKey, ref, input) {
   if (! ('name' in input)) {
     throw new Error(`ERROR: input.name missing in [react/element] [${JSON.stringify(input)}]`)
   }
-
-  // compute title
-  const parsed = parse_var_full_path(input.name)
-
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + parsed.full_paths.pop()
 
   // tree node data
   const data = {
@@ -782,7 +929,12 @@ function parse_react_element(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // expand react element by default
   js_context.expandedKeys.push(node.key)
@@ -837,12 +989,6 @@ function parse_react_html(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.name missing in [react/html] [${JSON.stringify(input)}]`)
   }
 
-  // compute title
-  const parsed = parse_var_full_path(input.name)
-
-  const prefix = ref ? ref + ': ' : ''
-  const title = prefix + parsed.full_paths.pop()
-
   // tree node data
   const data = {
     __ref: ref,
@@ -857,7 +1003,12 @@ function parse_react_html(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // expand react html by default
   js_context.expandedKeys.push(node.key)
@@ -929,7 +1080,12 @@ function parse_react_state(js_context, parentKey, ref, input) {
     init: input.init,
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
 
   return node
 }
@@ -952,7 +1108,12 @@ function parse_react_effect(js_context, parentKey, ref, input) {
     data: input.data,
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
 
   return node
 }
@@ -977,7 +1138,12 @@ function parse_mui_style(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, false)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    false)
 
   // do not expand mui styles by default
   // js_context.expandedKeys.push(node.key)
@@ -1016,7 +1182,11 @@ function parse_appx_route(js_context, parentKey, ref, input) {
     type: input.type,
   }
 
-  const node = new_js_node(name, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data, parentKey,
+    true)
 
   return node
 }
@@ -1113,5 +1283,7 @@ function parse_js(js_context, parentKey, ref, input) {
 
 export {
   parse_js,
-  lookup_icon,
+  lookup_icon_for_type,
+  lookup_icon_for_input,
+  lookup_title_for_input,
 }

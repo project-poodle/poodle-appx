@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import YAML from 'yaml'
+import _ from 'lodash'
 // material ui
 import {
   Box,
@@ -26,7 +27,7 @@ import { default as Editor } from '@monaco-editor/react'
 // context provider
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 // utilities
-import { lookup_icon } from 'app-x/builder/ui/util_parse'
+import { lookup_icon_for_type, lookup_icon_for_input, lookup_title_for_input } from 'app-x/builder/ui/util_parse'
 import { tree_traverse, tree_lookup, gen_js } from 'app-x/builder/ui/util_tree'
 
 const PropEditor = (props) => {
@@ -92,8 +93,16 @@ const PropEditor = (props) => {
   yamlDoc.contents = data
   // console.log(yamlDoc.toString())
 
-  console.log(Tabs)
-  console.log(TabPane)
+  // upgrade treeNode for the given treeData
+  function updateRef(refValue) {
+    const resultTree = _.cloneDeep(treeData)
+    const lookupNode = tree_lookup(resultTree, selectedKey)
+    lookupNode.data.__ref = refValue
+    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, lookupNode.data)
+    lookupNode.icon = lookup_icon_for_input(lookupNode.data)
+    setTreeData(resultTree)
+  }
+
 
   const { register, handleSubmit, watch, errors } = useForm()
   return (
@@ -119,13 +128,18 @@ const PropEditor = (props) => {
       &&
       (
         <Tabs defaultActiveKey="basic" className={styles.editor} tabPosition="right" size="small">
-          <TabPane tab="Basic" key="basic" className={styles.basicTab}>
+          <TabPane tab="Properties" key="basic" className={styles.basicTab}>
           {
-            (ref)
+            (ref !== null)
             &&
             (
               <FormControl className={styles.formControl}>
-                <TextField name="ref" label="Reference Name" value={ref} />
+                <TextField
+                  name="ref"
+                  label="Reference Name"
+                  value={ref}
+                  onChange={e => updateRef(e.target.value)}
+                  />
               </FormControl>
             )
           }
@@ -135,10 +149,16 @@ const PropEditor = (props) => {
             (
               <Box>
                 <FormControl className={styles.formControl}>
-                  <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
+                  <TextField
+                    name="type"
+                    label="Type"
+                    select={true}
+                    value={treeNode.data.type}
+                    onChange={e => console.log(e.target.value)}
+                    >
                     <MenuItem value="js/primitive">
                       <ListItemIcon>
-                        { lookup_icon('js/primitive') }
+                        { lookup_icon_for_type('js/primitive') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/primitive
@@ -146,7 +166,7 @@ const PropEditor = (props) => {
                     </MenuItem>
                     <MenuItem value="js/expression">
                       <ListItemIcon>
-                        { lookup_icon('js/expression') }
+                        { lookup_icon_for_type('js/expression') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/expression
@@ -155,7 +175,12 @@ const PropEditor = (props) => {
                   </TextField>
                 </FormControl>
                 <FormControl className={styles.formControl}>
-                  <TextField name="data" label="Data" value={data} />
+                  <TextField
+                    name="data"
+                    label="Data"
+                    value={data}
+                    onChange={e => console.log(e.target.value)}
+                    />
                 </FormControl>
               </Box>
             )
@@ -169,7 +194,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/array">
                       <ListItemIcon>
-                        { lookup_icon('js/array') }
+                        { lookup_icon_for_type('js/array') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/array
@@ -189,7 +214,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/object">
                       <ListItemIcon>
-                        { lookup_icon('js/object') }
+                        { lookup_icon_for_type('js/object') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/object
@@ -209,7 +234,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/import">
                       <ListItemIcon>
-                        { lookup_icon('js/import') }
+                        { lookup_icon_for_type('js/import') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/import
@@ -232,7 +257,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/primitive">
                       <ListItemIcon>
-                        { lookup_icon('js/primitive') }
+                        { lookup_icon_for_type('js/primitive') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/primitive
@@ -240,7 +265,7 @@ const PropEditor = (props) => {
                     </MenuItem>
                     <MenuItem value="js/expression">
                       <ListItemIcon>
-                        { lookup_icon('js/expression') }
+                        { lookup_icon_for_type('js/expression') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/expression
@@ -263,7 +288,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/block">
                       <ListItemIcon>
-                        { lookup_icon('js/block') }
+                        { lookup_icon_for_type('js/block') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/block
@@ -286,7 +311,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/function">
                       <ListItemIcon>
-                        { lookup_icon('js/function') }
+                        { lookup_icon_for_type('js/function') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/function
@@ -312,7 +337,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/switch">
                       <ListItemIcon>
-                        { lookup_icon('js/switch') }
+                        { lookup_icon_for_type('js/switch') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/switch
@@ -332,7 +357,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/map">
                       <ListItemIcon>
-                        { lookup_icon('js/map') }
+                        { lookup_icon_for_type('js/map') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/map
@@ -352,7 +377,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/reduce">
                       <ListItemIcon>
-                        { lookup_icon('js/reduce') }
+                        { lookup_icon_for_type('js/reduce') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/reduce
@@ -375,7 +400,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="js/filter">
                       <ListItemIcon>
-                        { lookup_icon('js/filter') }
+                        { lookup_icon_for_type('js/filter') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         js/filter
@@ -398,7 +423,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="react/element">
                       <ListItemIcon>
-                        { lookup_icon('react/element') }
+                        { lookup_icon_for_type('react/element') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/element
@@ -406,7 +431,7 @@ const PropEditor = (props) => {
                     </MenuItem>
                     <MenuItem value="react/html">
                       <ListItemIcon>
-                        { lookup_icon('react/html') }
+                        { lookup_icon_for_type('react/html') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/html
@@ -429,7 +454,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="react/element">
                       <ListItemIcon>
-                        { lookup_icon('react/element') }
+                        { lookup_icon_for_type('react/element') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/element
@@ -437,7 +462,7 @@ const PropEditor = (props) => {
                     </MenuItem>
                     <MenuItem value="react/html">
                       <ListItemIcon>
-                        { lookup_icon('react/html') }
+                        { lookup_icon_for_type('react/html') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/html
@@ -460,7 +485,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="react/state">
                       <ListItemIcon>
-                        { lookup_icon('react/state') }
+                        { lookup_icon_for_type('react/state') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/state
@@ -489,7 +514,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="react/effect">
                       <ListItemIcon>
-                        { lookup_icon('react/effect') }
+                        { lookup_icon_for_type('react/effect') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         react/effect
@@ -512,7 +537,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="mui/style">
                       <ListItemIcon>
-                        { lookup_icon('mui/style') }
+                        { lookup_icon_for_type('mui/style') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         mui/style
@@ -532,7 +557,7 @@ const PropEditor = (props) => {
                   <TextField name="type" label="Type" select={true} value={treeNode.data.type}>
                     <MenuItem value="appx/route">
                       <ListItemIcon>
-                        { lookup_icon('appx/route') }
+                        { lookup_icon_for_type('appx/route') }
                       </ListItemIcon>
                       <Typography variant="inherit" noWrap={true}>
                         appx/route
@@ -544,7 +569,7 @@ const PropEditor = (props) => {
             )
           }
           </TabPane>
-          <TabPane tab="Advanced" key="advanced" className={styles.editor}>
+          <TabPane tab="YAML" key="advanced" className={styles.editor}>
             <Box
               className={styles.editor}
               onScroll={e => e.stopPropagation()}
