@@ -122,6 +122,7 @@ const SyntaxTree = (props) => {
 
   // add dialog state
   const [ addDialogOpen,      setAddDialogOpen      ] = useState(false)
+  const [ addNodeParent,      setAddNodeParent      ] = useState(null)
   const [ addNodeRefRequired, setAddNodeRefRequired ] = useState(false)
   const [ addNodeRef,         setAddNodeRef         ] = useState(null)
   const [ addNodeType,        setAddNodeType        ] = useState('')
@@ -135,6 +136,7 @@ const SyntaxTree = (props) => {
     if (!!parentNode) {
       // confirm dialog
       // console.log(addCallback)
+      setAddNodeParent(parentNode)
       setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeRef(info.nodeRef)
       setAddNodeType(info.nodeType)
@@ -143,8 +145,8 @@ const SyntaxTree = (props) => {
   })
 
   // add callback
-  const addCallback = (nodeRef, nodeType, nodeData) => {
-    console.log(nodeRef, nodeType, nodeData)
+  const addCallback = (nodeRef, nodeData) => {
+    console.log(nodeRef, nodeData)
   }
 
   // delete dialog state
@@ -1044,6 +1046,7 @@ const SyntaxTree = (props) => {
         open={addDialogOpen}
         setOpen={setAddDialogOpen}
         callback={addCallback}
+        addNodeParent={addNodeParent}
         addNodeRef={addNodeRef}
         addNodeRefRequired={addNodeRefRequired}
         addNodeType={addNodeType}

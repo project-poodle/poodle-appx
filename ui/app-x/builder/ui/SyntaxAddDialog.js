@@ -7,6 +7,7 @@ import {
   IconButton,
   List,
   ListItem,
+  MenuItem,
   ListItemIcon,
   ListItemText,
   Divider,
@@ -53,6 +54,10 @@ const SyntaxAddDialog = (props) => {
 
   const [ nodeType,       setNodeType   ] = useState(props.addNodeType)
 
+  useEffect(() => {
+    setNodeType(props.addNodeType)
+  })
+
   const styles = makeStyles((theme) => ({
     dialog: {
       minWidth: 460,
@@ -72,10 +77,10 @@ const SyntaxAddDialog = (props) => {
 
   // onSubmit
   const onSubmit = data => {
-    console.log(data)
+    console.log('data', data)
     props.setOpen(false)
     if (props.callback) {
-      props.callback()
+      props.callback(props.addNodeRef, data)
     }
   }
 
@@ -83,8 +88,6 @@ const SyntaxAddDialog = (props) => {
   const { register, control, reset, errors, trigger, handleSubmit, getValues, setValue } = useForm({
     //criteriaMode: 'all'
   })
-
-  console.log(errors)
 
   return (
     <Dialog
@@ -130,7 +133,7 @@ const SyntaxAddDialog = (props) => {
                 },
                 validate: {
                   checkDuplicate: value =>
-                    lookup_child_by_ref(selectedNode, value) === null
+                    lookup_child_by_ref(props.addNodeParent, value) === null
                     || 'Reference name is duplicate with an existing child'
                 },
               }}
@@ -166,7 +169,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -369,7 +372,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -413,7 +416,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -457,7 +460,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -523,7 +526,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -599,7 +602,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -697,7 +700,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -741,7 +744,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -785,7 +788,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -861,7 +864,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -944,7 +947,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1017,7 +1020,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1144,7 +1147,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1221,7 +1224,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1265,7 +1268,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={addNodeType}
+                defaultValue={props.addNodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1316,7 +1319,9 @@ const SyntaxAddDialog = (props) => {
           variant="contained"
           onClick={
             e => {
-              console.log(errors)
+              if (!_.isEmpty(errors)) {
+                console.log('errors', errors)
+              }
               handleSubmit(onSubmit)()
             }
           }
