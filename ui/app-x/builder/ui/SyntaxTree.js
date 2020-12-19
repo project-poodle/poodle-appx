@@ -220,10 +220,9 @@ const SyntaxTree = (props) => {
                     message: 'Reference name must be a valid variable name',
                   },
                   validate: {
-                    checkDuplicate:
-                      value =>
-                        lookup_child_by_ref(selectedNode, value) === null
-                        || 'Reference name is duplicate with an existing child'
+                    checkDuplicate: value =>
+                      lookup_child_by_ref(selectedNode, value) === null
+                      || 'Reference name is duplicate with an existing child'
                   },
                 }}
                 render={props =>
@@ -329,7 +328,6 @@ const SyntaxTree = (props) => {
                   (
                     <Controller
                       name="data"
-                      type="string"
                       control={control}
                       defaultValue=''
                       rules={{
@@ -363,7 +361,9 @@ const SyntaxTree = (props) => {
                       defaultValue={0}
                       rules={{
                         required: "Number is required",
-                        validate: value => !isNaN(Number(value)) || "Must be a number",
+                        validate: {
+                          checkNumber: value => !isNaN(Number(value)) || "Must be a number",
+                        }
                       }}
                       render={props =>
                         (
@@ -417,21 +417,19 @@ const SyntaxTree = (props) => {
                   (
                     <Controller
                       name="data"
-                      type="string"
                       control={control}
                       defaultValue=''
                       rules={{
                         required: "Expression is required",
                         validate: {
-                          expressionSyntax:
-                            value => {
-                              try {
-                                parseExpression(value)
-                                return true
-                              } catch (err) {
-                                return String(err)
-                              }
+                          expressionSyntax: value => {
+                            try {
+                              parseExpression(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
                             }
+                          }
                         }
                       }}
                       render={props =>
@@ -459,25 +457,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/array">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/array') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/array
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/array">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/array') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/array
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -486,25 +501,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/object">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/object') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/object
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/object">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/object') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/object
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -513,33 +545,64 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/import">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/import') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/import
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="name"
-                    label="Name"
-                    inputRef={() => register({name: 'name', type: 'string'}, {required: true})}
-                    value={!!nodeData.name ? nodeData.name : ''}
-                    onChange={e => setNodeData({...nodeData, name: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/import">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/import') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/import
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Name is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Name"
+                          multiline={false}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.name}
+                          helperText={errors.name?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -548,35 +611,74 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/block">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/block') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/block
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="data"
-                    label="Code Block"
-                    multiline={true}
-                    inputRef={() => register({name: 'data', type: 'string'}, {required: true})}
-                    value={nodeData.data}
-                    onChange={e => setnodeType(e.target.value)}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/block">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/block') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/block
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="data"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Code block is required",
+                    validate: {
+                      validSyntax: value => {
+                        try {
+                          parse(value)
+                          return true
+                        } catch (err) {
+                          return String(err)
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Code Block"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.data}
+                          helperText={errors.data?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -585,44 +687,96 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/function">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/function') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/function
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="params"
-                    label="Parameters"
-                    inputRef={() => register({name: 'params', type: 'string'}, {required: true})}
-                    value={!!nodeData.params ? nodeData.params : ''}
-                    onChange={e => setNodeData({...nodeData, params: e.target.value})}
-                    />
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="body"
-                    label="Body"
-                    multiline={true}
-                    inputRef={() => register({name: 'body', type: 'string'}, {required: true})}
-                    value={!!nodeData.body ? nodeData.body : ''}
-                    onChange={e => setNodeData({...nodeData, body: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/function">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/function') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/function
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="params"
+                  type="custom"
+                  control={control}
+                  defaultValue={[]}
+                  rules={{
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Parameters"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.params}
+                          helperText={errors.params?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="body"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Function body is required",
+                    validate: {
+                      validSyntax: value => {
+                        try {
+                          parse(value)
+                          return true
+                        } catch (err) {
+                          return String(err)
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Body"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.body}
+                          helperText={errors.body?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -631,25 +785,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/switch">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/switch') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/switch
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/switch">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/switch') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/switch
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -658,25 +829,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/map">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/map') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/map
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/map">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/map') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/map
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -685,35 +873,74 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/reduce">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/reduce') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/reduce
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="reducer"
-                    label="Reducer"
-                    multiline={true}
-                    inputRef={() => register({name: 'reducer', type: 'string'}, {required: true})}
-                    value={!!nodeData.reducer ? nodeData.reducer : ''}
-                    onChange={e => setNodeData({...nodeData, reducer: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/reduce">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/reduce') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/reduce
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="reducer"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Reducer is required",
+                    validate: {
+                      validSyntax: value => {
+                        try {
+                          parseExpression(value)
+                          return true
+                        } catch (err) {
+                          return String(err)
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Reducer"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.reducer}
+                          helperText={errors.reducer?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -722,35 +949,74 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="js/filter">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('js/filter') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        js/filter
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="filter"
-                    label="Filter"
-                    multiline={true}
-                    inputRef={() => register({name: 'filter', type: 'string'}, {required: true})}
-                    value={!!nodeData.filter ? nodeData.filter : ''}
-                    onChange={e => setNodeData({...nodeData, filter: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="js/filter">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/filter') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              js/filter
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="filter"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Filter is required",
+                    validate: {
+                      validSyntax: value => {
+                        try {
+                          parseExpression(value)
+                          return true
+                        } catch (err) {
+                          return String(err)
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Filter"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.filter}
+                          helperText={errors.filter?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -766,42 +1032,71 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="react/element">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/element') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/element
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem value="react/html">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/html') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/html
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="name"
-                    label="Name"
-                    inputRef={() => register({name: 'name', type: 'string'}, {required: true})}
-                    value={!!nodeData.name ? nodeData.name : ''}
-                    onChange={e => setNodeData({...nodeData, name: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="react/element">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('react/element') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              react/element
+                            </Typography>
+                          </MenuItem>
+                          <MenuItem value="react/html">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('react/html') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              react/html
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Name is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Name"
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.name}
+                          helperText={errors.name?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -810,53 +1105,125 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="react/state">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/state') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/state
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="name"
-                    label="Name"
-                    inputRef={() => register({name: 'name', type: 'string'}, {required: true})}
-                    value={nodeData.name}
-                    onChange={e => setnodeType(e.target.value)}
-                    />
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="setter"
-                    label="Setter"
-                    inputRef={() => register({name: 'setter', type: 'string'}, {required: true})}
-                    value={!!nodeData.setter ? nodeData.setter : ''}
-                    onChange={e => setNodeData({...nodeData, setter: e.target.value})}
-                    />
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="init"
-                    label="Initial Value"
-                    multiline={true}
-                    inputRef={() => register({name: 'init', type: 'string'}, {required: true})}
-                    value={!!nodeData.init ? nodeData.init : ''}
-                    onChange={e => setNodeData({...nodeData, init: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="react/state">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('react/state') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              react/state
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Name is required",
+                    pattern: {
+                      value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                      message: "Name must be valid variable name"
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Name"
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.name}
+                          helperText={errors.name?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="setter"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Setter is required",
+                    pattern: {
+                      value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                      message: "Setter must be valid variable name"
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Setter"
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.setter}
+                          helperText={errors.setter?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="init"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    validate: {
+                      validSyntax: value => {
+                        if (value) {
+                          try {
+                            JSON.parse(value)
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Initial Value"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.init}
+                          helperText={errors.init?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -865,35 +1232,75 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="react/effect">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/effect') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/effect
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="data"
-                    label="Effect"
-                    multiline={true}
-                    inputRef={() => register({name: 'data', type: 'string'}, {required: true})}
-                    value={!!nodeData.data ? nodeData.data : ''}
-                    onChange={e => setNodeData({...nodeData, data: e.target.value})}
-                    />
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="react/effect">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('react/effect') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              react/effect
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+                <Controller
+                  name="data"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    validate: {
+                      validSyntax: value => {
+                        if (value) {
+                          try {
+                            parse(value)
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Code Block"
+                          multiline={true}
+                          onChange={props.onChange}
+                          value={props.value}
+                          error={!!errors.data}
+                          helperText={errors.data?.message}
+                          />
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -902,25 +1309,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="mui/style">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('mui/style') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        mui/style
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="mui/style">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('mui/style') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              mui/style
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
@@ -929,25 +1353,42 @@ const SyntaxTree = (props) => {
             &&
             (
               <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    inputRef={() => register({name: 'type', type: 'string'}, {required: true})}
-                    value={nodeType}
-                    onChange={e => setNodeType(e.target.value)}
-                    >
-                    <MenuItem value="appx/route">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('appx/route') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        appx/route
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
+                <Controller
+                  name="type"
+                  control={control}
+                  defaultValue={addNodeType}
+                  rules={{
+                    required: "Type is required",
+                  }}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Type"
+                          select={true}
+                          onChange={
+                            e => {
+                              props.onChange(e)
+                              setNodeType(e.target.value)
+                            }
+                          }
+                          value={props.value}
+                          error={!!errors.type}
+                          helperText={errors.type?.message}
+                          >
+                          <MenuItem value="appx/route">
+                            <ListItemIcon>
+                              { lookup_icon_for_type('appx/route') }
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              appx/route
+                            </Typography>
+                          </MenuItem>
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               </Box>
             )
           }
