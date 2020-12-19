@@ -385,7 +385,7 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
         data,
         parentKey,
         true)
-    case 'undefined': // treat undefined as null
+    case 'undefined':                         // treat undefined as null
       return new_js_node(
         lookup_title_for_input(ref, input),
         lookup_icon_for_input(input),
