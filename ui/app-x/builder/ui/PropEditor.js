@@ -524,49 +524,13 @@ const PropEditor = (props) => {
             )
           }
           {
-            (treeNode && treeNode.data && treeNode.data.type == 'react/element')
-            &&
-            (
-              <Box>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="type"
-                    label="Type"
-                    select={true}
-                    value={treeNode.data.type}
-                    onChange={e => updateNodeData({...treeNode.data, type: e.target.value})}
-                    >
-                    <MenuItem value="react/element">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/element') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/element
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem value="react/html">
-                      <ListItemIcon>
-                        { lookup_icon_for_type('react/html') }
-                      </ListItemIcon>
-                      <Typography variant="inherit" noWrap={true}>
-                        react/html
-                      </Typography>
-                    </MenuItem>
-                  </TextField>
-                </FormControl>
-                <FormControl className={styles.formControl}>
-                  <TextField
-                    name="name"
-                    label="Name"
-                    value={data.name}
-                    onChange={e => updateNodeData({...treeNode.data, name: e.target.value})}
-                    />
-                </FormControl>
-              </Box>
+            (treeNode && treeNode.data
+              &&
+              (
+                treeNode.data.type == 'react/element'
+                || treeNode.data.type == 'react/html'
+              )
             )
-          }
-          {
-            (treeNode && treeNode.data && treeNode.data.type == 'react/html')
             &&
             (
               <Box>

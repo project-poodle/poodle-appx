@@ -348,6 +348,8 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+                  babel:
+                      path: /dist/lib/babel.js
           description: "App-X Console"
           comment: "initialize"
     # auth editor
@@ -365,6 +367,8 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+                  babel:
+                      path: /dist/lib/babel.js
           description: "Auth Editor"
           comment: "initialize"
     # service builder
@@ -382,6 +386,8 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+                  babel:
+                      path: /dist/lib/babel.js
           description: "Service Builder"
           comment: "initialize"
     # ui builder
@@ -399,6 +405,8 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
+                  babel:
+                      path: /dist/lib/babel.js
           description: "UI Builder"
           comment: "initialize"
 

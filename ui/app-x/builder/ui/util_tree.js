@@ -2,15 +2,10 @@
 // utilities
 
 // lookup child by ref
-function _lookupChildByRef(treeNode, ref) {
+function lookup_child_by_ref(treeNode, ref) {
   // lookup child by ref
-  const found = treeNode.children.map(child => {
-    // console.log(child.data.__ref)
-    // console.log(ref)
-    if (child.data.__ref === ref) {
-      // console.log(child)
-      return child
-    }
+  const found = treeNode.children.filter(child => {
+    return (child.data.__ref === ref)
   })
   // check if found
   if (found.length) {
@@ -401,12 +396,12 @@ function gen_js_map(tree_context, treeNode) {
     throw new Error(`ERROR: treeNode.data.type is not [js/map] [${treeNode.data.type}]`)
   }
 
-  const childData = _lookupChildByRef(treeNode, 'data')
+  const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
     throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
   }
 
-  const childResult = _lookupChildByRef(treeNode, 'result')
+  const childResult = lookup_child_by_ref(treeNode, 'result')
   if (! childResult) {
     throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
   }
@@ -456,12 +451,12 @@ function gen_js_reduce(tree_context, treeNode) {
     throw new Error(`ERROR: missing [reducer] in treeNode.data`)
   }
 
-  const childData = _lookupChildByRef(treeNode, 'data')
+  const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
     throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
   }
 
-  const childInit = _lookupChildByRef(treeNode, 'init')
+  const childInit = lookup_child_by_ref(treeNode, 'init')
   if (! childResult) {
     throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
   }
@@ -512,7 +507,7 @@ function gen_js_filter(tree_context, treeNode) {
     throw new Error(`ERROR: missing [filter] in treeNode.data`)
   }
 
-  const childData = _lookupChildByRef(treeNode, 'data')
+  const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
     throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
   }
@@ -563,7 +558,7 @@ function gen_react_element(tree_context, treeNode) {
   }
 
   // process props
-  const childProps = _lookupChildByRef(treeNode, 'props')
+  const childProps = lookup_child_by_ref(treeNode, 'props')
   if (childProps) {
     data.props = gen_js(
       {
@@ -628,7 +623,7 @@ function gen_react_html(tree_context, treeNode) {
   }
 
   // process props
-  const childProps = _lookupChildByRef(treeNode, 'props')
+  const childProps = lookup_child_by_ref(treeNode, 'props')
   if (childProps) {
     data.props = gen_js(
       {
@@ -929,4 +924,5 @@ export {
   tree_traverse,
   tree_lookup,
   gen_js,
+  lookup_child_by_ref,
 }

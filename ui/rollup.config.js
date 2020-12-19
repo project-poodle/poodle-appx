@@ -61,6 +61,7 @@ export default [
       'lib/main.js',
       'lib/mui.js',
       'lib/antd.js',
+      'lib/babel.js',
     ],
     output: [
       {

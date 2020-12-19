@@ -11,6 +11,9 @@ import {
   FieldStringOutlined,
   NumberOutlined,
   SmallDashOutlined,
+  SwapOutlined,
+  FullscreenExitOutlined,
+  FilterOutlined,
   OrderedListOutlined,
   UnorderedListOutlined,
   MenuOutlined,
@@ -25,6 +28,13 @@ import {
   PoweroffOutlined,
   MinusCircleOutlined,
   FormatPainterOutlined,
+  DoubleRightOutlined,
+  BranchesOutlined,
+  CompressOutlined,
+  AppstoreAddOutlined,
+  MinusOutlined,
+  StopOutlined,
+  DashOutlined,
 } from '@ant-design/icons'
 import {
   // FunctionOutlined as FunctionOutlinedIcon,
@@ -149,11 +159,11 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'js/map') {
 
-    return <SwapOutlined />
+    return <DoubleRightOutlined />
 
   } else if (input.type === 'js/reduce') {
 
-    return <FullscreenExitOutlined />
+    return <CompressOutlined />
 
   } else if (input.type === 'js/filter') {
 
@@ -173,7 +183,7 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'react/effect') {
 
-    return <UngroupOutlined />
+    return <AppstoreAddOutlined />
 
   } else if (input.type === 'mui/style') {
 

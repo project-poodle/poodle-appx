@@ -55,6 +55,7 @@ const default_import_maps = {
         "@material-ui/icons",
         "@material-ui/styles",
         "@material-ui/lab",
+        "material-ui-nested-menu-item",
       ]
     },
     "antd": {
@@ -62,6 +63,16 @@ const default_import_maps = {
       modules: [
         "antd",
         "@ant-design/icons",
+      ]
+    },
+    "babel": {
+      path: "/dist/lib/babel.js",
+      modules: [
+        "@babel/standalone",
+        "@babel/traverse",
+        "@babel/types",
+        "@babel/parser",
+        "@babel/generator",
       ]
     },
   }
