@@ -80,7 +80,7 @@ const SyntaxAddDialog = (props) => {
     console.log('data', data)
     props.setOpen(false)
     if (props.callback) {
-      props.callback(props.addNodeRef, data)
+      props.callback(props.addNodeRef, props.addNodeParent, data)
     }
   }
 
@@ -122,7 +122,7 @@ const SyntaxAddDialog = (props) => {
           &&
           (
             <Controller
-              name="ref"
+              name="__ref"
               control={control}
               defaultValue=""
               rules={{

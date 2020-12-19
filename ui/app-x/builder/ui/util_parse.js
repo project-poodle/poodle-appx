@@ -404,18 +404,6 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
 // return array tree
 function parse_js_array(js_context, parentKey, ref, input) {
 
-  if (isPrimitive(input)) {
-    throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
-  }
-
-  if (typeof input !== 'object') {
-    throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
-  }
-
-  if (!Array.isArray(input)) {
-    throw new Error(`ERROR: input is not array [${typeof input}] [${JSON.stringify(input)}]`)
-  }
-
   // tree node data
   const data = {
     __ref: ref,
@@ -426,6 +414,30 @@ function parse_js_array(js_context, parentKey, ref, input) {
       enable: true
     },
     type: 'js/array',
+  }
+
+  // empty input
+  if (!input) {
+
+    return new_js_node(
+      lookup_title_for_input(ref, {type: 'js/array'}),
+      lookup_icon_for_input({type: 'js/array'}),
+      data,
+      parentKey,
+      false)
+  }
+
+  // for non empty input
+  if (isPrimitive(input)) {
+    throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
+  }
+
+  if (typeof input !== 'object') {
+    throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
+  }
+
+  if (!Array.isArray(input)) {
+    throw new Error(`ERROR: input is not array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
   const node = new_js_node(
@@ -474,18 +486,6 @@ function parse_js_array(js_context, parentKey, ref, input) {
 // create object tree
 function parse_js_object(js_context, parentKey, ref, input) {
 
-  if (isPrimitive(input)) {
-    throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
-  }
-
-  if (typeof input !== 'object') {
-    throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
-  }
-
-  if (Array.isArray(input)) {
-    throw new Error(`ERROR: input is array [${typeof input}] [${JSON.stringify(input)}]`)
-  }
-
   // tree node data
   const data = {
     __ref: ref,
@@ -496,6 +496,30 @@ function parse_js_object(js_context, parentKey, ref, input) {
       enable: false
     },
     type: 'js/object',
+  }
+
+  // empty input
+  if (!input) {
+
+    return new_js_node(
+      lookup_title_for_input(ref, {type: 'js/object'}),
+      lookup_icon_for_input({type: 'js/object'}),
+      data,
+      parentKey,
+      false)
+  }
+
+  // for non empty input
+  if (isPrimitive(input)) {
+    throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
+  }
+
+  if (typeof input !== 'object') {
+    throw new Error(`ERROR: input is not object [${typeof input}] [${JSON.stringify(input)}]`)
+  }
+
+  if (Array.isArray(input)) {
+    throw new Error(`ERROR: input is array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
   const node = new_js_node(
@@ -512,6 +536,11 @@ function parse_js_object(js_context, parentKey, ref, input) {
     // return children only
     const results = []
     Object.keys(input).map(key => {
+      // skip keys starts with '__'
+      if (key.startsWith('__')) {
+        return
+      }
+      // add children to node
       results.push(
         parse_js(
           {
@@ -529,6 +558,11 @@ function parse_js_object(js_context, parentKey, ref, input) {
   } else {
     // return node with children
     Object.keys(input).map(key => {
+      // skip keys starts with '__'
+      if (key.startsWith('__')) {
+        return
+      }
+      // add children to node
       node.children.push(
         parse_js(
           js_context,
@@ -1250,6 +1284,14 @@ function parse_js(js_context, parentKey, ref, input) {
   if (input.type === 'js/string' || input.type === 'js/number' || input.type === 'js/boolean' || input.type === 'js/null') {
 
     return parse_js_primitive(js_context, parentKey, ref, input.data)
+
+  } else if (input.type === 'js/object') {
+
+    return parse_js_object(js_context, parentKey, ref, input.data)
+
+  } else if (input.type === 'js/array') {
+
+    return parse_js_array(js_context, parentKey, ref, input.data)
 
   } else if (input.type === 'js/import') {
 

@@ -134,8 +134,7 @@ const SyntaxTree = (props) => {
     // find node
     const parentNode = tree_lookup(treeData, info.nodeKey)
     if (!!parentNode) {
-      // confirm dialog
-      // console.log(addCallback)
+      // add dialog
       setAddNodeParent(parentNode)
       setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeRef(info.nodeRef)
@@ -145,8 +144,34 @@ const SyntaxTree = (props) => {
   })
 
   // add callback
-  const addCallback = (nodeRef, nodeData) => {
-    console.log(nodeRef, nodeData)
+  const addCallback = (nodeRef, nodeParent, nodeData) => {
+    // console.log(nodeRef, nodeParent, nodeData)
+    // ready to add node
+    const resultTree = _.cloneDeep(treeData)
+    const lookupParent = tree_lookup(resultTree, nodeParent.key)
+    // parent key
+    let parentKey = null
+    if (!!lookupParent) {
+      parentKey = lookupParent.key
+    }
+    // ref
+    const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
+    // parse nodeData
+    const parsed = parse_js({}, parentKey, ref, nodeData)
+    console.log(nodeRef, nodeParent, parsed)
+    // insert to proper location
+    if (lookupParent) {
+      if (!!ref) {
+        lookupParent.children.unshift(parsed)
+      } else {
+        lookupParent.children.push(parsed)
+      }
+      setTreeData(resultTree)
+    } else {
+      // add to the root
+      resultTree.push(parsed)
+      setTreeData(resultTree)
+    }
   }
 
   // delete dialog state
@@ -160,7 +185,7 @@ const SyntaxTree = (props) => {
     // find node
     const lookupNode = tree_lookup(treeData, info.nodeKey)
     if (!!lookupNode) {
-      // confirm dialog
+      // confirm deletion dialog
       setDeleteDialogNode(lookupNode)
       setDeleteDialogOpen(true)
     }
