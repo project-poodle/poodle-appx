@@ -4,6 +4,8 @@ import * as babelTraverse from '@babel/traverse'
 import * as babelTypes from '@babel/types'
 import * as babelParser from '@babel/parser'
 import * as babelGenerator from '@babel/generator'
+// import { Buffer } from 'buffer'
+// const { Buffer } = buffer
 
 // export module as library
 export default {

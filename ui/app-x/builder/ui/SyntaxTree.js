@@ -43,6 +43,7 @@ import {
 } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 import { useForm, Controller } from "react-hook-form";
+import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
@@ -424,6 +425,17 @@ const SyntaxTree = (props) => {
                       defaultValue=''
                       rules={{
                         required: "Expression is required",
+                        validate: {
+                          expressionSyntax:
+                            value => {
+                              try {
+                                parseExpression(value)
+                                return true
+                              } catch (err) {
+                                return String(err)
+                              }
+                            }
+                        }
                       }}
                       render={props =>
                         (

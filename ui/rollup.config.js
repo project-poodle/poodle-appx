@@ -3,6 +3,8 @@ import html from '@rollup/plugin-html'
 import replace from '@rollup/plugin-replace'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
+import nodeGlobals from 'rollup-plugin-node-globals'
+import nodeBuiltins from 'rollup-plugin-node-builtins'
 // import css from 'rollup-plugin-import-css'
 import postcss from 'rollup-plugin-postcss'
 //import { terser } from "rollup-plugin-terser"
@@ -29,12 +31,14 @@ const plugins = [
     // dedupe: [ 'react', 'react-dom' ], // Default: []
     //  moduleDirectory: 'js_modules'
   }),
-  replace({
-    //exclude: 'package.json',
-    include: 'node_modules/**',  // Default: undefined
-    'process.env.NODE_ENV': JSON.stringify('development'),
-    'process.env.BABEL_TYPES_8_BREAKING': null
-  }),
+  nodeGlobals(),
+  nodeBuiltins(),
+  //replace({
+  //  //exclude: 'package.json',
+  //  include: 'node_modules/**',  // Default: undefined
+  //  'process.env.NODE_ENV': JSON.stringify('development'),
+  //  'process.env.BABEL_TYPES_8_BREAKING': null
+  //}),
   //css(),
   postcss({
     plugins: []

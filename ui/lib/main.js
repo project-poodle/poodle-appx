@@ -33,6 +33,7 @@ import * as monacoEditor from '@monaco-editor/react'
 // utilities
 import * as clsx from 'clsx'
 import * as yaml from 'yaml'
+import * as buffer from 'buffer'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
@@ -73,6 +74,7 @@ export default {
   //"antd": antd,
   "clsx": clsx,
   "yaml": yaml,
+  "buffer": buffer,
   "lodash": lodash,
   "axios": axios,
   "uuid": uuid,

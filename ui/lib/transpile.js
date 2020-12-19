@@ -43,6 +43,7 @@ const default_import_maps = {
         //"ace-builds",
         "clsx",
         "yaml",
+        "buffer",
         "lodash",
         "axios",
         "uuid",
