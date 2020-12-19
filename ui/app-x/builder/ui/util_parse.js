@@ -1367,9 +1367,39 @@ function parse_js(js_context, parentKey, ref, input) {
   }
 }
 
+function valid_react_elements() {
+  return [
+    {
+      title: '@material-ui/core.Box',
+    },
+    {
+      title: '@material-ui/core.Grid',
+    },
+    {
+      title: '@material-ui/core.Container',
+    }
+  ]
+}
+
+function valid_html_elements() {
+  return [
+    {
+      title: 'form',
+    },
+    {
+      title: 'div',
+    },
+    {
+      title: 'a',
+    }
+  ]
+}
+
 export {
   parse_js,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
+  valid_react_elements,
+  valid_html_elements,
 }

@@ -29,7 +29,12 @@ import {
 import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
-import { default as NestedMenuItem } from 'material-ui-nested-menu-item'
+import {
+  Autocomplete,
+} from '@material-ui/lab'
+import {
+  default as NestedMenuItem
+} from 'material-ui-nested-menu-item'
 import {
   Tree,
 } from 'antd'
@@ -46,18 +51,29 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { parse_js, lookup_icon_for_type } from 'app-x/builder/ui/util_parse'
-import { tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
+import {
+  parse_js,
+  lookup_icon_for_type,
+  valid_react_elements,
+  valid_html_elements,
+} from 'app-x/builder/ui/util_parse'
+import {
+  tree_traverse,
+  tree_lookup,
+  lookup_child_by_ref
+} from 'app-x/builder/ui/util_tree'
 
 // add dialog
 const SyntaxAddDialog = (props) => {
 
+  // states and effects
   const [ nodeType,       setNodeType   ] = useState(props.addNodeType)
 
   useEffect(() => {
     setNodeType(props.addNodeType)
-  })
+  }, [props.addNodeType])
 
+  // styles
   const styles = makeStyles((theme) => ({
     dialog: {
       minWidth: 460,
@@ -79,8 +95,9 @@ const SyntaxAddDialog = (props) => {
   const onSubmit = data => {
     console.log('data', data)
     props.setOpen(false)
+    setNodeType(null)
     if (props.callback) {
-      props.callback(props.addNodeRef, props.addNodeParent, data)
+      props.callback(props.addNodeRef, props.nodeParent, data)
     }
   }
 
@@ -89,12 +106,17 @@ const SyntaxAddDialog = (props) => {
     //criteriaMode: 'all'
   })
 
+  // console.log(nodeType)
+
   return (
     <Dialog
       className={styles.dialog}
       open={props.open}
       onClose={
-        e => props.setOpen(false)
+        e => {
+          props.setOpen(false)
+          setNodeType(null)
+        }
       }
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -133,7 +155,7 @@ const SyntaxAddDialog = (props) => {
                 },
                 validate: {
                   checkDuplicate: value =>
-                    lookup_child_by_ref(props.addNodeParent, value) === null
+                    lookup_child_by_ref(props.nodeParent, value) === null
                     || 'Reference name is duplicate with an existing child'
                 },
               }}
@@ -169,7 +191,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -181,8 +203,9 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
+                            console.log(e.target.value)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -372,7 +395,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -384,8 +407,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -416,7 +439,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -428,8 +451,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -460,7 +483,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -472,8 +495,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -526,7 +549,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -538,8 +561,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -602,7 +625,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -614,8 +637,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -700,7 +723,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -712,8 +735,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -744,7 +767,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -756,8 +779,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -788,7 +811,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -800,8 +823,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -864,7 +887,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -876,8 +899,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -947,7 +970,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -959,8 +982,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -998,13 +1021,44 @@ const SyntaxAddDialog = (props) => {
                 render={props =>
                   (
                     <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Name"
-                        onChange={props.onChange}
-                        value={props.value}
-                        error={!!errors.name}
-                        helperText={errors.name?.message}
-                        />
+                    {
+                      nodeType === 'react/element'
+                      &&
+                      <Autocomplete
+                        options={valid_react_elements()}
+                        getOptionLabel={option => option.title}
+                        renderInput={
+                          params =>
+                          <TextField
+                            {...params}
+                            label="Name"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                          />
+                        }
+                      />
+                    }
+                    {
+                      nodeType === 'react/html'
+                      &&
+                      <Autocomplete
+                        options={valid_html_elements()}
+                        getOptionLabel={option => option.title}
+                        renderInput={
+                          params =>
+                          <TextField
+                            {...params}
+                            label="Name"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                          />
+                        }
+                      />
+                    }
                     </FormControl>
                   )
                 }
@@ -1020,7 +1074,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1147,7 +1201,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1224,7 +1278,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1268,7 +1322,7 @@ const SyntaxAddDialog = (props) => {
               <Controller
                 name="type"
                 control={control}
-                defaultValue={props.addNodeType}
+                defaultValue={nodeType}
                 rules={{
                   required: "Type is required",
                 }}
@@ -1309,7 +1363,10 @@ const SyntaxAddDialog = (props) => {
         <Button
           variant="outlined"
           onClick={
-            e => props.setOpen(false)
+            e => {
+              props.setOpen(false)
+              setNodeType(null)
+            }
           }
           color="primary"
           >

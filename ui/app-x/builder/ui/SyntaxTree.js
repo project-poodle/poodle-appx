@@ -121,11 +121,11 @@ const SyntaxTree = (props) => {
   const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
   // add dialog state
-  const [ addDialogOpen,      setAddDialogOpen      ] = useState(false)
-  const [ addNodeParent,      setAddNodeParent      ] = useState(null)
-  const [ addNodeRefRequired, setAddNodeRefRequired ] = useState(false)
+  const [ nodeParent,         setNodeParent         ] = useState(null)
   const [ addNodeRef,         setAddNodeRef         ] = useState(null)
+  const [ addNodeRefRequired, setAddNodeRefRequired ] = useState(false)
   const [ addNodeType,        setAddNodeType        ] = useState('')
+  const [ addDialogOpen,      setAddDialogOpen      ] = useState(false)
 
   // add menu clicked
   const addMenuClicked = (info => {
@@ -135,11 +135,14 @@ const SyntaxTree = (props) => {
     const parentNode = tree_lookup(treeData, info.nodeKey)
     if (!!parentNode) {
       // add dialog
-      setAddNodeParent(parentNode)
+      setNodeParent(parentNode)
       setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeRef(info.nodeRef)
       setAddNodeType(info.nodeType)
       setAddDialogOpen(true)
+      //setAddNodeType(info.nodeType, () => {
+      //  setAddDialogOpen(true)
+      //})
     }
   })
 
@@ -175,8 +178,8 @@ const SyntaxTree = (props) => {
   }
 
   // delete dialog state
+  const [ deleteNode,             setDeleteNode           ] = useState(null)
   const [ deleteDialogOpen,       setDeleteDialogOpen     ] = useState(false)
-  const [ deleteDialogNode,       setDeleteDialogNode     ] = useState(null)
 
   // delete menu clicked
   const deleteMenuClicked = (info => {
@@ -186,6 +189,9 @@ const SyntaxTree = (props) => {
     const lookupNode = tree_lookup(treeData, info.nodeKey)
     if (!!lookupNode) {
       // confirm deletion dialog
+      //setDeleteDialogNode(lookupNode, () => {
+      //  setDeleteDialogOpen(true)
+      //})
       setDeleteDialogNode(lookupNode)
       setDeleteDialogOpen(true)
     }
@@ -1071,7 +1077,7 @@ const SyntaxTree = (props) => {
         open={addDialogOpen}
         setOpen={setAddDialogOpen}
         callback={addCallback}
-        addNodeParent={addNodeParent}
+        nodeParent={nodeParent}
         addNodeRef={addNodeRef}
         addNodeRefRequired={addNodeRefRequired}
         addNodeType={addNodeType}
@@ -1080,7 +1086,7 @@ const SyntaxTree = (props) => {
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         callback={deleteCallback}
-        node={deleteDialogNode}
+        node={deleteNode}
         />
       <ContextMenu />
     </Box>
