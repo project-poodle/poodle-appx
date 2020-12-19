@@ -363,10 +363,7 @@ const SyntaxTree = (props) => {
                       defaultValue={0}
                       rules={{
                         required: "Number is required",
-                        type: {
-                          value: 'number',
-                          message: "Must be a number",
-                        }
+                        validate: value => !isNaN(Number(value)) || "Must be a number",
                       }}
                       render={props =>
                         (
