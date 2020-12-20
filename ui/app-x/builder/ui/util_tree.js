@@ -398,12 +398,14 @@ function gen_js_map(tree_context, treeNode) {
 
   const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+    // throw new Error(`ERROR: [${treeNode.data.type}] missing [data] in treeNode.children`)
+    console.warn(`WARN: [${treeNode.data.type}] missing [data] in treeNode.children`)
   }
 
   const childResult = lookup_child_by_ref(treeNode, 'result')
   if (! childResult) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
+    // throw new Error(`ERROR: [${treeNode.data.type}] missing [result] in treeNode.children`)
+    console.warn(`WARN: [${treeNode.data.type}] missing [result] in treeNode.children`)
   }
 
   // generate data
@@ -453,12 +455,14 @@ function gen_js_reduce(tree_context, treeNode) {
 
   const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+    //throw new Error(`ERROR: [${treeNode.data.type}] missing [data] in treeNode.children`)
+    console.warn(`WARN: [${treeNode.data.type}] missing [data] in treeNode.children`)
   }
 
   const childInit = lookup_child_by_ref(treeNode, 'init')
-  if (! childResult) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [result] in treeNode.children`)
+  if (! childInit) {
+    //throw new Error(`ERROR: [${treeNode.data.type}] missing [result] in treeNode.children`)
+    console.warn(`WARN: [${treeNode.data.type}] missing [result] in treeNode.children`)
   }
 
   // generate data
@@ -509,7 +513,8 @@ function gen_js_filter(tree_context, treeNode) {
 
   const childData = lookup_child_by_ref(treeNode, 'data')
   if (! childData) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.children`)
+    // throw new Error(`ERROR: [${treeNode.data.type}] missing [data] in treeNode.children`)
+    console.warn(`WARN: [${treeNode.data.type}] missing [data] in treeNode.children`)
   }
 
   // generate data
@@ -548,7 +553,7 @@ function gen_react_element(tree_context, treeNode) {
   }
 
   if (! ('name' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
   }
 
   // generate data
@@ -613,7 +618,7 @@ function gen_react_html(tree_context, treeNode) {
   }
 
   if (! ('name' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
   }
 
   // generate data
@@ -678,15 +683,15 @@ function gen_react_state(tree_context, treeNode) {
   }
 
   if (! ('name' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [name] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
   }
 
   if (! ('setter' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [setter] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [setter] in treeNode.data`)
   }
 
   if (! ('init' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [init] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [init] in treeNode.data`)
   }
 
   // generate data
@@ -720,7 +725,7 @@ function gen_react_effect(tree_context, treeNode) {
   }
 
   if (! ('data' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeData.data.type}] missing [data] in treeNode.data`)
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [data] in treeNode.data`)
   }
 
   // generate data

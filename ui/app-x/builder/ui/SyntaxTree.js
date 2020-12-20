@@ -157,7 +157,8 @@ const SyntaxTree = (props) => {
     // ref
     const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
     // parse nodeData
-    const parsed = parse_js({}, parentKey, ref, nodeData)
+    const parse_context = {}
+    const parsed = parse_js(parse_context, parentKey, ref, nodeData)
     // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location
     if (lookupParent) {
@@ -172,6 +173,13 @@ const SyntaxTree = (props) => {
       resultTree.push(parsed)
       setTreeData(resultTree)
     }
+    // process expanded keys
+    parse_context.expandedKeys.map(key => {
+      if (!expandedKeys.includes(key)) {
+        expandedKeys.push(key)
+      }
+    })
+    setExpandedKeys(expandedKeys)
   }
 
   // delete dialog state
@@ -397,6 +405,41 @@ const SyntaxTree = (props) => {
               nodeRef: props.nodeRef,
               nodeRefRequired: props.nodeRefRequired,
               nodeKey: selectedKey,
+              nodeType: 'js/object',
+            })
+          }
+          >
+          <ListItemIcon>
+            { lookup_icon_for_type('js/object') }
+          </ListItemIcon>
+          <ListItemText primary="Add js/object" />
+        </MenuItem>
+        <MenuItem
+          dense={true}
+          className={styles.menuItem}
+          onClick={
+            () => addMenuClicked({
+              nodeRef: props.nodeRef,
+              nodeRefRequired: props.nodeRefRequired,
+              nodeKey: selectedKey,
+              nodeType: 'js/array',
+            })
+          }
+          >
+          <ListItemIcon>
+            { lookup_icon_for_type('js/array') }
+          </ListItemIcon>
+          <ListItemText primary="Add js/array" />
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          dense={true}
+          className={styles.menuItem}
+          onClick={
+            () => addMenuClicked({
+              nodeRef: props.nodeRef,
+              nodeRefRequired: props.nodeRefRequired,
+              nodeKey: selectedKey,
               nodeType: 'js/switch',
             })
           }
@@ -456,41 +499,6 @@ const SyntaxTree = (props) => {
             { lookup_icon_for_type('js/filter') }
           </ListItemIcon>
           <ListItemText primary="Add js/filter" />
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          dense={true}
-          className={styles.menuItem}
-          onClick={
-            () => addMenuClicked({
-              nodeRef: props.nodeRef,
-              nodeRefRequired: props.nodeRefRequired,
-              nodeKey: selectedKey,
-              nodeType: 'js/object',
-            })
-          }
-          >
-          <ListItemIcon>
-            { lookup_icon_for_type('js/object') }
-          </ListItemIcon>
-          <ListItemText primary="Add js/object" />
-        </MenuItem>
-        <MenuItem
-          dense={true}
-          className={styles.menuItem}
-          onClick={
-            () => addMenuClicked({
-              nodeRef: props.nodeRef,
-              nodeRefRequired: props.nodeRefRequired,
-              nodeKey: selectedKey,
-              nodeType: 'js/array',
-            })
-          }
-          >
-          <ListItemIcon>
-            { lookup_icon_for_type('js/array') }
-          </ListItemIcon>
-          <ListItemText primary="Add js/array" />
         </MenuItem>
       </Box>
     )

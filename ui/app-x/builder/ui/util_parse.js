@@ -89,6 +89,8 @@ function lookup_icon_for_input(input) {
         return <NumberOutlined />
       case 'boolean':
         return <PoweroffOutlined />
+      case 'undefined':
+        return <MinusCircleOutlined />
       case 'object':
         if (input === null) {
           return <MinusCircleOutlined />
@@ -217,6 +219,8 @@ function lookup_title_for_input(ref, input) {
         return prefix + data.toString()
       case 'boolean':
         return prefix + data.toString()
+      case 'undefined':
+        return prefix + 'null'
       case 'object':
         if (data === null) {
           return prefix + 'null'
@@ -359,8 +363,8 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input === null ? 'js/null' : ('js/' + typeof input),
-    data: input,
+    type: (input === null || typeof input === 'undefined') ? 'js/null' : ('js/' + typeof input),
+    data: (input === null || typeof input === 'undefined') ? null : input,
   }
 
   switch (typeof input) {
@@ -785,13 +789,13 @@ function parse_js_map(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/map] [${JSON.stringify(input)}]`)
-  }
+  //if (! ('data' in input)) {
+  //  throw new Error(`ERROR: input.data missing in [js/map] [${JSON.stringify(input)}]`)
+  //}
 
-  if (! ('result' in input)) {
-    throw new Error(`ERROR: input.result missing in [js/map] [${JSON.stringify(input)}]`)
-  }
+  //if (! ('result' in input)) {
+  //  throw new Error(`ERROR: input.result missing in [js/map] [${JSON.stringify(input)}]`)
+  //}
 
   // tree node data
   const data = {
@@ -852,17 +856,17 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/reduce] [${JSON.stringify(input)}]`)
-  }
+  //if (! ('data' in input)) {
+  //  throw new Error(`ERROR: input.data missing in [js/reduce] [${JSON.stringify(input)}]`)
+  //}
 
   if (! ('reducer' in input)) {
     throw new Error(`ERROR: input.reducer missing in [js/reduce] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('init' in input)) {
-    throw new Error(`ERROR: input.init missing in [js/reduce] [${JSON.stringify(input)}]`)
-  }
+  //if (! ('init' in input)) {
+  //  throw new Error(`ERROR: input.init missing in [js/reduce] [${JSON.stringify(input)}]`)
+  //}
 
   // tree node data
   const data = {
@@ -927,9 +931,9 @@ function parse_js_filter(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/filter] [${JSON.stringify(input)}]`)
-  }
+  //if (! ('data' in input)) {
+  //  throw new Error(`ERROR: input.data missing in [js/filter] [${JSON.stringify(input)}]`)
+  //}
 
   if (! ('filter' in input)) {
     throw new Error(`ERROR: input.filter missing in [js/filter] [${JSON.stringify(input)}]`)
