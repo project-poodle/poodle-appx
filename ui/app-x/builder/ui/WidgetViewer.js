@@ -78,13 +78,13 @@ const WidgetViewer = (props) => {
         //tabBarGutter={16}
         tabBarStyle={{marginLeft: 16}}
         >
-        <TabPane tab="WIDGET" key="iframe" className={styles.root}>
+        <TabPane tab="Widget" key="iframe" className={styles.root}>
           <Box className={styles.iframeWrapper}>
             <iframe src={iframeUrl} className={styles.iframe}>
             </iframe>
           </Box>
         </TabPane>
-        <TabPane tab="CODE" key="code" className={styles.root}>
+        <TabPane tab="Code" key="code" className={styles.root}>
           <SourceViewer
             namespace={props.namespace}
             ui_name={props.ui_name}

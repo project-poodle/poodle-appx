@@ -332,7 +332,7 @@ ui_element:
                                 name: '@material-ui/core.ListItemIcon'
                                 children:
                                     - type: react/element
-                                      name: '@material-ui/icons.AllOutOutlined'
+                                      name: '@material-ui/icons.CropRotateOutlined'
                               - type: react/element
                                 name: '@material-ui/core.ListItemText'
                                 props:

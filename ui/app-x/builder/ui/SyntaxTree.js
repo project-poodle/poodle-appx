@@ -1104,9 +1104,9 @@ const SyntaxTree = (props) => {
               'js/function',
               'js/block',
               'js/switch',
-              'js/filter',
               'js/map',
               'js/reduce',
+              'js/filter',
               'mui/style',
               'appx/route',
             ].map(type => {
