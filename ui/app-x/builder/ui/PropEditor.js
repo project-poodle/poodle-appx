@@ -140,7 +140,7 @@ const PropEditor = (props) => {
       &&
       (
         <Tabs defaultActiveKey="basic" className={styles.editor} tabPosition="right" size="small">
-          <TabPane tab="Properties" key="basic" className={styles.basicTab}>
+          <TabPane tab="Base" key="basic" className={styles.basicTab}>
           {
             (ref !== null)
             &&

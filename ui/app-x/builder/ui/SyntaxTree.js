@@ -129,7 +129,7 @@ const SyntaxTree = (props) => {
 
   // add menu clicked
   const addMenuClicked = (info => {
-    console.log('add', info)
+    // console.log('add', info)
     setContextAnchorEl(null)
     // find node
     const parentNode = tree_lookup(treeData, info.nodeKey)
@@ -954,8 +954,7 @@ const SyntaxTree = (props) => {
 
   // drag enter
   const onDragEnter = info => {
-    console.trace()
-    console.log(info)
+    // console.log(info)
     // expandedKeys
     if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
       // console.log([...info.expandedKeys, info.node.key])
@@ -967,12 +966,12 @@ const SyntaxTree = (props) => {
 
   // drag enter
   const onDragOver = info => {
-    //console.log(info)
+    // console.log(info)
   }
 
   // drop
   const onDrop = info => {
-    console.log(info)
+    // console.log(info)
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     const dropPosition = info.dropPosition
@@ -996,7 +995,7 @@ const SyntaxTree = (props) => {
         // console.log(expandedKeys)
         item.children.unshift(dragObj)
         if (!expandedKeys.includes(item.key)) {
-          console.log([...expandedKeys, item.key])
+          // console.log([...expandedKeys, item.key])
           setExpandedKeys(
             [...expandedKeys, item.key]
           )
