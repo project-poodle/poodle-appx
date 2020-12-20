@@ -163,8 +163,8 @@ const SyntaxAddDialog = (props) => {
                     label="Reference"
                     onChange={props.onChange}
                     value={props.value}
-                    error={!!errors.ref}
-                    helperText={errors.ref?.message}
+                    error={!!errors.__ref}
+                    helperText={errors.__ref?.message}
                     />
                 </FormControl>
               }
