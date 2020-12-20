@@ -4,24 +4,29 @@ import {
   Box,
   Container,
   Grid,
-  // Tabs,
-  Tab,
-  // TabPanel,
   Typography,
   makeStyles,
 } from '@material-ui/core'
-import {
-  TabContext,
-  TabList,
-  TabPanel,
-} from '@material-ui/lab'
 import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
-import { Layout, Tree } from 'antd'
-const { DirectoryTree } = Tree
+import {
+  Layout,
+  Tree,
+  Tabs,
+} from 'antd'
 const { Header, Footer, Sider, Content } = Layout
-import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
-// import { default as GridLayout } from 'react-grid-layout'
-import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-layout';
+const { DirectoryTree } = Tree
+const { TabPane } = Tabs;
+import {
+  Icon,
+  FileOutlined,
+  ContainerOutlined,
+  CodepenOutlined
+} from '@ant-design/icons'
+import {
+  Responsive,
+  WidthProvider,
+  default as GridLayout
+} from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
@@ -40,12 +45,6 @@ const WidgetViewer = (props) => {
       padding: theme.spacing(0),
       margin: theme.spacing(0),
     },
-    tabPanel: {
-      height: 'calc(100% - 64px)',
-      // height: '100%',
-      width: '100%',
-      margin: theme.spacing(2, 0)
-    },
     iframeWrapper: {
       height: '100%',
       width: '100%',
@@ -58,16 +57,10 @@ const WidgetViewer = (props) => {
       padding: 0,
       margin: 0,
       border: 2,
-      // borderColor: theme.palette.divider,
+      borderColor: theme.palette.divider,
       borderStyle: 'dashed',
     },
   }))()
-
-  const [ tabValue, setTabValue ] = useState('iframe')
-
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
-  }
 
   const iframeUrl =
     globalThis.appx.UI_ROOT
@@ -77,53 +70,45 @@ const WidgetViewer = (props) => {
     + '/_elem' + props.ui_element_name + '.html'
 
   return (
-
-    <TabContext value={tabValue}>
-      <Box>
-        <TabList
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          >
-          <Tab size="small" label="Widget" value="iframe"/>
-          <Tab size="small" label="Code" value="code"/ >
-          <Tab size="small" label="YAML" value="yaml"/ >
-          <Tab size="small" label="JSON" value="json"/ >
-        </TabList>
-      </Box>
-      <Box className={styles.tabPanel}>
-        <TabPanel value="iframe" className={styles.root}>
+      <Tabs
+        defaultActiveKey="widget"
+        tabPosition="bottom"
+        size="small"
+        className={styles.root}
+        //tabBarGutter={16}
+        tabBarStyle={{marginLeft: 16}}
+        >
+        <TabPane tab="WIDGET" key="iframe" className={styles.root}>
           <Box className={styles.iframeWrapper}>
             <iframe src={iframeUrl} className={styles.iframe}>
             </iframe>
           </Box>
-        </TabPanel>
-        <TabPanel value="code" className={styles.root}>
+        </TabPane>
+        <TabPane tab="CODE" key="code" className={styles.root}>
           <SourceViewer
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
             ui_element_name={props.ui_element_name}
           />
-        </TabPanel>
-        <TabPanel value="yaml" className={styles.root}>
+        </TabPane>
+        <TabPane tab="YAML" key="yaml" className={styles.root}>
           <YamlViewer
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
             ui_element_name={props.ui_element_name}
           />
-        </TabPanel>
-        <TabPanel value="json" className={styles.root}>
+        </TabPane>
+        <TabPane tab="JSON" key="json" className={styles.root}>
           <JsonViewer
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
             ui_element_name={props.ui_element_name}
           />
-        </TabPanel>
-      </Box>
-    </TabContext>
+        </TabPane>
+      </Tabs>
   )
 }
 
