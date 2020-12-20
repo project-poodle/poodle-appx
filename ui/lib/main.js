@@ -21,7 +21,7 @@ import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
-import * as reactCursor from 'react-cursor'
+// import * as reactCursor from 'react-cursor'
 // editor
 import * as monacoEditor from '@monaco-editor/react'
 //import * as aceEditor from 'react-ace'
@@ -66,7 +66,7 @@ export default {
   // react utilities
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
-  "react-cursor": reactCursor,
+  // "react-cursor": reactCursor,
   // editors
   // "nomaco-editor": monacoEditor,
   "@monaco-editor/react": monacoEditor,

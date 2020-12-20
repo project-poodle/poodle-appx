@@ -1601,11 +1601,421 @@ function valid_import_names() {
   return _valid_import_names
 }
 
+// valid child types
+function lookup_valid_child_types(type) {
+  if (!type || type === '/') {
+    return {
+      'ref': {
+        names: null,
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          'js/block',
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/string') {
+    return null         // leaf
+  } else if (type === 'js/number') {
+    return null         // leaf
+  } else if (type === 'js/boolean') {
+    return null         // leaf
+  } else if (type === 'js/null') {
+    return null         // leaf
+  } else if (type === 'js/object') {
+    return {
+      'ref': {
+        names: null,
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/array') {
+    return {
+      '_': {
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/import') {
+    return null         // leaf
+  } else if (type === 'js/expression') {
+    return null         // leaf
+  } else if (type === 'js/function') {
+    return null         // leaf
+  } else if (type === 'js/block') {
+    return null         // leaf
+  } else if (type === 'js/switch') {
+    return {
+      ref: {
+        names: [
+          'default'
+        ],
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      },
+      '_': {
+        attrs: [
+          'condition'
+        ],
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/map') {
+    return {
+      ref: {
+        names: [
+          'data',
+          'result',
+        ],
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/reduce') {
+    return {
+      ref: {
+        names: [
+          'data',
+          'init',
+        ],
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'js/filter') {
+    return {
+      ref: {
+        names: [
+          'data',
+        ],
+        types: [
+          'js/string',
+          'js/number',
+          'js/boolean',
+          'js/null',
+          null,
+          'js/object',
+          'js/array',
+          null,
+          'react/element',
+          'react/html',
+          'react/state',
+          'react/effect',
+          null,
+          'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          null,
+          'mui/style',
+          'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'react/element') {
+    return {
+      ref: {
+        names: [
+          'props',
+        ],
+        types: [
+          'js/object',
+        ]
+      },
+      '_': {
+        types: [
+          'react/element',
+          'react/html',
+          // 'react/state',
+          // 'react/effect',
+          null,
+          'js/string',
+          // 'js/number',
+          // 'js/boolean',
+          // 'js/null',
+          // null,
+          // 'js/object',
+          // 'js/array',
+          // null,
+          // 'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          // 'mui/style',
+          // 'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'react/html') {
+    return {
+      ref: {
+        names: [
+          'props',
+        ],
+        types: [
+          'js/object',
+        ]
+      },
+      '_': {
+        types: [
+          'react/element',
+          'react/html',
+          // 'react/state',
+          // 'react/effect',
+          null,
+          'js/string',
+          // 'js/number',
+          // 'js/boolean',
+          // 'js/null',
+          // null,
+          // 'js/object',
+          // 'js/array',
+          // null,
+          // 'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          // 'mui/style',
+          // 'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'react/state') {
+    return null         // leaf
+  } else if (type === 'react/effect') {
+    return null         // leaf
+  } else if (type === 'mui/style') {
+    return {
+      ref: {
+        names: null,
+        types: [
+          // 'js/string',
+          // 'js/number',
+          // 'js/boolean',
+          // 'js/null',
+          'js/object',
+          // 'js/array',
+          // null,
+          // 'js/import',
+          'js/expression',
+          // 'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          // 'react/element',
+          // 'react/html',
+          // 'react/state',
+          // 'react/effect',
+          // 'mui/style',
+          // 'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'appx/route') {
+    return null         // leaf
+  } else {
+    return null         // leaf
+  }
+}
+
 export {
   parse_js,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
+  lookup_valid_child_types,
   valid_import_names,
   valid_html_tags,
 }

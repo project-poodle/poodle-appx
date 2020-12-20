@@ -34,7 +34,6 @@ const default_import_maps = {
         "react-grid-layout",
         "react-helmet",
         "react-feather",
-        "react-cursor",
         "@monaco-editor/react",
         "clsx",
         "yaml",
