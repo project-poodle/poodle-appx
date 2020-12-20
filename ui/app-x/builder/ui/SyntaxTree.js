@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
+import ReactDOM from 'react-dom'
+import ReactDOMServer from 'react-dom/server'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {
@@ -57,7 +59,11 @@ const SyntaxTree = (props) => {
     expandedKeys,
     setExpandedKeys,
     selectedKey,
-    setSelectedKey
+    setSelectedKey,
+    selectedTool,
+    setSelectedTool,
+    syntaxTreeCursor,
+    setSyntaxTreeCursor,
   } = useContext(EditorProvider.Context)
 
   // styles
@@ -73,6 +79,7 @@ const SyntaxTree = (props) => {
     },
     fab: {
       margin: theme.spacing(1),
+      // cursor: 'move',
     },
     tree: {
       width: '100%',
@@ -98,6 +105,51 @@ const SyntaxTree = (props) => {
       padding: theme.spacing(2, 0),
     },
   }))()
+
+  const designTreeRef = React.createRef()
+
+  // selectedTool
+  useEffect(() => {
+    if (!selectedTool || selectedTool === 'pointer') {
+      setSyntaxTreeCursor(`pointer`)
+    } else {
+      const iconString = ReactDOMServer.renderToStaticMarkup(lookup_icon_for_type(selectedTool))
+      const iconElement = new DOMParser().parseFromString(iconString, 'text/html')
+      const svgElement = iconElement.getElementsByTagName('svg')
+      if (svgElement.length) {
+        svgElement[0].setAttribute("xmlns", "http://www.w3.org/2000/svg")
+        // console.log('svgElement.outerHTML', svgElement[0].outerHTML)
+        const cursor = `url('data:image/svg+xml;base64,${btoa(svgElement[0].outerHTML)}'), copy`
+        setSyntaxTreeCursor(cursor)
+      } else {
+        setSyntaxTreeCursor(`copy`)
+      }
+    }
+  }, [selectedTool])
+
+
+  // expansion timeout
+  const [ expansionTimeout, setExpansionTimeout ] = useState(new Date())
+  useEffect(() => {
+    setTimeout(() => {
+      setExpansionTimeout(new Date())
+    }, 500)
+  }, [expandedKeys])
+
+  // update syntaxTreeCursor
+  useEffect(() => {
+    // console.log('updateCursor', syntaxTreeCursor)
+    // html node
+    const node = ReactDOM.findDOMNode(designTreeRef.current)
+    const draggableList = node.querySelectorAll('[draggable]')
+    // console.log(typeof draggableList, Array.isArray(draggableList), draggableList)
+    if (draggableList.length) {
+      draggableList.forEach(draggable => {
+        // console.log(draggable)
+        draggable.style.cursor = syntaxTreeCursor
+      })
+    }
+  }, [syntaxTreeCursor, expansionTimeout])
 
   // load data via api
   useEffect(() => {
@@ -950,6 +1002,8 @@ const SyntaxTree = (props) => {
   // expand/collapse
   const onExpand = keys => {
     setExpandedKeys(keys)
+    //updateCursor()
+    // setNewExpandedKeys(keys)
   }
 
   // select
@@ -957,6 +1011,7 @@ const SyntaxTree = (props) => {
     // console.log(`selected ${key}`)
     if (key.length) {
       setSelectedKey(key[0])
+      setSelectedTool(null)
     } else {
       setSelectedKey(null)
     }
@@ -966,14 +1021,35 @@ const SyntaxTree = (props) => {
   const onDragStart = info => {
     //console.trace()
     //console.log(info.node.key)
-    info.event.dataTransfer.setData("nodeKey", info.node.key)
+    info.event.dataTransfer.setData("application", info.node.key)
+    info.event.dataTransfer.effectAllowed = 'move'
+    info.event.dataTransfer.dropEffect = 'move'
+    console.log(info.event.dataTransfer.effectAllowed)
+    console.log(info.event.dataTransfer.dropEffect)
     // console.log(info.event)
+    if (info.node.key === '/') {
+      let target = info.event.target
+      while (target.parentNode && !target.draggable) {
+        target = target.parentNode
+      }
+      console.log('changeCursor')
+      //console.log(target)
+      target.style.cursor = '-webkit-grab -moz-grab grab move'
+      //console.log(target)
+      setSyntaxTreeCursor('not-allowed')
+    }
+  }
+
+  const onDragEnd = info => {
+    console.log('changeBack')
+    setSyntaxTreeCursor('default')
   }
 
   // drag enter
   const onDragEnter = info => {
-    // console.log(info)
     // expandedKeys
+    info.event.dataTransfer.dropEffect = 'move'
+    console.log(info.event.dataTransfer.getData("application"))
     if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
       // console.log([...info.expandedKeys, info.node.key])
       setExpandedKeys(
@@ -985,6 +1061,10 @@ const SyntaxTree = (props) => {
   // drag enter
   const onDragOver = info => {
     // console.log(info)
+    info.event.preventDefault()
+    // console.log(info.event.dataTransfer.getData("application"))
+    info.event.dataTransfer.dropEffect = 'move'
+    console.log(info.event.dataTransfer.dropEffect)
   }
 
   // drop
@@ -993,6 +1073,11 @@ const SyntaxTree = (props) => {
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     const dropPosition = info.dropPosition
+
+    // check for root
+    if (dragKey === '/') {
+      return
+    }
 
     // replicate data
     const data = [...treeData]
@@ -1052,6 +1137,7 @@ const SyntaxTree = (props) => {
     // console.log(info)
     // set selected key
     setSelectedKey(info.node.key)
+    setSelectedTool(null)
     // find draggable target, open context menu
     let target = info.event.target
     while (target.parentNode && !target.draggable) {
@@ -1111,15 +1197,34 @@ const SyntaxTree = (props) => {
               'appx/route',
             ].map(type => {
               return (
-                <Tooltip key={type} title={type}>
+                <Tooltip
+                  key={type}
+                  title={type}
+                  placement="left"
+                  >
                   <AntButton
                     size="small"
                     color="secondary"
+                    type={
+                      selectedTool === type
+                      ? 'primary'
+                      :
+                      (
+                        !selectedTool && type === 'pointer'
+                        ? 'primary'
+                        : 'default'
+                      )
+                    }
                     className={styles.fab}
                     key={type}
                     value={type}
                     icon={lookup_icon_for_type(type)}
                     shape="circle"
+                    // draggable={true}
+                    onClick={e => {
+                      setSelectedKey(null)
+                      setSelectedTool(type)
+                    }}
                     >
                   </AntButton>
                 </Tooltip>
@@ -1136,6 +1241,7 @@ const SyntaxTree = (props) => {
         onContextMenu={handleContextMenu}
         >
         <Tree
+          ref={designTreeRef}
           className={styles.tree}
           expandedKeys={expandedKeys}
           selectedKeys={[selectedKey]}
@@ -1147,6 +1253,7 @@ const SyntaxTree = (props) => {
           onDragStart={onDragStart}
           onDragEnter={onDragEnter}
           onDragOver={onDragOver}
+          onDragEnd={onDragEnd}
           onDrop={onDrop}
           onRightClick={onRightClick}
           treeData={treeData}

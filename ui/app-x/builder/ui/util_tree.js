@@ -919,6 +919,13 @@ function gen_js(tree_context, treeNode) {
 
     return gen_appx_route(tree_context, treeNode)
 
+  } else if (treeNode.data.type === '/') {
+
+    return {
+      ref: null,
+      data: null
+    }
+
   } else {
 
     throw new Error(`ERROR: unrecognized treeNode.data.type [${treeNode.data.type}] [${JSON.stringify(treeNode.data)}]`)

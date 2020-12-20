@@ -3,6 +3,7 @@
 // react core
 import * as react from 'react'
 import * as reactDom from 'react-dom'
+import * as reactDomServer from 'react-dom/server'
 import * as propTypes from 'prop-types'
 // redux
 import * as reactRedux from 'react-redux'
@@ -20,6 +21,7 @@ import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 import * as reactFeather from 'react-feather'
+import * as reactCursor from 'react-cursor'
 // editor
 import * as monacoEditor from '@monaco-editor/react'
 //import * as aceEditor from 'react-ace'
@@ -45,6 +47,7 @@ export default {
   // react core
   "react": react,
   "react-dom": reactDom,
+  "react-dom/server": reactDomServer,
   "prop-types": propTypes,     // override original propTypes?
   "reflectPropTypes": reflectPropTypes,
   // redux
@@ -63,6 +66,7 @@ export default {
   // react utilities
   "react-helmet": reactHelmet,
   "react-feather": reactFeather,
+  "react-cursor": reactCursor,
   // editors
   // "nomaco-editor": monacoEditor,
   "@monaco-editor/react": monacoEditor,

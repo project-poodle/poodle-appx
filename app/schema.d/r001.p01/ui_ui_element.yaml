@@ -246,6 +246,9 @@ ui_element:
               type: react/element
               name: '@material-ui/core.Box'
               props:
+                  draggable: true
+                  style:
+                      cursor: move
                   className:
                       type: js/expression
                       data: styles.root

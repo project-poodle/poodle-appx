@@ -1,10 +1,5 @@
-//import * as acorn from 'acorn'
-//import jsx from 'acorn-jsx'
-//import escodegen from 'escodegen'
-//import Babel from '@babel/standalone'
 import babel from "@babel/standalone"
 import t from "@babel/types"
-//import { clone, cloneDeep } from 'lodash' // Import the clone, cleanDeep
 
 ////////////////////////////////////////////////////////////////////////////////
 // babel conf
@@ -27,6 +22,7 @@ const default_import_maps = {
       modules: [
         "react",
         "react-dom",
+        "react-dom/server",
         "prop-types",
         "reflectPropTypes",
         "react-redux",
@@ -38,9 +34,8 @@ const default_import_maps = {
         "react-grid-layout",
         "react-helmet",
         "react-feather",
+        "react-cursor",
         "@monaco-editor/react",
-        //"react-ace",
-        //"ace-builds",
         "clsx",
         "yaml",
         "buffer",
@@ -212,9 +207,10 @@ function importMapPlugin(import_maps, globalImports) {
                     )
                   } else if (src_val.startsWith(module_name + '/')) {
 
-                    // TODO
-                    //console.log(lib_key, module_name)
-                    throw new Error('ERROR: submodule not yet implemented [' + src_val + '].')
+                    // console.log(lib_key, module_name)
+                    // throw new Error('ERROR: submodule not yet implemented [' + src_val + '].')
+                    // just return and keep searching
+                    return
                   }
                 })
               }

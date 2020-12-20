@@ -10,8 +10,8 @@ import {
   QuestionOutlined,
   FieldStringOutlined,
   NumberOutlined,
-  SmallDashOutlined,
-  SwapOutlined,
+  // SmallDashOutlined,
+  // SwapOutlined,
   FullscreenExitOutlined,
   FilterOutlined,
   OrderedListOutlined,
@@ -27,7 +27,7 @@ import {
   // SisternodeOutlined,
   PoweroffOutlined,
   MinusCircleOutlined,
-  // FormatPainterOutlined,
+  FormatPainterOutlined,
   DoubleRightOutlined,
   BranchesOutlined,
   CompressOutlined,
@@ -35,6 +35,7 @@ import {
   MinusOutlined,
   StopOutlined,
   DashOutlined,
+  HomeOutlined,
 } from '@ant-design/icons'
 //import {
   // FunctionOutlined as FunctionOutlinedIcon,
@@ -43,7 +44,7 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 
 import ReactIcon from 'app-x/icon/React'
-import Database from 'app-x/icon/Database'
+// import Database from 'app-x/icon/Database'
 import Html from 'app-x/icon/Html'
 import Import from 'app-x/icon/Import'
 import Text from 'app-x/icon/Text'
@@ -56,6 +57,8 @@ import Code from 'app-x/icon/Code'
 import Branch from 'app-x/icon/Branch'
 import Route from 'app-x/icon/Route'
 import Effect from 'app-x/icon/Effect'
+import State from 'app-x/icon/State'
+import Style from 'app-x/icon/Style'
 import Pointer from 'app-x/icon/Pointer'
 
 const PATH_SEPARATOR = '/'
@@ -194,7 +197,7 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'react/state') {
 
-    return <Database />
+    return <State />
 
   } else if (input.type === 'react/effect') {
 
@@ -202,7 +205,7 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'mui/style') {
 
-    return <Css />
+    return <Style />
 
   } else if (input.type === 'mui/control') {
 
@@ -216,6 +219,10 @@ function lookup_icon_for_input(input) {
   } else if (input.type === 'pointer') {
 
     return <Pointer />
+
+  } else if (input.type === '/') {
+
+    return <HomeOutlined />
 
   } else {
 
@@ -356,6 +363,7 @@ function lookup_title_for_input(ref, input) {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // create new node
 function new_js_node(title, icon, data, parentKey, isLeaf) {
   return {
@@ -366,6 +374,22 @@ function new_js_node(title, icon, data, parentKey, isLeaf) {
     icon: icon ? icon : <QuestionOutlined />,
     isLeaf: isLeaf ? true : false,
     children: isLeaf ? null : [],
+  }
+}
+
+// create new root node
+function new_root_node() {
+  return {
+    key: '/',
+    parentKey: null,
+    title: '/',
+    data: {
+      __ref: null,
+      type: '/'
+    },
+    icon: lookup_icon_for_type('/'),
+    isLeaf: true,
+    children: null,
   }
 }
 
@@ -581,6 +605,9 @@ function parse_js_object(js_context, parentKey, ref, input) {
         )
       )
     })
+
+    // add root element to the top level
+    results.unshift(new_root_node())
 
     return results
   } else {

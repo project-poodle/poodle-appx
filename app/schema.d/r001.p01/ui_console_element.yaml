@@ -680,6 +680,9 @@ ui_element:
                                     type: react/element
                                     name: '@material-ui/core.Card'
                                     props:
+                                        draggable: true
+                                        style:
+                                            cursor: move
                                         key:
                                             type: js/expression
                                             data: item.id
