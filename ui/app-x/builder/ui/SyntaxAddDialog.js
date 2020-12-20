@@ -54,8 +54,8 @@ import ReactIcon from 'app-x/icon/React'
 import {
   parse_js,
   lookup_icon_for_type,
-  valid_react_elements,
-  valid_html_elements,
+  valid_import_names,
+  valid_html_tags,
 } from 'app-x/builder/ui/util_parse'
 import {
   tree_traverse,
@@ -95,7 +95,6 @@ const SyntaxAddDialog = (props) => {
   const onSubmit = data => {
     console.log('data', data)
     props.setOpen(false)
-    setNodeType(null)
     if (props.callback) {
       props.callback(props.addNodeRef, props.nodeParent, data)
     }
@@ -115,7 +114,6 @@ const SyntaxAddDialog = (props) => {
       onClose={
         e => {
           props.setOpen(false)
-          setNodeType(null)
         }
       }
       aria-labelledby="alert-dialog-title"
@@ -203,7 +201,6 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            console.log(e.target.value)
                             setNodeType(e.target.value)
                             props.onChange(e)
                           }
@@ -1025,13 +1022,15 @@ const SyntaxAddDialog = (props) => {
                       nodeType === 'react/element'
                       &&
                       <Autocomplete
-                        options={valid_react_elements()}
-                        getOptionLabel={option => option.title}
+                        options={valid_import_names()}
+                        getOptionLabel={option => option}
+                        freeSolo={true}
+                        onChange={(e, v) => props.onChange(v)}
                         renderInput={
                           params =>
                           <TextField
                             {...params}
-                            label="Name"
+                            label="Element Name"
                             onChange={props.onChange}
                             value={props.value}
                             error={!!errors.name}
@@ -1044,13 +1043,15 @@ const SyntaxAddDialog = (props) => {
                       nodeType === 'react/html'
                       &&
                       <Autocomplete
-                        options={valid_html_elements()}
-                        getOptionLabel={option => option.title}
+                        options={valid_html_tags()}
+                        getOptionLabel={option => option}
+                        freeSolo={true}
+                        onChange={(e, v) => props.onChange(v)}
                         renderInput={
                           params =>
                           <TextField
                             {...params}
-                            label="Name"
+                            label="HTML Tag"
                             onChange={props.onChange}
                             value={props.value}
                             error={!!errors.name}
@@ -1086,8 +1087,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -1213,8 +1214,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -1290,8 +1291,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -1334,8 +1335,8 @@ const SyntaxAddDialog = (props) => {
                         select={true}
                         onChange={
                           e => {
-                            props.onChange(e)
                             setNodeType(e.target.value)
+                            props.onChange(e)
                           }
                         }
                         value={props.value}
@@ -1365,7 +1366,6 @@ const SyntaxAddDialog = (props) => {
           onClick={
             e => {
               props.setOpen(false)
-              setNodeType(null)
             }
           }
           color="primary"

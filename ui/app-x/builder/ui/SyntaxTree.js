@@ -140,9 +140,6 @@ const SyntaxTree = (props) => {
       setAddNodeRef(info.nodeRef)
       setAddNodeType(info.nodeType)
       setAddDialogOpen(true)
-      //setAddNodeType(info.nodeType, () => {
-      //  setAddDialogOpen(true)
-      //})
     }
   })
 
@@ -161,7 +158,7 @@ const SyntaxTree = (props) => {
     const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
     // parse nodeData
     const parsed = parse_js({}, parentKey, ref, nodeData)
-    console.log(nodeRef, nodeParent, parsed)
+    // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location
     if (lookupParent) {
       if (!!ref) {
@@ -189,10 +186,7 @@ const SyntaxTree = (props) => {
     const lookupNode = tree_lookup(treeData, info.nodeKey)
     if (!!lookupNode) {
       // confirm deletion dialog
-      //setDeleteDialogNode(lookupNode, () => {
-      //  setDeleteDialogOpen(true)
-      //})
-      setDeleteDialogNode(lookupNode)
+      setDeleteNode(lookupNode)
       setDeleteDialogOpen(true)
     }
   })

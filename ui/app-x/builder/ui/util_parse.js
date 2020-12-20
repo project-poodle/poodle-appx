@@ -1367,32 +1367,190 @@ function parse_js(js_context, parentKey, ref, input) {
   }
 }
 
-function valid_react_elements() {
-  return [
-    {
-      title: '@material-ui/core.Box',
-    },
-    {
-      title: '@material-ui/core.Grid',
-    },
-    {
-      title: '@material-ui/core.Container',
-    }
-  ]
+// https://html.spec.whatwg.org/#elements-3
+const html_tags = [
+  'a',
+  'abbr',
+  'address',
+  'area',
+  'article',
+  'aside',
+  'audio',
+  'b',
+  'base',
+  'bdi',
+  'bdo',
+  'blockquote',
+  'body',
+  'br',
+  'button',
+  'canvas',
+  'caption',
+  'cite',
+  'code',
+  'col',
+  'colgroup',
+  'data',
+  'datalist',
+  'dd',
+  'del',
+  'details',
+  'dfn',
+  'dialog',
+  'div',
+  'dl',
+  'dt',
+  'em',
+  'embed',
+  'fieldset',
+  'figcaption',
+  'figure',
+  'footer',
+  'form',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'head',
+  'header',
+  'hgroup',
+  'hr',
+  'html',
+  'i',
+  'iframe',
+  'img',
+  'input',
+  'ins',
+  'kbd',
+  'label',
+  'legend',
+  'li',
+  'link',
+  'main',
+  'map',
+  'mark',
+  'menu',
+  'meta',
+  'meter',
+  'nav',
+  'noscript',
+  'object',
+  'ol',
+  'optgroup',
+  'option',
+  'output',
+  'p',
+  'param',
+  'picture',
+  'pre',
+  'progress',
+  'q',
+  'rp',
+  'rt',
+  'ruby',
+  's',
+  'samp',
+  'script',
+  'section',
+  'select',
+  'slot',
+  'small',
+  'source',
+  'span',
+  'strong',
+  'style',
+  'sub',
+  'summary',
+  'sup',
+  'table',
+  'tbody',
+  'td',
+  'template',
+  'textarea',
+  'tfoot',
+  'th',
+  'thead',
+  'time',
+  'title',
+  'tr',
+  'track',
+  'u',
+  'ul',
+  'var',
+  'video',
+  'wbr'
+]
+
+// return a list of valid html tags
+function valid_html_tags() {
+  return html_tags.sort()
 }
 
-function valid_html_elements() {
-  return [
-    {
-      title: 'form',
-    },
-    {
-      title: 'div',
-    },
-    {
-      title: 'a',
-    }
-  ]
+// stores a list of valid import_names
+const _valid_import_data = {}
+const _valid_import_names = []
+
+// load valid import names
+function load_valid_import_data() {
+
+  if (!globalThis.appx?.IMPORT_MAPS) {
+    throw new Error(`ERROR: appx.IMPORT_MAPS not set`)
+  }
+
+  const libs = globalThis.appx?.IMPORT_MAPS.libs
+  if (libs) {
+    // iterate libs
+    Object.keys(libs).map(lib_key => {
+      const path = libs[lib_key].path
+      // import lib path
+      import(path).then(path_module => {
+        // load module
+        const modules = libs[lib_key].modules
+        if (modules && modules.length) {
+          // iterate modules
+          modules.map(module_name => {
+            // console.log(module_name)
+            const module_content = path_module['default'][module_name]
+            if (typeof module_content === 'object' && module_content) {
+              // console.log(module_content)
+              Object.keys(module_content).map(variable_name => {
+                if (variable_name === 'default') {
+                  // add default
+                  _valid_import_data[module_name] = {
+                    title: module_name,
+                    module: module_name,
+                    variable: variable_name,
+                  }
+                }
+                const title = module_name + VARIABLE_SEPARATOR + variable_name
+                _valid_import_data[title] = {
+                  title: title,
+                  module: module_name,
+                  variable: variable_name,
+                }
+              })
+            }
+          })
+        }
+      })
+    })
+  }
+}
+
+load_valid_import_data()
+
+// return a list of valid import names
+function valid_import_names() {
+  // if import data is not initialized
+  if (!_valid_import_names.length) {
+    Object.keys(_valid_import_data).sort().map(key => {
+      _valid_import_names.push(key)
+    })
+    console.log(`valid_import_names`, _valid_import_names.length)
+  }
+  return _valid_import_names
 }
 
 export {
@@ -1400,6 +1558,6 @@ export {
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
-  valid_react_elements,
-  valid_html_elements,
+  valid_import_names,
+  valid_html_tags,
 }
