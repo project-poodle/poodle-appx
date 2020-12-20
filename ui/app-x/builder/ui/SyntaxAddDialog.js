@@ -518,7 +518,7 @@ const SyntaxAddDialog = (props) => {
                 control={control}
                 defaultValue=''
                 rules={{
-                  required: "Name is required",
+                  required: "Import name is required",
                 }}
                 render={props =>
                   (
@@ -1008,19 +1008,19 @@ const SyntaxAddDialog = (props) => {
                   )
                 }
               />
-              <Controller
-                name="name"
-                control={control}
-                defaultValue=''
-                rules={{
-                  required: "Name is required",
-                }}
-                render={props =>
+              {
+                nodeType === 'react/element'
+                &&
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "Element name is required",
+                  }}
+                  render={props =>
                   (
                     <FormControl className={styles.formControl}>
-                    {
-                      nodeType === 'react/element'
-                      &&
                       <Autocomplete
                         options={valid_import_names()}
                         getOptionLabel={option => option}
@@ -1038,10 +1038,24 @@ const SyntaxAddDialog = (props) => {
                           />
                         }
                       />
-                    }
-                    {
-                      nodeType === 'react/html'
-                      &&
+                    </FormControl>
+                  )
+                }
+                />
+              }
+              {
+                nodeType === 'react/html'
+                &&
+                <Controller
+                  name="name"
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    required: "HTML tag is required",
+                  }}
+                  render={props =>
+                  (
+                    <FormControl className={styles.formControl}>
                       <Autocomplete
                         options={valid_html_tags()}
                         getOptionLabel={option => option}
@@ -1059,11 +1073,11 @@ const SyntaxAddDialog = (props) => {
                           />
                         }
                       />
-                    }
                     </FormControl>
                   )
                 }
-              />
+                />
+              }
             </Box>
           )
         }
