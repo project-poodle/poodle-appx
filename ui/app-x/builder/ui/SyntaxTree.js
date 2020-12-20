@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   IconButton,
+  Fab,
   Menu,
   MenuItem,
   List,
@@ -20,13 +21,18 @@ import {
 } from '@material-ui/icons'
 import { default as NestedMenuItem } from 'material-ui-nested-menu-item'
 import {
+  Layout,
   Tree,
+  Tabs,
+  Radio,
+  Tooltip,
+  Button as AntButton,
 } from 'antd'
+const { Header, Footer, Sider, Content } = Layout
+const { DirectoryTree } = Tree
+const { TabPane } = Tabs;
 import {
   DeleteOutlined,
-} from '@ant-design/icons'
-const { DirectoryTree } = Tree
-import {
   Icon,
 } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
@@ -56,6 +62,18 @@ const SyntaxTree = (props) => {
 
   // styles
   const styles = makeStyles((theme) => ({
+    root: {
+      height: '100%',
+      width: '100%',
+    },
+    pane: {
+      height: '100%',
+      width: '100%',
+      overflow: 'scroll',
+    },
+    fab: {
+      margin: theme.spacing(1),
+    },
     tree: {
       width: '100%',
     },
@@ -1055,42 +1073,114 @@ const SyntaxTree = (props) => {
   }
 
   return (
-    <Box
-      onContextMenu={handleContextMenu}
+    <Tabs
+      defaultActiveKey="design"
+      className={styles.root}
+      tabPosition="right"
+      size="small"
+      tabBarExtraContent={
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="center"
+          alignItems="center"
+          maxWidth={120}
+          >
+          {
+            [
+              'pointer',
+              'js/string',
+              'js/number',
+              'js/boolean',
+              'js/null',
+              'js/object',
+              'js/array',
+              'react/element',
+              'react/html',
+              'react/state',
+              'react/effect',
+              'js/import',
+              'js/expression',
+              'js/function',
+              'js/block',
+              'js/switch',
+              'js/filter',
+              'js/map',
+              'js/reduce',
+              'mui/style',
+              'appx/route',
+            ].map(type => {
+              return (
+                <Tooltip key={type} title={type}>
+                  <AntButton
+                    size="small"
+                    color="secondary"
+                    className={styles.fab}
+                    key={type}
+                    value={type}
+                    icon={lookup_icon_for_type(type)}
+                    shape="circle"
+                    >
+                  </AntButton>
+                </Tooltip>
+              )
+            })
+          }
+        </Box>
+      }
       >
-      <Tree
-        className={styles.tree}
-        expandedKeys={expandedKeys}
-        selectedKeys={[selectedKey]}
-        draggable
-        blockNode
-        showIcon
-        onSelect={onSelect}
-        onExpand={onExpand}
-        onDragStart={onDragStart}
-        onDragEnter={onDragEnter}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
-        onRightClick={onRightClick}
-        treeData={treeData}
-      />
-      <SyntaxAddDialog
-        open={addDialogOpen}
-        setOpen={setAddDialogOpen}
-        callback={addCallback}
-        nodeParent={nodeParent}
-        addNodeRef={addNodeRef}
-        addNodeRefRequired={addNodeRefRequired}
-        addNodeType={addNodeType}
+      <TabPane
+        tab="Design"
+        key="design"
+        className={styles.pane}
+        onContextMenu={handleContextMenu}
+        >
+        <Tree
+          className={styles.tree}
+          expandedKeys={expandedKeys}
+          selectedKeys={[selectedKey]}
+          draggable
+          blockNode
+          showIcon
+          onSelect={onSelect}
+          onExpand={onExpand}
+          onDragStart={onDragStart}
+          onDragEnter={onDragEnter}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+          onRightClick={onRightClick}
+          treeData={treeData}
         />
-      <SyntaxDeleteDialog
-        open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
-        callback={deleteCallback}
-        node={deleteNode}
-        />
-      <ContextMenu />
-    </Box>
+        <SyntaxAddDialog
+          open={addDialogOpen}
+          setOpen={setAddDialogOpen}
+          callback={addCallback}
+          nodeParent={nodeParent}
+          addNodeRef={addNodeRef}
+          addNodeRefRequired={addNodeRefRequired}
+          addNodeType={addNodeType}
+          />
+        <SyntaxDeleteDialog
+          open={deleteDialogOpen}
+          setOpen={setDeleteDialogOpen}
+          callback={deleteCallback}
+          node={deleteNode}
+          />
+        <ContextMenu />
+      </TabPane>
+      <TabPane
+        tab="Test"
+        key="test"
+        className={styles.pane}
+        onContextMenu={handleContextMenu}
+        >
+        <Box display="flex" justifyContent="center" alignItems="center" className={styles.root}>
+          <Typography variant="body2">
+            TODO: test data goes here
+          </Typography>
+        </Box>
+      </TabPane>
+    </Tabs>
   )
 }
 

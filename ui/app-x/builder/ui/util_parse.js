@@ -3,8 +3,8 @@ import {
   Icon,
   FileOutlined,
   FileTextOutlined,
-  ContainerOutlined,
-  CodepenOutlined,
+  // ContainerOutlined,
+  // CodepenOutlined,
   SwitcherOutlined,
   QuestionCircleOutlined,
   QuestionOutlined,
@@ -16,34 +16,47 @@ import {
   FilterOutlined,
   OrderedListOutlined,
   UnorderedListOutlined,
-  MenuOutlined,
-  ApartmentOutlined,
+  // MenuOutlined,
+  // ApartmentOutlined,
   PercentageOutlined,
-  ImportOutlined,
-  FunctionOutlined,
-  FontSizeOutlined,
-  DatabaseOutlined,
-  UngroupOutlined,
-  SisternodeOutlined,
+  // ImportOutlined,
+  // FunctionOutlined,
+  // FontSizeOutlined,
+  // DatabaseOutlined,
+  // UngroupOutlined,
+  // SisternodeOutlined,
   PoweroffOutlined,
   MinusCircleOutlined,
-  FormatPainterOutlined,
+  // FormatPainterOutlined,
   DoubleRightOutlined,
   BranchesOutlined,
   CompressOutlined,
-  AppstoreAddOutlined,
+  // AppstoreAddOutlined,
   MinusOutlined,
   StopOutlined,
   DashOutlined,
 } from '@ant-design/icons'
-import {
+//import {
   // FunctionOutlined as FunctionOutlinedIcon,
-  AllOutOutlined,
-} from '@material-ui/icons'
+  // AllOutOutlined,
+//} from '@material-ui/icons'
 import { v4 as uuidv4 } from 'uuid'
 
 import ReactIcon from 'app-x/icon/React'
-// import ReactSvg from 'app-x/icon/react.svg'
+import Database from 'app-x/icon/Database'
+import Html from 'app-x/icon/Html'
+import Import from 'app-x/icon/Import'
+import Text from 'app-x/icon/Text'
+import Css from 'app-x/icon/Css'
+import Bracket from 'app-x/icon/Bracket'
+import CurlyBracket from 'app-x/icon/CurlyBracket'
+import Calculator from 'app-x/icon/Calculator'
+import Function from 'app-x/icon/Function'
+import Code from 'app-x/icon/Code'
+import Branch from 'app-x/icon/Branch'
+import Route from 'app-x/icon/Route'
+import Effect from 'app-x/icon/Effect'
+import Pointer from 'app-x/icon/Pointer'
 
 const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
@@ -84,7 +97,7 @@ function lookup_icon_for_input(input) {
   function _primitive_icon(data) {
     switch (typeof data) {
       case 'string':
-        return <FontSizeOutlined />
+        return <Text />
       case 'number':
         return <NumberOutlined />
       case 'boolean':
@@ -107,17 +120,17 @@ function lookup_icon_for_input(input) {
   }
 
   if (Array.isArray(input)) {
-    return <MenuOutlined />
+    return <Bracket />
   }
 
   if (! ('type' in input)) {
-    return <ApartmentOutlined />
+    return <CurlyBracket />
   }
 
   // 'type' is presented in the json object
   if (input.type === 'js/string') {
 
-    return <FontSizeOutlined />
+    return <Text />
 
   } else if (input.type === 'js/number') {
 
@@ -133,15 +146,15 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'js/array') {
 
-    return  <MenuOutlined />
+    return  <Bracket />
 
   } else if (input.type === 'js/object') {
 
-    return <ApartmentOutlined />
+    return <CurlyBracket />
 
   } else if (input.type === 'js/import') {
 
-    return <ImportOutlined />
+    return <Import />
 
   } else if (input.type === 'js/expression') {
 
@@ -149,15 +162,15 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'js/block') {
 
-    return <CodepenOutlined />
+    return <Code />
 
   } else if (input.type === 'js/function') {
 
-    return <FunctionOutlined />
+    return <Function />
 
   } else if (input.type === 'js/switch') {
 
-    return <SisternodeOutlined />
+    return <Branch />
 
   } else if (input.type === 'js/map') {
 
@@ -177,19 +190,19 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'react/html') {
 
-    return <ContainerOutlined />
+    return <Html />
 
   } else if (input.type === 'react/state') {
 
-    return <DatabaseOutlined />
+    return <Database />
 
   } else if (input.type === 'react/effect') {
 
-    return <AppstoreAddOutlined />
+    return <Effect />
 
   } else if (input.type === 'mui/style') {
 
-    return <FormatPainterOutlined />
+    return <Css />
 
   } else if (input.type === 'mui/control') {
 
@@ -198,7 +211,11 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'appx/route') {
 
-    return <AllOutOutlined />
+    return <Route />
+
+  } else if (input.type === 'pointer') {
+
+    return <Pointer />
 
   } else {
 
