@@ -31,7 +31,10 @@ import {
   Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout
-const { DirectoryTree } = Tree
+const {
+  TreeNode,
+  DirectoryTree,
+} = Tree
 const { TabPane } = Tabs;
 import {
   DeleteOutlined,
@@ -127,7 +130,6 @@ const SyntaxTree = (props) => {
     }
   }, [selectedTool])
 
-
   // expansion timeout
   const [ expansionTimeout, setExpansionTimeout ] = useState(new Date())
   useEffect(() => {
@@ -139,6 +141,7 @@ const SyntaxTree = (props) => {
   // update syntaxTreeCursor
   useEffect(() => {
     // console.log('updateCursor', syntaxTreeCursor)
+    console.log(designTreeRef)
     // html node
     const node = ReactDOM.findDOMNode(designTreeRef.current)
     const draggableList = node.querySelectorAll('[draggable]')
@@ -1158,6 +1161,79 @@ const SyntaxTree = (props) => {
     e.preventDefault()
   }
 
+  function constructTree() {
+    return (
+      <Tree
+        ref={designTreeRef}
+        className={styles.tree}
+        expandedKeys={expandedKeys}
+        selectedKeys={[selectedKey]}
+        draggable
+        blockNode
+        showIcon
+        onSelect={onSelect}
+        onExpand={onExpand}
+        onDragStart={onDragStart}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
+        onDrop={onDrop}
+        onRightClick={onRightClick}
+        treeData={treeData}
+      >
+      {
+        treeData.map(treeNode => {
+          // get result
+          function convertTreeNode(data) {
+            return <TreeNode
+              //eventKey={[data.key, data.parentKey]}
+              key={data.key}
+              parentKey={data.parentKey}
+              title={data.title}
+              icon={data.icon}
+              isLeaf={data.isLeaf}
+              data={data.data}
+              children={data.children?.map(child => {
+                  return convertTreeNode(child)
+              })}
+            >
+            </TreeNode>
+          }
+          return convertTreeNode(treeNode)
+          /*
+          const result = []
+          function addTreeNode(data, depth) {
+            const node =
+              <TreeNode
+                //eventKey={[data.key, data.parentKey]}
+                key={data.key}
+                parentKey={data.parentKey}
+                title={data.title}
+                icon={data.icon}
+                isLeaf={data.isLeaf}
+                data={data.data}
+                style={{marginLeft: 24*depth}}
+                //children={data.children}
+                level={depth}
+              >
+              </TreeNode>
+            result.push(node)
+            // recursively add children
+            if (!data.isLeaf && expandedKeys.includes(data.key)) {
+              data.children.map(child => {
+                addTreeNode(child, depth+1)
+              })
+            }
+          }
+          addTreeNode(treeNode)
+          return result
+          */
+        })
+      }
+      </Tree>
+    )
+  }
+
   return (
     <Tabs
       defaultActiveKey="design"
@@ -1240,24 +1316,9 @@ const SyntaxTree = (props) => {
         className={styles.pane}
         onContextMenu={handleContextMenu}
         >
-        <Tree
-          ref={designTreeRef}
-          className={styles.tree}
-          expandedKeys={expandedKeys}
-          selectedKeys={[selectedKey]}
-          draggable
-          blockNode
-          showIcon
-          onSelect={onSelect}
-          onExpand={onExpand}
-          onDragStart={onDragStart}
-          onDragEnter={onDragEnter}
-          onDragOver={onDragOver}
-          onDragEnd={onDragEnd}
-          onDrop={onDrop}
-          onRightClick={onRightClick}
-          treeData={treeData}
-        />
+        {
+          constructTree()
+        }
         <SyntaxAddDialog
           open={addDialogOpen}
           setOpen={setAddDialogOpen}
