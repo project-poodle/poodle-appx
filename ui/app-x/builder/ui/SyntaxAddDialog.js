@@ -161,7 +161,33 @@ const SyntaxAddDialog = (props) => {
                 validate: {
                   checkDuplicate: value =>
                     lookup_child_by_ref(props.nodeParent, value) === null
-                    || 'Reference name is duplicate with an existing child'
+                    || 'Reference name is duplicate with an existing child',
+                  checkMapChild: value =>
+                    nodeType !== 'js/switch'
+                    || value === 'default'
+                    || 'Reference name for js/switch must by [default]',
+                  checkMapChild: value =>
+                    nodeType !== 'js/map'
+                    || value === 'data'
+                    || value === 'result'
+                    || 'Reference name for js/map must by [data] or [result]',
+                  checkReduceChild: value =>
+                    nodeType !== 'js/reduce'
+                    || value === 'data'
+                    || value === 'init'
+                    || 'Reference name for js/reduce must by [data] or [init]',
+                  checkFilterChild: value =>
+                    nodeType !== 'js/filter'
+                    || value === 'data'
+                    || 'Reference name for js/filter must by [data]',
+                  checkFilterChild: value =>
+                    nodeType !== 'react/element'
+                    || value === 'props'
+                    || 'Reference name for react/element must by [props]',
+                  checkFilterChild: value =>
+                    nodeType !== 'react/html'
+                    || value === 'props'
+                    || 'Reference name for react/html must by [props]',
                 },
               }}
               render={props =>
