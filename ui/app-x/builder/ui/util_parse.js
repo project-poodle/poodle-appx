@@ -1671,9 +1671,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
