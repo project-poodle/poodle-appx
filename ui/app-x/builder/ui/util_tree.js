@@ -138,6 +138,45 @@ function gen_js_null(tree_context, treeNode) {
 // generate js/array from tree
 function gen_js_array(tree_context, treeNode) {
 
+  if (Array.isArray(treeNode)) {
+
+    if (tree_context.topLevel) {
+      // return result as object
+      const result = {}
+      treeNode.map(child => {
+        const childResult = gen_js(
+          {
+            ...tree_context,
+            topLevel: false,
+          },
+          child)
+        if (!!childResult.ref) {
+          result[childResult.ref] = childResult.data
+        }
+      })
+      // return
+      return result
+
+    } else {
+      // return result as array
+      const data = []
+      treeNode.map(child => {
+        const childResult = gen_js(
+          {
+            ...tree_context,
+            topLevel: false,
+          },
+          child)
+        data.push(childResult.data)
+      })
+      // return
+      return {
+        ref: null,
+        data: data,
+      }
+    }
+  }
+
   if (! ('data' in treeNode)) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
@@ -341,37 +380,43 @@ function gen_js_switch(tree_context, treeNode) {
   // generate children with conditions
   if (treeNode.children.length) {
     treeNode.children.map(child => {
-      // verify that data exist in child
-      if (! ('data' in child)) {
-        throw new Error(`ERROR: [js/switch] child missing [data] i[${JSON.stringify(child)}]`)
-      }
-      // verify that condition exist in child.data
-      if (! ('condition' in child.data)) {
-        throw new Error(`ERROR: [js/switch] child.data missing [condition] [${JSON.stringify(child.data)}]`)
-      }
-      // result is the same object, no need to check
-      // update data.children
-      data.children.push({
-        condition: child.data.condition,
-        result: gen_js(
-          {
-            ...tree_context,
-            topLevel: false,
-          },
-          child
-        ).data,
-      })
-    })
-  }
 
-  if ('default' in treeNode.data) {
-    data.default = gen_js(
-      {
-        ...tree_context,
-        topLevel: false,
-      },
-      reeNode.data.default
-    ).data
+      if (child.data.__ref) {
+
+        // process 'default' child
+        if (child.data.__ref === 'default') {
+          data.default = gen_js(
+            {
+              ...tree_context,
+              topLevel: false,
+            },
+            child
+          ).data
+        }
+
+      } else {
+          // verify that data exist in child
+          if (! ('data' in child)) {
+            throw new Error(`ERROR: [js/switch] child missing [data] i[${JSON.stringify(child)}]`)
+          }
+          // verify that condition exist in child.data
+          if (! ('condition' in child.data)) {
+            throw new Error(`ERROR: [js/switch] child.data missing [condition] [${JSON.stringify(child.data)}]`)
+          }
+          // result is the same object, no need to check
+          // update data.children
+          data.children.push({
+            condition: child.data.condition,
+            result: gen_js(
+              {
+                ...tree_context,
+                topLevel: false,
+              },
+              child
+            ).data,
+          })
+      }
+    })
   }
 
   // return

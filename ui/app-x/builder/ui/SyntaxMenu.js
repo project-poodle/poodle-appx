@@ -107,16 +107,21 @@ const SyntaxMenu = (props) => {
           !!props.selectedNode
           && !!props.selectedNode.data
           && !!props.selectedNode.data.type
-          && (!!valid_child_types._?.types && !!valid_child_types.ref?.types)
+          && (!!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
         )
         &&
         (
           <Box>
             {
-              valid_child_types.ref.names.map(name => {
+              valid_child_types?.ref.names.map(name => {
+                const exists = lookup_child_by_ref(props.selectedNode, name)
+                if (exists) {
+                  return null
+                }
                 return (
                   <NestedMenuItem
                     className={styles.nestedMenuItem}
+                    key={uuidv4()}
                     label={(
                       <List className={styles.nestedMenuItem}>
                         <ListItem
@@ -133,12 +138,13 @@ const SyntaxMenu = (props) => {
                     parentMenuOpen={!!props.contextAnchorEl}
                     >
                     {
-                      valid_child_types.ref.types.map(type => {
+                      valid_child_types?.ref.types.map(type => {
                         if (!!type) {
                           return (
                             <MenuItem
                               dense={true}
                               className={styles.menuItem}
+                              key={uuidv4()}
                               onClick={
                                 () => props.addMenuClicked({
                                   nodeRef: name,
@@ -156,7 +162,7 @@ const SyntaxMenu = (props) => {
                           )
                         } else {
                           return (
-                            <Divider />
+                            <Divider key={uuidv4()} />
                           )
                         }
                       })
@@ -164,56 +170,14 @@ const SyntaxMenu = (props) => {
                   </NestedMenuItem>
                 )
               })
-              .concat([<Divider />])
-              .concat(valid_child_types._.types.map(type => {
+              .concat([<Divider key={uuidv4()} />])
+              .concat(valid_child_types?._.types.map(type => {
                 if (!!type) {
                   return (
                     <MenuItem
                       dense={true}
                       className={styles.menuItem}
-                      onClick={
-                        () => props.addMenuClicked({
-                          nodeRef: null,
-                          nodeRefRequired: true,
-                          nodeKey: props.selectedNode.key,
-                          nodeType: type,
-                        })
-                      }
-                      >
-                      <ListItemIcon>
-                        { lookup_icon_for_type(type) }
-                      </ListItemIcon>
-                      <ListItemText primary={`Add ${type}`} />
-                    </MenuItem>
-                  )
-                } else {
-                  return (
-                    <Divider />
-                  )
-                }
-              }))
-            }
-            <Divider />
-          </Box>
-        )
-      }
-      {
-        (
-          !!props.selectedNode
-          && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!!valid_child_types._?.types && !valid_child_types.ref?.types)
-        )
-        &&
-        (
-          <Box>
-            {
-              valid_child_types._.types.map(type => {
-                if (!!type) {
-                  return (
-                    <MenuItem
-                      dense={true}
-                      className={styles.menuItem}
+                      key={uuidv4()}
                       onClick={
                         () => props.addMenuClicked({
                           nodeRef: null,
@@ -231,12 +195,12 @@ const SyntaxMenu = (props) => {
                   )
                 } else {
                   return (
-                    <Divider />
+                    <Divider key={uuidv4()} />
                   )
                 }
-              })
+              }))
             }
-            <Divider />
+            <Divider key={uuidv4()} />
           </Box>
         )
       }
@@ -245,22 +209,23 @@ const SyntaxMenu = (props) => {
           !!props.selectedNode
           && !!props.selectedNode.data
           && !!props.selectedNode.data.type
-          && (!valid_child_types._?.types && !!valid_child_types.ref?.types)
+          && (!!valid_child_types?._?.types && !valid_child_types?.ref?.types)
         )
         &&
         (
           <Box>
             {
-              valid_child_types.ref.types.map(type => {
+              valid_child_types?._.types.map(type => {
                 if (!!type) {
                   return (
                     <MenuItem
                       dense={true}
                       className={styles.menuItem}
+                      key={uuidv4()}
                       onClick={
                         () => props.addMenuClicked({
                           nodeRef: null,
-                          nodeRefRequired: true,
+                          nodeRefRequired: false,
                           nodeKey: props.selectedNode.key,
                           nodeType: type,
                         })
@@ -274,12 +239,123 @@ const SyntaxMenu = (props) => {
                   )
                 } else {
                   return (
-                    <Divider />
+                    <Divider key={uuidv4()} />
                   )
                 }
               })
             }
-            <Divider />
+            <Divider key={uuidv4()} />
+          </Box>
+        )
+      }
+      {
+        (
+          !!props.selectedNode
+          && !!props.selectedNode.data
+          && !!props.selectedNode.data.type
+          && (!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
+        )
+        &&
+        (
+          <Box>
+            {
+              !!valid_child_types?.ref?.names
+              &&
+              (
+                valid_child_types?.ref.names.map(name => {
+                  const exists = lookup_child_by_ref(props.selectedNode, name)
+                  if (exists) {
+                    return null
+                  }
+                  return (
+                    <NestedMenuItem
+                      className={styles.nestedMenuItem}
+                      key={uuidv4()}
+                      label={(
+                        <List className={styles.nestedMenuItem}>
+                          <ListItem
+                            dense={true}
+                            className={styles.menuItem}
+                            >
+                            <ListItemIcon>
+                              { lookup_icon_for_type('js/object') }
+                            </ListItemIcon>
+                            <ListItemText primary={`[ ${name} ]`} />
+                          </ListItem>
+                        </List>
+                      )}
+                      parentMenuOpen={!!props.contextAnchorEl}
+                      >
+                      {
+                        valid_child_types?.ref.types.map(type => {
+                          if (!!type) {
+                            return (
+                              <MenuItem
+                                dense={true}
+                                className={styles.menuItem}
+                                key={uuidv4()}
+                                onClick={
+                                  () => props.addMenuClicked({
+                                    nodeRef: name,
+                                    nodeRefRequired: true,
+                                    nodeKey: props.selectedNode.key,
+                                    nodeType: type,
+                                  })
+                                }
+                                >
+                                <ListItemIcon>
+                                  { lookup_icon_for_type(type) }
+                                </ListItemIcon>
+                                <ListItemText primary={`Add ${type}`} />
+                              </MenuItem>
+                            )
+                          } else {
+                            return (
+                              <Divider key={uuidv4()} />
+                            )
+                          }
+                        })
+                      }
+                    </NestedMenuItem>
+                  )
+                })
+              )
+            }
+            {
+              !valid_child_types?.ref?.names
+              &&
+              (
+                valid_child_types?.ref.types.map(type => {
+                  if (!!type) {
+                    return (
+                      <MenuItem
+                        dense={true}
+                        className={styles.menuItem}
+                        key={uuidv4()}
+                        onClick={
+                          () => props.addMenuClicked({
+                            nodeRef: null,
+                            nodeRefRequired: true,
+                            nodeKey: props.selectedNode.key,
+                            nodeType: type,
+                          })
+                        }
+                        >
+                        <ListItemIcon>
+                          { lookup_icon_for_type(type) }
+                        </ListItemIcon>
+                        <ListItemText primary={`Add ${type}`} />
+                      </MenuItem>
+                    )
+                  } else {
+                    return (
+                      <Divider key={uuidv4()} />
+                    )
+                  }
+                })
+              )
+            }
+            <Divider key={uuidv4()} />
           </Box>
         )
       }

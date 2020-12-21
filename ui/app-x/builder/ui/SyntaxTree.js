@@ -47,7 +47,7 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import { parse_js, lookup_icon_for_type } from 'app-x/builder/ui/util_parse'
-import { tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
+import { gen_js, tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
@@ -209,9 +209,10 @@ const SyntaxTree = (props) => {
     const parentNode = tree_lookup(treeData, info.nodeKey)
     if (!!parentNode) {
       // add dialog
+      // console.log(info)
       setNodeParent(parentNode)
-      setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeRef(info.nodeRef)
+      setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeType(info.nodeType)
       setAddDialogOpen(true)
     }
@@ -230,6 +231,7 @@ const SyntaxTree = (props) => {
     }
     // ref
     const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
+    // console.log(parentKey, ref, nodeData)
     // parse nodeData
     const parse_context = {}
     const parsed = parse_js(parse_context, parentKey, ref, nodeData)
@@ -242,6 +244,7 @@ const SyntaxTree = (props) => {
         lookupParent.children.push(parsed)
       }
       setTreeData(resultTree)
+      console.log(gen_js({topLevel: true}, resultTree))
     } else {
       // add to the root
       resultTree.push(parsed)
