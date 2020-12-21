@@ -143,10 +143,10 @@ const SyntaxTree = (props) => {
   }, [selectedTool])
 
   // expansion timeout
-  const [ expansionTimer, setExpansionTimer ] = useState(new Date())
+  const [ expandTimer, setExpandTimer ] = useState(new Date())
   useEffect(() => {
     setTimeout(() => {
-      setExpansionTimer(new Date())
+      setExpandTimer(new Date())
     }, 500)
   }, [expandedKeys])
 
@@ -165,7 +165,12 @@ const SyntaxTree = (props) => {
         const valid_child_types = lookup_valid_child_types(parentType)
         // console.log(valid_child_types)
         const draggableList = treeNode.querySelectorAll('[draggable]')
-        if (valid_child_types?.ref?.types.includes(selectedTool)
+        if (!selectedTool) {
+          draggableList.forEach(draggable => {
+            // console.log('canDrop', draggable)
+            draggable.style.cursor = 'pointer'
+          })
+        } else if (valid_child_types?.ref?.types.includes(selectedTool)
             || valid_child_types?._?.types.includes(selectedTool)) {
           // if selected tool is one of the valid child types
           draggableList.forEach(draggable => {
@@ -181,7 +186,7 @@ const SyntaxTree = (props) => {
         }
       }
     })
-  }, [syntaxTreeCursor, expansionTimer])
+  }, [syntaxTreeCursor, expandTimer])
 
   // load data via api
   useEffect(() => {
