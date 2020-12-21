@@ -67,11 +67,18 @@ import {
 const SyntaxAddDialog = (props) => {
 
   // states and effects
-  const [ nodeType,       setNodeType   ] = useState(props.addNodeType)
+  const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
+  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
 
+  // nodeType
   useEffect(() => {
     setNodeType(props.addNodeType)
   }, [props.addNodeType])
+
+  // isSwitchDefault
+  useEffect(() => {
+    setSwitchDefault(props.isSwitchDefault)
+  }, [props.isSwitchDefault])
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -165,6 +172,96 @@ const SyntaxAddDialog = (props) => {
                     value={props.value}
                     error={!!errors.__ref}
                     helperText={errors.__ref?.message}
+                    />
+                </FormControl>
+              }
+              />
+          )
+        }
+        {
+          !!props.nodeParent
+          && !!props.nodeParent.data
+          && !!props.nodeParent.data.type
+          && props.nodeParent.data.type === 'js/switch'
+          &&
+          (
+            <Controller
+              name="default"
+              type="boolean"
+              control={control}
+              defaultValue={isSwitchDefault}
+              rules={{
+                validate: {
+                  checkDuplicate: value =>
+                    !value
+                    || lookup_child_by_ref(props.nodeParent, 'default') === null
+                    || 'Default condition already exists'
+                },
+              }}
+              render={props =>
+                (
+                  <FormControl
+                    className={styles.formControl}
+                    error={!!errors.default}
+                    >
+                    <FormHelperText>Is Default</FormHelperText>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          name={props.name}
+                          checked={props.value}
+                          onChange={e => {
+                            props.onChange(e.target.checked)
+                            setSwitchDefault(e.target.checked)
+                          }}
+                        />
+                      }
+                      label=""
+                      />
+                      {
+                        !!errors.default
+                        &&
+                        <FormHelperText>{errors.default?.message}</FormHelperText>
+                      }
+                  </FormControl>
+                )
+              }
+            />
+          )
+        }
+        {
+          !!props.nodeParent
+          && !!props.nodeParent.data
+          && !!props.nodeParent.data.type
+          && props.nodeParent.data.type === 'js/switch'
+          && !isSwitchDefault
+          &&
+          (
+            <Controller
+              name="condition"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Condition is required",
+                validate: {
+                  conditionSyntax: value => {
+                    try {
+                      parseExpression(value)
+                      return true
+                    } catch (err) {
+                      return String(err)
+                    }
+                  }
+                },
+              }}
+              render={props =>
+                <FormControl className={styles.formControl}>
+                  <TextField
+                    label="Condition"
+                    onChange={props.onChange}
+                    value={props.value}
+                    error={!!errors.condition}
+                    helperText={errors.condition?.message}
                     />
                 </FormControl>
               }

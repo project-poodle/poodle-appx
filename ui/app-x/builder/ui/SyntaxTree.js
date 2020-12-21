@@ -228,6 +228,7 @@ const SyntaxTree = (props) => {
   const [ addNodeRefRequired, setAddNodeRefRequired ] = useState(false)
   const [ addNodeType,        setAddNodeType        ] = useState('')
   const [ addDialogOpen,      setAddDialogOpen      ] = useState(false)
+  const [ isSwitchDefault,    setSwitchDefault      ] = useState(false)
 
   // add menu clicked
   const addMenuClicked = (info => {
@@ -242,6 +243,7 @@ const SyntaxTree = (props) => {
       setAddNodeRef(info.nodeRef)
       setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeType(info.nodeType)
+      setSwitchDefault(!!info.isSwitchDefault)
       setAddDialogOpen(true)
     }
   })
@@ -260,9 +262,20 @@ const SyntaxTree = (props) => {
     // ref
     const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
     // console.log(parentKey, ref, nodeData)
-    // parse nodeData
     const parse_context = {}
-    const parsed = parse_js(parse_context, parentKey, ref, nodeData)
+    var parsed = null
+    // handle js/switch specially
+    if (lookupParent?.data?.type === 'js/switch') {
+      if (nodeData.default) {
+        parsed = parse_js(parse_context, parentKey, 'default', nodeData)
+      } else {
+        parsed = parse_js(parse_context, parentKey, null, nodeData)
+        parsed.data.condition = nodeData.condition
+      }
+    } else {
+      // parse nodeData
+      parsed = parse_js(parse_context, parentKey, ref, nodeData)
+    }
     // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location
     if (lookupParent) {
@@ -652,6 +665,7 @@ const SyntaxTree = (props) => {
           addNodeRef={addNodeRef}
           addNodeRefRequired={addNodeRefRequired}
           addNodeType={addNodeType}
+          isSwitchDefault={isSwitchDefault}
           />
         <SyntaxDeleteDialog
           open={deleteDialogOpen}

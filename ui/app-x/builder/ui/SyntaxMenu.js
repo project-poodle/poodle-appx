@@ -151,6 +151,7 @@ const SyntaxMenu = (props) => {
                                   nodeRefRequired: true,
                                   nodeKey: props.selectedNode.key,
                                   nodeType: type,
+                                  isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
                                 })
                               }
                               >
@@ -300,6 +301,7 @@ const SyntaxMenu = (props) => {
                                     nodeRefRequired: true,
                                     nodeKey: props.selectedNode.key,
                                     nodeType: type,
+                                    isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
                                   })
                                 }
                                 >
