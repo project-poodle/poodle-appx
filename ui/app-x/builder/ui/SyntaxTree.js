@@ -285,19 +285,23 @@ const SyntaxTree = (props) => {
         lookupParent.children.push(parsed)
       }
       setTreeData(resultTree)
-      console.log(gen_js({topLevel: true}, resultTree))
     } else {
       // add to the root
       resultTree.push(parsed)
       setTreeData(resultTree)
     }
+    console.log(gen_js({topLevel: true}, resultTree))
     // process expanded keys
+    const newExpandedKeys = _.cloneDeep(expandedKeys)
     parse_context.expandedKeys.map(key => {
-      if (!expandedKeys.includes(key)) {
-        expandedKeys.push(key)
+      if (!newExpandedKeys.includes(key)) {
+        newExpandedKeys.push(key)
       }
     })
-    setExpandedKeys(expandedKeys)
+    if (!!lookupParent && !newExpandedKeys.includes(lookupParent.key)) {
+      newExpandedKeys.push(lookupParent.key)
+    }
+    setExpandedKeys(newExpandedKeys)
   }
 
   // delete dialog state
@@ -349,7 +353,35 @@ const SyntaxTree = (props) => {
     // console.log(`selected ${key}`)
     if (key.length) {
       setSelectedKey(key[0])
-      setSelectedTool(null)
+      // drop a selected tool here
+      if (selectedTool) {
+        console.log('here', selectedTool, key[0])
+        // console.log('add', info)
+        setContextAnchorEl(null)
+        // find node
+        const parentNode = tree_lookup(treeData, key[0])
+        if (!!parentNode) {
+          // add dialog
+          console.log('here2', selectedTool, parentNode)
+          setNodeParent(parentNode)
+          const valid_child_types = lookup_valid_child_types(parentNode.data.type)
+          if (valid_child_types?._?.types.includes(selectedTool)) {
+            setAddNodeRef(null)
+            setAddNodeRefRequired(false)
+            setAddNodeType(selectedTool)
+            setSwitchDefault(false)
+            setAddDialogOpen(true)
+          } else if (valid_child_types?.ref?.types.includes(selectedTool)) {
+            setAddNodeRef(null)
+            setAddNodeRefRequired(true)
+            setAddNodeType(selectedTool)
+            setSwitchDefault(false)
+            setAddDialogOpen(true)
+          }
+          // not found, just ignore
+        }
+        setSelectedTool(null)
+      }
     } else {
       setSelectedKey(null)
     }
@@ -637,7 +669,11 @@ const SyntaxTree = (props) => {
                     // draggable={true}
                     onClick={e => {
                       setSelectedKey(null)
-                      setSelectedTool(type)
+                      if (!type || type === 'pointer') {
+                        setSelectedTool(null)
+                      } else {
+                        setSelectedTool(type)
+                      }
                     }}
                     >
                   </AntButton>
