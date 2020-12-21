@@ -258,7 +258,8 @@ const SyntaxTree = (props) => {
     // console.log(nodeRef, nodeParent, nodeData)
     // ready to add node
     const resultTree = _.cloneDeep(treeData)
-    const lookupParent = tree_lookup(resultTree, nodeParent.key)
+    const tmpParent = tree_lookup(resultTree, nodeParent.key)
+    const lookupParent = (tmpParent.data.type === '/') ? null : tmpParent
     // parent key
     let parentKey = null
     if (!!lookupParent) {
@@ -291,8 +292,8 @@ const SyntaxTree = (props) => {
       }
       setTreeData(resultTree)
     } else {
-      // add to the root
-      resultTree.push(parsed)
+      // add to the root as first element
+      resultTree.splice(1, 0, parsed)
       setTreeData(resultTree)
     }
     console.log(gen_js({topLevel: true}, resultTree))

@@ -38,7 +38,7 @@ const YamlViewer = (props) => {
 
         const doc = new YAML.Document()
         doc.contents = data.ui_element_spec
-        console.log(doc.toString())
+        // console.log(doc.toString())
         setYaml(doc.toString())
       },
       error => {

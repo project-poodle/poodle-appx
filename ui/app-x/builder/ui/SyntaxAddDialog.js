@@ -113,6 +113,7 @@ const SyntaxAddDialog = (props) => {
   })
 
   // console.log(nodeType)
+  console.log(props)
 
   return (
     <Dialog

@@ -201,7 +201,6 @@ const SyntaxMenu = (props) => {
                 }
               }))
             }
-            <Divider key={uuidv4()} />
           </Box>
         )
       }
@@ -245,7 +244,6 @@ const SyntaxMenu = (props) => {
                 }
               })
             }
-            <Divider key={uuidv4()} />
           </Box>
         )
       }
@@ -357,24 +355,35 @@ const SyntaxMenu = (props) => {
                 })
               )
             }
-            <Divider key={uuidv4()} />
           </Box>
         )
       }
-      <MenuItem
-        dense={true}
-        className={styles.menuItem}
-        onClick={
-          () => props.deleteMenuClicked({
-            nodeKey: selectedKey,
-          })
-        }
-        >
-        <ListItemIcon>
-          <DeleteOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Delete" />
-      </MenuItem>
+      {
+        !!props.selectedNode
+        && !!props.selectedNode.data
+        && !!props.selectedNode.data.type
+        && props.selectedNode.data.type !== '/'
+        &&
+        (
+          <Box>
+            <Divider key={uuidv4()} />
+            <MenuItem
+              dense={true}
+              className={styles.menuItem}
+              onClick={
+                () => props.deleteMenuClicked({
+                  nodeKey: selectedKey,
+                })
+              }
+              >
+              <ListItemIcon>
+                <DeleteOutlined />
+              </ListItemIcon>
+              <ListItemText primary="Delete" />
+            </MenuItem>
+          </Box>
+        )
+      }
     </Menu>
   )
 }

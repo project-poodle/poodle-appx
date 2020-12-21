@@ -373,7 +373,7 @@ function new_js_node(title, icon, data, parentKey, isLeaf) {
     data: data ? data : null,
     icon: icon ? icon : <QuestionOutlined />,
     isLeaf: isLeaf ? true : false,
-    children: isLeaf ? null : [],
+    children: isLeaf ? [] : [],
   }
 }
 
