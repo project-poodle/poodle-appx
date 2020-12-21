@@ -70,12 +70,6 @@ const PropEditor = (props) => {
       height: '100%',
       overflow: 'scroll',
     },
-    select: {
-      width: '100%',
-      padding: theme.spacing(2, 0, 2, 2),
-      display: 'flex',
-      alignItems: 'center',
-    },
   }))()
 
   // context
@@ -88,12 +82,9 @@ const PropEditor = (props) => {
     setSelectedKey
   } = useContext(EditorProvider.Context)
 
-  const treeNode = tree_lookup(treeData, selectedKey)
-  const parentNode = treeNode ? tree_lookup(treeData, treeNode.parentKey) : null
-  // console.log(treeNode)
-  // console.log(parentNode)
-
-  const [ nodeType,   setNodeType   ] = useState('')
+  const [ nodeType,     setNodeType   ] = useState('')
+  const [ treeNode,     setTreeNode   ] = useState(null)
+  const [ parentNode,   setParentNode ] = useState(null)
 
   // react hook form
   const { register, control, reset, errors, trigger, handleSubmit, getValues, setValue } = useForm({
@@ -108,9 +99,20 @@ const PropEditor = (props) => {
   })
 
   useEffect(() => {
+    // lookup node
     const lookupNode = tree_lookup(treeData, selectedKey)
+    const lookupParent = !!lookupNode ? tree_lookup(treeData, lookupNode.parentKey) : null
+    setTreeNode(lookupNode)
+    setParentNode(lookupParent)
+    // console.log(treeNode)
+    // console.log(parentNode)
     if (lookupNode) {
       setNodeType(lookupNode.data.type)
+      Object.keys(lookupNode.data).map(k => {
+        if (!!k && k !== 'type') {
+          setValue(k, lookupNode.data[k])
+        }
+      })
     }
   }, [selectedKey])
 
@@ -149,7 +151,7 @@ const PropEditor = (props) => {
   // render
   return (
     <Box className={styles.root}>
-      <form onSubmit={() => {return false}}>
+      <form onSubmit={() => {return false}} className={styles.root}>
       {
         (!treeNode)
         &&
@@ -172,251 +174,142 @@ const PropEditor = (props) => {
         (
           <Tabs defaultActiveKey="basic" className={styles.editor} tabPosition="right" size="small">
             <TabPane tab="Base" key="basic" className={styles.basicTab}>
-            {
-              (ref !== null)
-              &&
-              (
-                <Controller
-                  name="__ref"
-                  control={control}
-                  defaultValue={ref}
-                  rules={{
-                    required: 'Reference name is required',
-                    validate: {
-                      //checkDuplicate: value =>
-                      //  !value
-                      //  || !parentNode
-                      //  || lookup_child_by_ref(parentNode, value)?.key === treeNode.key
-                      //  || 'Reference name already exists'
-                    },
-                  }}
-                  render={props =>
-                    (
-                      <FormControl className={styles.formControl}>
-                        <TextField
-                          label="Reference"
-                          name={props.name}
-                          value={props.value}
-                          onChange={ e => {
-                            props.onChange(e.target.value)
-                            setSubmitTimer(new Date())
-                          }}
-                          error={!!errors.__ref}
-                          helperText={errors.__ref?.message}
-                          />
-                      </FormControl>
-                    )
-                  }
-                />
-              )
-            }
-            {
-              (
-                !!nodeType
+              <Box className={styles.editor}>
+              {
+                (ref !== null)
                 &&
                 (
-                  nodeType == 'js/string'
-                  || nodeType == 'js/number'
-                  || nodeType == 'js/boolean'
-                  || nodeType == 'js/null'
-                  || nodeType == 'js/expression'
-                )
-              )
-              &&
-              (
-                <Box>
                   <Controller
-                    name="type"
+                    name="__ref"
                     control={control}
-                    defaultValue={nodeType}
+                    defaultValue={ref}
                     rules={{
-                      required: 'Type is required',
+                      required: 'Reference name is required',
+                      validate: {
+                        //checkDuplicate: value =>
+                        //  !value
+                        //  || !parentNode
+                        //  || lookup_child_by_ref(parentNode, value)?.key === treeNode.key
+                        //  || 'Reference name already exists'
+                      },
                     }}
                     render={props =>
                       (
                         <FormControl className={styles.formControl}>
                           <TextField
-                            label="Type"
-                            select={true}
+                            label="Reference"
+                            name={props.name}
                             value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
+                            onChange={ e => {
                               props.onChange(e.target.value)
                               setSubmitTimer(new Date())
                             }}
-                            >
-                            <MenuItem value="js/string">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/string') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/string
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/number">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/number') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/number
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/boolean">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/boolean') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/boolean
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/null">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/null') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/null
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/expression">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/expression') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/expression
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
+                            error={!!errors.__ref}
+                            helperText={errors.__ref?.message}
+                            />
                         </FormControl>
                       )
                     }
                   />
-                  {
-                    (nodeType === 'js/string')
-                    &&
-                    (
-                      <Controller
-                        name="data"
-                        control={control}
-                        defaultValue={treeNode?.data?.data}
-                        rules={{
-                          required: "String value is required",
-                        }}
-                        render={props =>
-                          (
-                            <FormControl className={styles.formControl}>
-                              <TextField
-                                label="String"
-                                multiline={false}
-                                name={props.name}
-                                value={props.value}
-                                onChange={ e => {
-                                  props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
-                                }}
-                                error={!!errors.data}
-                                helperText={errors.data?.message}
-                                />
-                            </FormControl>
-                          )
-                        }
-                      />
-                    )
-                  }
-                  {
-                    (nodeType === 'js/number')
-                    &&
-                    (
-                      <Controller
-                        name="data"
-                        type="number"
-                        control={control}
-                        defaultValue={treeNode?.data?.data}
-                        rules={{
-                          required: "Number is required",
-                          validate: {
-                            checkNumber: value => !isNaN(Number(value)) || "Must be a number",
-                          }
-                        }}
-                        render={props =>
-                          (
-                            <FormControl className={styles.formControl}>
-                              <TextField
-                                label="Number"
-                                multiline={false}
-                                name={props.name}
-                                value={props.value}
-                                onChange={ e => {
-                                  props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
-                                }}
-                                error={!!errors.data}
-                                helperText={errors.data?.message}
-                                />
-                            </FormControl>
-                          )
-                        }
-                      />
-                    )
-                  }
-                  {
-                    (nodeType === 'js/boolean')
-                    &&
-                    (
-                      <Controller
-                        name="data"
-                        type="boolean"
-                        control={control}
-                        defaultValue={!!treeNode?.data?.data}
-                        render={props =>
-                          (
-                            <FormControl className={styles.formControl}>
-                              <FormHelperText>Boolean</FormHelperText>
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    name={props.name}
-                                    checked={props.value}
-                                    onChange={ e => {
-                                      props.onChange(e.target.checked)
-                                      setSubmitTimer(new Date())
-                                    }}
-                                  />
-                                }
-                                label=""
-                                />
-                            </FormControl>
-                          )
-                        }
-                      />
-                    )
-                  }
-                  {
-                    (nodeType === 'js/expression')
-                    &&
-                    (
-                      <Controller
-                        name="data"
-                        control={control}
-                        defaultValue={treeNode?.data?.data}
-                        rules={{
-                          required: "Expression is required",
-                          validate: {
-                            expressionSyntax: value => {
-                              try {
-                                parseExpression(value)
-                                return true
-                              } catch (err) {
-                                return String(err)
-                              }
-                            }
-                          }
-                        }}
-                        render={props =>
-                          (
-                            <FormControl className={styles.formControl}>
+                )
+              }
+              {
+                (
+                  !!nodeType
+                  &&
+                  (
+                    nodeType == 'js/string'
+                    || nodeType == 'js/number'
+                    || nodeType == 'js/boolean'
+                    || nodeType == 'js/null'
+                    || nodeType == 'js/expression'
+                  )
+                )
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/string">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/string') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/string
+                                </Typography>
+                              </MenuItem>
+                              <MenuItem value="js/number">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/number') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/number
+                                </Typography>
+                              </MenuItem>
+                              <MenuItem value="js/boolean">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/boolean') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/boolean
+                                </Typography>
+                              </MenuItem>
+                              <MenuItem value="js/null">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/null') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/null
+                                </Typography>
+                              </MenuItem>
+                              <MenuItem value="js/expression">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/expression') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/expression
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    {
+                      (nodeType === 'js/string')
+                      &&
+                      (
+                        <Controller
+                          name="data"
+                          control={control}
+                          defaultValue={treeNode?.data?.data}
+                          rules={{
+                            required: "String value is required",
+                          }}
+                          render={props =>
+                            (
+                              <FormControl className={styles.formControl}>
                                 <TextField
-                                  label="Expression"
-                                  multiline={true}
+                                  label="String"
+                                  multiline={false}
                                   name={props.name}
                                   value={props.value}
                                   onChange={ e => {
@@ -426,649 +319,251 @@ const PropEditor = (props) => {
                                   error={!!errors.data}
                                   helperText={errors.data?.message}
                                   />
-                            </FormControl>
-                          )
-                        }
-                      />
-                    )
-                  }
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/array')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/array">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/array') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/array
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/object')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/object">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/object') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/object
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/import')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/import">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/import') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/import
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="name"
-                    control={control}
-                    defaultValue={treeNode?.data?.name}
-                    rules={{
-                      required: "Import name is required",
-                    }}
-                    render={props =>
-                    (
-                      <FormControl className={styles.formControl}>
-                        <Autocomplete
-                          options={valid_import_names()}
-                          getOptionLabel={option => option}
-                          freeSolo={true}
-                          value={props.value}
-                          onChange={(e, v) => {
-                            props.onChange(v)
-                            setSubmitTimer(new Date())
-                          }}
-                          renderInput={
-                            params =>
-                            <TextField
-                              {...params}
-                              label="Element Name"
-                              onChange={props.onChange}
-                              value={props.value}
-                              error={!!errors.name}
-                              helperText={errors.name?.message}
-                            />
+                              </FormControl>
+                            )
                           }
                         />
-                      </FormControl>
-                    )
-                  }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/block')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/block">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/block') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/block
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
                       )
                     }
-                  />
-                  <Controller
-                    name="data"
-                    control={control}
-                    defaultValue={treeNode?.data?.data}
-                    rules={{
-                      required: "Code is required",
-                      validate: {
-                        expressionSyntax: value => {
-                          try {
-                            parse(value)
-                            return true
-                          } catch (err) {
-                            return String(err)
+                    {
+                      (nodeType === 'js/number')
+                      &&
+                      (
+                        <Controller
+                          name="data"
+                          type="number"
+                          control={control}
+                          defaultValue={treeNode?.data?.data}
+                          rules={{
+                            required: "Number is required",
+                            validate: {
+                              checkNumber: value => !isNaN(Number(value)) || "Must be a number",
+                            }
+                          }}
+                          render={props =>
+                            (
+                              <FormControl className={styles.formControl}>
+                                <TextField
+                                  label="Number"
+                                  multiline={false}
+                                  name={props.name}
+                                  value={props.value}
+                                  onChange={ e => {
+                                    props.onChange(e.target.value)
+                                    setSubmitTimer(new Date())
+                                  }}
+                                  error={!!errors.data}
+                                  helperText={errors.data?.message}
+                                  />
+                              </FormControl>
+                            )
                           }
-                        }
-                      }
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Code"
-                              multiline={true}
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.data}
-                              helperText={errors.data?.message}
-                              />
-                        </FormControl>
+                        />
                       )
                     }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/function')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
+                    {
+                      (nodeType === 'js/boolean')
+                      &&
                       (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/function">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/function') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/function
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="data"
-                    control={control}
-                    defaultValue={treeNode?.data?.params}
-                    rules={{
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Parameters"
-                              multiline={true}
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.params}
-                              helperText={errors.params?.message}
-                            />
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="body"
-                    control={control}
-                    defaultValue={treeNode?.body?.body}
-                    rules={{
-                      required: "Body is required",
-                      validate: {
-                        expressionSyntax: value => {
-                          try {
-                            parse(value)
-                            return true
-                          } catch (err) {
-                            return String(err)
+                        <Controller
+                          name="data"
+                          type="boolean"
+                          control={control}
+                          defaultValue={!!treeNode?.data?.data}
+                          render={props =>
+                            (
+                              <FormControl className={styles.formControl}>
+                                <FormHelperText>Boolean</FormHelperText>
+                                <FormControlLabel
+                                  control={
+                                    <Switch
+                                      name={props.name}
+                                      checked={props.value}
+                                      onChange={ e => {
+                                        props.onChange(e.target.checked)
+                                        setSubmitTimer(new Date())
+                                      }}
+                                    />
+                                  }
+                                  label=""
+                                  />
+                              </FormControl>
+                            )
                           }
-                        }
-                      }
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Body"
-                              multiline={true}
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.body}
-                              helperText={errors.body?.message}
-                              />
-                        </FormControl>
+                        />
                       )
                     }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/switch')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
+                    {
+                      (nodeType === 'js/expression')
+                      &&
                       (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/switch">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/switch') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/switch
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/map')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/map">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/map') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/map
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/reduce')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/reduce">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/reduce') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/reduce
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="reducer"
-                    control={control}
-                    defaultValue={treeNode?.data?.reducer}
-                    rules={{
-                      required: "Reducer is required",
-                      validate: {
-                        expressionSyntax: value => {
-                          try {
-                            parseExpression(value)
-                            return true
-                          } catch (err) {
-                            return String(err)
+                        <Controller
+                          name="data"
+                          control={control}
+                          defaultValue={treeNode?.data?.data}
+                          rules={{
+                            required: "Expression is required",
+                            validate: {
+                              expressionSyntax: value => {
+                                try {
+                                  parseExpression(value)
+                                  return true
+                                } catch (err) {
+                                  return String(err)
+                                }
+                              }
+                            }
+                          }}
+                          render={props =>
+                            (
+                              <FormControl className={styles.formControl}>
+                                  <TextField
+                                    label="Expression"
+                                    multiline={true}
+                                    name={props.name}
+                                    value={props.value}
+                                    onChange={ e => {
+                                      props.onChange(e.target.value)
+                                      setSubmitTimer(new Date())
+                                    }}
+                                    error={!!errors.data}
+                                    helperText={errors.data?.message}
+                                    />
+                              </FormControl>
+                            )
                           }
-                        }
-                      }
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Reducer"
-                              multiline={true}
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.reducer}
-                              helperText={errors.reducer?.message}
-                              />
-                        </FormControl>
+                        />
                       )
                     }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'js/filter')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="js/filter">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/filter') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/filter
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="filter"
-                    control={control}
-                    defaultValue={treeNode?.data?.filter}
-                    rules={{
-                      required: "Filter is required",
-                      validate: {
-                        expressionSyntax: value => {
-                          try {
-                            parseExpression(value)
-                            return true
-                          } catch (err) {
-                            return String(err)
-                          }
-                        }
-                      }
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Filter"
-                              multiline={true}
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.filter}
-                              helperText={errors.filter?.message}
-                              />
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/array')
                 &&
                 (
-                  nodeType == 'react/element'
-                  || nodeType == 'react/html'
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/array">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/array') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/array
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
                 )
-              )
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="react/element">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('react/element') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                react/element
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="react/html">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('react/html') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                react/html
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  {
-                    nodeType === 'react/element'
-                    &&
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/object')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/object">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/object') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/object
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/import')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/import">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/import') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/import
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
                     <Controller
                       name="name"
                       control={control}
                       defaultValue={treeNode?.data?.name}
                       rules={{
-                        required: "Element name is required",
+                        required: "Import name is required",
                       }}
                       render={props =>
                       (
@@ -1098,324 +593,833 @@ const PropEditor = (props) => {
                       )
                     }
                     />
-                  }
-                  {
-                    nodeType === 'react/html'
-                    &&
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/block')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/block">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/block') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/block
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="data"
+                      control={control}
+                      defaultValue={treeNode?.data?.data}
+                      rules={{
+                        required: "Code is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parse(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Code"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.data}
+                                helperText={errors.data?.message}
+                                />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/function')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/function">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/function') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/function
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="data"
+                      control={control}
+                      defaultValue={treeNode?.data?.params}
+                      rules={{
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Parameters"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.params}
+                                helperText={errors.params?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="body"
+                      control={control}
+                      defaultValue={treeNode?.body?.body}
+                      rules={{
+                        required: "Body is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parse(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Body"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.body}
+                                helperText={errors.body?.message}
+                                />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/switch')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/switch">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/switch') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/switch
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/map')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/map">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/map') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/map
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/reduce')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/reduce">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/reduce') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/reduce
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="reducer"
+                      control={control}
+                      defaultValue={treeNode?.data?.reducer}
+                      rules={{
+                        required: "Reducer is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parseExpression(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Reducer"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.reducer}
+                                helperText={errors.reducer?.message}
+                                />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'js/filter')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="js/filter">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('js/filter') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  js/filter
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="filter"
+                      control={control}
+                      defaultValue={treeNode?.data?.filter}
+                      rules={{
+                        required: "Filter is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parseExpression(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Filter"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.filter}
+                                helperText={errors.filter?.message}
+                                />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data
+                  &&
+                  (
+                    nodeType == 'react/element'
+                    || nodeType == 'react/html'
+                  )
+                )
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="react/element">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/element') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/element
+                                </Typography>
+                              </MenuItem>
+                              <MenuItem value="react/html">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/html') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/html
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    {
+                      nodeType === 'react/element'
+                      &&
+                      <Controller
+                        name="name"
+                        control={control}
+                        defaultValue={treeNode?.data?.name}
+                        rules={{
+                          required: "Element name is required",
+                        }}
+                        render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <Autocomplete
+                              options={valid_import_names()}
+                              getOptionLabel={option => option}
+                              freeSolo={true}
+                              value={props.value}
+                              onChange={(e, v) => {
+                                props.onChange(v)
+                                setSubmitTimer(new Date())
+                              }}
+                              renderInput={
+                                params =>
+                                <TextField
+                                  {...params}
+                                  label="Element Name"
+                                  onChange={props.onChange}
+                                  value={props.value}
+                                  error={!!errors.name}
+                                  helperText={errors.name?.message}
+                                />
+                              }
+                            />
+                          </FormControl>
+                        )
+                      }
+                      />
+                    }
+                    {
+                      nodeType === 'react/html'
+                      &&
+                      <Controller
+                        name="name"
+                        control={control}
+                        defaultValue={treeNode?.data?.name}
+                        rules={{
+                          required: "HTML tag is required",
+                        }}
+                        render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <Autocomplete
+                              options={valid_html_tags()}
+                              getOptionLabel={option => option}
+                              freeSolo={true}
+                              value={props.value}
+                              onChange={(e, v) => {
+                                props.onChange(v)
+                                setSubmitTimer(new Date())
+                              }}
+                              renderInput={
+                                params =>
+                                <TextField
+                                  {...params}
+                                  label="HTML Tag"
+                                  onChange={props.onChange}
+                                  value={props.value}
+                                  error={!!errors.name}
+                                  helperText={errors.name?.message}
+                                />
+                              }
+                            />
+                          </FormControl>
+                        )
+                      }
+                      />
+                    }
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'react/state')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="react/state">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/state') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/state
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
                     <Controller
                       name="name"
                       control={control}
                       defaultValue={treeNode?.data?.name}
                       rules={{
-                        required: "HTML tag is required",
+                        required: "Name is required",
                       }}
                       render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <Autocomplete
-                            options={valid_html_tags()}
-                            getOptionLabel={option => option}
-                            freeSolo={true}
-                            value={props.value}
-                            onChange={(e, v) => {
-                              props.onChange(v)
-                              setSubmitTimer(new Date())
-                            }}
-                            renderInput={
-                              params =>
+                        (
+                          <FormControl className={styles.formControl}>
                               <TextField
-                                {...params}
-                                label="HTML Tag"
-                                onChange={props.onChange}
+                                label="Name"
+                                name={props.name}
                                 value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
-                              />
-                            }
-                          />
-                        </FormControl>
-                      )
-                    }
+                                />
+                          </FormControl>
+                        )
+                      }
                     />
-                  }
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'react/state')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="react/state">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('react/state') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                react/state
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="name"
-                    control={control}
-                    defaultValue={treeNode?.data?.name}
-                    rules={{
-                      required: "Name is required",
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Name"
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.name}
-                              helperText={errors.name?.message}
+                    <Controller
+                      name="setter"
+                      control={control}
+                      defaultValue={treeNode?.data?.setter}
+                      rules={{
+                        required: "Setter is required",
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Setter"
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.setter}
+                                helperText={errors.setter?.message}
                               />
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="setter"
-                    control={control}
-                    defaultValue={treeNode?.data?.setter}
-                    rules={{
-                      required: "Setter is required",
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="init"
+                      control={control}
+                      defaultValue={treeNode?.data?.init}
+                      rules={{
+                        required: "Initial value is required",
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Init"
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.init}
+                                helperText={errors.init?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'react/effect')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
                             <TextField
-                              label="Setter"
-                              name={props.name}
+                              label="Type"
+                              select={true}
                               value={props.value}
-                              onChange={ e => {
+                              onChange={e => {
+                                setNodeType(e.target.value)
                                 props.onChange(e.target.value)
                                 setSubmitTimer(new Date())
                               }}
-                              error={!!errors.setter}
-                              helperText={errors.setter?.message}
-                            />
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="init"
-                    control={control}
-                    defaultValue={treeNode?.data?.init}
-                    rules={{
-                      required: "Initial value is required",
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                            <TextField
-                              label="Init"
-                              name={props.name}
-                              value={props.value}
-                              onChange={ e => {
-                                props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
-                              }}
-                              error={!!errors.init}
-                              helperText={errors.init?.message}
-                            />
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'react/effect')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="react/effect">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('react/effect') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                react/effect
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  <Controller
-                    name="data"
-                    control={control}
-                    defaultValue={treeNode?.data?.data}
-                    rules={{
-                      required: "Effect code is required",
-                      validate: {
-                        expressionSyntax: value => {
-                          try {
-                            parse(value)
-                            return true
-                          } catch (err) {
-                            return String(err)
+                              >
+                              <MenuItem value="react/effect">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/effect') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/effect
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="data"
+                      control={control}
+                      defaultValue={treeNode?.data?.data}
+                      rules={{
+                        required: "Effect code is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parse(value)
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
                           }
                         }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                              <TextField
+                                label="Expression"
+                                multiline={true}
+                                name={props.name}
+                                value={props.value}
+                                onChange={ e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
+                                error={!!errors.data}
+                                helperText={errors.data?.message}
+                                />
+                          </FormControl>
+                        )
                       }
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'mui/style')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
                             <TextField
-                              label="Expression"
-                              multiline={true}
-                              name={props.name}
+                              label="Type"
+                              select={true}
                               value={props.value}
-                              onChange={ e => {
+                              onChange={e => {
+                                setNodeType(e.target.value)
                                 props.onChange(e.target.value)
                                 setSubmitTimer(new Date())
                               }}
-                              error={!!errors.data}
-                              helperText={errors.data?.message}
-                              />
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'mui/style')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="mui/style">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('mui/style') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                mui/style
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
-            {
-              (treeNode && treeNode.data && nodeType == 'appx/route')
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: 'Type is required',
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            value={props.value}
-                            onChange={e => {
-                              setNodeType(e.target.value)
-                              props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
-                            }}
-                            >
-                            <MenuItem value="appx/route">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('appx/route') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                appx/route
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                </Box>
-              )
-            }
+                              >
+                              <MenuItem value="mui/style">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('mui/style') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  mui/style
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType == 'appx/route')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="appx/route">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('appx/route') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  appx/route
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              </Box>
             </TabPane>
             <TabPane tab="YAML" key="advanced" className={styles.editor}>
               <Box
