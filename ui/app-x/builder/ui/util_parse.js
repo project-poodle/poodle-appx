@@ -1660,7 +1660,7 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           'react/state',
-          'react/effect',
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1692,7 +1692,7 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           'react/state',
-          'react/effect',
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1703,9 +1703,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
@@ -1734,8 +1734,8 @@ function lookup_valid_child_types(type) {
           null,
           'react/element',
           'react/html',
-          'react/state',
-          'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1746,9 +1746,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       },
       '_': {
@@ -1766,8 +1766,8 @@ function lookup_valid_child_types(type) {
           null,
           'react/element',
           'react/html',
-          'react/state',
-          'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1778,9 +1778,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
@@ -1802,8 +1802,8 @@ function lookup_valid_child_types(type) {
           null,
           'react/element',
           'react/html',
-          'react/state',
-          'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1814,9 +1814,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
@@ -1838,8 +1838,8 @@ function lookup_valid_child_types(type) {
           null,
           'react/element',
           'react/html',
-          'react/state',
-          'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1850,9 +1850,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
@@ -1873,8 +1873,8 @@ function lookup_valid_child_types(type) {
           null,
           'react/element',
           'react/html',
-          'react/state',
-          'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/effect',  // effect code not allowed
           null,
           'js/import',
           'js/expression',
@@ -1885,9 +1885,9 @@ function lookup_valid_child_types(type) {
           'js/map',
           'js/reduce',
           'js/filter',
-          null,
-          'mui/style',
-          'appx/route',
+          // null,
+          // 'mui/style',     // mui style not allowed
+          // 'appx/route',    // appx/route not allowed
         ]
       }
     }
