@@ -46,8 +46,19 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { parse_js, lookup_icon_for_type } from 'app-x/builder/ui/util_parse'
-import { gen_js, tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
+import {
+  parse_js,
+  lookup_icon_for_type,
+  lookup_valid_child_types,
+  lookup_classname_by_type,
+  lookup_type_by_classname,
+} from 'app-x/builder/ui/util_parse'
+import {
+  gen_js,
+  tree_traverse,
+  tree_lookup,
+  lookup_child_by_ref
+} from 'app-x/builder/ui/util_tree'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
@@ -132,28 +143,45 @@ const SyntaxTree = (props) => {
   }, [selectedTool])
 
   // expansion timeout
-  const [ expansionTimeout, setExpansionTimeout ] = useState(new Date())
+  const [ expansionTimer, setExpansionTimer ] = useState(new Date())
   useEffect(() => {
     setTimeout(() => {
-      setExpansionTimeout(new Date())
+      setExpansionTimer(new Date())
     }, 500)
   }, [expandedKeys])
 
   // update syntaxTreeCursor
   useEffect(() => {
     // console.log('updateCursor', syntaxTreeCursor)
-    console.log(designTreeRef)
+    // console.log(designTreeRef)
     // html node
     const node = ReactDOM.findDOMNode(designTreeRef.current)
-    const draggableList = node.querySelectorAll('[draggable]')
-    // console.log(typeof draggableList, Array.isArray(draggableList), draggableList)
-    if (draggableList.length) {
-      draggableList.forEach(draggable => {
-        // console.log(draggable)
-        draggable.style.cursor = syntaxTreeCursor
-      })
-    }
-  }, [syntaxTreeCursor, expansionTimeout])
+    const treeNodeList = node.querySelectorAll('.appx-tree-node')
+    treeNodeList.forEach(treeNode => {
+      const parentType = lookup_type_by_classname(treeNode.className)
+      // console.log(treeNode)
+      // console.log(parentType)
+      if (parentType) {
+        const valid_child_types = lookup_valid_child_types(parentType)
+        // console.log(valid_child_types)
+        const draggableList = treeNode.querySelectorAll('[draggable]')
+        if (valid_child_types?.ref?.types.includes(selectedTool)
+            || valid_child_types?._?.types.includes(selectedTool)) {
+          // if selected tool is one of the valid child types
+          draggableList.forEach(draggable => {
+            // console.log('canDrop', draggable)
+            draggable.style.cursor = syntaxTreeCursor
+          })
+        } else {
+          // if selected tool is not one of the valid child types
+          draggableList.forEach(draggable => {
+            // console.log('noDrop', draggable)
+            draggable.style.cursor = 'not-allowed'
+          })
+        }
+      }
+    })
+  }, [syntaxTreeCursor, expansionTimer])
 
   // load data via api
   useEffect(() => {
@@ -478,26 +506,53 @@ const SyntaxTree = (props) => {
       {
         treeData.map(treeNode => {
           // get result
-          function convertTreeNode(data) {
+          function ConvertTreeNode(data) {
+            /*
+            // update syntaxTreeCursor
+            useEffect(() => {
+              // console.log('updateCursor', syntaxTreeCursor)
+              // console.log(designTreeRef)
+              // html node
+              const valid_child_types = lookup_valid_child_types(data.data.type)
+              // const node = ReactDOM.findDOMNode(designTreeRef.current)
+              const node = document.getElementById(data.key)
+              const draggableList = node.querySelectorAll('[draggable]')
+              // console.log(typeof draggableList, Array.isArray(draggableList), draggableList)
+              if (selectedTool
+                  &&
+                  (
+                    valid_child_types?.ref?.types.includes(selectedTool)
+                    || valid_child_types?._?.types.includes(selectedTool)
+                  )
+                ) {
+                draggableList.forEach(draggable => {
+                  // console.log(draggable)
+                  draggable.style.cursor = syntaxTreeCursor
+                })
+              } else {
+                draggableList.forEach(draggable => {
+                  // console.log(draggable)
+                  draggable.style.cursor = 'pointer'
+                })
+              }
+            }, [syntaxTreeCursor])
+            */
             return <TreeNode
+              id={data.key}
               key={data.key}
               parentKey={data.parentKey}
               title={data.title}
               icon={data.icon}
               isLeaf={data.isLeaf}
               data={data.data}
-              className={
-                (!data.data?.type || data.data.type === '/')
-                ? 'appx-type-root'
-                : 'appx-type-' + data.data.type.replace(/[^a-zA-Z0-9]/g, '-')
-              }
+              className={`appx-tree-node ${lookup_classname_by_type(data.data.type)}`}
               children={data.children?.map(child => {
-                  return convertTreeNode(child)
+                  return ConvertTreeNode(child)
               })}
             >
             </TreeNode>
           }
-          return convertTreeNode(treeNode)
+          return ConvertTreeNode(treeNode)
         })
       }
       </Tree>

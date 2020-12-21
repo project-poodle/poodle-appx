@@ -2010,12 +2010,43 @@ function lookup_valid_child_types(type) {
   }
 }
 
+function lookup_classname_by_type(type) {
+  const classname =
+    (!type || type === '/')
+    ? 'appx-type-root'
+    : 'appx-type-' + type.replace(/[^a-zA-Z0-9]/g, '-')
+  // console.log(classname)
+  return classname
+}
+
+// lookup type by classname
+function lookup_type_by_classname(className) {
+  // handle root
+  if (className.includes('appx-type-root')) {
+    return '/'
+  }
+  // search others
+  let found = null
+  lookup_valid_child_types('/').ref.types.forEach(type => {
+    if (!type || found) {
+      return
+    }
+    if (className.includes(lookup_classname_by_type(type))) {
+      found = type
+      return
+    }
+  })
+  return found
+}
+
 export {
   parse_js,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
   lookup_valid_child_types,
+  lookup_classname_by_type,
+  lookup_type_by_classname,
   valid_import_names,
   valid_html_tags,
 }
