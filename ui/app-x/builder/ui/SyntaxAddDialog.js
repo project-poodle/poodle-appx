@@ -113,7 +113,7 @@ const SyntaxAddDialog = (props) => {
   })
 
   // console.log(nodeType)
-  console.log(props)
+  // console.log(props)
 
   return (
     <Dialog
@@ -395,8 +395,9 @@ const SyntaxAddDialog = (props) => {
                           <TextField
                             label="String"
                             multiline={false}
-                            onChange={props.onChange}
+                            name={props.name}
                             value={props.value}
+                            onChange={props.onChange}
                             error={!!errors.data}
                             helperText={errors.data?.message}
                             />
@@ -427,8 +428,9 @@ const SyntaxAddDialog = (props) => {
                           <TextField
                             label="Number"
                             multiline={false}
-                            onChange={props.onChange}
+                            name={props.name}
                             value={props.value}
+                            onChange={props.onChange}
                             error={!!errors.data}
                             helperText={errors.data?.message}
                             />
@@ -494,8 +496,9 @@ const SyntaxAddDialog = (props) => {
                             <TextField
                               label="Expression"
                               multiline={true}
-                              onChange={props.onChange}
+                              name={props.name}
                               value={props.value}
+                              onChange={props.onChange}
                               error={!!errors.data}
                               helperText={errors.data?.message}
                               />

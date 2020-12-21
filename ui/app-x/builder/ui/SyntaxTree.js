@@ -123,6 +123,13 @@ const SyntaxTree = (props) => {
 
   const designTreeRef = React.createRef()
 
+  // selectedKey will reset selectedTool
+  useEffect(() => {
+    if (!!selectedKey) {
+      setSelectedTool(null)
+    }
+  }, [selectedKey])
+
   // selectedTool
   useEffect(() => {
     if (!selectedTool || selectedTool === 'pointer') {
@@ -361,14 +368,14 @@ const SyntaxTree = (props) => {
       setSelectedKey(key[0])
       // drop a selected tool here
       if (selectedTool) {
-        console.log('here', selectedTool, key[0])
+        // console.log('here', selectedTool, key[0])
         // console.log('add', info)
         setContextAnchorEl(null)
         // find node
         const parentNode = tree_lookup(treeData, key[0])
         if (!!parentNode) {
           // add dialog
-          console.log('here2', selectedTool, parentNode)
+          // console.log('here2', selectedTool, parentNode)
           setNodeParent(parentNode)
           const valid_child_types = lookup_valid_child_types(parentNode.data.type)
           if (valid_child_types?._?.types.includes(selectedTool)) {
@@ -386,7 +393,7 @@ const SyntaxTree = (props) => {
           }
           // not found, just ignore
         }
-        setSelectedTool(null)
+        // setSelectedTool(null) // handled by effect
       }
     } else {
       setSelectedKey(null)
@@ -513,7 +520,7 @@ const SyntaxTree = (props) => {
     // console.log(info)
     // set selected key
     setSelectedKey(info.node.key)
-    setSelectedTool(null)
+    // setSelectedTool(null) // handled by effect
     // find draggable target, open context menu
     let target = info.event.target
     while (target.parentNode && !target.draggable) {
