@@ -30,7 +30,7 @@ function load_api_routers() {
 
         ROUTES[route] = router
 
-        console.log(`INFO: loaded API routes for API app_deployment [${route}]`)
+        console.log(`INFO: loaded API routes for app_deployment [${route}]`)
     });
 }
 
