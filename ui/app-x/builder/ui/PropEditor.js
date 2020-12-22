@@ -82,9 +82,10 @@ const PropEditor = (props) => {
     setSelectedKey
   } = useContext(EditorProvider.Context)
 
-  const [ nodeType,     setNodeType   ] = useState('')
-  const [ treeNode,     setTreeNode   ] = useState(null)
-  const [ parentNode,   setParentNode ] = useState(null)
+  const [ nodeType,         setNodeType       ] = useState('')
+  const [ treeNode,         setTreeNode       ] = useState(null)
+  const [ parentNode,       setParentNode     ] = useState(null)
+  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
 
   // react hook form
   const { register, control, reset, errors, trigger, handleSubmit, getValues, setValue } = useForm({
@@ -136,16 +137,29 @@ const PropEditor = (props) => {
   function onSubmit(data) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
-    lookupNode.data = data
-    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
-    lookupNode.icon = lookup_icon_for_input(data)
-    if (!!data.__ref) {
-      lookupNode.data.__ref = data.__ref
-    } else {
-      lookupNode.data.__ref = null
+    if (lookupNode) {
+      console.log(data)
+      lookupNode.data = data
+      if (!!data.__ref) {
+        lookupNode.data.__ref = data.__ref
+      } else {
+        lookupNode.data.__ref = null
+      }
+      // check if parent is js/switch
+      const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
+      if (lookupParent?.data?.type === 'js/switch') {
+        if (!!data.default) {
+          lookupNode.data.__ref = 'default'
+        } else {
+          lookupNode.data.__ref = null
+          lookupNode.data.condition = data.condition
+        }
+      }
+      lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
+      lookupNode.icon = lookup_icon_for_input(data)
+      // console.log(lookupNode)
+      // setTreeData(resultTree)
     }
-    console.log(data)
-    setTreeData(resultTree)
   }
 
   // render
@@ -176,7 +190,10 @@ const PropEditor = (props) => {
             <TabPane tab="Base" key="basic" className={styles.basicTab}>
               <Box className={styles.editor}>
               {
-                (ref !== null)
+                (
+                  ref !== null
+                  && parentNode?.data?.type !== 'js/switch'
+                )
                 &&
                 (
                   <Controller
@@ -211,6 +228,91 @@ const PropEditor = (props) => {
                       )
                     }
                   />
+                )
+              }
+              {
+                parentNode?.data?.type === 'js/switch'
+                &&
+                (
+                  <Controller
+                    name="default"
+                    type="boolean"
+                    control={control}
+                    defaultValue={treeNode?.data?.__ref === 'default'}
+                    rules={{
+                      validate: {
+                      },
+                    }}
+                    render={props =>
+                      (
+                        <FormControl
+                          className={styles.formControl}
+                          error={!!errors.default}
+                          >
+                          <FormHelperText>Is Default</FormHelperText>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                name={props.name}
+                                checked={props.value}
+                                onChange={e => {
+                                  props.onChange(e.target.checked)
+                                  setSwitchDefault(e.target.checked)
+                                  setSubmitTimer(new Date())
+                                }}
+                              />
+                            }
+                            label=""
+                            />
+                            {
+                              !!errors.default
+                              &&
+                              <FormHelperText>{errors.default?.message}</FormHelperText>
+                            }
+                        </FormControl>
+                      )
+                    }
+                  />
+                )
+              }
+              {
+                parentNode?.data?.type === 'js/switch'
+                && !isSwitchDefault
+                &&
+                (
+                  <Controller
+                    name="condition"
+                    control={control}
+                    defaultValue={treeNode?.data?.condition}
+                    rules={{
+                      required: "Condition is required",
+                      validate: {
+                        conditionSyntax: value => {
+                          try {
+                            parseExpression(value)
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      },
+                    }}
+                    render={props =>
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Condition"
+                          name={props.name}
+                          value={props.value}
+                          onChange={e => {
+                            props.onChange(e.target.value)
+                            setSubmitTimer(new Date())
+                          }}
+                          error={!!errors.condition}
+                          helperText={errors.condition?.message}
+                          />
+                      </FormControl>
+                    }
+                    />
                 )
               }
               {
@@ -582,8 +684,12 @@ const PropEditor = (props) => {
                               <TextField
                                 {...params}
                                 label="Element Name"
-                                onChange={props.onChange}
+                                name={props.name}
                                 value={props.value}
+                                onChange={e => {
+                                  props.onChange(e.target.value)
+                                  setSubmitTimer(new Date())
+                                }}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
                               />
@@ -1090,8 +1196,12 @@ const PropEditor = (props) => {
                                 <TextField
                                   {...params}
                                   label="Element Name"
-                                  onChange={props.onChange}
+                                  name={props.name}
                                   value={props.value}
+                                  onChange={e => {
+                                    props.onChange(e.target.value)
+                                    setSubmitTimer(new Date())
+                                  }}
                                   error={!!errors.name}
                                   helperText={errors.name?.message}
                                 />
@@ -1129,8 +1239,12 @@ const PropEditor = (props) => {
                                 <TextField
                                   {...params}
                                   label="HTML Tag"
-                                  onChange={props.onChange}
+                                  name={props.name}
                                   value={props.value}
+                                  onChange={e => {
+                                    props.onChange(e.target.value)
+                                    setSubmitTimer(new Date())
+                                  }}
                                   error={!!errors.name}
                                   helperText={errors.name?.message}
                                 />

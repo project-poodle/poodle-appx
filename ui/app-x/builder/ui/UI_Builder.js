@@ -89,14 +89,14 @@ const UI_Builder = (props) => {
         x: 6,
         y: 0,
         w: 6,
-        h: 6,
+        h: 5,
       },
       {
         i: 'propEditor',
         x: 6,
-        y: 7,
+        y: 6,
         w: 6,
-        h: 3,
+        h: 4,
       },
     ],
     sm: [

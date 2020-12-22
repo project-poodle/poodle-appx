@@ -41,6 +41,11 @@ var getPool = (mysql_conf_file) => {
     return db_pool
 }
 
+// utility method
+function get_random_between(min, max) {
+    return min + Math.random() * Math.abs(max - min)
+}
+
 var query = (sql, variables, callback) => {
 
     // console.log(`INFO: [${sql}]`)
@@ -48,7 +53,6 @@ var query = (sql, variables, callback) => {
 
         if (error) {
             console.log(`ERROR: [${sql}] -- ${error.toString()}`)
-
             // check if error is operation error
             // https://github.com/mysqljs/mysql#error-handling
             // err.fatal:
@@ -62,6 +66,8 @@ var query = (sql, variables, callback) => {
                         console.log(`ERROR: db_pool.end failed [${err.toString()}]`)
                     }
                 });
+                // sleep between 150 to 300 ms
+                deasync.sleep(get_random_between(150, 300))
                 // re-establish connection, and try again
                 try {
                     db_pool = null
