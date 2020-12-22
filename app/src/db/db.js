@@ -33,7 +33,7 @@ var getPool = (mysql_conf_file) => {
                         return value;
                     }
                 }
-                return next();
+                return next()
             }
         });
     }
@@ -48,8 +48,37 @@ function get_random_between(min, max) {
 
 var query = (sql, variables, callback, query_conn_retries=4) => {
 
+    if (query_conn_retries <= 0) {
+        // we have exhausted all the retry count
+        const msg = `ERROR: unrecoverable error, all connection retries has failed [${sql}]`
+        console.log(msg)
+        if (callback) {
+            callback(new Error(msg), null)
+        }
+        return
+    }
+
+    // reduce retry count
+    query_conn_retries = query_conn_retries - 1
     // console.log(`INFO: [${sql}]`)
-    getPool().query(sql, variables, (error, results, fields) => {
+    const pool = getPool()
+    // console.log(pool)
+    if (pool._closed) {
+        // set db_pool to null, so that we will reestablish connection
+        db_pool = null
+        // reduce retry count
+        // sleep between 500 to 1000 ms
+        const sleep_ms = Math.round(get_random_between(500, 1000))
+        console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+        // we cannot have dasync within dasync, use setTimeout here
+        setTimeout(() => {
+          // re-establish connection, and try again
+          query(sql, variables, callback, query_conn_retries)
+        }, sleep_ms)
+    }
+
+    // perform actual query
+    pool.query(sql, variables, (error, results, fields) => {
 
         if (error) {
             console.log(`ERROR: [${sql}] -- ${error.toString()} [${query_conn_retries}]`)
@@ -59,29 +88,24 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
             //      Boolean, indicating if this error is terminal to the connection object.
             //      If the error is not from a MySQL protocol operation, this property will not be defined.
             if (error.fatal) {
-                query_conn_retries = query_conn_retries - 1
-                if (query_conn_retries > 0) {
-                    // retry connection
-                    console.log(`INFO: retry for connection error [${sql}] -- ${error.toString()} [${query_conn_retries}]`)
-                    // if yes, release the pool, and retry
-                    db_pool.end(function (err) {
-                        if (err) {
-                            console.log(`ERROR: db_pool.end failed [${err.toString()}] [${query_conn_retries}]`)
-                        }
-                    })
-                    // sleep between 500 to 1000 ms
-                    const sleep_ms = get_random_between(500, 1000)
-                    console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
-                    deasync.sleep(sleep_ms)
-                    // re-establish connection, and try again
-                    query(sql, variables, callback, query_conn_retries)
-                } else {
-                    // we have exhausted all the retry count
-                    console.log(`ERROR: all connection retries has failed [${sql}] -- ${error.toString()}`)
-                    if (callback) {
-                        callback(error, null)
+                // retry connection
+                console.log(`INFO: retry connection error -- ${error.toString()} [${query_conn_retries}]`)
+                // if yes, release the pool, and retry
+                db_pool.end(function (err) {
+                    if (err) {
+                        console.log(`ERROR: db_pool.end failed [${err.toString()}] [${query_conn_retries}]`)
                     }
-                }
+                })
+                // set db_pool to null, so that we will reestablish connection
+                db_pool = null
+                // sleep between 500 to 1000 ms
+                const sleep_ms = Math.round(get_random_between(500, 1000))
+                console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+                // we cannot have dasync within dasync, use setTimeout here
+                setTimeout(() => {
+                  // re-establish connection, and try again
+                  query(sql, variables, callback, query_conn_retries)
+                }, sleep_ms)
             } else {
                 // for non connection error, callback error message immediately without retries
                 if (callback) {
