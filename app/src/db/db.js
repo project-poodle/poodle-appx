@@ -46,65 +46,51 @@ function get_random_between(min, max) {
     return min + Math.random() * Math.abs(max - min)
 }
 
-var query = (sql, variables, callback) => {
+var query = (sql, variables, callback, query_conn_retries=4) => {
 
     // console.log(`INFO: [${sql}]`)
     getPool().query(sql, variables, (error, results, fields) => {
 
         if (error) {
-            console.log(`ERROR: [${sql}] -- ${error.toString()}`)
+            console.log(`ERROR: [${sql}] -- ${error.toString()} [${query_conn_retries}]`)
             // check if error is operation error
             // https://github.com/mysqljs/mysql#error-handling
             // err.fatal:
             //      Boolean, indicating if this error is terminal to the connection object.
             //      If the error is not from a MySQL protocol operation, this property will not be defined.
             if (error.fatal) {
-                console.log(`INFO: retry connection error [${sql}] -- ${error.toString()}`)
-                // if yes, release the pool, and retry
-                db_pool.end(function (err) {
-                    if (err) {
-                        console.log(`ERROR: db_pool.end failed [${err.toString()}]`)
-                    }
-                });
-                // sleep between 300 to 600 ms
-                const sleep_ms = get_random_between(300, 600)
-                console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry...`)
-                deasync.sleep(sleep_ms)
-                // re-establish connection, and try again
-                try {
-                    db_pool = null
-                    getPool().query(sql, variables, (error, results, fields) => {
-                        if (error) {
-                            console.log(`ERROR: unrecoverable error [${sql}] -- ${error.toString()}`)
-                        }
-                        // if successfull
-                        console.log(`INFO: db_pool retry successful [${sql}]`)
-                        // callback
-                        if (callback) {
-                            if (fields) {
-                                callback(error, results, fields)
-                            } else {
-                                callback(error, results)
-                            }
+                query_conn_retries = query_conn_retries - 1
+                if (query_conn_retries > 0) {
+                    // retry connection
+                    console.log(`INFO: retry for connection error [${sql}] -- ${error.toString()} [${query_conn_retries}]`)
+                    // if yes, release the pool, and retry
+                    db_pool.end(function (err) {
+                        if (err) {
+                            console.log(`ERROR: db_pool.end failed [${err.toString()}] [${query_conn_retries}]`)
                         }
                     })
-                } catch (err) {
-                    console.log(`ERROR: failed to re-execute query [${err.toString()}]`)
+                    // sleep between 500 to 1000 ms
+                    const sleep_ms = get_random_between(500, 1000)
+                    console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+                    deasync.sleep(sleep_ms)
+                    // re-establish connection, and try again
+                    query(sql, variables, callback, query_conn_retries)
+                } else {
+                    // we have exhausted all the retry count
+                    console.log(`ERROR: all connection retries has failed [${sql}] -- ${error.toString()}`)
                     if (callback) {
-                        callback(err, null)
+                      callback(error, null)
                     }
-                } finally {
-                    // callback should have already been called, just return
-                    return
                 }
             }
-        }
-        // callback
-        if (callback) {
-            if (fields) {
-                callback(error, results, fields)
-            } else {
-                callback(error, results)
+        } else {
+            // callback
+            if (callback) {
+                if (fields) {
+                    callback(error, results, fields)
+                } else {
+                    callback(error, results)
+                }
             }
         }
     })
