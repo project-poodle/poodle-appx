@@ -193,6 +193,11 @@ const PropEditor = (props) => {
                 (
                   ref !== null
                   && parentNode?.data?.type !== 'js/switch'
+                  && parentNode?.data?.type !== 'js/map'
+                  && parentNode?.data?.type !== 'js/reduce'
+                  && parentNode?.data?.type !== 'js/filter'
+                  && parentNode?.data?.type !== 'react/element'
+                  && parentNode?.data?.type !== 'react/html'
                 )
                 &&
                 (

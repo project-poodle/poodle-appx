@@ -82,14 +82,14 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 6,
-        h: 9,
+        h: 10,
       },
       {
         i: 'navTree',
         x: 6,
         y: 0,
         w: 6,
-        h: 5,
+        h: 6,
       },
       {
         i: 'propEditor',
@@ -133,7 +133,7 @@ const UI_Builder = (props) => {
         className={styles.root}
         layouts={layouts}
         margin={[0, 0]}
-        rowHeight={100}
+        rowHeight={96}
         breakpoints={{md: 960, sm: 768}}
         cols={{lg: 12, md: 12, sm: 6, xs: 6}}
       >
