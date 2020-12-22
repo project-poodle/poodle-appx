@@ -79,13 +79,13 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
                     // we have exhausted all the retry count
                     console.log(`ERROR: all connection retries has failed [${sql}] -- ${error.toString()}`)
                     if (callback) {
-                      callback(error, null)
+                        callback(error, null)
                     }
                 }
             } else {
                 // for non connection error, callback error message immediately without retries
                 if (callback) {
-                  callback(error, null)
+                    callback(error, null)
                 }
             }
         } else {
