@@ -82,6 +82,11 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
                       callback(error, null)
                     }
                 }
+            } else {
+                // for non connection error, callback error message immediately without retries
+                if (callback) {
+                  callback(error, null)
+                }
             }
         } else {
             // callback
