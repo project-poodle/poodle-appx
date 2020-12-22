@@ -158,7 +158,7 @@ const PropEditor = (props) => {
       lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
       lookupNode.icon = lookup_icon_for_input(data)
       // console.log(lookupNode)
-      // setTreeData(resultTree)
+      setTreeData(resultTree)
     }
   }
 
