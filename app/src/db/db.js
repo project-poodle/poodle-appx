@@ -78,15 +78,19 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
     if (pool._closed) {
         // set db_pool to null, so that we will reestablish connection
         db_pool = null
-        // reduce retry count
-        // sleep before retry
-        const sleep_ms = get_sleep_ms(query_conn_retries)
-        console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
-        // we cannot have dasync within dasync, use setTimeout here
-        setTimeout(() => {
-          // re-establish connection, and try again
-          query(sql, variables, callback, query_conn_retries)
-        }, sleep_ms)
+        if (query_conn_retries == 0) {
+            // no more retries, following method will stop with callback
+            query(sql, variables, callback, query_conn_retries)
+        } else {
+            // sleep before retry
+            const sleep_ms = get_sleep_ms(query_conn_retries)
+            console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+            // we cannot have dasync within dasync, use setTimeout here
+            setTimeout(() => {
+              // re-establish connection, and try again
+              query(sql, variables, callback, query_conn_retries)
+            }, sleep_ms)
+        }
     }
 
     // perform actual query
@@ -110,14 +114,19 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
                 })
                 // set db_pool to null, so that we will reestablish connection
                 db_pool = null
-                // sleep before retry
-                const sleep_ms = get_sleep_ms(query_conn_retries)
-                console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
-                // we cannot have dasync within dasync, use setTimeout here
-                setTimeout(() => {
-                  // re-establish connection, and try again
-                  query(sql, variables, callback, query_conn_retries)
-                }, sleep_ms)
+                if (query_conn_retries == 0) {
+                    // no more retries, following method will stop with callback
+                    query(sql, variables, callback, query_conn_retries)
+                } else {
+                    // sleep before retry
+                    const sleep_ms = get_sleep_ms(query_conn_retries)
+                    console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+                    // we cannot have dasync within dasync, use setTimeout here
+                    setTimeout(() => {
+                      // re-establish connection, and try again
+                      query(sql, variables, callback, query_conn_retries)
+                    }, sleep_ms)
+                }
             } else {
                 // for non connection error, callback error message immediately without retries
                 if (callback) {
