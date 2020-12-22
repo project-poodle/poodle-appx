@@ -66,8 +66,10 @@ var query = (sql, variables, callback) => {
                         console.log(`ERROR: db_pool.end failed [${err.toString()}]`)
                     }
                 });
-                // sleep between 150 to 300 ms
-                deasync.sleep(get_random_between(150, 300))
+                // sleep between 300 to 600 ms
+                const sleep_ms = get_random_between(300, 600)
+                console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry...`)
+                deasync.sleep(sleep_ms)
                 // re-establish connection, and try again
                 try {
                     db_pool = null
@@ -75,6 +77,8 @@ var query = (sql, variables, callback) => {
                         if (error) {
                             console.log(`ERROR: unrecoverable error [${sql}] -- ${error.toString()}`)
                         }
+                        // if successfull
+                        console.log(`INFO: db_pool retry successful [${sql}]`)
                         // callback
                         if (callback) {
                             if (fields) {
