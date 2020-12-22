@@ -7,6 +7,7 @@ const DEFAULT_POOL_SIZE = 15;
 var db_pool = null;
 var conf_file = null;
 
+// get cached pool if exist, otherwise, create the pool
 var getPool = (mysql_conf_file) => {
 
     if (db_pool == null) {
@@ -46,7 +47,18 @@ function get_random_between(min, max) {
     return min + Math.random() * Math.abs(max - min)
 }
 
-var query = (sql, variables, callback, query_conn_retries=4) => {
+function get_sleep_ms(query_conn_retries) {
+    const rand = Math.round(get_random_between(500, 1000))
+    if (query_conn_retries > 5) {
+        return rand
+    } else {
+        // connection retries
+        return rand + (5 - query_conn_retries) * 1000
+    }
+}
+
+// async query method
+var query = (sql, variables, callback, query_conn_retries=6) => {
 
     if (query_conn_retries <= 0) {
         // we have exhausted all the retry count
@@ -68,7 +80,7 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
         db_pool = null
         // reduce retry count
         // sleep between 500 to 1000 ms
-        const sleep_ms = Math.round(get_random_between(500, 1000))
+        const sleep_ms = get_sleep_ms(query_conn_retries)
         console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
         // we cannot have dasync within dasync, use setTimeout here
         setTimeout(() => {
@@ -99,7 +111,7 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
                 // set db_pool to null, so that we will reestablish connection
                 db_pool = null
                 // sleep between 500 to 1000 ms
-                const sleep_ms = Math.round(get_random_between(500, 1000))
+                const sleep_ms = get_sleep_ms(query_conn_retries)
                 console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
                 // we cannot have dasync within dasync, use setTimeout here
                 setTimeout(() => {
@@ -126,10 +138,10 @@ var query = (sql, variables, callback, query_conn_retries=4) => {
 }
 
 module.exports = {
-
+    // getPool
     getPool: getPool,
-
+    // async query method
     query: query,
-
+    // ync query method
     query_sync: deasync(query)
 }
