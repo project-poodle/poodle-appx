@@ -79,7 +79,7 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
         // set db_pool to null, so that we will reestablish connection
         db_pool = null
         // reduce retry count
-        // sleep between 500 to 1000 ms
+        // sleep before retry
         const sleep_ms = get_sleep_ms(query_conn_retries)
         console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
         // we cannot have dasync within dasync, use setTimeout here
@@ -110,7 +110,7 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
                 })
                 // set db_pool to null, so that we will reestablish connection
                 db_pool = null
-                // sleep between 500 to 1000 ms
+                // sleep before retry
                 const sleep_ms = get_sleep_ms(query_conn_retries)
                 console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
                 // we cannot have dasync within dasync, use setTimeout here
