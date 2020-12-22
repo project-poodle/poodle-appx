@@ -405,34 +405,28 @@ const SyntaxTree = (props) => {
     //console.trace()
     //console.log(info.node.key)
     info.event.dataTransfer.setData("application", info.node.key)
-    info.event.dataTransfer.effectAllowed = 'move'
-    info.event.dataTransfer.dropEffect = 'move'
-    console.log(info.event.dataTransfer.effectAllowed)
-    console.log(info.event.dataTransfer.dropEffect)
+    // info.event.dataTransfer.effectAllowed = 'move'
     // console.log(info.event)
     if (info.node.key === '/') {
       let target = info.event.target
       while (target.parentNode && !target.draggable) {
         target = target.parentNode
       }
-      console.log('changeCursor')
       //console.log(target)
-      target.style.cursor = '-webkit-grab -moz-grab grab move'
-      //console.log(target)
-      setSyntaxTreeCursor('not-allowed')
+      // setSyntaxTreeCursor('not-allowed')
     }
   }
 
   const onDragEnd = info => {
-    console.log('changeBack')
+    // console.log('changeBack')
     setSyntaxTreeCursor('default')
   }
 
   // drag enter
   const onDragEnter = info => {
     // expandedKeys
-    info.event.dataTransfer.dropEffect = 'move'
-    console.log(info.event.dataTransfer.getData("application"))
+    // info.event.dataTransfer.dropEffect = 'move'
+    // console.log(info.event.dataTransfer.getData("application"))
     if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
       // console.log([...info.expandedKeys, info.node.key])
       setExpandedKeys(
@@ -446,8 +440,8 @@ const SyntaxTree = (props) => {
     // console.log(info)
     info.event.preventDefault()
     // console.log(info.event.dataTransfer.getData("application"))
-    info.event.dataTransfer.dropEffect = 'move'
-    console.log(info.event.dataTransfer.dropEffect)
+    // info.event.dataTransfer.dropEffect = 'move'
+    // console.log(info.event.dataTransfer.dropEffect)
   }
 
   // drop
@@ -565,36 +559,6 @@ const SyntaxTree = (props) => {
         treeData.map(treeNode => {
           // get result
           function ConvertTreeNode(data) {
-            /*
-            // update syntaxTreeCursor
-            useEffect(() => {
-              // console.log('updateCursor', syntaxTreeCursor)
-              // console.log(designTreeRef)
-              // html node
-              const valid_child_types = lookup_valid_child_types(data.data.type)
-              // const node = ReactDOM.findDOMNode(designTreeRef.current)
-              const node = document.getElementById(data.key)
-              const draggableList = node.querySelectorAll('[draggable]')
-              // console.log(typeof draggableList, Array.isArray(draggableList), draggableList)
-              if (selectedTool
-                  &&
-                  (
-                    valid_child_types?.ref?.types.includes(selectedTool)
-                    || valid_child_types?._?.types.includes(selectedTool)
-                  )
-                ) {
-                draggableList.forEach(draggable => {
-                  // console.log(draggable)
-                  draggable.style.cursor = syntaxTreeCursor
-                })
-              } else {
-                draggableList.forEach(draggable => {
-                  // console.log(draggable)
-                  draggable.style.cursor = 'pointer'
-                })
-              }
-            }, [syntaxTreeCursor])
-            */
             return <TreeNode
               id={data.key}
               key={data.key}

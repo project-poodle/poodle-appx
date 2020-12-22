@@ -155,7 +155,10 @@ function gen_js_array(tree_context, treeNode) {
         }
       })
       // return
-      return result
+      return {
+        ref: null,
+        data: result,
+      }
 
     } else {
       // return result as array
@@ -170,7 +173,7 @@ function gen_js_array(tree_context, treeNode) {
         data.push(childResult.data)
       })
       // return
-      return {
+      return  {
         ref: null,
         data: data,
       }

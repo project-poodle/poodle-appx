@@ -127,7 +127,7 @@ const PropEditor = (props) => {
 
   // prop editor data
   const tree_context = { topLevel: true }
-  const { ref, data } = gen_js(tree_context, treeNode)
+  const { ref, data } = gen_js(tree_context, treeNode?.data?.type === '/' ? treeData : treeNode)
 
   // yaml data
   const yamlDoc = new YAML.Document()
