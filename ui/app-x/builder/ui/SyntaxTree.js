@@ -352,6 +352,9 @@ const SyntaxTree = (props) => {
         })
       )
     }
+    if (selectedKey === lookupNode?.key) {
+      setSelectedKey(null)
+    }
   }
 
   // expand/collapse

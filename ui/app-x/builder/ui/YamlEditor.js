@@ -198,19 +198,19 @@ const YamlEditor = props => {
       // console.log(yamlContent)
       const loaded = yaml.load(yamlContent)
       // console.log(loaded)
-      const js_context = { topLevel: treeNode?.data?.type === '/' }
-      const parsed = parse_js(js_context, null, null, loaded)
+      // replace current tree node
+      const resultTree = _.cloneDeep(treeData)
+      const lookupNode = tree_lookup(resultTree, selectedKey)
+      if (lookupNode) {
+        const js_context = { topLevel: false }
+        const parsed = parse_js(js_context, lookupNode.parentKey, null, loaded)
 
-      if (treeNode?.data?.type === '/') {
+        if (treeNode?.data?.type === '/') {
 
-        // replace the entire tree
-        setTreeData(parsed)
+          // replace the entire tree
+          setTreeData(parsed)
 
-      } else {
-        // replace current tree node
-        const resultTree = _.cloneDeep(treeData)
-        const lookupNode = tree_lookup(resultTree, selectedKey)
-        if (lookupNode) {
+        } else {
           // preserve data.__ref
           parsed.data.__ref = lookupNode.data.__ref
           // check if parent is js/switch
@@ -221,6 +221,7 @@ const YamlEditor = props => {
               parsed.data.condition = lookupNode.data.condition
             }
           }
+          lookupNode.key = parsed.key   // update node key
           lookupNode.data = parsed.data
           lookupNode.children = parsed.children
           lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, parsed.data)
@@ -228,11 +229,12 @@ const YamlEditor = props => {
           // lookupNode.parentKey = lookupNode.parentKey // no need to change parentKey
           // console.log(lookupNode)
           setTreeData(resultTree)
+          setSelectedKey(lookupNode.key)  // update selected key
+          // if we are successful, reset changed flag
+          setYamlChanged(false)
+          setYamlError(false)
+          setYamlMsg('')
         }
-        // if we are successful, reset changed flag
-        setYamlChanged(false)
-        setYamlError(false)
-        setYamlMsg('')
       }
     } catch (err) {
       // console.log(err)
