@@ -67,6 +67,7 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
         if (callback) {
             callback(new Error(msg), null)
         }
+        // stop further processing
         return
     }
 
@@ -75,7 +76,7 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
     // console.log(`INFO: [${sql}]`)
     const pool = getPool()
     // console.log(pool)
-    if (pool._closed) {
+    if (!pool || pool._closed) {
         // set db_pool to null, so that we will reestablish connection
         db_pool = null
         if (query_conn_retries == 0) {
@@ -91,6 +92,8 @@ var query = (sql, variables, callback, query_conn_retries=6) => {
               query(sql, variables, callback, query_conn_retries)
             }, sleep_ms)
         }
+        // stop further processing
+        return
     }
 
     // perform actual query
