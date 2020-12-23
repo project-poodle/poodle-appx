@@ -182,7 +182,7 @@ const PropEditor = (props) => {
               <Box className={styles.editor}>
               {
                 (
-                  treeNode?.data?.ref !== null
+                  treeNode?.data?.__ref !== null
                   && parentNode?.data?.type !== 'js/switch'
                   && parentNode?.data?.type !== 'js/map'
                   && parentNode?.data?.type !== 'js/reduce'
@@ -195,7 +195,7 @@ const PropEditor = (props) => {
                   <Controller
                     name="__ref"
                     control={control}
-                    defaultValue={ref}
+                    defaultValue={treeNode?.data?.__ref}
                     rules={{
                       required: 'Reference name is required',
                       validate: {
