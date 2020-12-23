@@ -235,7 +235,7 @@ const YamlEditor = props => {
         setYamlMsg('')
       }
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       setYamlError(true)
       if (!!err.message) {
         setYamlMsg(String(err.message))
