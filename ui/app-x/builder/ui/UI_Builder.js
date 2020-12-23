@@ -82,21 +82,21 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 6,
-        h: 10,
+        h: 12,
       },
       {
         i: 'navTree',
         x: 6,
         y: 0,
         w: 6,
-        h: 6,
+        h: 7,
       },
       {
         i: 'propEditor',
-        x: 6,
+        x: 7,
         y: 6,
         w: 6,
-        h: 4,
+        h: 5,
       },
     ],
     sm: [
@@ -105,21 +105,21 @@ const UI_Builder = (props) => {
         x: 0,
         y: 0,
         w: 6,
-        h: 5,
+        h: 6,
       },
       {
         i: 'navTree',
         x: 0,
-        y: 4,
+        y: 6,
         w: 6,
-        h: 2,
+        h: 3,
       },
       {
         i: 'propEditor',
         x: 0,
-        y: 8,
+        y: 9,
         w: 6,
-        h: 2,
+        h: 3,
       },
     ],
   }
@@ -133,7 +133,7 @@ const UI_Builder = (props) => {
         className={styles.root}
         layouts={layouts}
         margin={[0, 0]}
-        rowHeight={96}
+        rowHeight={80}
         breakpoints={{md: 960, sm: 768}}
         cols={{lg: 12, md: 12, sm: 6, xs: 6}}
       >

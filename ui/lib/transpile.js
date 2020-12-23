@@ -37,6 +37,8 @@ const default_import_maps = {
         "@monaco-editor/react",
         "clsx",
         "yaml",
+        "yaml/parse-cst",
+        "js-yaml",
         "buffer",
         "lodash",
         "axios",

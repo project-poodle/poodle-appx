@@ -29,10 +29,9 @@ import {
 const { TabPane } = Tabs;
 import { useForm, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
-// monaco editor
-import { default as Editor } from '@monaco-editor/react'
 // context provider
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import YamlEditor from 'app-x/builder/ui/YamlEditor'
 // utilities
 import {
   lookup_icon_for_type,
@@ -117,24 +116,16 @@ const PropEditor = (props) => {
     }
   }, [selectedKey])
 
-  // expansion timeout
-  const [ submitTimer, setSubmitTimer ] = useState(new Date())
+  // base submit timer
+  const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())
   useEffect(() => {
     setTimeout(() => {
-      handleSubmit(onSubmit)()
-    }, 500)
-  }, [submitTimer])
+      handleSubmit(onBaseSubmit)()
+    }, 300)
+  }, [baseSubmitTimer])
 
-  // prop editor data
-  const tree_context = { topLevel: true }
-  const { ref, data } = gen_js(tree_context, treeNode?.data?.type === '/' ? treeData : treeNode)
-
-  // yaml data
-  const yamlDoc = new YAML.Document()
-  yamlDoc.contents = data
-  // console.log(yamlDoc.toString())
-
-  function onSubmit(data) {
+  // submit base tab
+  function onBaseSubmit(data) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
     if (lookupNode) {
@@ -191,7 +182,7 @@ const PropEditor = (props) => {
               <Box className={styles.editor}>
               {
                 (
-                  ref !== null
+                  treeNode?.data?.ref !== null
                   && parentNode?.data?.type !== 'js/switch'
                   && parentNode?.data?.type !== 'js/map'
                   && parentNode?.data?.type !== 'js/reduce'
@@ -224,7 +215,7 @@ const PropEditor = (props) => {
                             value={props.value}
                             onChange={ e => {
                               props.onChange(e.target.value)
-                              setSubmitTimer(new Date())
+                              setBaseSubmitTimer(new Date())
                             }}
                             error={!!errors.__ref}
                             helperText={errors.__ref?.message}
@@ -263,7 +254,7 @@ const PropEditor = (props) => {
                                 onChange={e => {
                                   props.onChange(e.target.checked)
                                   setSwitchDefault(e.target.checked)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                               />
                             }
@@ -310,7 +301,7 @@ const PropEditor = (props) => {
                           value={props.value}
                           onChange={e => {
                             props.onChange(e.target.value)
-                            setSubmitTimer(new Date())
+                            setBaseSubmitTimer(new Date())
                           }}
                           error={!!errors.condition}
                           helperText={errors.condition?.message}
@@ -352,7 +343,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/string">
@@ -421,7 +412,7 @@ const PropEditor = (props) => {
                                   value={props.value}
                                   onChange={ e => {
                                     props.onChange(e.target.value)
-                                    setSubmitTimer(new Date())
+                                    setBaseSubmitTimer(new Date())
                                   }}
                                   error={!!errors.data}
                                   helperText={errors.data?.message}
@@ -457,7 +448,7 @@ const PropEditor = (props) => {
                                   value={props.value}
                                   onChange={ e => {
                                     props.onChange(e.target.value)
-                                    setSubmitTimer(new Date())
+                                    setBaseSubmitTimer(new Date())
                                   }}
                                   error={!!errors.data}
                                   helperText={errors.data?.message}
@@ -488,7 +479,7 @@ const PropEditor = (props) => {
                                       checked={props.value}
                                       onChange={ e => {
                                         props.onChange(e.target.checked)
-                                        setSubmitTimer(new Date())
+                                        setBaseSubmitTimer(new Date())
                                       }}
                                     />
                                   }
@@ -531,7 +522,7 @@ const PropEditor = (props) => {
                                     value={props.value}
                                     onChange={ e => {
                                       props.onChange(e.target.value)
-                                      setSubmitTimer(new Date())
+                                      setBaseSubmitTimer(new Date())
                                     }}
                                     error={!!errors.data}
                                     helperText={errors.data?.message}
@@ -567,7 +558,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/array">
@@ -608,7 +599,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/object">
@@ -649,7 +640,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/import">
@@ -682,7 +673,7 @@ const PropEditor = (props) => {
                             value={props.value}
                             onChange={(e, v) => {
                               props.onChange(v)
-                              setSubmitTimer(new Date())
+                              setBaseSubmitTimer(new Date())
                             }}
                             renderInput={
                               params =>
@@ -693,7 +684,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
@@ -729,7 +720,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/block">
@@ -772,7 +763,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.data}
                                 helperText={errors.data?.message}
@@ -806,7 +797,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/function">
@@ -838,7 +829,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.params}
                                 helperText={errors.params?.message}
@@ -874,7 +865,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.body}
                                 helperText={errors.body?.message}
@@ -908,7 +899,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/switch">
@@ -949,7 +940,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/map">
@@ -990,7 +981,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/reduce">
@@ -1033,7 +1024,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.reducer}
                                 helperText={errors.reducer?.message}
@@ -1067,7 +1058,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="js/filter">
@@ -1110,7 +1101,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.filter}
                                 helperText={errors.filter?.message}
@@ -1150,7 +1141,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="react/element">
@@ -1194,7 +1185,7 @@ const PropEditor = (props) => {
                               value={props.value}
                               onChange={(e, v) => {
                                 props.onChange(v)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               renderInput={
                                 params =>
@@ -1205,7 +1196,7 @@ const PropEditor = (props) => {
                                   value={props.value}
                                   onChange={e => {
                                     props.onChange(e.target.value)
-                                    setSubmitTimer(new Date())
+                                    setBaseSubmitTimer(new Date())
                                   }}
                                   error={!!errors.name}
                                   helperText={errors.name?.message}
@@ -1237,7 +1228,7 @@ const PropEditor = (props) => {
                               value={props.value}
                               onChange={(e, v) => {
                                 props.onChange(v)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               renderInput={
                                 params =>
@@ -1248,7 +1239,7 @@ const PropEditor = (props) => {
                                   value={props.value}
                                   onChange={e => {
                                     props.onChange(e.target.value)
-                                    setSubmitTimer(new Date())
+                                    setBaseSubmitTimer(new Date())
                                   }}
                                   error={!!errors.name}
                                   helperText={errors.name?.message}
@@ -1285,7 +1276,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="react/state">
@@ -1317,7 +1308,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
@@ -1342,7 +1333,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.setter}
                                 helperText={errors.setter?.message}
@@ -1367,7 +1358,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.init}
                                 helperText={errors.init?.message}
@@ -1401,7 +1392,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="react/effect">
@@ -1444,7 +1435,7 @@ const PropEditor = (props) => {
                                 value={props.value}
                                 onChange={ e => {
                                   props.onChange(e.target.value)
-                                  setSubmitTimer(new Date())
+                                  setBaseSubmitTimer(new Date())
                                 }}
                                 error={!!errors.data}
                                 helperText={errors.data?.message}
@@ -1478,7 +1469,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="mui/style">
@@ -1519,7 +1510,7 @@ const PropEditor = (props) => {
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
-                                setSubmitTimer(new Date())
+                                setBaseSubmitTimer(new Date())
                               }}
                               >
                               <MenuItem value="appx/route">
@@ -1541,27 +1532,7 @@ const PropEditor = (props) => {
               </Box>
             </TabPane>
             <TabPane tab="YAML" key="advanced" className={styles.editor}>
-              <Box
-                className={styles.editor}
-                onScroll={e => e.stopPropagation()}
-                >
-                <Editor
-                  className={styles.editor}
-                  language="yaml"
-                  options={{
-                    readOnly: true,
-                    wordWrap: 'on',
-                    wrappingIndent: 'deepIndent',
-                    scrollBeyondLastLine: false,
-                    wrappingStrategy: 'advanced',
-                    minimap: {
-                      enabled: false
-                    }
-                  }}
-                  value={yamlDoc.toString()}
-                  >
-                </Editor>
-              </Box>
+              <YamlEditor />
             </TabPane>
           </Tabs>
         )

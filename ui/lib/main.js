@@ -35,6 +35,8 @@ import * as monacoEditor from '@monaco-editor/react'
 // utilities
 import * as clsx from 'clsx'
 import * as yaml from 'yaml'
+import * as parseCST from 'yaml/parse-cst'
+import * as jsYaml from 'js-yaml'
 import * as buffer from 'buffer'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
@@ -78,6 +80,8 @@ export default {
   //"antd": antd,
   "clsx": clsx,
   "yaml": yaml,
+  "yaml/parse-cst": parseCST,
+  "js-yaml": jsYaml,
   "buffer": buffer,
   "lodash": lodash,
   "axios": axios,
