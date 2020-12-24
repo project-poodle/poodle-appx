@@ -23,7 +23,7 @@ const EditorProvider = (() => {
     // update action
     const updateAction = (action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey) => {
 
-      console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
+      // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
 
       setUpdateKey(nodeKey)
       if (nodeKey !== updateKey) {
@@ -55,7 +55,7 @@ const EditorProvider = (() => {
     // make action
     const makeAction = (action, newTreeData, newExpandedKeys, newSelectedKey) => {
 
-      console.log('makeAction', action, newTreeData, newExpandedKeys, newSelectedKey)
+      // console.log('makeAction', action, newTreeData, newExpandedKeys, newSelectedKey)
 
       // if current is not set, set current and return
       if (!history.current) {
@@ -114,7 +114,7 @@ const EditorProvider = (() => {
 
     // undo
     const undo = () => {
-      console.log('undo')
+      // console.log('undo')
       if (history.undo.length) {
         // get record for redo
         const newHistory = _.clone(history)
@@ -142,7 +142,7 @@ const EditorProvider = (() => {
 
     // redo
     const redo = () => {
-      console.log('redo')
+      // console.log('redo')
       if (history.redo.length) {
         // get record for redo
         const newHistory = _.clone(history)
