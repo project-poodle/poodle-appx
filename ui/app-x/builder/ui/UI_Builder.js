@@ -26,8 +26,9 @@ import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-lay
 import ReactIcon from 'app-x/icon/React'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import SyntaxTree from 'app-x/builder/ui/SyntaxTree'
-import WidgetViewer from 'app-x/builder/ui/WidgetViewer'
 import PropEditor from 'app-x/builder/ui/PropEditor'
+import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
+import PreviewTabs from 'app-x/builder/ui/PreviewTabs'
 
 
 const UI_Builder = (props) => {
@@ -144,13 +145,15 @@ const UI_Builder = (props) => {
             onMouseUp={e => e.stopPropagation()}
             onDrag={e => e.stopPropagation()}
             >
-            <WidgetViewer
-              namespace={props.namespace}
-              ui_name={props.ui_name}
-              ui_deployment={props.ui_deployment}
-              ui_element_name={props.ui_element_name}
-              >
-            </WidgetViewer>
+            <PreviewProvider>
+              <PreviewTabs
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+                >
+              </PreviewTabs>
+            </PreviewProvider>
           </Box>
         </Box>
         <Box key="navTree" className={styles.box}>

@@ -12,11 +12,12 @@ import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
 import {
   gen_js,
 } from 'app-x/builder/ui/util_tree'
 
-const YamlViewer = (props) => {
+const PreviewJson = (props) => {
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -26,7 +27,7 @@ const YamlViewer = (props) => {
     },
   }))()
 
-  // context
+  // editor context
   const {
     treeData,
     expandedKeys,
@@ -36,15 +37,23 @@ const YamlViewer = (props) => {
     setLiveUpdate,
   } = useContext(EditorProvider.Context)
 
-  const [ yaml, setYaml ] = useState('')
+  // preview context
+  const {
+    previewLoading,
+    setPreviewLoading,
+  } = useContext(PreviewProvider.Context)
+
+  // json content
+  const [ json, setJson ] = useState('')
 
   // load content from api
   useEffect(() => {
 
     // load from backend if not liveUpdate
     if (!liveUpdate) {
+      setPreviewLoading(true)
+      // loading url
       const ui_root = globalThis.appx.UI_ROOT
-
       const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
 
       api.get(
@@ -53,6 +62,7 @@ const YamlViewer = (props) => {
         url,
         data => {
           // console.log(data)
+          setPreviewLoading(false)
           if (Array.isArray(data)) {
             data = data[0]
           }
@@ -61,12 +71,10 @@ const YamlViewer = (props) => {
             setYaml('')
           }
 
-          const doc = new YAML.Document()
-          doc.contents = data.ui_element_spec
-          // console.log(doc.toString())
-          setYaml(doc.toString())
+          setJson(JSON.stringify(data.ui_element_spec, null, 2))
         },
         error => {
+          setPreviewLoading(false)
           console.error(error)
         })
     }
@@ -80,11 +88,8 @@ const YamlViewer = (props) => {
     if (liveUpdate) {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
-      // yaml data
-      const yamlDoc = new YAML.Document()
-      yamlDoc.contents = data
       // set editor value
-      setYaml(yamlDoc.toString())
+      setJson(JSON.stringify(data, null, 2))
     }
 
   }, [liveUpdate, treeData])
@@ -96,7 +101,7 @@ const YamlViewer = (props) => {
       onScroll={e => e.stopPropagation()}
       >
       <Editor
-        language="yaml"
+        language="json"
         options={{
           readOnly: true,
           wordWrap: 'on',
@@ -115,18 +120,18 @@ const YamlViewer = (props) => {
         // theme="github"
         // mode='javascript'
         // readOnly={true}
-        value={yaml}
+        value={json}
         >
       </Editor>
     </Box>
   )
 }
 
-YamlViewer.propTypes = {
+PreviewJson.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default YamlViewer
+export default PreviewJson

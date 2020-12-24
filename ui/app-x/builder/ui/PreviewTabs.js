@@ -33,13 +33,12 @@ import {
 import ReactIcon from 'app-x/icon/React'
 import Live from 'app-x/icon/Live'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
-import SyntaxTree from 'app-x/builder/ui/SyntaxTree'
-import SourceViewer from 'app-x/builder/ui/SourceViewer'
-import YamlViewer from 'app-x/builder/ui/YamlViewer'
-import JsonViewer from 'app-x/builder/ui/JsonViewer'
-import PropEditor from 'app-x/builder/ui/PropEditor'
+import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
+import PreviewSource from 'app-x/builder/ui/PreviewSource'
+import PreviewYaml from 'app-x/builder/ui/PreviewYaml'
+import PreviewJson from 'app-x/builder/ui/PreviewJson'
 
-const WidgetViewer = (props) => {
+const PreviewTabs = (props) => {
 
   const styles = makeStyles((theme) => ({
     root: {
@@ -73,7 +72,7 @@ const WidgetViewer = (props) => {
     },
   }))()
 
-  // context
+  // editor context
   const {
     treeData,
     expandedKeys,
@@ -83,6 +82,13 @@ const WidgetViewer = (props) => {
     setLiveUpdate,
   } = useContext(EditorProvider.Context)
 
+  // preview context
+  const {
+    previewLoading,
+    setPreviewLoading,
+  } = useContext(PreviewProvider.Context)
+
+  // iframe url
   const iframeUrl =
     globalThis.appx.UI_ROOT
     + '/' + props.namespace
@@ -113,7 +119,7 @@ const WidgetViewer = (props) => {
                   icon={<Live />}
                   shape="circle"
                   onClick={e => { setLiveUpdate(!liveUpdate) }}
-                  loading={false}
+                  loading={previewLoading}
                   >
                 </AntButton>
               </Tooltip>
@@ -127,7 +133,7 @@ const WidgetViewer = (props) => {
           </Box>
         </TabPane>
         <TabPane tab="Code" key="code" className={styles.root}>
-          <SourceViewer
+          <PreviewSource
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
@@ -135,7 +141,7 @@ const WidgetViewer = (props) => {
           />
         </TabPane>
         <TabPane tab="YAML" key="yaml" className={styles.root}>
-          <YamlViewer
+          <PreviewYaml
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
@@ -143,7 +149,7 @@ const WidgetViewer = (props) => {
           />
         </TabPane>
         <TabPane tab="JSON" key="json" className={styles.root}>
-          <JsonViewer
+          <PreviewJson
             namespace={props.namespace}
             ui_name={props.ui_name}
             ui_deployment={props.ui_deployment}
@@ -154,11 +160,11 @@ const WidgetViewer = (props) => {
   )
 }
 
-WidgetViewer.propTypes = {
+PreviewTabs.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default WidgetViewer
+export default PreviewTabs

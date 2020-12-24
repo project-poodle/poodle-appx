@@ -202,10 +202,8 @@ const EditorProvider = (() => {
 
   // update Context variable
   f.Context = EditorContext
-  // console.log(f)
-  // console.log(Object.entries(f))
 
   return f
 }) ()
 
-export default EditorProvider;
+export default EditorProvider

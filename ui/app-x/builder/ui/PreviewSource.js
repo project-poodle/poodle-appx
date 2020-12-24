@@ -15,7 +15,7 @@ import {
 //import "ace-builds-src-noconflict/ext-language_tools"
 import { default as Editor } from '@monaco-editor/react'
 
-const SourceViewer = (props) => {
+const PreviewSource = (props) => {
 
   const [ code, setCode ] = useState('')
 
@@ -78,11 +78,11 @@ const SourceViewer = (props) => {
   )
 }
 
-SourceViewer.propTypes = {
+PreviewSource.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default SourceViewer
+export default PreviewSource
