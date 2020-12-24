@@ -8,8 +8,6 @@ import {
   Button,
   IconButton,
   Fab,
-  Menu,
-  MenuItem,
   List,
   ListItem,
   ListItemIcon,
@@ -21,7 +19,6 @@ import {
 import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
-import { default as NestedMenuItem } from 'material-ui-nested-menu-item'
 import {
   Layout,
   Tree,
@@ -79,22 +76,6 @@ function capitalize(s) {
 
 const SyntaxTree = (props) => {
 
-  // context
-  const {
-    treeData,
-    expandedKeys,
-    setExpandedKeys,
-    selectedKey,
-    setSelectedKey,
-    treeDirty,
-    setTreeDirty,
-    history,
-    makeAction,
-    updateAction,
-    undo,
-    redo,
-  } = useContext(EditorProvider.Context)
-
   // styles
   const styles = makeStyles((theme) => ({
     root: {
@@ -122,12 +103,6 @@ const SyntaxTree = (props) => {
     tree: {
       width: '100%',
     },
-    menuItem: {
-      minWidth: 200,
-    },
-    nestedMenuItem: {
-      padding: 0,
-    },
     dialog: {
       minWidth: 460,
       [theme.breakpoints.up('md')]: {
@@ -151,6 +126,22 @@ const SyntaxTree = (props) => {
       borderColor: theme.palette.divider,
     },
   }))()
+
+  // context
+  const {
+    treeData,
+    expandedKeys,
+    setExpandedKeys,
+    selectedKey,
+    setSelectedKey,
+    treeDirty,
+    setTreeDirty,
+    history,
+    makeAction,
+    updateAction,
+    undo,
+    redo,
+  } = useContext(EditorProvider.Context)
 
   const designTreeRef = React.createRef()
 

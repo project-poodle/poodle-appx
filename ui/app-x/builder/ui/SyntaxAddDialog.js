@@ -66,20 +66,6 @@ import {
 // add dialog
 const SyntaxAddDialog = (props) => {
 
-  // states and effects
-  const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
-  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
-
-  // nodeType
-  useEffect(() => {
-    setNodeType(props.addNodeType)
-  }, [props.addNodeType])
-
-  // isSwitchDefault
-  useEffect(() => {
-    setSwitchDefault(props.isSwitchDefault)
-  }, [props.isSwitchDefault])
-
   // styles
   const styles = makeStyles((theme) => ({
     dialog: {
@@ -97,6 +83,20 @@ const SyntaxAddDialog = (props) => {
       padding: theme.spacing(2, 0),
     },
   }))()
+
+  // states and effects
+  const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
+  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
+
+  // nodeType
+  useEffect(() => {
+    setNodeType(props.addNodeType)
+  }, [props.addNodeType])
+
+  // isSwitchDefault
+  useEffect(() => {
+    setSwitchDefault(props.isSwitchDefault)
+  }, [props.isSwitchDefault])
 
   // onSubmit
   const onSubmit = data => {

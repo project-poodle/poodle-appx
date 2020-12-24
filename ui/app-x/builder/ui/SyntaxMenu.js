@@ -53,6 +53,16 @@ import EditorProvider from 'app-x/builder/ui/EditorProvider'
 // make context menu
 const SyntaxMenu = (props) => {
 
+  // styles
+  const styles = makeStyles((theme) => ({
+    menuItem: {
+      minWidth: 200,
+    },
+    nestedMenuItem: {
+      padding: 0,
+    },
+  }))()
+
   // context
   const {
     treeData,
@@ -63,16 +73,6 @@ const SyntaxMenu = (props) => {
   } = useContext(EditorProvider.Context)
 
   // const [ menuPosition, setMenuPosition ] = useState(null)
-
-  // styles
-  const styles = makeStyles((theme) => ({
-    menuItem: {
-      minWidth: 200,
-    },
-    nestedMenuItem: {
-      padding: 0,
-    },
-  }))()
 
   // check props.selectedNode
   if (!props.selectedNode) {

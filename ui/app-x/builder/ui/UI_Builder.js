@@ -32,8 +32,7 @@ import PropEditor from 'app-x/builder/ui/PropEditor'
 
 const UI_Builder = (props) => {
 
-  // console.log(props)
-
+  // styles
   const styles = makeStyles((theme) => ({
     root: {
       height: "100%",

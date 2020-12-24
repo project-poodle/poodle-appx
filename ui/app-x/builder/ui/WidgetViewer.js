@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -12,6 +12,8 @@ import {
   Layout,
   Tree,
   Tabs,
+  Tooltip,
+  Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout
 const { DirectoryTree } = Tree
@@ -29,6 +31,7 @@ import {
 } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
+import Live from 'app-x/icon/Live'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import SyntaxTree from 'app-x/builder/ui/SyntaxTree'
 import SourceViewer from 'app-x/builder/ui/SourceViewer'
@@ -44,6 +47,14 @@ const WidgetViewer = (props) => {
       width: "100%",
       padding: theme.spacing(0),
       margin: theme.spacing(0),
+    },
+    toolTop: {
+      margin: theme.spacing(1, 2),
+      // cursor: 'move',
+    },
+    fab: {
+      margin: theme.spacing(1),
+      // cursor: 'move',
     },
     iframeWrapper: {
       height: '100%',
@@ -62,6 +73,16 @@ const WidgetViewer = (props) => {
     },
   }))()
 
+  // context
+  const {
+    treeData,
+    expandedKeys,
+    selectedKey,
+    treeDirty,
+    liveUpdate,
+    setLiveUpdate,
+  } = useContext(EditorProvider.Context)
+
   const iframeUrl =
     globalThis.appx.UI_ROOT
     + '/' + props.namespace
@@ -75,7 +96,29 @@ const WidgetViewer = (props) => {
         tabPosition="top"
         size="small"
         className={styles.root}
-        tabBarStyle={{marginLeft: 16}}
+        tabBarExtraContent={{
+          left:
+            <Box key="toolTop" display="inline" className={styles.toolTop}>
+              <Tooltip
+                key="live"
+                title={ liveUpdate ? "Live" : "Backend" }
+                placement="bottom"
+                >
+                <AntButton
+                  size="small"
+                  color="secondary"
+                  type={ liveUpdate ? "primary" : "default" }
+                  className={styles.fab}
+                  key="live"
+                  icon={<Live />}
+                  shape="circle"
+                  onClick={e => { setLiveUpdate(!liveUpdate) }}
+                  loading={false}
+                  >
+                </AntButton>
+              </Tooltip>
+            </Box>
+        }}
         >
         <TabPane tab="Widget" key="iframe" className={styles.root}>
           <Box className={styles.iframeWrapper}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import YAML from 'yaml'
 import {
@@ -11,42 +11,14 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
+import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import {
+  gen_js,
+} from 'app-x/builder/ui/util_tree'
 
 const YamlViewer = (props) => {
 
-  const [ yaml, setYaml ] = useState('')
-
-  useEffect(() => {
-
-    const ui_root = globalThis.appx.UI_ROOT
-
-    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
-
-    api.get(
-      'sys',
-      'appx',
-      url,
-      data => {
-        // console.log(data)
-        if (Array.isArray(data)) {
-          data = data[0]
-        }
-
-        if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          setYaml('')
-        }
-
-        const doc = new YAML.Document()
-        doc.contents = data.ui_element_spec
-        // console.log(doc.toString())
-        setYaml(doc.toString())
-      },
-      error => {
-        console.error(error)
-      })
-
-  }, [])
-
+  // styles
   const styles = makeStyles((theme) => ({
     editor: {
       width: '100%',
@@ -54,6 +26,70 @@ const YamlViewer = (props) => {
     },
   }))()
 
+  // context
+  const {
+    treeData,
+    expandedKeys,
+    selectedKey,
+    treeDirty,
+    liveUpdate,
+    setLiveUpdate,
+  } = useContext(EditorProvider.Context)
+
+  const [ yaml, setYaml ] = useState('')
+
+  // load content from api
+  useEffect(() => {
+
+    // load from backend if not liveUpdate
+    if (!liveUpdate) {
+      const ui_root = globalThis.appx.UI_ROOT
+
+      const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+
+      api.get(
+        'sys',
+        'appx',
+        url,
+        data => {
+          // console.log(data)
+          if (Array.isArray(data)) {
+            data = data[0]
+          }
+
+          if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+            setYaml('')
+          }
+
+          const doc = new YAML.Document()
+          doc.contents = data.ui_element_spec
+          // console.log(doc.toString())
+          setYaml(doc.toString())
+        },
+        error => {
+          console.error(error)
+        })
+    }
+
+  }, [liveUpdate])
+
+  // load content from UI context treeData
+  useEffect(() => {
+
+    // load from UI context if liveUpdate
+    if (liveUpdate) {
+      const tree_context = { topLevel: true }
+      const { ref, data } = gen_js(tree_context, treeData)
+      // yaml data
+      const yamlDoc = new YAML.Document()
+      yamlDoc.contents = data
+      // set editor value
+      setYaml(yamlDoc.toString())
+    }
+
+  }, [liveUpdate, treeData])
+
+  // render
   return (
     <Box
       className={styles.editor}
