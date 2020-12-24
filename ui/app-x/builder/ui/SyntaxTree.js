@@ -244,7 +244,7 @@ const SyntaxTree = (props) => {
         }
 
         if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          makeAction(`init`, [], [], null)
+          updateAction(`init`, [], [], null)
           return
         }
 
@@ -253,7 +253,7 @@ const SyntaxTree = (props) => {
 
         console.log(parsedTree)
 
-        makeAction(`init`, parsedTree, js_context.expandedKeys, null)
+        updateAction(`init`, parsedTree, js_context.expandedKeys, null)
       },
       error => {
         console.error(error)
