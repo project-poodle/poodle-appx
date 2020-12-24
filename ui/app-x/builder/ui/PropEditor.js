@@ -159,6 +159,7 @@ const PropEditor = (props) => {
         resultTree,
         expandedKeys,
         selectedKey,
+        lookupNode.key,
       )
     }
   }

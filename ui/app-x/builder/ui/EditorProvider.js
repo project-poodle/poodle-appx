@@ -13,6 +13,7 @@ const EditorProvider = (() => {
     const [ expandedKeys, setExpandedKeys ] = useState([])
     const [ selectedKey, setSelectedKey ] = useState(null)
     // history
+    const [ updateKey, setUpdateKey ] = useState(null)
     const [ history, setHistory ] = useState({
       undo: [],
       current: null,
@@ -20,10 +21,17 @@ const EditorProvider = (() => {
     })
 
     // update action
-    const updateAction = (action, newTreeData, newExpandedKeys, newSelectedKey) => {
+    const updateAction = (action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey) => {
 
-      console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey)
+      console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
 
+      setUpdateKey(nodeKey)
+      if (nodeKey !== updateKey) {
+        makeAction(action, newTreeData, newExpandedKeys, newSelectedKey)
+        return
+      }
+
+      // if node key is same as updateKey
       const newHistory = {
         undo: _.cloneDeep(history.undo),
         current: {
