@@ -119,11 +119,15 @@ const YamlEditor = props => {
   // context
   const {
     treeData,
-    setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
-    setSelectedKey
+    setSelectedKey,
+    history,
+    makeAction,
+    updateAction,
+    undo,
+    redo,
   } = useContext(EditorProvider.Context)
 
   const [ treeNode,         setTreeNode       ] = useState(null)
@@ -208,7 +212,12 @@ const YamlEditor = props => {
         if (treeNode?.data?.type === '/') {
 
           // replace the entire tree
-          setTreeData(parsed)
+          makeAction(
+            `Full Replace`,
+            parsed,
+            js_context.expandedKeys,
+            null,
+          )
 
         } else {
           // preserve data.__ref
@@ -228,8 +237,12 @@ const YamlEditor = props => {
           lookupNode.icon = lookup_icon_for_input(parsed.data)
           // lookupNode.parentKey = lookupNode.parentKey // no need to change parentKey
           // console.log(lookupNode)
-          setTreeData(resultTree)
-          setSelectedKey(lookupNode.key)  // update selected key
+          makeAction(
+            `Replace [${lookupNode.title}]`,
+            resultTree,
+            expandedKeys,
+            lookupNode.key,   // update selected key
+          )
           // if we are successful, reset changed flag
           setYamlChanged(false)
           setYamlError(false)

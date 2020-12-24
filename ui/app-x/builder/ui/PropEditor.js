@@ -74,11 +74,15 @@ const PropEditor = (props) => {
   // context
   const {
     treeData,
-    setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
-    setSelectedKey
+    setSelectedKey,
+    history,
+    makeAction,
+    updateAction,
+    undo,
+    redo,
   } = useContext(EditorProvider.Context)
 
   const [ nodeType,         setNodeType       ] = useState('')
@@ -149,7 +153,13 @@ const PropEditor = (props) => {
       lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
       lookupNode.icon = lookup_icon_for_input(data)
       // console.log(lookupNode)
-      setTreeData(resultTree)
+      // setTreeData(resultTree)
+      updateAction(
+        `Update [${lookupNode.title}]`,
+        resultTree,
+        expandedKeys,
+        selectedKey,
+      )
     }
   }
 

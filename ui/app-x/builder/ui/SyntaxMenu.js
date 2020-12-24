@@ -56,15 +56,10 @@ const SyntaxMenu = (props) => {
   // context
   const {
     treeData,
-    setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
-    selectedTool,
-    setSelectedTool,
-    syntaxTreeCursor,
-    setSyntaxTreeCursor,
   } = useContext(EditorProvider.Context)
 
   // const [ menuPosition, setMenuPosition ] = useState(null)

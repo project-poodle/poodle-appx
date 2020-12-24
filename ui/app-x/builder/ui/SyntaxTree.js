@@ -38,6 +38,7 @@ const {
 const { TabPane } = Tabs;
 import {
   DeleteOutlined,
+  QuestionOutlined,
   Icon,
 } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
@@ -46,6 +47,10 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import Save from 'app-x/icon/Save'
+import Reset from 'app-x/icon/Reset'
+import Undo from 'app-x/icon/Undo'
+import Redo from 'app-x/icon/Redo'
 import {
   parse_js,
   lookup_icon_for_type,
@@ -64,21 +69,28 @@ import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
 import SyntaxMenu from 'app-x/builder/ui/SyntaxMenu'
 
+// capitalize string
+function capitalize(s) {
+    if (typeof s !== 'string') {
+        throw new Error(`ERROR: capitalize input is not string [${typeof s}]`)
+    }
+    return s.charAt(0).toUpperCase() + s.slice(1)
+}
 
 const SyntaxTree = (props) => {
 
   // context
   const {
     treeData,
-    setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
-    selectedTool,
-    setSelectedTool,
-    syntaxTreeCursor,
-    setSyntaxTreeCursor,
+    history,
+    makeAction,
+    updateAction,
+    undo,
+    redo,
   } = useContext(EditorProvider.Context)
 
   // styles
@@ -90,11 +102,20 @@ const SyntaxTree = (props) => {
     pane: {
       height: '100%',
       width: '100%',
-      overflow: 'scroll',
+      // overflow: 'scroll',
+    },
+    toolTop: {
+      margin: theme.spacing(1, 2),
+      // cursor: 'move',
     },
     fab: {
       margin: theme.spacing(1),
       // cursor: 'move',
+    },
+    treeBox: {
+      height: '100%',
+      width: '100%',
+      overflow: 'scroll',
     },
     tree: {
       width: '100%',
@@ -114,10 +135,18 @@ const SyntaxTree = (props) => {
     dialogContent: {
       padding: theme.spacing(0, 5, 3),
     },
-    formControl: {
-      width: '100%',
-      // margin: theme.spacing(1),
-      padding: theme.spacing(2, 0),
+    sider: {
+      // width: 122,
+      margin: 0,
+      padding: 0,
+      backgroundColor: theme.palette.background.paper,
+      // border
+      border: 1,
+      borderTop: 0,
+      borderRight: 0,
+      borderBottom: 0,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
     },
   }))()
 
@@ -129,6 +158,11 @@ const SyntaxTree = (props) => {
       setSelectedTool(null)
     }
   }, [selectedKey])
+
+  // selected pallette tool
+  const [ selectedTool, setSelectedTool ] = useState(null)
+  // syntax tree cursor
+  const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
 
   // selectedTool
   useEffect(() => {
@@ -210,8 +244,8 @@ const SyntaxTree = (props) => {
         }
 
         if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          setTreeData([])
-          setExpandedKeys([])
+          makeAction(`init`, [], [], null)
+          return
         }
 
         const js_context = { topLevel: true }
@@ -219,8 +253,7 @@ const SyntaxTree = (props) => {
 
         console.log(parsedTree)
 
-        setTreeData(parsedTree)
-        setExpandedKeys(js_context.expandedKeys)
+        makeAction(`init`, parsedTree, js_context.expandedKeys, null)
       },
       error => {
         console.error(error)
@@ -297,11 +330,9 @@ const SyntaxTree = (props) => {
       } else {
         lookupParent.children.push(parsed)
       }
-      setTreeData(resultTree)
     } else {
       // add to the root as first element
       resultTree.splice(1, 0, parsed)
-      setTreeData(resultTree)
     }
     console.log(gen_js({topLevel: true}, resultTree))
     // process expanded keys
@@ -314,7 +345,13 @@ const SyntaxTree = (props) => {
     if (!!lookupParent && !newExpandedKeys.includes(lookupParent.key)) {
       newExpandedKeys.push(lookupParent.key)
     }
-    setExpandedKeys(newExpandedKeys)
+    // take action
+    makeAction(
+      `Add [${parsed?.title}]`,
+      resultTree,
+      newExpandedKeys,
+      selectedKey,
+    )
   }
 
   // delete dialog state
@@ -337,24 +374,28 @@ const SyntaxTree = (props) => {
   // delete callback
   const deleteCallback = (lookupNode) => {
     // actual delete only if confirmed
-    const resultTree = _.cloneDeep(treeData)
+    let resultTree = _.cloneDeep(treeData)
     const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
     if (!!lookupParent) {
       lookupParent.children = lookupParent.children.filter(child => {
         return child.key !== lookupNode.key
       })
-      setTreeData(resultTree)
-    } else {
       // this is one of the root node
-      setTreeData(
+      resultTree =
         resultTree.filter(child => {
           return child.key !== lookupNode.key
         })
-      )
     }
     if (selectedKey === lookupNode?.key) {
       setSelectedKey(null)
     }
+    // take action
+    makeAction(
+      `Delete [${lookupNode?.title}]`,
+      resultTree,
+      expandedKeys,
+      null,
+    )
   }
 
   // expand/collapse
@@ -460,7 +501,7 @@ const SyntaxTree = (props) => {
     }
 
     // replicate data
-    const data = [...treeData]
+    const data = _.cloneDeep(treeData)
 
     // Find dragObject
     let dragObj
@@ -510,7 +551,13 @@ const SyntaxTree = (props) => {
       }
     }
 
-    setTreeData(data)
+    // take action
+    makeAction(
+      `Drag & Drop [${dragObj.title}]`,
+      data,
+      expandedKeys,
+      dragObj.key
+    )
   }
 
   const onRightClick = info => {
@@ -562,6 +609,7 @@ const SyntaxTree = (props) => {
         treeData.map(treeNode => {
           // get result
           function ConvertTreeNode(data) {
+            // console.log(data.key)
             return <TreeNode
               id={data.key}
               key={data.key}
@@ -584,133 +632,239 @@ const SyntaxTree = (props) => {
     )
   }
 
-  return (
-    <Tabs
-      defaultActiveKey="design"
-      className={styles.root}
-      tabPosition="right"
-      size="small"
-      tabBarExtraContent={
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="center"
-          alignItems="center"
-          maxWidth={120}
-          >
-          {
-            [
-              'pointer',
-              'js/string',
-              'js/number',
-              'js/boolean',
-              'js/null',
-              'js/object',
-              'js/array',
-              'react/element',
-              'react/html',
-              'react/state',
-              'react/effect',
-              'js/import',
-              'js/expression',
-              'js/function',
-              'js/block',
-              'js/switch',
-              'js/map',
-              'js/reduce',
-              'js/filter',
-              'mui/style',
-              'appx/route',
-            ].map(type => {
-              return (
-                <Tooltip
-                  key={type}
-                  title={type}
-                  placement="left"
-                  >
-                  <AntButton
-                    size="small"
-                    color="secondary"
-                    type={
-                      selectedTool === type
-                      ? 'primary'
-                      :
-                      (
-                        !selectedTool && type === 'pointer'
-                        ? 'primary'
-                        : 'default'
-                      )
-                    }
-                    className={styles.fab}
-                    key={type}
-                    value={type}
-                    icon={lookup_icon_for_type(type)}
-                    shape="circle"
-                    // draggable={true}
-                    onClick={e => {
-                      setSelectedKey(null)
-                      if (!type || type === 'pointer') {
-                        setSelectedTool(null)
-                      } else {
-                        setSelectedTool(type)
-                      }
-                    }}
-                    >
-                  </AntButton>
-                </Tooltip>
-              )
-            })
-          }
-        </Box>
-      }
-      >
-      <TabPane
-        tab="Design"
-        key="design"
-        className={styles.pane}
-        onContextMenu={handleSyntaxMenu}
+  const Toolbar = (props) => {
+    return (
+      <Box
+        key="toolbar"
+        display="flex"
+        flexWrap="wrap"
+        justifyContent="center"
+        alignItems="center"
+        maxWidth={120}
         >
         {
-          constructTree()
+          [
+            'pointer',
+            'js/string',
+            'js/number',
+            'js/boolean',
+            'js/null',
+            'js/object',
+            'js/array',
+            'react/element',
+            'react/html',
+            'react/state',
+            'react/effect',
+            'js/import',
+            'js/expression',
+            'js/function',
+            'js/block',
+            'js/switch',
+            'js/map',
+            'js/reduce',
+            'js/filter',
+            'mui/style',
+            'appx/route',
+          ].map(type => {
+            return (
+              <Tooltip
+                key={type}
+                title={type}
+                placement="left"
+                >
+                <AntButton
+                  size="small"
+                  color="secondary"
+                  type={
+                    selectedTool === type
+                    ? 'primary'
+                    :
+                    (
+                      !selectedTool && type === 'pointer'
+                      ? 'primary'
+                      : 'default'
+                    )
+                  }
+                  className={styles.fab}
+                  key={type}
+                  value={type}
+                  icon={lookup_icon_for_type(type)}
+                  shape="circle"
+                  // draggable={true}
+                  onClick={e => {
+                    setSelectedKey(null)
+                    if (!type || type === 'pointer') {
+                      setSelectedTool(null)
+                    } else {
+                      setSelectedTool(type)
+                    }
+                  }}
+                  >
+                </AntButton>
+              </Tooltip>
+            )
+          })
         }
-        <SyntaxAddDialog
-          open={addDialogOpen}
-          setOpen={setAddDialogOpen}
-          callback={addCallback}
-          nodeParent={nodeParent}
-          addNodeRef={addNodeRef}
-          addNodeRefRequired={addNodeRefRequired}
-          addNodeType={addNodeType}
-          isSwitchDefault={isSwitchDefault}
-          />
-        <SyntaxDeleteDialog
-          open={deleteDialogOpen}
-          setOpen={setDeleteDialogOpen}
-          callback={deleteCallback}
-          node={deleteNode}
-          />
-        <SyntaxMenu
-          selectedNode={selectedNode}
-          contextAnchorEl={contextAnchorEl}
-          setContextAnchorEl={setContextAnchorEl}
-          addMenuClicked={addMenuClicked}
-          deleteMenuClicked={deleteMenuClicked}
+      </Box>
+    )
+  }
+
+  return (
+        <Tabs
+          defaultActiveKey="design"
+          className={styles.root}
+          tabPosition="top"
+          size="small"
+          // tabBarStyle={{marginLeft: 16}}
+          tabBarExtraContent={{
+            left:
+              <Box key="toolTop" display="inline" className={styles.toolTop}>
+              {
+                [
+                  'save',
+                  'reset',
+                ].map(action => {
+                  return (
+                    <Tooltip
+                      key={action}
+                      title={capitalize(action)}
+                      placement="bottom"
+                      >
+                      <AntButton
+                        size="small"
+                        color="secondary"
+                        type="default"
+                        className={styles.fab}
+                        key={action}
+                        value={action}
+                        icon={
+                          (action === 'save' && <Save />)
+                          || (action === 'reset' && <Reset />)
+                          || (action === 'undo' && <Undo />)
+                          || (action === 'redo' && <Redo />)
+                          || <  QuestionOutlined />
+                        }
+                        shape="circle"
+                        // draggable={true}
+                        onClick={e => {
+                          setSelectedKey(null)
+                          if (!type || type === 'pointer') {
+                            setSelectedTool(null)
+                          } else {
+                            setSelectedTool(type)
+                          }
+                        }}
+                        >
+                      </AntButton>
+                    </Tooltip>
+                  )
+                })
+              }
+              <Tooltip
+                key="undo"
+                title="Undo"
+                placement="bottom"
+                >
+                <AntButton
+                  size="small"
+                  color="secondary"
+                  type="default"
+                  className={styles.fab}
+                  key="undo"
+                  icon={<Undo />}
+                  shape="circle"
+                  onClick={e => { undo() }}
+                  disabled={!history.undo?.length}
+                  >
+                </AntButton>
+              </Tooltip>
+              <Tooltip
+                key="redo"
+                title="Redo"
+                placement="bottom"
+                >
+                <AntButton
+                  size="small"
+                  color="secondary"
+                  type="default"
+                  className={styles.fab}
+                  key="redo"
+                  icon={<Redo />}
+                  shape="circle"
+                  onClick={e => { redo() }}
+                  disabled={!history.redo?.length}
+                  >
+                </AntButton>
+              </Tooltip>
+              </Box>
+          }}
           >
-        </SyntaxMenu>
-      </TabPane>
-      <TabPane
-        tab="Test"
-        key="test"
-        className={styles.pane}
-        onContextMenu={handleSyntaxMenu}
-        >
-        <Box display="flex" justifyContent="center" alignItems="center" className={styles.root}>
-          <Typography variant="body2">
-            TODO: test data goes here
-          </Typography>
-        </Box>
-      </TabPane>
-    </Tabs>
+          <TabPane
+            tab="Design"
+            key="design"
+            className={styles.pane}
+            onContextMenu={handleSyntaxMenu}
+            >
+            <Layout className={styles.pane}>
+              <Content key="content">
+                <Box className={styles.treeBox}>
+                  {
+                    constructTree()
+                  }
+                </Box>
+              </Content>
+              <Sider key="sider" width={122} className={styles.sider}>
+                <Toolbar />
+              </Sider>
+            </Layout>
+          </TabPane>
+          <TabPane
+            tab="Test"
+            key="test"
+            className={styles.pane}
+            onContextMenu={handleSyntaxMenu}
+            >
+            <Layout className={styles.pane}>
+              <Content key="content">
+                <Box display="flex" justifyContent="center" alignItems="center" className={styles.root}>
+                  <Typography variant="body2">
+                    TODO: test data goes here
+                  </Typography>
+                </Box>
+              </Content>
+              <Sider key="sider" width={122} className={styles.sider}>
+                <Toolbar />
+              </Sider>
+            </Layout>
+          </TabPane>
+          <SyntaxAddDialog
+            key="addDialog"
+            open={addDialogOpen}
+            setOpen={setAddDialogOpen}
+            callback={addCallback}
+            nodeParent={nodeParent}
+            addNodeRef={addNodeRef}
+            addNodeRefRequired={addNodeRefRequired}
+            addNodeType={addNodeType}
+            isSwitchDefault={isSwitchDefault}
+            />
+          <SyntaxDeleteDialog
+            key="deleteDialog"
+            open={deleteDialogOpen}
+            setOpen={setDeleteDialogOpen}
+            callback={deleteCallback}
+            node={deleteNode}
+            />
+          <SyntaxMenu
+            key="syntaxMenu"
+            selectedNode={selectedNode}
+            contextAnchorEl={contextAnchorEl}
+            setContextAnchorEl={setContextAnchorEl}
+            addMenuClicked={addMenuClicked}
+            deleteMenuClicked={deleteMenuClicked}
+            >
+          </SyntaxMenu>
+        </Tabs>
   )
 }
 

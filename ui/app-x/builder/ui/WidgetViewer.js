@@ -72,10 +72,9 @@ const WidgetViewer = (props) => {
   return (
       <Tabs
         defaultActiveKey="widget"
-        tabPosition="bottom"
+        tabPosition="top"
         size="small"
         className={styles.root}
-        //tabBarGutter={16}
         tabBarStyle={{marginLeft: 16}}
         >
         <TabPane tab="Widget" key="iframe" className={styles.root}>
