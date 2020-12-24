@@ -131,7 +131,7 @@ const YamlEditor = props => {
   } = useContext(EditorProvider.Context)
 
   const [ treeNode,         setTreeNode       ] = useState(null)
-  const [ yamlChanged,      setYamlChanged    ] = useState(false)
+  const [ yamlDirty,        setYamlDirty      ] = useState(false)
   const [ yamlMsg,          setYamlMsg        ] = useState('')
   const [ yamlError,        setYamlError      ] = useState(false)
   const [ yamlContent,      setYamlContent    ] = useState('')
@@ -244,7 +244,7 @@ const YamlEditor = props => {
             lookupNode.key,   // update selected key
           )
           // if we are successful, reset changed flag
-          setYamlChanged(false)
+          setYamlDirty(false)
           setYamlError(false)
           setYamlMsg('')
         }
@@ -262,7 +262,7 @@ const YamlEditor = props => {
 
   // editor change
   const handleEditorChange = (ev, value) => {
-    setYamlChanged(true)
+    setYamlDirty(true)
     setYamlContent(value)
   }
 
@@ -295,7 +295,7 @@ const YamlEditor = props => {
           <Content>
             <Box display="flex" alignItems="center" justifyContent="left" className={styles.yamlMsg}>
               {
-                !!yamlChanged
+                !!yamlDirty
                 &&
                 (
                   <Asterisk className={styles.asterisk} />
@@ -323,7 +323,7 @@ const YamlEditor = props => {
                   onClick={e => {
                     // reset prop editor data
                     reset_yaml_content()
-                    setYamlChanged(false)
+                    setYamlDirty(false)
                     setYamlError(false)
                     setYamlMsg('')
                   }}

@@ -86,12 +86,16 @@ const SyntaxTree = (props) => {
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    treeDirty,
+    setTreeDirty,
     history,
     makeAction,
     updateAction,
     undo,
     redo,
   } = useContext(EditorProvider.Context)
+
+  console.log(treeDirty)
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -244,7 +248,8 @@ const SyntaxTree = (props) => {
         }
 
         if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          updateAction(`init`, [], [], null)
+          // fresh action
+          makeAction(`init`, [], [], null, true)
           return
         }
 
@@ -253,7 +258,8 @@ const SyntaxTree = (props) => {
 
         console.log(parsedTree)
 
-        updateAction(`init`, parsedTree, js_context.expandedKeys, null)
+        // fresh action
+        makeAction(`init`, parsedTree, js_context.expandedKeys, null, true)
       },
       error => {
         console.error(error)
@@ -719,83 +725,77 @@ const SyntaxTree = (props) => {
           tabBarExtraContent={{
             left:
               <Box key="toolTop" display="inline" className={styles.toolTop}>
-              {
-                [
-                  'save',
-                  'reset',
-                ].map(action => {
-                  return (
-                    <Tooltip
-                      key={action}
-                      title={capitalize(action)}
-                      placement="bottom"
-                      >
-                      <AntButton
-                        size="small"
-                        color="secondary"
-                        type="default"
-                        className={styles.fab}
-                        key={action}
-                        value={action}
-                        icon={
-                          (action === 'save' && <Save />)
-                          || (action === 'reset' && <Reset />)
-                          || (action === 'undo' && <Undo />)
-                          || (action === 'redo' && <Redo />)
-                          || <  QuestionOutlined />
-                        }
-                        shape="circle"
-                        // draggable={true}
-                        onClick={e => {
-                          setSelectedKey(null)
-                          if (!type || type === 'pointer') {
-                            setSelectedTool(null)
-                          } else {
-                            setSelectedTool(type)
-                          }
-                        }}
-                        >
-                      </AntButton>
-                    </Tooltip>
-                  )
-                })
-              }
-              <Tooltip
-                key="undo"
-                title="Undo"
-                placement="bottom"
-                >
-                <AntButton
-                  size="small"
-                  color="secondary"
-                  type="default"
-                  className={styles.fab}
+                <Tooltip
+                  key="save"
+                  title="Save"
+                  placement="bottom"
+                  >
+                  <AntButton
+                    size="small"
+                    color="secondary"
+                    type="default"
+                    className={styles.fab}
+                    key="save"
+                    icon={<Save />}
+                    shape="circle"
+                    onClick={e => { console.log('save') }}
+                    danger={treeDirty}
+                    >
+                  </AntButton>
+                </Tooltip>
+                <Tooltip
+                  key="reset"
+                  title="Reset"
+                  placement="bottom"
+                  >
+                  <AntButton
+                    size="small"
+                    color="secondary"
+                    type="default"
+                    className={styles.fab}
+                    key="reset"
+                    icon={<Reset />}
+                    shape="circle"
+                    onClick={e => { console.log('reset') }}
+                    >
+                  </AntButton>
+                </Tooltip>
+                <Tooltip
                   key="undo"
-                  icon={<Undo />}
-                  shape="circle"
-                  onClick={e => { undo() }}
-                  disabled={!history.undo?.length}
+                  title="Undo"
+                  placement="bottom"
                   >
-                </AntButton>
-              </Tooltip>
-              <Tooltip
-                key="redo"
-                title="Redo"
-                placement="bottom"
-                >
-                <AntButton
-                  size="small"
-                  color="secondary"
-                  type="default"
-                  className={styles.fab}
+                  <AntButton
+                    size="small"
+                    color="secondary"
+                    type="default"
+                    className={styles.fab}
+                    key="undo"
+                    icon={<Undo />}
+                    shape="circle"
+                    onClick={e => { undo() }}
+                    disabled={!history.undo?.length}
+                    >
+                  </AntButton>
+                </Tooltip>
+                <Tooltip
                   key="redo"
-                  icon={<Redo />}
-                  shape="circle"
-                  onClick={e => { redo() }}
-                  disabled={!history.redo?.length}
+                  title="Redo"
+                  placement="bottom"
                   >
-                </AntButton>
-              </Tooltip>
+                  <AntButton
+                    size="small"
+                    color="secondary"
+                    type="default"
+                    className={styles.fab}
+                    key="redo"
+                    icon={<Redo />}
+                    shape="circle"
+                    onClick={e => { redo() }}
+                    disabled={!history.redo?.length}
+                    >
+                  </AntButton>
+                </Tooltip>
               </Box>
           }}
           >

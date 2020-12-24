@@ -9,9 +9,10 @@ const EditorProvider = (() => {
 
   const f = (props) => {
     // tree data and selected key
-    const [ treeData, setTreeData ] = useState([])
-    const [ expandedKeys, setExpandedKeys ] = useState([])
-    const [ selectedKey, setSelectedKey ] = useState(null)
+    const [ treeData,       setTreeData       ] = useState([])
+    const [ expandedKeys,   setExpandedKeys   ] = useState([])
+    const [ selectedKey,    setSelectedKey    ] = useState(null)
+    const [ treeDirty,      setTreeDirty      ] = useState(false)
     // history
     const [ updateKey, setUpdateKey ] = useState(null)
     const [ history, setHistory ] = useState({
@@ -47,18 +48,19 @@ const EditorProvider = (() => {
       setTreeData(newTreeData)
       setExpandedKeys(newExpandedKeys)
       setSelectedKey(newSelectedKey)
+      setTreeDirty(true)
 
       // set history
       setHistory(newHistory)
     }
 
     // make action
-    const makeAction = (action, newTreeData, newExpandedKeys, newSelectedKey) => {
+    const makeAction = (action, newTreeData, newExpandedKeys, newSelectedKey, fresh=false) => {
 
       // console.log('makeAction', action, newTreeData, newExpandedKeys, newSelectedKey)
 
-      // if current is not set, set current and return
-      if (!history.current) {
+      // if fresh, clear history, and mark record as fresh
+      if (!!fresh) {
         // set current
         const newHistory = {
           undo: [],
@@ -67,6 +69,7 @@ const EditorProvider = (() => {
             treeData: newTreeData,
             expandedKeys: newExpandedKeys,
             selectedKey: newSelectedKey,
+            fresh: fresh,
           },
           redo: [],
         }
@@ -75,6 +78,7 @@ const EditorProvider = (() => {
         setTreeData(newTreeData)
         setExpandedKeys(newExpandedKeys)
         setSelectedKey(newSelectedKey)
+        setTreeDirty(false)
 
         // set history
         setHistory(newHistory)
@@ -107,6 +111,7 @@ const EditorProvider = (() => {
       setTreeData(record.treeData)
       setExpandedKeys(record.expandedKeys)
       setSelectedKey(record.selectedKey)
+      setTreeDirty(true)
 
       // set history
       setHistory(newHistory)
@@ -134,6 +139,7 @@ const EditorProvider = (() => {
         setTreeData(record.treeData)
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
+        setTreeDirty(!record.fresh)
 
         // set history
         setHistory(newHistory)
@@ -162,6 +168,7 @@ const EditorProvider = (() => {
         setTreeData(record.treeData)
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
+        setTreeDirty(!record.fresh)
 
         // set history
         setHistory(newHistory)
@@ -176,6 +183,8 @@ const EditorProvider = (() => {
           setExpandedKeys: setExpandedKeys,
           selectedKey: selectedKey,
           setSelectedKey: setSelectedKey,
+          treeDirty: treeDirty,
+          setTreeDirty: setTreeDirty,
           history: history,
           makeAction: makeAction,
           updateAction: updateAction,
