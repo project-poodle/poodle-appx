@@ -95,8 +95,6 @@ const SyntaxTree = (props) => {
     redo,
   } = useContext(EditorProvider.Context)
 
-  console.log(treeDirty)
-
   // styles
   const styles = makeStyles((theme) => ({
     root: {
@@ -167,6 +165,95 @@ const SyntaxTree = (props) => {
   const [ selectedTool, setSelectedTool ] = useState(null)
   // syntax tree cursor
   const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
+  // loading and saving
+  const [ loading,          setLoading          ] = useState(false)
+  const [ loadTimer,        setLoadTimer        ] = useState(null)
+  const [ saving,           setSaving           ] = useState(false)
+  const [ saveTimer,        setSaveTimer        ] = useState(null)
+
+  // process api data
+  function process_api_data(data) {
+    // check array
+    if (Array.isArray(data)) {
+      data = data[0]
+    }
+
+    if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+      // fresh action
+      makeAction(`init`, [], [], null, true)
+      return
+    }
+
+    const js_context = { topLevel: true }
+    const parsedTree = parse_js(js_context, null, null, data.ui_element_spec)
+
+    console.log(parsedTree)
+
+    // fresh action
+    makeAction(`init`, parsedTree, js_context.expandedKeys, null, true)
+  }
+
+  // load data via api
+  useEffect(() => {
+    setLoading(true)
+    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    // console.log(url)
+    api.get(
+      'sys',
+      'appx',
+      url,
+      data => {
+        // console.log(data)
+        setLoading(false)
+        process_api_data(data)
+      },
+      error => {
+        setLoading(false)
+        console.error(error)
+      }
+    )
+  }, [loadTimer])
+
+  // save data via api
+  useEffect(() => {
+    // do not save initially
+    if (!saveTimer) {
+      return
+    }
+    setSaving(true)
+    const tree_context = { topLevel: true }
+    const { ref, genData } = gen_js(tree_context, treeData)
+    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    // console.log(url)
+    api.post(
+      'sys',
+      'appx',
+      url,
+      genData,
+      data => {
+        // console.log(data)
+        api.get(
+          'sys',
+          'appx',
+          url,
+          data => {
+            // console.log(data)
+            setSaving(false)
+            process_api_data(data)
+          },
+          error => {
+            setSaving(false)
+            console.error(error)
+          }
+        )
+      },
+      error => {
+        console.error(error)
+        setSaving(false)
+      }
+    )
+  }, [saveTimer])
+
 
   // selectedTool
   useEffect(() => {
@@ -232,40 +319,6 @@ const SyntaxTree = (props) => {
       }
     })
   }, [syntaxTreeCursor, expandTimer])
-
-  // load data via api
-  useEffect(() => {
-    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
-    // console.log(url)
-    api.get(
-      'sys',
-      'appx',
-      url,
-      data => {
-        // console.log(data)
-        if (Array.isArray(data)) {
-          data = data[0]
-        }
-
-        if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-          // fresh action
-          makeAction(`init`, [], [], null, true)
-          return
-        }
-
-        const js_context = { topLevel: true }
-        const parsedTree = parse_js(js_context, null, null, data.ui_element_spec)
-
-        console.log(parsedTree)
-
-        // fresh action
-        makeAction(`init`, parsedTree, js_context.expandedKeys, null, true)
-      },
-      error => {
-        console.error(error)
-      }
-    )
-  }, [])
 
   // selected node
   const selectedNode = tree_lookup(treeData, selectedKey)
@@ -738,8 +791,9 @@ const SyntaxTree = (props) => {
                     key="save"
                     icon={<Save />}
                     shape="circle"
-                    onClick={e => { console.log('save') }}
+                    onClick={e => { setSaveTimer(new Date()) }}
                     danger={treeDirty}
+                    loading={saving}
                     >
                   </AntButton>
                 </Tooltip>
@@ -756,7 +810,8 @@ const SyntaxTree = (props) => {
                     key="reset"
                     icon={<Reset />}
                     shape="circle"
-                    onClick={e => { console.log('reset') }}
+                    onClick={e => { setLoadTimer(new Date()) }}
+                    loading={loading}
                     >
                   </AntButton>
                 </Tooltip>
