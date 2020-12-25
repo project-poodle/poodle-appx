@@ -103,6 +103,23 @@ const Header_user = (props) => {
     })
   }, [])
 
+  // logout user if
+  useEffect(() => {
+    if (!!props.reducers.user) {
+      if (!props.reducers.user.realm
+          || !props.reducers.user.username
+          || !props.reducers.user.token) {
+        // handle logout
+        handleLogout()
+      }
+    }
+  },
+  [
+    props.reducers?.user?.realm,
+    props.reducers?.user?.username,
+    props.reducers?.user?.token,
+  ])
+
   // render
   return (
     <AppBar
@@ -188,13 +205,14 @@ Header_user.propTypes = {
 
 // state to props
 const mapStateToProps = (state, ownProps) => {
-  //console.log(state)
+
+  console.log(state)
   //console.log(ownProps)
 
   const updateState = {
     reducers: {
-      user: ownProps.reducers && ownProps.reducers.user ? ownProps.reducers.user : {},
-      role: ownProps.reducers && ownProps.reducers.role ? ownProps.reducers.role : {}
+      user: !!ownProps.reducers?.user ? ownProps.reducers.user : {},
+      role: !!ownProps.reducers?.role ? ownProps.reducers.role : {}
     },
     realm: ownProps.realm
   }
@@ -221,6 +239,7 @@ const mapStateToProps = (state, ownProps) => {
 
   // update user reducers
   if (updateState.realm in state.userReducer) {
+    console.log('here')
     updateState.reducers.user.realm = state.userReducer[updateState.realm].realm
     updateState.reducers.user.username = state.userReducer[updateState.realm].username
     updateState.reducers.user.token = state.userReducer[updateState.realm].token

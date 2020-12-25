@@ -1,6 +1,7 @@
 //const axios = lib.axios
 import axios from 'axios'
 import store from 'app-x/redux/store'
+import { notification } from 'antd'
 
 // compute base path from namespace and app_name
 function _get_base_path(namespace, app_name) {
@@ -518,22 +519,44 @@ const request = (namespace, app_name, conf, callback, handler) => {
               if (res.data.status === 'ok') {
                 callback(res.data)
               } else {
-                handler(res.data)
+                notification['info']({
+                  message: 'INFO',
+                  description: String(res.data.message),
+                  placement: 'bottomLeft',
+                })
+                if (!!handler) {
+                  handler(res.data)
+                }
               }
             } else {
-              callback(res.data)
+              if (!!callback) {
+                callback(res.data)
+              }
             }
           } else {
-            handler({
-              status: `error`,
-              message: `ERROR: empty response data`,
-              data: res
+            notification['error']({
+              message: 'ERROR',
+              description: `ERROR: empty response data`,
+              placement: 'bottomLeft',
             })
+            if (!!handler) {
+              handler({
+                status: `error`,
+                message: `ERROR: empty response data`,
+                data: res
+              })
+            }
           }
         })
         .catch((err) => {
-          if (err.response && 'status' in err.response && err.response.status === 401) {
+          if (err?.response?.status === 401) {
             _handle_logout(realm)
+          } else if (err?.response?.status >= 400) {
+            notification['error']({
+              message: 'ERROR',
+              description: String(err),
+              placement: 'bottomLeft',
+            })
           }
           let res = {
             status: 'error',
@@ -543,11 +566,18 @@ const request = (namespace, app_name, conf, callback, handler) => {
           if ('response' in err && 'data' in err.response) {
             res = { ...res, ...err.response.data }
           }
-          handler(res)
+          if (!!handler) {
+            handler(res)
+          }
         })
     },
     err => {
       console.log(err.stack)
+      notification['error']({
+        message: 'ERROR',
+        description: String(err),
+        placement: 'bottomLeft',
+      })
     }
   )
 }
