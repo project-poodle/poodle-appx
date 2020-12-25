@@ -76,7 +76,9 @@ const UI_Builder = (props) => {
     },
   }))()
 
-  const layouts = {
+  const [ rowHeight,  setRowHeight  ] = useState(80)
+  const [ width,      setWidth      ] = useState(960)
+  const [ layouts,    setLayouts    ] = useState({
     md: [
       {
         i: 'iframe',
@@ -123,10 +125,8 @@ const UI_Builder = (props) => {
         h: 3,
       },
     ],
-  }
+  })
 
-  const [ rowHeight,  setRowHeight  ] = useState(80)
-  const [ width,      setWidth      ] = useState(960)
   const gridRef = React.createRef()
 
   // resize listener
@@ -151,9 +151,26 @@ const UI_Builder = (props) => {
     }
   }, [gridRef.current])
 
-  // console.log(GridLayout)
-  // const ResponsiveGridLayout = WidthProvider(Responsive);
-  // console.log(ResponsiveGridLayout)
+  // listen to layout change event
+  const onLayoutChange = (currLayout, allLayouts) => {
+    // console.log(currLayout)
+    // console.log(allLayouts)
+    if (!!allLayouts) {
+      globalThis.localStorage.setItem(
+        `/app-x/ui/builder/grid-layout`,
+        JSON.stringify(allLayouts)
+      )
+    }
+  }
+
+  // load layout when loading first time
+  useEffect(() => {
+    const stored_layouts = globalThis.localStorage.getItem(`/app-x/ui/builder/grid-layout`)
+    if (!!stored_layouts) {
+      // console.log(JSON.parse(stored_layouts))
+      setLayouts(JSON.parse(stored_layouts))
+    }
+  }, [])
 
   return (
     <EditorProvider>
@@ -165,7 +182,8 @@ const UI_Builder = (props) => {
           rowHeight={rowHeight}
           width={width}
           breakpoints={{md: 960, sm: 768}}
-          cols={{lg: 12, md: 12, sm: 6, xs: 6}}
+          cols={{md: 12, sm: 6}}
+          onLayoutChange={onLayoutChange}
         >
           <Box key="iframe" className={styles.box}>
             <Box
