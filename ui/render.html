@@ -15,16 +15,63 @@
 
 <script type="module">
 
-  export {};
-
   {{{init_js}}}
 
-  // #element original and replacement
-  const elemOriginal = document.querySelector('#element')
-  const elemReplacement = document.createElement('script')
+  // update element
+  function updateElement(event) {
+    // console.log(event)
+    if (event.origin === window.location.origin
+        && !!event.data
+        && !!event.data.path
+        && !!event.data.data) {
+      //
+      // console.log(event.data.data)
+      fetch(
+        event.data.path,
+        {
+          method: 'POST',
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(event.data.data)
+        }
+      )
+      .then(response => response.text())
+      .then(data => {
+        // console.log(data)
+        const elemOriginal = document.querySelector('#element')
+        elemOriginal.textContent = data
+        // console.log(elemOriginal)
+        transpile()
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    }
+  }
 
-  elemReplacement.id = elemOriginal.id
-  elemReplacement.type = 'module'
+  // transpile
+  function transpile() {
+    // transpile
+    if (navigator.serviceWorker.controller) {
+      // get original element
+      const elemOriginal = document.querySelector('#element')
+      // post code for transpile
+      navigator.serviceWorker.controller.postMessage({
+        id: elemOriginal.id,
+        type: 'transpile',
+        code: elemOriginal.textContent,
+        url: window.location.href,
+      })
+    }
+  }
+
+  // update event
+  window.addEventListener("message", updateElement, false)
 
   // handle transpile message
   navigator.serviceWorker.addEventListener('message', function(event) {
@@ -34,20 +81,33 @@
         && !!event.data.id
         && event.data.id === 'element') {
 
-      // Include the updated code in the src attribute as a blob URL that can be re-imported.
+      // clear root element
+      const rootEl = document.querySelector('#root')
+      // rootEl.innerHTML = ''
+
+      // #element original and replacement
+      const elemOriginal = document.querySelector('#element')
+      const elemReplacement = document.createElement('script')
+
+      elemReplacement.id = 'replace_element'
+      elemReplacement.type = 'module'
       elemReplacement.src = URL.createObjectURL(
           new Blob([event.data.code], {type: 'application/javascript'}))
       elemReplacement.textContent = event.data.code
-      elemOriginal.replaceWith(elemReplacement)
 
-      // process main element
+      // replace prev element
+      const prevElemReplacement = document.getElementById('replace_element')
+      if (!!prevElemReplacement) {
+        prevElemReplacement.parentElement.removeChild(prevElemReplacement)
+      }
+      document.body.appendChild(elemReplacement)
+
+      // #render original and replacement
       const renderOriginal = document.querySelector('#render')
       const renderReplacement = document.createElement('script')
 
-      renderReplacement.id = renderOriginal.id
+      renderReplacement.id = 'replace_render'
       renderReplacement.type = 'module'
-
-      // Preserve the ID so the element can be selected for import
       const transformedSource = renderOriginal.textContent.replace(
         // Find anything that looks like an import from '#some-id'
         /(from\s+|import\s+)['"](#[\w\-]+)['"]/g,
@@ -58,37 +118,31 @@
             // ..then update the import to use that script's src URL instead.
             `${action}/* ${selector} */ '${refEl.src}'` :
             unmodified;
-        })
+      })
+      renderReplacement.src = URL.createObjectURL(
+          new Blob([transformedSource], {type: 'application/javascript'}))
+      renderReplacement.textContent = transformedSource
 
-        renderReplacement.src = URL.createObjectURL(
-            new Blob([transformedSource], {type: 'application/javascript'}))
-        renderReplacement.textContent = transformedSource
-        renderOriginal.replaceWith(renderReplacement)
+      // replace prev render
+      const prevRenderReplacement = document.getElementById('replace_render')
+      if (!!prevRenderReplacement) {
+        prevRenderReplacement.parentElement.removeChild(prevRenderReplacement)
+      }
+      document.body.appendChild(renderReplacement)
     }
   })
 
-  // transpile
-  if (navigator.serviceWorker.controller) {
-    // post code for transpile
-    navigator.serviceWorker.controller.postMessage({
-      id: elemOriginal.id,
-      type: 'transpile',
-      code: elemOriginal.textContent,
-      url: window.location.href,
-    })
-  }
+  // transpile for the first time
+  transpile()
 </script>
 
-<script type="inline-module" id="element">
-
+<script type="appx-inline-module" id="element">
   {{{element_js}}}
-
 </script>
 
-<script type="inline-module" id="render">
+<script type="appx-inline-module" id="render">
 
-  import { default as element } from "#element"
-
+  import { default as element } from "#replace_element"
   // render function
   function render() {
       import(window.location.origin + '/dist/lib/main.js').then(main_module => {
@@ -100,7 +154,6 @@
           )
       })
   }
-
   // render immediately
   render()
 

@@ -94,7 +94,8 @@ const PreviewTabs = (props) => {
   } = useContext(PreviewProvider.Context)
 
   // code content
-  const [ iframeHtml, setIframeHtml ] = useState('')
+  const [ iframeHtml,         setIframeHtml         ] = useState('')
+  const [ iframeInitialized,  setIframeInitialized  ] = useState(false)
 
   // form ref and iframe ref
   const formRef = React.createRef()
@@ -104,7 +105,10 @@ const PreviewTabs = (props) => {
   useEffect(() => {
 
     // load from backend if not livePreview
-    if (!livePreview && !!apiData && !!iframeRef.current) {
+    if (!livePreview
+        && !!apiData
+        && !!formRef.current
+        && !!iframeRef.current) {
       // setPreviewLoading(true)
       // loading url
       // iframe url
@@ -118,26 +122,39 @@ const PreviewTabs = (props) => {
       iframeRef.current.src=iframeUrl
     }
 
-  }, [livePreview, apiData])
+  },
+  [
+    livePreview,
+    apiData,
+  ])
 
   // load content from UI context treeData
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (!!livePreview && !!apiData && !!treeData && !!formRef && !!iframeRef) {
+    if (!iframeInitialized
+        && !!livePreview
+        && !!apiData && Object.keys(apiData).length
+        && !!treeData && treeData.length
+        && !!formRef.current
+        && !!iframeRef.current) {
+
+      console.log(treeData)
       const tree_context = { topLevel: true }
-      const { ref, data } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = gen_js(tree_context, treeData)
+      console.log(genData)
       // preview loading
       // setPreviewLoading(true)
-      // preview url
+      // preview data
       const submitData = {
         type: 'ui_element',
         output: 'html',
         data: {
           ...apiData,
-          ui_element_spec: data
+          ui_element_spec: genData
         },
       }
+      console.log(submitData)
       // build form for submission
       formRef.current.innerHTML = '' // clear children
       const input = document.createElement('input')
@@ -145,9 +162,58 @@ const PreviewTabs = (props) => {
       input.value = JSON.stringify(submitData)
       formRef.current.appendChild(input)
       formRef.current.submit() // submit form
+      // set initialized flag
+      setIframeInitialized(true)
     }
+  },
+  [
+    livePreview,
+    apiData,
+    treeData,
+  ])
 
-  }, [livePreview, apiData, treeData])
+  // load content from UI context treeData
+  useEffect(() => {
+
+    // load from UI context if livePreview
+    if (!!iframeInitialized
+        && !!livePreview
+        && !!treeData && treeData.length
+        && !!formRef.current
+        && !!iframeRef.current) {
+      const tree_context = { topLevel: true }
+      const { ref, data } = gen_js(tree_context, treeData)
+      // preview loading
+      // setPreviewLoading(true)
+      // preview data
+      const message = {
+        path: globalThis.appx.UI_ROOT
+          + '/' + apiData?.namespace
+          + '/' + apiData?.ui_name
+          + '/' + apiData?.ui_deployment
+          + '/',
+        data: {
+          type: 'ui_element',
+          output: 'code',
+          data: {
+            ...apiData,
+            ui_element_spec: data
+          }
+        }
+      }
+      // build form for submission
+      // console.log(submitData)
+      iframeRef.current.contentWindow.postMessage(
+        message,
+        window.location.origin,
+      )
+    }
+  },
+  [
+    livePreview,
+    treeData,
+    iframeInitialized,
+  ])
 
   return (
     <Box className={styles.root}>
