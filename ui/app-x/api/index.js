@@ -3,6 +3,9 @@ import axios from 'axios'
 import store from 'app-x/redux/store'
 import { notification } from 'antd'
 
+// valid api status
+const VALID_API_STATUS = ['ok', 'error', 'info', 'warning', 'success']
+
 // compute base path from namespace and app_name
 function _get_base_path(namespace, app_name) {
   if (!globalThis.appx.API_MAPS) {
@@ -519,11 +522,19 @@ const request = (namespace, app_name, conf, callback, handler) => {
               if (res.data.status === 'ok') {
                 callback(res.data)
               } else {
-                notification['info']({
-                  message: 'INFO',
-                  description: String(res.data.message),
-                  placement: 'bottomLeft',
-                })
+                if (VALID_API_STATUS.includes(res.data.status)) {
+                  notification[res.data.status]({
+                    message: `API ${res.data.status.toUpperCase()}`,
+                    description: String(res.data.message),
+                    placement: 'bottomLeft',
+                  })
+                } else {
+                  notification['info']({
+                    message: 'API Message',
+                    description: String(res.data.message),
+                    placement: 'bottomLeft',
+                  })
+                }
                 if (!!handler) {
                   handler(res.data)
                 }
@@ -535,7 +546,7 @@ const request = (namespace, app_name, conf, callback, handler) => {
             }
           } else {
             notification['error']({
-              message: 'ERROR',
+              message: 'API ERROR',
               description: `ERROR: empty response data`,
               placement: 'bottomLeft',
             })
@@ -553,7 +564,7 @@ const request = (namespace, app_name, conf, callback, handler) => {
             _handle_logout(realm)
           } else if (err?.response?.status >= 400) {
             notification['error']({
-              message: 'ERROR',
+              message: 'API ERROR',
               description: String(err),
               placement: 'bottomLeft',
             })
@@ -574,7 +585,7 @@ const request = (namespace, app_name, conf, callback, handler) => {
     err => {
       console.log(err.stack)
       notification['error']({
-        message: 'ERROR',
+        message: 'API ERROR',
         description: String(err),
         placement: 'bottomLeft',
       })
