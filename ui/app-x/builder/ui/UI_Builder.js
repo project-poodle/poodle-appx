@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -21,7 +22,7 @@ const { DirectoryTree } = Tree
 const { Header, Footer, Sider, Content } = Layout
 import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-design/icons'
 // import { default as GridLayout } from 'react-grid-layout'
-import { Responsive, WidthProvider, default as GridLayout } from 'react-grid-layout';
+import { Responsive as ResponsiveGridLayout, default as GridLayout } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
@@ -123,73 +124,103 @@ const UI_Builder = (props) => {
       },
     ],
   }
+
+  const [ rowHeight,  setRowHeight  ] = useState(80)
+  const [ width,      setWidth      ] = useState(960)
+  const gridRef = React.createRef()
+
+  // resize listener
+  useEffect(() => {
+    if (!!gridRef.current) {
+      // closure on ref
+      const ref = gridRef.current
+      function resizeGridLayout() {
+        const node = ReactDOM.findDOMNode(ref)
+        // console.log(node, node.offsetWidth, node.offsetHeight)
+        setRowHeight(node.offsetHeight / 12)
+        setWidth(node.offsetWidth)
+      }
+      // resize now
+      resizeGridLayout()
+      // event listener
+      window.addEventListener("resize", event => {
+        // console.log(event)
+        // console.log(ref)
+        resizeGridLayout()
+      })
+    }
+  }, [gridRef.current])
+
   // console.log(GridLayout)
-  const ResponsiveGridLayout = WidthProvider(Responsive);
+  // const ResponsiveGridLayout = WidthProvider(Responsive);
   // console.log(ResponsiveGridLayout)
 
   return (
     <EditorProvider>
-      <ResponsiveGridLayout
-        className={styles.root}
-        layouts={layouts}
-        margin={[0, 0]}
-        rowHeight={80}
-        breakpoints={{md: 960, sm: 768}}
-        cols={{lg: 12, md: 12, sm: 6, xs: 6}}
-      >
-        <Box key="iframe" className={styles.box}>
-          <Box
-            className={styles.tabContent}
-            onClick={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onMouseUp={e => e.stopPropagation()}
-            onDrag={e => e.stopPropagation()}
-            >
-            <PreviewProvider>
-              <PreviewTabs
+      <Box ref={gridRef} className={styles.root}>
+        <ResponsiveGridLayout
+          className={styles.root}
+          layouts={layouts}
+          margin={[0, 0]}
+          rowHeight={rowHeight}
+          width={width}
+          breakpoints={{md: 960, sm: 768}}
+          cols={{lg: 12, md: 12, sm: 6, xs: 6}}
+        >
+          <Box key="iframe" className={styles.box}>
+            <Box
+              className={styles.tabContent}
+              onClick={e => e.stopPropagation()}
+              onMouseDown={e => e.stopPropagation()}
+              onMouseUp={e => e.stopPropagation()}
+              onDrag={e => e.stopPropagation()}
+              >
+              <PreviewProvider>
+                <PreviewTabs
+                  namespace={props.namespace}
+                  ui_name={props.ui_name}
+                  ui_deployment={props.ui_deployment}
+                  ui_element_name={props.ui_element_name}
+                  >
+                </PreviewTabs>
+              </PreviewProvider>
+            </Box>
+          </Box>
+          <Box key="navTree" className={styles.box}>
+            <Box
+              className={styles.content}
+              onClick={e => e.stopPropagation()}
+              onMouseDown={e => e.stopPropagation()}
+              onMouseUp={e => e.stopPropagation()}
+              onDrag={e => e.stopPropagation()}
+              >
+              <SyntaxTree
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+              />
+            </Box>
+          </Box>
+          <Box key="propEditor" className={styles.box}>
+            <Box
+              className={styles.content}
+              onClick={e => e.stopPropagation()}
+              onMouseDown={e => e.stopPropagation()}
+              onMouseUp={e => e.stopPropagation()}
+              onDrag={e => e.stopPropagation()}
+              >
+              <PropEditor
                 namespace={props.namespace}
                 ui_name={props.ui_name}
                 ui_deployment={props.ui_deployment}
                 ui_element_name={props.ui_element_name}
                 >
-              </PreviewTabs>
-            </PreviewProvider>
+              </PropEditor>
+            </Box>
           </Box>
-        </Box>
-        <Box key="navTree" className={styles.box}>
-          <Box
-            className={styles.content}
-            onClick={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onMouseUp={e => e.stopPropagation()}
-            onDrag={e => e.stopPropagation()}
-            >
-            <SyntaxTree
-              namespace={props.namespace}
-              ui_name={props.ui_name}
-              ui_deployment={props.ui_deployment}
-              ui_element_name={props.ui_element_name}
-            />
-          </Box>
-        </Box>
-        <Box key="propEditor" className={styles.box}>
-          <Box
-            className={styles.content}
-            onClick={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onMouseUp={e => e.stopPropagation()}
-            onDrag={e => e.stopPropagation()}
-            >
-            <PropEditor
-              namespace={props.namespace}
-              ui_name={props.ui_name}
-              ui_deployment={props.ui_deployment}
-              ui_element_name={props.ui_element_name}
-              >
-            </PropEditor>
-          </Box>
-        </Box>
-      </ResponsiveGridLayout>
+        </ResponsiveGridLayout>
+      </Box>
     </EditorProvider>
   )
 }
