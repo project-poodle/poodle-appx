@@ -85,6 +85,8 @@ const PreviewTabs = (props) => {
     treeDirty,
     livePreview,
     setLivePreview,
+    previewInitialized,
+    setPreviewInitialized,
   } = useContext(EditorProvider.Context)
 
   // preview context
@@ -95,7 +97,6 @@ const PreviewTabs = (props) => {
 
   // code content
   const [ iframeHtml,         setIframeHtml         ] = useState('')
-  const [ iframeInitialized,  setIframeInitialized  ] = useState(false)
 
   // form ref and iframe ref
   const formRef = React.createRef()
@@ -132,17 +133,17 @@ const PreviewTabs = (props) => {
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (!iframeInitialized
+    if (!previewInitialized
         && !!livePreview
         && !!apiData && Object.keys(apiData).length
         && !!treeData && treeData.length
         && !!formRef.current
         && !!iframeRef.current) {
 
-      console.log(treeData)
+      // console.log(treeData)
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
-      console.log(genData)
+      // console.log(genData)
       // preview loading
       // setPreviewLoading(true)
       // preview data
@@ -154,7 +155,7 @@ const PreviewTabs = (props) => {
           ui_element_spec: genData
         },
       }
-      console.log(submitData)
+      // console.log(submitData)
       // build form for submission
       formRef.current.innerHTML = '' // clear children
       const input = document.createElement('input')
@@ -163,20 +164,21 @@ const PreviewTabs = (props) => {
       formRef.current.appendChild(input)
       formRef.current.submit() // submit form
       // set initialized flag
-      setIframeInitialized(true)
+      setPreviewInitialized(true)
     }
   },
   [
     livePreview,
     apiData,
     treeData,
+    previewInitialized,
   ])
 
   // load content from UI context treeData
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (!!iframeInitialized
+    if (!!previewInitialized
         && !!livePreview
         && !!treeData && treeData.length
         && !!formRef.current
@@ -212,7 +214,7 @@ const PreviewTabs = (props) => {
   [
     livePreview,
     treeData,
-    iframeInitialized,
+    previewInitialized,
   ])
 
   return (
@@ -256,7 +258,10 @@ const PreviewTabs = (props) => {
                   key="preview"
                   icon={<Preview />}
                   shape="circle"
-                  onClick={e => { setLivePreview(!livePreview) }}
+                  onClick={e => {
+                    setLivePreview(!livePreview);
+                    setPreviewInitialized(false);
+                  }}
                   loading={previewLoading}
                   >
                 </AntButton>

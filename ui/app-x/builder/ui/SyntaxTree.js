@@ -138,6 +138,8 @@ const SyntaxTree = (props) => {
     setSelectedKey,
     treeDirty,
     setTreeDirty,
+    previewInitialized,
+    setPreviewInitialized,
     history,
     makeAction,
     updateAction,
@@ -184,7 +186,7 @@ const SyntaxTree = (props) => {
     const js_context = { topLevel: true }
     const parsedTree = parse_js(js_context, null, null, data.ui_element_spec)
 
-    console.log(parsedTree)
+    // console.log(parsedTree)
 
     // fresh action
     makeAction(`init`, parsedTree, js_context.expandedKeys, null, true)
@@ -202,10 +204,12 @@ const SyntaxTree = (props) => {
       data => {
         // console.log(data)
         setLoading(false)
+        setPreviewInitialized(false)
         process_api_data(data)
       },
       error => {
         setLoading(false)
+        setPreviewInitialized(false)
         console.error(error)
       }
     )
@@ -239,10 +243,12 @@ const SyntaxTree = (props) => {
           data => {
             // console.log(data)
             setSaving(false)
+            setPreviewInitialized(false)
             process_api_data(data)
           },
           error => {
             setSaving(false)
+            setPreviewInitialized(false)
             console.error(error)
           }
         )

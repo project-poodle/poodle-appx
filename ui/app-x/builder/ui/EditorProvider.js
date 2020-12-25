@@ -9,12 +9,13 @@ const EditorProvider = (() => {
 
   const f = (props) => {
     // tree data and selected key
-    const [ apiData,        setApiData        ] = useState({})
-    const [ treeData,       setTreeData       ] = useState([])
-    const [ expandedKeys,   setExpandedKeys   ] = useState([])
-    const [ selectedKey,    setSelectedKey    ] = useState(null)
-    const [ treeDirty,      setTreeDirty      ] = useState(false)
-    const [ livePreview,    setLivePreview    ] = useState(true)
+    const [ apiData,            setApiData            ] = useState({})
+    const [ treeData,           setTreeData           ] = useState([])
+    const [ expandedKeys,       setExpandedKeys       ] = useState([])
+    const [ selectedKey,        setSelectedKey        ] = useState(null)
+    const [ treeDirty,          setTreeDirty          ] = useState(false)
+    const [ livePreview,        setLivePreview        ] = useState(true)
+    const [ previewInitialized, setPreviewInitialized ] = useState(false)
     // history
     const [ updateKey, setUpdateKey ] = useState(null)
     const [ history, setHistory ] = useState({
@@ -191,6 +192,8 @@ const EditorProvider = (() => {
           setTreeDirty: setTreeDirty,
           livePreview: livePreview,
           setLivePreview: setLivePreview,
+          previewInitialized: previewInitialized,
+          setPreviewInitialized: setPreviewInitialized,
           history: history,
           makeAction: makeAction,
           updateAction: updateAction,
