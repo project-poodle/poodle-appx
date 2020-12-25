@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useRef, useCallback, memo } from 'react'
 import PropTypes from 'prop-types';
 import YAML from 'yaml'
-import { default as parseCST } from 'yaml/parse-cst'
+// import { default as parseCST } from 'yaml/parse-cst'
 import yaml from 'js-yaml'
 import _ from 'lodash'
 import {

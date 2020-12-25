@@ -124,7 +124,7 @@ const PreviewTabs = (props) => {
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (!!livePreview && !!apiData && !!treeData && !!formRef) {
+    if (!!livePreview && !!apiData && !!treeData && !!formRef && !!iframeRef) {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
       // preview loading

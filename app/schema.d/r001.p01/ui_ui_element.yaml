@@ -156,8 +156,8 @@ ui_element:
                           ui_element_name: event.ui_element_name,
                           ui_route_name: '',
                       })
-                      console.log(event)
-                      console.log(states.builder.data)
+                      // console.log(event)
+                      // console.log(states.builder.data)
               handleRouteSelected:
                   type: js/function
                   params:

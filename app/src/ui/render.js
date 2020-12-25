@@ -155,7 +155,7 @@ function handle_render(req, res, load_from_db=true) {
     // console.log(ui_element)
 
     const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
-    const html_content = fs.readFileSync(path.join(rootDir, load_from_db ? 'index.html' : 'render.html'), "utf8")
+    const html_content = fs.readFileSync(path.join(rootDir, 'render.html'), "utf8")
 
     // context
     let context = {
@@ -191,7 +191,7 @@ function handle_render(req, res, load_from_db=true) {
     const prettified = prettier.format(rendered, { semi: false, parser: "html" })
 
     // send back rendered html_content as html
-    console.log(prettified)
+    // console.log(prettified)
     return {
         status: 200,
         type: 'html',

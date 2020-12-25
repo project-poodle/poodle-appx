@@ -1,6 +1,6 @@
 import json from '@rollup/plugin-json'
 import html from '@rollup/plugin-html'
-import replace from '@rollup/plugin-replace'
+// import replace from '@rollup/plugin-replace'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import nodeGlobals from 'rollup-plugin-node-globals'
@@ -65,6 +65,7 @@ export default [
       'lib/main.js',
       'lib/mui.js',
       'lib/antd.js',
+      'lib/anti.js',
       'lib/babel.js',
     ],
     output: [

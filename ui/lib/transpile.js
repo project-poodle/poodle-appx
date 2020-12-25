@@ -60,6 +60,11 @@ const default_import_maps = {
       path: "/dist/lib/antd.js",
       modules: [
         "antd",
+      ]
+    },
+    "anti": {
+      path: "/dist/lib/anti.js",
+      modules: [
         "@ant-design/icons",
       ]
     },

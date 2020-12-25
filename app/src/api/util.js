@@ -57,7 +57,7 @@ function parse_for_sql(context, req, res) {
     let obj_prop = [
         //"object",
         context.namespace,
-        "app_deployment",
+        "app_deployments",
         context.app_name,
         context.app_deployment,
         "objs",

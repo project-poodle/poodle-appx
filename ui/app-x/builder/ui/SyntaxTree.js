@@ -193,12 +193,12 @@ const SyntaxTree = (props) => {
   // load data via api
   useEffect(() => {
     setLoading(true)
-    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    const loadUrl = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
     // console.log(url)
     api.get(
       'sys',
       'appx',
-      url,
+      loadUrl,
       data => {
         // console.log(data)
         setLoading(false)
@@ -219,20 +219,23 @@ const SyntaxTree = (props) => {
     }
     setSaving(true)
     const tree_context = { topLevel: true }
-    const { ref, genData } = gen_js(tree_context, treeData)
-    const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    const { ref, data: genData } = gen_js(tree_context, treeData)
+    const saveUrl = `/namespace/${apiData.namespace}/ui/${apiData.ui_name}/${apiData.ui_ver}/ui_element/base64:${btoa(apiData.ui_element_name)}`
     // console.log(url)
-    api.post(
+    api.put(
       'sys',
       'appx',
-      url,
-      genData,
+      saveUrl,
+      {
+        ui_element_spec: genData,
+      },
       data => {
         // console.log(data)
+        const loadUrl = `/namespace/${apiData.namespace}/ui_deployment/ui/${apiData.ui_name}/deployment/${apiData.ui_deployment}/ui_element/base64:${btoa(apiData.ui_element_name)}`
         api.get(
           'sys',
           'appx',
-          url,
+          loadUrl,
           data => {
             // console.log(data)
             setSaving(false)

@@ -10,8 +10,8 @@ import * as reactRedux from 'react-redux'
 import * as redux from 'redux'
 // routers
 import * as hookrouter from 'hookrouter'
-import * as reactRouter from 'react-router'
-import * as reactRouterDom from 'react-router-dom'
+// import * as reactRouter from 'react-router'
+// import * as reactRouterDom from 'react-router-dom'
 // form
 import * as reactHookForm from 'react-hook-form'
 // layout
@@ -20,7 +20,7 @@ import react_grid_layout_css from 'react-grid-layout/css/styles.css'
 import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
-import * as reactFeather from 'react-feather'
+// import * as reactFeather from 'react-feather'
 // import * as reactCursor from 'react-cursor'
 // editor
 import * as monacoEditor from '@monaco-editor/react'
@@ -35,14 +35,14 @@ import * as monacoEditor from '@monaco-editor/react'
 // utilities
 import * as clsx from 'clsx'
 import * as yaml from 'yaml'
-import * as parseCST from 'yaml/parse-cst'
+// import * as parseCST from 'yaml/parse-cst'
 import * as jsYaml from 'js-yaml'
-import * as buffer from 'buffer'
+// import * as buffer from 'buffer'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
 // reflective prop types
-import reflectPropTypes from './reflectPropTypes'
+//import reflectPropTypes from './reflectPropTypes'
 
 // export module as library
 export default {
@@ -51,23 +51,23 @@ export default {
   "react-dom": reactDom,
   "react-dom/server": reactDomServer,
   "prop-types": propTypes,     // override original propTypes?
-  "reflectPropTypes": reflectPropTypes,
+  //"reflectPropTypes": reflectPropTypes,
   // redux
   "react-redux": reactRedux,
   "redux": redux,
   // routers
   "hookrouter": hookrouter,
-  "react-router": reactRouter,
-  "react-router-dom": reactRouterDom,
+  // "react-router": reactRouter,
+  // "react-router-dom": reactRouterDom,
   // form
   "react-hook-form": reactHookForm,
   // grid layout
   "react-grid-layout": reactGridLayout,
-  "react_grid_layout_css": react_grid_layout_css,
-  "react_resizable_css": react_resizable_css,
+  // "react_grid_layout_css": react_grid_layout_css,
+  // "react_resizable_css": react_resizable_css,
   // react utilities
   "react-helmet": reactHelmet,
-  "react-feather": reactFeather,
+  // "react-feather": reactFeather,
   // "react-cursor": reactCursor,
   // editors
   // "nomaco-editor": monacoEditor,
@@ -80,9 +80,9 @@ export default {
   //"antd": antd,
   "clsx": clsx,
   "yaml": yaml,
-  "yaml/parse-cst": parseCST,
+  // "yaml/parse-cst": parseCST,
   "js-yaml": jsYaml,
-  "buffer": buffer,
+  // "buffer": buffer,
   "lodash": lodash,
   "axios": axios,
   "uuid": uuid,
