@@ -60,11 +60,6 @@ const default_import_maps = {
       path: "/dist/lib/antd.js",
       modules: [
         "antd",
-      ]
-    },
-    "anti": {
-      path: "/dist/lib/anti.js",
-      modules: [
         "@ant-design/icons",
       ]
     },
@@ -72,7 +67,7 @@ const default_import_maps = {
       path: "/dist/lib/babel.js",
       modules: [
         "@babel/standalone",
-        "@babel/traverse",
+        // "@babel/traverse",
         "@babel/types",
         "@babel/parser",
         "@babel/generator",

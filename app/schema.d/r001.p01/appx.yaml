@@ -348,8 +348,6 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
-                  anti:
-                      path: /dist/lib/anti.js
                   babel:
                       path: /dist/lib/babel.js
           description: "App-X Console"
@@ -369,8 +367,6 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
-                  anti:
-                      path: /dist/lib/anti.js
                   babel:
                       path: /dist/lib/babel.js
           description: "Auth Editor"
@@ -390,8 +386,6 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
-                  anti:
-                      path: /dist/lib/anti.js
                   babel:
                       path: /dist/lib/babel.js
           description: "Service Builder"
@@ -411,8 +405,6 @@ ui:
                       path: /dist/lib/mui.js
                   antd:
                       path: /dist/lib/antd.js
-                  anti:
-                      path: /dist/lib/anti.js
                   babel:
                       path: /dist/lib/babel.js
           description: "UI Builder"
