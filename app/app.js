@@ -69,6 +69,7 @@ app.use(mount_options.api_root,
 const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 // ui endpoints
 app.use(mount_options.ui_root, bodyParser.json())
+app.use(mount_options.ui_root, bodyParser.urlencoded({extended: true}))
 app.use(mount_options.ui_root,
   (req, res, next) => {
     req.mount_options = mount_options

@@ -29,14 +29,38 @@ self.addEventListener('activate', event => {
 
 // message
 self.addEventListener('message', event => {
+  // process message
   switch (event.data.type) {
     case "importMaps":
       if ('basePath' in event.data && 'importMaps' in event.data) {
-        importMappings[event.data.basePath] = {...event.data.importMaps }
-        console.log(`Service Worker: updated [${event.data.basePath}] importMaps`)
-        console.log(importMappings[event.data.basePath])
+        if (!Transpile._.isEqual(importMappings[event.data.basePath], event.data.importMaps)) {
+          importMappings[event.data.basePath] = {...event.data.importMaps }
+          console.log(`Service Worker: updated [${event.data.basePath}] importMaps`, importMappings[event.data.basePath])
+        }
       } else {
         console.log(`Service Worker: unrecognized importMaps message - ${event.data}`)
+      }
+      break
+    case "transpile":
+      if ('code' in event.data && 'url' in event.data) {
+        event.waitUntil(async function() {
+          // Exit early if we don't have access to the client.
+          // Eg, if it's cross-origin.
+          if (!event.source.id) return;
+          const client = await clients.get(event.source.id);
+          if (!client) return;
+          // transpile
+          let transpiled_code = sw_transpile(event.data.code, event.data.url)
+          let message = {
+            ...event.data,
+            type: "transpile",
+            code: transpiled_code,
+          }
+          client.postMessage(message)
+          // console.log('posted', message)
+        }())
+      } else {
+        console.log(`Service Worker: unrecognized transpile message - ${event.data}`)
       }
       break
     default:
@@ -124,7 +148,7 @@ self.addEventListener('fetch', function(event) {
 
               if (response.url.endsWith('/')) {
 
-                console.log(`Service Worker: redirect [${url}] transpile [index.js]`)
+                // console.log(`Service Worker: redirect [${url}] transpile [index.js]`)
                 newRequest = new Request(response.url + 'index.js')
 
                 let newParser = getTranspiler(newRequest)
@@ -138,7 +162,7 @@ self.addEventListener('fetch', function(event) {
 
               } else if (!response.url.endsWith('.js') && !response.url.endsWith('.jsx')) {
 
-                console.log(`Service Worker: redirect [${url}] transpile [.js]`)
+                // console.log(`Service Worker: redirect [${url}] transpile [.js]`)
                 newRequest = new Request(response.url + '.js')
 
                 let newParser = getTranspiler(newRequest)

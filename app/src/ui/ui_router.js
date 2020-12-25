@@ -453,7 +453,10 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                     router.get(render_js_route_path, (req, res) => {
                         req.context = {...elem_context, ...req.context}
                         // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
-                        handle_render(req, res)
+                        const result = handle_render(req, res, load_from_db=true)
+                        res.status(result.status)
+                            .type(result.type)
+                            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
                     })
                 } else {
                     // route path without '.js' will add '.js' and '.source'
@@ -473,7 +476,10 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                     router.get(render_js_route_path, (req, res) => {
                         req.context = {...elem_context, ...req.context}
                         // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
-                        handle_render(req, res)
+                        const result = handle_render(req, res, load_from_db=true)
+                        res.status(result.status)
+                            .type(result.type)
+                            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
                     })
                 }
 

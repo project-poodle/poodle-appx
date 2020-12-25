@@ -20,7 +20,8 @@
   // render function
   function render() {
 
-    console.log(`INFO: entry path [${globalThis.appx.ENTRY_ELEM_PATH}]`)
+    console.log(`INFO: BASE_PATH [${globalThis.appx.BASE_PATH}]`)
+    console.log(`INFO: ENTRY_ELEM_PATH [${globalThis.appx.ENTRY_ELEM_PATH}]`)
 
     import(globalThis.appx.ENTRY_ELEM_PATH).then(app_module => {
       const app = app_module.default

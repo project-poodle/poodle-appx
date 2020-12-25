@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>{{{data.title}}}</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
+<script type="module">
+
+  export {};
+
+  {{{init_js}}}
+
+  // #element original and replacement
+  const elemOriginal = document.querySelector('#element')
+  const elemReplacement = document.createElement('script')
+
+  elemReplacement.id = elemOriginal.id
+  elemReplacement.type = 'module'
+
+  // handle transpile message
+  navigator.serviceWorker.addEventListener('message', function(event) {
+    // console.log("Got message from service worker: ", event.data)
+    if (!!event.data.type
+        && event.data.type === 'transpile'
+        && !!event.data.id
+        && event.data.id === 'element') {
+
+      // Include the updated code in the src attribute as a blob URL that can be re-imported.
+      elemReplacement.src = URL.createObjectURL(
+          new Blob([event.data.code], {type: 'application/javascript'}))
+      elemReplacement.textContent = event.data.code
+      elemOriginal.replaceWith(elemReplacement)
+
+      // process main element
+      const renderOriginal = document.querySelector('#render')
+      const renderReplacement = document.createElement('script')
+
+      renderReplacement.id = renderOriginal.id
+      renderReplacement.type = 'module'
+
+      // Preserve the ID so the element can be selected for import
+      const transformedSource = renderOriginal.textContent.replace(
+        // Find anything that looks like an import from '#some-id'
+        /(from\s+|import\s+)['"](#[\w\-]+)['"]/g,
+        (unmodified, action, selector) => {
+          // If we can find a suitable script with that id...
+          const refEl = document.querySelector('script[type=module][src]' + selector);
+          return refEl ?
+            // ..then update the import to use that script's src URL instead.
+            `${action}/* ${selector} */ '${refEl.src}'` :
+            unmodified;
+        })
+
+        renderReplacement.src = URL.createObjectURL(
+            new Blob([transformedSource], {type: 'application/javascript'}))
+        renderReplacement.textContent = transformedSource
+        renderOriginal.replaceWith(renderReplacement)
+    }
+  })
+
+  // transpile
+  if (navigator.serviceWorker.controller) {
+    // post code for transpile
+    navigator.serviceWorker.controller.postMessage({
+      id: elemOriginal.id,
+      type: 'transpile',
+      code: elemOriginal.textContent,
+      url: window.location.href,
+    })
+  }
+</script>
+
+<script type="inline-module" id="element">
+
+  {{{element_js}}}
+
+</script>
+
+<script type="inline-module" id="render">
+
+  import { default as element } from "#element"
+
+  // render function
+  function render() {
+      import(window.location.origin + '/dist/lib/main.js').then(main_module => {
+          const main = main_module.default
+          // console.log(main)
+          main['react-dom'].render(
+              main['react'].createElement(element, null),
+              document.getElementById('root')
+          )
+      })
+  }
+
+  // render immediately
+  render()
+
+</script>
+
+</html>

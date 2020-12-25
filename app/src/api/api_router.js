@@ -21,7 +21,7 @@ function decode_params(params) {
   Object.keys(params).map(paramKey => {
     const paramValue = params[paramKey]
     if (paramValue.startsWith('base64:')) {
-      console.log(paramValue)
+      // console.log(paramValue)
       const decodedValue = Buffer.from(paramValue.substring('base64:'.length), 'base64').toString('utf8')
       result[paramKey] = decodedValue
     } else {

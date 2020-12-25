@@ -20,11 +20,16 @@ const rootDir = path.join(__dirname, '../../../ui/')
  */
 function handle_preview(req, res) {
 
+    // console.log(req)
+    // console.log(req.body)
+
     const {
         type: req_type,
         output: req_output,
         data: req_data
-    } = req.body
+    } = !!req.body.urlencoded ? JSON.parse(req.body.urlencoded) : req.body
+
+    // console.log(req_type, req_output, req_data)
 
     // process ui_element
     if (req_type === 'ui_element') {
@@ -45,10 +50,11 @@ function handle_preview(req, res) {
 
       // set request context
       req.context = { ...req.context, ...req_data }
-      const result = handle_react(req, res)
 
       if (req_output === 'code') {
 
+        // render source code
+        const result = handle_react(req, res)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -56,13 +62,11 @@ function handle_preview(req, res) {
 
       } else if (req_output === 'html') {
 
-        // TODO
         // render html
-        // unrecognized output
-        res.status(422).json({
-            status: FAILURE,
-            message: `ERROR: unsupported preview output [${req_output}]`
-        })
+        const result = handle_render(req, res, false)
+        res.status(result.status)
+            .type(result.type)
+            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
         return
 
       } else {

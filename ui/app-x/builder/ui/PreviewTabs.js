@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -31,12 +31,16 @@ import {
 } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
-import Live from 'app-x/icon/Live'
+// import Live from 'app-x/icon/Live'
+import Preview from 'app-x/icon/Preview'
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
 import PreviewSource from 'app-x/builder/ui/PreviewSource'
 import PreviewYaml from 'app-x/builder/ui/PreviewYaml'
 import PreviewJson from 'app-x/builder/ui/PreviewJson'
+import {
+  gen_js,
+} from 'app-x/builder/ui/util_tree'
 
 const PreviewTabs = (props) => {
 
@@ -74,12 +78,13 @@ const PreviewTabs = (props) => {
 
   // editor context
   const {
+    apiData,
     treeData,
     expandedKeys,
     selectedKey,
     treeDirty,
-    liveUpdate,
-    setLiveUpdate,
+    livePreview,
+    setLivePreview,
   } = useContext(EditorProvider.Context)
 
   // preview context
@@ -88,15 +93,82 @@ const PreviewTabs = (props) => {
     setPreviewLoading,
   } = useContext(PreviewProvider.Context)
 
-  // iframe url
-  const iframeUrl =
-    globalThis.appx.UI_ROOT
-    + '/' + props.namespace
-    + '/' + props.ui_name
-    + '/' + props.ui_deployment
-    + '/_elem' + props.ui_element_name + '.html'
+  // code content
+  const [ iframeHtml, setIframeHtml ] = useState('')
+
+  // form ref and iframe ref
+  const formRef = React.createRef()
+  const iframeRef = React.createRef()
+
+  // load content from backend api
+  useEffect(() => {
+
+    // load from backend if not livePreview
+    if (!livePreview && !!apiData && !!iframeRef.current) {
+      // setPreviewLoading(true)
+      // loading url
+      // iframe url
+      const iframeUrl =
+        globalThis.appx.UI_ROOT
+        + '/' + apiData.namespace
+        + '/' + apiData.ui_name
+        + '/' + apiData.ui_deployment
+        + '/_elem' + apiData.ui_element_name + '.html'
+      console.log(iframeUrl)
+      iframeRef.current.src=iframeUrl
+    }
+
+  }, [livePreview, apiData])
+
+  // load content from UI context treeData
+  useEffect(() => {
+
+    // load from UI context if livePreview
+    if (!!livePreview && !!apiData && !!treeData && !!formRef) {
+      const tree_context = { topLevel: true }
+      const { ref, data } = gen_js(tree_context, treeData)
+      // preview loading
+      // setPreviewLoading(true)
+      // preview url
+      const submitData = {
+        type: 'ui_element',
+        output: 'html',
+        data: {
+          ...apiData,
+          ui_element_spec: data
+        },
+      }
+      // build form for submission
+      formRef.current.innerHTML = '' // clear children
+      const input = document.createElement('input')
+      input.name = "urlencoded"
+      input.value = JSON.stringify(submitData)
+      formRef.current.appendChild(input)
+      formRef.current.submit() // submit form
+    }
+
+  }, [livePreview, apiData, treeData])
 
   return (
+    <Box className={styles.root}>
+      <form
+        // encType="application/json"
+        style={{width:0,height:0,display:'none'}}
+        ref={formRef}
+        action={
+            globalThis.appx.UI_ROOT
+            + '/' + apiData?.namespace
+            + '/' + apiData?.ui_name
+            + '/' + apiData?.ui_deployment
+            + '/'
+        }
+        method="POST"
+        target="live_preview"
+        >
+        <input name="type" value="ui_element" readOnly/>
+        <input name="output" value="html" readOnly/>
+        <input name="data[]" value="3" readOnly/>
+      </form>
       <Tabs
         defaultActiveKey="widget"
         tabPosition="top"
@@ -106,19 +178,19 @@ const PreviewTabs = (props) => {
           left:
             <Box key="toolTop" display="inline" className={styles.toolTop}>
               <Tooltip
-                key="live"
-                title={ liveUpdate ? "Live View" : "Backend" }
+                key="preview"
+                title={ livePreview ? "Preview" : "Backend" }
                 placement="bottom"
                 >
                 <AntButton
                   size="small"
                   color="secondary"
-                  type={ liveUpdate ? "primary" : "default" }
+                  type={ livePreview ? "primary" : "default" }
                   className={styles.fab}
-                  key="live"
-                  icon={<Live />}
+                  key="preview"
+                  icon={<Preview />}
                   shape="circle"
-                  onClick={e => { setLiveUpdate(!liveUpdate) }}
+                  onClick={e => { setLivePreview(!livePreview) }}
                   loading={previewLoading}
                   >
                 </AntButton>
@@ -127,9 +199,11 @@ const PreviewTabs = (props) => {
         }}
         >
         <TabPane tab="Widget" key="iframe" className={styles.root}>
-          <Box className={styles.iframeWrapper}>
-            <iframe src={iframeUrl} className={styles.iframe}>
-            </iframe>
+          <Box className={styles.root}>
+            <Box className={styles.iframeWrapper}>
+              <iframe ref={iframeRef} name="live_preview" className={styles.iframe}>
+              </iframe>
+            </Box>
           </Box>
         </TabPane>
         <TabPane tab="Code" key="code" className={styles.root}>
@@ -157,6 +231,7 @@ const PreviewTabs = (props) => {
           />
         </TabPane>
       </Tabs>
+    </Box>
   )
 }
 

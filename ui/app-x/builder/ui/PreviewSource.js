@@ -33,7 +33,7 @@ const PreviewSource = (props) => {
     expandedKeys,
     selectedKey,
     treeDirty,
-    liveUpdate,
+    livePreview,
     setLiveUpdate,
   } = useContext(EditorProvider.Context)
 
@@ -49,8 +49,8 @@ const PreviewSource = (props) => {
   // load content from backend api
   useEffect(() => {
 
-    // load from backend if not liveUpdate
-    if (!liveUpdate) {
+    // load from backend if not livePreview
+    if (!livePreview) {
       setPreviewLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
@@ -69,13 +69,13 @@ const PreviewSource = (props) => {
         })
     }
 
-  }, [liveUpdate])
+  }, [livePreview])
 
   // load content from UI context treeData
   useEffect(() => {
 
-    // load from UI context if liveUpdate
-    if (liveUpdate) {
+    // load from UI context if livePreview
+    if (livePreview) {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
       // preview source code
@@ -116,7 +116,7 @@ const PreviewSource = (props) => {
         })
     }
 
-  }, [liveUpdate, apiData, treeData])
+  }, [livePreview, apiData, treeData])
 
   // render
   return (

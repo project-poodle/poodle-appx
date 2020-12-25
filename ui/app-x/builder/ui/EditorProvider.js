@@ -14,7 +14,7 @@ const EditorProvider = (() => {
     const [ expandedKeys,   setExpandedKeys   ] = useState([])
     const [ selectedKey,    setSelectedKey    ] = useState(null)
     const [ treeDirty,      setTreeDirty      ] = useState(false)
-    const [ liveUpdate,     setLiveUpdate     ] = useState(true)
+    const [ livePreview,    setLivePreview    ] = useState(true)
     // history
     const [ updateKey, setUpdateKey ] = useState(null)
     const [ history, setHistory ] = useState({
@@ -189,8 +189,8 @@ const EditorProvider = (() => {
           setSelectedKey: setSelectedKey,
           treeDirty: treeDirty,
           setTreeDirty: setTreeDirty,
-          liveUpdate: liveUpdate,
-          setLiveUpdate: setLiveUpdate,
+          livePreview: livePreview,
+          setLivePreview: setLivePreview,
           history: history,
           makeAction: makeAction,
           updateAction: updateAction,

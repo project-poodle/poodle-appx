@@ -25,6 +25,7 @@ const db = require('../db/db')
 function handle_react(req, res) {
 
     // const { ui_deployment, ui_element } = req.context
+    // console.log(req.context)
 
     if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
         return {
@@ -32,7 +33,7 @@ function handle_react(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
+                message: `ERROR: ui_spec.importMaps not defined [${req.context.ui_spec}]`
             }
         }
     }
@@ -43,7 +44,7 @@ function handle_react(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
+                message: `ERROR: ui_element_spec.element not defined [${req.context.ui_element_spec}]`
             }
         }
     }
@@ -54,7 +55,7 @@ function handle_react(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: unrecognized ui_element_spec.element.type [${ui_element.ui_element_spec.element.type}]`
+                message: `ERROR: unrecognized ui_element_spec.element.type [${req.context.ui_element_spec.element.type}]`
             }
         }
     }

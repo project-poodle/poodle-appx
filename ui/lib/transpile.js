@@ -1,5 +1,6 @@
 import babel from "@babel/standalone"
 import t from "@babel/types"
+import _ from "lodash"
 
 ////////////////////////////////////////////////////////////////////////////////
 // babel conf
@@ -116,8 +117,8 @@ function importMapPlugin(import_maps, globalImports) {
 
           let src_val = path.node.source.value
 
-          // do not transform relative path
-          if (src_val.startsWith('.') || src_val.startsWith('/')) {
+          // do not transform relative path, or absolute path
+          if (src_val.startsWith('.') || src_val.startsWith('/') || src_val.includes('//')) {
             return
           }
 
@@ -126,14 +127,20 @@ function importMapPlugin(import_maps, globalImports) {
           // check 'imports'
           if (import_maps.imports) {
             Object.keys(import_maps.imports).map(key => {
+              // compute import key based on configured origin and configured key
+              const import_key =
+                !!import_maps.origin && !import_maps.imports[key].includes('//')
+                ? import_maps.origin + import_maps.imports[key]
+                : import_maps.imports[key]
+              // process
               if (found) {
                 return
               } else if (src_val == key) {
                 found = true
-                path.node.source.value = import_maps.imports[key]
+                path.node.source.value = import_key
               } else if (key.endsWith('/') && src_val.startsWith(key)) {
                 found = true
-                path.node.source.value = import_maps.imports[key] + src_val.substring(key.length)
+                path.node.source.value = import_key + src_val.substring(key.length)
               }
             })
           }
@@ -149,18 +156,22 @@ function importMapPlugin(import_maps, globalImports) {
                 lib.modules.map(module_name => {
 
                   if (found) {
-
                     return
-
                   }
+
+                  // compute import key based on configured origin and configured key
+                  const lib_path =
+                    !!import_maps.origin && !lib.path.includes('//')
+                    ? import_maps.origin + lib.path
+                    : lib.path
 
                   if (src_val == module_name) {
 
                     found = true
                     // console.log(lib_key, module_name)
 
-                    // add lib.path to global imports
-                    globalImports[lib_key] = lib.path
+                    // add lib_path to global imports
+                    globalImports[lib_key] = lib_path
                     //console.log(globalImports)
 
                     path.replaceWithMultiple(
@@ -229,7 +240,7 @@ function importMapPlugin(import_maps, globalImports) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-export default function transpile(input, import_maps) {
+function transpile(input, import_maps) {
 
   try {
     //console.log(input)
@@ -248,3 +259,8 @@ export default function transpile(input, import_maps) {
     throw err
   }
 }
+
+// expose lodash
+transpile._ = _
+
+export default transpile

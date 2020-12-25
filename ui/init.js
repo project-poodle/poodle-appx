@@ -28,12 +28,13 @@ if (window.location.pathname.endsWith(RELATIVE_URL)) {
 
 const BASE_ELEM_PATH = BASE_PATH + '_elem/'
 IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_ELEM_PATH })
+IMPORT_MAPS.origin = window.location.origin
 
 const ENTRY_ELEM_PATH = (BASE_PATH + "/_elem/" + "{{{entry}}}").replace(/\/+/g, '/')
 
-console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
-console.log(`INFO: BASE_ELEM_PATH is [${BASE_ELEM_PATH}]`)
-console.log(`INFO: ENTRY_ELEM_PATH is [${ENTRY_ELEM_PATH}]`)
+// console.log(`INFO: BASE_PATH is [${BASE_PATH}]`)
+// console.log(`INFO: BASE_ELEM_PATH is [${BASE_ELEM_PATH}]`)
+// console.log(`INFO: ENTRY_ELEM_PATH is [${ENTRY_ELEM_PATH}]`)
 
 globalThis.appx = {
   IMPORT_MAPS: IMPORT_MAPS,
@@ -60,7 +61,7 @@ globalThis.appx = {
   }
 
   function registerImportMaps(controller, basePath, importMaps) {
-    console.log(`INFO: sending 'importMaps' [${basePath}] to service worker`)
+    // console.log(`INFO: sending 'importMaps' [${basePath}] to service worker`)
     controller.postMessage({
       type: 'importMaps',
       basePath: basePath,

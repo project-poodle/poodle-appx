@@ -133,7 +133,7 @@ const PropEditor = (props) => {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
     if (lookupNode) {
-      console.log(data)
+      // console.log(data)
       lookupNode.data = data
       if (!!data.__ref) {
         lookupNode.data.__ref = data.__ref
