@@ -17,7 +17,7 @@ const rootDir = path.join(__dirname, '../../../ui/')
  */
 function handle_render(req, res) {
 
-    const { namespace, ui_name, ui_deployment, ui_element_name } = req.context.ui_element
+    const { namespace, ui_name, ui_deployment, ui_element_name } = req.context
 
     console.log(namespace, ui_name, ui_deployment, ui_element_name)
 
@@ -96,55 +96,38 @@ function handle_render(req, res) {
       return
     }
 
-    fs.readFile(path.join(rootDir, 'init.js'), "utf8", (err, initjs_content) => {
+    console.log(ui_element)
 
-        if (err) {
-            res.status(422).json({
-                status: FAILURE,
-                message: `ERROR: cannot read init.js`
-            })
-            return
-        }
+    const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
+    const html_content = fs.readFileSync(path.join(rootDir, 'index.html'), "utf8")
 
-        fs.readFile(path.join(rootDir, 'index.html'), "utf8", (err, html_content) => {
+    // context
+    let context = {
+        APPX_ENV: {
+            RENDER_JSON: RENDER_JSON,
+            KEY_VALUE: KEY_VALUE,
+            AUTH_ROOT: req.mount_options.auth_root,
+            API_ROOT: req.mount_options.api_root,
+            UI_ROOT: req.mount_options.ui_root,
+            RELATIVE_URL: url.parse(req.url).pathname,
+            IMPORT_MAPS: ui_element.ui_spec.importMaps,
+            API_MAPS: ui_element.ui_deployment_spec.apiMaps,
+        },
+        entry: ui_element.ui_element_name,
+        // props: req.data.props,
+    }
 
-            if (err) {
-                res.status(422).json({
-                    status: FAILURE,
-                    message: `ERROR: cannot read inde.html`
-                })
-                return
-            }
+    context.init_js = Mustache.render(initjs_content, context)
+    // console.log(context.init_js)
 
-            // context
-            let context = {
-                APPX_ENV: {
-                    RENDER_JSON: RENDER_JSON,
-                    KEY_VALUE: KEY_VALUE,
-                    AUTH_ROOT: req.mount_options.auth_root,
-                    API_ROOT: req.mount_options.api_root,
-                    UI_ROOT: req.mount_options.ui_root,
-                    RELATIVE_URL: url.parse(req.url).pathname,
-                    IMPORT_MAPS: ui_element.ui_spec.importMaps,
-                    API_MAPS: ui_element.ui_deployment_spec.apiMaps,
-                },
-                entry: ui_element.ui_element_name,
-                // props: req.data.props,
-            }
+    // render the html_content
+    let rendered = Mustache.render(html_content, context)
 
-            context.init_js = Mustache.render(initjs_content, context)
-            // console.log(context.init_js)
+    // prettify
+    const prettified = prettier.format(rendered, { semi: false, parser: "html" })
 
-            // render the html_content
-            let rendered = Mustache.render(html_content, context)
-
-            // prettify
-            const prettified = prettier.format(rendered, { semi: false, parser: "html" })
-
-            // send back rendered html_content as html
-            res.status(200).type('html').send(prettified)
-        })
-    })
+    // send back rendered html_content as html
+    res.status(200).type('html').send(prettified)
 }
 
 // export

@@ -24,34 +24,43 @@ const db = require('../db/db')
  */
 function handle_react(req, res) {
 
-    const { ui_deployment, ui_element } = req.context
+    // const { ui_deployment, ui_element } = req.context
 
-    if (! ('ui_spec' in ui_deployment) || ! ('importMaps' in ui_deployment.ui_spec) ) {
-        res.status(422).json({
-            status: FAILURE,
-            message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
-        })
-        return
+    if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
+        return {
+            status: 422,
+            type: 'application/json',
+            data: {
+                status: FAILURE,
+                message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
+            }
+        }
     }
 
-    if (! ('ui_element_spec' in ui_element) || ! ('element' in ui_element.ui_element_spec) ) {
-        res.status(422).json({
-            status: FAILURE,
-            message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
-        })
-        return
+    if (! ('ui_element_spec' in req.context) || ! ('element' in req.context.ui_element_spec) ) {
+        return {
+            status: 422,
+            type: 'application/json',
+            data: {
+                status: FAILURE,
+                message: `ERROR: ui_element_spec.element not defined [${ui_element}]`
+            }
+        }
     }
 
-    if (! ('type' in ui_element.ui_element_spec.element) || ui_element.ui_element_spec.element.type != 'react/element') {
-        res.status(422).json({
-            status: FAILURE,
-            message: `ERROR: unrecognized ui_element_spec.element.type [${ui_element.ui_element_spec.element.type}]`
-        })
-        return
+    if (! ('type' in req.context.ui_element_spec.element) || req.context.ui_element_spec.element.type != 'react/element') {
+        return {
+            status: 422,
+            type: 'application/json',
+            data: {
+                status: FAILURE,
+                message: `ERROR: unrecognized ui_element_spec.element.type [${ui_element.ui_element_spec.element.type}]`
+            }
+        }
     }
 
     // import maps
-    const importMaps = ui_deployment.ui_spec.importMaps
+    const importMaps = req.context.ui_spec.importMaps
 
     // process context
     const js_context = {
@@ -61,14 +70,14 @@ function handle_react(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + ui_element.ui_element_name).replace(/\/+/g, '/')
+    const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
     reg_js_variable(js_context, ui_elem_name)
     //console.log(get_js_variable(js_context, ui_elem_name))
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    const input = ui_element.ui_element_spec
+    const input = req.context.ui_element_spec
 
     // check if there are any block statements
     const block_statements = []
@@ -125,7 +134,7 @@ function handle_react(req, res) {
                     [
                       ...block_statements,
                       t.returnStatement(
-                        react_element(js_context, ui_element.ui_element_spec.element)
+                        react_element(js_context, req.context.ui_element_spec.element)
                       )
                     ]
                   )
@@ -153,7 +162,12 @@ function handle_react(req, res) {
 
     const prettified = prettier.format(output.code, { semi: false, parser: "babel" })
 
-    res.status(200).type('application/javascript').send(prettified)
+    // res.status(200).type('application/javascript').send(prettified)
+    return {
+        status: 200,
+        type: 'application/javascript',
+        data: prettified,
+    }
 }
 
 // export

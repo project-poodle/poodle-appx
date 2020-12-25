@@ -9,6 +9,7 @@ const EditorProvider = (() => {
 
   const f = (props) => {
     // tree data and selected key
+    const [ apiData,        setApiData        ] = useState({})
     const [ treeData,       setTreeData       ] = useState([])
     const [ expandedKeys,   setExpandedKeys   ] = useState([])
     const [ selectedKey,    setSelectedKey    ] = useState(null)
@@ -179,6 +180,8 @@ const EditorProvider = (() => {
     return (
       <EditorContext.Provider
         value={{
+          apiData: apiData,
+          setApiData: setApiData,
           treeData: treeData,
           expandedKeys: expandedKeys,
           setExpandedKeys: setExpandedKeys,

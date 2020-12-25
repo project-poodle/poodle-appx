@@ -68,6 +68,7 @@ app.use(mount_options.api_root,
 // initialize ui router --- Note: perform this step only after db_pool is initialized
 const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
 // ui endpoints
+app.use(mount_options.ui_root, bodyParser.json())
 app.use(mount_options.ui_root,
   (req, res, next) => {
     req.mount_options = mount_options

@@ -111,15 +111,7 @@ const PreviewJson = (props) => {
           minimap: {
             enabled: true
           }
-          //tabIndex: 2,
         }}
-        // height="60vh"
-        // mode="javascript"
-        // width="100%"
-        // height="100%"
-        // theme="github"
-        // mode='javascript'
-        // readOnly={true}
         value={json}
         >
       </Editor>

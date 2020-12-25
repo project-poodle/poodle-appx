@@ -129,6 +129,8 @@ const SyntaxTree = (props) => {
 
   // context
   const {
+    apiData,
+    setApiData,
     treeData,
     expandedKeys,
     setExpandedKeys,
@@ -169,6 +171,10 @@ const SyntaxTree = (props) => {
       data = data[0]
     }
 
+    // set api data
+    setApiData(data)
+
+    // data check
     if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
       // fresh action
       makeAction(`init`, [], [], null, true)

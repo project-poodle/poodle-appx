@@ -1374,7 +1374,7 @@ function appx_route(js_context, input) {
     throw new Error(`ERROR: context missing appx.ui_deployment [${JSON.stringify(js_context)}]`)
   }
 
-  const { ui_deployment } = js_context.appx
+  const { namespace, ui_name, ui_deployment } = js_context.appx
 
   let route_results = db.query_sync(`SELECT
                   ui_route.namespace,
@@ -1398,9 +1398,9 @@ function appx_route(js_context, input) {
                   AND ui_route.deleted=0
                   AND ui_deployment.deleted=0`,
               [
-                  ui_deployment.namespace,
-                  ui_deployment.ui_name,
-                  ui_deployment.ui_deployment,
+                  namespace,
+                  ui_name,
+                  ui_deployment,
               ]
   )
 

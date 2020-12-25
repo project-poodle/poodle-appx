@@ -107,7 +107,7 @@ const PreviewTabs = (props) => {
             <Box key="toolTop" display="inline" className={styles.toolTop}>
               <Tooltip
                 key="live"
-                title={ liveUpdate ? "Live" : "Backend" }
+                title={ liveUpdate ? "Live View" : "Backend" }
                 placement="bottom"
                 >
                 <AntButton
