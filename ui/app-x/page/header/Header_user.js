@@ -206,7 +206,7 @@ Header_user.propTypes = {
 // state to props
 const mapStateToProps = (state, ownProps) => {
 
-  console.log(state)
+  // console.log(state)
   //console.log(ownProps)
 
   const updateState = {
@@ -239,7 +239,6 @@ const mapStateToProps = (state, ownProps) => {
 
   // update user reducers
   if (updateState.realm in state.userReducer) {
-    console.log('here')
     updateState.reducers.user.realm = state.userReducer[updateState.realm].realm
     updateState.reducers.user.username = state.userReducer[updateState.realm].username
     updateState.reducers.user.token = state.userReducer[updateState.realm].token
