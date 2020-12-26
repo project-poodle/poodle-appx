@@ -50,14 +50,18 @@ self.addEventListener('message', event => {
           const client = await clients.get(event.source.id);
           if (!client) return;
           // transpile
-          let transpiled_code = sw_transpile(event.data.code, event.data.url)
-          let message = {
-            ...event.data,
-            type: "transpile",
-            code: transpiled_code,
+          try {
+            let transpiled_code = sw_transpile(event.data.code, event.data.url)
+            let message = {
+              ...event.data,
+              type: "transpile",
+              code: transpiled_code,
+            }
+            client.postMessage(message)
+            // console.log('posted', message)
+          } catch (err) {
+            console.error(String(err))
           }
-          client.postMessage(message)
-          // console.log('posted', message)
         }())
       } else {
         console.log(`Service Worker: unrecognized transpile message - ${event.data}`)

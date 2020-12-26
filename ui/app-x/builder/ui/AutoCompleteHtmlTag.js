@@ -34,7 +34,9 @@ const AutoCompleteHtmlTag = (props) => {
         value={props.value}
         onChange={data => {
           props.onChange(data)
-          setBaseSubmitTimer(new Date())
+          if (props.callback) {
+            props.callback(data)
+          }
         }}
         onSearch={s => {
           const valid_names = valid_html_tags()
@@ -54,7 +56,9 @@ const AutoCompleteHtmlTag = (props) => {
           value={props.value}
           onChange={e => {
             props.onChange(e.target.value)
-            setBaseSubmitTimer(new Date())
+            if (props.callback) {
+              props.callback(e.target.value)
+            }
           }}
           error={!!props.errors?.name}
           helperText={props.errors?.name?.message}

@@ -57,7 +57,7 @@ const AutoCompleteImportName = (props) => {
           onChange={e => {
             props.onChange(e.target.value)
             if (props.callback) {
-              props.callback(data)
+              props.callback(e.target.value)
             }
           }}
           error={!!props.errors?.name}

@@ -230,7 +230,7 @@ function importMapPlugin(import_maps, globalImports) {
           }
 
           if (!found) {
-            throw new Error('ERROR: import cannot be resolved [' + src_val + '].' + JSON.stringify(import_maps, null, 4))
+            throw new Error('ERROR: import cannot be resolved [' + src_val + '].')
           }
         }
       }
@@ -255,7 +255,7 @@ function transpile(input, import_maps) {
 
   } catch (err) {
 
-    console.log(err.stack)
+    // console.log(err)
     throw err
   }
 }
