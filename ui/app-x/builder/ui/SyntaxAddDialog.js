@@ -30,9 +30,6 @@ import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
 import {
-  Autocomplete,
-} from '@material-ui/lab'
-import {
   default as NestedMenuItem
 } from 'material-ui-nested-menu-item'
 import {
@@ -51,6 +48,9 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
+import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
 import {
   parse_js,
   lookup_icon_for_type,
@@ -83,6 +83,10 @@ const SyntaxAddDialog = (props) => {
       padding: theme.spacing(2, 0),
     },
   }))()
+
+  const {
+    selectedKey
+  } = useContext(EditorProvider.Context)
 
   // states and effects
   const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
@@ -649,16 +653,16 @@ const SyntaxAddDialog = (props) => {
                 }}
                 render={props =>
                   (
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Name"
-                        multiline={false}
-                        onChange={props.onChange}
+                    <Box className={styles.formControl}>
+                      <AutoCompleteImportName
+                        name={props.name}
                         value={props.value}
-                        error={!!errors.name}
-                        helperText={errors.name?.message}
-                        />
-                    </FormControl>
+                        onChange={props.onChange}
+                        errors={errors}
+                        selectedKey={selectedKey}
+                        title="Import Name"
+                      />
+                    </Box>
                   )
                 }
               />
@@ -1147,25 +1151,16 @@ const SyntaxAddDialog = (props) => {
                   }}
                   render={props =>
                   (
-                    <FormControl className={styles.formControl}>
-                      <Autocomplete
-                        options={valid_import_names()}
-                        getOptionLabel={option => option}
-                        freeSolo={true}
-                        onChange={(e, v) => props.onChange(v)}
-                        renderInput={
-                          params =>
-                          <TextField
-                            {...params}
-                            label="Element Name"
-                            onChange={props.onChange}
-                            value={props.value}
-                            error={!!errors.name}
-                            helperText={errors.name?.message}
-                          />
-                        }
+                    <Box className={styles.formControl}>
+                      <AutoCompleteImportName
+                        name={props.name}
+                        value={props.value}
+                        onChange={props.onChange}
+                        errors={errors}
+                        selectedKey={selectedKey}
+                        title="Element Name"
                       />
-                    </FormControl>
+                    </Box>
                   )
                 }
                 />
@@ -1182,25 +1177,16 @@ const SyntaxAddDialog = (props) => {
                   }}
                   render={props =>
                   (
-                    <FormControl className={styles.formControl}>
-                      <Autocomplete
-                        options={valid_html_tags()}
-                        getOptionLabel={option => option}
-                        freeSolo={true}
-                        onChange={(e, v) => props.onChange(v)}
-                        renderInput={
-                          params =>
-                          <TextField
-                            {...params}
-                            label="HTML Tag"
-                            onChange={props.onChange}
-                            value={props.value}
-                            error={!!errors.name}
-                            helperText={errors.name?.message}
-                          />
-                        }
+                    <Box className={styles.formControl}>
+                      <AutoCompleteHtmlTag
+                        name={props.name}
+                        value={props.value}
+                        onChange={props.onChange}
+                        errors={errors}
+                        selectedKey={selectedKey}
+                        title="HTML Tag"
                       />
-                    </FormControl>
+                    </Box>
                   )
                 }
                 />

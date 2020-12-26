@@ -31,6 +31,9 @@ const GlobalStyles = () => {
       '.ant-tabs-content': {
         height: '100%', // fix ant tabs
       },
+      '.ant-select-dropdown': {
+        zIndex: 2050,
+      },
       '.MuiSelect-select.MuiSelect-select': {
         display: 'flex',
         alignItems: 'center',

@@ -19,12 +19,10 @@ import {
   MenuItem,
   makeStyles
 } from '@material-ui/core'
-import {
-  Autocomplete,
-} from '@material-ui/lab'
 // ant design
 import {
   Tabs,
+  AutoComplete,
 } from 'antd'
 const { TabPane } = Tabs;
 import { useForm, Controller } from "react-hook-form";
@@ -32,6 +30,8 @@ import { parse, parseExpression } from "@babel/parser"
 // context provider
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import YamlEditor from 'app-x/builder/ui/YamlEditor'
+import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
+import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
 // utilities
 import {
   lookup_icon_for_type,
@@ -85,10 +85,10 @@ const PropEditor = (props) => {
     redo,
   } = useContext(EditorProvider.Context)
 
-  const [ nodeType,         setNodeType       ] = useState('')
-  const [ treeNode,         setTreeNode       ] = useState(null)
-  const [ parentNode,       setParentNode     ] = useState(null)
-  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
+  const [ nodeType,             setNodeType             ] = useState('')
+  const [ treeNode,             setTreeNode             ] = useState(null)
+  const [ parentNode,           setParentNode           ] = useState(null)
+  const [ isSwitchDefault,      setSwitchDefault        ] = useState(props.isSwitchDefault)
 
   // react hook form
   const { register, control, reset, errors, trigger, handleSubmit, getValues, setValue } = useForm({
@@ -630,7 +630,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/import')
+                (treeNode && treeNode.data && nodeType == 'A')
                 &&
                 (
                   <Box>
@@ -676,33 +676,19 @@ const PropEditor = (props) => {
                       }}
                       render={props =>
                       (
-                        <FormControl className={styles.formControl}>
-                          <Autocomplete
-                            options={valid_import_names()}
-                            getOptionLabel={option => option}
-                            freeSolo={true}
+                        <Box className={styles.formControl}>
+                          <AutoCompleteImportName
+                            name={props.name}
                             value={props.value}
-                            onChange={(e, v) => {
-                              props.onChange(v)
+                            onChange={props.onChange}
+                            errors={errors}
+                            selectedKey={selectedKey}
+                            title="Import Name"
+                            callback={data => {
                               setBaseSubmitTimer(new Date())
                             }}
-                            renderInput={
-                              params =>
-                              <TextField
-                                {...params}
-                                label="Element Name"
-                                name={props.name}
-                                value={props.value}
-                                onChange={e => {
-                                  props.onChange(e.target.value)
-                                  setBaseSubmitTimer(new Date())
-                                }}
-                                error={!!errors.name}
-                                helperText={errors.name?.message}
-                              />
-                            }
                           />
-                        </FormControl>
+                        </Box>
                       )
                     }
                     />
@@ -1187,35 +1173,21 @@ const PropEditor = (props) => {
                           required: "Element name is required",
                         }}
                         render={props =>
-                        (
-                          <FormControl className={styles.formControl}>
-                            <Autocomplete
-                              options={valid_import_names()}
-                              getOptionLabel={option => option}
-                              freeSolo={true}
-                              value={props.value}
-                              onChange={(e, v) => {
-                                props.onChange(v)
-                                setBaseSubmitTimer(new Date())
-                              }}
-                              renderInput={
-                                params =>
-                                <TextField
-                                  {...params}
-                                  label="Element Name"
-                                  name={props.name}
-                                  value={props.value}
-                                  onChange={e => {
-                                    props.onChange(e.target.value)
-                                    setBaseSubmitTimer(new Date())
-                                  }}
-                                  error={!!errors.name}
-                                  helperText={errors.name?.message}
-                                />
-                              }
-                            />
-                          </FormControl>
-                        )
+                          (
+                            <Box className={styles.formControl}>
+                              <AutoCompleteImportName
+                                name={props.name}
+                                value={props.value}
+                                onChange={props.onChange}
+                                errors={errors}
+                                selectedKey={selectedKey}
+                                title="Element Name"
+                                callback={data => {
+                                  setBaseSubmitTimer(new Date())
+                                }}
+                              />
+                            </Box>
+                          )
                       }
                       />
                     }
@@ -1231,33 +1203,19 @@ const PropEditor = (props) => {
                         }}
                         render={props =>
                         (
-                          <FormControl className={styles.formControl}>
-                            <Autocomplete
-                              options={valid_html_tags()}
-                              getOptionLabel={option => option}
-                              freeSolo={true}
+                          <Box className={styles.formControl}>
+                            <AutoCompleteImportName
+                              name={props.name}
                               value={props.value}
-                              onChange={(e, v) => {
-                                props.onChange(v)
+                              onChange={props.onChange}
+                              errors={errors}
+                              selectedKey={selectedKey}
+                              title="HTML Tag"
+                              callback={data => {
                                 setBaseSubmitTimer(new Date())
                               }}
-                              renderInput={
-                                params =>
-                                <TextField
-                                  {...params}
-                                  label="HTML Tag"
-                                  name={props.name}
-                                  value={props.value}
-                                  onChange={e => {
-                                    props.onChange(e.target.value)
-                                    setBaseSubmitTimer(new Date())
-                                  }}
-                                  error={!!errors.name}
-                                  helperText={errors.name?.message}
-                                />
-                              }
                             />
-                          </FormControl>
+                          </Box>
                         )
                       }
                       />
