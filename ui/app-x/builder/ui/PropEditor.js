@@ -1204,7 +1204,7 @@ const PropEditor = (props) => {
                         render={props =>
                         (
                           <Box className={styles.formControl}>
-                            <AutoCompleteImportName
+                            <AutoCompleteHtmlTag
                               name={props.name}
                               value={props.value}
                               onChange={props.onChange}
