@@ -91,7 +91,7 @@ const PropEditor = (props) => {
   const [ isSwitchDefault,      setSwitchDefault        ] = useState(props.isSwitchDefault)
 
   // react hook form
-  const { register, control, reset, errors, trigger, handleSubmit, getValues, setValue } = useForm({
+  const formHook = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     // defaultValues: {},
@@ -101,6 +101,27 @@ const PropEditor = (props) => {
     // shouldFocusError: true,
     // shouldUnregister: true,
   })
+
+  // react hook form
+  const hookForm = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+  })
+  const {
+    register,
+    unregister,
+    errors,
+    watch,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    setValue,
+    getValues,
+    trigger,
+    control,
+    formState,
+  } = hookForm
 
   useEffect(() => {
     // lookup node
@@ -117,6 +138,9 @@ const PropEditor = (props) => {
           setValue(k, lookupNode.data[k])
         }
       })
+      if (lookupNode.data.type === 'react/state') {
+        setValue('customReference', !lookupNode.data?.__ref?.startsWith('...'))
+      }
     }
   }, [selectedKey])
 
@@ -134,11 +158,20 @@ const PropEditor = (props) => {
     const lookupNode = tree_lookup(resultTree, selectedKey)
     if (lookupNode) {
       // console.log(data)
+      const preservedRef = lookupNode.data.__ref
       lookupNode.data = data
       if (!!data.__ref) {
         lookupNode.data.__ref = data.__ref
+      } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
+        lookupNode.data.__ref = preservedRef
       } else {
         lookupNode.data.__ref = null
+      }
+      // check if lookupNode is react/state, and customReference is false
+      if (lookupNode.data?.type === 'react/state') {
+        if (!data.customReference) {
+          lookupNode.data.__ref = `...${lookupNode.data.name}`
+        }
       }
       // check if parent is js/switch
       const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
@@ -152,7 +185,7 @@ const PropEditor = (props) => {
       }
       lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
       lookupNode.icon = lookup_icon_for_input(data)
-      // console.log(lookupNode)
+      console.log(lookupNode)
       // setTreeData(resultTree)
       updateAction(
         `Update [${lookupNode.title}]`,
@@ -193,6 +226,49 @@ const PropEditor = (props) => {
               <Box className={styles.editor}>
               {
                 (
+                  treeNode?.data?.type === 'react/state'
+                )
+                &&
+                (
+                  <Controller
+                    control={control}
+                    key='customReference'
+                    name='customReference'
+                    type="boolean"
+                    defaultValue={!treeNode?.data?.__ref?.startsWith('...')}
+                    render={props =>
+                      (
+                        <FormControl
+                          className={styles.formControl}
+                          error={!!errors.customReference}
+                          >
+                          <FormHelperText>Custom Reference</FormHelperText>
+                          <Switch
+                            name={props.name}
+                            checked={props.value}
+                            onChange={e => {
+                              props.onChange(e.target.checked)
+                              if (e.target.checked) {
+                                setValue(`__ref`, `...${getValues('name')}`)
+                              } else {
+                                setValue(`__ref`, `${getValues('name')}`)
+                              }
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                          {
+                            !!errors.customReference
+                            &&
+                            <FormHelperText>{errors.customReference?.message}</FormHelperText>
+                          }
+                        </FormControl>
+                      )
+                    }
+                  />
+                )
+              }
+              {
+                (
                   treeNode?.data?.__ref !== null
                   && parentNode?.data?.type !== 'js/switch'
                   && parentNode?.data?.type !== 'js/map'
@@ -200,6 +276,11 @@ const PropEditor = (props) => {
                   && parentNode?.data?.type !== 'js/filter'
                   && parentNode?.data?.type !== 'react/element'
                   && parentNode?.data?.type !== 'react/html'
+                  && !
+                  (
+                    (treeNode?.data?.type === 'react/state')
+                    && !getValues('customReference')
+                  )
                 )
                 &&
                 (
@@ -210,11 +291,29 @@ const PropEditor = (props) => {
                     rules={{
                       required: 'Reference name is required',
                       validate: {
-                        //checkDuplicate: value =>
-                        //  !value
-                        //  || !parentNode
-                        //  || lookup_child_by_ref(parentNode, value)?.key === treeNode.key
-                        //  || 'Reference name already exists'
+                        checkDuplicate: value => {
+                          if (!value) {
+                            return true
+                          } else if (!parentNode) {
+                            return true
+                          } else if (!parentNode.children) {
+                            return true
+                          }
+                          // check if any children matches current key
+                          const found = parentNode.children
+                            // filter out current node
+                            .filter(child => child.key !== treeNode.key)
+                            // check if child node matches current key
+                            .reduce(
+                              (result, item) => {
+                                return result || item.data.__ref === treeNode?.data?.__ref
+                              },
+                              false
+                            )
+                          // not found, or error
+                          return !found
+                            || `Duplicate reference name [${treeNode?.data?.__ref}]`
+                        }
                       },
                     }}
                     render={props =>
@@ -257,25 +356,20 @@ const PropEditor = (props) => {
                           error={!!errors.default}
                           >
                           <FormHelperText>Is Default</FormHelperText>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                name={props.name}
-                                checked={props.value}
-                                onChange={e => {
-                                  props.onChange(e.target.checked)
-                                  setSwitchDefault(e.target.checked)
-                                  setBaseSubmitTimer(new Date())
-                                }}
-                              />
-                            }
-                            label=""
-                            />
-                            {
-                              !!errors.default
-                              &&
-                              <FormHelperText>{errors.default?.message}</FormHelperText>
-                            }
+                          <Switch
+                            name={props.name}
+                            checked={props.value}
+                            onChange={e => {
+                              props.onChange(e.target.checked)
+                              setSwitchDefault(e.target.checked)
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                          {
+                            !!errors.default
+                            &&
+                            <FormHelperText>{errors.default?.message}</FormHelperText>
+                          }
                         </FormControl>
                       )
                     }
@@ -296,7 +390,7 @@ const PropEditor = (props) => {
                       validate: {
                         conditionSyntax: value => {
                           try {
-                            parseExpression(value)
+                            parseExpression(String(value))
                             return true
                           } catch (err) {
                             return String(err)
@@ -483,19 +577,14 @@ const PropEditor = (props) => {
                             (
                               <FormControl className={styles.formControl}>
                                 <FormHelperText>Boolean</FormHelperText>
-                                <FormControlLabel
-                                  control={
-                                    <Switch
-                                      name={props.name}
-                                      checked={props.value}
-                                      onChange={ e => {
-                                        props.onChange(e.target.checked)
-                                        setBaseSubmitTimer(new Date())
-                                      }}
-                                    />
-                                  }
-                                  label=""
-                                  />
+                                <Switch
+                                  name={props.name}
+                                  checked={props.value}
+                                  onChange={ e => {
+                                    props.onChange(e.target.checked)
+                                    setBaseSubmitTimer(new Date())
+                                  }}
+                                />
                               </FormControl>
                             )
                           }
@@ -515,7 +604,7 @@ const PropEditor = (props) => {
                             validate: {
                               expressionSyntax: value => {
                                 try {
-                                  parseExpression(value)
+                                  parseExpression(String(value))
                                   return true
                                 } catch (err) {
                                   return String(err)
@@ -742,7 +831,9 @@ const PropEditor = (props) => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parse(value)
+                              parse(value, {
+                                allowReturnOutsideFunction: true, // allow return in the block statement
+                              })
                               return true
                             } catch (err) {
                               return String(err)
@@ -844,7 +935,9 @@ const PropEditor = (props) => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parse(value)
+                              parse(value, {
+                                allowReturnOutsideFunction: true, // allow return in the block statement
+                              })
                               return true
                             } catch (err) {
                               return String(err)
@@ -1003,7 +1096,7 @@ const PropEditor = (props) => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parseExpression(value)
+                              parseExpression(String(value))
                               return true
                             } catch (err) {
                               return String(err)
@@ -1026,6 +1119,40 @@ const PropEditor = (props) => {
                                 error={!!errors.reducer}
                                 helperText={errors.reducer?.message}
                                 />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="init"
+                      control={control}
+                      defaultValue=''
+                      rules={{
+                        required: 'Initial value required',
+                        validate: {
+                          validSyntax: value => {
+                            if (value) {
+                              try {
+                                parseExpression(String(value))
+                                return true
+                              } catch (err) {
+                                return String(err)
+                              }
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Initial Value"
+                              multiline={true}
+                              onChange={props.onChange}
+                              value={props.value}
+                              error={!!errors.init}
+                              helperText={errors.init?.message}
+                              />
                           </FormControl>
                         )
                       }
@@ -1080,7 +1207,7 @@ const PropEditor = (props) => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parseExpression(value)
+                              parseExpression(String(value))
                               return true
                             } catch (err) {
                               return String(err)
@@ -1316,7 +1443,16 @@ const PropEditor = (props) => {
                       control={control}
                       defaultValue={treeNode?.data?.init}
                       rules={{
-                        required: "Initial value is required",
+                        validate: {
+                          validSyntax: value => {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
                       }}
                       render={props =>
                         (
@@ -1386,7 +1522,9 @@ const PropEditor = (props) => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parse(value)
+                              parse(value, {
+                                allowReturnOutsideFunction: true, // allow return in the block statement
+                              })
                               return true
                             } catch (err) {
                               return String(err)
@@ -1413,6 +1551,27 @@ const PropEditor = (props) => {
                         )
                       }
                     />
+                    <TextFieldArray
+                      key="states"
+                      name="states"
+                      label="States"
+                      type="text"
+                      defaultValues={[]}
+                      className={styles.formControl}
+                      rules={{
+                        required: "State expression is required",
+                        validate: {
+                          validSyntax: value => {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      />
                   </Box>
                 )
               }

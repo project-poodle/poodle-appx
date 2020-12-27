@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import _ from 'lodash'
-
-const MAX_HISTORY = 20
 
 const PreviewProvider = (() => {
 

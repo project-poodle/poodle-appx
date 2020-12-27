@@ -9,7 +9,7 @@ const db = require('../db/db')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
-const { handle_react } = require('./react')
+const { handle_react_element } = require('./react_element')
 const { handle_render } = require('./render')
 
 const rootDir = path.join(__dirname, '../../../ui/')
@@ -54,7 +54,7 @@ function handle_preview(req, res) {
       if (req_output === 'code') {
 
         // render source code
-        const result = handle_react(req, res)
+        const result = handle_react_element(req, res)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))

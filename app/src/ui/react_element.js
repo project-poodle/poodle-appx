@@ -16,13 +16,10 @@ const {
 } = require('./util')
 const db = require('../db/db')
 
-// console.log(generate)
-
-
 /**
- * handle_react
+ * handle_react_element
  */
-function handle_react(req, res) {
+function handle_react_element(req, res) {
 
     // const { ui_deployment, ui_element } = req.context
     // console.log(req.context)
@@ -65,8 +62,10 @@ function handle_react(req, res) {
 
     // process context
     const js_context = {
+        topLevel: true,
         variables: {},
         imports: {},
+        states: {},
         appx: req.context
     }
 
@@ -87,10 +86,71 @@ function handle_react(req, res) {
       if (key === 'type' || key === 'element' || key === 'propTypes') {
         return
       }
-      // check if input[key] is 'js/block'
-      if (!isPrimitive(input[key]) && input[key].type === 'js/block') {
+
+      if (isPrimitive(input[key])) {
+        // process input[key] and assign to declared variable
+        const variableDeclaration = t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  parentRef: key,
+                  parentPath: t.identifier(key),
+                },
+                input[key]
+              )
+            )
+          ]
+        )
+        // no comments for primitive types
+        block_statements.push(
+          variableDeclaration
+        )
+
+      } else if (input[key].type === 'js/block') {
+        // if input[key] is 'js/block'
         // adds each of the block statement
-        block_statements.push(...(js_process(js_context, input[key]).body))
+        block_statements.push(...(js_process(
+          js_context,
+          input[key]).body
+        ))
+
+      } else if (key.startsWith('...')) {
+        // if input[key] starts with '...'
+        if (input[key].type === 'react/state') {
+          const variableDeclaration = t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.arrayPattern(
+                  [
+                    t.identifier(input[key].name),
+                    t.identifier(input[key].setter),
+                  ]
+                ),
+                js_process(
+                  {
+                    ...js_context,
+                    parentRef: key,
+                    parentPath: t.identifier(key),
+                  },
+                  input[key]
+                )
+              )
+            ]
+          )
+          //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+          t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
+          block_statements.push(
+            variableDeclaration
+          )
+
+        } else {
+            throw new Error(`ERROR: unrecognized top level definition [${key}] [${input[key].type}]`)
+        }
 
       } else {
         // process input[key] and assign to declared variable
@@ -99,7 +159,14 @@ function handle_react(req, res) {
             [
               t.variableDeclarator(
                 t.identifier(key),
-                js_process(js_context, input[key])
+                js_process(
+                  {
+                    ...js_context,
+                    parentRef: key,
+                    parentPath: t.identifier(key),
+                  },
+                  input[key]
+                )
               )
             ]
           )
@@ -108,15 +175,8 @@ function handle_react(req, res) {
         block_statements.push(
           variableDeclaration
         )
-        // add empty statement
-        //block_statements.push(
-        //  t.emptyStatement()
-        //)
       }
     })
-
-    // console.log(t.addComment)
-    // console.log(t.addComments)
 
     // create ast tree for the program
     const ast_tree = t.file(
@@ -173,5 +233,5 @@ function handle_react(req, res) {
 
 // export
 module.exports = {
-    handle_react: handle_react
+    handle_react_element: handle_react_element
 }

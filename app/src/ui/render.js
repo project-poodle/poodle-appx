@@ -8,7 +8,7 @@ const Mustache = require('mustache')
 const db = require('../db/db')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
-const { handle_react } = require('./react')
+const { handle_react_element } = require('./react_element')
 
 const rootDir = path.join(__dirname, '../../../ui/')
 // const INDEX_HTML = 'index.html'
@@ -178,7 +178,7 @@ function handle_render(req, res, load_from_db=true) {
     // console.log(context.init_js)
 
     // process source code [element_js]
-    const element_js = handle_react(req, res)
+    const element_js = handle_react_element(req, res)
     if (element_js.status !== 200) {
         return element_js
     }

@@ -864,32 +864,6 @@ function parse_js_map(js_context, parentKey, ref, input) {
   // expand map by default
   js_context.expandedKeys.push(node.key)
 
-  // add input.data
-  node.children.push(
-    parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      'data',
-      input.data
-    )
-  )
-
-  // add input.result
-  node.children.push(
-    parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      'result',
-      input.result
-    )
-  )
-
   return node
 }
 
@@ -933,37 +907,14 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     parentKey,
     false)
 
-  // input filter
+  // input reducer
   node.data.reducer = input.reducer
+
+  // input init
+  node.data.init = input.init
 
   // expand reduce by default
   js_context.expandedKeys.push(node.key)
-
-  // add input.data
-  node.children.push(
-    parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      'data',
-      input.data
-    )
-  )
-
-  // add input.init
-  node.children.push(
-    parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      'init',
-      input.init
-    )
-  )
 
   return node
 }
@@ -1009,19 +960,6 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 
   // expand filter by default
   js_context.expandedKeys.push(node.key)
-
-  // add input.data
-  node.children.push(
-    parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      'data',
-      input.data
-    )
-  )
 
   return node
 }
@@ -1825,7 +1763,6 @@ function lookup_valid_child_types(type) {
       ref: {
         names: [
           'data',
-          'init',
         ],
         types: [
           'js/string',

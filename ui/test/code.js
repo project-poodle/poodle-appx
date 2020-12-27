@@ -1,4 +1,8 @@
 import * as React from 'react'
+const [ state, setSatte ]  = useState()
+
+const member1 = b[1]
+const member2 = d.e
 
 const a = {
   a: 1,
@@ -10,7 +14,6 @@ const a = {
 
 const b = { ...a }
 
-const [ state, setSatte ]  = useState()
 
 const AppX = (props, children) => {
 

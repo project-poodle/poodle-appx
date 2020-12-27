@@ -34,7 +34,6 @@ const PreviewJson = (props) => {
     selectedKey,
     treeDirty,
     livePreview,
-    setLiveUpdate,
   } = useContext(EditorProvider.Context)
 
   // preview context

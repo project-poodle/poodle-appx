@@ -33,8 +33,7 @@ const PreviewYaml = (props) => {
     expandedKeys,
     selectedKey,
     treeDirty,
-    liveUpdate,
-    setLiveUpdate,
+    livePreview,
   } = useContext(EditorProvider.Context)
 
   // preview context
@@ -49,8 +48,8 @@ const PreviewYaml = (props) => {
   // load content from api
   useEffect(() => {
 
-    // load from backend if not liveUpdate
-    if (!liveUpdate) {
+    // load from backend if not livePreview
+    if (!livePreview) {
       setPreviewLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
@@ -82,13 +81,13 @@ const PreviewYaml = (props) => {
         })
     }
 
-  }, [liveUpdate])
+  }, [livePreview])
 
   // load content from UI context treeData
   useEffect(() => {
 
-    // load from UI context if liveUpdate
-    if (liveUpdate) {
+    // load from UI context if livePreview
+    if (!!livePreview) {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
       // yaml data
@@ -98,7 +97,7 @@ const PreviewYaml = (props) => {
       setYaml(yamlDoc.toString())
     }
 
-  }, [liveUpdate, treeData])
+  }, [livePreview, treeData])
 
   // render
   return (
