@@ -446,10 +446,13 @@ const SyntaxTree = (props) => {
     // actual delete only if confirmed
     let resultTree = _.cloneDeep(treeData)
     const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-    if (!!lookupParent) {
+    if (!!lookupParent && lookupParent.key !== '/') {
+      // console.log(lookupParent)
       lookupParent.children = lookupParent.children.filter(child => {
         return child.key !== lookupNode.key
       })
+    } else {
+      // console.log('here')
       // this is one of the root node
       resultTree =
         resultTree.filter(child => {
@@ -570,24 +573,25 @@ const SyntaxTree = (props) => {
       return
     }
 
-    // replicate data
-    const data = _.cloneDeep(treeData)
+    // replicate treeData
+    const resultData = _.cloneDeep(treeData)
 
     // Find dragObject
     let dragObj
-    tree_traverse(data, dragKey, (item, index, arr) => {
+    tree_traverse(resultData, dragKey, (item, index, arr) => {
       arr.splice(index, 1)
       dragObj = item
     })
 
     if (!info.dropToGap) {
       // Drop on the content
-      tree_traverse(data, dropKey, item => {
+      tree_traverse(resultData, dropKey, item => {
         // console.log(item)
         item.children = item.children || []
         // where to insert
         // console.log(expandedKeys)
         item.children.unshift(dragObj)
+        dragObj.parentKey = dropKey
         if (!expandedKeys.includes(item.key)) {
           // console.log([...expandedKeys, item.key])
           setExpandedKeys(
@@ -600,31 +604,34 @@ const SyntaxTree = (props) => {
       info.node.props.expanded && // Is expanded
       dropPosition === 1 // On the bottom gap
     ) {
-      tree_traverse(data, dropKey, item => {
+      tree_traverse(resultData, dropKey, item => {
         item.children = item.children || []
         // where to insert
         item.children.unshift(dragObj)
+        dragObj.parentKey = dropKey
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
       })
     } else {
       let ar
       let i
-      tree_traverse(data, dropKey, (item, index, arr) => {
+      tree_traverse(resultData, dropKey, (item, index, arr) => {
         ar = arr
         i = index
       })
       if (dropPosition === -1) {
         ar.splice(i, 0, dragObj)
+        dragObj.parentKey = dropKey
       } else {
         ar.splice(i + 1, 0, dragObj)
+        dragObj.parentKey = dropKey
       }
     }
 
     // take action
     makeAction(
       `Drag & Drop [${dragObj.title}]`,
-      data,
+      resultData,
       expandedKeys,
       dragObj.key
     )
