@@ -99,6 +99,7 @@ const SyntaxTree = (props) => {
       height: '100%',
       width: '100%',
       overflow: 'scroll',
+      backgroundColor: theme.palette.background.paper,
     },
     tree: {
       width: '100%',
@@ -545,12 +546,15 @@ const SyntaxTree = (props) => {
     // expandedKeys
     // info.event.dataTransfer.dropEffect = 'move'
     // console.log(info.event.dataTransfer.getData("application"))
-    if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
-      // console.log([...info.expandedKeys, info.node.key])
-      setExpandedKeys(
-        [...info.expandedKeys, info.node.key]
-      )
-    }
+
+    // DO NOT EXPAND NODE ON ENTER
+    // user must stay on the element for a while before expand node
+    //if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
+    //  // console.log([...info.expandedKeys, info.node.key])
+    //  setExpandedKeys(
+    //    [...info.expandedKeys, info.node.key]
+    //  )
+    //}
   }
 
   // drag enter
