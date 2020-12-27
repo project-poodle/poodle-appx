@@ -1,8 +1,9 @@
 import React from 'react'
 import {
   useRoutes as _useRoutes,
+  usePath as _usePath,
   navigate as _navigate,
-  A as _A
+  A as _A,
 } from 'hookrouter'
 
 // check base path exist, or log error
@@ -31,6 +32,16 @@ function compute_url(inputUrl) {
   return newUrl
 }
 
+// compute new url based on input
+function reverse_url(inputUrl) {
+  if (inputUrl.startsWith(globalThis.appx.BASE_PATH)) {
+    const newUrl = ('/' + inputUrl.substring(globalThis.appx.BASE_PATH.length))
+    return newUrl.replace(/\/+/g, '/')
+  } else {
+    return inputUrl
+  }
+}
+
 // map hookrouter|useRoutes to new route keys
 const useRoutes = (routeMap => {
   check_base_path()
@@ -44,6 +55,15 @@ const useRoutes = (routeMap => {
   const result = _useRoutes(newMap)
   //console.log(result)
   return result
+})
+
+// map hookrouter|useRoutes to new route keys
+const usePath = (() => {
+  check_base_path()
+  const result = _usePath()
+  const newResult = reverse_url(result)
+  //console.log(newResult)
+  return newResult
 })
 
 // map hookrouter|navigate to new url
@@ -96,6 +116,7 @@ const HLink = (props) => {
 
 export {
   useRoutes,
+  usePath,
   navigate,
   hnavigate,
   A,

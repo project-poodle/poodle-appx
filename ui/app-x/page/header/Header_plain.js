@@ -1,8 +1,8 @@
 import React from 'react'
-import { A } from 'app-x/router'
+import { A, usePath } from 'app-x/router'
 import PropTypes from 'prop-types'
 import { Box, Avatar, Typography, AppBar, Toolbar, makeStyles } from '@material-ui/core'
-
+import { usePath as _usePath } from 'hookrouter'
 
 const Header_plain = (props) => {
 
