@@ -546,7 +546,7 @@ const SyntaxTree = (props) => {
     // expandedKeys
     // info.event.dataTransfer.dropEffect = 'move'
     // console.log(info.event.dataTransfer.getData("application"))
-
+    info.event.preventDefault()
     // DO NOT EXPAND NODE ON ENTER
     // user must stay on the element for a while before expand node
     //if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
@@ -595,8 +595,8 @@ const SyntaxTree = (props) => {
         item.children = item.children || []
         // where to insert
         // console.log(expandedKeys)
+        dragObj.parentKey = item.key
         item.children.unshift(dragObj)
-        dragObj.parentKey = dropKey
         if (!expandedKeys.includes(item.key)) {
           // console.log([...expandedKeys, item.key])
           setExpandedKeys(
@@ -612,24 +612,26 @@ const SyntaxTree = (props) => {
       tree_traverse(resultData, dropKey, item => {
         item.children = item.children || []
         // where to insert
+        dragObj.parentKey = item.key
         item.children.unshift(dragObj)
-        dragObj.parentKey = dropKey
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
       })
     } else {
       let ar
       let i
+      let t
       tree_traverse(resultData, dropKey, (item, index, arr) => {
         ar = arr
         i = index
+        t = item
       })
       if (dropPosition === -1) {
+        dragObj.parentKey = t.parentKey
         ar.splice(i, 0, dragObj)
-        dragObj.parentKey = dropKey
       } else {
+        dragObj.parentKey = t.parentKey
         ar.splice(i + 1, 0, dragObj)
-        dragObj.parentKey = dropKey
       }
     }
 

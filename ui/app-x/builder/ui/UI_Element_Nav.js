@@ -12,54 +12,6 @@ import ReactIcon from 'app-x/icon/React'
 
 const PATH_SEPARATOR = '/'
 
-/*
-const treeData = [
-  {
-    title: 'parent 0',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true,
-      },
-    ],
-  },
-]
-
-const initData = []
-const x = 3
-const y = 2
-const z = 1
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0'
-  const tns = _tns || initData
-
-  const children = []
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`
-    tns.push({ title: key, key: key, isLeaf: _level<0 })
-    if (i < y) {
-      children.push(key)
-    }
-  }
-  if (_level < 0) {
-    return tns;
-  }
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = []
-    return generateData(level, key, tns[index].children)
-  })
-}
-generateData(z)
-*/
-
 // traverse method
 const traverse = (data, key, callback) => {
   for (let i = 0; i < data.length; i++) {
