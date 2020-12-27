@@ -137,7 +137,7 @@ const UI_Builder = (props) => {
       function resizeGridLayout() {
         const node = ReactDOM.findDOMNode(ref)
         // console.log(node, node.offsetWidth, node.offsetHeight)
-        setRowHeight(node.offsetHeight / 12)
+        setRowHeight((node.offsetHeight - 2) / 12)
         setWidth(node.offsetWidth)
       }
       // resize now
