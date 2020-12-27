@@ -749,7 +749,7 @@ function gen_react_state(tree_context, treeNode) {
     type: treeNode.data.type,
     name: treeNode.data.name,
     setter: treeNode.data.setter,
-    init: treeNode.data.init,
+    init: !!treeNode.data.init ? treeNode.data.init : null, // default to null
   }
 
   // return

@@ -371,7 +371,12 @@ const SyntaxTree = (props) => {
       parentKey = lookupParent.key
     }
     // ref
-    const ref = !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
+    const ref =
+      (nodeData.type === 'react/state')
+      ? !!nodeData.customReference        // special handle of 'react/state'
+        ? nodeData.__ref
+        : `...${nodeData.name}`
+      : !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
     // console.log(parentKey, ref, nodeData)
     const parse_context = {}
     var parsed = null
@@ -399,7 +404,7 @@ const SyntaxTree = (props) => {
       // add to the root as first element
       resultTree.splice(1, 0, parsed)
     }
-    console.log(gen_js({topLevel: true}, resultTree))
+    // console.log(gen_js({topLevel: true}, resultTree))
     // process expanded keys
     const newExpandedKeys = _.cloneDeep(expandedKeys)
     parse_context.expandedKeys.map(key => {

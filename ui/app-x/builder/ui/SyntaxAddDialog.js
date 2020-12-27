@@ -139,6 +139,19 @@ const SyntaxAddDialog = (props) => {
   // console.log(nodeType)
   // console.log(props)
 
+  // watchCustomReference
+  const watchCustomReference = watch('customReference')
+  useEffect(() => {
+    if (nodeType === 'react/state') {
+      if (watchCustomReference) {
+        setValue(`__ref`, `${getValues('name')}`)
+      } else {
+        setValue(`__ref`, `...${getValues('name')}`)
+      }
+    }
+  }, [watchCustomReference])
+
+
   return (
     <Dialog
       className={styles.dialog}
@@ -170,8 +183,60 @@ const SyntaxAddDialog = (props) => {
             className={styles.dialogContent}
             >
             {
-              !!props.addNodeRefRequired
-              && !props.addNodeRef
+              (
+                nodeType === 'react/state'
+              )
+              &&
+              (
+                <Controller
+                  control={control}
+                  key='customReference'
+                  name='customReference'
+                  type="boolean"
+                  defaultValue={false}
+                  render={props =>
+                    (
+                      <FormControl
+                        className={styles.formControl}
+                        error={!!errors.customReference}
+                        >
+                        <FormHelperText>Custom Reference</FormHelperText>
+                        <Switch
+                          name={props.name}
+                          checked={props.value}
+                          onChange={e => {
+                            props.onChange(e.target.checked)
+                            if (e.target.checked) {
+                              setValue(`__ref`, `${getValues('name')}`)
+                            } else {
+                              setValue(`__ref`, `...${getValues('name')}`)
+                            }
+                          }}
+                        />
+                        {
+                          !!errors.customReference
+                          &&
+                          <FormHelperText>{errors.customReference?.message}</FormHelperText>
+                        }
+                      </FormControl>
+                    )
+                  }
+                />
+              )
+            }
+            {
+              (
+                (
+                  (nodeType !== 'react/state')
+                  && !!props.addNodeRefRequired
+                  && !props.addNodeRef
+                )
+                ||
+                (
+                  (nodeType === 'react/state')
+                  && !!getValues('customReference')
+                )
+              )
               &&
               (
                 <Controller

@@ -338,7 +338,11 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input.type === 'react/state') {
 
-    return prefix + input.name
+    if (!!ref && ref.startsWith('...')) {
+      return ref
+    } else {
+      return prefix + input.name
+    }
 
   } else if (input.type === 'react/effect') {
 

@@ -123,6 +123,18 @@ const PropEditor = (props) => {
     formState,
   } = hookForm
 
+  // watch customReference
+  const watchCustomReference = watch('customReference')
+  useEffect(() => {
+    if (treeNode?.data?.type === 'react/state') {
+      if (watchCustomReference) {
+        setValue(`__ref`, `${getValues('name')}`)
+      } else {
+        setValue(`__ref`, `...${getValues('name')}`)
+      }
+    }
+  }, [watchCustomReference])
+
   useEffect(() => {
     // lookup node
     const lookupNode = tree_lookup(treeData, selectedKey)
@@ -185,7 +197,7 @@ const PropEditor = (props) => {
       }
       lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
       lookupNode.icon = lookup_icon_for_input(data)
-      console.log(lookupNode)
+      // console.log(lookupNode)
       // setTreeData(resultTree)
       updateAction(
         `Update [${lookupNode.title}]`,
@@ -248,11 +260,6 @@ const PropEditor = (props) => {
                             checked={props.value}
                             onChange={e => {
                               props.onChange(e.target.checked)
-                              if (e.target.checked) {
-                                setValue(`__ref`, `...${getValues('name')}`)
-                              } else {
-                                setValue(`__ref`, `${getValues('name')}`)
-                              }
                               setBaseSubmitTimer(new Date())
                             }}
                           />
@@ -290,6 +297,10 @@ const PropEditor = (props) => {
                     defaultValue={treeNode?.data?.__ref}
                     rules={{
                       required: 'Reference name is required',
+                      pattern: {
+                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                        message: 'Reference name must be a valid variable name',
+                      },
                       validate: {
                         checkDuplicate: value => {
                           if (!value) {
@@ -1445,6 +1456,9 @@ const PropEditor = (props) => {
                       rules={{
                         validate: {
                           validSyntax: value => {
+                            if (!value) {
+                              return true
+                            }
                             try {
                               parseExpression(String(value))
                               return true
@@ -1457,17 +1471,18 @@ const PropEditor = (props) => {
                       render={props =>
                         (
                           <FormControl className={styles.formControl}>
-                              <TextField
-                                label="Init"
-                                name={props.name}
-                                value={props.value}
-                                onChange={ e => {
-                                  props.onChange(e.target.value)
-                                  setBaseSubmitTimer(new Date())
-                                }}
-                                error={!!errors.init}
-                                helperText={errors.init?.message}
-                              />
+                            <TextField
+                              label="Initial Value"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.init}
+                              helperText={errors.init?.message}
+                            />
                           </FormControl>
                         )
                       }
