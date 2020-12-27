@@ -117,6 +117,7 @@ const SyntaxTree = (props) => {
       margin: 0,
       padding: 0,
       backgroundColor: theme.palette.background.paper,
+      overflow: 'scroll',
       // border
       border: 1,
       borderTop: 0,
