@@ -330,7 +330,7 @@ function js_expression(js_context, input) {
       throw new Error(`ERROR: input.data missing in [js/expression] [${JSON.stringify(input)}]`)
     }
 
-    data = input.data
+    data = String(input.data)
   }
 
   const parsed = _js_parse_expression(js_context, data)

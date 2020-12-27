@@ -127,9 +127,11 @@ const PropEditor = (props) => {
   const watchCustomReference = watch('customReference')
   useEffect(() => {
     if (treeNode?.data?.type === 'react/state') {
-      if (watchCustomReference) {
-        setValue(`__ref`, `${getValues('name')}`)
-      } else {
+      if (!!watchCustomReference) {
+        if (!getValues(`__ref`)) {
+          setValue(`__ref`, `${getValues('name')}`)
+        }
+      } else if (!watchCustomReference) {
         setValue(`__ref`, `...${getValues('name')}`)
       }
     }
@@ -141,20 +143,29 @@ const PropEditor = (props) => {
     const lookupParent = !!lookupNode ? tree_lookup(treeData, lookupNode.parentKey) : null
     setTreeNode(lookupNode)
     setParentNode(lookupParent)
-    // console.log(treeNode)
+    // console.log(lookupNode)
     // console.log(parentNode)
     if (lookupNode) {
       setNodeType(lookupNode.data.type)
-      Object.keys(lookupNode.data).map(k => {
-        if (!!k && k !== 'type') {
-          setValue(k, lookupNode.data[k])
-        }
-      })
-      if (lookupNode.data.type === 'react/state') {
-        setValue('customReference', !lookupNode.data?.__ref?.startsWith('...'))
-      }
     }
   }, [selectedKey])
+
+  // setValue when treeNode change
+  useEffect(() => {
+    if (!!treeNode) {
+      setNodeType(treeNode.data.type)
+      Object.keys(treeNode.data).map(k => {
+        if (!!k) {
+          setValue(k, treeNode.data[k])
+        }
+      })
+      if (treeNode.data.type === 'react/state') {
+        setValue('customReference',
+          !!treeNode.data.__ref
+          && !treeNode.data.__ref.startsWith('...'))
+      }
+    }
+  }, [treeNode])
 
   // base submit timer
   const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())

@@ -143,9 +143,11 @@ const SyntaxAddDialog = (props) => {
   const watchCustomReference = watch('customReference')
   useEffect(() => {
     if (nodeType === 'react/state') {
-      if (watchCustomReference) {
-        setValue(`__ref`, `${getValues('name')}`)
-      } else {
+      if (!!watchCustomReference) {
+        if (!getValues(`__ref`)) {
+          setValue(`__ref`, `${getValues('name')}`)
+        }
+      } else if (!watchCustomReference) {
         setValue(`__ref`, `...${getValues('name')}`)
       }
     }
