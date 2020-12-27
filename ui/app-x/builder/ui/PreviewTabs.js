@@ -119,7 +119,7 @@ const PreviewTabs = (props) => {
         + '/' + apiData.ui_name
         + '/' + apiData.ui_deployment
         + '/_elem' + apiData.ui_element_name + '.html'
-      console.log(iframeUrl)
+      // console.log(iframeUrl)
       iframeRef.current.src=iframeUrl
     }
 

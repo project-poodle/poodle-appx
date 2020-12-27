@@ -868,6 +868,36 @@ function parse_js_map(js_context, parentKey, ref, input) {
   // expand map by default
   js_context.expandedKeys.push(node.key)
 
+  // add 'data' if exist
+  if (input.data) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'data',
+        input.data ? input.data : null
+      )
+    )
+  }
+
+  // add 'result' if exist
+  if (input.result) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'result',
+        input.result ? input.result : null
+      )
+    )
+  }
+
   return node
 }
 
@@ -920,6 +950,21 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
   // expand reduce by default
   js_context.expandedKeys.push(node.key)
 
+  // add 'data' if exist
+  if (input.data) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'data',
+        input.data ? input.data : null
+      )
+    )
+  }
+
   return node
 }
 
@@ -964,6 +1009,21 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 
   // expand filter by default
   js_context.expandedKeys.push(node.key)
+
+  // add 'data' if exist
+  if (input.data) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'data',
+        input.data ? input.data : null
+      )
+    )
+  }
 
   return node
 }

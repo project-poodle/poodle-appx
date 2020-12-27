@@ -475,7 +475,7 @@ function gen_js_map(tree_context, treeNode) {
     ).data,
   }
 
-  console.log(data)
+  // console.log(data)
 
   // return
   return {

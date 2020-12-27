@@ -70,7 +70,7 @@ const SideDrawer = (props) => {
         <Drawer
           anchor="left"
           classes={{ paper: classes.desktopDrawer }}
-          open
+          open={true}
           variant="persistent"
         >
           {props.children}
