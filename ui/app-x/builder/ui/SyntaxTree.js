@@ -375,7 +375,7 @@ const SyntaxTree = (props) => {
     // ref
     const ref =
       (nodeData.type === 'react/state')
-      ? !!nodeData.customReference        // special handle of 'react/state'
+      ? !!nodeData.__customRef        // special handle of 'react/state'
         ? nodeData.__ref
         : `...${nodeData.name}`
       : !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
@@ -400,7 +400,32 @@ const SyntaxTree = (props) => {
       if (!!ref) {
         lookupParent.children.unshift(parsed)
       } else {
-        lookupParent.children.push(parsed)
+        if ('__pos' in nodeData) {
+          let count = 0
+          let found = false
+          lookupParent.children.map((child, index) => {
+            if (found) {
+              return
+            }
+            if (!child.data.__ref) {
+              count = count+1
+            }
+            // check if we'd insert before first element with no __ref
+            if (nodeData.__pos === 0 && count !== 0) {
+              found = true
+              lookupParent.children.splice(index, 0, parsed)
+              return
+            }
+            if (count >= nodeData.__pos) {
+              found = true
+              lookupParent.children.splice(index+1, 0, parsed)
+              return
+            }
+          })
+        } else {
+          // no __pos, simply add to the end
+          lookupParent.children.push(parsed)
+        }
       }
     } else {
       // add to the root as first element

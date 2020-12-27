@@ -123,19 +123,19 @@ const PropEditor = (props) => {
     formState,
   } = hookForm
 
-  // watch customReference
-  const watchCustomReference = watch('customReference')
+  // watch __customRef
+  const watch__customRef = watch('__customRef')
   useEffect(() => {
     if (treeNode?.data?.type === 'react/state') {
-      if (!!watchCustomReference) {
+      if (!!watch__customRef) {
         if (!getValues(`__ref`)) {
           setValue(`__ref`, `${getValues('name')}`)
         }
-      } else if (!watchCustomReference) {
+      } else if (!watch__customRef) {
         setValue(`__ref`, `...${getValues('name')}`)
       }
     }
-  }, [watchCustomReference])
+  }, [watch__customRef])
 
   useEffect(() => {
     // lookup node
@@ -160,7 +160,7 @@ const PropEditor = (props) => {
         }
       })
       if (treeNode.data.type === 'react/state') {
-        setValue('customReference',
+        setValue('__customRef',
           !!treeNode.data.__ref
           && !treeNode.data.__ref.startsWith('...'))
       }
@@ -190,9 +190,9 @@ const PropEditor = (props) => {
       } else {
         lookupNode.data.__ref = null
       }
-      // check if lookupNode is react/state, and customReference is false
+      // check if lookupNode is react/state, and __customRef is false
       if (lookupNode.data?.type === 'react/state') {
-        if (!data.customReference) {
+        if (!data.__customRef) {
           lookupNode.data.__ref = `...${lookupNode.data.name}`
         }
       }
@@ -255,15 +255,15 @@ const PropEditor = (props) => {
                 (
                   <Controller
                     control={control}
-                    key='customReference'
-                    name='customReference'
+                    key='__customRef'
+                    name='__customRef'
                     type="boolean"
                     defaultValue={!treeNode?.data?.__ref?.startsWith('...')}
                     render={props =>
                       (
                         <FormControl
                           className={styles.formControl}
-                          error={!!errors.customReference}
+                          error={!!errors.__customRef}
                           >
                           <FormHelperText>Custom Reference</FormHelperText>
                           <Switch
@@ -275,9 +275,9 @@ const PropEditor = (props) => {
                             }}
                           />
                           {
-                            !!errors.customReference
+                            !!errors.__customRef
                             &&
-                            <FormHelperText>{errors.customReference?.message}</FormHelperText>
+                            <FormHelperText>{errors.__customRef?.message}</FormHelperText>
                           }
                         </FormControl>
                       )
@@ -297,7 +297,7 @@ const PropEditor = (props) => {
                   && !
                   (
                     (treeNode?.data?.type === 'react/state')
-                    && !getValues('customReference')
+                    && !getValues('__customRef')
                   )
                 )
                 &&

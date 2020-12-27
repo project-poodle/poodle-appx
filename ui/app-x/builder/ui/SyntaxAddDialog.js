@@ -37,6 +37,7 @@ import {
 } from 'antd'
 import {
   DeleteOutlined,
+  PlusOutlined,
 } from '@ant-design/icons'
 const { DirectoryTree } = Tree
 import {
@@ -61,6 +62,7 @@ import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
 import {
   parse_js,
   lookup_icon_for_type,
+  lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
 } from 'app-x/builder/ui/util_parse'
@@ -92,12 +94,24 @@ const SyntaxAddDialog = (props) => {
   }))()
 
   const {
-    selectedKey
+    treeData,
+    selectedKey,
   } = useContext(EditorProvider.Context)
 
   // states and effects
+  const [ parentNode,       setParentNode     ] = useState(null)
   const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
   const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
+
+  // parentNode
+  useEffect(() => {
+    // lookup node
+    const lookupNode = tree_lookup(treeData, selectedKey)
+    setParentNode(lookupNode)
+    // console.log(lookupNode)
+    // console.log(lookupNode?.children.filter(child => child.data?.__ref === null))
+    // console.log(parentNode)
+  }, [selectedKey])
 
   // nodeType
   useEffect(() => {
@@ -139,19 +153,19 @@ const SyntaxAddDialog = (props) => {
   // console.log(nodeType)
   // console.log(props)
 
-  // watchCustomReference
-  const watchCustomReference = watch('customReference')
+  // watch__customRef
+  const watch__customRef = watch('__customRef')
   useEffect(() => {
     if (nodeType === 'react/state') {
-      if (!!watchCustomReference) {
+      if (!!watch__customRef) {
         if (!getValues(`__ref`)) {
           setValue(`__ref`, `${getValues('name')}`)
         }
-      } else if (!watchCustomReference) {
+      } else if (!watch__customRef) {
         setValue(`__ref`, `...${getValues('name')}`)
       }
     }
-  }, [watchCustomReference])
+  }, [watch__customRef])
 
 
   return (
@@ -192,15 +206,15 @@ const SyntaxAddDialog = (props) => {
               (
                 <Controller
                   control={control}
-                  key='customReference'
-                  name='customReference'
+                  key='__customRef'
+                  name='__customRef'
                   type="boolean"
                   defaultValue={false}
                   render={props =>
                     (
                       <FormControl
                         className={styles.formControl}
-                        error={!!errors.customReference}
+                        error={!!errors.__customRef}
                         >
                         <FormHelperText>Custom Reference</FormHelperText>
                         <Switch
@@ -216,9 +230,9 @@ const SyntaxAddDialog = (props) => {
                           }}
                         />
                         {
-                          !!errors.customReference
+                          !!errors.__customRef
                           &&
-                          <FormHelperText>{errors.customReference?.message}</FormHelperText>
+                          <FormHelperText>{errors.__customRef?.message}</FormHelperText>
                         }
                       </FormControl>
                     )
@@ -236,7 +250,7 @@ const SyntaxAddDialog = (props) => {
                 ||
                 (
                   (nodeType === 'react/state')
-                  && !!getValues('customReference')
+                  && !!getValues('__customRef')
                 )
               )
               &&
@@ -253,31 +267,31 @@ const SyntaxAddDialog = (props) => {
                     },
                     validate: {
                       checkDuplicate: value =>
-                        lookup_child_by_ref(props.nodeParent, value) === null
+                        lookup_child_by_ref(parentNode, value) === null
                         || 'Reference name is duplicate with an existing child',
                       checkSwitchChild: value =>
-                        nodeType !== 'js/switch'
+                        parentNode?.data?.type !== 'js/switch'
                         || value === 'default'
                         || 'Reference name for js/switch must be [default]',
                       checkMapChild: value =>
-                        nodeType !== 'js/map'
+                        parentNode?.data?.type !== 'js/map'
                         || value === 'data'
                         || value === 'result'
                         || 'Reference name for js/map must be [data] or [result]',
                       checkReduceChild: value =>
-                        nodeType !== 'js/reduce'
+                        parentNode?.data?.type !== 'js/reduce'
                         || value === 'data'
                         || 'Reference name for js/reduce must be [data]',
                       checkFilterChild: value =>
-                        nodeType !== 'js/filter'
+                        parentNode?.data?.type !== 'js/filter'
                         || value === 'data'
                         || 'Reference name for js/filter must be [data]',
                       checkReactElementChild: value =>
-                        nodeType !== 'react/element'
+                        parentNode?.data?.type !== 'react/element'
                         || value === 'props'
                         || 'Reference name for react/element must be [props]',
                       checkReactHtmlChild: value =>
-                        nodeType !== 'react/html'
+                        parentNode?.data?.type !== 'react/html'
                         || value === 'props'
                         || 'Reference name for react/html must b3 [props]',
                     },
@@ -414,13 +428,14 @@ const SyntaxAddDialog = (props) => {
                           <TextField
                             label="Type"
                             select={true}
+                            name={props.name}
+                            value={props.value}
                             onChange={
                               e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e)
                               }
                             }
-                            value={props.value}
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1622,6 +1637,62 @@ const SyntaxAddDialog = (props) => {
                     }
                   />
                 </Box>
+              )
+            }
+            {
+              (
+                !!parentNode?.children
+                && parentNode?.children.filter(child => child.data.__ref === null).length > 0
+              )
+              &&
+              (
+                <Controller
+                  name="__pos"
+                  control={control}
+                  defaultValue={0}
+                  render={props =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Position"
+                          select={true}
+                          name={props.name}
+                          value={props.value}
+                          onChange={props.onChange}
+                          error={!!errors.__pos}
+                          helperText={errors._pos?.message}
+                          >
+                          <MenuItem
+                            key={0}
+                            value={0}
+                            >
+                            <ListItemIcon>
+                              <PlusOutlined />
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              Add at Beginning
+                            </Typography>
+                          </MenuItem>
+                          {
+                            parentNode.children.filter(child => child.data?.__ref === null).map((child, index) => (
+                              <MenuItem
+                                key={`${index+1}`}
+                                value={index+1}
+                                >
+                                <ListItemIcon>
+                                  { lookup_icon_for_type(child.data?.type) }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  Add after [{ lookup_title_for_input(null, child.data) }]
+                                </Typography>
+                              </MenuItem>
+                            ))
+                          }
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
               )
             }
           </DialogContent>

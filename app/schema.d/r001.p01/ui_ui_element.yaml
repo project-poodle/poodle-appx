@@ -222,7 +222,14 @@ ui_element:
       ui_element_spec:
         styles:
           type: mui/style
+          divider:
+            margin:
+              type: js/expression
+              data: theme.spacing(3, 0, 2)
           root:
+            backgroundColor:
+              type: js/expression
+              data: theme.palette.background.paper
             width: 100%
         states:
           ...uiDeployments:
@@ -277,6 +284,7 @@ ui_element:
                     - type: react/element
                       name: "@material-ui/core.ListItem"
                       props:
+                        dense: true
                         button: true
                       children:
                         - type: react/element
@@ -284,6 +292,8 @@ ui_element:
                           children:
                             - type: react/element
                               name: "@material-ui/icons.SettingsOutlined"
+                              props:
+                                fontSize: small
                         - type: react/element
                           name: "@material-ui/core.ListItemText"
                           props:
@@ -296,6 +306,7 @@ ui_element:
                     - type: react/element
                       name: "@material-ui/core.ListItem"
                       props:
+                        dense: true
                         button: true
                       children:
                         - type: react/element
@@ -303,12 +314,23 @@ ui_element:
                           children:
                             - type: react/element
                               name: "@material-ui/icons.DeviceHubOutlined"
+                              props:
+                                fontSize: small
                         - type: react/element
                           name: "@material-ui/core.ListItemText"
                           props:
+                            variant: small
                             primary: UI Deployments
                 - type: react/element
+                  name: "@material-ui/core.Divider"
+                  props:
+                    className:
+                      type: js/expression
+                      data: styles.divider
+                - type: react/element
                   name: "@material-ui/core.ListItem"
+                  props:
+                    dense: true
                   children:
                     - type: react/element
                       name: "@material-ui/core.FormControl"
@@ -344,10 +366,11 @@ ui_element:
                                     name: "@material-ui/core.ListItemText"
                                     children:
                                       - type: js/expression
-                                        data: "item"
+                                        data: item
                 - type: react/element
                   name: "@material-ui/core.ListItem"
                   props:
+                    dense: true
                     button: true
                     onClick:
                       type: js/expression
@@ -361,6 +384,8 @@ ui_element:
                       children:
                         - type: react/element
                           name: "@material-ui/icons.WidgetsOutlined"
+                          props:
+                            fontSize: small
                     - type: react/element
                       name: "@material-ui/core.ListItemText"
                       props:
@@ -371,10 +396,14 @@ ui_element:
                           result:
                             type: react/element
                             name: "@material-ui/icons.ExpandLess"
+                            props:
+                              fontSize: small
                         - condition: "!states.uiElementNav.open"
                           result:
                             type: react/element
                             name: "@material-ui/icons.ExpandMore"
+                            props:
+                              fontSize: small
                 - type: react/element
                   name: "@material-ui/core.Collapse"
                   props:
@@ -401,6 +430,7 @@ ui_element:
                 - type: react/element
                   name: "@material-ui/core.ListItem"
                   props:
+                    dense: true
                     button: true
                     onClick:
                       type: js/expression
@@ -414,6 +444,8 @@ ui_element:
                       children:
                         - type: react/element
                           name: "@material-ui/icons.CropRotateOutlined"
+                          props:
+                            fontSize: small
                     - type: react/element
                       name: "@material-ui/core.ListItemText"
                       props:
@@ -424,10 +456,14 @@ ui_element:
                           result:
                             type: react/element
                             name: "@material-ui/icons.ExpandLess"
+                            props:
+                              fontSize: small
                         - condition: "!states.uiRouteNav.open"
                           result:
                             type: react/element
                             name: "@material-ui/icons.ExpandMore"
+                            props:
+                              fontSize: small
                 - type: react/element
                   name: "@material-ui/core.Collapse"
                   props:
