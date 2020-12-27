@@ -754,13 +754,13 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.type is not [js/switch] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('children' in input)) {
-    throw new Error(`ERROR: input.children missing in [js/switch] [${JSON.stringify(input)}]`)
-  }
-
-  if (! Array.isArray(input.children)) {
-    throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
-  }
+  //if (! ('children' in input)) {
+  //  throw new Error(`ERROR: input.children missing in [js/switch] [${JSON.stringify(input)}]`)
+  //}
+  //
+  //if (! Array.isArray(input.children)) {
+  //  throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
+  //}
 
   // tree node data
   const data = {
@@ -787,30 +787,32 @@ function parse_js_switch(js_context, parentKey, ref, input) {
   js_context.expandedKeys.push(node.key)
 
   // add each conditions and results
-  input.children.map(child => {
+  if (!!input.children && Array.isArray(input.children)) {
+    input.children.map(child => {
 
-    if (! ('condition' in child)) {
-      throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
-    }
-    if (! ('result' in child)) {
-      throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
-    }
+      if (! ('condition' in child)) {
+        throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
+      }
+      if (! ('result' in child)) {
+        throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
+      }
 
-    // process result as child node
-    const childNode = parse_js(
-      {
-        ...js_context,
-        topLevel: false,
-      },
-      node.key,
-      null,
-      child.result
-    )
-    // add condition data to childNode
-    childNode.data.condition = child.condition
+      // process result as child node
+      const childNode = parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        null,
+        child.result
+      )
+      // add condition data to childNode
+      childNode.data.condition = child.condition
 
-    node.children.push(childNode)
-  })
+      node.children.push(childNode)
+    })
+  }
 
   // add default if exist
   if (input.default) {
