@@ -302,6 +302,11 @@ const ElementTree = (props) => {
     // const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
     const dropPosition = info.dropPosition
 
+    // check for root
+    if (dragKey === '/') {
+      return
+    }
+
     // check if drop key is leaf
     let isLeaf = false
     if (!info.dropToGap) {
