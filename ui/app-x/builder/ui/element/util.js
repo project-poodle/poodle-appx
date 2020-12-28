@@ -140,16 +140,6 @@ function default_element_spec_for_type (type) {
               'This is template text'
             ]
           },
-          {
-            type: 'react/element',
-            name: '@material-ui/core.Button',
-            props: {
-              variant: 'contained',
-            },
-            children: [
-              'This is a Button'
-            ]
-          },
         ]
       }
     }
