@@ -51,6 +51,7 @@ import Redo from 'app-x/icon/Redo'
 import {
   parse_js,
   lookup_icon_for_type,
+  lookup_title_for_input,
   lookup_valid_child_types,
   lookup_classname_by_type,
   lookup_type_by_classname,
@@ -64,6 +65,7 @@ import {
 import EditorProvider from 'app-x/builder/ui/EditorProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
+import SyntaxMoveDialog from 'app-x/builder/ui/SyntaxMoveDialog'
 import SyntaxMenu from 'app-x/builder/ui/SyntaxMenu'
 
 // capitalize string
@@ -427,6 +429,7 @@ const SyntaxTree = (props) => {
           lookupParent.children.push(parsed)
         }
       }
+      reorderChildren(lookupParent)
     } else {
       // add to the root as first element
       resultTree.splice(1, 0, parsed)
@@ -498,6 +501,113 @@ const SyntaxTree = (props) => {
     )
   }
 
+  // move
+  const [ moveDialogOpen,       setMoveDialogOpen     ] = useState(false)
+  const [ moveCallback,         setMoveCallback       ] = useState(null)
+  const [ moveDragNode,         setMoveDragNode       ] = useState(null)
+  const [ moveDropParent,       setMoveDropParent     ] = useState(null)
+
+  // reorder children
+  const reorderChildren = (parentNode) => {
+
+    if (parentNode.data.type === 'js/object'
+        || parentNode.data.type === 'mui/style') {
+
+      const children = []
+      // add __ref !== null
+      parentNode.children
+        .filter(child => !!child.data.__ref)
+        .sort((a, b) => {
+          return a.data.__ref.localeCompare(b.data.__ref)
+        })
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    } else if (parentNode.data.type === 'react/element'
+              || parentNode.data.type === 'react/html') {
+
+      const children = []
+      // add __ref === 'props'
+      parentNode.children
+        .filter(child => child.data.__ref === 'props')
+        .map(child => {
+          children.push(child)
+        })
+      // add __ref === null
+      parentNode.children
+        .filter(child => child.data.__ref === null)
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    } else if (parentNode.data.type === 'js/switch') {
+
+      const children = []
+      // add __ref === null
+      parentNode.children
+        .filter(child => child.data.__ref === null)
+        .map(child => {
+          children.push(child)
+        })
+      // add __ref === 'default'
+      parentNode.children
+        .filter(child => child.data.__ref === 'default')
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    } else if (parentNode.data.type === 'js/map') {
+
+      const children = []
+      // add __ref === 'data'
+      parentNode.children
+        .filter(child => child.data.__ref === 'data')
+        .map(child => {
+          children.push(child)
+        })
+      // add __ref === 'result'
+      parentNode.children
+        .filter(child => child.data.__ref === 'result')
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    } else if (parentNode.data.type === 'js/reduce') {
+
+      const children = []
+      // add __ref === 'data'
+      parentNode.children
+        .filter(child => child.data.__ref === 'data')
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    } else if (parentNode.data.type === 'js/filter') {
+
+      const children = []
+      // add __ref === 'data'
+      parentNode.children
+        .filter(child => child.data.__ref === 'data')
+        .map(child => {
+          children.push(child)
+        })
+      // update children
+      parentNode.children = children
+
+    }
+  }
+
   // expand/collapse
   const onExpand = keys => {
     setExpandedKeys(keys)
@@ -563,7 +673,7 @@ const SyntaxTree = (props) => {
 
   const onDragEnd = info => {
     // console.log('changeBack')
-    setSyntaxTreeCursor('default')
+    // setSyntaxTreeCursor('default')
   }
 
   // drag enter
@@ -606,13 +716,19 @@ const SyntaxTree = (props) => {
     // replicate treeData
     const resultData = _.cloneDeep(treeData)
 
+    let dragFunc = () => {}
+    let dropFunc = () => {}
+
     // Find dragObject
     let dragObj
     tree_traverse(resultData, dragKey, (item, index, arr) => {
-      arr.splice(index, 1)
+      dragFunc = () => {
+        arr.splice(index, 1)
+      }
       dragObj = item
     })
 
+    let dropParentKey
     if (!info.dropToGap) {
       // Drop on the content
       tree_traverse(resultData, dropKey, item => {
@@ -620,8 +736,11 @@ const SyntaxTree = (props) => {
         item.children = item.children || []
         // where to insert
         // console.log(expandedKeys)
-        dragObj.parentKey = item.key
-        item.children.unshift(dragObj)
+        dropParentKey = item.key
+        dropFunc = () => {
+          dragObj.parentKey = item.key
+          item.children.unshift(dragObj)
+        }
         if (!expandedKeys.includes(item.key)) {
           // console.log([...expandedKeys, item.key])
           setExpandedKeys(
@@ -637,8 +756,11 @@ const SyntaxTree = (props) => {
       tree_traverse(resultData, dropKey, item => {
         item.children = item.children || []
         // where to insert
-        dragObj.parentKey = item.key
-        item.children.unshift(dragObj)
+        dropParentKey = item.key
+        dropFunc = () => {
+          dragObj.parentKey = item.key
+          item.children.unshift(dragObj)
+        }
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
       })
@@ -652,21 +774,99 @@ const SyntaxTree = (props) => {
         t = item
       })
       if (dropPosition === -1) {
-        dragObj.parentKey = t.parentKey
-        ar.splice(i, 0, dragObj)
+        dropParentKey = t.parentKey
+        dropFunc = () => {
+          dragObj.parentKey = t.parentKey
+          ar.splice(i, 0, dragObj)
+        }
       } else {
-        dragObj.parentKey = t.parentKey
-        ar.splice(i + 1, 0, dragObj)
+        dropParentKey = t.parentKey
+        dropFunc = () => {
+          dragObj.parentKey = t.parentKey
+          ar.splice(i + 1, 0, dragObj)
+        }
       }
     }
 
-    // take action
-    makeAction(
-      `Drag & Drop [${dragObj.title}]`,
-      resultData,
-      expandedKeys,
-      dragObj.key
-    )
+    // compute dropParent
+    let dropParent
+    tree_traverse(resultData, dropParentKey, (item, index, arr) => {
+      dropParent = item
+    })
+
+    // callback with move confirmation
+    const thisMoveCallback = (data) => {
+
+      console.log(dragObj, data)
+      if (dropParent.data.type === 'js/switch') {
+        if (!!data.default) {
+          dragObj.data.__ref = 'default'
+          dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+        } else {
+          dragObj.data.__ref = null
+          dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+          dragObj.data.condition = data.condition
+        }
+      } else {
+        // set ref
+        dragObj.data.__ref = data.__ref
+        dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+      }
+
+      // drag & drop
+      dragFunc()
+      dropFunc()
+
+      reorderChildren(dropParent)
+
+      // take action
+      makeAction(
+        `Drag & Drop [${dragObj.title}]`,
+        resultData,
+        expandedKeys,
+        dragObj.key
+      )
+    }
+
+    // check if drop parent is same as current parent
+    if (dropParent.key === dragObj.parentKey) {
+
+      thisMoveCallback({
+         __ref: dragObj.data.__ref     // keep __ref
+      })
+
+    } else if (
+      // check drop parent type
+      dropParent.data.type === 'js/object'
+      || dropParent.data.type === 'mui/style'
+      || dropParent.data.type === 'js/switch'
+      || dropParent.data.type === 'js/map'
+      || dropParent.data.type === 'js/reduce'
+      || dropParent.data.type === 'js/filter'
+      ||
+      (
+        (
+          dropParent.data.type === 'react/element'
+          || dropParent.data.type === 'react/element'
+        )
+        &&
+        (
+          dragObj.data.type === 'js/object'
+        )
+      )
+    ) {
+
+      setMoveDragNode(dragObj)
+      setMoveDropParent(dropParent)
+      setMoveCallback(() => { return thisMoveCallback})
+      setMoveDialogOpen(true)
+
+    } else {
+      // invoke callback directly if no ref needed
+      thisMoveCallback({
+         __ref: null      // clear __ref
+      })
+    }
   }
 
   const onRightClick = info => {
@@ -958,6 +1158,15 @@ const SyntaxTree = (props) => {
             open={deleteDialogOpen}
             setOpen={setDeleteDialogOpen}
             callback={deleteCallback}
+            node={deleteNode}
+            />
+          <SyntaxMoveDialog
+            key="moveDialog"
+            open={moveDialogOpen}
+            setOpen={setMoveDialogOpen}
+            moveDragNode={moveDragNode}
+            moveDropParent={moveDropParent}
+            moveCallback={moveCallback}
             node={deleteNode}
             />
           <SyntaxMenu

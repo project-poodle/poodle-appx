@@ -30,18 +30,7 @@ import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
 import {
-  default as NestedMenuItem
-} from 'material-ui-nested-menu-item'
-import {
-  Tree,
-} from 'antd'
-import {
-  DeleteOutlined,
   PlusOutlined,
-} from '@ant-design/icons'
-const { DirectoryTree } = Tree
-import {
-  Icon,
 } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 import {
