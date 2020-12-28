@@ -9,6 +9,7 @@ import {
   FileOutlined,
   FolderOutlined,
   FolderOpenOutlined,
+  HomeOutlined,
 } from '@ant-design/icons'
 import ReactIcon from 'app-x/icon/React'
 
@@ -187,13 +188,20 @@ function default_element_spec_for_type (type) {
 
 // create new folder node
 function new_folder_node(parentKey, subName) {
-  return {
+  const result = {
     title: subName,
     type: 'folder',
     key: (parentKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/'),
     parentKey: parentKey,
+    // isLeaf: false,
     subName: subName,
     children: [],
+  }
+  if (result.key === '/') {
+    result.icon = <HomeOutlined />  // override root icon
+    return result
+  } else {
+    return result
   }
 }
 

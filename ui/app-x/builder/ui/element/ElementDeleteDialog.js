@@ -22,12 +22,23 @@ import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
 import {
+  notification,
+} from 'antd'
+import {
   DeleteOutlined,
 } from '@ant-design/icons'
 
+import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
-import { tree_traverse, tree_lookup } from 'app-x/builder/ui/element/util'
+import {
+  tree_traverse,
+  tree_lookup,
+  lookup_icon_for_type,
+  lookup_desc_for_type,
+  reorder_children,
+} from 'app-x/builder/ui/element/util'
 
 // delete dialog
 const ElementDeleteDialog = (props) => {
@@ -49,6 +60,18 @@ const ElementDeleteDialog = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    setNavDeployment,
+    navElement,
+    setNavElement,
+    navRoute,
+    setNavRoute,
+    navSelected,
+    setNavSelected,
+  } = useContext(NavProvider.Context)
+
   // element context
   const {
     // basic data
@@ -58,6 +81,8 @@ const ElementDeleteDialog = (props) => {
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    loadTimer,
+    setLoadTimer,
     // delete dialog
     deleteDialogOpen,
     setDeleteDialogOpen,
@@ -71,9 +96,12 @@ const ElementDeleteDialog = (props) => {
   const deleteElement = (elementPath) => {
 
     // deleteElement
+    const resultTree = _.cloneDeep(treeData)
+    const lookupNode = tree_lookup(resultTree, elementPath)
+    const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
     // api request
     const deleteUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(elementPath)}`
-    api.delete(
+    api.del(
       'sys',
       'appx',
       deleteUrl,
@@ -82,15 +110,19 @@ const ElementDeleteDialog = (props) => {
         if (!!data.status && data.status === 'ok') {
           notification['success']({
             message: `SUCCESS`,
-            description: `Successfully deleted ${lookup_desc_for_type(type)} [ ${name} ]`,
+            description: `Successfully deleted ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ]`,
             placement: 'bottomLeft',
           })
-          // result tree
-          const resultTree = _.cloneDeep(treeData)
-          const lookupParent = tree_lookup(resultTree, addDialogContext.parentNode.key)
-          if (!!lookupParent) {
-            // create new folder node and add it
-            lookupParent.children.push(newNode)
+          // check that lookupNode and lookupParent exists
+          if (!!lookupNode && !!lookupParent) {
+            // delete node from result tree
+            const children = []
+            lookupParent.children
+              .filter(child => child.key !== elementPath)
+              .map(child => {
+                children.push(child)
+              })
+            lookupParent.children = children
             reorder_children(lookupParent)
             // update tree data
             // console.log(resultTree)
@@ -103,16 +135,57 @@ const ElementDeleteDialog = (props) => {
           setLoadTimer(new Date())
           notification['error']({
             message: `FAILURE`,
-            description: `Failed to create ${lookup_desc_for_type(type)} [ ${name} ] - ${data.message}`,
+            description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${data.message}`,
             placement: 'bottomLeft',
           })
         }
       },
       error => {
         console.error(error)
+        notification['error']({
+          message: `FAILURE`,
+          description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${error.toString()}`,
+          placement: 'bottomLeft',
+        })
         setLoadTimer(new Date())
       }
     )
+  }
+
+  // potentially recurssivelly delete
+  const onDelete = (node) => {
+    if (!!node.isLeaf) {
+      deleteElement(node.key)
+      return
+    } else if (!!node.children.length) {
+      // do not delete non empty folder
+      notification['error']({
+        message: `FAILURE`,
+        description: `Cannot delete non empty folder [ ${node.key} ]`,
+        placement: 'bottomLeft',
+      })
+    } else {
+      // we are hder if empty folder
+      const resultTree = _.cloneDeep(treeData)
+      const lookupNode = tree_lookup(resultTree, node.key)
+      const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
+      if (!!lookupNode && !!lookupParent) {
+        const children = []
+        lookupParent.children
+          .filter(child => child.key !== node.key)
+          .map(child => {
+            children.push(child)
+          })
+        lookupParent.children = children
+        reorder_children(lookupParent)
+        // update tree data
+        // console.log(resultTree)
+        setTreeData(resultTree)
+      } else {
+        // refresh if unexpected
+        setLoadTimer(new Date())
+      }
+    }
   }
 
   return (
@@ -160,6 +233,7 @@ const ElementDeleteDialog = (props) => {
           onClick={
             e => {
               setDeleteDialogOpen(false)
+              onDelete(deleteDialogContext.selectedNode)
               if (!!deleteDialogCallback) {
                 deleteDialogCallback(deleteDialogContext.selectedNode)
               }

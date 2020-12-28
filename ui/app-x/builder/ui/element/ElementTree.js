@@ -47,17 +47,17 @@ import {
 const transformTree = (data) => {
 
   const resultData = []
+  resultData.push(new_folder_node('/', '/'))
 
   data.map(ui_element => {
 
-    let currParent = resultData
     let currKey = PATH_SEPARATOR
 
     const name = ui_element.ui_element_name
     const subPaths = name.split(PATH_SEPARATOR)
 
     let subName = subPaths.shift()
-    if (subName != '') {
+    if (subName !== '') {
       // if name does not start with '/', ignore
       return
     }
@@ -66,27 +66,64 @@ const transformTree = (data) => {
     while (subPaths.length) {
 
       subName = subPaths.shift()
-      if (subName == '') {
+      if (subName === '') {
         // ignore empty subname
         continue
       }
 
-      let found = currParent.find(treeNode => treeNode.title == subName)
+      // update currKey
+      let parentKey = currKey
+      currKey = (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/')
+
+      let found = resultData.find(treeNode => treeNode.key === currKey)
       if (!found) {
         if (subPaths.length == 0) {
-          found = new_element_node(currKey, subName, ui_element.ui_element_type, ui_element)
+          found = new_element_node(parentKey, subName, ui_element.ui_element_type, ui_element)
         } else {
-          found = new_folder_node(currKey, subName)
+          found = new_folder_node(parentKey, subName)
         }
-        currParent.push(found)
+        resultData.push(found)
         currKey = found.key
       }
-
-      currParent = found.children
     }
   })
 
-  return resultData
+  const resultTree = []
+  // add root nodes
+  resultData
+    .filter(node => node.parentKey === '/')
+    .sort((a, b) => {
+      if (!a.isLeaf && !!b.isLeaf) {
+        return -1
+      } else if (!!a.isLeaf && !b.isLeaf) {
+        return 1
+      } else {
+        return a.key.localeCompare(b.key)
+      }
+    })
+    .map(node => {
+      resultTree.push(node)
+    })
+  // child decedant nodes
+  resultData
+    .filter(node => node.parentKey !== '/')
+    .sort((a, b) => {
+      if (!a.isLeaf && !!b.isLeaf) {
+        return -1
+      } else if (!!a.isLeaf && !b.isLeaf) {
+        return 1
+      } else {
+        return a.key.localeCompare(b.key)
+      }
+    })
+    .map(node => {
+    // handle each child
+    tree_traverse(resultTree, node.parentKey, (found, index, arr) => {
+      found.children.push(node)
+    })
+  })
+
+  return resultTree
 }
 
 const ElementTree = (props) => {
