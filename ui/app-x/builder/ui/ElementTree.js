@@ -97,7 +97,12 @@ const loaded = {
 }
 
 
-const UI_Element_Nav = (props) => {
+const ElementTree = (props) => {
+
+  // selected pallette tool
+  const [ selectedTool, setSelectedTool ] = useState(null)
+  // syntax tree cursor
+  const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
 
   const [ tData, setTData ] = useState(loaded.api_data)
   const [ expandedKeys, setExpandedKeys ] = useState([])
@@ -270,7 +275,7 @@ const UI_Element_Nav = (props) => {
   )
 }
 
-UI_Element_Nav.propTypes = {
+ElementTree.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
@@ -279,4 +284,4 @@ UI_Element_Nav.propTypes = {
   }),
 }
 
-export default UI_Element_Nav
+export default ElementTree

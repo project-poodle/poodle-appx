@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 const MAX_HISTORY = 20
 
-const EditorProvider = (() => {
+const SyntaxProvider = (() => {
 
   const EditorContext = React.createContext()
 
@@ -212,4 +212,4 @@ const EditorProvider = (() => {
   return f
 }) ()
 
-export default EditorProvider
+export default SyntaxProvider

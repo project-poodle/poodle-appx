@@ -10,7 +10,7 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
 import {
   gen_js,
@@ -35,7 +35,7 @@ const PreviewSource = (props) => {
     treeDirty,
     livePreview,
     setLiveUpdate,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   // preview context
   const {

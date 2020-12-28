@@ -42,7 +42,7 @@ import {
   gen_js,
 } from 'app-x/builder/ui/util_tree'
 // context provider
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import ControlledEditor from 'app-x/builder/ui/ControlledEditor'
 import Asterisk from 'app-x/icon/Asterisk'
 
@@ -67,7 +67,7 @@ const YamlEditor = props => {
     updateAction,
     undo,
     redo,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   const [ treeNode,         setTreeNode       ] = useState(null)
   const [ yamlDirty,        setYamlDirty      ] = useState(false)

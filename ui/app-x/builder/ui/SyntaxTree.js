@@ -63,7 +63,7 @@ import {
   tree_lookup,
   lookup_child_by_ref
 } from 'app-x/builder/ui/util_tree'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
 import SyntaxMoveDialog from 'app-x/builder/ui/SyntaxMoveDialog'
@@ -150,7 +150,7 @@ const SyntaxTree = (props) => {
     updateAction,
     undo,
     redo,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   const designTreeRef = React.createRef()
 

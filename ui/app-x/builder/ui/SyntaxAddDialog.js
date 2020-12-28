@@ -45,7 +45,7 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import TextFieldArray from 'app-x/component/TextFieldArray'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
 import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
 import {
@@ -85,7 +85,7 @@ const SyntaxAddDialog = (props) => {
   const {
     treeData,
     selectedKey,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   // states and effects
   const [ parentNode,       setParentNode     ] = useState(null)
@@ -740,7 +740,7 @@ const SyntaxAddDialog = (props) => {
                     render={props =>
                       (
                         <Box className={styles.formControl}>
-                          <AutoCompleteImportName
+                          SyntaxProviderutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -1270,7 +1270,7 @@ const SyntaxAddDialog = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          <AutoCompleteImportName
+                          SyntaxProviderutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -1296,7 +1296,7 @@ const SyntaxAddDialog = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          <AutoCompleteHtmlTag
+                          SyntaxProviderutoCompleteHtmlTag
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}

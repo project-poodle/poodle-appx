@@ -33,7 +33,7 @@ import {
 import ReactIcon from 'app-x/icon/React'
 // import Live from 'app-x/icon/Live'
 import Preview from 'app-x/icon/Preview'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
 import PreviewSource from 'app-x/builder/ui/PreviewSource'
 import PreviewYaml from 'app-x/builder/ui/PreviewYaml'
@@ -87,7 +87,7 @@ const PreviewTabs = (props) => {
     setLivePreview,
     previewInitialized,
     setPreviewInitialized,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   // preview context
   const {

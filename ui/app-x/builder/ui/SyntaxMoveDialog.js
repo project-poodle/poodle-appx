@@ -39,7 +39,7 @@ import {
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import {
   parse_js,
   lookup_icon_for_type,
@@ -77,7 +77,7 @@ const SyntaxMoveDialog = (props) => {
   const {
     treeData,
     selectedKey,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   // whether switch default
   const [ isSwitchDefault,    setSwitchDefault    ] = useState(false)

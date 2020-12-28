@@ -28,7 +28,7 @@ const { TabPane } = Tabs;
 import { useForm, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 // context provider
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/YamlEditor'
 import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
 import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
@@ -83,7 +83,7 @@ const PropEditor = (props) => {
     updateAction,
     undo,
     redo,
-  } = useContext(EditorProvider.Context)
+  } = useContext(SyntaxProvider.Context)
 
   const [ nodeType,             setNodeType             ] = useState('')
   const [ treeNode,             setTreeNode             ] = useState(null)
@@ -788,7 +788,7 @@ const PropEditor = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          <AutoCompleteImportName
+                          SyntaxProviderutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -1324,7 +1324,7 @@ const PropEditor = (props) => {
                         render={props =>
                           (
                             <Box className={styles.formControl}>
-                              <AutoCompleteImportName
+                              SyntaxProviderutoCompleteImportName
                                 name={props.name}
                                 value={props.value}
                                 onChange={props.onChange}
@@ -1353,7 +1353,7 @@ const PropEditor = (props) => {
                         render={props =>
                         (
                           <Box className={styles.formControl}>
-                            <AutoCompleteHtmlTag
+                            SyntaxProviderutoCompleteHtmlTag
                               name={props.name}
                               value={props.value}
                               onChange={props.onChange}

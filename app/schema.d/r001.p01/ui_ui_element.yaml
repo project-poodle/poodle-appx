@@ -270,12 +270,11 @@ ui_element:
                 className:
                   type: js/expression
                   data: styles.root
-                subheader:
-                  type: react/element
+              children:
+                - type: react/element
                   name: "@material-ui/core.ListSubheader"
                   children:
                     - UI Builder
-              children:
                 - type: react/element
                   name: app-x/router.A
                   props:
@@ -419,7 +418,7 @@ ui_element:
                         p: 1
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/UI_Element_Nav
+                          name: app-x/builder/ui/ElementTree
                           props:
                             namespace: sys
                             ui_name: ui
@@ -479,7 +478,7 @@ ui_element:
                         p: 1
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/UI_Element_Nav
+                          name: app-x/builder/ui/ElementTree
                           props:
                             namespace: sys
                             ui_name: ui

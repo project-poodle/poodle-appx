@@ -25,7 +25,7 @@ import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-des
 import { Responsive as ResponsiveGridLayout, default as GridLayout } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
 import SyntaxTree from 'app-x/builder/ui/SyntaxTree'
 import PropEditor from 'app-x/builder/ui/PropEditor'
 import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
@@ -173,7 +173,7 @@ const UI_Builder = (props) => {
   }, [])
 
   return (
-    <EditorProvider>
+    <SyntaxProvider>
       <Box ref={gridRef} className={styles.root}>
         <ResponsiveGridLayout
           className={styles.root}
@@ -239,7 +239,7 @@ const UI_Builder = (props) => {
           </Box>
         </ResponsiveGridLayout>
       </Box>
-    </EditorProvider>
+    </SyntaxProvider>
   )
 }
 
