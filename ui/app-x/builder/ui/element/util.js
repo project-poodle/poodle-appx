@@ -220,29 +220,29 @@ function new_element_node(parentKey, subName, type, data) {
 }
 
 // reorder children
-const reorder_children = (parentNode) => {
+const reorder_array = (children) => {
 
-  const children = []
+  const reordered = []
   // add add non-leaf child first
-  parentNode.children
+  children
     .filter(child => !child.isLeaf)
     .sort((a, b) => {
       return a.subName.localeCompare(b.subName)
     })
     .map(child => {
-      children.push(child)
+      reordered.push(child)
     })
   // add add all leaf child next
-  parentNode.children
+  children
     .filter(child => !!child.isLeaf)
     .sort((a, b) => {
       return a.subName.localeCompare(b.subName)
     })
     .map(child => {
-      children.push(child)
+      reordered.push(child)
     })
-  // update children
-  parentNode.children = children
+  // return reordered
+  return reordered
 }
 
 export {
@@ -253,6 +253,6 @@ export {
   default_element_spec_for_type,
   new_folder_node,
   new_element_node,
-  reorder_children,
+  reorder_array,
   PATH_SEPARATOR,
 }

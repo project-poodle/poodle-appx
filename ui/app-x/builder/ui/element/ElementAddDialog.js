@@ -50,7 +50,7 @@ import {
   new_folder_node,
   new_element_node,
   default_element_spec_for_type,
-  reorder_children,
+  reorder_array,
   PATH_SEPARATOR,
 } from 'app-x/builder/ui/element/util'
 
@@ -151,10 +151,10 @@ const ElementAddDialog = (props) => {
           // result tree
           const resultTree = _.cloneDeep(treeData)
           const lookupParent = tree_lookup(resultTree, addDialogContext.parentNode.key)
-          if (!!lookupParent) {
+          if (!!lookupParent && lookupParent.key !== '/') {
             // create new folder node and add it
             lookupParent.children.push(newNode)
-            reorder_children(lookupParent)
+            lookupParent.children = reorder_array(lookupParent.children)
             // update tree data
             // console.log(resultTree)
             setTreeData(resultTree)
@@ -190,14 +190,22 @@ const ElementAddDialog = (props) => {
 
       const resultTree = _.cloneDeep(treeData)
       const lookupParent = tree_lookup(resultTree, addDialogContext.parentNode.key)
-      if (!!lookupParent) {
+      if (!!lookupParent && lookupParent.key !== '/') {
         // create new folder node and add it
         const newNode = new_folder_node(addDialogContext.parentNode.key, data.name)
         lookupParent.children.push(newNode)
-        reorder_children(lookupParent)
+        lookupParent.children = reorder_array(lookupParent.children)
         // update tree data
         // console.log(resultTree)
         setTreeData(resultTree)
+
+      } else {
+        // add to top level
+        const newNode = new_folder_node('/', data.name)
+        resultTree.push(newNode)
+        const reorderedTree = reorder_array(resultTree)
+        console.log(reorderedTree)
+        setTreeData(reorderedTree)
       }
 
     } else if (data.type === 'react/element') {
@@ -324,6 +332,20 @@ const ElementAddDialog = (props) => {
                       .filter(child => child.subName.toUpperCase() === value.toUpperCase())
                       .length === 0
                     || 'Element name is duplicate with an existing child',
+                  checkRootFolder: value => {
+                    if (addDialogContext.parentNode.key !== '/') {
+                      return true
+                    } else if (treeData
+                      .filter(child => child.subName.toUpperCase() === value.toUpperCase())
+                      .length === 0)
+                    {
+                      return true
+                    }
+                    else
+                    {
+                      return 'Element name is duplicate with an existing child'
+                    }
+                  }
                 }
               }}
               render={props =>

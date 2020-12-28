@@ -37,7 +37,7 @@ import {
   tree_lookup,
   lookup_icon_for_type,
   lookup_desc_for_type,
-  reorder_children,
+  reorder_array,
 } from 'app-x/builder/ui/element/util'
 
 // delete dialog
@@ -114,7 +114,7 @@ const ElementDeleteDialog = (props) => {
             placement: 'bottomLeft',
           })
           // check that lookupNode and lookupParent exists
-          if (!!lookupNode && !!lookupParent) {
+          if (!!lookupNode && !!lookupParent && lookupParent.key !== '/') {
             // delete node from result tree
             const children = []
             lookupParent.children
@@ -122,8 +122,7 @@ const ElementDeleteDialog = (props) => {
               .map(child => {
                 children.push(child)
               })
-            lookupParent.children = children
-            reorder_children(lookupParent)
+            lookupParent.children = reorder_array(children)
             // update tree data
             // console.log(resultTree)
             setTreeData(resultTree)
@@ -169,15 +168,14 @@ const ElementDeleteDialog = (props) => {
       const resultTree = _.cloneDeep(treeData)
       const lookupNode = tree_lookup(resultTree, node.key)
       const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
-      if (!!lookupNode && !!lookupParent) {
+      if (!!lookupNode && !!lookupParent && lookupParent.key !== '/') {
         const children = []
         lookupParent.children
           .filter(child => child.key !== node.key)
           .map(child => {
             children.push(child)
           })
-        lookupParent.children = children
-        reorder_children(lookupParent)
+        lookupParent.children = reorder_array(children)
         // update tree data
         // console.log(resultTree)
         setTreeData(resultTree)

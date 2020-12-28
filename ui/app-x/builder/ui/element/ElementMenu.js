@@ -149,27 +149,39 @@ const ElementMenu = (props) => {
                 }
               })
             }
-            <Divider />
+            {
+              selectedNode?.key !== '/'
+              &&
+              (
+                <Divider />
+              )
+            }
           </Box>
         )
       }
-      <MenuItem
-        dense={true}
-        className={styles.menuItem}
-        key='delete'
-        onClick={() => {
-          props.setContextAnchorEl(null)
-          setDeleteDialogContext({
-            selectedNode: selectedNode,
-          })
-          setDeleteDialogOpen(true)
-        }}
-        >
-        <ListItemIcon>
-          <DeleteOutlined />
-        </ListItemIcon>
-        <ListItemText primary={`Delete`} />
-      </MenuItem>
+      {
+        selectedNode?.key !== '/'
+        &&
+        (
+          <MenuItem
+            dense={true}
+            className={styles.menuItem}
+            key='delete'
+            onClick={() => {
+              props.setContextAnchorEl(null)
+              setDeleteDialogContext({
+                selectedNode: selectedNode,
+              })
+              setDeleteDialogOpen(true)
+            }}
+            >
+            <ListItemIcon>
+              <DeleteOutlined />
+            </ListItemIcon>
+            <ListItemText primary={`Delete`} />
+          </MenuItem>
+        )
+      }
     </Menu>
   )
 }
