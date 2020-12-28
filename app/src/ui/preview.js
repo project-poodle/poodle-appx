@@ -7,6 +7,7 @@ const Mustache = require('mustache')
 
 const db = require('../db/db')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
 const { handle_react_element } = require('./react_element')
@@ -34,7 +35,7 @@ function handle_preview(req, res) {
     // process ui_element
     if (req_type === 'ui_element') {
       // process ui_element
-      const {
+      let {
           namespace,
           ui_name,
           ui_ver,
@@ -50,6 +51,27 @@ function handle_preview(req, res) {
 
       // set request context
       req.context = { ...req.context, ...req_data }
+
+      // load from cache if not exist
+      if (!ui_spec || !ui_deployment_spec) {
+
+          const lookup = get_ui_deployment(req, res)
+          if (req.fatal) {
+              return
+          }
+
+          // extract result
+          req.context = {
+              ...req.context,
+              ui_spec: lookup.ui_spec,
+              ui_deployment_spec: lookup.ui_deployment_spec,
+          }
+
+          // update local variables
+          ui_spec             = lookup.ui_spec
+          ui_deployment_spec  = lookup.ui_deployment_spec
+
+      }
 
       if (req_output === 'code') {
 

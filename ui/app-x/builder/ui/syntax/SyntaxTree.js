@@ -209,9 +209,9 @@ const SyntaxTree = (props) => {
   // load data via api
   useEffect(() => {
 
-    console.log(navDeployment)
-    console.log(navSelected)
-    console.log(navElement)
+    // console.log(navDeployment)
+    // console.log(navSelected)
+    // console.log(navElement)
 
     if (!!navDeployment
         && !!navDeployment.namespace

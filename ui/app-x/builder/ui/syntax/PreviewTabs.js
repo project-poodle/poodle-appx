@@ -150,9 +150,9 @@ const PreviewTabs = (props) => {
   // load content from UI context treeData
   useEffect(() => {
 
-    console.log(navDeployment)
-    console.log(navSelected)
-    console.log(navElement)
+    // console.log(navDeployment)
+    // console.log(navSelected)
+    // console.log(navElement)
 
     // load from UI context if livePreview
     if (!previewInitialized
