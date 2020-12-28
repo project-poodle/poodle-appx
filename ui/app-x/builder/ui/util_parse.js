@@ -632,6 +632,9 @@ function parse_js_object(js_context, parentKey, ref, input) {
       )
     })
 
+    // reorder
+    reorder_children(node)
+
     return node
   }
 }
@@ -829,6 +832,9 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     )
   }
 
+  // reorder
+  reorder_children(node)
+
   return node
 }
 
@@ -900,6 +906,9 @@ function parse_js_map(js_context, parentKey, ref, input) {
     )
   }
 
+  // reorder
+  reorder_children(node)
+
   return node
 }
 
@@ -967,6 +976,9 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     )
   }
 
+  // reorder
+  reorder_children(node)
+
   return node
 }
 
@@ -1026,6 +1038,9 @@ function parse_js_filter(js_context, parentKey, ref, input) {
       )
     )
   }
+
+  // reorder
+  reorder_children(node)
 
   return node
 }
@@ -1101,6 +1116,9 @@ function parse_react_element(js_context, parentKey, ref, input) {
     })
   }
 
+  // reorder
+  reorder_children(node)
+
   return node
 }
 
@@ -1174,6 +1192,9 @@ function parse_react_html(js_context, parentKey, ref, input) {
       )
     })
   }
+
+  // reorder
+  reorder_children(node)
 
   return node
 }
@@ -1291,6 +1312,9 @@ function parse_mui_style(js_context, parentKey, ref, input) {
       )
     )
   })
+
+  // reorder
+  reorder_children(node)
 
   return node
 }
@@ -2042,6 +2066,107 @@ function lookup_type_by_classname(className) {
   return found
 }
 
+// reorder children
+const reorder_children = (parentNode) => {
+
+  if (parentNode.data.type === 'js/object'
+      || parentNode.data.type === 'mui/style') {
+
+    const children = []
+    // add __ref !== null
+    parentNode.children
+      .filter(child => !!child.data.__ref)
+      .sort((a, b) => {
+        return a.data.__ref.localeCompare(b.data.__ref)
+      })
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  } else if (parentNode.data.type === 'react/element'
+            || parentNode.data.type === 'react/html') {
+
+    const children = []
+    // add __ref === 'props'
+    parentNode.children
+      .filter(child => child.data.__ref === 'props')
+      .map(child => {
+        children.push(child)
+      })
+    // add __ref === null
+    parentNode.children
+      .filter(child => child.data.__ref === null)
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  } else if (parentNode.data.type === 'js/switch') {
+
+    const children = []
+    // add __ref === null
+    parentNode.children
+      .filter(child => child.data.__ref === null)
+      .map(child => {
+        children.push(child)
+      })
+    // add __ref === 'default'
+    parentNode.children
+      .filter(child => child.data.__ref === 'default')
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  } else if (parentNode.data.type === 'js/map') {
+
+    const children = []
+    // add __ref === 'data'
+    parentNode.children
+      .filter(child => child.data.__ref === 'data')
+      .map(child => {
+        children.push(child)
+      })
+    // add __ref === 'result'
+    parentNode.children
+      .filter(child => child.data.__ref === 'result')
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  } else if (parentNode.data.type === 'js/reduce') {
+
+    const children = []
+    // add __ref === 'data'
+    parentNode.children
+      .filter(child => child.data.__ref === 'data')
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  } else if (parentNode.data.type === 'js/filter') {
+
+    const children = []
+    // add __ref === 'data'
+    parentNode.children
+      .filter(child => child.data.__ref === 'data')
+      .map(child => {
+        children.push(child)
+      })
+    // update children
+    parentNode.children = children
+
+  }
+}
+
 export {
   parse_js,
   lookup_icon_for_type,
@@ -2052,4 +2177,5 @@ export {
   lookup_type_by_classname,
   valid_import_names,
   valid_html_tags,
+  reorder_children,
 }

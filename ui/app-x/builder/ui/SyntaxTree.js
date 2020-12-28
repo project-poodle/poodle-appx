@@ -55,6 +55,7 @@ import {
   lookup_valid_child_types,
   lookup_classname_by_type,
   lookup_type_by_classname,
+  reorder_children,
 } from 'app-x/builder/ui/util_parse'
 import {
   gen_js,
@@ -429,7 +430,7 @@ const SyntaxTree = (props) => {
           lookupParent.children.push(parsed)
         }
       }
-      reorderChildren(lookupParent)
+      reorder_children(lookupParent)
     } else {
       // add to the root as first element
       resultTree.splice(1, 0, parsed)
@@ -506,107 +507,6 @@ const SyntaxTree = (props) => {
   const [ moveCallback,         setMoveCallback       ] = useState(null)
   const [ moveDragNode,         setMoveDragNode       ] = useState(null)
   const [ moveDropParent,       setMoveDropParent     ] = useState(null)
-
-  // reorder children
-  const reorderChildren = (parentNode) => {
-
-    if (parentNode.data.type === 'js/object'
-        || parentNode.data.type === 'mui/style') {
-
-      const children = []
-      // add __ref !== null
-      parentNode.children
-        .filter(child => !!child.data.__ref)
-        .sort((a, b) => {
-          return a.data.__ref.localeCompare(b.data.__ref)
-        })
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    } else if (parentNode.data.type === 'react/element'
-              || parentNode.data.type === 'react/html') {
-
-      const children = []
-      // add __ref === 'props'
-      parentNode.children
-        .filter(child => child.data.__ref === 'props')
-        .map(child => {
-          children.push(child)
-        })
-      // add __ref === null
-      parentNode.children
-        .filter(child => child.data.__ref === null)
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    } else if (parentNode.data.type === 'js/switch') {
-
-      const children = []
-      // add __ref === null
-      parentNode.children
-        .filter(child => child.data.__ref === null)
-        .map(child => {
-          children.push(child)
-        })
-      // add __ref === 'default'
-      parentNode.children
-        .filter(child => child.data.__ref === 'default')
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    } else if (parentNode.data.type === 'js/map') {
-
-      const children = []
-      // add __ref === 'data'
-      parentNode.children
-        .filter(child => child.data.__ref === 'data')
-        .map(child => {
-          children.push(child)
-        })
-      // add __ref === 'result'
-      parentNode.children
-        .filter(child => child.data.__ref === 'result')
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    } else if (parentNode.data.type === 'js/reduce') {
-
-      const children = []
-      // add __ref === 'data'
-      parentNode.children
-        .filter(child => child.data.__ref === 'data')
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    } else if (parentNode.data.type === 'js/filter') {
-
-      const children = []
-      // add __ref === 'data'
-      parentNode.children
-        .filter(child => child.data.__ref === 'data')
-        .map(child => {
-          children.push(child)
-        })
-      // update children
-      parentNode.children = children
-
-    }
-  }
 
   // expand/collapse
   const onExpand = keys => {
@@ -797,7 +697,7 @@ const SyntaxTree = (props) => {
     // callback with move confirmation
     const thisMoveCallback = (data) => {
 
-      console.log(dragObj, data)
+      // console.log(dragObj, data)
       if (dropParent.data.type === 'js/switch') {
         if (!!data.default) {
           dragObj.data.__ref = 'default'
@@ -817,13 +717,18 @@ const SyntaxTree = (props) => {
       dragFunc()
       dropFunc()
 
-      reorderChildren(dropParent)
+      reorder_children(dropParent)
+
+      const newExpandedKeys = _.cloneDeep(expandedKeys)
+      if (!newExpandedKeys.includes(dropParent.key)) {
+        newExpandedKeys.push(dropParent.key)
+      }
 
       // take action
       makeAction(
         `Drag & Drop [${dragObj.title}]`,
         resultData,
-        expandedKeys,
+        newExpandedKeys,
         dragObj.key
       )
     }

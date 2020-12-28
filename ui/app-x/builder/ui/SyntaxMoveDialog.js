@@ -84,10 +84,10 @@ const SyntaxMoveDialog = (props) => {
 
   // onSubmit
   const onSubmit = data => {
-    console.log('onSubmit')
-    console.log(props.moveCallback)
+    // console.log('onSubmit')
+    // console.log(props.moveCallback)
     if (props.moveCallback) {
-      console.log(data)
+      // console.log(data)
       props.moveCallback(data)
       props.setOpen(false)
     }
