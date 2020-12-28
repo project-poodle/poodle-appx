@@ -5,31 +5,17 @@ import {
   makeStyles
 } from '@material-ui/core'
 import {
-  WebOutlined,
-  InsertDriveFileOutlined
-} from '@material-ui/icons'
+  ContainerOutlined,
+  FileOutlined,
+} from '@ant-design/icons'
 import {
   Tree,
-  Layout,
-  Tooltip,
-  Button as AntButton,
+  notification,
 } from 'antd'
 const {
   TreeNode,
   DirectoryTree,
 } = Tree
-const {
-  Header,
-  Footer,
-  Sider,
-  Content
-} = Layout
-import {
-  Icon,
-  FileOutlined,
-  ContainerOutlined,
-  CodepenOutlined
-} from '@ant-design/icons'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
@@ -42,12 +28,20 @@ import Pointer from 'app-x/icon/Pointer'
 
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import ElementAddDialog from 'app-x/builder/ui/element/ElementAddDialog'
+import ElementDeleteDialog from 'app-x/builder/ui/element/ElementDeleteDialog'
+import ElementMenu from 'app-x/builder/ui/element/ElementMenu'
 import {
   tree_traverse,
+  tree_lookup,
+  lookup_icon_for_type,
+  lookup_desc_for_type,
+  new_folder_node,
+  new_element_node,
+  PATH_SEPARATOR,
 } from 'app-x/builder/ui/element/util'
 
 
-const PATH_SEPARATOR = '/'
 
 // generate tree data
 const transformTree = (data) => {
@@ -68,17 +62,7 @@ const transformTree = (data) => {
       return
     }
 
-    let icon = <FileOutlined />
-    switch (ui_element.ui_element_type) {
-      case 'react/element':
-        // icon = <CodepenOutlined />
-        icon = <ReactIcon />
-        break
-      case 'html':
-        icon = <ContainerOutlined />
-        break
-    }
-
+    // find location
     while (subPaths.length) {
 
       subName = subPaths.shift()
@@ -90,19 +74,9 @@ const transformTree = (data) => {
       let found = currParent.find(treeNode => treeNode.title == subName)
       if (!found) {
         if (subPaths.length == 0) {
-          found = {
-            title: subName,
-            key: (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/'),
-            isLeaf: true,
-            icon: icon,
-            data: ui_element,
-          }
+          found = new_element_node(currKey, subName, ui_element.ui_element_type, ui_element)
         } else {
-          found = {
-            title: subName,
-            key: (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, '/'),
-            children: [],
-          }
+          found = new_folder_node(currKey, subName)
         }
         currParent.push(found)
         currKey = found.key
@@ -128,7 +102,6 @@ const ElementTree = (props) => {
       width: '100%',
       margin: theme.spacing(1, 1),
       padding: theme.spacing(1, 1),
-      // backgroundColor: theme.palette.background.paper,
       // maxHeight: theme.spacing(100),
       // overflow: 'scroll',
       // border
@@ -158,23 +131,33 @@ const ElementTree = (props) => {
 
   // element context
   const {
+    // basic data
     treeData,
     setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
-    selectedTool,
-    setSelectedTool,
+    loadTimer,
+    setLoadTimer,
+    // add dialog
     addDialogOpen,
     setAddDialogOpen,
+    addDialogContext,
+    setAddDialogContext,
     addDialogCallback,
     setAddDialogCallback,
+    // delete dialog
     deleteDialogOpen,
     setDeleteDialogOpen,
+    deleteDialogContext,
+    setDeleteDialogContext,
     deleteDialogCallback,
     setDeleteDialogCallback,
   } = useContext(ElementProvider.Context)
+
+  // context menu
+  const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
   // tree ref
   const elementTreeRef = React.createRef()
@@ -193,26 +176,48 @@ const ElementTree = (props) => {
         'appx',
         `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element`,
         data => {
-          // console.log(data)
+          console.log(data)
           const translated = transformTree(data)
           console.log(translated)
           setTreeData(translated)
         },
         error => {
+          console.log(error)
           // error notification
           notification['error']({
             message: `Load UI Element Tree Failed`,
             description: String(error),
-            placement: 'bottomLeft',
+            placement: 'bottomRight',
           })
         }
       )
     }
-  }, [navDeployment])
+  }, [navDeployment, loadTimer])
 
   // right click
-  const onRightClick = () => {
+  const onRightClick = info => {
+    // console.log(info)
+    // set selected key
+    setSelectedKey(info.node.key)
+    // find draggable target, open context menu
+    let target = info.event.target
+    while (target.parentNode && !target.draggable) {
+      target = target.parentNode
+    }
+    // console.log(target)
+    setContextAnchorEl(target)
+    info.event.stopPropagation()
+    info.event.preventDefault()
+  }
 
+  // syntax menu
+  const handleSyntaxMenu = e => {
+    // console.log('Right click')
+    if (contextAnchorEl) {
+      setContextAnchorEl(null)
+    }
+    e.stopPropagation()
+    e.preventDefault()
   }
 
   // expand/collapse
@@ -223,11 +228,10 @@ const ElementTree = (props) => {
   // select
   const onSelect = key => {
     // console.log(key)
-    setSelectedTool(null)
     tree_traverse(treeData, key[0], (item, index, arr) => {
+      setSelectedKey(item.key)
       if (item.isLeaf) {
         // console.log(item)
-        setSelectedKey(item.key)
         setNavSelected({
           type: 'ui_element'
         })
@@ -254,7 +258,7 @@ const ElementTree = (props) => {
 
   // drop
   const onDrop = info => {
-    console.log(info)
+    // console.log(info)
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     // const dropPos = info.node.props.pos.split('-')
@@ -374,96 +378,31 @@ const ElementTree = (props) => {
     )
   }
 
-  const Toolbar = (props) => {
-    return (
-      <Box
-        key="toolbar"
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="left"
-        alignItems="center"
-        >
-        <Tooltip
-          key='pointer'
-          title='pointer'
-          placement="bottom"
-          >
-          <AntButton
-            size="small"
-            color="secondary"
-            type={!selectedTool ? 'primary' : 'default'}
-            className={styles.fab}
-            value='pointer'
-            icon={<Pointer />}
-            shape="circle"
-            onClick={e => {
-              setSelectedKey(null)
-              setSelectedTool(null)
-            }}
-            >
-          </AntButton>
-        </Tooltip>
-        <Tooltip
-          key='react'
-          title='react'
-          placement="bottom"
-          >
-          <AntButton
-            size="small"
-            color="secondary"
-            type={selectedTool === 'react' ? 'primary' : 'default'}
-            className={styles.fab}
-            value='pointer'
-            icon={<ReactIcon />}
-            shape="circle"
-            onClick={e => {
-              setSelectedKey(null)
-              setSelectedTool('react')
-            }}
-            >
-          </AntButton>
-        </Tooltip>
-      </Box>
-    )
-  }
-
   return (
-    <Box className={styles.root}>
-      <Box className={styles.treeBox}>
+    <Box
+      className={styles.root}
+      >
+      <Box
+        className={styles.treeBox}
+        >
         {
           constructTree()
         }
       </Box>
+      <ElementAddDialog
+        key="addDialog"
+        />
+      <ElementDeleteDialog
+        key="deleteDialog"
+        />
+      <ElementMenu
+        key="syntaxMenu"
+        contextAnchorEl={contextAnchorEl}
+        setContextAnchorEl={setContextAnchorEl}
+        >
+      </ElementMenu>
     </Box>
   )
 }
 
 export default ElementTree
-
-/*
-header: {
-  // width: 122,
-  // margin: 0,
-  // padding: 0,
-  padding: theme.spacing(1, 1, 1),
-  height: theme.spacing(6),
-  backgroundColor: theme.palette.background.paper,
-  // border
-  // border: 1,
-  // borderTop: 0,
-  // borderRight: 0,
-  // borderLeft: 0,
-  // borderStyle: 'dotted',
-  // borderColor: theme.palette.divider,
-},
-fab: {
-  margin: theme.spacing(1),
-},
-<Layout className={styles.root}>
-  <Content key="content">
-<Header key="header" className={styles.header}>
-  <Toolbar />
-</Header>
-</Content>
-</Layout>
-*/

@@ -10,6 +10,7 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
@@ -26,9 +27,16 @@ const PreviewSource = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
+
   // editor context
   const {
-    apiData,
     treeData,
     expandedKeys,
     selectedKey,
@@ -54,7 +62,7 @@ const PreviewSource = (props) => {
       setPreviewLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
-      const url = `/${ui_root}/${props.namespace}/${props.ui_name}/${props.ui_deployment}/_elem/${props.ui_element_name}.source`.replace(/\/+/g, '/')
+      const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navElement.ui_element_name}.source`.replace(/\/+/g, '/')
       // console.log(url)
       fetch(url)
         .then(response => response.text())
@@ -82,7 +90,7 @@ const PreviewSource = (props) => {
       setPreviewLoading(true)
       // preview url
       const ui_root = globalThis.appx.UI_ROOT
-      const url = `/${ui_root}/${props.namespace}/${props.ui_name}/${props.ui_deployment}/`.replace(/\/+/g, '/')
+      const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
       // console.log(url)
       fetch(
         url,
@@ -99,7 +107,12 @@ const PreviewSource = (props) => {
             type: 'ui_element',
             output: 'code',
             data: {
-              ...apiData,
+              namespace: navDeployment.namespace,
+              ui_name: navDeployment.ui_name,
+              ui_ver: navDeployment.ui_ver,
+              ui_deployment: navDeployment.ui_deployment,
+              ui_element_name: navElement.ui_element_name,
+              ui_element_type: navElement.ui_element_type,
               ui_element_spec: data
             },
           }) // body data type must match "Content-Type" header
@@ -116,7 +129,17 @@ const PreviewSource = (props) => {
         })
     }
 
-  }, [livePreview, apiData, treeData])
+  },
+  [
+    livePreview,
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navElement.ui_element_type,
+    treeData,
+  ])
 
   // render
   return (

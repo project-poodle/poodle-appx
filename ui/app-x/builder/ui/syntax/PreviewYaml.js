@@ -11,6 +11,7 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
@@ -26,6 +27,14 @@ const PreviewYaml = (props) => {
       height: '100%',
     },
   }))()
+
+  // nav context
+  const {
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
 
   // editor context
   const {
@@ -53,7 +62,7 @@ const PreviewYaml = (props) => {
       setPreviewLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
-      const url = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+      const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
 
       api.get(
         'sys',

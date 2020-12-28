@@ -21,34 +21,29 @@ import {
 import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
-import { default as NestedMenuItem } from 'material-ui-nested-menu-item'
 import {
-  Layout,
-  Tree,
-  Tabs,
-  Radio,
   Tooltip,
   Button as AntButton,
 } from 'antd'
-const { Header, Footer, Sider, Content } = Layout
-const {
-  TreeNode,
-  DirectoryTree,
-} = Tree
-const { TabPane } = Tabs;
 import {
+  ContainerOutlined,
+  FileOutlined,
   DeleteOutlined,
+  ProfileOutlined,
   Icon,
 } from '@ant-design/icons'
-import { v4 as uuidv4 } from 'uuid'
 import { useForm, Controller } from "react-hook-form";
-import { parse, parseExpression } from "@babel/parser"
+import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { parse_js, lookup_icon_for_type, lookup_valid_child_types } from 'app-x/builder/ui/util_parse'
-import { tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
-import EditorProvider from 'app-x/builder/ui/EditorProvider'
+import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import {
+  tree_traverse,
+  tree_lookup,
+  lookup_icon_for_type,
+  lookup_desc_for_type,
+} from 'app-x/builder/ui/element/util'
 
 // make context menu
 const ElementMenu = (props) => {
@@ -58,29 +53,47 @@ const ElementMenu = (props) => {
     menuItem: {
       minWidth: 200,
     },
-    nestedMenuItem: {
-      padding: 0,
-    },
   }))()
 
   // context
   const {
+    // basic data
     treeData,
+    setTreeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
-  } = useContext(EditorProvider.Context)
+    // add dialog
+    addDialogOpen,
+    setAddDialogOpen,
+    addDialogContext,
+    setAddDialogContext,
+    addDialogCallback,
+    setAddDialogCallback,
+    // delete dialog
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    deleteDialogContext,
+    setDeleteDialogContext,
+    deleteDialogCallback,
+    setDeleteDialogCallback,
+  } = useContext(ElementProvider.Context)
 
-  // const [ menuPosition, setMenuPosition ] = useState(null)
+  const [ selectedNode,     setSelectedNode   ] = useState(null)
 
-  // check props.selectedNode
-  if (!props.selectedNode) {
-    return null
-  }
+  // lookup
+  useEffect(() => {
+    // lookup selected node
+    const lookupNode = tree_lookup(treeData, selectedKey)
+    if (!!lookupNode) {
+      setSelectedNode(lookupNode)
+    } else {
+      setSelectedNode(null)
+    }
+  }, [treeData, selectedKey])
 
-  const valid_child_types = lookup_valid_child_types(props.selectedNode.data.type)
-
+  // render
   return (
     <Menu
       keepMounted={true}
@@ -98,287 +111,65 @@ const ElementMenu = (props) => {
       onClose={ e => props.setContextAnchorEl(null) }
       >
       {
-        (
-          !!props.selectedNode
-          && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
-        )
+        !selectedNode?.isLeaf
         &&
         (
           <Box>
             {
-              valid_child_types?.ref.names.map(name => {
-                const exists = lookup_child_by_ref(props.selectedNode, name)
-                if (exists) {
-                  return null
-                }
-                return (
-                  <NestedMenuItem
-                    className={styles.nestedMenuItem}
-                    key={uuidv4()}
-                    label={(
-                      <List className={styles.nestedMenuItem}>
-                        <ListItem
-                          dense={true}
-                          className={styles.menuItem}
-                          >
-                          <ListItemIcon>
-                            { lookup_icon_for_type('js/object') }
-                          </ListItemIcon>
-                          <ListItemText primary={`[ ${name} ]`} />
-                        </ListItem>
-                      </List>
-                    )}
-                    parentMenuOpen={!!props.contextAnchorEl}
-                    >
-                    {
-                      valid_child_types?.ref.types.map(type => {
-                        if (!!type) {
-                          return (
-                            <MenuItem
-                              dense={true}
-                              className={styles.menuItem}
-                              key={uuidv4()}
-                              onClick={
-                                () => props.addMenuClicked({
-                                  nodeRef: name,
-                                  nodeRefRequired: true,
-                                  nodeKey: props.selectedNode.key,
-                                  nodeType: type,
-                                  isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
-                                })
-                              }
-                              >
-                              <ListItemIcon>
-                                { lookup_icon_for_type(type) }
-                              </ListItemIcon>
-                              <ListItemText primary={`Add ${type}`} />
-                            </MenuItem>
-                          )
-                        } else {
-                          return (
-                            <Divider key={uuidv4()} />
-                          )
-                        }
-                      })
-                    }
-                  </NestedMenuItem>
-                )
-              })
-              .concat([<Divider key={uuidv4()} />])
-              .concat(valid_child_types?._.types.map(type => {
+              [
+                'folder',
+                null,
+                'react/element',
+                'react/provider',
+                'html',
+              ].map(type => {
                 if (!!type) {
                   return (
                     <MenuItem
                       dense={true}
                       className={styles.menuItem}
-                      key={uuidv4()}
-                      onClick={
-                        () => props.addMenuClicked({
-                          nodeRef: null,
-                          nodeRefRequired: false,
-                          nodeKey: props.selectedNode.key,
+                      key={type}
+                      onClick={() => {
+                        props.setContextAnchorEl(null)
+                        setAddDialogContext({
+                          parentNode: selectedNode,
                           nodeType: type,
                         })
-                      }
+                        setAddDialogOpen(true)
+                      }}
                       >
                       <ListItemIcon>
                         { lookup_icon_for_type(type) }
                       </ListItemIcon>
-                      <ListItemText primary={`Add ${type}`} />
+                      <ListItemText primary={`Add ${lookup_desc_for_type(type)}`} />
                     </MenuItem>
                   )
                 } else {
-                  return (
-                    <Divider key={uuidv4()} />
-                  )
-                }
-              }))
-            }
-          </Box>
-        )
-      }
-      {
-        (
-          !!props.selectedNode
-          && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!!valid_child_types?._?.types && !valid_child_types?.ref?.types)
-        )
-        &&
-        (
-          <Box>
-            {
-              valid_child_types?._.types.map(type => {
-                if (!!type) {
-                  return (
-                    <MenuItem
-                      dense={true}
-                      className={styles.menuItem}
-                      key={uuidv4()}
-                      onClick={
-                        () => props.addMenuClicked({
-                          nodeRef: null,
-                          nodeRefRequired: false,
-                          nodeKey: props.selectedNode.key,
-                          nodeType: type,
-                        })
-                      }
-                      >
-                      <ListItemIcon>
-                        { lookup_icon_for_type(type) }
-                      </ListItemIcon>
-                      <ListItemText primary={`Add ${type}`} />
-                    </MenuItem>
-                  )
-                } else {
-                  return (
-                    <Divider key={uuidv4()} />
-                  )
+                  return <Divider key={uuidv4()}/>
                 }
               })
             }
+            <Divider />
           </Box>
         )
       }
-      {
-        (
-          !!props.selectedNode
-          && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
-        )
-        &&
-        (
-          <Box>
-            {
-              !!valid_child_types?.ref?.names
-              &&
-              (
-                valid_child_types?.ref.names.map(name => {
-                  const exists = lookup_child_by_ref(props.selectedNode, name)
-                  if (exists) {
-                    return null
-                  }
-                  return (
-                    <NestedMenuItem
-                      className={styles.nestedMenuItem}
-                      key={uuidv4()}
-                      label={(
-                        <List className={styles.nestedMenuItem}>
-                          <ListItem
-                            dense={true}
-                            className={styles.menuItem}
-                            >
-                            <ListItemIcon>
-                              { lookup_icon_for_type('js/object') }
-                            </ListItemIcon>
-                            <ListItemText primary={`[ ${name} ]`} />
-                          </ListItem>
-                        </List>
-                      )}
-                      parentMenuOpen={!!props.contextAnchorEl}
-                      >
-                      {
-                        valid_child_types?.ref.types.map(type => {
-                          if (!!type) {
-                            return (
-                              <MenuItem
-                                dense={true}
-                                className={styles.menuItem}
-                                key={uuidv4()}
-                                onClick={
-                                  () => props.addMenuClicked({
-                                    nodeRef: name,
-                                    nodeRefRequired: true,
-                                    nodeKey: props.selectedNode.key,
-                                    nodeType: type,
-                                    isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
-                                  })
-                                }
-                                >
-                                <ListItemIcon>
-                                  { lookup_icon_for_type(type) }
-                                </ListItemIcon>
-                                <ListItemText primary={`Add ${type}`} />
-                              </MenuItem>
-                            )
-                          } else {
-                            return (
-                              <Divider key={uuidv4()} />
-                            )
-                          }
-                        })
-                      }
-                    </NestedMenuItem>
-                  )
-                })
-              )
-            }
-            {
-              !valid_child_types?.ref?.names
-              &&
-              (
-                valid_child_types?.ref.types.map(type => {
-                  if (!!type) {
-                    return (
-                      <MenuItem
-                        dense={true}
-                        className={styles.menuItem}
-                        key={uuidv4()}
-                        onClick={
-                          () => props.addMenuClicked({
-                            nodeRef: null,
-                            nodeRefRequired: true,
-                            nodeKey: props.selectedNode.key,
-                            nodeType: type,
-                          })
-                        }
-                        >
-                        <ListItemIcon>
-                          { lookup_icon_for_type(type) }
-                        </ListItemIcon>
-                        <ListItemText primary={`Add ${type}`} />
-                      </MenuItem>
-                    )
-                  } else {
-                    return (
-                      <Divider key={uuidv4()} />
-                    )
-                  }
-                })
-              )
-            }
-          </Box>
-        )
-      }
-      {
-        !!props.selectedNode
-        && !!props.selectedNode.data
-        && !!props.selectedNode.data.type
-        && props.selectedNode.data.type !== '/'
-        &&
-        (
-          <Box>
-            <Divider key={uuidv4()} />
-            <MenuItem
-              dense={true}
-              className={styles.menuItem}
-              onClick={
-                () => props.deleteMenuClicked({
-                  nodeKey: selectedKey,
-                })
-              }
-              >
-              <ListItemIcon>
-                <DeleteOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
-          </Box>
-        )
-      }
+      <MenuItem
+        dense={true}
+        className={styles.menuItem}
+        key='delete'
+        onClick={() => {
+          props.setContextAnchorEl(null)
+          setDeleteDialogContext({
+            selectedNode: selectedNode,
+          })
+          setDeleteDialogOpen(true)
+        }}
+        >
+        <ListItemIcon>
+          <DeleteOutlined />
+        </ListItemIcon>
+        <ListItemText primary={`Delete`} />
+      </MenuItem>
     </Menu>
   )
 }

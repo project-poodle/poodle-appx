@@ -34,6 +34,9 @@ const GlobalStyles = () => {
       '.ant-select-dropdown': {
         zIndex: 2050,
       },
+      '.ant-notification': {
+        zIndex: 2010,
+      },
       '.MuiSelect-select.MuiSelect-select': {
         display: 'flex',
         alignItems: 'center',

@@ -143,8 +143,6 @@ const SyntaxTree = (props) => {
 
   // context
   const {
-    // apiData,
-    // setApiData,
     treeData,
     expandedKeys,
     setExpandedKeys,
@@ -265,7 +263,7 @@ const SyntaxTree = (props) => {
     setSaving(true)
     const tree_context = { topLevel: true }
     const { ref, data: genData } = gen_js(tree_context, treeData)
-    const saveUrl = `/namespace/${apiData.namespace}/ui/${apiData.ui_name}/${apiData.ui_ver}/ui_element/base64:${btoa(apiData.ui_element_name)}`
+    const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
     // console.log(url)
     api.put(
       'sys',
@@ -276,7 +274,7 @@ const SyntaxTree = (props) => {
       },
       data => {
         // console.log(data)
-        const loadUrl = `/namespace/${apiData.namespace}/ui_deployment/ui/${apiData.ui_name}/deployment/${apiData.ui_deployment}/ui_element/base64:${btoa(apiData.ui_element_name)}`
+        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
         api.get(
           'sys',
           'appx',
