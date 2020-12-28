@@ -45,21 +45,21 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import TextFieldArray from 'app-x/component/TextFieldArray'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
-import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import AutoCompleteHtmlTag from 'app-x/builder/ui/syntax/AutoCompleteHtmlTag'
+import AutoCompleteImportName from 'app-x/builder/ui/syntax/AutoCompleteImportName'
 import {
   parse_js,
   lookup_icon_for_type,
   lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
-} from 'app-x/builder/ui/util_parse'
+} from 'app-x/builder/ui/syntax/util_parse'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
 // add dialog
 const SyntaxAddDialog = (props) => {
@@ -740,7 +740,7 @@ const SyntaxAddDialog = (props) => {
                     render={props =>
                       (
                         <Box className={styles.formControl}>
-                          SyntaxProviderutoCompleteImportName
+                          <AutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -1270,7 +1270,7 @@ const SyntaxAddDialog = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          SyntaxProviderutoCompleteImportName
+                          <AutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -1296,7 +1296,7 @@ const SyntaxAddDialog = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          SyntaxProviderutoCompleteHtmlTag
+                          <AutoCompleteHtmlTag
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}

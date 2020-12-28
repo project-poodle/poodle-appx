@@ -24,23 +24,18 @@ import {
   ContainerOutlined,
   CodepenOutlined
 } from '@ant-design/icons'
-import {
-  Responsive,
-  WidthProvider,
-  default as GridLayout
-} from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
 // import Live from 'app-x/icon/Live'
 import Preview from 'app-x/icon/Preview'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
-import PreviewSource from 'app-x/builder/ui/PreviewSource'
-import PreviewYaml from 'app-x/builder/ui/PreviewYaml'
-import PreviewJson from 'app-x/builder/ui/PreviewJson'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
+import PreviewSource from 'app-x/builder/ui/syntax/PreviewSource'
+import PreviewYaml from 'app-x/builder/ui/syntax/PreviewYaml'
+import PreviewJson from 'app-x/builder/ui/syntax/PreviewJson'
 import {
   gen_js,
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
 const PreviewTabs = (props) => {
 

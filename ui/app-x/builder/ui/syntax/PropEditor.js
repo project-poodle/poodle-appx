@@ -25,13 +25,14 @@ import {
   AutoComplete,
 } from 'antd'
 const { TabPane } = Tabs;
-import { useForm, Controller } from "react-hook-form";
+import { useForm, FormProvider, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 // context provider
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import YamlEditor from 'app-x/builder/ui/YamlEditor'
-import AutoCompleteHtmlTag from 'app-x/builder/ui/AutoCompleteHtmlTag'
-import AutoCompleteImportName from 'app-x/builder/ui/AutoCompleteImportName'
+import TextFieldArray from 'app-x/component/TextFieldArray'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
+import AutoCompleteHtmlTag from 'app-x/builder/ui/syntax/AutoCompleteHtmlTag'
+import AutoCompleteImportName from 'app-x/builder/ui/syntax/AutoCompleteImportName'
 // utilities
 import {
   lookup_icon_for_type,
@@ -39,13 +40,13 @@ import {
   lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
-} from 'app-x/builder/ui/util_parse'
+} from 'app-x/builder/ui/syntax/util_parse'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref,
   gen_js,
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
 const PropEditor = (props) => {
   // make styles
@@ -223,6 +224,7 @@ const PropEditor = (props) => {
   // render
   return (
     <Box className={styles.root}>
+    <FormProvider {...hookForm}>
       <form onSubmit={() => {return false}} className={styles.root}>
       {
         (!treeNode)
@@ -788,7 +790,7 @@ const PropEditor = (props) => {
                       render={props =>
                       (
                         <Box className={styles.formControl}>
-                          SyntaxProviderutoCompleteImportName
+                          <AutoCompleteImportName
                             name={props.name}
                             value={props.value}
                             onChange={props.onChange}
@@ -923,30 +925,23 @@ const PropEditor = (props) => {
                         )
                       }
                     />
-                    <Controller
-                      name="data"
-                      control={control}
-                      defaultValue={treeNode?.data?.params}
+                    <TextFieldArray
+                      key="params"
+                      name="params"
+                      label="Parameters"
+                      type="text"
+                      defaultValues={treeNode?.data?.params}
+                      className={styles.formControl}
                       rules={{
+                        required: "Parameter is required",
+                        pattern: {
+                          value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                          message: "Parameter name must be valid variable name",
+                        }
                       }}
-                      render={props =>
-                        (
-                          <FormControl className={styles.formControl}>
-                              <TextField
-                                label="Parameters"
-                                multiline={true}
-                                name={props.name}
-                                value={props.value}
-                                onChange={ e => {
-                                  props.onChange(e.target.value)
-                                  setBaseSubmitTimer(new Date())
-                                }}
-                                error={!!errors.params}
-                                helperText={errors.params?.message}
-                              />
-                          </FormControl>
-                        )
-                      }
+                      callback={data => {
+                        setBaseSubmitTimer(new Date())
+                      }}
                     />
                     <Controller
                       name="body"
@@ -1324,7 +1319,7 @@ const PropEditor = (props) => {
                         render={props =>
                           (
                             <Box className={styles.formControl}>
-                              SyntaxProviderutoCompleteImportName
+                              <AutoCompleteImportName
                                 name={props.name}
                                 value={props.value}
                                 onChange={props.onChange}
@@ -1353,7 +1348,7 @@ const PropEditor = (props) => {
                         render={props =>
                         (
                           <Box className={styles.formControl}>
-                            SyntaxProviderutoCompleteHtmlTag
+                            <AutoCompleteHtmlTag
                               name={props.name}
                               value={props.value}
                               onChange={props.onChange}
@@ -1582,7 +1577,7 @@ const PropEditor = (props) => {
                       name="states"
                       label="States"
                       type="text"
-                      defaultValues={[]}
+                      defaultValues={treeNode?.data?.states}
                       className={styles.formControl}
                       rules={{
                         required: "State expression is required",
@@ -1692,6 +1687,7 @@ const PropEditor = (props) => {
         )
       }
       </form>
+    </FormProvider>
     </Box>
   )
 }

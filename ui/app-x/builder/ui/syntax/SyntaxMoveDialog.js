@@ -39,19 +39,19 @@ import {
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   parse_js,
   lookup_icon_for_type,
   lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
-} from 'app-x/builder/ui/util_parse'
+} from 'app-x/builder/ui/syntax/util_parse'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
 // add dialog
 const SyntaxMoveDialog = (props) => {

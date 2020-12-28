@@ -414,18 +414,19 @@ ui_element:
                   children:
                     - type: react/element
                       name: "@material-ui/core.Box"
-                      props:
-                        p: 1
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/ElementTree
-                          props:
-                            namespace: sys
-                            ui_name: ui
-                            ui_deployment: base
-                            handlers:
-                              type: js/expression
-                              data: props.handlers
+                          name: app-x/builder/ui/NavProvider
+                          children:
+                            - type: react/element
+                              name: app-x/builder/ui/element/ElementProvider
+                              children:
+                                - type: react/element
+                                  name: app-x/builder/ui/element/ElementTree
+                                  props:
+                                    namespace: sys
+                                    ui_name: ui
+                                    ui_deployment: base
                 - type: react/element
                   name: "@material-ui/core.ListItem"
                   props:
@@ -478,14 +479,17 @@ ui_element:
                         p: 1
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/ElementTree
-                          props:
-                            namespace: sys
-                            ui_name: ui
-                            ui_deployment: base
-                            handlers:
-                              type: js/expression
-                              data: props.handlers
+                          name: app-x/builder/ui/NavProvider
+                          children:
+                            - type: react/element
+                              name: app-x/builder/ui/element/ElementProvider
+                              children:
+                                - type: react/element
+                                  name: app-x/builder/ui/element/ElementTree
+                                  props:
+                                    namespace: sys
+                                    ui_name: ui
+                                    ui_deployment: base
 
     ############################################################
     - namespace: sys

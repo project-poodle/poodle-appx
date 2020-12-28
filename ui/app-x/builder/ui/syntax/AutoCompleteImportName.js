@@ -8,10 +8,10 @@ import {
   AutoComplete,
 } from 'antd'
 import {
-  valid_html_tags,
-} from 'app-x/builder/ui/util_parse'
+  valid_import_names,
+} from 'app-x/builder/ui/syntax/util_parse'
 
-const AutoCompleteHtmlTag = (props) => {
+const AutoCompleteImportName = (props) => {
 
   const styles = makeStyles((theme) => ({
     formControl: {
@@ -24,7 +24,7 @@ const AutoCompleteHtmlTag = (props) => {
   const [ options,    setOptions    ] = useState([])
 
   useEffect(() => {
-    setOptions(valid_html_tags().map(n => ({value: n})))
+    setOptions(valid_import_names().map(n => ({value: n})))
   }, [props.selectedKey])
 
   return (
@@ -39,7 +39,7 @@ const AutoCompleteHtmlTag = (props) => {
           }
         }}
         onSearch={s => {
-          const valid_names = valid_html_tags()
+          const valid_names = valid_import_names()
           const s_list = s.toUpperCase().split(' ').filter(s => !!s)
           const found_options = valid_names.filter(name => {
             const name_upper = name.toUpperCase()
@@ -68,4 +68,4 @@ const AutoCompleteHtmlTag = (props) => {
   )
 }
 
-export default AutoCompleteHtmlTag
+export default AutoCompleteImportName

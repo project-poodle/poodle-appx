@@ -46,9 +46,17 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import { parse_js, lookup_icon_for_type, lookup_valid_child_types } from 'app-x/builder/ui/util_parse'
-import { tree_traverse, tree_lookup, lookup_child_by_ref } from 'app-x/builder/ui/util_tree'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
+import {
+  parse_js,
+  lookup_icon_for_type,
+  lookup_valid_child_types
+} from 'app-x/builder/ui/syntax/util_parse'
+import {
+  tree_traverse,
+  tree_lookup,
+  lookup_child_by_ref
+} from 'app-x/builder/ui/syntax/util_tree'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 
 // make context menu
 const SyntaxMenu = (props) => {

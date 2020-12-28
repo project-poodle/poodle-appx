@@ -34,16 +34,16 @@ import {
   lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
-} from 'app-x/builder/ui/util_parse'
+} from 'app-x/builder/ui/syntax/util_parse'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref,
   gen_js,
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 // context provider
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import ControlledEditor from 'app-x/builder/ui/ControlledEditor'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import ControlledEditor from 'app-x/builder/ui/syntax/ControlledEditor'
 import Asterisk from 'app-x/icon/Asterisk'
 
 // console.log(monaco)

@@ -11,13 +11,13 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
   gen_js,
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
-const PreviewJson = (props) => {
+const PreviewYaml = (props) => {
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -42,8 +42,8 @@ const PreviewJson = (props) => {
     setPreviewLoading,
   } = useContext(PreviewProvider.Context)
 
-  // json content
-  const [ json, setJson ] = useState('')
+  // yaml content
+  const [ yaml, setYaml ] = useState('')
 
   // load content from api
   useEffect(() => {
@@ -70,7 +70,10 @@ const PreviewJson = (props) => {
             setYaml('')
           }
 
-          setJson(JSON.stringify(data.ui_element_spec, null, 2))
+          const doc = new YAML.Document()
+          doc.contents = data.ui_element_spec
+          // console.log(doc.toString())
+          setYaml(doc.toString())
         },
         error => {
           setPreviewLoading(false)
@@ -84,11 +87,14 @@ const PreviewJson = (props) => {
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (livePreview) {
+    if (!!livePreview) {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
+      // yaml data
+      const yamlDoc = new YAML.Document()
+      yamlDoc.contents = data
       // set editor value
-      setJson(JSON.stringify(data, null, 2))
+      setYaml(yamlDoc.toString())
     }
 
   }, [livePreview, treeData])
@@ -100,7 +106,7 @@ const PreviewJson = (props) => {
       onScroll={e => e.stopPropagation()}
       >
       <Editor
-        language="json"
+        language="yaml"
         options={{
           readOnly: true,
           wordWrap: 'on',
@@ -111,18 +117,18 @@ const PreviewJson = (props) => {
             enabled: true
           }
         }}
-        value={json}
+        value={yaml}
         >
       </Editor>
     </Box>
   )
 }
 
-PreviewJson.propTypes = {
+PreviewYaml.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_element_name: PropTypes.string.isRequired,
 }
 
-export default PreviewJson
+export default PreviewYaml

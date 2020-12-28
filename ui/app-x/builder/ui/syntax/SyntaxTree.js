@@ -56,18 +56,18 @@ import {
   lookup_classname_by_type,
   lookup_type_by_classname,
   reorder_children,
-} from 'app-x/builder/ui/util_parse'
+} from 'app-x/builder/ui/syntax/util_parse'
 import {
   gen_js,
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
-} from 'app-x/builder/ui/util_tree'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import SyntaxAddDialog from 'app-x/builder/ui/SyntaxAddDialog'
-import SyntaxDeleteDialog from 'app-x/builder/ui/SyntaxDeleteDialog'
-import SyntaxMoveDialog from 'app-x/builder/ui/SyntaxMoveDialog'
-import SyntaxMenu from 'app-x/builder/ui/SyntaxMenu'
+} from 'app-x/builder/ui/syntax/util_tree'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import SyntaxAddDialog from 'app-x/builder/ui/syntax/SyntaxAddDialog'
+import SyntaxDeleteDialog from 'app-x/builder/ui/syntax/SyntaxDeleteDialog'
+import SyntaxMoveDialog from 'app-x/builder/ui/syntax/SyntaxMoveDialog'
+import SyntaxMenu from 'app-x/builder/ui/syntax/SyntaxMenu'
 
 // capitalize string
 function capitalize(s) {
@@ -511,8 +511,6 @@ const SyntaxTree = (props) => {
   // expand/collapse
   const onExpand = keys => {
     setExpandedKeys(keys)
-    //updateCursor()
-    // setNewExpandedKeys(keys)
   }
 
   // select
@@ -569,36 +567,6 @@ const SyntaxTree = (props) => {
       //console.log(target)
       // setSyntaxTreeCursor('not-allowed')
     }
-  }
-
-  const onDragEnd = info => {
-    // console.log('changeBack')
-    // setSyntaxTreeCursor('default')
-  }
-
-  // drag enter
-  const onDragEnter = info => {
-    // expandedKeys
-    // info.event.dataTransfer.dropEffect = 'move'
-    // console.log(info.event.dataTransfer.getData("application"))
-    info.event.preventDefault()
-    // DO NOT EXPAND NODE ON ENTER
-    // user must stay on the element for a while before expand node
-    //if (!info.node.isLeaf && !info.expandedKeys.includes(info.node.key)) {
-    //  // console.log([...info.expandedKeys, info.node.key])
-    //  setExpandedKeys(
-    //    [...info.expandedKeys, info.node.key]
-    //  )
-    //}
-  }
-
-  // drag enter
-  const onDragOver = info => {
-    // console.log(info)
-    info.event.preventDefault()
-    // console.log(info.event.dataTransfer.getData("application"))
-    // info.event.dataTransfer.dropEffect = 'move'
-    // console.log(info.event.dataTransfer.dropEffect)
   }
 
   // drop
@@ -811,10 +779,6 @@ const SyntaxTree = (props) => {
         showIcon
         onSelect={onSelect}
         onExpand={onExpand}
-        onDragStart={onDragStart}
-        onDragEnter={onDragEnter}
-        onDragOver={onDragOver}
-        onDragEnd={onDragEnd}
         onDrop={onDrop}
         onRightClick={onRightClick}
         treeData={treeData}

@@ -10,11 +10,11 @@ import {
 import { default as Editor } from '@monaco-editor/react'
 
 import * as api from 'app-x/api'
-import SyntaxProvider from 'app-x/builder/ui/SyntaxProvider'
-import PreviewProvider from 'app-x/builder/ui/PreviewProvider'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
   gen_js,
-} from 'app-x/builder/ui/util_tree'
+} from 'app-x/builder/ui/syntax/util_tree'
 
 const PreviewSource = (props) => {
 
