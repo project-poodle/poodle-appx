@@ -304,6 +304,11 @@ const ElementTree = (props) => {
 
     // check for root
     if (dragKey === '/') {
+      notification['info']({
+        message: 'INFO',
+        description: 'Moving root element not allowed',
+        placement: 'bottomLeft',
+      })
       return
     }
 
@@ -326,12 +331,34 @@ const ElementTree = (props) => {
     // replicate data
     const data = [...treeData]
 
+    let dragFunc = () => {}
+    let dropFunc = () => {}
+
     // Find dragObject
     let dragObj
     tree_traverse(data, dragKey, (item, index, arr) => {
-      arr.splice(index, 1)
+      dragFunc = () => {
+        arr.splice(index, 1)
+      }
       dragObj = item
     })
+
+    if (dragObj.type === 'folder' && !!dragObj.children.length) {
+      notification['info']({
+        message: 'INFO',
+        description: 'Moving non-empty folder not allowed',
+        placement: 'bottomLeft',
+      })
+      return
+    }
+
+    // not implemented
+    notification['info']({
+      message: 'INFO',
+      description: 'Move not yet implemented',
+      placement: 'bottomLeft',
+    })
+    return
 
     if (!info.dropToGap) {
       // Drop on the content
@@ -373,6 +400,8 @@ const ElementTree = (props) => {
         ar.splice(i + 1, 0, dragObj)
       }
     }
+
+    dragFunc()
 
     setTData(data)
   }
