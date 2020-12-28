@@ -122,37 +122,22 @@ const ElementTree = (props) => {
     root: {
       height: '100%',
       width: '100%',
-      margin: theme.spacing(1, 0),
-      border: 1,
-      borderStyle: 'dotted',
-      borderColor: theme.palette.divider,
-      backgroundColor: theme.palette.background.paper,
-    },
-    header: {
-      // width: 122,
-      // margin: 0,
-      // padding: 0,
-      padding: theme.spacing(1, 1, 1),
-      height: theme.spacing(6),
-      backgroundColor: theme.palette.background.paper,
-      // border
-      // border: 1,
-      // borderTop: 0,
-      // borderRight: 0,
-      // borderLeft: 0,
-      // borderStyle: 'dotted',
-      // borderColor: theme.palette.divider,
-    },
-    fab: {
-      margin: theme.spacing(1),
     },
     treeBox: {
       height: '100%',
       width: '100%',
-      padding: theme.spacing(1),
+      margin: theme.spacing(1, 1),
+      padding: theme.spacing(1, 1),
       // backgroundColor: theme.palette.background.paper,
-      maxHeight: theme.spacing(100),
-      overflow: 'scroll',
+      // maxHeight: theme.spacing(100),
+      // overflow: 'scroll',
+      // border
+      border: 1,
+      borderLeft: 0,
+      borderRight: 0,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
+      backgroundColor: theme.palette.background.paper,
     },
     tree: {
       width: '100%',
@@ -443,19 +428,42 @@ const ElementTree = (props) => {
   }
 
   return (
-    <Layout className={styles.root}>
-      <Header key="header" className={styles.header}>
-        <Toolbar />
-      </Header>
-      <Content key="content">
-        <Box className={styles.treeBox}>
-          {
-            constructTree()
-          }
-        </Box>
-      </Content>
-    </Layout>
+    <Box className={styles.root}>
+      <Box className={styles.treeBox}>
+        {
+          constructTree()
+        }
+      </Box>
+    </Box>
   )
 }
 
 export default ElementTree
+
+/*
+header: {
+  // width: 122,
+  // margin: 0,
+  // padding: 0,
+  padding: theme.spacing(1, 1, 1),
+  height: theme.spacing(6),
+  backgroundColor: theme.palette.background.paper,
+  // border
+  // border: 1,
+  // borderTop: 0,
+  // borderRight: 0,
+  // borderLeft: 0,
+  // borderStyle: 'dotted',
+  // borderColor: theme.palette.divider,
+},
+fab: {
+  margin: theme.spacing(1),
+},
+<Layout className={styles.root}>
+  <Content key="content">
+<Header key="header" className={styles.header}>
+  <Toolbar />
+</Header>
+</Content>
+</Layout>
+*/
