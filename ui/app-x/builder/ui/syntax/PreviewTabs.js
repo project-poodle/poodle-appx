@@ -28,6 +28,7 @@ import {
 import ReactIcon from 'app-x/icon/React'
 // import Live from 'app-x/icon/Live'
 import Preview from 'app-x/icon/Preview'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import PreviewSource from 'app-x/builder/ui/syntax/PreviewSource'
@@ -71,9 +72,16 @@ const PreviewTabs = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
+
   // editor context
   const {
-    apiData,
     treeData,
     expandedKeys,
     selectedKey,
@@ -102,7 +110,15 @@ const PreviewTabs = (props) => {
 
     // load from backend if not livePreview
     if (!livePreview
-        && !!apiData
+        && !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && !!navSelected.type
+        && navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
         && !!formRef.current
         && !!iframeRef.current) {
       // setPreviewLoading(true)
@@ -110,27 +126,46 @@ const PreviewTabs = (props) => {
       // iframe url
       const iframeUrl =
         globalThis.appx.UI_ROOT
-        + '/' + apiData.namespace
-        + '/' + apiData.ui_name
-        + '/' + apiData.ui_deployment
-        + '/_elem' + apiData.ui_element_name + '.html'
+        + '/' + navDeployment.namespace
+        + '/' + navDeployment.ui_name
+        + '/' + navDeployment.ui_deployment
+        + '/_elem' + navElement.ui_element_name + '.html'
       // console.log(iframeUrl)
       iframeRef.current.src=iframeUrl
+      setPreviewInitialized(false)
     }
 
   },
   [
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navRoute.ui_route_name,
+    navSelected.type,
     livePreview,
-    apiData,
   ])
 
   // load content from UI context treeData
   useEffect(() => {
 
+    console.log(navDeployment)
+    console.log(navSelected)
+    console.log(navElement)
+
     // load from UI context if livePreview
     if (!previewInitialized
         && !!livePreview
-        && !!apiData && Object.keys(apiData).length
+        && !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && !!navSelected.type
+        && navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
         && !!treeData && treeData.length
         && !!formRef.current
         && !!iframeRef.current) {
@@ -146,7 +181,14 @@ const PreviewTabs = (props) => {
         type: 'ui_element',
         output: 'html',
         data: {
-          ...apiData,
+          namespace: navDeployment.namespace,
+          ui_name: navDeployment.ui_name,
+          ui_ver: navDeployment.ui_ver,
+          ui_spec: navDeployment.ui_spec,
+          ui_deployment: navDeployment.ui_deployment,
+          ui_deployment_spec: navDeployment.ui_deployment_spec,
+          ui_element_name: navElement.ui_element_name,
+          ui_element_type: navElement.ui_element_type,
           ui_element_spec: genData
         },
       }
@@ -163,8 +205,14 @@ const PreviewTabs = (props) => {
     }
   },
   [
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navRoute.ui_route_name,
+    navSelected.type,
     livePreview,
-    apiData,
     treeData,
     previewInitialized,
   ])
@@ -185,15 +233,22 @@ const PreviewTabs = (props) => {
       // preview data
       const message = {
         path: globalThis.appx.UI_ROOT
-          + '/' + apiData?.namespace
-          + '/' + apiData?.ui_name
-          + '/' + apiData?.ui_deployment
+          + '/' + navDeployment?.namespace
+          + '/' + navDeployment?.ui_name
+          + '/' + navDeployment?.ui_deployment
           + '/',
         data: {
           type: 'ui_element',
           output: 'code',
           data: {
-            ...apiData,
+            namespace: navDeployment.namespace,
+            ui_name: navDeployment.ui_name,
+            ui_ver: navDeployment.ui_ver,
+            ui_spec: navDeployment.ui_spec,
+            ui_deployment: navDeployment.ui_deployment,
+            ui_deployment_spec: navDeployment.ui_deployment_spec,
+            ui_element_name: navElement.ui_element_name,
+            ui_element_type: navElement.ui_element_type,
             ui_element_spec: data
           }
         }
@@ -207,6 +262,10 @@ const PreviewTabs = (props) => {
     }
   },
   [
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
     livePreview,
     treeData,
     previewInitialized,
@@ -220,9 +279,9 @@ const PreviewTabs = (props) => {
         ref={formRef}
         action={
             globalThis.appx.UI_ROOT
-            + '/' + apiData?.namespace
-            + '/' + apiData?.ui_name
-            + '/' + apiData?.ui_deployment
+            + '/' + navDeployment?.namespace
+            + '/' + navDeployment?.ui_name
+            + '/' + navDeployment?.ui_deployment
             + '/'
         }
         method="POST"

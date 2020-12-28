@@ -8,10 +8,10 @@ const NavProvider = (() => {
 
     // deployment
     const [ navDeployment,    setNavDeployment   ] = useState({
-      namespace: null,
-      ui_name: null,
-      ui_ver: null,
-      ui_deployment: null,
+      namespace: 'sys',
+      ui_name: 'ui',
+      ui_ver: 'internal',
+      ui_deployment: 'base',
     })
 
     // ui_element

@@ -15,7 +15,8 @@ import {
   Button as AntButton,
 } from 'antd'
 const {
-  DirectoryTree
+  TreeNode,
+  DirectoryTree,
 } = Tree
 const {
   Header,
@@ -32,6 +33,13 @@ import {
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import Html from 'app-x/icon/Html'
+import Text from 'app-x/icon/Text'
+import Css from 'app-x/icon/Css'
+import Code from 'app-x/icon/Code'
+import Effect from 'app-x/icon/Effect'
+import Pointer from 'app-x/icon/Pointer'
+
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
 import {
@@ -42,7 +50,7 @@ import {
 const PATH_SEPARATOR = '/'
 
 // generate tree data
-const translateTree = (data) => {
+const transformTree = (data) => {
 
   const resultData = []
 
@@ -97,6 +105,7 @@ const translateTree = (data) => {
           }
         }
         currParent.push(found)
+        currKey = found.key
       }
 
       currParent = found.children
@@ -113,20 +122,26 @@ const ElementTree = (props) => {
     root: {
       height: '100%',
       width: '100%',
+      margin: theme.spacing(1, 0),
+      border: 1,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
+      backgroundColor: theme.palette.background.paper,
     },
     header: {
       // width: 122,
-      margin: 0,
-      padding: 0,
+      // margin: 0,
+      // padding: 0,
+      padding: theme.spacing(1, 1, 1),
+      height: theme.spacing(6),
       backgroundColor: theme.palette.background.paper,
-      overflow: 'scroll',
       // border
-      border: 1,
-      borderTop: 0,
-      borderRight: 0,
-      borderLeft: 0,
-      borderStyle: 'dotted',
-      borderColor: theme.palette.divider,
+      // border: 1,
+      // borderTop: 0,
+      // borderRight: 0,
+      // borderLeft: 0,
+      // borderStyle: 'dotted',
+      // borderColor: theme.palette.divider,
     },
     fab: {
       margin: theme.spacing(1),
@@ -134,8 +149,10 @@ const ElementTree = (props) => {
     treeBox: {
       height: '100%',
       width: '100%',
+      padding: theme.spacing(1),
+      // backgroundColor: theme.palette.background.paper,
+      maxHeight: theme.spacing(100),
       overflow: 'scroll',
-      backgroundColor: theme.palette.background.paper,
     },
     tree: {
       width: '100%',
@@ -152,7 +169,7 @@ const ElementTree = (props) => {
     setNavRoute,
     navSelected,
     setNavSelected,
-  } = NavProvider.Context
+  } = useContext(NavProvider.Context)
 
   // element context
   const {
@@ -172,13 +189,14 @@ const ElementTree = (props) => {
     setDeleteDialogOpen,
     deleteDialogCallback,
     setDeleteDialogCallback,
-  } = ElementProvider.Context
+  } = useContext(ElementProvider.Context)
 
   // tree ref
   const elementTreeRef = React.createRef()
 
   // nav deployment change
   useEffect(() => {
+    // console.log(navDeployment)
     // load tree from api
     if (!!navDeployment?.namespace
         && !!navDeployment?.ui_name
@@ -190,8 +208,9 @@ const ElementTree = (props) => {
         'appx',
         `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element`,
         data => {
-          console.log(data)
-          const translated = translateTree(data)
+          // console.log(data)
+          const translated = transformTree(data)
+          console.log(translated)
           setTreeData(translated)
         },
         error => {
@@ -218,25 +237,30 @@ const ElementTree = (props) => {
 
   // select
   const onSelect = key => {
-    //console.log(key)
-    tree_traverse(tData, key[0], (item, index, arr) => {
+    // console.log(key)
+    setSelectedTool(null)
+    tree_traverse(treeData, key[0], (item, index, arr) => {
       if (item.isLeaf) {
         // console.log(item)
-        props.handlers.handleElementSelected(item.data)
+        setSelectedKey(item.key)
+        setNavSelected({
+          type: 'ui_element'
+        })
+        setNavElement({
+          ui_element_name: item.key,
+          ui_element_type: item.data.ui_element_type,
+          ui_element_spec: item.data.ui_element_spec,
+        })
       } else {
-        // console.log(item)
+        // expand folder & key
         const idx = expandedKeys.indexOf(item.key)
         if (idx < 0) {
-          // expand non-leaf node if not already
-          // console.log(`expand ${item.key}`, [...expandedKeys, item.key])
           setExpandedKeys(
             [...expandedKeys, item.key]
           )
         } else {
-          // collapse leaf node if already expanded
           const newKeys = [...expandedKeys]
           newKeys.splice(idx, 1)
-          //console.log(`remove ${item.key}`, newKeys)
           setExpandedKeys(newKeys)
         }
       }
@@ -256,7 +280,7 @@ const ElementTree = (props) => {
     let isLeaf = false
     if (!info.dropToGap) {
       // Drop on the content
-      tree_traverse(tData, dropKey, item => {
+      tree_traverse(treeData, dropKey, item => {
         if (item.isLeaf) {
           isLeaf = true
         }
@@ -269,7 +293,7 @@ const ElementTree = (props) => {
     }
 
     // replicate data
-    const data = [...tData]
+    const data = [...treeData]
 
     // Find dragObject
     let dragObj
@@ -351,7 +375,7 @@ const ElementTree = (props) => {
               icon={data.icon}
               isLeaf={data.isLeaf}
               data={data.data}
-              className={`appx-tree-node ${lookup_classname_by_type(data.data.type)}`}
+              className={`appx-tree-node`}
               children={data.children?.map(child => {
                   return ConvertTreeNode(child)
               })}
@@ -371,56 +395,49 @@ const ElementTree = (props) => {
         key="toolbar"
         display="flex"
         flexWrap="wrap"
-        justifyContent="center"
+        justifyContent="left"
         alignItems="center"
         >
-        {
-          [
-            'pointer',
-            'folder',
-            'element',
-            'provider',
-            'html',
-          ].map(type => {
-            return (
-              <Tooltip
-                key={type}
-                title={type}
-                placement="left"
-                >
-                <AntButton
-                  size="small"
-                  color="secondary"
-                  type={
-                    selectedTool === type
-                    ? 'primary'
-                    :
-                    (
-                      !selectedTool && type === 'pointer'
-                      ? 'primary'
-                      : 'default'
-                    )
-                  }
-                  className={styles.fab}
-                  key={type}
-                  value={type}
-                  icon={<FileOutlined />}
-                  shape="circle"
-                  // draggable={true}
-                  onClick={e => {
-                    setSelectedKey(null)
-                    if (!type || type === 'pointer') {
-                      setSelectedTool(null)
-                    } else {
-                      setSelectedTool(type)
-                    }
-                  }}
-                  >
-                </AntButton>
-              </Tooltip>
-            )
-          })
-        }
+        <Tooltip
+          key='pointer'
+          title='pointer'
+          placement="bottom"
+          >
+          <AntButton
+            size="small"
+            color="secondary"
+            type={!selectedTool ? 'primary' : 'default'}
+            className={styles.fab}
+            value='pointer'
+            icon={<Pointer />}
+            shape="circle"
+            onClick={e => {
+              setSelectedKey(null)
+              setSelectedTool(null)
+            }}
+            >
+          </AntButton>
+        </Tooltip>
+        <Tooltip
+          key='react'
+          title='react'
+          placement="bottom"
+          >
+          <AntButton
+            size="small"
+            color="secondary"
+            type={selectedTool === 'react' ? 'primary' : 'default'}
+            className={styles.fab}
+            value='pointer'
+            icon={<ReactIcon />}
+            shape="circle"
+            onClick={e => {
+              setSelectedKey(null)
+              setSelectedTool('react')
+            }}
+            >
+          </AntButton>
+        </Tooltip>
       </Box>
     )
   }

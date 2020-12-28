@@ -63,6 +63,7 @@ import {
   tree_lookup,
   lookup_child_by_ref
 } from 'app-x/builder/ui/syntax/util_tree'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/syntax/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/syntax/SyntaxDeleteDialog'
@@ -132,10 +133,18 @@ const SyntaxTree = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
+
   // context
   const {
-    apiData,
-    setApiData,
+    // apiData,
+    // setApiData,
     treeData,
     expandedKeys,
     setExpandedKeys,
@@ -179,7 +188,7 @@ const SyntaxTree = (props) => {
     }
 
     // set api data
-    setApiData(data)
+    // setApiData(data)
 
     // data check
     if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
@@ -199,8 +208,24 @@ const SyntaxTree = (props) => {
 
   // load data via api
   useEffect(() => {
+
+    console.log(navDeployment)
+    console.log(navSelected)
+    console.log(navElement)
+
+    if (!!navDeployment
+        && !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && !!navSelected.type
+        && navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+      )
     setLoading(true)
-    const loadUrl = `/namespace/${props.namespace}/ui_deployment/ui/${props.ui_name}/deployment/${props.ui_deployment}/ui_element/base64:${btoa(props.ui_element_name)}`
+    const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
     // console.log(url)
     api.get(
       'sys',
@@ -209,16 +234,27 @@ const SyntaxTree = (props) => {
       data => {
         // console.log(data)
         setLoading(false)
-        setPreviewInitialized(false)
         process_api_data(data)
+        setPreviewInitialized(false)
       },
       error => {
         setLoading(false)
-        setPreviewInitialized(false)
         console.error(error)
+        setPreviewInitialized(false)
       }
     )
-  }, [loadTimer])
+  },
+  [
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navRoute.ui_route_name,
+    navSelected.type,
+    loadTimer
+  ]
+  )
 
   // save data via api
   useEffect(() => {
@@ -248,13 +284,13 @@ const SyntaxTree = (props) => {
           data => {
             // console.log(data)
             setSaving(false)
-            setPreviewInitialized(false)
             process_api_data(data)
+            setPreviewInitialized(false)
           },
           error => {
             setSaving(false)
-            setPreviewInitialized(false)
             console.error(error)
+            setPreviewInitialized(false)
           }
         )
       },

@@ -170,48 +170,51 @@ ui_element:
                       })
           element:
               type: react/element
-              name: 'app-x/page/layout/SideNavLayout'
-              props:
-                  isMobileNavOpen:
-                      type: js/expression
-                      data: props.isMobileNavOpen
-                  onMobileClose:
-                      type: js/expression
-                      data: props.handlers.sideNavHandler
-                  sideNav:
-                      type: react/element
-                      name: '@material-ui/core.Box'
-                      props:
-                          height: 100%
-                          display: flex
-                          flexDirection: column
-                      children:
-                          - type: react/element
-                            name: 'self/nav/uiNav'
-                            props:
-                                handlers:
-                                    handleElementSelected:
-                                        type: js/expression
-                                        data: handlers.handleElementSelected
-                                    handleRouteSelected:
-                                        type: js/expression
-                                        data: handlers.handleRouteSelected
+              name: app-x/builder/ui/NavProvider
               children:
-                  - type: react/element
-                    name: app-x/builder/ui/UI_Builder
-                    props:
-                        namespace: sys
-                        ui_name: ui
-                        ui_deployment: base
-                        ui_builder_type:
-                            type: js/expression
-                            data: states.builder.data.ui_builder_type
-                        ui_element_name:
-                            type: js/expression
-                            data: states.builder.data.ui_element_name
-                        ui_route_name:
-                            type: js/expression
-                            data: states.builder.data.ui_route_name
+                - type: react/element
+                  name: 'app-x/page/layout/SideNavLayout'
+                  props:
+                      isMobileNavOpen:
+                          type: js/expression
+                          data: props.isMobileNavOpen
+                      onMobileClose:
+                          type: js/expression
+                          data: props.handlers.sideNavHandler
+                      sideNav:
+                          type: react/element
+                          name: '@material-ui/core.Box'
+                          props:
+                              height: 100%
+                              display: flex
+                              flexDirection: column
+                          children:
+                              - type: react/element
+                                name: 'self/nav/uiNav'
+                                props:
+                                    handlers:
+                                        handleElementSelected:
+                                            type: js/expression
+                                            data: handlers.handleElementSelected
+                                        handleRouteSelected:
+                                            type: js/expression
+                                            data: handlers.handleRouteSelected
+                  children:
+                      - type: react/element
+                        name: app-x/builder/ui/UI_Builder
+                        props:
+                            namespace: sys
+                            ui_name: ui
+                            ui_deployment: base
+                            ui_builder_type:
+                                type: js/expression
+                                data: states.builder.data.ui_builder_type
+                            ui_element_name:
+                                type: js/expression
+                                data: states.builder.data.ui_element_name
+                            ui_route_name:
+                                type: js/expression
+                                data: states.builder.data.ui_route_name
 
     ############################################################
     - namespace: sys
@@ -416,17 +419,14 @@ ui_element:
                       name: "@material-ui/core.Box"
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/NavProvider
+                          name: app-x/builder/ui/element/ElementProvider
                           children:
                             - type: react/element
-                              name: app-x/builder/ui/element/ElementProvider
-                              children:
-                                - type: react/element
-                                  name: app-x/builder/ui/element/ElementTree
-                                  props:
-                                    namespace: sys
-                                    ui_name: ui
-                                    ui_deployment: base
+                              name: app-x/builder/ui/element/ElementTree
+                              props:
+                                namespace: sys
+                                ui_name: ui
+                                ui_deployment: base
                 - type: react/element
                   name: "@material-ui/core.ListItem"
                   props:
@@ -479,17 +479,14 @@ ui_element:
                         p: 1
                       children:
                         - type: react/element
-                          name: app-x/builder/ui/NavProvider
+                          name: app-x/builder/ui/element/ElementProvider
                           children:
                             - type: react/element
-                              name: app-x/builder/ui/element/ElementProvider
-                              children:
-                                - type: react/element
-                                  name: app-x/builder/ui/element/ElementTree
-                                  props:
-                                    namespace: sys
-                                    ui_name: ui
-                                    ui_deployment: base
+                              name: app-x/builder/ui/element/ElementTree
+                              props:
+                                namespace: sys
+                                ui_name: ui
+                                ui_deployment: base
 
     ############################################################
     - namespace: sys

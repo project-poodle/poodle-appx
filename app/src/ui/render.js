@@ -7,6 +7,7 @@ const Mustache = require('mustache')
 
 const db = require('../db/db')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_react_element } = require('./react_element')
 
@@ -105,6 +106,7 @@ function handle_render(req, res, load_from_db=true) {
           ...elem_result[0],
         }
 
+        // update local variables
         namespace           = elem_result[0].namespace
         ui_name             = elem_result[0].ui_name
         ui_ver              = elem_result[0].ui_ver
@@ -114,6 +116,29 @@ function handle_render(req, res, load_from_db=true) {
         ui_element_name     = elem_result[0].ui_element_name
         ui_element_type     = elem_result[0].ui_element_type
         ui_element_spec     = elem_result[0].ui_element_spec
+
+    } else {
+
+        // load from cache if not exist
+        if (!ui_spec || !ui_deployment_spec) {
+
+            const lookup = get_ui_deployment(req, res)
+            if (req.fatal) {
+                return
+            }
+
+            // extract result
+            req.context = {
+                ...req.context,
+                ui_spec: lookup.ui_spec,
+                ui_deployment_spec: lookup.ui_deployment_spec,
+            }
+
+            // update local variables
+            ui_spec             = lookup.ui_spec
+            ui_deployment_spec  = lookup.ui_deployment_spec
+
+        }
     }
 
     // check for importMaps

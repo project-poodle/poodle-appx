@@ -25,6 +25,7 @@ import { Icon, FileOutlined, ContainerOutlined, CodepenOutlined } from '@ant-des
 import { Responsive as ResponsiveGridLayout, default as GridLayout } from 'react-grid-layout';
 
 import ReactIcon from 'app-x/icon/React'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import SyntaxTree from 'app-x/builder/ui/syntax/SyntaxTree'
 import PropEditor from 'app-x/builder/ui/syntax/PropEditor'
