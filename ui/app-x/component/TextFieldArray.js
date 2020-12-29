@@ -19,6 +19,7 @@ import {
   Controller,
 } from 'react-hook-form'
 import { v4 as uuidv4 } from 'uuid'
+import objPath from 'object-path'
 
 // array text field
 const TextFieldArray = props => {
@@ -26,8 +27,6 @@ const TextFieldArray = props => {
   const styles = makeStyles((theme) => ({
     formControl: {
       width: '100%',
-      // margin: theme.spacing(0),
-      // padding: theme.spacing(0),
     },
   }))()
 
@@ -71,7 +70,7 @@ const TextFieldArray = props => {
             <Controller
               key={item.id}
               name={`${props.name}[${index}].value`}
-              type={props.type}
+              type={!!props.type ? props.type : 'text'}
               control={control}
               defaultValue={item.value}
               rules={props.rules}
@@ -83,12 +82,12 @@ const TextFieldArray = props => {
                       value={innerProps.value}
                       onChange={innerProps.onChange}
                       error={
-                        !!errors[props.name]
-                        && !!errors[props.name][index]
+                        !!objPath.get(errors, props.name)
+                        && !!objPath.get(errors, props.name)[index]
                       }
                       helperText={
-                        !!errors[props.name]
-                        && errors[props.name][index]?.value?.message
+                        !!objPath.get(errors, props.name)
+                        && objPath.get(errors, props.name)[index]?.value?.message
                       }
                     />
                   </FormControl>

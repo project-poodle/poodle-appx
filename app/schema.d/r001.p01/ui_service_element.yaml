@@ -6,10 +6,8 @@ ui_element:
       ui_element_name: /index
       ui_element_type: html
       ui_element_spec:
-          path: /index.html
           entry: /Router
-          data:
-              title: Design Your Own Apps with App-X
+          title: Design Your Own Apps with App-X
 
     ############################################################
     - namespace: sys

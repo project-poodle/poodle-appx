@@ -117,18 +117,6 @@ function handle_html(req, res) {
         }
     }
 
-    // check for ui_element_spec.path
-    if (! ('path' in req.context.ui_element_spec) ) {
-        return {
-            status: 422,
-            type: 'application/json',
-            data: {
-                status: FAILURE,
-                message: `ERROR: ui_element_spec.path not defined [${ui_element}]`
-            }
-        }
-    }
-
     // check for ui_element_spec.entry
     if (! ('entry' in req.context.ui_element_spec) ) {
         return {
@@ -142,7 +130,7 @@ function handle_html(req, res) {
     }
 
     const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
-    const html_content = fs.readFileSync(path.join(rootDir, req.context.ui_element_spec.path), "utf8")
+    const html_content = fs.readFileSync(path.join(rootDir, 'index.html'), "utf8")
 
     // context
     let context = {
@@ -157,7 +145,7 @@ function handle_html(req, res) {
             API_MAPS: req.context.ui_deployment_spec.apiMaps,
         },
         entry: req.context.ui_element_spec.entry,
-        data: req.context.ui_element_spec.data,
+        data: req.context.ui_element_spec,
     }
 
     context.init_js = Mustache.render(initjs_content, context)

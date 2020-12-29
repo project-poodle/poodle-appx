@@ -24,7 +24,9 @@ function handle_react_provider(req, res) {
     // const { ui_deployment, ui_element } = req.context
     // console.log(req.context)
 
-    if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
+    if (! ('ui_spec' in req.context)
+        || ! (req.context.ui_spec.importMaps)
+    ) {
         return {
             status: 422,
             type: 'application/json',
@@ -35,7 +37,9 @@ function handle_react_provider(req, res) {
         }
     }
 
-    if (! ('ui_element_spec' in req.context) || ! ('provider' in req.context.ui_element_spec) ) {
+    if (! ('ui_element_spec' in req.context)
+        || ! (req.context.ui_element_spec.provider)
+    ) {
         return {
             status: 422,
             type: 'application/json',
@@ -195,6 +199,19 @@ function handle_react_provider(req, res) {
     const ast_tree = t.file(
       t.program(
         [
+          // const elem_name_Context = React.createContext()
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.identifier(`${ui_elem_name}_Context`),
+                t.callExpression(
+                  t.identifier('react.createContext'),
+                  [],
+                )
+              )
+            ]
+          ),
           t.variableDeclaration(
             'const',
             [
@@ -205,19 +222,6 @@ function handle_react_provider(req, res) {
                     [],
                     t.blockStatement(
                       [
-                        // const elem_name_Context = React.createContext()
-                        t.variableDeclaration(
-                          'const',
-                          [
-                            t.variableDeclarator(
-                              t.identifier(`${ui_elem_name}_Context`),
-                              t.callExpression(
-                                t.identifier('react.createContext'),
-                                [],
-                              )
-                            )
-                          ]
-                        ),
                         // const elem_name_Function = (props) => {}
                         t.variableDeclaration(
                           'const',
@@ -293,6 +297,15 @@ function handle_react_provider(req, res) {
                   ),
                   []
                 )
+              )
+            ]
+          ),
+          t.exportNamedDeclaration(
+            null,
+            [
+              t.exportSpecifier(
+                t.identifier(`${ui_element_name}_Context`),
+                t.identifier(`Context`)
               )
             ]
           ),

@@ -25,32 +25,45 @@
         && !!event.data.path
         && !!event.data.data) {
       //
-      // console.log(event.data)
-      fetch(
-        event.data.path,
-        {
-          method: 'POST',
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify(event.data.data)
-        }
-      )
-      .then(response => response.text())
-      .then(data => {
-        // console.log(data)
-        const elemOriginal = document.querySelector('#element')
-        elemOriginal.textContent = data
-        // console.log(elemOriginal)
-        transpile()
-      })
-      .catch(error => {
-        console.error(error)
-      })
+      try {
+        fetch(
+          event.data.path,
+          {
+            method: 'POST',
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(event.data.data)
+          }
+        )
+        .then(response => response.text())
+        .then(data => {
+          // console.log(data)
+          const elemOriginal = document.querySelector('#element')
+          elemOriginal.textContent = data
+          // console.log(elemOriginal)
+          transpile()
+        })
+        .catch(error => {
+          // console.error(error)
+          handleError(
+            'Failed to load source code',
+            error.toString(),
+            error,
+          )
+        })
+      } catch (error) {
+        // console.error(error)
+        handleError(
+          'Failed to fetch',
+          error.toString(),
+          error,
+        )
+      }
     }
   }
 
@@ -70,6 +83,22 @@
     }
   }
 
+  // handle error
+  function handleError(message, description, error) {
+    import(window.location.origin + '/dist/lib/antd.js').then(antd_module => {
+      const notification = antd_module?.default?.antd?.notification
+      if (notification) {
+        notification['error']({
+          message: message,
+          description: description,
+          placement: 'bottomLeft',
+        })
+      } else {
+        console.error(message, description, error)
+      }
+    })
+  }
+
   // update event
   window.addEventListener("message", updateElement, false)
 
@@ -81,54 +110,73 @@
         && !!event.data.id
         && event.data.id === 'element') {
 
-      // clear root element
-      const rootEl = document.querySelector('#root')
-      // rootEl.innerHTML = ''
+      try {
+        // check for error message
+        if (event.data.status !== 'ok') {
+          handleError(
+            'Failed to transpile source code',
+            event.data.message,
+            event
+          )
+          return
+        }
 
-      // #element original and replacement
-      const elemOriginal = document.querySelector('#element')
-      const elemReplacement = document.createElement('script')
+        // clear root element
+        const rootEl = document.querySelector('#root')
+        // rootEl.innerHTML = ''
 
-      elemReplacement.id = 'replace_element'
-      elemReplacement.type = 'module'
-      elemReplacement.src = URL.createObjectURL(
-          new Blob([event.data.code], {type: 'application/javascript'}))
-      elemReplacement.textContent = event.data.code
+        // #element original and replacement
+        const elemOriginal = document.querySelector('#element')
+        const elemReplacement = document.createElement('script')
 
-      // replace prev element
-      const prevElemReplacement = document.getElementById('replace_element')
-      if (!!prevElemReplacement) {
-        prevElemReplacement.parentElement.removeChild(prevElemReplacement)
+        elemReplacement.id = 'replace_element'
+        elemReplacement.type = 'module'
+        elemReplacement.src = URL.createObjectURL(
+            new Blob([event.data.code], {type: 'application/javascript'}))
+        elemReplacement.textContent = event.data.code
+
+        // replace prev element
+        const prevElemReplacement = document.getElementById('replace_element')
+        if (!!prevElemReplacement) {
+          prevElemReplacement.parentElement.removeChild(prevElemReplacement)
+        }
+        document.body.appendChild(elemReplacement)
+
+        // #render original and replacement
+        const renderOriginal = document.querySelector('#render')
+        const renderReplacement = document.createElement('script')
+
+        renderReplacement.id = 'replace_render'
+        renderReplacement.type = 'module'
+        const transformedSource = renderOriginal.textContent.replace(
+          // Find anything that looks like an import from '#some-id'
+          /(from\s+|import\s+)['"](#[\w\-]+)['"]/g,
+          (unmodified, action, selector) => {
+            // If we can find a suitable script with that id...
+            const refEl = document.querySelector('script[type=module][src]' + selector);
+            return refEl ?
+              // ..then update the import to use that script's src URL instead.
+              `${action}/* ${selector} */ '${refEl.src}'` :
+              unmodified;
+        })
+        renderReplacement.src = URL.createObjectURL(
+            new Blob([transformedSource], {type: 'application/javascript'}))
+        renderReplacement.textContent = transformedSource
+
+        // replace prev render
+        const prevRenderReplacement = document.getElementById('replace_render')
+        if (!!prevRenderReplacement) {
+          prevRenderReplacement.parentElement.removeChild(prevRenderReplacement)
+        }
+        document.body.appendChild(renderReplacement)
+
+      } catch (error) {
+        handleError(
+          'Failed to update source code',
+          error.toString(),
+          error
+        )
       }
-      document.body.appendChild(elemReplacement)
-
-      // #render original and replacement
-      const renderOriginal = document.querySelector('#render')
-      const renderReplacement = document.createElement('script')
-
-      renderReplacement.id = 'replace_render'
-      renderReplacement.type = 'module'
-      const transformedSource = renderOriginal.textContent.replace(
-        // Find anything that looks like an import from '#some-id'
-        /(from\s+|import\s+)['"](#[\w\-]+)['"]/g,
-        (unmodified, action, selector) => {
-          // If we can find a suitable script with that id...
-          const refEl = document.querySelector('script[type=module][src]' + selector);
-          return refEl ?
-            // ..then update the import to use that script's src URL instead.
-            `${action}/* ${selector} */ '${refEl.src}'` :
-            unmodified;
-      })
-      renderReplacement.src = URL.createObjectURL(
-          new Blob([transformedSource], {type: 'application/javascript'}))
-      renderReplacement.textContent = transformedSource
-
-      // replace prev render
-      const prevRenderReplacement = document.getElementById('replace_render')
-      if (!!prevRenderReplacement) {
-        prevRenderReplacement.parentElement.removeChild(prevRenderReplacement)
-      }
-      document.body.appendChild(renderReplacement)
     }
   })
 
@@ -142,18 +190,52 @@
 
 <script type="appx-inline-module" id="render">
 
+  // handle error
+  function handleError(message, description, error) {
+    import(window.location.origin + '/dist/lib/antd.js').then(antd_module => {
+      const notification = antd_module?.default?.antd?.notification
+      if (notification) {
+        notification['error']({
+          message: message,
+          description: description,
+          placement: 'bottomLeft',
+        })
+      } else {
+        console.error(message, description, error)
+      }
+    })
+  }
+
+  // load replace element
   import { default as element } from "#replace_element"
   // render function
   function render() {
-      import(window.location.origin + '/dist/lib/main.js').then(main_module => {
-          const main = main_module.default
-          // console.log(main)
-          main['react-dom'].render(
-              main['react'].createElement(element, null),
-              document.getElementById('root')
+      try {
+          import(window.location.origin + '/dist/lib/main.js').then(main_module => {
+              try {
+                  const main = main_module.default
+                  // console.log(main)
+                  main['react-dom'].render(
+                      main['react'].createElement(element, null),
+                      document.getElementById('root')
+                  )
+              } catch (error) {
+                  handleError(
+                      'Failed to render',
+                      error.toString(),
+                      error
+                  )
+              }
+          })
+      } catch (error) {
+          handleError(
+              'Failed to import',
+              error.toString(),
+              error
           )
-      })
+      }
   }
+
   // render immediately
   render()
 

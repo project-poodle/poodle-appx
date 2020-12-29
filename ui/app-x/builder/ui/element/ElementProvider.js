@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const ElementProvider = (() => {
+const ElementContext = React.createContext()
 
-  const ElementContext = React.createContext()
+const ElementProvider = (() => {
 
   const f = (props) => {
 
@@ -58,5 +58,7 @@ const ElementProvider = (() => {
 
   return f
 }) ()
+
+export { ElementContext as Context }
 
 export default ElementProvider

@@ -69,6 +69,7 @@ import SyntaxAddDialog from 'app-x/builder/ui/syntax/SyntaxAddDialog'
 import SyntaxDeleteDialog from 'app-x/builder/ui/syntax/SyntaxDeleteDialog'
 import SyntaxMoveDialog from 'app-x/builder/ui/syntax/SyntaxMoveDialog'
 import SyntaxMenu from 'app-x/builder/ui/syntax/SyntaxMenu'
+import TestEditor from 'app-x/builder/ui/syntax/TestEditor'
 
 // capitalize string
 function capitalize(s) {
@@ -143,18 +144,22 @@ const SyntaxTree = (props) => {
 
   // context
   const {
+    // tree data
     treeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    // test data
+    testData,
+    setTestData,
+    // common
     treeDirty,
-    setTreeDirty,
     previewInitialized,
     setPreviewInitialized,
+    // history and actions
     history,
     makeAction,
-    updateAction,
     undo,
     redo,
   } = useContext(SyntaxProvider.Context)
@@ -191,17 +196,29 @@ const SyntaxTree = (props) => {
     // data check
     if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
       // fresh action
-      makeAction(`init`, [], [], null, true)
+      makeAction(`init`, [], null, [], null, true)
       return
     }
 
-    const js_context = { topLevel: true }
-    const parsedTree = parse_js(js_context, null, null, data.ui_element_spec)
+    // remove __test if exist
+    const filtered = Object.keys(data.ui_element_spec)
+      .filter(key => key !== '__test')
+      .reduce((obj, key) => {
+        obj[key] = data.ui_element_spec[key]
+        return obj
+      }, {})
+    // console.log(filtered)
 
+    const js_context = { topLevel: true }
+    const parsedTree = parse_js(js_context, null, null, filtered)
     // console.log(parsedTree)
 
+    const testData = !!data.ui_element_spec.__test
+      ? data.ui_element_spec.__test
+      : null
+
     // fresh action
-    makeAction(`init`, parsedTree, js_context.expandedKeys, null, true)
+    makeAction(`init`, parsedTree, testData, js_context.expandedKeys, null, true)
   }
 
   // load data via api
@@ -263,6 +280,10 @@ const SyntaxTree = (props) => {
     setSaving(true)
     const tree_context = { topLevel: true }
     const { ref, data: genData } = gen_js(tree_context, treeData)
+    const spec = !!testData
+      ? { ...genData, __test: testData }
+      : genData
+    // url
     const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
     // console.log(url)
     api.put(
@@ -270,7 +291,7 @@ const SyntaxTree = (props) => {
       'appx',
       saveUrl,
       {
-        ui_element_spec: genData,
+        ui_element_spec: spec,
       },
       data => {
         // console.log(data)
@@ -484,6 +505,7 @@ const SyntaxTree = (props) => {
     makeAction(
       `Add [${parsed?.title}]`,
       resultTree,
+      testData,
       newExpandedKeys,
       selectedKey,
     )
@@ -531,6 +553,7 @@ const SyntaxTree = (props) => {
     makeAction(
       `Delete [${lookupNode?.title}]`,
       resultTree,
+      testData,
       expandedKeys,
       null,
     )
@@ -730,6 +753,7 @@ const SyntaxTree = (props) => {
       makeAction(
         `Drag & Drop [${dragObj.title}]`,
         resultData,
+        testData,
         newExpandedKeys,
         dragObj.key
       )
@@ -1032,18 +1056,8 @@ const SyntaxTree = (props) => {
             className={styles.pane}
             onContextMenu={handleSyntaxMenu}
             >
-            <Layout className={styles.pane}>
-              <Content key="content">
-                <Box display="flex" justifyContent="center" alignItems="center" className={styles.root}>
-                  <Typography variant="body2">
-                    TODO: test data goes here
-                  </Typography>
-                </Box>
-              </Content>
-              <Sider key="sider" width={122} className={styles.sider}>
-                <Toolbar />
-              </Sider>
-            </Layout>
+            <TestEditor>
+            </TestEditor>
           </TabPane>
           <SyntaxAddDialog
             key="addDialog"

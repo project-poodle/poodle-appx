@@ -22,17 +22,15 @@ import {
 // ant design
 import {
   Tabs,
-  AutoComplete,
 } from 'antd'
 const { TabPane } = Tabs;
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 // context provider
+import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
-import AutoCompleteHtmlTag from 'app-x/builder/ui/syntax/AutoCompleteHtmlTag'
-import AutoCompleteImportName from 'app-x/builder/ui/syntax/AutoCompleteImportName'
 // utilities
 import {
   lookup_icon_for_type,
@@ -74,34 +72,22 @@ const PropEditor = (props) => {
 
   // context
   const {
+    // tree data
     treeData,
     expandedKeys,
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
-    history,
-    makeAction,
+    // test data
+    testData,
+    // update action
     updateAction,
-    undo,
-    redo,
   } = useContext(SyntaxProvider.Context)
 
   const [ nodeType,             setNodeType             ] = useState('')
   const [ treeNode,             setTreeNode             ] = useState(null)
   const [ parentNode,           setParentNode           ] = useState(null)
   const [ isSwitchDefault,      setSwitchDefault        ] = useState(props.isSwitchDefault)
-
-  // react hook form
-  const formHook = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    // defaultValues: {},
-    // resolver: undefined,
-    // context: undefined,
-    // criteriaMode: "firstError",
-    // shouldFocusError: true,
-    // shouldUnregister: true,
-  })
 
   // react hook form
   const hookForm = useForm({
@@ -214,6 +200,7 @@ const PropEditor = (props) => {
       updateAction(
         `Update [${lookupNode.title}]`,
         resultTree,
+        testData,
         expandedKeys,
         selectedKey,
         lookupNode.key,
@@ -780,30 +767,18 @@ const PropEditor = (props) => {
                         )
                       }
                     />
-                    <Controller
+                    <AutoComplete
+                      className={styles.formControl}
                       name="name"
-                      control={control}
+                      label="Import Name"
+                      options={valid_import_names()}
                       defaultValue={treeNode?.data?.name}
                       rules={{
                         required: "Import name is required",
                       }}
-                      render={props =>
-                      (
-                        <Box className={styles.formControl}>
-                          <AutoCompleteImportName
-                            name={props.name}
-                            value={props.value}
-                            onChange={props.onChange}
-                            errors={errors}
-                            selectedKey={selectedKey}
-                            title="Import Name"
-                            callback={data => {
-                              setBaseSubmitTimer(new Date())
-                            }}
-                          />
-                        </Box>
-                      )
-                    }
+                      callback={data => {
+                        setBaseSubmitTimer(new Date())
+                      }}
                     />
                   </Box>
                 )
@@ -1309,59 +1284,35 @@ const PropEditor = (props) => {
                     {
                       nodeType === 'react/element'
                       &&
-                      <Controller
+                      <AutoComplete
+                        className={styles.formControl}
                         name="name"
-                        control={control}
+                        label="Element Name"
+                        options={valid_import_names()}
                         defaultValue={treeNode?.data?.name}
                         rules={{
                           required: "Element name is required",
                         }}
-                        render={props =>
-                          (
-                            <Box className={styles.formControl}>
-                              <AutoCompleteImportName
-                                name={props.name}
-                                value={props.value}
-                                onChange={props.onChange}
-                                errors={errors}
-                                selectedKey={selectedKey}
-                                title="Element Name"
-                                callback={data => {
-                                  setBaseSubmitTimer(new Date())
-                                }}
-                              />
-                            </Box>
-                          )
-                      }
+                        callback={data => {
+                          setBaseSubmitTimer(new Date())
+                        }}
                       />
                     }
                     {
                       nodeType === 'react/html'
                       &&
-                      <Controller
+                      <AutoComplete
+                        className={styles.formControl}
                         name="name"
-                        control={control}
+                        label="Import Name"
+                        options={valid_html_tags()}
                         defaultValue={treeNode?.data?.name}
                         rules={{
                           required: "HTML tag is required",
                         }}
-                        render={props =>
-                        (
-                          <Box className={styles.formControl}>
-                            <AutoCompleteHtmlTag
-                              name={props.name}
-                              value={props.value}
-                              onChange={props.onChange}
-                              errors={errors}
-                              selectedKey={selectedKey}
-                              title="HTML Tag"
-                              callback={data => {
-                                setBaseSubmitTimer(new Date())
-                              }}
-                            />
-                          </Box>
-                        )
-                      }
+                        callback={data => {
+                          setBaseSubmitTimer(new Date())
+                        }}
                       />
                     }
                   </Box>

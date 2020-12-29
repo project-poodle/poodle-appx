@@ -55,12 +55,19 @@ self.addEventListener('message', event => {
             let message = {
               ...event.data,
               type: "transpile",
+              status: "ok",
               code: transpiled_code,
             }
             client.postMessage(message)
             // console.log('posted', message)
           } catch (err) {
-            console.error(String(err))
+            // console.error(String(err))
+            client.postMessage({
+              ...event.data,
+              type: "transpile",
+              status: "error",
+              message: err.toString(),
+            })
           }
         }())
       } else {

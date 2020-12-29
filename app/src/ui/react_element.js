@@ -24,7 +24,9 @@ function handle_react_element(req, res) {
     // const { ui_deployment, ui_element } = req.context
     // console.log(req.context)
 
-    if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
+    if (! ('ui_spec' in req.context)
+        || ! (req.context.ui_spec.importMaps)
+    ) {
         return {
             status: 422,
             type: 'application/json',
@@ -35,7 +37,9 @@ function handle_react_element(req, res) {
         }
     }
 
-    if (! ('ui_element_spec' in req.context) || ! ('element' in req.context.ui_element_spec) ) {
+    if (! ('ui_element_spec' in req.context)
+        || ! (req.context.ui_element_spec.element)
+    ) {
         return {
             status: 422,
             type: 'application/json',
@@ -46,7 +50,9 @@ function handle_react_element(req, res) {
         }
     }
 
-    if (! ('type' in req.context.ui_element_spec.element) || req.context.ui_element_spec.element.type != 'react/element') {
+    if (! ('type' in req.context.ui_element_spec.element)
+        || req.context.ui_element_spec.element.type != 'react/element'
+    ) {
         return {
             status: 422,
             type: 'application/json',

@@ -3,15 +3,18 @@ import _ from 'lodash'
 
 const MAX_HISTORY = 20
 
-const SyntaxProvider = (() => {
+const SyntaxContext = React.createContext()
 
-  const EditorContext = React.createContext()
+const SyntaxProvider = (() => {
 
   const f = (props) => {
     // tree data and selected key
     const [ treeData,           setTreeData           ] = useState([])
     const [ expandedKeys,       setExpandedKeys       ] = useState([])
     const [ selectedKey,        setSelectedKey        ] = useState(null)
+    // test data
+    const [ testData,           setTestData           ] = useState([])
+    // common data
     const [ treeDirty,          setTreeDirty          ] = useState(false)
     const [ livePreview,        setLivePreview        ] = useState(true)
     const [ previewInitialized, setPreviewInitialized ] = useState(false)
@@ -24,13 +27,13 @@ const SyntaxProvider = (() => {
     })
 
     // update action
-    const updateAction = (action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey) => {
+    const updateAction = (action, newTreeData, newTestData, newExpandedKeys, newSelectedKey, nodeKey) => {
 
       // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
 
       setUpdateKey(nodeKey)
       if (nodeKey !== updateKey) {
-        makeAction(action, newTreeData, newExpandedKeys, newSelectedKey)
+        makeAction(action, newTreeData, newTestData, newExpandedKeys, newSelectedKey)
         return
       }
 
@@ -40,6 +43,7 @@ const SyntaxProvider = (() => {
         current: {
           action: action,
           treeData: newTreeData,
+          testData: newTestData,
           expandedKeys: newExpandedKeys,
           selectedKey: newSelectedKey,
         },
@@ -48,6 +52,7 @@ const SyntaxProvider = (() => {
 
       // update state from record
       setTreeData(newTreeData)
+      setTestData(newTestData)
       setExpandedKeys(newExpandedKeys)
       setSelectedKey(newSelectedKey)
       setTreeDirty(true)
@@ -57,7 +62,7 @@ const SyntaxProvider = (() => {
     }
 
     // make action
-    const makeAction = (action, newTreeData, newExpandedKeys, newSelectedKey, fresh=false) => {
+    const makeAction = (action, newTreeData, newTestData, newExpandedKeys, newSelectedKey, fresh=false) => {
 
       // console.log('makeAction', action, newTreeData, newExpandedKeys, newSelectedKey)
 
@@ -69,6 +74,7 @@ const SyntaxProvider = (() => {
           current: {
             action: action,
             treeData: newTreeData,
+            testData: newTestData,
             expandedKeys: newExpandedKeys,
             selectedKey: newSelectedKey,
             fresh: fresh,
@@ -78,6 +84,7 @@ const SyntaxProvider = (() => {
 
         // update state from record
         setTreeData(newTreeData)
+        setTestData(newTestData)
         setExpandedKeys(newExpandedKeys)
         setSelectedKey(newSelectedKey)
         setTreeDirty(false)
@@ -91,6 +98,7 @@ const SyntaxProvider = (() => {
       const record = {
         action: action,
         treeData: !!newTreeData ? newTreeData : treeData,
+        testData: !!newTestData ? newTestData : testData,
         expandedKeys: !!newExpandedKeys ? newExpandedKeys : expandedKeys,
         selectedKey: !!newSelectedKey ? newSelectedKey : selectedKey,
       }
@@ -111,6 +119,7 @@ const SyntaxProvider = (() => {
 
       // update state from action
       setTreeData(record.treeData)
+      setTestData(record.testData)
       setExpandedKeys(record.expandedKeys)
       setSelectedKey(record.selectedKey)
       setTreeDirty(true)
@@ -139,6 +148,7 @@ const SyntaxProvider = (() => {
 
         // update state from record
         setTreeData(record.treeData)
+        setTestData(record.testData)
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
         setTreeDirty(!record.fresh)
@@ -168,6 +178,7 @@ const SyntaxProvider = (() => {
 
         // update state from record
         setTreeData(record.treeData)
+        setTestData(record.testData)
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
         setTreeDirty(!record.fresh)
@@ -178,19 +189,25 @@ const SyntaxProvider = (() => {
     }
 
     return (
-      <EditorContext.Provider
+      <SyntaxContext.Provider
         value={{
+          // syntax tree data
           treeData: treeData,
           expandedKeys: expandedKeys,
           setExpandedKeys: setExpandedKeys,
           selectedKey: selectedKey,
           setSelectedKey: setSelectedKey,
+          // test data
+          testData: testData,
+          setTestData: setTestData,
+          // common data
           treeDirty: treeDirty,
           setTreeDirty: setTreeDirty,
           livePreview: livePreview,
           setLivePreview: setLivePreview,
           previewInitialized: previewInitialized,
           setPreviewInitialized: setPreviewInitialized,
+          // history and actions
           history: history,
           makeAction: makeAction,
           updateAction: updateAction,
@@ -199,14 +216,16 @@ const SyntaxProvider = (() => {
         }}
       >
         {props.children}
-      </EditorContext.Provider>
+      </SyntaxContext.Provider>
     )
   }
 
   // update Context variable
-  f.Context = EditorContext
+  f.Context = SyntaxContext
 
   return f
 }) ()
+
+export { SyntaxContext as Context }
 
 export default SyntaxProvider

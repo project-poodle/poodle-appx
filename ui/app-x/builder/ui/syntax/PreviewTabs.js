@@ -82,9 +82,13 @@ const PreviewTabs = (props) => {
 
   // editor context
   const {
+    // tree data
     treeData,
     expandedKeys,
     selectedKey,
+    // test data
+    testData,
+    // global
     treeDirty,
     livePreview,
     setLivePreview,
@@ -174,6 +178,9 @@ const PreviewTabs = (props) => {
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
       // console.log(genData)
+      const spec = !!testData
+        ? { ...genData, __test: testData }
+        : genData
       // preview loading
       // setPreviewLoading(true)
       // preview data
@@ -189,7 +196,7 @@ const PreviewTabs = (props) => {
           ui_deployment_spec: navDeployment.ui_deployment_spec,
           ui_element_name: navElement.ui_element_name,
           ui_element_type: navElement.ui_element_type,
-          ui_element_spec: genData
+          ui_element_spec: spec
         },
       }
       // console.log(submitData)
@@ -229,6 +236,9 @@ const PreviewTabs = (props) => {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
       // preview loading
+      const spec = !!testData
+        ? { ...data, __test: testData }
+        : data
       // setPreviewLoading(true)
       // preview data
       const message = {
@@ -249,7 +259,7 @@ const PreviewTabs = (props) => {
             ui_deployment_spec: navDeployment.ui_deployment_spec,
             ui_element_name: navElement.ui_element_name,
             ui_element_type: navElement.ui_element_type,
-            ui_element_spec: data
+            ui_element_spec: spec
           }
         }
       }

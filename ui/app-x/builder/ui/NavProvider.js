@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const NavProvider = (() => {
+const NavContext = React.createContext()
 
-  const NavContext = React.createContext()
+const NavProvider = (() => {
 
   const f = (props) => {
 
@@ -55,5 +55,7 @@ const NavProvider = (() => {
 
   return f
 }) ()
+
+export { NavContext as Context }
 
 export default NavProvider

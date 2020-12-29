@@ -44,10 +44,9 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
-import AutoCompleteHtmlTag from 'app-x/builder/ui/syntax/AutoCompleteHtmlTag'
-import AutoCompleteImportName from 'app-x/builder/ui/syntax/AutoCompleteImportName'
 import {
   parse_js,
   lookup_icon_for_type,
@@ -730,27 +729,15 @@ const SyntaxAddDialog = (props) => {
                       )
                     }
                   />
-                  <Controller
+                  <AutoComplete
+                    className={styles.formControl}
                     name="name"
-                    control={control}
+                    label="Import Name"
+                    options={valid_import_names()}
                     defaultValue=''
                     rules={{
                       required: "Import name is required",
                     }}
-                    render={props =>
-                      (
-                        <Box className={styles.formControl}>
-                          <AutoCompleteImportName
-                            name={props.name}
-                            value={props.value}
-                            onChange={props.onChange}
-                            errors={errors}
-                            selectedKey={selectedKey}
-                            title="Import Name"
-                          />
-                        </Box>
-                      )
-                    }
                   />
                 </Box>
               )
@@ -1260,53 +1247,29 @@ const SyntaxAddDialog = (props) => {
                   {
                     nodeType === 'react/element'
                     &&
-                    <Controller
+                    <AutoComplete
+                      className={styles.formControl}
                       name="name"
-                      control={control}
+                      label="Import Name"
+                      options={valid_import_names()}
                       defaultValue=''
                       rules={{
                         required: "Element name is required",
                       }}
-                      render={props =>
-                      (
-                        <Box className={styles.formControl}>
-                          <AutoCompleteImportName
-                            name={props.name}
-                            value={props.value}
-                            onChange={props.onChange}
-                            errors={errors}
-                            selectedKey={selectedKey}
-                            title="Element Name"
-                          />
-                        </Box>
-                      )
-                    }
                     />
                   }
                   {
                     nodeType === 'react/html'
                     &&
-                    <Controller
+                    <AutoComplete
+                      className={styles.formControl}
                       name="name"
-                      control={control}
+                      label="Import Name"
+                      options={valid_html_tags()}
                       defaultValue=''
                       rules={{
                         required: "HTML tag is required",
                       }}
-                      render={props =>
-                      (
-                        <Box className={styles.formControl}>
-                          <AutoCompleteHtmlTag
-                            name={props.name}
-                            value={props.value}
-                            onChange={props.onChange}
-                            errors={errors}
-                            selectedKey={selectedKey}
-                            title="HTML Tag"
-                          />
-                        </Box>
-                      )
-                    }
                     />
                   }
                 </Box>

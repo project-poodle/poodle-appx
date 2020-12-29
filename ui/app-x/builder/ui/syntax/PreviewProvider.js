@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const PreviewProvider = (() => {
+const PreviewContext = React.createContext()
 
-  const PreviewContext = React.createContext()
+const PreviewProvider = (() => {
 
   const f = (props) => {
 
@@ -26,5 +26,7 @@ const PreviewProvider = (() => {
 
   return f
 }) ()
+
+export { PreviewContext as Context }
 
 export default PreviewProvider

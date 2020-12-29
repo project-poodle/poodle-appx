@@ -12,6 +12,7 @@ import {
   HomeOutlined,
 } from '@ant-design/icons'
 import ReactIcon from 'app-x/icon/React'
+import Provider from 'app-x/icon/Provider'
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -63,7 +64,7 @@ function lookup_icon_for_type (type) {
 
   } else if (type === 'react/provider') {
 
-    return <ProfileOutlined />
+    return <Provider />
 
   } else if (type === 'html') {
 
