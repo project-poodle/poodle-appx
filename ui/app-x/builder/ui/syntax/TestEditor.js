@@ -29,8 +29,6 @@ import { useForm, FormProvider, Controller } from "react-hook-form";
 // context provider
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
-import AutoCompleteHtmlTag from 'app-x/builder/ui/syntax/AutoCompleteHtmlTag'
-import AutoCompleteImportName from 'app-x/builder/ui/syntax/AutoCompleteImportName'
 // utilities
 import {
   valid_import_names,
