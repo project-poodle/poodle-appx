@@ -155,20 +155,10 @@ const TestEditor = (props) => {
     }
     // we are here if provider exists
     const defaultValues = []
-    let diff = false
-    if (testData.providers.length !== fieldsProvider.length) {
-      diff = true
-    }
     testData.providers
       .filter(provider => provider?.type === 'react/element')
       .map((provider, index) => {
-        console.log(`provider`, provider)
-        // check for length diff
-        const propLength = !!provider?.props?.length ? provider?.props?.length : 0
-        const fieldPropLength = !!getValues(`providers[${index}].props`) ? getValues(`providers[${index}].props`).length : 0
-        if (propLength != fieldPropLength) {
-          diff = true
-        }
+        // console.log(`provider`, provider)
         // iterate props
         const props =
           (
@@ -203,18 +193,8 @@ const TestEditor = (props) => {
         })
       }
     )
-    // if diff found
-    if (diff) {
-      // set default value
-      console.log(`yes diff`)
-      setValue('providers', defaultValues)
-    } else {
-      console.log(`no diff`)
-      defaultValues.map((provider, index) => {
-        setValue(`providers[${index}].name`, provider.name)
-        setValue(`providers[${index}].props`, provider.props)
-      })
-    }
+    // set default value
+    setValue('providers', defaultValues)
   },
   [
     navDeployment,
@@ -228,7 +208,7 @@ const TestEditor = (props) => {
   // submit test data
   function onTestSubmit(data) {
 
-    console.log(`data`, data)
+    // console.log(`data`, data)
     // return
 
     // convert form data to result test data
@@ -239,7 +219,7 @@ const TestEditor = (props) => {
     // we are here if data.providers has data
     resultTestData.providers = []
     data.providers.map(provider => {
-      console.log(`gen provider`, provider)
+      // console.log(`gen provider`, provider)
       const providerElem = {
         type: 'react/element',
         name: provider.name,
@@ -284,11 +264,11 @@ const TestEditor = (props) => {
           }
         }
       })
-      console.log(`providerElem`, providerElem)
+      // console.log(`providerElem`, providerElem)
       resultTestData.providers.push(providerElem)
     })
     // console.log(lookupNode)
-    console.log(`resultTestData`, resultTestData)
+    // console.log(`resultTestData`, resultTestData)
     updateAction(
       `Update [test]`,
       treeData,
