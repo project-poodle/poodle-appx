@@ -1594,6 +1594,32 @@ function load_valid_import_data() {
     throw new Error(`ERROR: appx.IMPORT_MAPS not set`)
   }
 
+  if (!!globalThis.appx?.APPX_PATHS?.paths) {
+    globalThis.appx.APPX_PATHS.paths.map(path => {
+      // import lib path
+      import(PATH_SEPARATOR + path).then(path_module => {
+        console.log(path_module)
+        const module_name = path
+        Object.keys(path_module).map(variable_name => {
+          if (variable_name === 'default') {
+            // add default
+            _valid_import_data[module_name] = {
+              title: module_name,
+              module: module_name,
+              variable: variable_name,
+            }
+          }
+          const title = module_name + VARIABLE_SEPARATOR + variable_name
+          _valid_import_data[title] = {
+            title: title,
+            module: module_name,
+            variable: variable_name,
+          }
+        })
+      })
+    })
+  }
+
   const libs = globalThis.appx?.IMPORT_MAPS.libs
   if (libs) {
     // iterate libs

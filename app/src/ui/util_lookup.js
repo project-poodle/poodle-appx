@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
@@ -126,9 +128,33 @@ function get_ui_route(req, res) {
     return route
 }
 
+// walk folder recursivelly
+const walk_recursive = function(dir, done) {
+  var results = []
+  fs.readdir(dir, function(err, list) {
+    if (err) return done(err)
+    var pending = list.length
+    if (!pending) return done(null, results)
+    list.forEach(function(file) {
+      file = path.resolve(dir, file)
+      fs.stat(file, function(err, stat) {
+        if (stat && stat.isDirectory()) {
+          walk_recursive(file, function(err, res) {
+            results = results.concat(res)
+            if (!--pending) done(null, results)
+          })
+        } else {
+          results.push(file)
+          if (!--pending) done(null, results)
+        }
+      })
+    })
+  })
+}
 
 module.exports = {
   get_ui_deployment: get_ui_deployment,
   get_ui_element: get_ui_element,
   get_ui_route: get_ui_route,
+  walk_recursive: walk_recursive,
 }

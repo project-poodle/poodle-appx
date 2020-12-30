@@ -25,7 +25,7 @@ const RENDER_JSON = function() {
             } else {
                 return '"' + data.replace(/"/g, '\\"') + '"'
             }
-        } else if (data instanceof Array) {
+        } else if (Array.isArray(data)) {
             let results = []
             data.forEach((value) => {
                 results.push(process(value, depth+1))
@@ -132,6 +132,8 @@ function handle_html(req, res) {
     const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
     const html_content = fs.readFileSync(path.join(rootDir, 'index.html'), "utf8")
 
+    // console.log(req.appx_paths)
+
     // context
     let context = {
         APPX_ENV: {
@@ -141,6 +143,7 @@ function handle_html(req, res) {
             API_ROOT: req.mount_options.api_root,
             UI_ROOT: req.mount_options.ui_root,
             RELATIVE_URL: url.parse(req.url).pathname,
+            APPX_PATHS: { 'paths': req.appx_paths },
             IMPORT_MAPS: req.context.ui_spec.importMaps,
             API_MAPS: req.context.ui_deployment_spec.apiMaps,
         },

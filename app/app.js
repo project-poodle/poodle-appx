@@ -38,6 +38,33 @@ const app = express()
 //})
 
 //////////////////////////////////////////////////
+// recursively walk app-x path
+var appx_paths = []
+const staticRootDir = path.join(__dirname, '../ui/')
+const { walk_recursive } = require('./src/ui/util_lookup')
+walk_recursive(path.join(staticRootDir, 'app-x'), (err, results) => {
+  if (err) {
+    console.log(err)
+    return
+  }
+
+  const result = []
+  results.map(r => {
+    // console.log(r)
+    if (r.startsWith(staticRootDir) && r.endsWith('.js')) {
+      const relPath = r.substring(staticRootDir.length)
+      const importPath = relPath.substring(0, relPath.length - 3)
+      console.log(`INFO: found app-x path [${importPath}]`)
+      result.push(importPath)
+    }
+  })
+
+  if (result.length) {
+    appx_paths = result
+  }
+})
+
+//////////////////////////////////////////////////
 // initialize auth_dispatcher and authenticator --- Note: perform this step only after db_pool is initialized
 const { auth_dispatcher, authenticator } = require("./src/auth")
 ////app.use(passport.initialize())
@@ -64,22 +91,22 @@ app.use(mount_options.api_root,
   authenticator,
   api_dispatcher)
 
-//////////////////////////////////////////////////
-// initialize ui router --- Note: perform this step only after db_pool is initialized
-const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
-// ui endpoints
-app.use(mount_options.ui_root, bodyParser.json())
-app.use(mount_options.ui_root, bodyParser.urlencoded({extended: true}))
-app.use(mount_options.ui_root,
-  (req, res, next) => {
-    req.mount_options = mount_options
-    next()
-  },
-  ui_dispatcher)
+  //////////////////////////////////////////////////
+  // initialize ui router --- Note: perform this step only after db_pool is initialized
+  const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
+  // ui endpoints
+  app.use(mount_options.ui_root, bodyParser.json())
+  app.use(mount_options.ui_root, bodyParser.urlencoded({extended: true}))
+  app.use(mount_options.ui_root,
+    (req, res, next) => {
+      req.mount_options = mount_options
+      req.appx_paths = appx_paths
+      next()
+    },
+    ui_dispatcher)
 
 //////////////////////////////////////////////////
 // initialize static files and launch page
-const staticRootDir = path.join(__dirname, '../ui/')
 // static files and launch page
 app.use('/',
     (req, res, next) => {
