@@ -782,6 +782,7 @@ function gen_react_effect(tree_context, treeNode) {
   const data = {
     type: treeNode.data.type,
     data: treeNode.data.data,
+    states: treeNode.data.states,
   }
 
   // return

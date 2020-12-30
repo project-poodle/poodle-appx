@@ -308,7 +308,16 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input.type === 'js/function') {
 
-    return prefix + 'function(' + (input.params ? input.params.map(param => isPrimitive(param) ? String(param) : String(param.value)).join(', ') : '') +  ')'
+    const name = 'func (' +
+      (
+        input.params
+          ? input.params
+            .map(param => isPrimitive(param) ? String(param) : String(param.value))
+            .join(', ')
+          : ''
+      )
+      +  ')'
+    return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
   } else if (input.type === 'js/switch') {
 
@@ -346,7 +355,16 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input.type === 'react/effect') {
 
-    return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+    const name = 'effect [' +
+      (
+        input.states
+          ? input.states
+            .map(state => isPrimitive(state) ? String(state) : String(state.value))
+            .join(', ')
+          : ''
+      )
+      +  ']'
+    return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
   } else if (input.type === 'mui/style') {
 
@@ -1253,6 +1271,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
     __ref: ref,
     type: input.type,
     data: input.data,
+    states: input.states,
   }
 
   const node = new_js_node(

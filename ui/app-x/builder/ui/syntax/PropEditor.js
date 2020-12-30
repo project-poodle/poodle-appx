@@ -922,7 +922,7 @@ const PropEditor = (props) => {
                     <Controller
                       name="body"
                       control={control}
-                      defaultValue={treeNode?.body?.body}
+                      defaultValue={treeNode?.data?.body}
                       rules={{
                         required: "Body is required",
                         validate: {

@@ -1602,7 +1602,10 @@ function react_effect(js_context, input) {
               },
               {
                 type: 'js/expression',
-                data: String(state),
+                data:
+                  isPrimitive(state)
+                    ? String(state)
+                    : String(state.value)
               }
             )
           }
