@@ -7,12 +7,12 @@ import _ from 'lodash'
 import {
   Box,
   Typography,
+  Tooltip,
   makeStyles,
 } from '@material-ui/core'
 // ant design
 import {
   Layout,
-  Tooltip,
   Button as AntButton,
 } from 'antd'
 const {

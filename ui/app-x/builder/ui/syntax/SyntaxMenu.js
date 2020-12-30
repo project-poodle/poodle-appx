@@ -27,7 +27,6 @@ import {
   Tree,
   Tabs,
   Radio,
-  Tooltip,
   Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout

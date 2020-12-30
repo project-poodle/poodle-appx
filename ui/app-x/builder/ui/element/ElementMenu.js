@@ -22,7 +22,6 @@ import {
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
 import {
-  Tooltip,
   Button as AntButton,
 } from 'antd'
 import {

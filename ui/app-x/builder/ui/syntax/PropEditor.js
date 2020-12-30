@@ -143,7 +143,7 @@ const PropEditor = (props) => {
       setNodeType(treeNode.data.type)
       Object.keys(treeNode.data).map(k => {
         if (!!k) {
-          console.log(`setValue`, k, treeNode.data[k])
+          // console.log(`setValue`, k, treeNode.data[k])
           setValue(k, treeNode.data[k])
         }
       })
@@ -167,7 +167,7 @@ const PropEditor = (props) => {
   function onBaseSubmit(data) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
-    if (lookupNode) {
+    if (!!lookupNode) {
       // console.log(data)
       const preservedRef = lookupNode.data.__ref
       lookupNode.data = data

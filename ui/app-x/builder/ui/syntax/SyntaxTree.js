@@ -13,6 +13,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Tooltip,
   Typography,
   makeStyles
 } from '@material-ui/core'
@@ -24,7 +25,7 @@ import {
   Tree,
   Tabs,
   Radio,
-  Tooltip,
+  // Tooltip,
   Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout
@@ -916,7 +917,7 @@ const SyntaxTree = (props) => {
             return (
               <Tooltip
                 key={type}
-                title={type}
+                title={type.replace('/', ' / ')}
                 placement="left"
                 >
                 <AntButton

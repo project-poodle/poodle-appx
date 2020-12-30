@@ -4,6 +4,7 @@ import {
   Box,
   Container,
   Grid,
+  Tooltip,
   Typography,
   makeStyles,
 } from '@material-ui/core'
@@ -12,7 +13,6 @@ import {
   Layout,
   Tree,
   Tabs,
-  Tooltip,
   Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout

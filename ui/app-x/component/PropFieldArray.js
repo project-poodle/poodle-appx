@@ -43,7 +43,7 @@ const PropFieldArray = props => {
       padding: theme.spacing(0, 1),
     },
     nameControl: {
-      width: '70%',
+      width: '60%',
       padding: theme.spacing(0, 1),
     },
     valueControl: {
@@ -83,44 +83,6 @@ const PropFieldArray = props => {
     }
   )
 
-  useEffect(() => {
-    // if no value, reset
-    if (!props?.value?.length) {
-      reset([])
-      return
-    }
-    // we are here if props.value exists
-    props.value
-      .filter(child => (
-        child?.type === 'js/string'
-        || child?.type === 'js/number'
-        || child?.type === 'js/boolean'
-        || child?.type === 'js/null'
-        || child?.type === 'js/impression'
-        || child?.type === 'js/import'
-      ))
-      .map((child, index) => {
-        if (fields.length <= index) {
-          append({
-            type: child.type,
-            name: child.name,
-            value: child.value,
-          })
-        } else {
-          setValue(`${props.name}[${index}].type`, child.type)
-          setValue(`${props.name}[${index}].name`, child.name)
-          setValue(`${props.name}[${index}].value`, child.value)
-        }
-      })
-
-    // remove unused data
-    if (fields.length > props.value.length) {
-      for (let i=fields.length-1; i>=props.value.length; i--) {
-        remove(i)
-      }
-    }
-  }, [props.value])
-
   return (
     <Box className={props.className}>
       {
@@ -139,7 +101,7 @@ const PropFieldArray = props => {
                 key='type'
                 name={`${props.name}[${index}].type`}
                 control={control}
-                defaultValue={item.type}
+                defaultValue={item?.type}
                 rules={{
                   required: "Property type is required",
                 }}
@@ -188,7 +150,7 @@ const PropFieldArray = props => {
                 name={`${props.name}[${index}].name`}
                 type={'text'}
                 control={control}
-                defaultValue={item.name}
+                defaultValue={item?.name}
                 rules={{
                   required: "Property name is required",
                   pattern: {
@@ -224,7 +186,7 @@ const PropFieldArray = props => {
                 key='value'
                 name={`${props.name}[${index}].value`}
                 control={control}
-                defaultValue={item.value}
+                defaultValue={item?.value}
                 callback={props.callback}
                 render={innerProps =>
                   <Box className={styles.formControl}>
@@ -232,7 +194,7 @@ const PropFieldArray = props => {
                     (propType === 'js/boolean')
                     &&
                     (
-                      <FormControl className={styles.valueControl}>
+                      <FormControl key="boolean" className={styles.valueControl}>
                         <Switch
                           name={innerProps.name}
                           checked={innerProps.value}
@@ -254,7 +216,7 @@ const PropFieldArray = props => {
                     )
                     &&
                     (
-                      <FormControl className={styles.valueControl}>
+                      <FormControl key="data" className={styles.valueControl}>
                         <TextField
                           className={styles.formControl}
                           name={innerProps.name}
@@ -267,7 +229,7 @@ const PropFieldArray = props => {
                           }}
                           error={
                             !!_.get(errors, props.name)
-                            && !!_.get(errors, props.name)[index].value
+                            && !!_.get(errors, props.name)[index]?.value
                           }
                           helperText={
                             !!_.get(errors, props.name)
@@ -282,6 +244,7 @@ const PropFieldArray = props => {
                     &&
                     (
                       <AutoComplete
+                        key="import"
                         className={styles.valueControl}
                         name={innerProps.name}
                         defaultValue={innerProps.value}
@@ -334,10 +297,10 @@ const PropFieldArray = props => {
 PropFieldArray.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
-  value: PropTypes.arrayOf(PropTypes.shape({
+  defaultValue: PropTypes.arrayOf(PropTypes.shape({
     type: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.any.isRequired,
   })),
   options: PropTypes.array,                 // for prop name autocomplete
   callback: PropTypes.func,

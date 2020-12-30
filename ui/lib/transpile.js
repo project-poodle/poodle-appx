@@ -39,7 +39,7 @@ const default_import_maps = {
         "clsx",
         "yaml",
         "js-yaml",
-        "object-path",
+        // "object-path",
         "lodash",
         "axios",
         "uuid",

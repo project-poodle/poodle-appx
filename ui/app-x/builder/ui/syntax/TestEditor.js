@@ -45,6 +45,9 @@ import {
   valid_import_names,
   isPrimitive,
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  tree_lookup,
+} from 'app-x/builder/ui/syntax/util_tree'
 
 const TestEditor = (props) => {
   // make styles
@@ -123,28 +126,29 @@ const TestEditor = (props) => {
   )
 
   // test submit timer
-  const [ testSubmitTimer, setTestSubmitTimer ] = useState(new Date())
+  const [ testSubmitTimer, setTestSubmitTimer ] = useState(0)
   useEffect(() => {
-    setTimeout(() => {
-      console.log(`errors`, errors)
-      handleSubmit(onTestSubmit)()
-    }, 300)
+    if (testSubmitTimer > 0) {
+      setTimeout(() => {
+        console.log(`errors`, errors)
+        handleSubmit(onTestSubmit)()
+      }, 500)
+    }
   }, [testSubmitTimer])
 
   // load test data
   useEffect(() => {
-    //reset({
-    //  providers: [],
-    //})
     // check if provider exists
     if (!testData?.providers?.length) {
-      reset([])
+      setValue('providers', [])
       return
     }
     // we are here if provider exists
+    const defaultValues = []
     testData.providers
       .filter(provider => provider?.type === 'react/element')
       .map((provider, index) => {
+        console.log(`provider`, provider)
         const props =
           (
             !!provider.props
@@ -159,8 +163,9 @@ const TestEditor = (props) => {
                 || provider.props[key]?.type === 'js/impression'
                 || provider.props[key]?.type === 'js/import'
               ))
-              .map(key => {
+              .map((key, childIndex) => {
                 return {
+                  // id: `providers[${index}].props[${childIndex}]`,
                   type: provider.props[key].type,
                   name: key,
                   value: provider.props[key].type === 'js/import'
@@ -170,115 +175,16 @@ const TestEditor = (props) => {
               })
           : []
 
-        // append or set existing value
-        if (fields.length <= index) {
-          append({
-            name: provider.name,
-            props: props,
-          })
-        } else {
-          setValue(`provider[${index}].name`, provider.name)
-          setValue(`provider[${index}].props`, props)
-        }
-
-        /*
-        // check properties
-        if (!provider.props || !Object.keys(provider.props).length) {
-          return
-        }
-
-        // we are here if prop                         erties exists
-        // providerData.props = []
-        Object.keys(provider.props)
-          .sort((a, b) => (
-            a.name.localeCompare(b.name)
-          ))
-          .map((key, childIndex) => {
-            const child = provider.props[key]
-            // const childData = {}
-            if (isPrimitive(child)) {
-              switch (typeof child) {
-                case 'string':
-                  // childData.type  = 'js/string'
-                  // childData.name  = key
-                  // childData.value = String(child)
-                  setValue(`provider[${index}].props[${childIndex}].type`, 'js/string')
-                  setValue(`provider[${index}].props[${childIndex}].name`, key)
-                  setValue(`provider[${index}].props[${childIndex}].value`, String(child))
-                  break
-                case 'number':
-                  // childData.type  = 'js/number'
-                  // childData.name  = key
-                  // childData.value = Number(child)
-                  setValue(`provider[${index}].props[${childIndex}].type`, 'js/number')
-                  setValue(`provider[${index}].props[${childIndex}].name`, key)
-                  setValue(`provider[${index}].props[${childIndex}].value`, Number(child))
-                  break
-                case 'boolean':
-                  // childData.type  = 'js/boolean'
-                  // childData.name  = key
-                  // childData.value = Boolean(child)
-                  setValue(`provider[${index}].props[${childIndex}].type`, 'js/boolean')
-                  setValue(`provider[${index}].props[${childIndex}].name`, key)
-                  setValue(`provider[${index}].props[${childIndex}].value`, Boolean(child))
-                  break
-                case 'undefined':
-                  // childData.type  = 'js/null'
-                  // childData.name  = key
-                  // childData.value = null
-                  setValue(`provider[${index}].props[${childIndex}].type`, 'js/null')
-                  setValue(`provider[${index}].props[${childIndex}].name`, key)
-                  setValue(`provider[${index}].props[${childIndex}].value`, null)
-                  break
-                case 'object':
-                  if (child === null) {
-                    // childData.type  = 'js/null'
-                    // childData.name  = key
-                    // childData.value = null
-                    setValue(`provider[${index}].props[${childIndex}].type`, 'js/null')
-                    setValue(`provider[${index}].props[${childIndex}].name`, key)
-                    setValue(`provider[${index}].props[${childIndex}].value`, null)
-                    break
-                  } else {
-                    throw new Error(`unrecognized primitive data ${child}`)
-                  }
-              }
-              // providerData.props.push(childData)
-            } else if (child?.type === 'js/string'
-                      || child?.type === 'js/number'
-                      || child?.type === 'js/boolean'
-                      || child?.type === 'js/null'
-                      || child?.type === 'js/expression'
-            ) {
-              // childData.type  = child.type
-              // childData.name  = key
-              // childData.value = child.data
-              setValue(`provider[${index}].props[${childIndex}].type`, child.type)
-              setValue(`provider[${index}].props[${childIndex}].name`, key)
-              setValue(`provider[${index}].props[${childIndex}].value`, child.data)
-              // providerData.props.push(childData)
-            } else if (child?.type === 'js/import') {
-              // childData.type  = child.type
-              // childData.name  = key
-              // childData.value = child.name
-              setValue(`provider[${index}].props[${childIndex}].type`, child.type)
-              setValue(`provider[${index}].props[${childIndex}].name`, key)
-              setValue(`provider[${index}].props[${childIndex}].value`, child.name)
-              // providerData.props.push(childData)
-            }
-          }
-        )
-        */
+        defaultValues.push({
+          // id: `providers[${index}]`,
+          name: provider.name,
+          props: props,
+        })
       }
     )
-
-    // remove unused data
-    if (fields.length > testData.providers.length) {
-      for (let i=fields.length-1; i>=testData.providers.length; i--) {
-        remove(i)
-      }
-    }
-  }, [testData])
+    // set default value
+    setValue('providers', defaultValues)
+  }, [selectedKey, testData])
 
   // submit test data
   function onTestSubmit(data) {
@@ -294,6 +200,7 @@ const TestEditor = (props) => {
     // we are here if data.providers has data
     resultTestData.providers = []
     data.providers.map(provider => {
+      console.log(`gen provider`, provider)
       const providerElem = {
         type: 'react/element',
         name: provider.name,
@@ -342,7 +249,7 @@ const TestEditor = (props) => {
       resultTestData.providers.push(providerElem)
     })
     // console.log(lookupNode)
-    console.log(resultTestData)
+    console.log(`resultTestData`, resultTestData)
     updateAction(
       `Update [test]`,
       treeData,
@@ -361,7 +268,7 @@ const TestEditor = (props) => {
             {
               fields.map((item, index) => {
                 return (
-                  <Box key={item.id} className={styles.contextProvider}>
+                  <Box key={`providers[${index}]`} className={styles.contextProvider}>
                     <FormHelperText>Context Provider</FormHelperText>
                     <Box key='element' display="flex" className={styles.formControl}>
                       <AutoComplete
@@ -375,6 +282,7 @@ const TestEditor = (props) => {
                           required: 'Context provider name is required'
                         }}
                         callback={d => {
+                          console.log(`submit providers[${index}].name`)
                           setTestSubmitTimer(new Date())
                         }}
                         >
@@ -384,6 +292,7 @@ const TestEditor = (props) => {
                         aria-label="Remove"
                         onClick={e => {
                           remove(index)
+                          console.log(`remove providers[${index}].name`)
                           setTestSubmitTimer(new Date())
                         }}
                         >
@@ -394,9 +303,10 @@ const TestEditor = (props) => {
                       <PropFieldArray
                         name={`providers[${index}].props`}
                         label="Properties"
-                        value={item.props}
+                        defaultValue={item.props}
                         className={styles.formControl}
                         callback={d => {
+                          console.log(`callback providers[${index}].props`)
                           setTestSubmitTimer(new Date())
                         }}
                       />
@@ -411,8 +321,12 @@ const TestEditor = (props) => {
               aria-label="Add Context Provider"
               startIcon={<AddCircleOutline />}
               onClick={e => {
-                append({ name: '' })
-                setTestSubmitTimer(new Date())
+                append({
+                  //id: `providers[${fields.length}]`,
+                  name: '',
+                  props: [],
+                })
+                // setTestSubmitTimer(new Date())
               }}
             >
               Add Context Provider

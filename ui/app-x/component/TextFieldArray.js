@@ -20,7 +20,6 @@ import {
   Controller,
 } from 'react-hook-form'
 import { v4 as uuidv4 } from 'uuid'
-import objPath from 'object-path'
 
 import AutoComplete from 'app-x/component/AutoComplete'
 
@@ -64,10 +63,12 @@ const TextFieldArray = props => {
     }
   )
 
+  /*
   useEffect(() => {
     console.log(`props.name`, props.name)
     console.log(`props.defaultValue`, props.defaultValue)
   }, [props.defaultValue])
+  */
 
   return (
     <Box className={props.className}>
