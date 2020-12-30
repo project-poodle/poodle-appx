@@ -128,8 +128,8 @@ const PropEditor = (props) => {
     // lookup node
     const lookupNode = tree_lookup(treeData, selectedKey)
     const lookupParent = !!lookupNode ? tree_lookup(treeData, lookupNode.parentKey) : null
-    setTreeNode(lookupNode)
-    setParentNode(lookupParent)
+    setTreeNode(_.cloneDeep(lookupNode))
+    setParentNode(_.cloneDeep(lookupParent))
     // console.log(lookupNode)
     // console.log(parentNode)
     if (lookupNode) {
@@ -143,6 +143,7 @@ const PropEditor = (props) => {
       setNodeType(treeNode.data.type)
       Object.keys(treeNode.data).map(k => {
         if (!!k) {
+          console.log(`setValue`, k, treeNode.data[k])
           setValue(k, treeNode.data[k])
         }
       })
@@ -224,7 +225,7 @@ const PropEditor = (props) => {
             className={styles.root}
             >
             <Typography variant="body2">
-              Select an element to edit
+              Select an object to edit
             </Typography>
           </Box>
         )
@@ -905,7 +906,7 @@ const PropEditor = (props) => {
                       name="params"
                       label="Parameters"
                       type="text"
-                      defaultValues={treeNode?.data?.params}
+                      defaultValue={treeNode?.data?.params}
                       className={styles.formControl}
                       rules={{
                         required: "Parameter is required",
@@ -914,7 +915,7 @@ const PropEditor = (props) => {
                           message: "Parameter name must be valid variable name",
                         }
                       }}
-                      callback={data => {
+                      callback={() => {
                         setBaseSubmitTimer(new Date())
                       }}
                     />
@@ -1118,7 +1119,7 @@ const PropEditor = (props) => {
                     <Controller
                       name="init"
                       control={control}
-                      defaultValue=''
+                      defaultValue={treeNode?.data?.init}
                       rules={{
                         required: 'Initial value required',
                         validate: {
@@ -1528,7 +1529,7 @@ const PropEditor = (props) => {
                       name="states"
                       label="States"
                       type="text"
-                      defaultValues={treeNode?.data?.states}
+                      defaultValue={treeNode?.data?.states}
                       className={styles.formControl}
                       rules={{
                         required: "State expression is required",
@@ -1542,6 +1543,9 @@ const PropEditor = (props) => {
                             }
                           }
                         }
+                      }}
+                      callback={() => {
+                        setBaseSubmitTimer(new Date())
                       }}
                       />
                   </Box>

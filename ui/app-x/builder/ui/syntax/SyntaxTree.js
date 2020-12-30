@@ -217,6 +217,8 @@ const SyntaxTree = (props) => {
       ? data.ui_element_spec.__test
       : null
 
+    console.log(`testData`, testData)
+
     // fresh action
     makeAction(`init`, parsedTree, testData, js_context.expandedKeys, null, true)
   }
@@ -283,6 +285,7 @@ const SyntaxTree = (props) => {
     const spec = !!testData
       ? { ...genData, __test: testData }
       : genData
+    console.log(spec)
     // url
     const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
     // console.log(url)
@@ -354,7 +357,15 @@ const SyntaxTree = (props) => {
     // console.log(designTreeRef)
     // html node
     const node = ReactDOM.findDOMNode(designTreeRef.current)
+    if (!node) {
+      return
+    }
+    // find all tree node
     const treeNodeList = node.querySelectorAll('.appx-tree-node')
+    if (!treeNodeList) {
+      return
+    }
+    // iterate tree node list
     treeNodeList.forEach(treeNode => {
       const parentType = lookup_type_by_classname(treeNode.className)
       // console.log(treeNode)
@@ -946,6 +957,43 @@ const SyntaxTree = (props) => {
   }
 
   return (
+    <Box className={styles.root}>
+    {
+      !(
+        !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && navSelected.type === 'ui_element'
+        && !!navElement.ui_element_name
+      )
+      &&
+      (
+        <Box
+          className={styles.root}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          >
+          <Typography variant="body2">
+            Select a UI element
+          </Typography>
+        </Box>
+      )
+    }
+    {
+      (
+        !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && navSelected.type === 'ui_element'
+        && !!navElement.ui_element_name
+      )
+      &&
+      (
         <Tabs
           defaultActiveKey="design"
           className={styles.root}
@@ -1096,6 +1144,9 @@ const SyntaxTree = (props) => {
             >
           </SyntaxMenu>
         </Tabs>
+      )
+    }
+    </Box>
   )
 }
 

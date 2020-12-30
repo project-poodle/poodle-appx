@@ -283,89 +283,129 @@ const PreviewTabs = (props) => {
 
   return (
     <Box className={styles.root}>
-      <form
-        // encType="application/json"
-        style={{width:0,height:0,display:'none'}}
-        ref={formRef}
-        action={
-            globalThis.appx.UI_ROOT
-            + '/' + navDeployment?.namespace
-            + '/' + navDeployment?.ui_name
-            + '/' + navDeployment?.ui_deployment
-            + '/'
-        }
-        method="POST"
-        target="live_preview"
-        >
-        <input name="type" value="ui_element" readOnly/>
-        <input name="output" value="html" readOnly/>
-        <input name="data[]" value="3" readOnly/>
-      </form>
-      <Tabs
-        defaultActiveKey="widget"
-        tabPosition="top"
-        size="small"
-        className={styles.root}
-        tabBarExtraContent={{
-          left:
-            <Box key="toolTop" display="inline" className={styles.toolTop}>
-              <Tooltip
-                key="preview"
-                title={ livePreview ? "Preview" : "Backend" }
-                placement="bottom"
-                >
-                <AntButton
-                  size="small"
-                  color="secondary"
-                  type={ livePreview ? "primary" : "default" }
-                  className={styles.fab}
-                  key="preview"
-                  icon={<Preview />}
-                  shape="circle"
-                  onClick={e => {
-                    setLivePreview(!livePreview);
-                    setPreviewInitialized(false);
-                  }}
-                  loading={previewLoading}
-                  >
-                </AntButton>
-              </Tooltip>
-            </Box>
-        }}
-        >
-        <TabPane tab="Widget" key="iframe" className={styles.root}>
-          <Box className={styles.root}>
-            <Box className={styles.iframeWrapper}>
-              <iframe ref={iframeRef} name="live_preview" className={styles.iframe}>
-              </iframe>
-            </Box>
-          </Box>
-        </TabPane>
-        <TabPane tab="Code" key="code" className={styles.root}>
-          <PreviewSource
-            namespace={props.namespace}
-            ui_name={props.ui_name}
-            ui_deployment={props.ui_deployment}
-            ui_element_name={props.ui_element_name}
-          />
-        </TabPane>
-        <TabPane tab="YAML" key="yaml" className={styles.root}>
-          <PreviewYaml
-            namespace={props.namespace}
-            ui_name={props.ui_name}
-            ui_deployment={props.ui_deployment}
-            ui_element_name={props.ui_element_name}
-          />
-        </TabPane>
-        <TabPane tab="JSON" key="json" className={styles.root}>
-          <PreviewJson
-            namespace={props.namespace}
-            ui_name={props.ui_name}
-            ui_deployment={props.ui_deployment}
-            ui_element_name={props.ui_element_name}
-          />
-        </TabPane>
-      </Tabs>
+    {
+      !(
+        !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && navSelected.type === 'ui_element'
+        && !!navElement.ui_element_name
+      )
+      &&
+      (
+        <Box
+          className={styles.root}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          >
+          <Typography variant="body2">
+            Select a UI element
+          </Typography>
+        </Box>
+      )
+    }
+    {
+      (
+        !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+        && navSelected.type === 'ui_element'
+        && !!navElement.ui_element_name
+      )
+      &&
+      (
+        <Box className={styles.root}>
+          <form
+            // encType="application/json"
+            style={{width:0,height:0,display:'none'}}
+            ref={formRef}
+            action={
+                globalThis.appx.UI_ROOT
+                + '/' + navDeployment?.namespace
+                + '/' + navDeployment?.ui_name
+                + '/' + navDeployment?.ui_deployment
+                + '/'
+            }
+            method="POST"
+            target="live_preview"
+            >
+            <input name="type" value="ui_element" readOnly/>
+            <input name="output" value="html" readOnly/>
+            <input name="data[]" value="3" readOnly/>
+          </form>
+          <Tabs
+            defaultActiveKey="widget"
+            tabPosition="top"
+            size="small"
+            className={styles.root}
+            tabBarExtraContent={{
+              left:
+                <Box key="toolTop" display="inline" className={styles.toolTop}>
+                  <Tooltip
+                    key="preview"
+                    title={ livePreview ? "Preview" : "Backend" }
+                    placement="bottom"
+                    >
+                    <AntButton
+                      size="small"
+                      color="secondary"
+                      type={ livePreview ? "primary" : "default" }
+                      className={styles.fab}
+                      key="preview"
+                      icon={<Preview />}
+                      shape="circle"
+                      onClick={e => {
+                        setLivePreview(!livePreview);
+                        setPreviewInitialized(false);
+                      }}
+                      loading={previewLoading}
+                      >
+                    </AntButton>
+                  </Tooltip>
+                </Box>
+            }}
+            >
+            <TabPane tab="Widget" key="iframe" className={styles.root}>
+              <Box className={styles.root}>
+                <Box className={styles.iframeWrapper}>
+                  <iframe ref={iframeRef} name="live_preview" className={styles.iframe}>
+                  </iframe>
+                </Box>
+              </Box>
+            </TabPane>
+            <TabPane tab="Code" key="code" className={styles.root}>
+              <PreviewSource
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+              />
+            </TabPane>
+            <TabPane tab="YAML" key="yaml" className={styles.root}>
+              <PreviewYaml
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+              />
+            </TabPane>
+            <TabPane tab="JSON" key="json" className={styles.root}>
+              <PreviewJson
+                namespace={props.namespace}
+                ui_name={props.ui_name}
+                ui_deployment={props.ui_deployment}
+                ui_element_name={props.ui_element_name}
+              />
+            </TabPane>
+          </Tabs>
+        </Box>
+      )
+    }
     </Box>
   )
 }

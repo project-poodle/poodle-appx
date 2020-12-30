@@ -308,7 +308,7 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input.type === 'js/function') {
 
-    return prefix + 'function(' + (input.params ? input.params.join(', ') : '') +  ')'
+    return prefix + 'function(' + (input.params ? input.params.map(param => isPrimitive(param) ? String(param) : String(param.value)).join(', ') : '') +  ')'
 
   } else if (input.type === 'js/switch') {
 
@@ -2178,4 +2178,5 @@ export {
   valid_import_names,
   valid_html_tags,
   reorder_children,
+  isPrimitive,
 }

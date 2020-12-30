@@ -13,7 +13,7 @@ import {
   useFormContext,
   Controller,
 } from 'react-hook-form'
-import objPath from 'object-path'
+import _ from 'lodash'
 
 const AutoComplete = (props) => {
   // make styles
@@ -89,8 +89,8 @@ const AutoComplete = (props) => {
                     props.callback(e.target.value)
                   }
                 }}
-                error={!!objPath.get(errors, props.name)}
-                helperText={objPath.get(errors, props.name)?.message}
+                error={!!_.get(errors, props.name)}
+                helperText={_.get(errors, props.name)?.message}
               />
             </AntAutoComplete>
           </FormControl>
@@ -107,6 +107,7 @@ AutoComplete.propTypes = {
   rules: PropTypes.object,
   options: PropTypes.array,
   defaultValues: PropTypes.string,
+  callback: PropTypes.func,
   className: PropTypes.string,
 }
 

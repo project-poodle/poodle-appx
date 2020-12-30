@@ -58,6 +58,46 @@ function js_primitive(js_context, input) {
   }
 }
 
+// create string ast
+function js_string(js_context, input) {
+  // check input.type
+  if (!('type' in input) || input.type !== 'js/string') {
+    throw new Error(`ERROR: input.type is not [js/string] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  return t.stringLiteral(String(input.data))
+}
+
+// create numeric ast
+function js_number(js_context, input) {
+  // check input.type
+  if (!('type' in input) || input.type !== 'js/number') {
+    throw new Error(`ERROR: input.type is not [js/number] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  return t.numericLiteral(Number(input.data))
+}
+
+// create boolean ast
+function js_boolean(js_context, input) {
+  // check input.type
+  if (!('type' in input) || input.type !== 'js/boolean') {
+    throw new Error(`ERROR: input.type is not [js/boolean] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  return t.booleanLiteral(Boolean(input.data))
+}
+
+// create null ast
+function js_null(js_context, input) {
+  // check input.type
+  if (!('type' in input) || input.type !== 'js/null') {
+    throw new Error(`ERROR: input.type is not [js/null] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  return t.nullLiteral()
+}
+
 // create array js ast
 // js_array is true - will return result as an array of data
 // js_array is false - will return arrayExpression
@@ -1860,7 +1900,23 @@ function js_process(js_context, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/import') {
+  if (input.type === 'js/string') {
+
+    return js_string(js_context, input)
+
+  } else if (input.type === 'js/number') {
+
+    return js_number(js_context, input)
+
+  } else if (input.type === 'js/boolean') {
+
+    return js_boolean(js_context, input)
+
+  } else if (input.type === 'js/null') {
+
+    return js_null(js_context, input)
+
+  } else if (input.type === 'js/import') {
 
     return js_import(js_context, input)
 

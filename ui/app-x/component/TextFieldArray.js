@@ -7,6 +7,7 @@ import {
   IconButton,
   InputAdornment,
   FormHelperText,
+  Typography,
   makeStyles,
 } from '@material-ui/core'
 import {
@@ -20,6 +21,8 @@ import {
 } from 'react-hook-form'
 import { v4 as uuidv4 } from 'uuid'
 import objPath from 'object-path'
+
+import AutoComplete from 'app-x/component/AutoComplete'
 
 // array text field
 const TextFieldArray = props => {
@@ -61,48 +64,49 @@ const TextFieldArray = props => {
     }
   )
 
+  useEffect(() => {
+    console.log(`props.name`, props.name)
+    console.log(`props.defaultValue`, props.defaultValue)
+  }, [props.defaultValue])
+
   return (
     <Box className={props.className}>
-      <FormHelperText key="label">{props.label}</FormHelperText>
+      {
+        (!!props.label)
+        &&
+        (
+          <FormHelperText key="label">{props.label}</FormHelperText>
+        )
+      }
       {
         fields.map((item, index) => {
           return (
-            <Controller
-              key={item.id}
-              name={`${props.name}[${index}].value`}
-              type={!!props.type ? props.type : 'text'}
-              control={control}
-              defaultValue={item.value}
-              rules={props.rules}
-              render={innerProps =>
-                <Box display="flex" className={styles.formControl}>
-                  <FormControl className={styles.formControl}>
-                    <TextField
-                      name={innerProps.name}
-                      value={innerProps.value}
-                      onChange={innerProps.onChange}
-                      error={
-                        !!objPath.get(errors, props.name)
-                        && !!objPath.get(errors, props.name)[index]
-                      }
-                      helperText={
-                        !!objPath.get(errors, props.name)
-                        && objPath.get(errors, props.name)[index]?.value?.message
-                      }
-                    />
-                  </FormControl>
-                  <IconButton
-                    key="remove"
-                    aria-label="Remove"
-                    onClick={e => {
-                      remove(index)
-                    }}
-                    >
-                    <RemoveCircleOutline />
-                  </IconButton>
-                </Box>
-              }
-            />
+            <Box key={item.id} display="flex" className={styles.formControl}>
+              <AutoComplete
+                className={styles.formControl}
+                key="value"
+                name={`${props.name}[${index}].value`}
+                type={props.type}
+                defaultValue={item?.value}
+                options={!!props.options ? props.options : []}
+                rules={props.rules}
+                callback={props.callback}
+                >
+              </AutoComplete>
+              <IconButton
+                key="remove"
+                aria-label="Remove"
+                onClick={e => {
+                  console.log('herer!!')
+                  remove(index)
+                  if (!!props.callback) {
+                    props.callback()
+                  }
+                }}
+                >
+                <RemoveCircleOutline />
+              </IconButton>
+            </Box>
           )
         })
       }
@@ -123,14 +127,15 @@ const TextFieldArray = props => {
 
 TextFieldArray.propTypes = {
   name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,             // text, number, etc.
   label: PropTypes.string,
-  type: PropTypes.string,
   rules: PropTypes.object,
-  defaultValues: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
+  defaultValue: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string.isRequired,
   })),
-  className: PropTypes.string,
+  options: PropTypes.array,           // for autocomplete type
+  callback: PropTypes.func,
+  className: PropTypes.string,        // display className for element
 }
 
 export default TextFieldArray
