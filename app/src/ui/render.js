@@ -191,6 +191,7 @@ function handle_render(req, res, load_from_db=true) {
             API_ROOT: req.mount_options.api_root,
             UI_ROOT: req.mount_options.ui_root,
             RELATIVE_URL: url.parse(req.url).pathname,
+            APPX_PATHS: { 'paths': req.appx_paths },
             IMPORT_MAPS: ui_spec.importMaps,
             API_MAPS: ui_deployment_spec.apiMaps,
         },
