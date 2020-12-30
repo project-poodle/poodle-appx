@@ -40,6 +40,7 @@ const PreviewSource = (props) => {
     treeData,
     expandedKeys,
     selectedKey,
+    loadTimer,
     treeDirty,
     livePreview,
     setLiveUpdate,
@@ -47,8 +48,8 @@ const PreviewSource = (props) => {
 
   // preview context
   const {
-    previewLoading,
-    setPreviewLoading,
+    sourceLoading,
+    setSourceLoading,
   } = useContext(PreviewProvider.Context)
 
   // code content
@@ -59,7 +60,7 @@ const PreviewSource = (props) => {
 
     // load from backend if not livePreview
     if (!livePreview) {
-      setPreviewLoading(true)
+      setSourceLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
       const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navElement.ui_element_name}.source`.replace(/\/+/g, '/')
@@ -68,16 +69,20 @@ const PreviewSource = (props) => {
         .then(response => response.text())
         .then(data => {
           // console.log(data)
-          setPreviewLoading(false)
+          setSourceLoading(false)
           setCode(data)
         })
         .catch(error => {
-          setPreviewLoading(false)
+          setSourceLoading(false)
           console.error(error)
         })
     }
 
-  }, [livePreview])
+  },
+  [
+    livePreview,
+    loadTimer,
+  ])
 
   // load content from UI context treeData
   useEffect(() => {
@@ -87,7 +92,7 @@ const PreviewSource = (props) => {
       const tree_context = { topLevel: true }
       const { ref, data } = gen_js(tree_context, treeData)
       // preview source code
-      setPreviewLoading(true)
+      setSourceLoading(true)
       // preview url
       const ui_root = globalThis.appx.UI_ROOT
       const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
@@ -120,11 +125,11 @@ const PreviewSource = (props) => {
       ).then(response => response.text())
         .then(data => {
           // console.log(data)
-          setPreviewLoading(false)
+          setSourceLoading(false)
           setCode(data)
         })
         .catch(error => {
-          setPreviewLoading(false)
+          setSourceLoading(false)
           console.error(error)
         })
     }
@@ -132,6 +137,7 @@ const PreviewSource = (props) => {
   },
   [
     livePreview,
+    loadTimer,
     navDeployment.namespace,
     navDeployment.ui_name,
     navDeployment.ui_ver,

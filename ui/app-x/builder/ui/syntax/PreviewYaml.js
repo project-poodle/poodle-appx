@@ -41,14 +41,15 @@ const PreviewYaml = (props) => {
     treeData,
     expandedKeys,
     selectedKey,
+    loadTimer,
     treeDirty,
     livePreview,
   } = useContext(SyntaxProvider.Context)
 
   // preview context
   const {
-    previewLoading,
-    setPreviewLoading,
+    yamlLoading,
+    setYamltLoading,
   } = useContext(PreviewProvider.Context)
 
   // yaml content
@@ -59,7 +60,7 @@ const PreviewYaml = (props) => {
 
     // load from backend if not livePreview
     if (!livePreview) {
-      setPreviewLoading(true)
+      setYamltLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
       const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
@@ -70,7 +71,7 @@ const PreviewYaml = (props) => {
         url,
         data => {
           // console.log(data)
-          setPreviewLoading(false)
+          setYamltLoading(false)
           if (Array.isArray(data)) {
             data = data[0]
           }
@@ -85,12 +86,16 @@ const PreviewYaml = (props) => {
           setYaml(doc.toString())
         },
         error => {
-          setPreviewLoading(false)
+          setYamltLoading(false)
           console.error(error)
         })
     }
 
-  }, [livePreview])
+  },
+  [
+    livePreview,
+    loadTimer,
+  ])
 
   // load content from UI context treeData
   useEffect(() => {
@@ -106,7 +111,12 @@ const PreviewYaml = (props) => {
       setYaml(yamlDoc.toString())
     }
 
-  }, [livePreview, treeData])
+  },
+  [
+    livePreview,
+    loadTimer,
+    treeData,
+  ])
 
   // render
   return (

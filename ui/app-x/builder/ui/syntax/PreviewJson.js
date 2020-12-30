@@ -41,14 +41,15 @@ const PreviewJson = (props) => {
     treeData,
     expandedKeys,
     selectedKey,
+    loadTimer,
     treeDirty,
     livePreview,
   } = useContext(SyntaxProvider.Context)
 
   // preview context
   const {
-    previewLoading,
-    setPreviewLoading,
+    jsonLoading,
+    setJsonLoading,
   } = useContext(PreviewProvider.Context)
 
   // json content
@@ -59,7 +60,7 @@ const PreviewJson = (props) => {
 
     // load from backend if not livePreview
     if (!livePreview) {
-      setPreviewLoading(true)
+      setJsonLoading(true)
       // loading url
       const ui_root = globalThis.appx.UI_ROOT
       const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
@@ -70,7 +71,7 @@ const PreviewJson = (props) => {
         url,
         data => {
           // console.log(data)
-          setPreviewLoading(false)
+          setJsonLoading(false)
           if (Array.isArray(data)) {
             data = data[0]
           }
@@ -82,12 +83,16 @@ const PreviewJson = (props) => {
           setJson(JSON.stringify(data.ui_element_spec, null, 2))
         },
         error => {
-          setPreviewLoading(false)
+          setJsonLoading(false)
           console.error(error)
         })
     }
 
-  }, [livePreview])
+  },
+  [
+    livePreview,
+    loadTimer,
+  ])
 
   // load content from UI context treeData
   useEffect(() => {
@@ -100,7 +105,12 @@ const PreviewJson = (props) => {
       setJson(JSON.stringify(data, null, 2))
     }
 
-  }, [livePreview, treeData])
+  },
+  [
+    livePreview,
+    loadTimer,
+    treeData,
+  ])
 
   // render
   return (

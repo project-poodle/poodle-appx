@@ -39,6 +39,7 @@ import {
 import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import PropFieldArray from 'app-x/component/PropFieldArray'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 // utilities
 import {
@@ -77,6 +78,14 @@ const TestEditor = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
+
   // context
   const {
     treeData,
@@ -84,7 +93,8 @@ const TestEditor = (props) => {
     selectedKey,
     // test data
     testData,
-    setTestData,
+    // common
+    loadTimer,
     // update action
     updateAction,
   } = useContext(SyntaxProvider.Context)
@@ -111,13 +121,13 @@ const TestEditor = (props) => {
   } = hookForm
 
   const {
-    fields,
-    append,
-    prepend,
-    remove,
-    swap,
-    move,
-    insert,
+    fields: fieldsProvider,
+    append: appendProvider,
+    prepend: prependProvider,
+    remove: removeProvider,
+    swap: swapProvider,
+    move: moveProvider,
+    insert: insertProvider,
   } = useFieldArray(
     {
       control,
@@ -145,13 +155,24 @@ const TestEditor = (props) => {
     }
     // we are here if provider exists
     const defaultValues = []
+    let diff = false
+    if (testData.providers.length !== fieldsProvider.length) {
+      diff = true
+    }
     testData.providers
       .filter(provider => provider?.type === 'react/element')
       .map((provider, index) => {
         console.log(`provider`, provider)
+        // check for length diff
+        const propLength = !!provider?.props?.length ? provider?.props?.length : 0
+        const fieldPropLength = !!getValues(`providers[${index}].props`) ? getValues(`providers[${index}].props`).length : 0
+        if (propLength != fieldPropLength) {
+          diff = true
+        }
+        // iterate props
         const props =
           (
-            !!provider.props
+            !!provider?.props
             && !!(Object.keys(provider.props).length)
           )
           ? Object.keys(provider.props)
@@ -182,9 +203,27 @@ const TestEditor = (props) => {
         })
       }
     )
-    // set default value
-    setValue('providers', defaultValues)
-  }, [selectedKey, testData])
+    // if diff found
+    if (diff) {
+      // set default value
+      console.log(`yes diff`)
+      setValue('providers', defaultValues)
+    } else {
+      console.log(`no diff`)
+      defaultValues.map((provider, index) => {
+        setValue(`providers[${index}].name`, provider.name)
+        setValue(`providers[${index}].props`, provider.props)
+      })
+    }
+  },
+  [
+    navDeployment,
+    navElement,
+    navRoute,
+    navSelected,
+    loadTimer,
+    !!testData,
+  ])
 
   // submit test data
   function onTestSubmit(data) {
@@ -266,9 +305,9 @@ const TestEditor = (props) => {
         <form onSubmit={() => {return false}} className={styles.root}>
           <Box className={styles.basicTab}>
             {
-              fields.map((item, index) => {
+              fieldsProvider.map((item, index) => {
                 return (
-                  <Box key={`providers[${index}]`} className={styles.contextProvider}>
+                  <Box key={item.id} className={styles.contextProvider}>
                     <FormHelperText>Context Provider</FormHelperText>
                     <Box key='element' display="flex" className={styles.formControl}>
                       <AutoComplete
@@ -291,7 +330,7 @@ const TestEditor = (props) => {
                         key="remove"
                         aria-label="Remove"
                         onClick={e => {
-                          remove(index)
+                          removeProvider(index)
                           console.log(`remove providers[${index}].name`)
                           setTestSubmitTimer(new Date())
                         }}
@@ -321,7 +360,7 @@ const TestEditor = (props) => {
               aria-label="Add Context Provider"
               startIcon={<AddCircleOutline />}
               onClick={e => {
-                append({
+                appendProvider({
                   //id: `providers[${fields.length}]`,
                   name: '',
                   props: [],

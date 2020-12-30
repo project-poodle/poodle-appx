@@ -153,8 +153,9 @@ const SyntaxTree = (props) => {
     setSelectedKey,
     // test data
     testData,
-    setTestData,
     // common
+    loadTimer,
+    setLoadTimer,
     treeDirty,
     previewInitialized,
     setPreviewInitialized,
@@ -179,10 +180,8 @@ const SyntaxTree = (props) => {
   // syntax tree cursor
   const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
   // loading and saving
-  const [ loading,          setLoading          ] = useState(false)
-  const [ loadTimer,        setLoadTimer        ] = useState(null)
-  const [ saving,           setSaving           ] = useState(false)
-  const [ saveTimer,        setSaveTimer        ] = useState(null)
+  const [ loadTrigger,      setLoadTrigger      ] = useState(new Date())  // trigger a load by default
+  const [ saveTrigger,      setSaveTrigger      ] = useState(0)
 
   // process api data
   function process_api_data(data) {
@@ -242,25 +241,28 @@ const SyntaxTree = (props) => {
         && !!navElement
         && !!navElement.ui_element_name
       )
-    setLoading(true)
-    const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
-    // console.log(url)
-    api.get(
-      'sys',
-      'appx',
-      loadUrl,
-      data => {
-        // console.log(data)
-        setLoading(false)
-        process_api_data(data)
-        setPreviewInitialized(false)
-      },
-      error => {
-        setLoading(false)
-        console.error(error)
-        setPreviewInitialized(false)
-      }
-    )
+    {
+      const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+      // console.log(url)
+      api.get(
+        'sys',
+        'appx',
+        loadUrl,
+        data => {
+          // console.log(data)
+          process_api_data(data)
+          setPreviewInitialized(false)
+          setLoadTrigger(0)
+          setLoadTimer(new Date())
+        },
+        error => {
+          console.error(error)
+          setPreviewInitialized(false)
+          setLoadTrigger(0)
+          setLoadTimer(new Date())
+        }
+      )
+    }
   },
   [
     navDeployment.namespace,
@@ -270,17 +272,15 @@ const SyntaxTree = (props) => {
     navElement.ui_element_name,
     navRoute.ui_route_name,
     navSelected.type,
-    loadTimer
-  ]
-  )
+    loadTrigger,
+  ])
 
   // save data via api
   useEffect(() => {
     // do not save initially
-    if (!saveTimer) {
+    if (!saveTrigger) {
       return
     }
-    setSaving(true)
     const tree_context = { topLevel: true }
     const { ref, data: genData } = gen_js(tree_context, treeData)
     const spec = !!testData
@@ -306,23 +306,27 @@ const SyntaxTree = (props) => {
           loadUrl,
           data => {
             // console.log(data)
-            setSaving(false)
             process_api_data(data)
             setPreviewInitialized(false)
+            setSaveTrigger(0)
+            setLoadTimer(new Date())
           },
           error => {
-            setSaving(false)
             console.error(error)
             setPreviewInitialized(false)
+            setSaveTrigger(0)
+            setLoadTimer(new Date())
           }
         )
       },
       error => {
         console.error(error)
-        setSaving(false)
+        setPreviewInitialized(false)
+        setSaveTrigger(0)
+        setLoadTimer(new Date())
       }
     )
-  }, [saveTimer])
+  }, [saveTrigger])
 
 
   // selectedTool
@@ -1017,9 +1021,9 @@ const SyntaxTree = (props) => {
                     key="save"
                     icon={<Save />}
                     shape="circle"
-                    onClick={e => { setSaveTimer(new Date()) }}
+                    onClick={e => { setSaveTrigger(new Date()) }}
                     danger={treeDirty}
-                    loading={saving}
+                    loading={!!saveTrigger}
                     >
                   </AntButton>
                 </Tooltip>
@@ -1036,8 +1040,8 @@ const SyntaxTree = (props) => {
                     key="reset"
                     icon={<Reset />}
                     shape="circle"
-                    onClick={e => { setLoadTimer(new Date()) }}
-                    loading={loading}
+                    onClick={e => { setLoadTrigger(new Date()) }}
+                    loading={!!loadTrigger}
                     >
                   </AntButton>
                 </Tooltip>

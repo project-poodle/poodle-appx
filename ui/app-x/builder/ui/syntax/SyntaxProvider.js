@@ -15,6 +15,7 @@ const SyntaxProvider = (() => {
     // test data
     const [ testData,           setTestData           ] = useState([])
     // common data
+    const [ loadTimer,          setLoadTimer          ] = useState(0)
     const [ treeDirty,          setTreeDirty          ] = useState(false)
     const [ livePreview,        setLivePreview        ] = useState(true)
     const [ previewInitialized, setPreviewInitialized ] = useState(false)
@@ -199,8 +200,9 @@ const SyntaxProvider = (() => {
           setSelectedKey: setSelectedKey,
           // test data
           testData: testData,
-          setTestData: setTestData,
           // common data
+          loadTimer: loadTimer,
+          setLoadTimer: setLoadTimer,
           treeDirty: treeDirty,
           setTreeDirty: setTreeDirty,
           livePreview: livePreview,

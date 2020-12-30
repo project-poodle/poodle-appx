@@ -89,6 +89,7 @@ const PreviewTabs = (props) => {
     // test data
     testData,
     // global
+    loadTimer,
     treeDirty,
     livePreview,
     setLivePreview,
@@ -98,8 +99,13 @@ const PreviewTabs = (props) => {
 
   // preview context
   const {
-    previewLoading,
-    setPreviewLoading,
+    widgetLoading,
+    setWidgetLoading,
+    liveWidgetUpdating,
+    setLiveWidgetUpdating,
+    sourceLoading,
+    yamlLoading,
+    jsonLoading,
   } = useContext(PreviewProvider.Context)
 
   // code content
@@ -126,6 +132,8 @@ const PreviewTabs = (props) => {
         && !!formRef.current
         && !!iframeRef.current) {
       // setPreviewLoading(true)
+      // widget loading
+      setWidgetLoading(true)
       // loading url
       // iframe url
       const iframeUrl =
@@ -137,6 +145,7 @@ const PreviewTabs = (props) => {
       // console.log(iframeUrl)
       iframeRef.current.src=iframeUrl
       setPreviewInitialized(false)
+      setWidgetLoading(false)
     }
 
   },
@@ -148,6 +157,7 @@ const PreviewTabs = (props) => {
     navElement.ui_element_name,
     navRoute.ui_route_name,
     navSelected.type,
+    loadTimer,
     livePreview,
   ])
 
@@ -173,7 +183,8 @@ const PreviewTabs = (props) => {
         && !!treeData && treeData.length
         && !!formRef.current
         && !!iframeRef.current) {
-
+      // widget loading
+      setWidgetLoading(true)
       // console.log(treeData)
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
@@ -208,7 +219,9 @@ const PreviewTabs = (props) => {
       formRef.current.appendChild(input)
       formRef.current.submit() // submit form
       // set initialized flag
+      setLiveWidgetUpdating(true)
       setPreviewInitialized(true)
+      setWidgetLoading(false)
     }
   },
   [
@@ -221,6 +234,7 @@ const PreviewTabs = (props) => {
     navSelected.type,
     livePreview,
     treeData,
+    loadTimer,
     previewInitialized,
   ])
 
@@ -233,42 +247,57 @@ const PreviewTabs = (props) => {
         && !!treeData && treeData.length
         && !!formRef.current
         && !!iframeRef.current) {
-      const tree_context = { topLevel: true }
-      const { ref, data } = gen_js(tree_context, treeData)
-      // preview loading
-      const spec = !!testData
-        ? { ...data, __test: testData }
-        : data
-      // setPreviewLoading(true)
-      // preview data
-      const message = {
-        path: globalThis.appx.UI_ROOT
-          + '/' + navDeployment?.namespace
-          + '/' + navDeployment?.ui_name
-          + '/' + navDeployment?.ui_deployment
-          + '/',
-        data: {
-          type: 'ui_element',
-          output: 'code',
+
+      try {
+        // live widget update
+        setLiveWidgetUpdating(true)
+        // generate data
+        const tree_context = { topLevel: true }
+        const { ref, data } = gen_js(tree_context, treeData)
+        // preview loading
+        const spec = !!testData
+          ? { ...data, __test: testData }
+          : data
+        // setPreviewLoading(true)
+        // preview data
+        const message = {
+          path: globalThis.appx.UI_ROOT
+            + '/' + navDeployment?.namespace
+            + '/' + navDeployment?.ui_name
+            + '/' + navDeployment?.ui_deployment
+            + '/',
           data: {
-            namespace: navDeployment.namespace,
-            ui_name: navDeployment.ui_name,
-            ui_ver: navDeployment.ui_ver,
-            ui_spec: navDeployment.ui_spec,
-            ui_deployment: navDeployment.ui_deployment,
-            ui_deployment_spec: navDeployment.ui_deployment_spec,
-            ui_element_name: navElement.ui_element_name,
-            ui_element_type: navElement.ui_element_type,
-            ui_element_spec: spec
+            type: 'ui_element',
+            output: 'code',
+            data: {
+              namespace: navDeployment.namespace,
+              ui_name: navDeployment.ui_name,
+              ui_ver: navDeployment.ui_ver,
+              ui_spec: navDeployment.ui_spec,
+              ui_deployment: navDeployment.ui_deployment,
+              ui_deployment_spec: navDeployment.ui_deployment_spec,
+              ui_element_name: navElement.ui_element_name,
+              ui_element_type: navElement.ui_element_type,
+              ui_element_spec: spec
+            }
           }
         }
+        // build form for submission
+        // console.log(submitData)
+        iframeRef.current.contentWindow.postMessage(
+          message,
+          window.location.origin,
+        )
+      } catch (error) {
+        notification['error']({
+          message: 'Live Update Failed',
+          description: error.toString(),
+          placement: 'bottomLeft',
+        })
+      } finally {
+        // set setLiveWidgetUpdating to false
+        setLiveWidgetUpdating(false)
       }
-      // build form for submission
-      // console.log(submitData)
-      iframeRef.current.contentWindow.postMessage(
-        message,
-        window.location.origin,
-      )
     }
   },
   [
@@ -363,7 +392,13 @@ const PreviewTabs = (props) => {
                         setLivePreview(!livePreview);
                         setPreviewInitialized(false);
                       }}
-                      loading={previewLoading}
+                      loading={
+                        widgetLoading
+                        || liveWidgetUpdating
+                        || sourceLoading
+                        || yamlLoading
+                        || jsonLoading
+                      }
                       >
                     </AntButton>
                   </Tooltip>
