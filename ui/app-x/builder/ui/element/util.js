@@ -152,6 +152,7 @@ function default_element_spec_for_type (type) {
       // state
       states: {
         '...open': {
+          type: 'react/state',
           name: 'open',
           setter: 'setOpen',
           init: false

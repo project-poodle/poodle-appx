@@ -180,24 +180,28 @@ function handle_react_provider(req, res) {
     // provider expression
     const providerExpression =
       !!req.context.ui_element_spec.provider
-      ? t.arrayExpression
+      ? t.objectExpression
         (
-          req.context.ui_element_spec.provider.map
-          (
-            state =>
+          Object
+            .keys(req.context.ui_element_spec.provider)
+            .map(key =>
             {
-              return js_process
-              (
-                js_context,
-                {
-                  type: 'js/expression',
-                  data: state,
-                }
+              const value = req.context.ui_element_spec.provider[key]
+              return t.objectProperty(
+                t.identifier(key),
+                js_process
+                (
+                  js_context,
+                  value
+                )
               )
             }
           )
         )
       : t.arrayExpression([])
+
+    // console.log(req.context.ui_element_spec)
+    // console.log(js_context.states)
 
     // create ast tree for the program
     const ast_tree = t.file(
@@ -231,70 +235,77 @@ function handle_react_provider(req, res) {
                           'const',
                           [
                             t.variableDeclarator(
-                              t.identifier(`${ui_element_name}_Function`),
+                              t.identifier(`${ui_elem_name}_Function`),
                               t.arrowFunctionExpression(
                                 [
                                   t.identifier('props')
                                 ],
-                                // insert block_statements from earlier
-                                ...block_statements,
-                                // react_element(js_context, req.context.ui_element_spec.element)
-                                t.returnStatement(
-                                  t.jSXElement(
-                                    t.jSXOpeningElement(
-                                      t.jSXIdentifier(`${ui_element_name}_Context.Provider`),
-                                      [
-                                        t.jSXAttribute(
-                                          t.identifier('value'),
-                                          t.objectExpression(
-                                            [
-                                              ...js_context.states.map(key =>
-                                                t.objectProperty(
-                                                  t.identifier(key),
-                                                  t.memberExpression(
-                                                    js_context.states[key],
-                                                    t.identifier(key)
-                                                  )
-                                                )
-                                              ),
-                                              t.spreadElement(
-                                                js_process(
-                                                  js_context,
-                                                  req.context.ui_element_spec.provider
+                                t.blockStatement(
+                                  [
+                                    // insert block_statements from earlier
+                                    ...block_statements,
+                                    // react_element(js_context, req.context.ui_element_spec.element)
+                                    t.returnStatement(
+                                      t.jSXElement(
+                                        t.jSXOpeningElement(
+                                          t.jSXIdentifier(`${ui_elem_name}_Context.Provider`),
+                                          [
+                                            t.jSXAttribute(
+                                              t.jSXIdentifier('value'),
+                                              t.jSXExpressionContainer(
+                                                t.objectExpression(
+                                                  [
+                                                    ...(Object.keys(js_context.states).map(key =>
+                                                      t.objectProperty(
+                                                        t.identifier(key),
+                                                        t.memberExpression(
+                                                          js_context.states[key].parentPath,
+                                                          t.identifier(js_context.states[key].name)
+                                                        )
+                                                      )
+                                                    )),
+                                                    t.spreadElement(
+                                                      providerExpression
+                                                    )
+                                                  ]
                                                 )
                                               )
-                                            ]
+                                            )
+                                          ]
+                                        ),
+                                        t.jSXClosingElement(
+                                          t.jSXIdentifier(`${ui_elem_name}_Context.Provider`),
+                                        ),
+                                        [
+                                          t.jSXExpressionContainer(
+                                            t.memberExpression(
+                                              t.identifier('props'),
+                                              t.identifier('children')
+                                            )
                                           )
-                                        )
-                                      ]
-                                    ),
-                                    t.jSXClosingElement(
-                                      t.jSXIdentifier(`${ui_element_name}_Context.Provider`),
-                                    ),
-                                    t.jSXExpressionContainer(
-                                      t.memberExpression(
-                                        t.identifier('props'),
-                                        t.identifier('children')
+                                        ]
                                       )
                                     )
-                                  )
+                                  ]
                                 )
                               )
                             )
                           ]
                         ),
                         // elem_name_Function.Context = elem_name_Context
-                        t.assignmentExpression(
-                          '=',
-                          t.memberExpression(
-                            t.identifier(`${ui_element_name}_Function`),
-                            t.identifier('Context')
-                          ),
-                          t.identifier(`${ui_element_name}_Context`)
+                        t.expressionStatement(
+                          t.assignmentExpression(
+                            '=',
+                            t.memberExpression(
+                              t.identifier(`${ui_elem_name}_Function`),
+                              t.identifier('Context')
+                            ),
+                            t.identifier(`${ui_elem_name}_Context`)
+                          )
                         ),
                         // return elem_name_Function
                         t.returnStatement(
-                          t.identifier(`${ui_element_name}_Function`)
+                          t.identifier(`${ui_elem_name}_Function`)
                         )
                       ]
                     )
@@ -308,7 +319,7 @@ function handle_react_provider(req, res) {
             null,
             [
               t.exportSpecifier(
-                t.identifier(`${ui_element_name}_Context`),
+                t.identifier(`${ui_elem_name}_Context`),
                 t.identifier(`Context`)
               )
             ]

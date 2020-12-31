@@ -163,7 +163,7 @@ function js_object(js_context, input) {
               parentRef: key,
               parentPath:
                 !!js_context.parentPath
-                ? t.memberExpression(js_context.parentPath, t.identifier(key))
+                ? js_context.parentPath
                 : null
             },
             value
@@ -343,7 +343,7 @@ function _js_parse_expression(js_context, data) {
 
   } catch (err) {
 
-    console.log(data)
+    // console.log(data)
     throw err
   }
 }
@@ -1472,6 +1472,7 @@ function react_state(js_context, input) {
   reg_js_import(js_context, 'react.useState')
 
   // register react state
+  // console.log(`reg_react_state`)
   reg_react_state(js_context, {
     name: input.name,
     setter: input.setter,
@@ -1873,6 +1874,7 @@ function reg_react_state(js_context, react_state) {
   const { name, setter } = react_state
 
   // if parentPath is '[]'
+  // console.log(`parentPath`, js_context.parentPath)
   if (!!js_context.parentPath) {
     js_context.states[name] = {
       parentPath: js_context.parentPath,
