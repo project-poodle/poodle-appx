@@ -58,7 +58,7 @@ function tree_lookup(data, key) {
 // lookup icon for type
 function lookup_icon_for_type (type) {
 
-  if (type === 'react/element') {
+  if (type === 'react/component') {
 
     return <ReactIcon />
 
@@ -83,7 +83,7 @@ function lookup_icon_for_type (type) {
 // lookup icon for type
 function lookup_desc_for_type (type) {
 
-  if (type === 'react/element') {
+  if (type === 'react/component') {
 
     return 'React Element'
 
@@ -106,9 +106,9 @@ function lookup_desc_for_type (type) {
 }
 
 // lookup default spec
-function default_element_spec_for_type (type) {
+function default_spec_for_type (type) {
 
-  if (type === 'react/element') {
+  if (type === 'react/component') {
 
     return {
       styles: {
@@ -184,7 +184,7 @@ function default_element_spec_for_type (type) {
 
   } else {
 
-    throw new Error(`Unknown element type [ ${type} ]`)
+    throw new Error(`Unknown component type [ ${type} ]`)
   }
 }
 
@@ -207,8 +207,8 @@ function new_folder_node(parentKey, subName) {
   }
 }
 
-// create new element node
-function new_element_node(parentKey, subName, type, data) {
+// create new component node
+function new_component_node(parentKey, subName, type, data) {
   return {
     title: subName,
     type: type,
@@ -252,9 +252,9 @@ export {
   tree_lookup,
   lookup_icon_for_type,
   lookup_desc_for_type,
-  default_element_spec_for_type,
+  default_spec_for_type,
   new_folder_node,
-  new_element_node,
+  new_component_node,
   reorder_array,
   PATH_SEPARATOR,
 }

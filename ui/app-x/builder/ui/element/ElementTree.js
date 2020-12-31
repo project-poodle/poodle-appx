@@ -37,7 +37,7 @@ import {
   lookup_icon_for_type,
   lookup_desc_for_type,
   new_folder_node,
-  new_element_node,
+  new_component_node,
   PATH_SEPARATOR,
 } from 'app-x/builder/ui/element/util'
 
@@ -78,7 +78,7 @@ const transformTree = (data) => {
       let found = resultData.find(treeNode => treeNode.key === currKey)
       if (!found) {
         if (subPaths.length == 0) {
-          found = new_element_node(parentKey, subName, ui_element.ui_element_type, ui_element)
+          found = new_component_node(parentKey, subName, ui_element.ui_element_type, ui_element)
         } else {
           found = new_folder_node(parentKey, subName)
         }
@@ -314,7 +314,7 @@ const ElementTree = (props) => {
     if (dragKey === '/') {
       notification['info']({
         message: 'INFO',
-        description: 'Moving root element not allowed',
+        description: 'Moving root component not allowed',
         placement: 'bottomLeft',
       })
       return

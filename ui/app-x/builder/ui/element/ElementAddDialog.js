@@ -48,8 +48,8 @@ import {
   lookup_icon_for_type,
   lookup_desc_for_type,
   new_folder_node,
-  new_element_node,
-  default_element_spec_for_type,
+  new_component_node,
+  default_spec_for_type,
   reorder_array,
   PATH_SEPARATOR,
 } from 'app-x/builder/ui/element/util'
@@ -128,8 +128,8 @@ const ElementAddDialog = (props) => {
   const createElement = (parentNode, name, type) => {
 
     // createElement
-    const spec = default_element_spec_for_type(type)
-    const newNode = new_element_node(addDialogContext.parentNode.key, name, type, spec)
+    const spec = default_spec_for_type(type)
+    const newNode = new_component_node(addDialogContext.parentNode.key, name, type, spec)
     // api request
     const postUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(newNode.key)}`
     api.post(
@@ -208,7 +208,7 @@ const ElementAddDialog = (props) => {
         setTreeData(reorderedTree)
       }
 
-    } else if (data.type === 'react/element') {
+    } else if (data.type === 'react/component') {
 
       createElement(addDialogContext.parentNode, data.name, data.type)
 
@@ -294,7 +294,7 @@ const ElementAddDialog = (props) => {
                       {
                         [
                           'folder',
-                          'react/element',
+                          'react/component',
                           'react/provider',
                           'html',
                         ].map(type => (

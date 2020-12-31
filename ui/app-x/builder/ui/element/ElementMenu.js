@@ -118,7 +118,7 @@ const ElementMenu = (props) => {
               [
                 'folder',
                 null,
-                'react/element',
+                'react/component',
                 'react/provider',
                 'html',
               ].map(type => {
