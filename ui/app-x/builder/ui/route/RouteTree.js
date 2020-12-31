@@ -27,19 +27,18 @@ import Effect from 'app-x/icon/Effect'
 import Pointer from 'app-x/icon/Pointer'
 
 import NavProvider from 'app-x/builder/ui/NavProvider'
-import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
-import ElementAddDialog from 'app-x/builder/ui/element/ElementAddDialog'
-import ElementDeleteDialog from 'app-x/builder/ui/element/ElementDeleteDialog'
-import ElementMenu from 'app-x/builder/ui/element/ElementMenu'
+import RouteProvider from 'app-x/builder/ui/route/RouteProvider'
+import RouteAddDialog from 'app-x/builder/ui/route/RouteAddDialog'
+import RouteDeleteDialog from 'app-x/builder/ui/route/RouteDeleteDialog'
+import RouteMenu from 'app-x/builder/ui/route/RouteMenu'
 import {
   tree_traverse,
   tree_lookup,
-  lookup_icon_for_type,
-  lookup_desc_for_type,
   new_folder_node,
-  new_element_node,
+  new_route_node,
   PATH_SEPARATOR,
-} from 'app-x/builder/ui/element/util'
+  ROOT_KEY,
+} from 'app-x/builder/ui/route/util'
 
 
 
@@ -47,18 +46,19 @@ import {
 const transformTree = (data) => {
 
   const resultData = []
-  resultData.push(new_folder_node(PATH_SEPARATOR, PATH_SEPARATOR))
+  // resultData.push(new_folder_node(PATH_SEPARATOR, PATH_SEPARATOR))
+  // console.log(data)
 
-  data.map(ui_element => {
+  data.map(ui_route => {
 
-    let currKey = PATH_SEPARATOR
+    let currKey = ''
 
-    const name = ui_element.ui_element_name
+    const name = ui_route.ui_route_name
     const subPaths = name.split(PATH_SEPARATOR)
 
-    let subName = subPaths.shift()
-    if (subName !== '') {
-      // if name does not start with '/', ignore
+    let subName = subPaths[0]
+    if (subName === '') {
+      // if name does start with '*'', ignore
       return
     }
 
@@ -73,25 +73,34 @@ const transformTree = (data) => {
 
       // update currKey
       let parentKey = currKey
-      currKey = (currKey + PATH_SEPARATOR + subName).replace(/\/+/g, PATH_SEPARATOR)
+      currKey = !!parentKey
+                ? (currKey + PATH_SEPARATOR + subName).replace(/\*+/g, PATH_SEPARATOR)
+                : subName
 
+      // console.log(`find`, parentKey, currKey)
       let found = resultData.find(treeNode => treeNode.key === currKey)
       if (!found) {
-        if (subPaths.length == 0) {
-          found = new_element_node(parentKey, subName, ui_element.ui_element_type, ui_element)
+        if (ui_route.ui_route_name === '/') {
+          found = new_folder_node(parentKey, subName, ui_route)
+        } else if (subPaths.length === 0) {
+          found = new_route_node(parentKey, subName, ui_route)
+        } else if (subPaths.length === 1 && subPaths[0] === '') {
+          found = new_folder_node(parentKey, subName, ui_route)
         } else {
-          found = new_folder_node(parentKey, subName)
+          found = new_folder_node(parentKey, subName, null)
         }
+        // console.log(found)
         resultData.push(found)
         currKey = found.key
       }
     }
   })
+  // console.log(resultData)
 
   const resultTree = []
   // add root nodes
   resultData
-    .filter(node => node.parentKey === PATH_SEPARATOR)
+    .filter(node => node.parentKey === ROOT_KEY)
     .sort((a, b) => {
       if (!a.isLeaf && !!b.isLeaf) {
         return -1
@@ -106,7 +115,7 @@ const transformTree = (data) => {
     })
   // child decedant nodes
   resultData
-    .filter(node => node.parentKey !== PATH_SEPARATOR)
+    .filter(node => node.parentKey !== ROOT_KEY)
     .sort((a, b) => {
       if (!a.isLeaf && !!b.isLeaf) {
         return -1
@@ -123,10 +132,11 @@ const transformTree = (data) => {
     })
   })
 
+  // console.log(resultTree)
   return resultTree
 }
 
-const ElementTree = (props) => {
+const RouteTree = (props) => {
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -158,15 +168,13 @@ const ElementTree = (props) => {
   const {
     navDeployment,
     setNavDeployment,
-    navElement,
-    setNavElement,
     navRoute,
     setNavRoute,
     navSelected,
     setNavSelected,
   } = useContext(NavProvider.Context)
 
-  // element context
+  // Route context
   const {
     // basic data
     treeData,
@@ -191,13 +199,13 @@ const ElementTree = (props) => {
     setDeleteDialogContext,
     deleteDialogCallback,
     setDeleteDialogCallback,
-  } = useContext(ElementProvider.Context)
+  } = useContext(RouteProvider.Context)
 
   // context menu
   const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
   // tree ref
-  const elementTreeRef = React.createRef()
+  const RouteTreeRef = React.createRef()
 
   // nav deployment change
   useEffect(() => {
@@ -211,18 +219,18 @@ const ElementTree = (props) => {
       api.get(
         'sys',
         'appx',
-        `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element`,
+        `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route`,
         data => {
           // console.log(data)
           const translated = transformTree(data)
-          console.log(translated)
+          // console.log(translated)
           setTreeData(translated)
         },
         error => {
           console.log(error)
           // error notification
           notification['error']({
-            message: `Load UI Element Tree Failed`,
+            message: `Load UI Route Tree Failed`,
             description: String(error),
             placement: 'bottomRight',
           })
@@ -270,12 +278,11 @@ const ElementTree = (props) => {
       if (item.isLeaf) {
         // console.log(item)
         setNavSelected({
-          type: 'ui_element'
+          type: 'ui_route'
         })
-        setNavElement({
-          ui_element_name: item.key,
-          ui_element_type: item.data.ui_element_type,
-          ui_element_spec: item.data.ui_element_spec,
+        setNavRoute({
+          ui_route_name: item.key,
+          ui_route_spec: item.data.ui_route_spec,
         })
       } else {
         // expand folder & key
@@ -306,7 +313,7 @@ const ElementTree = (props) => {
     if (dragKey === '/') {
       notification['info']({
         message: 'INFO',
-        description: 'Moving root element not allowed',
+        description: 'Moving root route not allowed',
         placement: 'bottomLeft',
       })
       return
@@ -369,7 +376,7 @@ const ElementTree = (props) => {
         // console.log(expandedKeys)
         item.children.unshift(dragObj)
         if (!expandedKeys.includes(item.key)) {
-          console.log([...expandedKeys, item.key])
+          // console.log([...expandedKeys, item.key])
           setExpandedKeys(
             [...expandedKeys, item.key]
           )
@@ -409,7 +416,7 @@ const ElementTree = (props) => {
   function constructTree() {
     return (
       <DirectoryTree
-        ref={elementTreeRef}
+        ref={RouteTreeRef}
         className={styles.tree}
         expandedKeys={expandedKeys}
         selectedKeys={[selectedKey]}
@@ -460,20 +467,20 @@ const ElementTree = (props) => {
           constructTree()
         }
       </Box>
-      <ElementAddDialog
+      <RouteAddDialog
         key="addDialog"
         />
-      <ElementDeleteDialog
+      <RouteDeleteDialog
         key="deleteDialog"
         />
-      <ElementMenu
+      <RouteMenu
         key="menu"
         contextAnchorEl={contextAnchorEl}
         setContextAnchorEl={setContextAnchorEl}
         >
-      </ElementMenu>
+      </RouteMenu>
     </Box>
   )
 }
 
-export default ElementTree
+export default RouteTree

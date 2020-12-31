@@ -339,7 +339,7 @@ ui_element:
                           - type: react/element
                             name: "@material-ui/core.ListItemText"
                             props:
-                              primary: UI Settings
+                              primary: UI Apps
                   - type: react/element
                     name: app-x/router.A
                     props:
@@ -483,7 +483,7 @@ ui_element:
                         name: "@material-ui/core.ListItemIcon"
                         children:
                           - type: react/element
-                            name: "@material-ui/icons.CropRotateOutlined"
+                            name: "@material-ui/icons.SwapCallsOutlined"
                             props:
                               fontSize: small
                       - type: react/element
@@ -515,14 +515,12 @@ ui_element:
                     children:
                       - type: react/element
                         name: "@material-ui/core.Box"
-                        props:
-                          p: 1
                         children:
                           - type: react/element
-                            name: app-x/builder/ui/element/ElementProvider
+                            name: app-x/builder/ui/route/RouteProvider
                             children:
                               - type: react/element
-                                name: app-x/builder/ui/element/ElementTree
+                                name: app-x/builder/ui/route/RouteTree
                                 props:
                                   namespace: sys
                                   ui_name: ui

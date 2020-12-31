@@ -31,18 +31,17 @@ import {
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import NavProvider from 'app-x/builder/ui/NavProvider'
-import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import RouteProvider from 'app-x/builder/ui/route/RouteProvider'
 import {
   tree_traverse,
   tree_lookup,
-  lookup_icon_for_type,
-  lookup_desc_for_type,
   reorder_array,
   PATH_SEPARATOR,
-} from 'app-x/builder/ui/element/util'
+  ROOT_KEY,
+} from 'app-x/builder/ui/route/util'
 
 // delete dialog
-const ElementDeleteDialog = (props) => {
+const RouteDeleteDialog = (props) => {
 
   const styles = makeStyles((theme) => ({
     dialog: {
@@ -65,15 +64,13 @@ const ElementDeleteDialog = (props) => {
   const {
     navDeployment,
     setNavDeployment,
-    navElement,
-    setNavElement,
     navRoute,
     setNavRoute,
     navSelected,
     setNavSelected,
   } = useContext(NavProvider.Context)
 
-  // element context
+  // Route context
   const {
     // basic data
     treeData,
@@ -91,73 +88,80 @@ const ElementDeleteDialog = (props) => {
     setDeleteDialogContext,
     deleteDialogCallback,
     setDeleteDialogCallback,
-  } = useContext(ElementProvider.Context)
+  } = useContext(RouteProvider.Context)
 
-  // delete element
-  const deleteElement = (elementPath) => {
+  // delete Route
+  const deleteRoute = (routePath) => {
 
-    // deleteElement
+    // deleteRoute
     const resultTree = _.cloneDeep(treeData)
-    const lookupNode = tree_lookup(resultTree, elementPath)
+    const lookupNode = tree_lookup(resultTree, routePath)
     const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
     // api request
-    const deleteUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(elementPath)}`
-    api.del(
-      'sys',
-      'appx',
-      deleteUrl,
-      data => {
-        // console.log(data)
-        if (!!data.status && data.status === 'ok') {
-          notification['success']({
-            message: `SUCCESS`,
-            description: `Successfully deleted ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ]`,
-            placement: 'bottomLeft',
-          })
-          // check that lookupNode and lookupParent exists
-          if (!!lookupNode && !!lookupParent && lookupParent.key !== PATH_SEPARATOR) {
-            // delete node from result tree
-            const children = []
-            lookupParent.children
-              .filter(child => child.key !== elementPath)
-              .map(child => {
-                children.push(child)
-              })
-            lookupParent.children = reorder_array(children)
-            // update tree data
-            // console.log(resultTree)
-            setTreeData(resultTree)
+    if (!!lookupNode) {
+      const deleteUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_route/base64:${btoa(lookupNode.apiKey)}`
+      api.del(
+        'sys',
+        'appx',
+        deleteUrl,
+        data => {
+          // console.log(data)
+          if (!!data.status && data.status === 'ok') {
+            notification['success']({
+              message: `SUCCESS`,
+              description: `Successfully deleted route [ ${routePath} ]`,
+              placement: 'bottomLeft',
+            })
+            // check that lookupNode and lookupParent exists
+            if (!!lookupNode && !!lookupParent && lookupParent.key !== ROOT_KEY) {
+              // delete node from result tree
+              const children = []
+              lookupParent.children
+                .filter(child => child.key !== routePath)
+                .map(child => {
+                  children.push(child)
+                })
+              lookupParent.children = reorder_array(children)
+              // update tree data
+              // console.log(resultTree)
+              setTreeData(resultTree)
+            } else {
+              // refresh tree
+              setLoadTimer(new Date())
+            }
           } else {
-            // refresh tree
             setLoadTimer(new Date())
+            notification['error']({
+              message: `FAILURE`,
+              description: `Failed to delete route [ ${routePath} ] - ${data.message}`,
+              placement: 'bottomLeft',
+            })
           }
-        } else {
-          setLoadTimer(new Date())
+        },
+        error => {
+          console.error(error)
           notification['error']({
             message: `FAILURE`,
-            description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${data.message}`,
+            description: `Failed to delete route [ ${routePath} ] - ${error.toString()}`,
             placement: 'bottomLeft',
           })
+          setLoadTimer(new Date())
         }
-      },
-      error => {
-        console.error(error)
-        notification['error']({
-          message: `FAILURE`,
-          description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${error.toString()}`,
-          placement: 'bottomLeft',
-        })
-        setLoadTimer(new Date())
-      }
-    )
+      )
+    }
   }
 
   // potentially recurssivelly delete
   const onDelete = (node) => {
-    if (!!node.isLeaf) {
-      deleteElement(node.key)
-      return
-    } else if (!!node.children.length) {
+    // check root
+    if (node.key === ROOT_KEY) {
+      // do not delete non empty folder
+      notification['error']({
+        message: `FAILURE`,
+        description: `Cannot delete home path /`,
+        placement: 'bottomLeft',
+      })
+    } else if (!!node?.children?.length) {
       // do not delete non empty folder
       notification['error']({
         message: `FAILURE`,
@@ -165,25 +169,8 @@ const ElementDeleteDialog = (props) => {
         placement: 'bottomLeft',
       })
     } else {
-      // we are hder if empty folder
-      const resultTree = _.cloneDeep(treeData)
-      const lookupNode = tree_lookup(resultTree, node.key)
-      const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
-      if (!!lookupNode && !!lookupParent && lookupParent.key !== PATH_SEPARATOR) {
-        const children = []
-        lookupParent.children
-          .filter(child => child.key !== node.key)
-          .map(child => {
-            children.push(child)
-          })
-        lookupParent.children = reorder_array(children)
-        // update tree data
-        // console.log(resultTree)
-        setTreeData(resultTree)
-      } else {
-        // refresh if unexpected
-        setLoadTimer(new Date())
-      }
+      // we are hder if leaf or empty folder
+      deleteRoute(node.key)
     }
   }
 
@@ -248,4 +235,4 @@ const ElementDeleteDialog = (props) => {
   )
 }
 
-export default ElementDeleteDialog
+export default RouteDeleteDialog

@@ -249,7 +249,7 @@ const SyntaxTree = (props) => {
         'appx',
         loadUrl,
         data => {
-          console.log(data)
+          // console.log(data)
           process_api_data(data)
           setPreviewInitialized(false)
           setLoadTrigger(0)

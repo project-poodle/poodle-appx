@@ -113,7 +113,7 @@ const PreviewSource = (props) => {
         ui_element_type: navElement.ui_element_type,
         ui_element_spec: spec
       }
-      console.log(postData)
+      // console.log(postData)
       fetch(
         url,
         {

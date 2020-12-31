@@ -1628,7 +1628,7 @@ api:
                   - obj: "ui"
                   - obj: "ui_deployment"
                   - obj: "namespace"
-                  - obj: "ui_element_status"
+                  - obj: "ui_route_status"
                     type: "left"
           doc:
               desc: "list ui_deployment of ui_elements for :namespace / :ui_name / :ui_deployment"
@@ -1665,7 +1665,7 @@ api:
                   - obj: "ui"
                   - obj: "ui_deployment"
                   - obj: "namespace"
-                  - obj: "ui_element_status"
+                  - obj: "ui_route_status"
                     type: "left"
           doc:
               desc: "get ui_element for :namespace / :ui_name / :ui_ver / :ui_deployment / :ui_route_name"
