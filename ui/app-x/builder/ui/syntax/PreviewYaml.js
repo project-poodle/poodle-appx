@@ -60,42 +60,107 @@ const PreviewYaml = (props) => {
   useEffect(() => {
 
     // load from backend if not livePreview
-    if (!livePreview) {
-      setYamltLoading(true)
-      // loading url
-      const ui_root = globalThis.appx.UI_ROOT
-      const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+    if
+    (
+      !livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+    )
+    {
+      if (
+        navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+      ) {
+        // set loading status
+        setYamltLoading(true)
+        // loading url
+        const ui_root = globalThis.appx.UI_ROOT
+        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
 
-      api.get(
-        'sys',
-        'appx',
-        url,
-        data => {
-          // console.log(data)
-          setYamltLoading(false)
-          if (Array.isArray(data)) {
-            data = data[0]
+        api.get(
+          'sys',
+          'appx',
+          url,
+          data => {
+            // console.log(data)
+            setYamltLoading(false)
+            if (Array.isArray(data)) {
+              data = data[0]
+            }
+
+            if (!('ui_element_spec' in data)) {
+              setYaml('')
+            }
+
+            const doc = new YAML.Document()
+            doc.contents = data.ui_element_spec
+            // console.log(doc.toString())
+            setYaml(doc.toString())
+          },
+          error => {
+            console.error(error)
+            setYamltLoading(false)
+            setYaml(error.toString())
           }
+        )
+      }
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
+      )
+      {
+        // set loading status
+        setYamltLoading(true)
+        // loading url
+        const ui_root = globalThis.appx.UI_ROOT
+        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
 
-          if (!('ui_element_spec' in data)) {
-            setYaml('')
+        api.get(
+          'sys',
+          'appx',
+          url,
+          data => {
+            // console.log(data)
+            setYamltLoading(false)
+            if (Array.isArray(data)) {
+              data = data[0]
+            }
+
+            if (!('ui_route_spec' in data)) {
+              setYaml('')
+            }
+
+            const doc = new YAML.Document()
+            doc.contents = data.ui_route_spec
+            // console.log(doc.toString())
+            setYaml(doc.toString())
+          },
+          error => {
+            console.error(error)
+            setYamltLoading(false)
+            setYaml(error.toString())
           }
-
-          const doc = new YAML.Document()
-          doc.contents = data.ui_element_spec
-          // console.log(doc.toString())
-          setYaml(doc.toString())
-        },
-        error => {
-          setYamltLoading(false)
-          console.error(error)
-        })
+        )
+      }
     }
-
   },
   [
     livePreview,
     loadTimer,
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navRoute.ui_route_name,
+    navSelected.type,
   ])
 
   // load content from UI context treeData
