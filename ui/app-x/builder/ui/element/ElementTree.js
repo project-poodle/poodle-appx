@@ -213,7 +213,7 @@ const ElementTree = (props) => {
         'appx',
         `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element`,
         data => {
-          console.log(data)
+          // console.log(data)
           const translated = transformTree(data)
           console.log(translated)
           setTreeData(translated)
@@ -420,7 +420,7 @@ const ElementTree = (props) => {
         onExpand={onExpand}
         onDrop={onDrop}
         onRightClick={onRightClick}
-        // treeData={treeData}
+        treeData={treeData}
       >
       {
         treeData?.map(treeNode => {

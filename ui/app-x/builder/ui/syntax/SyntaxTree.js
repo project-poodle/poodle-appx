@@ -734,6 +734,15 @@ const SyntaxTree = (props) => {
     tree_traverse(resultData, dropParentKey, (item, index, arr) => {
       dropParent = item
     })
+    // set to root if not found
+    if (!dropParent) {
+      dropParent = {
+        key: null,
+        data: {
+          type: '/'
+        }
+      }
+    }
 
     // callback with move confirmation
     const thisMoveCallback = (data) => {
@@ -776,15 +785,16 @@ const SyntaxTree = (props) => {
     }
 
     // check if drop parent is same as current parent
+    console.log(dragObj.parentKey)
     if (dropParent.key === dragObj.parentKey) {
-
       thisMoveCallback({
          __ref: dragObj.data.__ref     // keep __ref
       })
 
     } else if (
       // check drop parent type
-      dropParent.data.type === 'js/object'
+      dropParent.data.type === '/'
+      || dropParent.data.type === 'js/object'
       || dropParent.data.type === 'mui/style'
       || dropParent.data.type === 'js/switch'
       || dropParent.data.type === 'js/map'
@@ -855,7 +865,7 @@ const SyntaxTree = (props) => {
         onExpand={onExpand}
         onDrop={onDrop}
         onRightClick={onRightClick}
-        // treeData={treeData}
+        treeData={treeData}
       >
       {
         treeData.map(treeNode => {
