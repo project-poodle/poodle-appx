@@ -119,35 +119,70 @@ const PreviewTabs = (props) => {
   useEffect(() => {
 
     // load from backend if not livePreview
-    if (!livePreview
-        && !!navDeployment.namespace
-        && !!navDeployment.ui_name
-        && !!navDeployment.ui_ver
-        && !!navDeployment.ui_deployment
-        && !!navSelected
-        && !!navSelected.type
-        && navSelected.type === 'ui_element'
+    if
+    (
+      !livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+      && !!treeData && treeData.length
+      && !!formRef.current
+      && !!iframeRef.current
+    )
+    {
+      // check selected type
+      if (
+        navSelected.type === 'ui_element'
         && !!navElement
         && !!navElement.ui_element_name
-        && !!formRef.current
-        && !!iframeRef.current) {
-      // setPreviewLoading(true)
-      // widget loading
-      setWidgetLoading(true)
-      // loading url
-      // iframe url
-      const iframeUrl =
-        globalThis.appx.UI_ROOT
-        + '/' + navDeployment.namespace
-        + '/' + navDeployment.ui_name
-        + '/' + navDeployment.ui_deployment
-        + '/_elem' + navElement.ui_element_name + '.html'
-      // console.log(iframeUrl)
-      iframeRef.current.src=iframeUrl
-      setPreviewInitialized(false)
-      setWidgetLoading(false)
+      ) {
+        // setPreviewLoading(true)
+        // widget loading
+        setWidgetLoading(true)
+        // loading url
+        // iframe url
+        const iframeUrl =
+          (globalThis.appx.UI_ROOT
+          + '/' + navDeployment.namespace
+          + '/' + navDeployment.ui_name
+          + '/' + navDeployment.ui_deployment
+          + '/_elem' + navElement.ui_element_name + '.html').replace(/\+/g, '/')
+        // console.log(iframeUrl)
+        iframeRef.current.src=iframeUrl
+        setPreviewInitialized(false)
+        setWidgetLoading(false)
+      }
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
+      )
+      {
+        // setPreviewLoading(true)
+        // widget loading
+        setWidgetLoading(true)
+        // loading url
+        const replace_route = navRoute.ui_route_name.replace(/\*/g, '/')
+        const widget_route = replace_route.endsWith('/')
+          ? replace_route + '/index.html'
+          : replace_route + '.html'
+        // iframe url
+        const iframeUrl =
+          (globalThis.appx.UI_ROOT
+          + '/' + navDeployment.namespace
+          + '/' + navDeployment.ui_name
+          + '/' + navDeployment.ui_deployment
+          + '/_route' + widget_route).replace(/\/+/g, '/')
+        console.log(iframeUrl)
+        iframeRef.current.src=iframeUrl
+        setPreviewInitialized(false)
+        setWidgetLoading(false)
+      }
     }
-
   },
   [
     navDeployment.namespace,

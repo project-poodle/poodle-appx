@@ -297,6 +297,15 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                 // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                 handle_route_element(req, res)
             })
+            const render_route_path = prefix_route_path.slice(0,-1) + '/index.html'
+            router.get(render_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context, req_type: 'ui_route'}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                const result = handle_render(req, res, load_from_db=true)
+                res.status(result.status)
+                    .type(result.type)
+                    .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+            })
         } else {
             // route path without '.js' will add '.js' and '.source'
             const new_route_path = prefix_route_path + '.js'
@@ -310,6 +319,15 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                 req.context = {...route_context, ...req.context}
                 // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                 handle_route_element(req, res)
+            })
+            const render_route_path = prefix_route_path + '.html'
+            router.get(render_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context, req_type: 'ui_route'}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                const result = handle_render(req, res, load_from_db=true)
+                res.status(result.status)
+                    .type(result.type)
+                    .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
             })
         }
 
@@ -406,7 +424,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                     if (elem_context.ui_element_type === 'react/component') {
                         render_js_route_path = js_route_path + 'index.html'
                         router.get(render_js_route_path, (req, res) => {
-                            req.context = {...elem_context, ...req.context}
+                            req.context = {...elem_context, ...req.context, req_type: 'ui_element'}
                             // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                             const result = handle_render(req, res, load_from_db=true)
                             res.status(result.status)
@@ -432,7 +450,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                     if (elem_context.ui_element_type === 'react/component') {
                         render_js_route_path = js_route_path + '.html'
                         router.get(render_js_route_path, (req, res) => {
-                            req.context = {...elem_context, ...req.context}
+                            req.context = {...elem_context, ...req.context, req_type: 'ui_element'}
                             // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                             const result = handle_render(req, res, load_from_db=true)
                             res.status(result.status)
