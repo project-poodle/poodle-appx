@@ -169,22 +169,21 @@ const PreviewTabs = (props) => {
     // console.log(navElement)
 
     // load from UI context if livePreview
-    if (!previewInitialized
-        && !!livePreview
-        && !!navDeployment.namespace
-        && !!navDeployment.ui_name
-        && !!navDeployment.ui_ver
-        && !!navDeployment.ui_deployment
-        && !!navSelected
-        && !!navSelected.type
-        && navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
-        && !!treeData && treeData.length
-        && !!formRef.current
-        && !!iframeRef.current) {
-      // widget loading
-      setWidgetLoading(true)
+    if
+    (
+      !previewInitialized
+      && !!livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+      && !!treeData && treeData.length
+      && !!formRef.current
+      && !!iframeRef.current
+    )
+    {
       // console.log(treeData)
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
@@ -192,36 +191,81 @@ const PreviewTabs = (props) => {
       const spec = !!testData
         ? { ...genData, __test: testData }
         : genData
-      // preview loading
-      // setPreviewLoading(true)
-      // preview data
-      const submitData = {
-        type: 'ui_element',
-        output: 'html',
-        data: {
-          namespace: navDeployment.namespace,
-          ui_name: navDeployment.ui_name,
-          ui_ver: navDeployment.ui_ver,
-          ui_spec: navDeployment.ui_spec,
-          ui_deployment: navDeployment.ui_deployment,
-          ui_deployment_spec: navDeployment.ui_deployment_spec,
-          ui_element_name: navElement.ui_element_name,
-          ui_element_type: navElement.ui_element_type,
-          ui_element_spec: spec
-        },
+
+      // check selected type
+      if (
+        navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+      ) {
+        // widget loading
+        setWidgetLoading(true)
+        // preview loading
+        // setPreviewLoading(true)
+        // preview data
+        const submitData = {
+          type: 'ui_element',
+          output: 'html',
+          data: {
+            namespace: navDeployment.namespace,
+            ui_name: navDeployment.ui_name,
+            ui_ver: navDeployment.ui_ver,
+            ui_deployment: navDeployment.ui_deployment,
+            ui_element_name: navElement.ui_element_name,
+            ui_element_type: navElement.ui_element_type,
+            ui_element_spec: spec
+          },
+        }
+        // console.log(submitData)
+        // build form for submission
+        formRef.current.innerHTML = '' // clear children
+        const input = document.createElement('input')
+        input.name = "urlencoded"
+        input.value = JSON.stringify(submitData)
+        formRef.current.appendChild(input)
+        formRef.current.submit() // submit form
+        // set initialized flag
+        setLiveWidgetUpdating(true)
+        setPreviewInitialized(true)
+        setWidgetLoading(false)
       }
-      // console.log(submitData)
-      // build form for submission
-      formRef.current.innerHTML = '' // clear children
-      const input = document.createElement('input')
-      input.name = "urlencoded"
-      input.value = JSON.stringify(submitData)
-      formRef.current.appendChild(input)
-      formRef.current.submit() // submit form
-      // set initialized flag
-      setLiveWidgetUpdating(true)
-      setPreviewInitialized(true)
-      setWidgetLoading(false)
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
+      )
+      {
+        // widget loading
+        setWidgetLoading(true)
+        // preview loading
+        // setPreviewLoading(true)
+        // preview data
+        const submitData = {
+          type: 'ui_route',
+          output: 'html',
+          data: {
+            namespace: navDeployment.namespace,
+            ui_name: navDeployment.ui_name,
+            ui_ver: navDeployment.ui_ver,
+            ui_deployment: navDeployment.ui_deployment,
+            ui_route_name: navRoute.ui_route_name,
+            ui_route_spec: spec
+          },
+        }
+        // console.log(submitData)
+        // build form for submission
+        formRef.current.innerHTML = '' // clear children
+        const input = document.createElement('input')
+        input.name = "urlencoded"
+        input.value = JSON.stringify(submitData)
+        formRef.current.appendChild(input)
+        formRef.current.submit() // submit form
+        // set initialized flag
+        setLiveWidgetUpdating(true)
+        setPreviewInitialized(true)
+        setWidgetLoading(false)
+      }
     }
   },
   [
@@ -230,6 +274,7 @@ const PreviewTabs = (props) => {
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
     navElement.ui_element_name,
+    navElement.ui_element_type,
     navRoute.ui_route_name,
     navSelected.type,
     livePreview,

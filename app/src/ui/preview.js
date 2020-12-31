@@ -34,47 +34,46 @@ function handle_preview(req, res) {
 
     // console.log(req_type, req_output, req_data)
 
-    // process ui_element
+    let {
+        namespace,
+        ui_name,
+        ui_ver,
+        ui_spec,
+        ui_deployment,
+        ui_deployment_spec,
+        ui_element_name,
+        ui_element_type,
+        ui_element_spec,
+        ui_route_name,
+        ui_route_spec,
+    } = req_data
+
+    // set request context
+    req.context = { ...req.context, ...req_data, req_type: req_type }
+
+    // load from cache if not exist
+    if (!ui_spec || !ui_deployment_spec) {
+
+        const lookup = get_ui_deployment(req, res)
+        if (req.fatal) {
+            return
+        }
+
+        // extract result
+        req.context = {
+            ...req.context,
+            ui_spec: lookup.ui_spec,
+            ui_deployment_spec: lookup.ui_deployment_spec,
+        }
+
+        // update local variables
+        ui_spec             = lookup.ui_spec
+        ui_deployment_spec  = lookup.ui_deployment_spec
+    }
+
+    // check req_type
     if (req_type === 'ui_element') {
-      // process ui_element
-      let {
-          namespace,
-          ui_name,
-          ui_ver,
-          ui_spec,
-          ui_deployment,
-          ui_deployment_spec,
-          ui_element_name,
-          ui_element_type,
-          ui_element_spec,
-          //ui_route_name,
-          //ui_route_spec,
-      } = req_data
-
-      // set request context
-      req.context = { ...req.context, ...req_data }
-
-      // load from cache if not exist
-      if (!ui_spec || !ui_deployment_spec) {
-
-          const lookup = get_ui_deployment(req, res)
-          if (req.fatal) {
-              return
-          }
-
-          // extract result
-          req.context = {
-              ...req.context,
-              ui_spec: lookup.ui_spec,
-              ui_deployment_spec: lookup.ui_deployment_spec,
-          }
-
-          // update local variables
-          ui_spec             = lookup.ui_spec
-          ui_deployment_spec  = lookup.ui_deployment_spec
-
-      }
-
+      // handle ui_element
       if (req_output === 'code') {
 
         if (ui_element_type == 'react/component') {
@@ -121,45 +120,7 @@ function handle_preview(req, res) {
       }
 
     } else if (req_type === 'ui_route') {
-      // process ui_route
-      let {
-          namespace,
-          ui_name,
-          ui_ver,
-          ui_spec,
-          ui_deployment,
-          ui_deployment_spec,
-          //ui_element_name,
-          //ui_element_type,
-          //ui_element_spec,
-          ui_route_name,
-          ui_route_spec,
-      } = req_data
-
-      // set request context
-      req.context = { ...req.context, ...req_data }
-
-      // load from cache if not exist
-      if (!ui_spec || !ui_deployment_spec) {
-
-          const lookup = get_ui_deployment(req, res)
-          if (req.fatal) {
-              return
-          }
-
-          // extract result
-          req.context = {
-              ...req.context,
-              ui_spec: lookup.ui_spec,
-              ui_deployment_spec: lookup.ui_deployment_spec,
-          }
-
-          // update local variables
-          ui_spec             = lookup.ui_spec
-          ui_deployment_spec  = lookup.ui_deployment_spec
-
-      }
-
+      // handle ui_route
       if (req_output === 'code') {
 
         // render source code

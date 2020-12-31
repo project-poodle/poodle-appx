@@ -10,6 +10,8 @@ const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_react_component } = require('./react_component')
+const { handle_react_provider } = require('./react_provider')
+const { handle_appx_route } = require('./appx_route')
 
 const rootDir = path.join(__dirname, '../../../ui/')
 // const INDEX_HTML = 'index.html'
@@ -20,6 +22,7 @@ const rootDir = path.join(__dirname, '../../../ui/')
 function handle_render(req, res, load_from_db=true) {
 
     let {
+      req_type,
       namespace,
       ui_name,
       ui_ver,
@@ -29,6 +32,8 @@ function handle_render(req, res, load_from_db=true) {
       ui_element_name,
       ui_element_type,
       ui_element_spec,
+      ui_route_name,
+      ui_route_spec,
     } = req.context
 
     /*
@@ -51,71 +56,151 @@ function handle_render(req, res, load_from_db=true) {
     // if loading from db
     if (load_from_db) {
 
-        let elem_result = db.query_sync(`
-            SELECT
-                ui.namespace,
-                ui.ui_name,
-                ui.ui_ver,
-                ui.ui_spec,
-                ui_deployment.ui_deployment,
-                ui_deployment.ui_deployment_spec,
-                ui_element.ui_element_name,
-                ui_element.ui_element_type,
-                ui_element.ui_element_spec,
-                ui_element.create_time,
-                ui_element.update_time
-            FROM ui_element
-            JOIN ui
-                ON ui_element.namespace = ui.namespace
-                AND ui_element.ui_name = ui.ui_name
-                AND ui_element.ui_ver = ui.ui_ver
-            JOIN ui_deployment
-                ON ui_element.namespace = ui_deployment.namespace
-                AND ui_element.ui_name = ui_deployment.ui_name
-                AND ui_element.ui_ver = ui_deployment.ui_ver
-            WHERE
-                ui.namespace = ?
-                AND ui.ui_name = ?
-                AND ui_deployment.ui_deployment = ?
-                AND ui_element.ui_element_name = ?
-                AND ui.deleted=0
-                AND ui_element.deleted=0
-                AND ui_deployment.deleted=0`,
-            [
-                namespace,
-                ui_name,
-                ui_deployment,
-                ui_element_name,
-            ]
-        )
+        if (req_type === 'ui_element') {
+            // handle ui_element
+            let elem_result = db.query_sync(`
+                SELECT
+                    ui.namespace,
+                    ui.ui_name,
+                    ui.ui_ver,
+                    ui.ui_spec,
+                    ui_deployment.ui_deployment,
+                    ui_deployment.ui_deployment_spec,
+                    ui_element.ui_element_name,
+                    ui_element.ui_element_type,
+                    ui_element.ui_element_spec,
+                    ui_element.create_time,
+                    ui_element.update_time
+                FROM ui_element
+                JOIN ui
+                    ON ui_element.namespace = ui.namespace
+                    AND ui_element.ui_name = ui.ui_name
+                    AND ui_element.ui_ver = ui.ui_ver
+                JOIN ui_deployment
+                    ON ui_element.namespace = ui_deployment.namespace
+                    AND ui_element.ui_name = ui_deployment.ui_name
+                    AND ui_element.ui_ver = ui_deployment.ui_ver
+                WHERE
+                    ui.namespace = ?
+                    AND ui.ui_name = ?
+                    AND ui_deployment.ui_deployment = ?
+                    AND ui_element.ui_element_name = ?
+                    AND ui.deleted=0
+                    AND ui_element.deleted=0
+                    AND ui_deployment.deleted=0`,
+                [
+                    namespace,
+                    ui_name,
+                    ui_deployment,
+                    ui_element_name,
+                ]
+            )
 
-        if (elem_result.length == 0) {
+            if (elem_result.length == 0) {
+                return {
+                    status: 422,
+                    type: 'application/json',
+                    data: {
+                        status: FAILURE,
+                        message: `ERROR: unable to find ui_element [${ui_element_name}]`
+                    }
+                }
+            }
+
+            // extract result
+            req.context = {
+              ...req.context,
+              ...elem_result[0],
+            }
+
+            // update local variables
+            namespace           = elem_result[0].namespace
+            ui_name             = elem_result[0].ui_name
+            ui_ver              = elem_result[0].ui_ver
+            ui_spec             = elem_result[0].ui_spec
+            ui_deployment       = elem_result[0].ui_deployment
+            ui_deployment_spec  = elem_result[0].ui_deployment_spec
+            ui_element_name     = elem_result[0].ui_element_name
+            ui_element_type     = elem_result[0].ui_element_type
+            ui_element_spec     = elem_result[0].ui_element_spec
+
+        } else if (req_type === 'ui_route') {
+            // handle ui_route
+            let elem_result = db.query_sync(`
+                SELECT
+                    ui.namespace,
+                    ui.ui_name,
+                    ui.ui_ver,
+                    ui.ui_spec,
+                    ui_deployment.ui_deployment,
+                    ui_deployment.ui_deployment_spec,
+                    ui_route.ui_route_name,
+                    ui_route.ui_route_spec,
+                    ui_route.create_time,
+                    ui_route.update_time
+                FROM ui_route
+                JOIN ui
+                    ON ui_route.namespace = ui.namespace
+                    AND ui_route.ui_name = ui.ui_name
+                    AND ui_route.ui_ver = ui.ui_ver
+                JOIN ui_deployment
+                    ON ui_route.namespace = ui_deployment.namespace
+                    AND ui_route.ui_name = ui_deployment.ui_name
+                    AND ui_route.ui_ver = ui_deployment.ui_ver
+                WHERE
+                    ui.namespace = ?
+                    AND ui.ui_name = ?
+                    AND ui_deployment.ui_deployment = ?
+                    AND ui_route.ui_route_name = ?
+                    AND ui.deleted=0
+                    AND ui_route.deleted=0
+                    AND ui_deployment.deleted=0`,
+                [
+                    namespace,
+                    ui_name,
+                    ui_deployment,
+                    ui_route_name,
+                ]
+            )
+
+            if (elem_result.length == 0) {
+                return {
+                    status: 422,
+                    type: 'application/json',
+                    data: {
+                        status: FAILURE,
+                        message: `ERROR: unable to find ui_route [${ui_route_name}]`
+                    }
+                }
+            }
+
+            // extract result
+            req.context = {
+              ...req.context,
+              ...elem_result[0],
+            }
+
+            // update local variables
+            namespace           = elem_result[0].namespace
+            ui_name             = elem_result[0].ui_name
+            ui_ver              = elem_result[0].ui_ver
+            ui_spec             = elem_result[0].ui_spec
+            ui_deployment       = elem_result[0].ui_deployment
+            ui_deployment_spec  = elem_result[0].ui_deployment_spec
+            ui_route_name       = elem_result[0].ui_route_name
+            ui_route_spec       = elem_result[0].ui_route_spec
+
+        } else {
+            // unrecognized type
             return {
                 status: 422,
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: unable to find ui_element [${ui_element_name}]`
+                    message: `ERROR: unrecognized preview type [${req_type}]`
                 }
             }
         }
-
-        // extract result
-        req.context = {
-          ...req.context,
-          ...elem_result[0],
-        }
-
-        // update local variables
-        namespace           = elem_result[0].namespace
-        ui_name             = elem_result[0].ui_name
-        ui_ver              = elem_result[0].ui_ver
-        ui_spec             = elem_result[0].ui_spec
-        ui_deployment       = elem_result[0].ui_deployment
-        ui_deployment_spec  = elem_result[0].ui_deployment_spec
-        ui_element_name     = elem_result[0].ui_element_name
-        ui_element_type     = elem_result[0].ui_element_type
-        ui_element_spec     = elem_result[0].ui_element_spec
 
     } else {
 
@@ -166,13 +251,25 @@ function handle_render(req, res, load_from_db=true) {
     }
 
     // check for ui_element_spec
-    if (! (ui_element_spec) ) {
+    if (req_type === 'ui_element' && (!ui_element_spec) ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
                 message: `ERROR: ui_element_spec not defined [${ui_element_spec}]`
+            }
+        }
+    }
+
+    // check for ui_element_spec
+    if (req_type === 'ui_route' && (!ui_route_spec) ) {
+        return {
+            status: 422,
+            type: 'application/json',
+            data: {
+                status: FAILURE,
+                message: `ERROR: ui_route_spec not defined [${ui_route_spec}]`
             }
         }
     }
@@ -195,7 +292,7 @@ function handle_render(req, res, load_from_db=true) {
             IMPORT_MAPS: ui_spec.importMaps,
             API_MAPS: ui_deployment_spec.apiMaps,
         },
-        entry: ui_element_name,
+        entry: '$render$',
         // props: req.data.props,
     }
 
@@ -203,7 +300,15 @@ function handle_render(req, res, load_from_db=true) {
     context.init_js = Mustache.render(initjs_content, context)
     // console.log(context.init_js)
 
-    if (ui_element_type == 'react/component') {
+    if (req_type === 'ui_route') {
+      // process source code for ui_route
+      const element_js = handle_appx_route(req, res)
+      if (element_js.status !== 200) {
+          return element_js
+      }
+      context.element_js = element_js.data
+
+    } else if (ui_element_type == 'react/component') {
       // process source code [element_js]
       const element_js = handle_react_component(req, res)
       if (element_js.status !== 200) {
