@@ -94,7 +94,7 @@ function get_ui_element(req, res) {
  */
 function get_ui_route(req, res) {
 
-    let context = req.context.ui_route
+    let context = req.context
 
     let cache_ui_route = cache.get_cache_for('ui_route')
     //console.log(JSON.stringify(cache_ui_element, null, 4))

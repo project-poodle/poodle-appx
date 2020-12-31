@@ -7,10 +7,12 @@ const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_loo
 const { handle_html } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
+const { handle_appx_route } = require('./appx_route')
 const { handle_render } = require('./render')
 const { handle_preview } = require('./preview')
 
-const ELEM_ROUTE_PREFIX = "/_elem/"
+const ELEM_PREFIX = "/_elem/"
+const ROUTE_PREFIX = "/_route/"
 
 const EXCLUDED_TYPES = [
   "html",
@@ -80,6 +82,12 @@ function handle_element(req, res) {
  */
 function handle_route(req, res) {
 
+    // check ui_deployment
+    let ui_deployment = get_ui_deployment(req, res)
+    if (req.fatal) {
+        return
+    }
+
     // check ui_route
     let ui_route = get_ui_route(req, res)
     if (req.fatal) {
@@ -88,6 +96,7 @@ function handle_route(req, res) {
 
     req.context = {
       ...req.context,
+      ...ui_deployment,
       ...ui_route,
       ui_element_name: '/index'
     }
@@ -95,6 +104,38 @@ function handle_route(req, res) {
     // handle root element '/index'
     handle_element(req, res)
     return
+}
+
+/**
+ * handle route as element
+ */
+function handle_route_element(req, res) {
+
+  // check ui_deployment
+  let ui_deployment = get_ui_deployment(req, res)
+  if (req.fatal) {
+      return
+  }
+
+  // check ui_route
+  let ui_route = get_ui_route(req, res)
+  if (req.fatal) {
+      return
+  }
+
+  // update context
+  req.context = {
+      ...req.context,
+      ...ui_deployment,
+      ...ui_route,
+  }
+  //console.log(req.context)
+
+  const result = handle_appx_route(req, res)
+  res.status(result.status)
+      .type(result.type)
+      .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+  return
 }
 
 /**
@@ -233,11 +274,44 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
             ui_route_name: route_result.ui_route_name,
         }
 
-        router.get(route_result.ui_route_name.replace(/\/+/g, '/'), (req, res) => {
+        const route_path = route_result.ui_route_name.replace(/\/+/g, '/')
+        router.get(route_path, (req, res) => {
 
-            req.context = Object.assign({}, {ui_route: route_context}, req.context)
+            req.context = {...route_context, ...req.context}
+            // req.context = Object.assign({}, {ui_route: route_context}, req.context)
             handle_route(req, res)
         })
+
+        const prefix_route_path = (ROUTE_PREFIX + route_path).replace(/\*/g, '/').replace(/\/+/g, '/')
+        if (prefix_route_path.endsWith('/') || prefix_route_path.endsWith('*')) {
+            // route path add 'index.js' and 'index.source'
+            const new_route_path = prefix_route_path.slice(0,-1) + '/index.js'
+            router.get(new_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                handle_route_element(req, res)
+            })
+            const source_route_path = prefix_route_path.slice(0,-1) + '/index.source'
+            router.get(source_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                handle_route_element(req, res)
+            })
+        } else {
+            // route path without '.js' will add '.js' and '.source'
+            const new_route_path = prefix_route_path + '.js'
+            router.get(new_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                handle_route_element(req, res)
+            })
+            const source_route_path = prefix_route_path + '.source'
+            router.get(source_route_path, (req, res) => {
+                req.context = {...route_context, ...req.context}
+                // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
+                handle_route_element(req, res)
+            })
+        }
 
         log_route_status(route_context,
             SUCCESS,
@@ -289,7 +363,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
             || EXCLUDED_TYPES.find(row => elem_result.ui_element_type.startsWith(row + '/'))) {
 
             // not JAVASCRIPT types - handles normally
-            const route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
+            const route_path = (ELEM_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
             router.get(route_path, (req, res) => {
                 req.context = {...elem_context, ...req.context}
                 handle_element(req, res)
@@ -298,7 +372,7 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
         } else {
             // add index.js if directory; add .js if no suffix
 
-            let js_route_path = (ELEM_ROUTE_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
+            let js_route_path = (ELEM_PREFIX + elem_result.ui_element_name).replace(/\/+/g, '/')
             if (js_route_path.endsWith('.js') || js_route_path.endsWith('.jsx')) {
 
                 // JAVASCRIPT types, ensure route has .js suffix
@@ -391,8 +465,8 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
     router.use('/', (req, res) => {
 
         // console.log(`default route [${req.url}]`)
-        if (req.url.startsWith(ELEM_ROUTE_PREFIX)) {
-            // return 404 if under ELEM_ROUTE_PREFIX
+        if (req.url.startsWith(ELEM_PREFIX) || req.url.startsWith(ROUTE_PREFIX)) {
+            // return 404 if under ELEM_PREFIX
             res.status(404).json({status: FAILURE, message: `ERROR: UI route or element not found [${req.url}] !`})
 
         } else {

@@ -63,13 +63,147 @@ const PreviewSource = (props) => {
   useEffect(() => {
 
     // load from backend if not livePreview
-    if (!livePreview) {
-      setSourceLoading(true)
-      // loading url
+    if
+    (
+      !livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+    )
+    {
+      if (
+        navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+        && !!navElement.ui_element_type
+      ) {
+        setSourceLoading(true)
+        // loading url
+        const ui_root = globalThis.appx.UI_ROOT
+        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navElement.ui_element_name}.source`.replace(/\/+/g, '/')
+        // console.log(url)
+        fetch(url)
+          .then(response => response.text())
+          .then(data => {
+            // console.log(data)
+            setSourceLoading(false)
+            setCode(data)
+          })
+          .catch(error => {
+            console.error(error)
+            setSourceLoading(false)
+            setCode(error.toString())
+          })
+      }
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
+      )
+      {
+        setSourceLoading(true)
+        // loading url
+        const replace_route = navRoute.ui_route_name.replace(/\*/g, '/')
+        const source_route = replace_route.endsWith('/')
+          ? replace_route + '/index.source'
+          : replace_route + '.source'
+        const ui_root = globalThis.appx.UI_ROOT
+        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_route/${source_route}`.replace(/\/+/g, '/')
+        // console.log(url)
+        fetch(url)
+          .then(response => response.text())
+          .then(data => {
+            // console.log(data)
+            setSourceLoading(false)
+            setCode(data)
+          })
+          .catch(error => {
+            console.error(error)
+            setSourceLoading(false)
+            setCode(error.toString())
+          })
+      }
+    }
+  },
+  [
+    livePreview,
+    loadTimer,
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navSelected.type,
+    navElement.ui_element_name,
+    navElement.ui_element_type,
+    navRoute.ui_route_name,
+  ])
+
+  // load content from UI context treeData
+  useEffect(() => {
+
+    // load from UI context if livePreview
+    if
+    (
+      !!livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+    )
+    {
+      // generate spec data
+      const tree_context = { topLevel: true }
+      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const spec = !!testData
+        ? { ...genData, __test: testData }
+        : genData
+      // preview url
       const ui_root = globalThis.appx.UI_ROOT
-      const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navElement.ui_element_name}.source`.replace(/\/+/g, '/')
-      // console.log(url)
-      fetch(url)
+      const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
+      // check object type
+      if (
+        navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+        && !!navElement.ui_element_type
+      ) {
+        // preview source code
+        setSourceLoading(true)
+        // console.log(url)
+        const postData = {
+          namespace: navDeployment.namespace,
+          ui_name: navDeployment.ui_name,
+          ui_ver: navDeployment.ui_ver,
+          ui_deployment: navDeployment.ui_deployment,
+          ui_element_name: navElement.ui_element_name,
+          ui_element_type: navElement.ui_element_type,
+          ui_element_spec: spec
+        }
+        // console.log(postData)
+        fetch(
+          url,
+          {
+            method: 'POST',
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              type: navSelected.type,
+              output: 'code',
+              data: postData,
+            }) // body data type must match "Content-Type" header
+          }
+        )
         .then(response => response.text())
         .then(data => {
           // console.log(data)
@@ -78,140 +212,58 @@ const PreviewSource = (props) => {
         })
         .catch(error => {
           setSourceLoading(false)
+          setCode(error.toString())
           console.error(error)
         })
-    }
-
-  },
-  [
-    livePreview,
-    loadTimer,
-  ])
-
-  // load content from UI context treeData
-  useEffect(() => {
-
-    // load from UI context if livePreview
-    if (livePreview) {
-
-      if
+      }
+      else if
       (
-        !!navDeployment
-        && !!navDeployment.namespace
-        && !!navDeployment.ui_name
-        && !!navDeployment.ui_ver
-        && !!navDeployment.ui_deployment
-        && !!navSelected
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
       )
       {
-        // generate spec data
-        const tree_context = { topLevel: true }
-        const { ref, data: genData } = gen_js(tree_context, treeData)
-        const spec = !!testData
-          ? { ...genData, __test: testData }
-          : genData
-        // preview url
-        const ui_root = globalThis.appx.UI_ROOT
-        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
-        // check object type
-        if (
-          navSelected.type === 'ui_element'
-          && !!navElement
-          && !!navElement.ui_element_name
-          && !!navElement.ui_element_type
-        ) {
-          // preview source code
-          setSourceLoading(true)
-          // console.log(url)
-          const postData = {
-            namespace: navDeployment.namespace,
-            ui_name: navDeployment.ui_name,
-            ui_ver: navDeployment.ui_ver,
-            ui_deployment: navDeployment.ui_deployment,
-            ui_element_name: navElement.ui_element_name,
-            ui_element_type: navElement.ui_element_type,
-            ui_element_spec: spec
-          }
-          // console.log(postData)
-          fetch(
-            url,
-            {
-              method: 'POST',
-              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: 'same-origin', // include, *same-origin, omit
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              redirect: 'follow', // manual, *follow, error
-              referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify({
-                type: navSelected.type,
-                output: 'code',
-                data: postData,
-              }) // body data type must match "Content-Type" header
-            }
-          )
-          .then(response => response.text())
-          .then(data => {
-            // console.log(data)
-            setSourceLoading(false)
-            setCode(data)
-          })
-          .catch(error => {
-            setSourceLoading(false)
-            setCode(error.toString())
-            console.error(error)
-          })
+        // preview source code
+        setSourceLoading(true)
+        // console.log(url)
+        const postData = {
+          namespace: navDeployment.namespace,
+          ui_name: navDeployment.ui_name,
+          ui_ver: navDeployment.ui_ver,
+          ui_deployment: navDeployment.ui_deployment,
+          ui_route_name: navRoute.ui_route_name,
+          ui_route_spec: spec
         }
-        else if
-        (
-          navSelected.type === 'ui_route'
-          && !!navRoute
-          && !!navRoute.ui_route_name
+        // console.log(postData)
+        fetch(
+          url,
+          {
+            method: 'POST',
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+              type: navSelected.type,
+              output: 'code',
+              data: postData,
+            }) // body data type must match "Content-Type" header
+          }
         )
-        {
-          // preview source code
-          setSourceLoading(true)
-          // console.log(url)
-          const postData = {
-            namespace: navDeployment.namespace,
-            ui_name: navDeployment.ui_name,
-            ui_ver: navDeployment.ui_ver,
-            ui_deployment: navDeployment.ui_deployment,
-            ui_route_name: navRoute.ui_route_name,
-            ui_route_spec: spec
-          }
-          // console.log(postData)
-          fetch(
-            url,
-            {
-              method: 'POST',
-              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: 'same-origin', // include, *same-origin, omit
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              redirect: 'follow', // manual, *follow, error
-              referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-              body: JSON.stringify({
-                type: navSelected.type,
-                output: 'code',
-                data: postData,
-              }) // body data type must match "Content-Type" header
-            }
-          )
-          .then(response => response.text())
-          .then(data => {
-            // console.log(data)
-            setSourceLoading(false)
-            setCode(data)
-          })
-          .catch(error => {
-            setSourceLoading(false)
-            setCode(error.toString())
-            console.error(error)
-          })
-        }
+        .then(response => response.text())
+        .then(data => {
+          // console.log(data)
+          setSourceLoading(false)
+          setCode(data)
+        })
+        .catch(error => {
+          setSourceLoading(false)
+          setCode(error.toString())
+          console.error(error)
+        })
       }
     }
   },
