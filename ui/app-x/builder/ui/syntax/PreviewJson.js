@@ -77,8 +77,8 @@ const PreviewJson = (props) => {
             data = data[0]
           }
 
-          if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
-            setYaml('')
+          if (!('ui_element_spec' in data)) {
+            setJson('')
           }
 
           setJson(JSON.stringify(data.ui_element_spec, null, 2))

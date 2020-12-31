@@ -148,6 +148,7 @@ const PropEditor = (props) => {
         }
       })
       if (treeNode.data.type === 'react/state') {
+        // console.log(`__customRef`, treeNode, !!treeNode.data.__ref && !treeNode.data.__ref.startsWith('...'))
         setValue('__customRef',
           !!treeNode.data.__ref
           && !treeNode.data.__ref.startsWith('...'))
@@ -225,7 +226,7 @@ const PropEditor = (props) => {
             className={styles.root}
             >
             <Typography variant="body2">
-              Select an object to edit
+              Select an object
             </Typography>
           </Box>
         )

@@ -318,9 +318,19 @@ const PreviewTabs = (props) => {
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
-        && !!navSelected
-        && navSelected.type === 'ui_element'
-        && !!navElement.ui_element_name
+        && !!navSelected.type
+        &&
+        (
+          (
+            navSelected.type === 'ui_element'
+            && !!navElement.ui_element_name
+          )
+          ||
+          (
+            navSelected.type === 'ui_route'
+            && !!navRoute.ui_route_name
+          )
+        )
       )
       &&
       (
@@ -331,7 +341,7 @@ const PreviewTabs = (props) => {
           alignItems="center"
           >
           <Typography variant="body2">
-            Select a UI element
+            Select a UI element or route
           </Typography>
         </Box>
       )
@@ -342,9 +352,19 @@ const PreviewTabs = (props) => {
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
-        && !!navSelected
-        && navSelected.type === 'ui_element'
-        && !!navElement.ui_element_name
+        && !!navSelected.type
+        &&
+        (
+          (
+            navSelected.type === 'ui_element'
+            && !!navElement.ui_element_name
+          )
+          ||
+          (
+            navSelected.type === 'ui_route'
+            && !!navRoute.ui_route_name
+          )
+        )
       )
       &&
       (
@@ -405,38 +425,122 @@ const PreviewTabs = (props) => {
                 </Box>
             }}
             >
-            <TabPane tab="Widget" key="iframe" className={styles.root}>
-              <Box className={styles.root}>
-                <Box className={styles.iframeWrapper}>
-                  <iframe ref={iframeRef} name="live_preview" className={styles.iframe}>
-                  </iframe>
-                </Box>
-              </Box>
-            </TabPane>
-            <TabPane tab="Code" key="code" className={styles.root}>
-              <PreviewSource
-                namespace={props.namespace}
-                ui_name={props.ui_name}
-                ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
-              />
-            </TabPane>
-            <TabPane tab="YAML" key="yaml" className={styles.root}>
-              <PreviewYaml
-                namespace={props.namespace}
-                ui_name={props.ui_name}
-                ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
-              />
-            </TabPane>
-            <TabPane tab="JSON" key="json" className={styles.root}>
-              <PreviewJson
-                namespace={props.namespace}
-                ui_name={props.ui_name}
-                ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
-              />
-            </TabPane>
+            {
+              (
+                (
+                  navSelected.type === 'ui_element'
+                  && !!navElement.ui_element_name
+                  &&
+                  (
+                    navElement?.ui_element_type === 'react/element'
+                    || navElement?.ui_element_type === 'html'
+                  )
+                )
+                ||
+                (
+                  navSelected.type === 'ui_route'
+                  && !!navRoute?.ui_route_name
+                )
+              )
+              &&
+              (
+                <TabPane tab="Widget" key="iframe" className={styles.root}>
+                  <Box className={styles.root}>
+                    <Box className={styles.iframeWrapper}>
+                      <iframe ref={iframeRef} name="live_preview" className={styles.iframe}>
+                      </iframe>
+                    </Box>
+                  </Box>
+                </TabPane>
+              )
+            }
+            {
+              (
+                (
+                  navSelected.type === 'ui_element'
+                  && !!navElement.ui_element_name
+                  &&
+                  (
+                    navElement?.ui_element_type === 'react/element'
+                    || navElement?.ui_element_type === 'react/provider'
+                  )
+                )
+                ||
+                (
+                  navSelected?.type === 'ui_route'
+                  && !!navRoute?.ui_route_name
+                )
+              )
+              &&
+              (
+                <TabPane tab="Code" key="code" className={styles.root}>
+                  <PreviewSource
+                    namespace={props.namespace}
+                    ui_name={props.ui_name}
+                    ui_deployment={props.ui_deployment}
+                    ui_element_name={props.ui_element_name}
+                  />
+                </TabPane>
+              )
+            }
+            {
+              (
+                (
+                  navSelected.type === 'ui_element'
+                  && !!navElement.ui_element_name
+                  &&
+                  (
+                    navElement?.ui_element_type === 'react/element'
+                    || navElement?.ui_element_type === 'react/provider'
+                  )
+                )
+                ||
+                (
+                  navSelected?.type === 'ui_route'
+                  && !!navRoute?.ui_route_name
+                )
+              )
+              &&
+              (
+                <TabPane tab="YAML" key="yaml" className={styles.root}>
+                  <PreviewYaml
+                    namespace={props.namespace}
+                    ui_name={props.ui_name}
+                    ui_deployment={props.ui_deployment}
+                    ui_element_name={props.ui_element_name}
+                  />
+                </TabPane>
+              )
+            }
+            {
+              (
+                (
+                  navSelected.type === 'ui_element'
+                  && !!navElement.ui_element_name
+                  &&
+                  (
+                    navElement?.ui_element_type === 'react/element'
+                    || navElement?.ui_element_type === 'react/provider'
+                  )
+                )
+                ||
+                (
+                  navSelected?.type === 'ui_route'
+                  && !!navRoute?.ui_route_name
+                )
+              )
+              &&
+              (
+                <TabPane tab="JSON" key="json" className={styles.root}>
+                  <PreviewJson
+                    namespace={props.namespace}
+                    ui_name={props.ui_name}
+                    ui_deployment={props.ui_deployment}
+                    ui_element_name={props.ui_element_name}
+                  />
+                </TabPane>
+              )
+            }
           </Tabs>
         </Box>
       )

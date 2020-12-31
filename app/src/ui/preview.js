@@ -11,6 +11,7 @@ const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_loo
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
 const { handle_react_element } = require('./react_element')
+const { handle_react_provider } = require('./react_provider')
 const { handle_render } = require('./render')
 
 const rootDir = path.join(__dirname, '../../../ui/')
@@ -75,12 +76,30 @@ function handle_preview(req, res) {
 
       if (req_output === 'code') {
 
-        // render source code
-        const result = handle_react_element(req, res)
-        res.status(result.status)
-            .type(result.type)
-            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-        return
+        if (ui_element_type == 'react/element') {
+          // render source code
+          const result = handle_react_element(req, res)
+          res.status(result.status)
+              .type(result.type)
+              .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+          return
+
+        } else if (ui_element_type == 'react/provider') {
+          // render source code
+          const result = handle_react_provider(req, res)
+          res.status(result.status)
+              .type(result.type)
+              .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+          return
+
+        } else {
+          // unrecognized ui_element_type
+          res.status(422).json({
+              status: FAILURE,
+              message: `ERROR: unrecognized ui_element_type [${ui_element_type}]`
+          })
+          return
+        }
 
       } else if (req_output === 'html') {
 

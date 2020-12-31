@@ -77,7 +77,7 @@ const PreviewYaml = (props) => {
             data = data[0]
           }
 
-          if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+          if (!('ui_element_spec' in data)) {
             setYaml('')
           }
 

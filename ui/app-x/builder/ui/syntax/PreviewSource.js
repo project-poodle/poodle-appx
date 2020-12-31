@@ -104,6 +104,16 @@ const PreviewSource = (props) => {
       const ui_root = globalThis.appx.UI_ROOT
       const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
       // console.log(url)
+      const postData = {
+        namespace: navDeployment.namespace,
+        ui_name: navDeployment.ui_name,
+        ui_ver: navDeployment.ui_ver,
+        ui_deployment: navDeployment.ui_deployment,
+        ui_element_name: navElement.ui_element_name,
+        ui_element_type: navElement.ui_element_type,
+        ui_element_spec: spec
+      }
+      console.log(postData)
       fetch(
         url,
         {
@@ -118,15 +128,7 @@ const PreviewSource = (props) => {
           body: JSON.stringify({
             type: 'ui_element',
             output: 'code',
-            data: {
-              namespace: navDeployment.namespace,
-              ui_name: navDeployment.ui_name,
-              ui_ver: navDeployment.ui_ver,
-              ui_deployment: navDeployment.ui_deployment,
-              ui_element_name: navElement.ui_element_name,
-              ui_element_type: navElement.ui_element_type,
-              ui_element_spec: spec
-            },
+            data: postData,
           }) // body data type must match "Content-Type" header
         }
       ).then(response => response.text())

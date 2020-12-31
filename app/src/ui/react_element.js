@@ -52,14 +52,18 @@ function handle_react_element(req, res) {
     }
 
     if (! ('type' in req.context.ui_element_spec.element)
-        || req.context.ui_element_spec.element.type != 'react/element'
+        ||
+        (
+          req.context.ui_element_spec.element.type != 'react/element'
+          && req.context.ui_element_spec.element.type != 'react/html'
+        )
     ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: unrecognized ui_element_spec.element.type [${req.context.ui_element_spec.element.type}]`
+                message: `ERROR: ui_element_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_element_spec.element.type}]`
             }
         }
     }

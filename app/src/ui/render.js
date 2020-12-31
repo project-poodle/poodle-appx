@@ -203,12 +203,22 @@ function handle_render(req, res, load_from_db=true) {
     context.init_js = Mustache.render(initjs_content, context)
     // console.log(context.init_js)
 
-    // process source code [element_js]
-    const element_js = handle_react_element(req, res)
-    if (element_js.status !== 200) {
-        return element_js
+    if (ui_element_type == 'react/element') {
+      // process source code [element_js]
+      const element_js = handle_react_element(req, res)
+      if (element_js.status !== 200) {
+          return element_js
+      }
+      context.element_js = element_js.data
+
+    } else if (ui_element_type == 'react/provider') {
+      // process source code [element_js]
+      const element_js = handle_react_provider(req, res)
+      if (element_js.status !== 200) {
+          return element_js
+      }
+      context.element_js = element_js.data
     }
-    context.element_js = element_js.data
 
     // render the html_content
     let rendered = Mustache.render(html_content, context)

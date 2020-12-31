@@ -194,7 +194,7 @@ const SyntaxTree = (props) => {
     // setApiData(data)
 
     // data check
-    if (!('ui_element_spec' in data) || !('element' in data.ui_element_spec)) {
+    if (!('ui_element_spec' in data)) {
       // fresh action
       makeAction(`init`, [], null, [], null, true)
       return
@@ -249,7 +249,7 @@ const SyntaxTree = (props) => {
         'appx',
         loadUrl,
         data => {
-          // console.log(data)
+          console.log(data)
           process_api_data(data)
           setPreviewInitialized(false)
           setLoadTrigger(0)
@@ -979,9 +979,24 @@ const SyntaxTree = (props) => {
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
-        && !!navSelected
-        && navSelected.type === 'ui_element'
-        && !!navElement.ui_element_name
+        && !!navSelected.type
+        &&
+        (
+          (
+            navSelected.type === 'ui_element'
+            && !!navElement.ui_element_name
+            &&
+            (
+              navElement.ui_element_type === 'react/element'
+              || navElement.ui_element_type === 'react/provider'
+            )
+          )
+          ||
+          (
+            navSelected.type === 'ui_route'
+            && !!navRoute.ui_route_name
+          )
+        )
       )
       &&
       (
@@ -992,7 +1007,7 @@ const SyntaxTree = (props) => {
           alignItems="center"
           >
           <Typography variant="body2">
-            Select a UI element
+            Select a UI element or route
           </Typography>
         </Box>
       )
@@ -1003,9 +1018,24 @@ const SyntaxTree = (props) => {
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
-        && !!navSelected
-        && navSelected.type === 'ui_element'
-        && !!navElement.ui_element_name
+        && !!navSelected.type
+        &&
+        (
+          (
+            navSelected.type === 'ui_element'
+            && !!navElement.ui_element_name
+            &&
+            (
+              navElement.ui_element_type === 'react/element'
+              || navElement.ui_element_type === 'react/provider'
+            )
+          )
+          ||
+          (
+            navSelected.type === 'ui_route'
+            && !!navRoute.ui_route_name
+          )
+        )
       )
       &&
       (
@@ -1117,15 +1147,32 @@ const SyntaxTree = (props) => {
               </Sider>
             </Layout>
           </TabPane>
-          <TabPane
-            tab="Test"
-            key="test"
-            className={styles.pane}
-            onContextMenu={handleSyntaxMenu}
-            >
-            <TestEditor>
-            </TestEditor>
-          </TabPane>
+          {
+            (
+              (
+                navSelected.type === 'ui_element'
+                && !!navElement.ui_element_name
+                && navElement.ui_element_type === 'react/element'
+              )
+              ||
+              (
+                navSelected.type === 'ui_route'
+                && !!navRoute.ui_route_name
+              )
+            )
+            &&
+            (
+              <TabPane
+                tab="Test"
+                key="test"
+                className={styles.pane}
+                onContextMenu={handleSyntaxMenu}
+                >
+                <TestEditor>
+                </TestEditor>
+              </TabPane>
+            )
+          }
           <SyntaxAddDialog
             key="addDialog"
             open={addDialogOpen}
