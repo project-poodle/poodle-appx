@@ -2021,6 +2021,10 @@ function js_resolve_ids(js_context, ast_tree) {
         ////////////////////////////////////////////////////////////
         // process import statement first, prior to process sub_vars
         Object.keys(js_context.imports).map(importKey => {
+          // check for self
+          if (importKey === js_context.self) {
+            return
+          }
           // get basic information of import registration
           // console.log(js_context.imports[importKey])
           let import_name = js_context.variables[importKey].name
@@ -2135,4 +2139,5 @@ module.exports = {
   reg_js_variable: reg_js_variable,
   reg_js_import: reg_js_import,
   isPrimitive: isPrimitive,
+  capitalize: capitalize,
 }

@@ -13,6 +13,7 @@ const {
     js_process,
     js_resolve_ids,
     isPrimitive,
+    capitalize,
 } = require('./util_code')
 const db = require('../db/db')
 
@@ -77,7 +78,8 @@ function handle_react_element(req, res) {
 
     // ui_elem
     const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name)
+    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_element_name))
+    js_context.self = ui_elem_name
     //console.log(get_js_variable(js_context, ui_elem_name))
 
     reg_js_import(js_context, 'react', true, 'React')
@@ -89,7 +91,7 @@ function handle_react_element(req, res) {
     const block_statements = []
     Object.keys(input).map(key => {
       // ignore type / name / props / children
-      if (key === 'type' || key === 'element' || key === 'propTypes') {
+      if (key === 'type' || key === 'element' || key === 'propTypes' || key === '__test') {
         return
       }
 
@@ -184,6 +186,72 @@ function handle_react_element(req, res) {
       }
     })
 
+    // handle test statements
+    const test_statements = []
+    if ('__test' in req.context.ui_element_spec) {
+      // register variable
+      const ui_test_name = ui_elem_name + '.Test'
+      reg_js_variable(js_context, ui_test_name)
+      // process providers
+      let test_element = {
+        type: 'react/element',
+        name: ui_elem_name,
+      }
+      if (!!req.context.ui_element_spec.__test.providers) {
+        req.context.ui_element_spec.__test.providers
+          .reverse()
+          .filter(provider => provider.type === 'react/element')
+          .map(provider => {
+            test_element = {
+              type: provider.type,
+              name: provider.name,
+              props: provider.props,
+              children: [
+                test_element
+              ]
+            }
+          }
+        )
+      }
+      // const Test = () => {}
+      const testDeclaration = t.variableDeclaration(
+        'const',
+        [
+          t.variableDeclarator(
+            t.identifier(ui_test_name),
+            t.arrowFunctionExpression(
+              [],
+              t.blockStatement(
+                [
+                  // TODO
+                  t.returnStatement(
+                    react_element(js_context, test_element)
+                  )
+                ]
+              )
+            )
+          )
+        ]
+      )
+      //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+      t.addComment(testDeclaration, 'trailing', ' Test', true)
+      test_statements.push(testDeclaration)
+      // ElementName.Test = Test
+      const testAssignment = t.expressionStatement(
+        t.assignmentExpression(
+          '=',
+          t.memberExpression(
+            t.identifier(ui_elem_name),
+            t.identifier('Test')
+          ),
+          t.identifier(ui_test_name)
+        )
+      )
+      //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+      t.addComment(testAssignment, 'trailing', ' expose Test', true)
+      test_statements.push(testAssignment)
+    }
+
     // create ast tree for the program
     const ast_tree = t.file(
       t.program(
@@ -209,6 +277,9 @@ function handle_react_element(req, res) {
               )
             ]
           ),
+          // include test code
+          ...test_statements,
+          // export
           t.exportDefaultDeclaration(
             t.identifier(ui_elem_name)
           ),

@@ -217,7 +217,7 @@ const SyntaxTree = (props) => {
       ? data.ui_element_spec.__test
       : null
 
-    console.log(`testData`, testData)
+    // console.log(`testData`, testData)
 
     // fresh action
     makeAction(`init`, parsedTree, testData, js_context.expandedKeys, null, true)
@@ -286,7 +286,7 @@ const SyntaxTree = (props) => {
     const spec = !!testData
       ? { ...genData, __test: testData }
       : genData
-    console.log(spec)
+    // console.log(spec)
     // url
     const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
     // console.log(url)

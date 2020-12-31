@@ -13,6 +13,7 @@ const {
     js_process,
     js_resolve_ids,
     isPrimitive,
+    capitalize,
 } = require('./util_code')
 const db = require('../db/db')
 
@@ -64,7 +65,10 @@ function handle_react_provider(req, res) {
 
     // ui_elem
     const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name)
+    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_element_name))
+    js_context.self = ui_elem_name
+
+    // register other variables
     reg_js_variable(js_context, `${ui_elem_name}_Context`)
     reg_js_variable(js_context, `${ui_elem_name}_Context.Provider`)
     reg_js_variable(js_context, `${ui_elem_name}_Function`)
@@ -193,7 +197,7 @@ function handle_react_provider(req, res) {
             }
           )
         )
-      : t.objectExpression([])
+      : t.arrayExpression([])
 
     // create ast tree for the program
     const ast_tree = t.file(
@@ -284,7 +288,7 @@ function handle_react_provider(req, res) {
                           '=',
                           t.memberExpression(
                             t.identifier(`${ui_element_name}_Function`),
-                            t.stringLiteral('Context')
+                            t.identifier('Context')
                           ),
                           t.identifier(`${ui_element_name}_Context`)
                         ),

@@ -41,6 +41,7 @@ const PreviewYaml = (props) => {
     treeData,
     expandedKeys,
     selectedKey,
+    testData,
     loadTimer,
     treeDirty,
     livePreview,
@@ -103,10 +104,13 @@ const PreviewYaml = (props) => {
     // load from UI context if livePreview
     if (!!livePreview) {
       const tree_context = { topLevel: true }
-      const { ref, data } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const spec = !!testData
+        ? { ...genData, __test: testData }
+        : genData
       // yaml data
       const yamlDoc = new YAML.Document()
-      yamlDoc.contents = data
+      yamlDoc.contents = spec
       // set editor value
       setYaml(yamlDoc.toString())
     }

@@ -37,9 +37,13 @@ const PreviewSource = (props) => {
 
   // editor context
   const {
+    // tree data
     treeData,
     expandedKeys,
     selectedKey,
+    // test data
+    testData,
+    // common
     loadTimer,
     treeDirty,
     livePreview,
@@ -90,7 +94,10 @@ const PreviewSource = (props) => {
     // load from UI context if livePreview
     if (livePreview) {
       const tree_context = { topLevel: true }
-      const { ref, data } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const spec = !!testData
+        ? { ...genData, __test: testData }
+        : genData
       // preview source code
       setSourceLoading(true)
       // preview url
@@ -118,7 +125,7 @@ const PreviewSource = (props) => {
               ui_deployment: navDeployment.ui_deployment,
               ui_element_name: navElement.ui_element_name,
               ui_element_type: navElement.ui_element_type,
-              ui_element_spec: data
+              ui_element_spec: spec
             },
           }) // body data type must match "Content-Type" header
         }

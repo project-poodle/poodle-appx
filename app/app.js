@@ -52,10 +52,17 @@ walk_recursive(path.join(staticRootDir, 'app-x'), (err, results) => {
   results.map(r => {
     // console.log(r)
     if (r.startsWith(staticRootDir) && r.endsWith('.js')) {
-      const relPath = r.substring(staticRootDir.length)
-      const importPath = relPath.substring(0, relPath.length - 3)
-      console.log(`INFO: found app-x path [${importPath}]`)
-      result.push(importPath)
+      if (r.endsWith('/index.js')) {
+        const relPath = r.substring(staticRootDir.length)
+        const importPath = relPath.substring(0, relPath.length - 9)
+        console.log(`INFO: found app-x path [${importPath}]`)
+        result.push(importPath)
+      } else {
+        const relPath = r.substring(staticRootDir.length)
+        const importPath = relPath.substring(0, relPath.length - 3)
+        console.log(`INFO: found app-x path [${importPath}]`)
+        result.push(importPath)
+      }
     }
   })
 

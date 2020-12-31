@@ -72,6 +72,20 @@ ui_element:
                   suffix:
                       type: js/expression
                       data: props.suffix
+          __test:
+            providers:
+              - type: react/element
+                name: react-redux.Provider
+                props:
+                  store:
+                    type: js/import
+                    name: app-x/redux/store.default
+              - type: react/element
+                name: "@material-ui/core.MuiThemeProvider"
+                props:
+                  theme:
+                    type: js/import
+                    name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -126,6 +140,20 @@ ui_element:
                             sideNavHandler:
                                 type: js/expression
                                 data: handlers.sideNavHandler
+          __test:
+            providers:
+              - type: react/element
+                name: react-redux.Provider
+                props:
+                  store:
+                    type: js/import
+                    name: app-x/redux/store.default
+              - type: react/element
+                name: "@material-ui/core.MuiThemeProvider"
+                props:
+                  theme:
+                    type: js/import
+                    name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -213,6 +241,20 @@ ui_element:
                             ui_route_name:
                                 type: js/expression
                                 data: states.builder.data.ui_route_name
+          __test:
+            providers:
+              - type: react/element
+                name: react-redux.Provider
+                props:
+                  store:
+                    type: js/import
+                    name: app-x/redux/store.default
+              - type: react/element
+                name: "@material-ui/core.MuiThemeProvider"
+                props:
+                  theme:
+                    type: js/import
+                    name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -485,6 +527,20 @@ ui_element:
                                 namespace: sys
                                 ui_name: ui
                                 ui_deployment: base
+          __test:
+            providers:
+              - type: react/element
+                name: react-redux.Provider
+                props:
+                  store:
+                    type: js/import
+                    name: app-x/redux/store.default
+              - type: react/element
+                name: "@material-ui/core.MuiThemeProvider"
+                props:
+                  theme:
+                    type: js/import
+                    name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -593,3 +649,17 @@ ui_element:
                       data: styles.box
                   children:
                     - c
+          __test:
+            providers:
+              - type: react/element
+                name: react-redux.Provider
+                props:
+                  store:
+                    type: js/import
+                    name: app-x/redux/store.default
+              - type: react/element
+                name: "@material-ui/core.MuiThemeProvider"
+                props:
+                  theme:
+                    type: js/import
+                    name: app-x/theme.default
