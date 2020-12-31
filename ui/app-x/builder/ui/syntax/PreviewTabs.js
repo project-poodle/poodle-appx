@@ -322,15 +322,22 @@ const PreviewTabs = (props) => {
   useEffect(() => {
 
     // load from UI context if livePreview
-    if (!!previewInitialized
-        && !!livePreview
-        && !!treeData && treeData.length
-        && !!formRef.current
-        && !!iframeRef.current) {
-
+    if
+    (
+      !!previewInitialized
+      && !!livePreview
+      && !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+      && !!treeData && treeData.length
+      && !!formRef.current
+      && !!iframeRef.current
+    )
+    {
       try {
-        // live widget update
-        setLiveWidgetUpdating(true)
         // generate data
         const tree_context = { topLevel: true }
         const { ref, data } = gen_js(tree_context, treeData)
@@ -338,36 +345,84 @@ const PreviewTabs = (props) => {
         const spec = !!testData
           ? { ...data, __test: testData }
           : data
-        // setPreviewLoading(true)
-        // preview data
-        const message = {
-          path: globalThis.appx.UI_ROOT
-            + '/' + navDeployment?.namespace
-            + '/' + navDeployment?.ui_name
-            + '/' + navDeployment?.ui_deployment
-            + '/',
-          data: {
-            type: 'ui_element',
-            output: 'code',
+        // check selected type
+        if (
+          navSelected.type === 'ui_element'
+          && !!navElement
+          && !!navElement.ui_element_name
+        ) {
+          // live widget update
+          setLiveWidgetUpdating(true)
+          // setPreviewLoading(true)
+          // preview data
+          const message = {
+            path: globalThis.appx.UI_ROOT
+              + '/' + navDeployment?.namespace
+              + '/' + navDeployment?.ui_name
+              + '/' + navDeployment?.ui_deployment
+              + '/',
             data: {
-              namespace: navDeployment.namespace,
-              ui_name: navDeployment.ui_name,
-              ui_ver: navDeployment.ui_ver,
-              ui_spec: navDeployment.ui_spec,
-              ui_deployment: navDeployment.ui_deployment,
-              ui_deployment_spec: navDeployment.ui_deployment_spec,
-              ui_element_name: navElement.ui_element_name,
-              ui_element_type: navElement.ui_element_type,
-              ui_element_spec: spec
+              type: 'ui_element',
+              output: 'code',
+              data: {
+                namespace: navDeployment.namespace,
+                ui_name: navDeployment.ui_name,
+                ui_ver: navDeployment.ui_ver,
+                ui_spec: navDeployment.ui_spec,
+                ui_deployment: navDeployment.ui_deployment,
+                ui_deployment_spec: navDeployment.ui_deployment_spec,
+                ui_element_name: navElement.ui_element_name,
+                ui_element_type: navElement.ui_element_type,
+                ui_element_spec: spec
+              }
             }
           }
+          // build form for submission
+          // console.log(submitData)
+          iframeRef.current.contentWindow.postMessage(
+            message,
+            window.location.origin,
+          )
         }
-        // build form for submission
-        // console.log(submitData)
-        iframeRef.current.contentWindow.postMessage(
-          message,
-          window.location.origin,
+        else if
+        (
+          navSelected.type === 'ui_route'
+          && !!navRoute
+          && !!navRoute.ui_route_name
         )
+        {
+          // live widget update
+          setLiveWidgetUpdating(true)
+          // setPreviewLoading(true)
+          // preview data
+          const message = {
+            path: globalThis.appx.UI_ROOT
+              + '/' + navDeployment?.namespace
+              + '/' + navDeployment?.ui_name
+              + '/' + navDeployment?.ui_deployment
+              + '/',
+            data: {
+              type: 'ui_route',
+              output: 'code',
+              data: {
+                namespace: navDeployment.namespace,
+                ui_name: navDeployment.ui_name,
+                ui_ver: navDeployment.ui_ver,
+                ui_spec: navDeployment.ui_spec,
+                ui_deployment: navDeployment.ui_deployment,
+                ui_deployment_spec: navDeployment.ui_deployment_spec,
+                ui_route_name: navRoute.ui_route_name,
+                ui_route_spec: spec
+              }
+            }
+          }
+          // build form for submission
+          // console.log(submitData)
+          iframeRef.current.contentWindow.postMessage(
+            message,
+            window.location.origin,
+          )
+        }
       } catch (error) {
         notification['error']({
           message: 'Live Update Failed',
@@ -385,6 +440,10 @@ const PreviewTabs = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
+    navElement.ui_element_name,
+    navElement.ui_element_type,
+    navRoute.ui_route_name,
+    navSelected.type,
     livePreview,
     treeData,
     previewInitialized,
