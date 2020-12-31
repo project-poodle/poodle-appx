@@ -17,11 +17,11 @@ const MUI_App = (props) => {
   const routeResult = useRoutes(props.routes)
 
   return (
-    <GlobalStyleProvider theme={props.theme_provider}>
-      <Provider store={props.redux_store_provider}>
+    <Provider store={props.redux_store_provider}>
+      <GlobalStyleProvider theme={props.theme_provider}>
         {routeResult || not_found}
-      </Provider>
-    </GlobalStyleProvider>
+      </GlobalStyleProvider>
+    </Provider>
   )
 }
 
