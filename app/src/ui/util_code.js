@@ -1726,16 +1726,17 @@ function appx_route(js_context, input) {
           t.blockStatement(
             [
               t.returnStatement(
-                js_process(
-                  {
-                    ...js_context,
-                    topLevel: true,
-                    parentRef: null,
-                    parentPath: null,
-                    JSX_CONTEXT: true,
-                  },
-                  // TODO - more processing to be added
-                  route.ui_route_spec.element
+                t.callExpression(
+                  react_component(
+                    {
+                      ...js_context,
+                      topLevel: true,
+                      parentRef: null,
+                      parentPath: null,
+                    },
+                    route.ui_route_spec,
+                  ),
+                  []
                 )
               )
             ]
@@ -2015,6 +2016,128 @@ function js_process(js_context, input) {
   }
 }
 
+// return an react component function
+function react_component(js_context, input) {
+
+  // check if there are any block statements
+  const block_statements = []
+  Object.keys(input).map(key => {
+    // ignore type / name / props / children
+    if (key === 'type' || key === 'element' || key === 'propTypes' || key === '__test') {
+      return
+    }
+
+    if (isPrimitive(input[key])) {
+      // process input[key] and assign to declared variable
+      const variableDeclaration = t.variableDeclaration(
+        'const',
+        [
+          t.variableDeclarator(
+            t.identifier(key),
+            js_process(
+              {
+                ...js_context,
+                parentRef: key,
+                parentPath: t.identifier(key),
+              },
+              input[key]
+            )
+          )
+        ]
+      )
+      // no comments for primitive types
+      block_statements.push(
+        variableDeclaration
+      )
+
+    } else if (input[key].type === 'js/block') {
+      // if input[key] is 'js/block'
+      // adds each of the block statement
+      block_statements.push(...(js_process(
+        js_context,
+        input[key]).body
+      ))
+
+    } else if (key.startsWith('...')) {
+      // if input[key] starts with '...'
+      if (input[key].type === 'react/state') {
+        const variableDeclaration = t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.arrayPattern(
+                [
+                  t.identifier(input[key].name),
+                  t.identifier(input[key].setter),
+                ]
+              ),
+              js_process(
+                {
+                  ...js_context,
+                  parentRef: key,
+                  parentPath: t.identifier(key),
+                },
+                input[key]
+              )
+            )
+          ]
+        )
+        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+        t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
+        block_statements.push(
+          variableDeclaration
+        )
+
+      } else {
+        // unrecognized component definition starting with '...'
+        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key].type}]`)
+      }
+
+    } else {
+      // process input[key] and assign to declared variable
+      const variableDeclaration = t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  parentRef: key,
+                  parentPath: t.identifier(key),
+                },
+                input[key]
+              )
+            )
+          ]
+        )
+      //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+      t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
+      block_statements.push(
+        variableDeclaration
+      )
+    }
+  })
+
+  // return arrow function
+  const result = t.arrowFunctionExpression(
+    [
+      t.identifier('props')
+    ],
+    t.blockStatement(
+      [
+        ...block_statements,
+        t.returnStatement(
+          react_element(js_context, input.element)
+        )
+      ]
+    )
+  )
+
+  return result
+}
+
+// resolve identifiers
 function js_resolve_ids(js_context, ast_tree) {
   // add imports and other context to the code
   traverse(ast_tree, {
@@ -2127,6 +2250,7 @@ function js_resolve_ids(js_context, ast_tree) {
 // export
 module.exports = {
   js_process: js_process,
+  react_component: react_component,
   js_resolve_ids: js_resolve_ids,
   js_array: js_array,
   js_object: js_object,

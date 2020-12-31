@@ -428,7 +428,7 @@ const SyntaxTree = (props) => {
           'appx',
           saveUrl,
           {
-            ui_element_spec: spec,
+            ui_route_spec: spec,
           },
           data => {
             // console.log(data)

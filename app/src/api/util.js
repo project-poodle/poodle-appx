@@ -154,7 +154,7 @@ function parse_for_sql(context, req, res) {
         }
 
         if (! (body_key in non_key_attrs)) {
-            let msg = `ERROR: body_key not found [${body_key}] - [${body}] !`
+            let msg = `ERROR: body_key not found [${body_key}] - [${JSON.stringify(body)}] !`
             log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true

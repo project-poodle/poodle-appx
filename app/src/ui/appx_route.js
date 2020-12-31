@@ -19,11 +19,10 @@ const {
 const db = require('../db/db')
 
 /**
- * handle_react_component
+ * handle_appx_route
  */
-function handle_react_component(req, res) {
+function handle_appx_route(req, res) {
 
-    // const { ui_deployment, ui_element } = req.context
     // console.log(req.context)
 
     if (! ('ui_spec' in req.context)
@@ -39,24 +38,24 @@ function handle_react_component(req, res) {
         }
     }
 
-    if (! ('ui_element_spec' in req.context)
-        || ! (req.context.ui_element_spec.element)
+    if (! ('ui_route_spec' in req.context)
+        || ! (req.context.ui_route_spec.element)
     ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.element not defined [${req.context.ui_element_spec}]`
+                message: `ERROR: ui_route_spec.element not defined [${req.context.ui_route_spec}]`
             }
         }
     }
 
-    if (! ('type' in req.context.ui_element_spec.element)
+    if (! ('type' in req.context.ui_route_spec.element)
         ||
         (
-          req.context.ui_element_spec.element.type != 'react/element'
-          && req.context.ui_element_spec.element.type != 'react/html'
+          req.context.ui_route_spec.element.type != 'react/element'
+          && req.context.ui_route_spec.element.type != 'react/html'
         )
     ) {
         return {
@@ -64,7 +63,7 @@ function handle_react_component(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_element_spec.element.type}]`
+                message: `ERROR: ui_route_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_route_spec.element.type}]`
             }
         }
     }
@@ -82,32 +81,32 @@ function handle_react_component(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_element_name))
-    js_context.self = ui_elem_name
-    //console.log(get_js_variable(js_context, ui_elem_name))
+    const ui_route_name = ('self/' + req.context.ui_route_name).replace(/\/+/g, '/')
+    reg_js_variable(js_context, ui_route_name, 'const', capitalize(req.context.ui_route_name))
+    js_context.self = ui_route_name
+    //console.log(get_js_variable(js_context, ui_route_name))
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    const input = req.context.ui_element_spec
+    const input = req.context.ui_route_spec
 
     // create react component function
     const component_func = react_component(js_context, input)
 
     // handle test statements
     const test_statements = []
-    if ('__test' in req.context.ui_element_spec) {
+    if ('__test' in req.context.ui_route_spec) {
       // register variable
-      const ui_test_name = ui_elem_name + '.Test'
+      const ui_test_name = ui_route_name + '.Test'
       reg_js_variable(js_context, ui_test_name)
       // process providers
       let test_element = {
         type: 'react/element',
-        name: ui_elem_name,
+        name: ui_route_name,
       }
-      if (!!req.context.ui_element_spec.__test.providers) {
-        req.context.ui_element_spec.__test.providers
+      if (!!req.context.ui_route_spec.__test.providers) {
+        req.context.ui_route_spec.__test.providers
           .reverse()
           .filter(provider => provider.type === 'react/element')
           .map(provider => {
@@ -150,7 +149,7 @@ function handle_react_component(req, res) {
         t.assignmentExpression(
           '=',
           t.memberExpression(
-            t.identifier(ui_elem_name),
+            t.identifier(ui_route_name),
             t.identifier('Test')
           ),
           t.identifier(ui_test_name)
@@ -169,7 +168,7 @@ function handle_react_component(req, res) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier(ui_elem_name),
+                t.identifier(ui_route_name),
                 component_func,
               )
             ]
@@ -178,7 +177,7 @@ function handle_react_component(req, res) {
           ...test_statements,
           // export
           t.exportDefaultDeclaration(
-            t.identifier(ui_elem_name)
+            t.identifier(ui_route_name)
           ),
         ],
         [], // program directives
@@ -207,5 +206,5 @@ function handle_react_component(req, res) {
 
 // export
 module.exports = {
-    handle_react_component: handle_react_component
+    handle_appx_route: handle_appx_route
 }

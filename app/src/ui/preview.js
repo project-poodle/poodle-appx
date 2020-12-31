@@ -12,6 +12,7 @@ const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
+const { handle_appx_route } = require('./appx_route')
 const { handle_render } = require('./render')
 
 const rootDir = path.join(__dirname, '../../../ui/')
@@ -121,7 +122,7 @@ function handle_preview(req, res) {
 
     } else if (req_type === 'ui_route') {
       // process ui_route
-      const {
+      let {
           namespace,
           ui_name,
           ui_ver,
@@ -135,11 +136,56 @@ function handle_preview(req, res) {
           ui_route_spec,
       } = req_data
 
-      res.status(422).json({
-          status: FAILURE,
-          message: `ERROR: preview type not yet supported [${req_type}]`
-      })
-      return
+      // set request context
+      req.context = { ...req.context, ...req_data }
+
+      // load from cache if not exist
+      if (!ui_spec || !ui_deployment_spec) {
+
+          const lookup = get_ui_deployment(req, res)
+          if (req.fatal) {
+              return
+          }
+
+          // extract result
+          req.context = {
+              ...req.context,
+              ui_spec: lookup.ui_spec,
+              ui_deployment_spec: lookup.ui_deployment_spec,
+          }
+
+          // update local variables
+          ui_spec             = lookup.ui_spec
+          ui_deployment_spec  = lookup.ui_deployment_spec
+
+      }
+
+      if (req_output === 'code') {
+
+        // render source code
+        const result = handle_appx_route(req, res)
+        res.status(result.status)
+            .type(result.type)
+            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+        return
+
+      } else if (req_output === 'html') {
+
+        // render html
+        const result = handle_render(req, res, false)
+        res.status(result.status)
+            .type(result.type)
+            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+        return
+
+      } else {
+        // unrecognized output
+        res.status(422).json({
+            status: FAILURE,
+            message: `ERROR: unrecognized preview output [${req_output}]`
+        })
+        return
+      }
 
     } else {
         // unrecognized type

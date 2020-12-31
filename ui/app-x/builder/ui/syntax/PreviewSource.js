@@ -93,56 +93,127 @@ const PreviewSource = (props) => {
 
     // load from UI context if livePreview
     if (livePreview) {
-      const tree_context = { topLevel: true }
-      const { ref, data: genData } = gen_js(tree_context, treeData)
-      const spec = !!testData
-        ? { ...genData, __test: testData }
-        : genData
-      // preview source code
-      setSourceLoading(true)
-      // preview url
-      const ui_root = globalThis.appx.UI_ROOT
-      const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
-      // console.log(url)
-      const postData = {
-        namespace: navDeployment.namespace,
-        ui_name: navDeployment.ui_name,
-        ui_ver: navDeployment.ui_ver,
-        ui_deployment: navDeployment.ui_deployment,
-        ui_element_name: navElement.ui_element_name,
-        ui_element_type: navElement.ui_element_type,
-        ui_element_spec: spec
-      }
-      // console.log(postData)
-      fetch(
-        url,
-        {
-          method: 'POST',
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify({
-            type: 'ui_element',
-            output: 'code',
-            data: postData,
-          }) // body data type must match "Content-Type" header
-        }
-      ).then(response => response.text())
-        .then(data => {
-          // console.log(data)
-          setSourceLoading(false)
-          setCode(data)
-        })
-        .catch(error => {
-          setSourceLoading(false)
-          console.error(error)
-        })
-    }
 
+      if
+      (
+        !!navDeployment
+        && !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected
+      )
+      {
+        // generate spec data
+        const tree_context = { topLevel: true }
+        const { ref, data: genData } = gen_js(tree_context, treeData)
+        const spec = !!testData
+          ? { ...genData, __test: testData }
+          : genData
+        // preview url
+        const ui_root = globalThis.appx.UI_ROOT
+        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
+        // check object type
+        if (
+          navSelected.type === 'ui_element'
+          && !!navElement
+          && !!navElement.ui_element_name
+          && !!navElement.ui_element_type
+        ) {
+          // preview source code
+          setSourceLoading(true)
+          // console.log(url)
+          const postData = {
+            namespace: navDeployment.namespace,
+            ui_name: navDeployment.ui_name,
+            ui_ver: navDeployment.ui_ver,
+            ui_deployment: navDeployment.ui_deployment,
+            ui_element_name: navElement.ui_element_name,
+            ui_element_type: navElement.ui_element_type,
+            ui_element_spec: spec
+          }
+          // console.log(postData)
+          fetch(
+            url,
+            {
+              method: 'POST',
+              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: 'same-origin', // include, *same-origin, omit
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              redirect: 'follow', // manual, *follow, error
+              referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+              body: JSON.stringify({
+                type: navSelected.type,
+                output: 'code',
+                data: postData,
+              }) // body data type must match "Content-Type" header
+            }
+          )
+          .then(response => response.text())
+          .then(data => {
+            // console.log(data)
+            setSourceLoading(false)
+            setCode(data)
+          })
+          .catch(error => {
+            setSourceLoading(false)
+            setCode(error.toString())
+            console.error(error)
+          })
+        }
+        else if
+        (
+          navSelected.type === 'ui_route'
+          && !!navRoute
+          && !!navRoute.ui_route_name
+        )
+        {
+          // preview source code
+          setSourceLoading(true)
+          // console.log(url)
+          const postData = {
+            namespace: navDeployment.namespace,
+            ui_name: navDeployment.ui_name,
+            ui_ver: navDeployment.ui_ver,
+            ui_deployment: navDeployment.ui_deployment,
+            ui_route_name: navRoute.ui_route_name,
+            ui_route_spec: spec
+          }
+          // console.log(postData)
+          fetch(
+            url,
+            {
+              method: 'POST',
+              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: 'same-origin', // include, *same-origin, omit
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              redirect: 'follow', // manual, *follow, error
+              referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+              body: JSON.stringify({
+                type: navSelected.type,
+                output: 'code',
+                data: postData,
+              }) // body data type must match "Content-Type" header
+            }
+          )
+          .then(response => response.text())
+          .then(data => {
+            // console.log(data)
+            setSourceLoading(false)
+            setCode(data)
+          })
+          .catch(error => {
+            setSourceLoading(false)
+            setCode(error.toString())
+            console.error(error)
+          })
+        }
+      }
+    }
   },
   [
     livePreview,
@@ -151,8 +222,10 @@ const PreviewSource = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
+    navSelected.type,
     navElement.ui_element_name,
     navElement.ui_element_type,
+    navRoute.ui_route_name,
     treeData,
   ])
 
