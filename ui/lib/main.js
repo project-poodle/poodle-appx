@@ -23,10 +23,8 @@ import * as reactHelmet from 'react-helmet'
 // editor
 import * as monacoEditor from '@monaco-editor/react'
 // utilities
-import * as clsx from 'clsx'
 import * as yaml from 'yaml'
 import * as jsYaml from 'js-yaml'
-// import * as objPath from 'object-path'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
@@ -56,10 +54,9 @@ export default {
   "react-helmet": reactHelmet,
   // "react-feather": reactFeather,
   "@monaco-editor/react": monacoEditor,
-  "clsx": clsx,
+  // utilities
   "yaml": yaml,
   "js-yaml": jsYaml,
-  // "object-path": objPath,
   "lodash": lodash,
   "axios": axios,
   "uuid": uuid,

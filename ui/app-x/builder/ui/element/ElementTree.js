@@ -420,7 +420,7 @@ const ElementTree = (props) => {
         onExpand={onExpand}
         onDrop={onDrop}
         onRightClick={onRightClick}
-        treeData={treeData}
+        // treeData={treeData}
       >
       {
         treeData?.map(treeNode => {

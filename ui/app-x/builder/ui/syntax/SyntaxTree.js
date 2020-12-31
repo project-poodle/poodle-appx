@@ -855,7 +855,7 @@ const SyntaxTree = (props) => {
         onExpand={onExpand}
         onDrop={onDrop}
         onRightClick={onRightClick}
-        treeData={treeData}
+        // treeData={treeData}
       >
       {
         treeData.map(treeNode => {
@@ -1050,6 +1050,7 @@ const SyntaxTree = (props) => {
                   title="Undo"
                   placement="bottom"
                   >
+                  <span>
                   <AntButton
                     size="small"
                     color="secondary"
@@ -1062,12 +1063,14 @@ const SyntaxTree = (props) => {
                     disabled={!history.undo?.length}
                     >
                   </AntButton>
+                  </span>
                 </Tooltip>
                 <Tooltip
                   key="redo"
                   title="Redo"
                   placement="bottom"
                   >
+                  <span>
                   <AntButton
                     size="small"
                     color="secondary"
@@ -1080,6 +1083,7 @@ const SyntaxTree = (props) => {
                     disabled={!history.redo?.length}
                     >
                   </AntButton>
+                  </span>
                 </Tooltip>
               </Box>
           }}
