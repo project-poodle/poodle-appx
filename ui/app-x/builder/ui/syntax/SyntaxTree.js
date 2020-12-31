@@ -785,7 +785,7 @@ const SyntaxTree = (props) => {
     }
 
     // check if drop parent is same as current parent
-    console.log(dragObj.parentKey)
+    // console.log(dragObj.parentKey)
     if (dropParent.key === dragObj.parentKey) {
       thisMoveCallback({
          __ref: dragObj.data.__ref     // keep __ref
