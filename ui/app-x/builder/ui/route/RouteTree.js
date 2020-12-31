@@ -239,6 +239,13 @@ const RouteTree = (props) => {
     }
   }, [navDeployment, loadTimer])
 
+  // unselect if user chose other nav types
+  useEffect(() => {
+    if (navSelected?.type !== 'ui_route') {
+      setSelectedKey(null)
+    }
+  }, [ navSelected.type ])
+
   // right click
   const onRightClick = info => {
     // console.log(info)
@@ -275,16 +282,15 @@ const RouteTree = (props) => {
     // console.log(key)
     tree_traverse(treeData, key[0], (item, index, arr) => {
       setSelectedKey(item.key)
-      if (item.isLeaf) {
-        // console.log(item)
-        setNavSelected({
-          type: 'ui_route'
-        })
-        setNavRoute({
-          ui_route_name: item.key,
-          ui_route_spec: item.data.ui_route_spec,
-        })
-      } else {
+      setNavSelected({
+        type: 'ui_route'
+      })
+      setNavRoute({
+        ui_route_name: item.key,
+        ui_route_spec: item.data.ui_route_spec,
+      })
+      // expand / close non-leaf node
+      if (!item.isLeaf) {
         // expand folder & key
         const idx = expandedKeys.indexOf(item.key)
         if (idx < 0) {

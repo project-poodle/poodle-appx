@@ -231,6 +231,14 @@ const ElementTree = (props) => {
     }
   }, [navDeployment, loadTimer])
 
+  // unselect if user chose other nav types
+  useEffect(() => {
+    if (navSelected?.type !== 'ui_element') {
+      setSelectedKey(null)
+    }
+  }, [ navSelected.type ])
+
+
   // right click
   const onRightClick = info => {
     // console.log(info)
