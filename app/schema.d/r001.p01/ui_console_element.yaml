@@ -14,7 +14,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /Router
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               title: PropTypes.string.isRequired
@@ -57,7 +57,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /page/landing/Home
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
               type: mui/style
@@ -227,7 +227,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /page/landing/Unsplash_bg
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
               type: mui/style
@@ -257,7 +257,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /page/auth/Login
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
               type: mui/style
@@ -278,7 +278,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /page/auth/SignInForm
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               consoleUrl: PropTypes.string.isRequired
@@ -587,7 +587,7 @@ ui_element:
       ui_name: console
       ui_ver: internal
       ui_element_name: /page/Console
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
               type: mui/style

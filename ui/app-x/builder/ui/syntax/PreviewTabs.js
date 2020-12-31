@@ -413,7 +413,11 @@ const PreviewTabs = (props) => {
                         setPreviewInitialized(false);
                       }}
                       loading={
-                        widgetLoading
+                        (
+                          livePreview
+                          && !previewInitialized
+                        )
+                        || widgetLoading
                         || liveWidgetUpdating
                         || sourceLoading
                         || yamlLoading
@@ -432,7 +436,7 @@ const PreviewTabs = (props) => {
                   && !!navElement.ui_element_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/element'
+                    navElement?.ui_element_type === 'react/component'
                     || navElement?.ui_element_type === 'html'
                   )
                 )
@@ -461,7 +465,7 @@ const PreviewTabs = (props) => {
                   && !!navElement.ui_element_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/element'
+                    navElement?.ui_element_type === 'react/component'
                     || navElement?.ui_element_type === 'react/provider'
                   )
                 )
@@ -490,7 +494,7 @@ const PreviewTabs = (props) => {
                   && !!navElement.ui_element_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/element'
+                    navElement?.ui_element_type === 'react/component'
                     || navElement?.ui_element_type === 'react/provider'
                   )
                 )
@@ -519,7 +523,7 @@ const PreviewTabs = (props) => {
                   && !!navElement.ui_element_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/element'
+                    navElement?.ui_element_type === 'react/component'
                     || navElement?.ui_element_type === 'react/provider'
                   )
                 )

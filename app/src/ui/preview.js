@@ -10,7 +10,7 @@ const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
-const { handle_react_element } = require('./react_element')
+const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
 const { handle_render } = require('./render')
 
@@ -76,9 +76,9 @@ function handle_preview(req, res) {
 
       if (req_output === 'code') {
 
-        if (ui_element_type == 'react/element') {
+        if (ui_element_type == 'react/component') {
           // render source code
-          const result = handle_react_element(req, res)
+          const result = handle_react_component(req, res)
           res.status(result.status)
               .type(result.type)
               .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))

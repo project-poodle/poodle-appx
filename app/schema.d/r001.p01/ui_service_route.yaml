@@ -4,28 +4,31 @@ ui_route:
       ui_ver: internal
       ui_route_name: /
       ui_route_spec:
-          type: react/element
-          name: self/page/Console
+          element:
+              type: react/element
+              name: self/page/Console
 
     - namespace: sys
       ui_name: service
       ui_ver: internal
       ui_route_name: /console
       ui_route_spec:
-          type: react/element
-          name: self/page/Console
+          element:
+              type: react/element
+              name: self/page/Console
 
     - namespace: sys
       ui_name: service
       ui_ver: internal
       ui_route_name: /404
       ui_route_spec:
-          type: react/element
-          name: app-x/page/layout/HeaderLayout
-          props:
-              header:
-                  type: react/element
-                  name: self/page/header/Header_user
-          children:
-              - type: react/element
-                name: app-x/view/error/NotFoundView
+          element:
+              type: react/element
+              name: app-x/page/layout/HeaderLayout
+              props:
+                  header:
+                      type: react/element
+                      name: self/page/header/Header_user
+              children:
+                  - type: react/element
+                    name: app-x/view/error/NotFoundView

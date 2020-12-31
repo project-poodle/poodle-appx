@@ -9,7 +9,7 @@ const db = require('../db/db')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
-const { handle_react_element } = require('./react_element')
+const { handle_react_component } = require('./react_component')
 
 const rootDir = path.join(__dirname, '../../../ui/')
 // const INDEX_HTML = 'index.html'
@@ -203,9 +203,9 @@ function handle_render(req, res, load_from_db=true) {
     context.init_js = Mustache.render(initjs_content, context)
     // console.log(context.init_js)
 
-    if (ui_element_type == 'react/element') {
+    if (ui_element_type == 'react/component') {
       // process source code [element_js]
-      const element_js = handle_react_element(req, res)
+      const element_js = handle_react_component(req, res)
       if (element_js.status !== 200) {
           return element_js
       }

@@ -1734,7 +1734,8 @@ function appx_route(js_context, input) {
                     parentPath: null,
                     JSX_CONTEXT: true,
                   },
-                  route.ui_route_spec
+                  // TODO - more processing to be added
+                  route.ui_route_spec.element
                 )
               )
             ]

@@ -18,9 +18,9 @@ const {
 const db = require('../db/db')
 
 /**
- * handle_react_element
+ * handle_react_component
  */
-function handle_react_element(req, res) {
+function handle_react_component(req, res) {
 
     // const { ui_deployment, ui_element } = req.context
     // console.log(req.context)
@@ -314,5 +314,5 @@ function handle_react_element(req, res) {
 
 // export
 module.exports = {
-    handle_react_element: handle_react_element
+    handle_react_component: handle_react_component
 }

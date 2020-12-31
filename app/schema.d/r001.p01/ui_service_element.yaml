@@ -14,7 +14,7 @@ ui_element:
       ui_name: service
       ui_ver: internal
       ui_element_name: /Router
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               title: PropTypes.string.isRequired
@@ -50,7 +50,7 @@ ui_element:
       ui_name: service
       ui_ver: internal
       ui_element_name: /page/header/Header_user
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               suffix: PropTypes.element
@@ -78,7 +78,7 @@ ui_element:
       ui_name: service
       ui_ver: internal
       ui_element_name: /page/Console
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           states:
               mobileNav:
@@ -132,7 +132,7 @@ ui_element:
       ui_name: service
       ui_ver: internal
       ui_element_name: /page/Builder
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           states:
               builder:
@@ -192,7 +192,7 @@ ui_element:
       ui_name: service
       ui_ver: internal
       ui_element_name: /nav/appNav
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
               type: mui/style

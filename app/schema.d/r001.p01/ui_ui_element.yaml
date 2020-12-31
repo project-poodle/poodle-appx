@@ -14,7 +14,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /Router
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               title: PropTypes.string.isRequired
@@ -50,7 +50,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /page/header/Header_user
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           propTypes:
               suffix: PropTypes.element
@@ -92,7 +92,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /page/Console
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           states:
               ...navOpen:
@@ -160,7 +160,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /page/Builder
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           states:
               builder:
@@ -261,7 +261,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /nav/uiNav
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           styles:
             type: mui/style
@@ -548,7 +548,7 @@ ui_element:
       ui_name: ui
       ui_ver: internal
       ui_element_name: /GridLayoutTest
-      ui_element_type: react/element
+      ui_element_type: react/component
       ui_element_spec:
           layouts:
             lg:

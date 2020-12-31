@@ -5,7 +5,7 @@ const cache = require('../cache/cache')
 const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
 const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
 const { handle_html } = require('./html')
-const { handle_react_element } = require('./react_element')
+const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
 const { handle_render } = require('./render')
 const { handle_preview } = require('./preview')
@@ -51,9 +51,9 @@ function handle_element(req, res) {
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
         return
 
-    } else if (ui_element.ui_element_type == 'react/element') {
+    } else if (ui_element.ui_element_type == 'react/component') {
 
-        const result = handle_react_element(req, res)
+        const result = handle_react_component(req, res)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -328,8 +328,8 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                         // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })
-                    // generate render page if ui_element_type === 'react/element'
-                    if (elem_context.ui_element_type === 'react/element') {
+                    // generate render page if ui_element_type === 'react/component'
+                    if (elem_context.ui_element_type === 'react/component') {
                         render_js_route_path = js_route_path + 'index.html'
                         router.get(render_js_route_path, (req, res) => {
                             req.context = {...elem_context, ...req.context}
@@ -354,8 +354,8 @@ function load_ui_router(namespace, ui_name, ui_deployment) {
                         // req.context = Object.assign({}, {ui_element: elem_context}, req.context)
                         handle_element(req, res)
                     })
-                    // generate render page if ui_element_type === 'react/element'
-                    if (elem_context.ui_element_type === 'react/element') {
+                    // generate render page if ui_element_type === 'react/component'
+                    if (elem_context.ui_element_type === 'react/component') {
                         render_js_route_path = js_route_path + '.html'
                         router.get(render_js_route_path, (req, res) => {
                             req.context = {...elem_context, ...req.context}

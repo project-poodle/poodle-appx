@@ -215,7 +215,7 @@ const ElementTree = (props) => {
         data => {
           // console.log(data)
           const translated = transformTree(data)
-          console.log(translated)
+          // console.log(translated)
           setTreeData(translated)
         },
         error => {
@@ -377,7 +377,7 @@ const ElementTree = (props) => {
         // console.log(expandedKeys)
         item.children.unshift(dragObj)
         if (!expandedKeys.includes(item.key)) {
-          console.log([...expandedKeys, item.key])
+          // console.log([...expandedKeys, item.key])
           setExpandedKeys(
             [...expandedKeys, item.key]
           )

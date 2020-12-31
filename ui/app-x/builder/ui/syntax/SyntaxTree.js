@@ -26,6 +26,7 @@ import {
   Tabs,
   Radio,
   // Tooltip,
+  notification,
   Button as AntButton,
 } from 'antd'
 const { Header, Footer, Sider, Content } = Layout
@@ -176,7 +177,7 @@ const SyntaxTree = (props) => {
   }, [selectedKey])
 
   // selected pallette tool
-  const [ selectedTool, setSelectedTool ] = useState(null)
+  const [ selectedTool,     setSelectedTool     ] = useState(null)
   // syntax tree cursor
   const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
   // loading and saving
@@ -192,35 +193,51 @@ const SyntaxTree = (props) => {
 
     // set api data
     // setApiData(data)
+    // console.log(data)
 
     // data check
-    if (!('ui_element_spec' in data)) {
-      // fresh action
-      makeAction(`init`, [], null, [], null, true)
-      return
+    let spec_data = {}
+    if (navSelected?.type === 'ui_element') {
+      // check data sanity
+      if (!('ui_element_spec' in data)) {
+        // fresh action
+        makeAction(`init`, [], null, [], null, true)
+        return
+      } else {
+        spec_data = data.ui_element_spec
+      }
+    } else if (navSelected?.type === 'ui_route') {
+      // check data sanity
+      if (!('ui_route_spec' in data)) {
+        // fresh action
+        makeAction(`init`, [], null, [], null, true)
+        return
+      } else {
+        spec_data = data.ui_route_spec
+      }
     }
+    // console.log(`spec_data`, spec_data)
 
     // remove __test if exist
-    const filtered = Object.keys(data.ui_element_spec)
+    const filtered = Object.keys(spec_data)
       .filter(key => key !== '__test')
       .reduce((obj, key) => {
-        obj[key] = data.ui_element_spec[key]
+        obj[key] = spec_data[key]
         return obj
       }, {})
-    // console.log(filtered)
+    // console.log(`filtered`, filtered)
 
     const js_context = { topLevel: true }
     const parsedTree = parse_js(js_context, null, null, filtered)
     // console.log(parsedTree)
 
-    const testData = !!data.ui_element_spec.__test
-      ? data.ui_element_spec.__test
+    const parsedTest = !!spec_data.__test
+      ? spec_data.__test
       : null
 
-    // console.log(`testData`, testData)
-
+    // console.log(`parsed`, parsedTree, parsedTest)
     // fresh action
-    makeAction(`init`, parsedTree, testData, js_context.expandedKeys, null, true)
+    makeAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
   }
 
   // load data via api
@@ -230,38 +247,80 @@ const SyntaxTree = (props) => {
     // console.log(navSelected)
     // console.log(navElement)
 
-    if (!!navDeployment
-        && !!navDeployment.namespace
-        && !!navDeployment.ui_name
-        && !!navDeployment.ui_ver
-        && !!navDeployment.ui_deployment
-        && !!navSelected
-        && !!navSelected.type
-        && navSelected.type === 'ui_element'
+    if
+    (
+      !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+    )
+    {
+      if (
+        navSelected.type === 'ui_element'
         && !!navElement
         && !!navElement.ui_element_name
+      ) {
+        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        // console.log(url)
+        api.get(
+          'sys',
+          'appx',
+          loadUrl,
+          data => {
+            // console.log(data)
+            process_api_data(data)
+            setLoadTrigger(0)
+            setLoadTimer(new Date())
+            setPreviewInitialized(false)
+          },
+          error => {
+            console.error(error)
+            notification['error']({
+              message: `Failed to load UI element [${navElement.ui_element_name}]`,
+              description: error.toString(),
+              placement: 'bottomLeft',
+            })
+            setLoadTrigger(0)
+            setLoadTimer(new Date())
+            setPreviewInitialized(false)
+          }
+        )
+      }
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
       )
-    {
-      const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
-      // console.log(url)
-      api.get(
-        'sys',
-        'appx',
-        loadUrl,
-        data => {
-          // console.log(data)
-          process_api_data(data)
-          setPreviewInitialized(false)
-          setLoadTrigger(0)
-          setLoadTimer(new Date())
-        },
-        error => {
-          console.error(error)
-          setPreviewInitialized(false)
-          setLoadTrigger(0)
-          setLoadTimer(new Date())
-        }
-      )
+      {
+        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
+        // console.log(url)
+        api.get(
+          'sys',
+          'appx',
+          loadUrl,
+          data => {
+            // console.log(data)
+            process_api_data(data)
+            setLoadTrigger(0)
+            setLoadTimer(new Date())
+            setPreviewInitialized(false)
+          },
+          error => {
+            console.error(error)
+            notification['error']({
+              message: `Failed to load UI route [${navRoute.ui_route_name}]`,
+              description: error.toString(),
+              placement: 'bottomLeft',
+            })
+            setLoadTrigger(0)
+            setLoadTimer(new Date())
+            setPreviewInitialized(false)
+          }
+        )
+      }
     }
   },
   [
@@ -281,51 +340,137 @@ const SyntaxTree = (props) => {
     if (!saveTrigger) {
       return
     }
-    const tree_context = { topLevel: true }
-    const { ref, data: genData } = gen_js(tree_context, treeData)
-    const spec = !!testData
-      ? { ...genData, __test: testData }
-      : genData
-    // console.log(spec)
-    // url
-    const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
-    // console.log(url)
-    api.put(
-      'sys',
-      'appx',
-      saveUrl,
-      {
-        ui_element_spec: spec,
-      },
-      data => {
-        // console.log(data)
-        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
-        api.get(
+
+    if
+    (
+      !!navDeployment
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected
+    )
+    {
+      // generate spec
+      const tree_context = { topLevel: true }
+      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const spec = !!testData
+        ? { ...genData, __test: testData }
+        : genData
+      // console.log(spec)
+      if (
+        navSelected.type === 'ui_element'
+        && !!navElement
+        && !!navElement.ui_element_name
+      ) {
+        // url
+        const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        // console.log(url)
+        api.put(
           'sys',
           'appx',
-          loadUrl,
+          saveUrl,
+          {
+            ui_element_spec: spec,
+          },
           data => {
             // console.log(data)
-            process_api_data(data)
-            setPreviewInitialized(false)
-            setSaveTrigger(0)
-            setLoadTimer(new Date())
+            const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+            api.get(
+              'sys',
+              'appx',
+              loadUrl,
+              data => {
+                // console.log(data)
+                process_api_data(data)
+                setSaveTrigger(0)
+                setLoadTimer(new Date())
+                setPreviewInitialized(false)
+              },
+              error => {
+                console.error(error)
+                notification['error']({
+                  message: `Failed to load UI element [${navElement.ui_element_name}]`,
+                  description: error.toString(),
+                  placement: 'bottomLeft',
+                })
+                setSaveTrigger(0)
+                setLoadTimer(new Date())
+                setPreviewInitialized(false)
+              }
+            )
           },
           error => {
             console.error(error)
-            setPreviewInitialized(false)
+            notification['error']({
+              message: `Failed to save UI element [${navElement.ui_element_name}]`,
+              description: error.toString(),
+              placement: 'bottomLeft',
+            })
             setSaveTrigger(0)
             setLoadTimer(new Date())
+            setPreviewInitialized(false)
           }
         )
-      },
-      error => {
-        console.error(error)
-        setPreviewInitialized(false)
-        setSaveTrigger(0)
-        setLoadTimer(new Date())
       }
-    )
+      else if
+      (
+        navSelected.type === 'ui_route'
+        && !!navRoute
+        && !!navRoute.ui_route_name
+      )
+      {
+        // url
+        const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
+        // console.log(url)
+        api.put(
+          'sys',
+          'appx',
+          saveUrl,
+          {
+            ui_element_spec: spec,
+          },
+          data => {
+            // console.log(data)
+            const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
+            api.get(
+              'sys',
+              'appx',
+              loadUrl,
+              data => {
+                // console.log(data)
+                process_api_data(data)
+                setSaveTrigger(0)
+                setLoadTimer(new Date())
+                setPreviewInitialized(false)
+              },
+              error => {
+                console.error(error)
+                notification['error']({
+                  message: `Failed to load UI route [${navRoute.ui_route_name}]`,
+                  description: error.toString(),
+                  placement: 'bottomLeft',
+                })
+                setSaveTrigger(0)
+                setLoadTimer(new Date())
+                setPreviewInitialized(false)
+              }
+            )
+          },
+          error => {
+            console.error(error)
+            notification['error']({
+              message: `Failed to save UI route [${navRoute.ui_route_name}]`,
+              description: error.toString(),
+              placement: 'bottomLeft',
+            })
+            setSaveTrigger(0)
+            setLoadTimer(new Date())
+            setPreviewInitialized(false)
+          }
+        )
+      }
+    }
   }, [saveTrigger])
 
 
@@ -804,7 +949,7 @@ const SyntaxTree = (props) => {
       (
         (
           dropParent.data.type === 'react/element'
-          || dropParent.data.type === 'react/element'
+          || dropParent.data.type === 'react/html'
         )
         &&
         (
@@ -987,7 +1132,7 @@ const SyntaxTree = (props) => {
             && !!navElement.ui_element_name
             &&
             (
-              navElement.ui_element_type === 'react/element'
+              navElement.ui_element_type === 'react/component'
               || navElement.ui_element_type === 'react/provider'
             )
           )
@@ -1026,7 +1171,7 @@ const SyntaxTree = (props) => {
             && !!navElement.ui_element_name
             &&
             (
-              navElement.ui_element_type === 'react/element'
+              navElement.ui_element_type === 'react/component'
               || navElement.ui_element_type === 'react/provider'
             )
           )
@@ -1152,7 +1297,7 @@ const SyntaxTree = (props) => {
               (
                 navSelected.type === 'ui_element'
                 && !!navElement.ui_element_name
-                && navElement.ui_element_type === 'react/element'
+                && navElement.ui_element_type === 'react/component'
               )
               ||
               (
