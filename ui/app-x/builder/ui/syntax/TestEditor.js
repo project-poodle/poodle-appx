@@ -66,7 +66,14 @@ const TestEditor = (props) => {
     },
     contextProvider: {
       width: '100%',
-      padding: theme.spacing(0, 0, 3),
+      padding: theme.spacing(2, 0, 2),
+      // border
+      border: 1,
+      borderLeft: 0,
+      borderRight: 0,
+      borderBottom: 0,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
     },
     formControl: {
       width: '100%',

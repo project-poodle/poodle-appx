@@ -81,7 +81,7 @@ ui_element:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "@material-ui/core.MuiThemeProvider"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     type: js/import
@@ -149,7 +149,7 @@ ui_element:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "@material-ui/core.MuiThemeProvider"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     type: js/import
@@ -250,7 +250,7 @@ ui_element:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "@material-ui/core.MuiThemeProvider"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     type: js/import
@@ -263,270 +263,270 @@ ui_element:
       ui_element_name: /nav/uiNav
       ui_element_type: react/element
       ui_element_spec:
-        styles:
-          type: mui/style
-          divider:
-            margin:
+          styles:
+            type: mui/style
+            divider:
+              margin:
+                type: js/expression
+                data: theme.spacing(3, 0, 2)
+            root:
+              backgroundColor:
+                type: js/expression
+                data: theme.palette.background.paper
+              width: 100%
+          states:
+            ...uiDeployments:
+              type: react/state
+              name: uiDeployments
+              setter: setUiDeployments
+              init: "['a','b','c']"
+            uiElementNav:
+              type: react/state
+              name: open
+              setter: setOpen
+              init: "false"
+            uiRouteNav:
+              type: react/state
+              name: open
+              setter: setOpen
+              init: "false"
+          handlers:
+            handleElementSelected:
               type: js/expression
-              data: theme.spacing(3, 0, 2)
-          root:
-            backgroundColor:
+              data: props.handleElementSelected
+            handleRouteSelected:
               type: js/expression
-              data: theme.palette.background.paper
-            width: 100%
-        states:
-          ...uiDeployments:
-            type: react/state
-            name: uiDeployments
-            setter: setUiDeployments
-            init: "['a','b','c']"
-          uiElementNav:
-            type: react/state
-            name: open
-            setter: setOpen
-            init: "false"
-          uiRouteNav:
-            type: react/state
-            name: open
-            setter: setOpen
-            init: "false"
-        handlers:
-          handleElementSelected:
-            type: js/expression
-            data: props.handleElementSelected
-          handleRouteSelected:
-            type: js/expression
-            data: props.handleRouteSelected
-        element:
-          type: react/element
-          name: "@material-ui/core.Box"
-          props:
-            className:
-              type: js/expression
-              data: styles.root
-          children:
-            - type: react/element
-              name: "@material-ui/core.List"
-              props:
-                component: nav
-                aria-labelledby: UI Builder
-                className:
-                  type: js/expression
-                  data: styles.root
-              children:
-                - type: react/element
-                  name: "@material-ui/core.ListSubheader"
-                  children:
-                    - UI Builder
-                - type: react/element
-                  name: app-x/router.A
-                  props:
-                    href: /ui_settings
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.ListItem"
-                      props:
-                        dense: true
-                        button: true
-                      children:
-                        - type: react/element
-                          name: "@material-ui/core.ListItemIcon"
-                          children:
-                            - type: react/element
-                              name: "@material-ui/icons.SettingsOutlined"
-                              props:
-                                fontSize: small
-                        - type: react/element
-                          name: "@material-ui/core.ListItemText"
-                          props:
-                            primary: UI Settings
-                - type: react/element
-                  name: app-x/router.A
-                  props:
-                    href: /ui_deployments
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.ListItem"
-                      props:
-                        dense: true
-                        button: true
-                      children:
-                        - type: react/element
-                          name: "@material-ui/core.ListItemIcon"
-                          children:
-                            - type: react/element
-                              name: "@material-ui/icons.DeviceHubOutlined"
-                              props:
-                                fontSize: small
-                        - type: react/element
-                          name: "@material-ui/core.ListItemText"
-                          props:
-                            variant: small
-                            primary: UI Deployments
-                - type: react/element
-                  name: "@material-ui/core.Divider"
-                  props:
-                    className:
-                      type: js/expression
-                      data: styles.divider
-                - type: react/element
-                  name: "@material-ui/core.ListItem"
-                  props:
-                    dense: true
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.FormControl"
-                      props:
-                        style:
-                          width: 100%
-                      children:
-                        - type: react/element
-                          name: "@material-ui/core.FormHelperText"
-                          children:
-                            - Select Deployment
-                        - type: react/element
-                          name: "@material-ui/core.Select"
-                          props:
-                            value: b
-                          children:
-                            - type: js/map
-                              data:
-                                type: js/expression
-                                data: states.uiDeployments
-                              result:
-                                type: react/element
-                                name: "@material-ui/core.MenuItem"
+              data: props.handleRouteSelected
+          element:
+            type: react/element
+            name: "@material-ui/core.Box"
+            props:
+              className:
+                type: js/expression
+                data: styles.root
+            children:
+              - type: react/element
+                name: "@material-ui/core.List"
+                props:
+                  component: nav
+                  aria-labelledby: UI Builder
+                  className:
+                    type: js/expression
+                    data: styles.root
+                children:
+                  - type: react/element
+                    name: "@material-ui/core.ListSubheader"
+                    children:
+                      - UI Builder
+                  - type: react/element
+                    name: app-x/router.A
+                    props:
+                      href: /ui_settings
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.ListItem"
+                        props:
+                          dense: true
+                          button: true
+                        children:
+                          - type: react/element
+                            name: "@material-ui/core.ListItemIcon"
+                            children:
+                              - type: react/element
+                                name: "@material-ui/icons.SettingsOutlined"
                                 props:
-                                  key:
-                                    type: js/expression
-                                    data: item
-                                  value:
-                                    type: js/expression
-                                    data: item
-                                children:
-                                  - type: react/element
-                                    name: "@material-ui/core.ListItemText"
-                                    children:
-                                      - type: js/expression
-                                        data: item
-                - type: react/element
-                  name: "@material-ui/core.ListItem"
-                  props:
-                    dense: true
-                    button: true
-                    onClick:
-                      type: js/expression
-                      data: |
-                        () => {
-                          states.uiElementNav.setOpen(!states.uiElementNav.open)
-                        }
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.ListItemIcon"
-                      children:
-                        - type: react/element
-                          name: "@material-ui/icons.WidgetsOutlined"
-                          props:
-                            fontSize: small
-                    - type: react/element
-                      name: "@material-ui/core.ListItemText"
-                      props:
-                        primary: UI Elements
-                    - type: js/switch
-                      children:
-                        - condition: "!!states.uiElementNav.open"
-                          result:
-                            type: react/element
-                            name: "@material-ui/icons.ExpandLess"
+                                  fontSize: small
+                          - type: react/element
+                            name: "@material-ui/core.ListItemText"
+                            props:
+                              primary: UI Settings
+                  - type: react/element
+                    name: app-x/router.A
+                    props:
+                      href: /ui_deployments
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.ListItem"
+                        props:
+                          dense: true
+                          button: true
+                        children:
+                          - type: react/element
+                            name: "@material-ui/core.ListItemIcon"
+                            children:
+                              - type: react/element
+                                name: "@material-ui/icons.DeviceHubOutlined"
+                                props:
+                                  fontSize: small
+                          - type: react/element
+                            name: "@material-ui/core.ListItemText"
+                            props:
+                              variant: small
+                              primary: UI Deployments
+                  - type: react/element
+                    name: "@material-ui/core.Divider"
+                    props:
+                      className:
+                        type: js/expression
+                        data: styles.divider
+                  - type: react/element
+                    name: "@material-ui/core.ListItem"
+                    props:
+                      dense: true
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.FormControl"
+                        props:
+                          style:
+                            width: 100%
+                        children:
+                          - type: react/element
+                            name: "@material-ui/core.FormHelperText"
+                            children:
+                              - Select Deployment
+                          - type: react/element
+                            name: "@material-ui/core.Select"
+                            props:
+                              value: b
+                            children:
+                              - type: js/map
+                                data:
+                                  type: js/expression
+                                  data: states.uiDeployments
+                                result:
+                                  type: react/element
+                                  name: "@material-ui/core.MenuItem"
+                                  props:
+                                    key:
+                                      type: js/expression
+                                      data: item
+                                    value:
+                                      type: js/expression
+                                      data: item
+                                  children:
+                                    - type: react/element
+                                      name: "@material-ui/core.ListItemText"
+                                      children:
+                                        - type: js/expression
+                                          data: item
+                  - type: react/element
+                    name: "@material-ui/core.ListItem"
+                    props:
+                      dense: true
+                      button: true
+                      onClick:
+                        type: js/expression
+                        data: |
+                          () => {
+                            states.uiElementNav.setOpen(!states.uiElementNav.open)
+                          }
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.ListItemIcon"
+                        children:
+                          - type: react/element
+                            name: "@material-ui/icons.WidgetsOutlined"
                             props:
                               fontSize: small
-                        - condition: "!states.uiElementNav.open"
-                          result:
-                            type: react/element
-                            name: "@material-ui/icons.ExpandMore"
-                            props:
-                              fontSize: small
-                - type: react/element
-                  name: "@material-ui/core.Collapse"
-                  props:
-                    in:
-                      type: js/expression
-                      data: |
-                        states.uiElementNav.open
-                    unmountOnExit: true
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.Box"
-                      children:
-                        - type: react/element
-                          name: app-x/builder/ui/element/ElementProvider
-                          children:
-                            - type: react/element
-                              name: app-x/builder/ui/element/ElementTree
+                      - type: react/element
+                        name: "@material-ui/core.ListItemText"
+                        props:
+                          primary: UI Elements
+                      - type: js/switch
+                        children:
+                          - condition: "!!states.uiElementNav.open"
+                            result:
+                              type: react/element
+                              name: "@material-ui/icons.ExpandLess"
                               props:
-                                namespace: sys
-                                ui_name: ui
-                                ui_deployment: base
-                - type: react/element
-                  name: "@material-ui/core.ListItem"
-                  props:
-                    dense: true
-                    button: true
-                    onClick:
-                      type: js/expression
-                      data: |
-                        () => {
-                          states.uiRouteNav.setOpen(!states.uiRouteNav.open)
-                        }
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.ListItemIcon"
-                      children:
-                        - type: react/element
-                          name: "@material-ui/icons.CropRotateOutlined"
-                          props:
-                            fontSize: small
-                    - type: react/element
-                      name: "@material-ui/core.ListItemText"
-                      props:
-                        primary: UI Routes
-                    - type: js/switch
-                      children:
-                        - condition: "!!states.uiRouteNav.open"
-                          result:
-                            type: react/element
-                            name: "@material-ui/icons.ExpandLess"
-                            props:
-                              fontSize: small
-                        - condition: "!states.uiRouteNav.open"
-                          result:
-                            type: react/element
-                            name: "@material-ui/icons.ExpandMore"
-                            props:
-                              fontSize: small
-                - type: react/element
-                  name: "@material-ui/core.Collapse"
-                  props:
-                    in:
-                      type: js/expression
-                      data: |
-                        states.uiRouteNav.open
-                    unmountOnExit: true
-                  children:
-                    - type: react/element
-                      name: "@material-ui/core.Box"
-                      props:
-                        p: 1
-                      children:
-                        - type: react/element
-                          name: app-x/builder/ui/element/ElementProvider
-                          children:
-                            - type: react/element
-                              name: app-x/builder/ui/element/ElementTree
+                                fontSize: small
+                          - condition: "!states.uiElementNav.open"
+                            result:
+                              type: react/element
+                              name: "@material-ui/icons.ExpandMore"
                               props:
-                                namespace: sys
-                                ui_name: ui
-                                ui_deployment: base
+                                fontSize: small
+                  - type: react/element
+                    name: "@material-ui/core.Collapse"
+                    props:
+                      in:
+                        type: js/expression
+                        data: |
+                          states.uiElementNav.open
+                      unmountOnExit: true
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.Box"
+                        children:
+                          - type: react/element
+                            name: app-x/builder/ui/element/ElementProvider
+                            children:
+                              - type: react/element
+                                name: app-x/builder/ui/element/ElementTree
+                                props:
+                                  namespace: sys
+                                  ui_name: ui
+                                  ui_deployment: base
+                  - type: react/element
+                    name: "@material-ui/core.ListItem"
+                    props:
+                      dense: true
+                      button: true
+                      onClick:
+                        type: js/expression
+                        data: |
+                          () => {
+                            states.uiRouteNav.setOpen(!states.uiRouteNav.open)
+                          }
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.ListItemIcon"
+                        children:
+                          - type: react/element
+                            name: "@material-ui/icons.CropRotateOutlined"
+                            props:
+                              fontSize: small
+                      - type: react/element
+                        name: "@material-ui/core.ListItemText"
+                        props:
+                          primary: UI Routes
+                      - type: js/switch
+                        children:
+                          - condition: "!!states.uiRouteNav.open"
+                            result:
+                              type: react/element
+                              name: "@material-ui/icons.ExpandLess"
+                              props:
+                                fontSize: small
+                          - condition: "!states.uiRouteNav.open"
+                            result:
+                              type: react/element
+                              name: "@material-ui/icons.ExpandMore"
+                              props:
+                                fontSize: small
+                  - type: react/element
+                    name: "@material-ui/core.Collapse"
+                    props:
+                      in:
+                        type: js/expression
+                        data: |
+                          states.uiRouteNav.open
+                      unmountOnExit: true
+                    children:
+                      - type: react/element
+                        name: "@material-ui/core.Box"
+                        props:
+                          p: 1
+                        children:
+                          - type: react/element
+                            name: app-x/builder/ui/element/ElementProvider
+                            children:
+                              - type: react/element
+                                name: app-x/builder/ui/element/ElementTree
+                                props:
+                                  namespace: sys
+                                  ui_name: ui
+                                  ui_deployment: base
           __test:
             providers:
               - type: react/element
@@ -536,11 +536,14 @@ ui_element:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "@material-ui/core.MuiThemeProvider"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     type: js/import
                     name: app-x/theme.default
+              - type: react/element
+                name: "app-x/builder/ui/NavProvider"
+
 
     ############################################################
     - namespace: sys
@@ -549,106 +552,106 @@ ui_element:
       ui_element_name: /GridLayoutTest
       ui_element_type: react/element
       ui_element_spec:
-        layouts:
-          lg:
-            - i: a
-              x: 0
-              y: 0
-              w: 1
-              h: 2
-            - i: b
-              x: 1
-              y: 0
-              w: 3
-              h: 2
-            - i: c
-              x: 4
-              y: 0
-              w: 1
-              h: 2
-          md:
-            - i: a
-              x: 0
-              y: 0
-              w: 1
-              h: 2
-            - i: b
-              x: 1
-              y: 0
-              w: 3
-              h: 2
-            - i: c
-              x: 4
-              y: 0
-              w: 1
-              h: 2
-        styles:
-          type: mui/style
-          root:
-            height: 100%
-            width: 100%
-          box:
-            borderStyle: solid
-            borderColor:
-              type: js/expression
-              data: theme.palette.divider
-        snippet:
-          type: js/block
-          data: |
-            // console.log($r('react-grid-layout.default'))
-        element:
-          type: react/element
-          name: "@material-ui/core.Container"
-          props:
-            className:
-              type: js/expression
-              data: styles.root
-          children:
-            - type: react/element
-              name: react-grid-layout.Responsive
-              props:
-                breakpoints:
-                  md: 0
-                  lg: 1200
-                className:
-                  type: js/expression
-                  data: styles.root
-                layouts:
-                  type: js/expression
-                  data: layouts
-                cols:
-                  lg: 12
-                  md: 12
-                rowHeight: 30
-                width: 800
-              children:
-                - type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    key: a
-                    className:
-                      type: js/expression
-                      data: styles.box
-                  children:
-                    - a
-                - type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    key: b
-                    className:
-                      type: js/expression
-                      data: styles.box
-                  children:
-                    - b
-                - type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    key: c
-                    className:
-                      type: js/expression
-                      data: styles.box
-                  children:
-                    - c
+          layouts:
+            lg:
+              - i: a
+                x: 0
+                y: 0
+                w: 1
+                h: 2
+              - i: b
+                x: 1
+                y: 0
+                w: 3
+                h: 2
+              - i: c
+                x: 4
+                y: 0
+                w: 1
+                h: 2
+            md:
+              - i: a
+                x: 0
+                y: 0
+                w: 1
+                h: 2
+              - i: b
+                x: 1
+                y: 0
+                w: 3
+                h: 2
+              - i: c
+                x: 4
+                y: 0
+                w: 1
+                h: 2
+          styles:
+            type: mui/style
+            root:
+              height: 100%
+              width: 100%
+            box:
+              borderStyle: solid
+              borderColor:
+                type: js/expression
+                data: theme.palette.divider
+          snippet:
+            type: js/block
+            data: |
+              // console.log($r('react-grid-layout.default'))
+          element:
+            type: react/element
+            name: "@material-ui/core.Container"
+            props:
+              className:
+                type: js/expression
+                data: styles.root
+            children:
+              - type: react/element
+                name: react-grid-layout.Responsive
+                props:
+                  breakpoints:
+                    md: 0
+                    lg: 1200
+                  className:
+                    type: js/expression
+                    data: styles.root
+                  layouts:
+                    type: js/expression
+                    data: layouts
+                  cols:
+                    lg: 12
+                    md: 12
+                  rowHeight: 30
+                  width: 800
+                children:
+                  - type: react/element
+                    name: "@material-ui/core.Box"
+                    props:
+                      key: a
+                      className:
+                        type: js/expression
+                        data: styles.box
+                    children:
+                      - a
+                  - type: react/element
+                    name: "@material-ui/core.Box"
+                    props:
+                      key: b
+                      className:
+                        type: js/expression
+                        data: styles.box
+                    children:
+                      - b
+                  - type: react/element
+                    name: "@material-ui/core.Box"
+                    props:
+                      key: c
+                      className:
+                        type: js/expression
+                        data: styles.box
+                    children:
+                      - c
           __test:
             providers:
               - type: react/element
@@ -658,7 +661,7 @@ ui_element:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "@material-ui/core.MuiThemeProvider"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     type: js/import

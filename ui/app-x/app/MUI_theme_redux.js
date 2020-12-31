@@ -2,10 +2,9 @@
 import React from 'react'
 import { useRoutes } from 'app-x/router'
 import PropTypes from 'prop-types'
-import { ThemeProvider, Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
 import { Provider } from 'react-redux'
 
-import GlobalStyles from 'app-x/theme/GlobalStyles'
+import GlobalStyleProvider from 'app-x/theme/GlobalStyleProvider'
 import HeaderLayout from 'app-x/page/header/Header_plain'
 import NotFoundView from 'app-x/view/error/NotFoundView'
 
@@ -19,10 +18,9 @@ const MUI_App = (props) => {
 
   return (
     <Provider store={props.redux_store_provider}>
-      <ThemeProvider theme={props.theme_provider}>
-        <GlobalStyles />
+      <GlobalStyleProvider theme={props.theme_provider}>
         {routeResult || not_found}
-      </ThemeProvider>
+      </GlobalStyleProvider>
     </Provider>
   )
 }

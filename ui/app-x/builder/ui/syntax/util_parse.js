@@ -1598,7 +1598,7 @@ function load_valid_import_data() {
     globalThis.appx.APPX_PATHS.paths.map(path => {
       // import lib path
       import(PATH_SEPARATOR + path).then(path_module => {
-        console.log(path_module)
+        // console.log(path_module)
         const module_name = path
         Object.keys(path_module).map(variable_name => {
           if (variable_name === 'default') {
