@@ -182,85 +182,109 @@ const PropFieldArray = props => {
                   </FormControl>
                 }
               />
-              <Controller
-                key='value'
-                name={`${props.name}[${index}].value`}
-                control={control}
-                defaultValue={item?.value}
-                callback={props.callback}
-                render={innerProps =>
-                  <Box className={styles.formControl}>
-                  {
-                    (propType === 'js/boolean')
-                    &&
-                    (
-                      <FormControl key="boolean" className={styles.valueControl}>
-                        <Switch
-                          name={innerProps.name}
-                          checked={innerProps.value}
-                          onChange={e => {
-                            innerProps.onChange(e.target.checked)
-                            if (props.callback) {
-                              props.callback(e.target.checked, innerProps.name)
-                            }
-                          }}
-                        />
-                      </FormControl>
-                    )
-                  }
-                  {
-                    (
-                      propType === 'js/string'
-                      || propType === 'js/number'
-                      || propType === 'js/expression'
-                    )
-                    &&
-                    (
-                      <FormControl key="data" className={styles.valueControl}>
-                        <TextField
-                          className={styles.formControl}
-                          name={innerProps.name}
-                          value={innerProps.value}
-                          onChange={e => {
-                            innerProps.onChange(e.target.value)
-                            if (props.callback) {
-                              props.callback(e.target.value, innerProps.name)
-                            }
-                          }}
-                          error={
-                            !!_.get(errors, props.name)
-                            && !!_.get(errors, props.name)[index]?.value
-                          }
-                          helperText={
-                            !!_.get(errors, props.name)
-                            && _.get(errors, props.name)[index]?.value?.message
-                          }
-                        />
-                      </FormControl>
-                    )
-                  }
-                  {
-                    (propType === 'js/import')
-                    &&
-                    (
-                      <AutoComplete
-                        key="import"
-                        className={styles.valueControl}
-                        name={innerProps.name}
-                        defaultValue={innerProps.value}
-                        options={valid_import_names()}
-                        callback={data => {
-                          if (props.callback) {
-                            props.callback(data, innerProps.name)
-                          }
-                        }}
-                        >
-                      </AutoComplete>
-                    )
-                  }
-                  </Box>
+              <Box className={styles.formControl}>
+                {
+                  (propType === 'js/boolean')
+                  &&
+                  (
+                    <Controller
+                      key='value'
+                      name={`${props.name}[${index}].value`}
+                      control={control}
+                      defaultValue={item?.value}
+                      callback={props.callback}
+                      render={innerProps =>
+                        (
+                          <FormControl key="boolean" className={styles.valueControl}>
+                            <Switch
+                              name={innerProps.name}
+                              checked={innerProps.value}
+                              onChange={e => {
+                                innerProps.onChange(e.target.checked)
+                                if (props.callback) {
+                                  props.callback(e.target.checked, innerProps.name)
+                                }
+                              }}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  )
                 }
-              />
+                {
+                  (
+                    propType === 'js/string'
+                    || propType === 'js/number'
+                    || propType === 'js/expression'
+                  )
+                  &&
+                  (
+                    <Controller
+                      key='value'
+                      name={`${props.name}[${index}].value`}
+                      control={control}
+                      defaultValue={item?.value}
+                      callback={props.callback}
+                      render={innerProps =>
+                        (
+                          <FormControl key="data" className={styles.valueControl}>
+                            <TextField
+                              className={styles.formControl}
+                              name={innerProps.name}
+                              value={innerProps.value}
+                              onChange={e => {
+                                innerProps.onChange(e.target.value)
+                                if (props.callback) {
+                                  props.callback(e.target.value, innerProps.name)
+                                }
+                              }}
+                              error={
+                                !!_.get(errors, props.name)
+                                && !!_.get(errors, props.name)[index]?.value
+                              }
+                              helperText={
+                                !!_.get(errors, props.name)
+                                && _.get(errors, props.name)[index]?.value?.message
+                              }
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  )
+                }
+                {
+                  (propType === 'js/import')
+                  &&
+                  (
+                    <AutoComplete
+                      key='value'
+                      className={styles.valueControl}
+                      name={`${props.name}[${index}].value`}
+                      defaultValue={item?.value}
+                      options={
+                        valid_import_names()
+                      }
+                      rules={{
+                        required: "Import name is required",
+                        validate: {
+                          valid_name: value => (
+                            valid_import_names().includes(value)
+                            || "Must use a valid name"
+                          )
+                        }
+                      }}
+                      callback={data => {
+                        if (props.callback) {
+                          props.callback(data, `${props.name}[${index}].value`)
+                        }
+                      }}
+                      >
+                    </AutoComplete>
+                  )
+                }
+              </Box>
               <IconButton
                 key="remove"
                 aria-label="Remove"

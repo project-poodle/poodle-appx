@@ -737,6 +737,12 @@ const SyntaxAddDialog = (props) => {
                     defaultValue=''
                     rules={{
                       required: "Import name is required",
+                      validate: {
+                        valid_name: value => (
+                          valid_import_names().includes(value)
+                          || "Must use a valid name"
+                        )
+                      }
                     }}
                   />
                 </Box>
@@ -1255,6 +1261,12 @@ const SyntaxAddDialog = (props) => {
                       defaultValue=''
                       rules={{
                         required: "Element name is required",
+                        validate: {
+                          valid_name: value => (
+                            valid_import_names().includes(value)
+                            || "Must use a valid name"
+                          )
+                        }
                       }}
                     />
                   }

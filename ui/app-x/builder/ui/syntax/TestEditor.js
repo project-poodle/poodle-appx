@@ -147,7 +147,7 @@ const TestEditor = (props) => {
   useEffect(() => {
     if (testSubmitTimer > 0) {
       setTimeout(() => {
-        console.log(`errors`, errors)
+        // console.log(`errors`, errors)
         handleSubmit(onTestSubmit)()
       }, 500)
     }
@@ -305,10 +305,16 @@ const TestEditor = (props) => {
                         defaultValue={item.name}
                         options={valid_import_names()}
                         rules={{
-                          required: 'Context provider name is required'
+                          required: 'Context provider name is required',
+                          validate: {
+                            valid_name: value => (
+                              valid_import_names().includes(value)
+                              || "Must use a valid name"
+                            )
+                          }
                         }}
                         callback={d => {
-                          console.log(`submit providers[${index}].name`)
+                          // console.log(`submit providers[${index}].name`)
                           setTestSubmitTimer(new Date())
                         }}
                         >
@@ -318,7 +324,7 @@ const TestEditor = (props) => {
                         aria-label="Remove"
                         onClick={e => {
                           removeProvider(index)
-                          console.log(`remove providers[${index}].name`)
+                          // console.log(`remove providers[${index}].name`)
                           setTestSubmitTimer(new Date())
                         }}
                         >
@@ -332,7 +338,7 @@ const TestEditor = (props) => {
                         defaultValue={item.props}
                         className={styles.formControl}
                         callback={d => {
-                          console.log(`callback providers[${index}].props`)
+                          // console.log(`callback providers[${index}].props`)
                           setTestSubmitTimer(new Date())
                         }}
                       />

@@ -777,6 +777,12 @@ const PropEditor = (props) => {
                       defaultValue={treeNode?.data?.name}
                       rules={{
                         required: "Import name is required",
+                        validate: {
+                          valid_name: value => (
+                            valid_import_names().includes(value)
+                            || "Must use a valid name"
+                          )
+                        }
                       }}
                       callback={data => {
                         setBaseSubmitTimer(new Date())
@@ -1294,6 +1300,12 @@ const PropEditor = (props) => {
                         defaultValue={treeNode?.data?.name}
                         rules={{
                           required: "Element name is required",
+                          validate: {
+                            valid_name: value => (
+                              valid_import_names().includes(value)
+                              || "Must use a valid name"
+                            )
+                          }
                         }}
                         callback={data => {
                           setBaseSubmitTimer(new Date())
