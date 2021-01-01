@@ -192,11 +192,28 @@ const TestEditor = (props) => {
                 }
               })
           : []
-
+        // iterate other names
+        const otherNames =
+        (
+          !!provider?.props
+          && !!(Object.keys(provider.props).length)
+        )
+        ? Object.keys(provider.props)
+            .filter(key => (
+              provider.props[key]?.type !== 'js/string'
+              && provider.props[key]?.type !== 'js/number'
+              && provider.props[key]?.type !== 'js/boolean'
+              && provider.props[key]?.type !== 'js/null'
+              && provider.props[key]?.type !== 'js/impression'
+              && provider.props[key]?.type !== 'js/import'
+            ))
+            .map(key => key)
+        : []
         defaultValues.push({
           // id: `providers[${index}]`,
           name: provider.name,
           props: props,
+          otherNames: otherNames,
         })
       }
     )
@@ -336,9 +353,9 @@ const TestEditor = (props) => {
                         name={`providers[${index}].props`}
                         label="Properties"
                         defaultValue={item.props}
+                        otherNames={item.otherNames}
                         className={styles.formControl}
                         callback={d => {
-                          // console.log(`callback providers[${index}].props`)
                           setTestSubmitTimer(new Date())
                         }}
                       />

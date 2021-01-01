@@ -22,6 +22,7 @@ import {
   useFieldArray,
   Controller,
 } from 'react-hook-form'
+import { parse, parseExpression } from "@babel/parser"
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
@@ -62,7 +63,7 @@ const PropFieldArray = props => {
     setError,
     clearErrors,
     setValue,
-    getValuess,
+    getValues,
     trigger,
     control,
     formState,
@@ -156,9 +157,27 @@ const PropFieldArray = props => {
                   pattern: {
                     value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
                     message: "Property name must be valid variable name",
+                  },
+                  validate: {
+                    noDuplicateWithOthers: value => {
+                      return
+                        !props.otherNames
+                        || !props.otherNames.includes(value)
+                        || "Property name duplicate with one of existing properties"
+                    },
+                    noDuplicateWithSelf: value => {
+                      let found = false
+                      _.get(getValues(), props.name)?.map((child, i) => {
+                        // console.log(`child`, child, i)
+                        if (child.name === value && index !== i) {
+                          found = true
+                        }
+                      })
+                      return !found
+                        || "Another property has same name"
+                    }
                   }
                 }}
-                callback={props.callback}
                 render={innerProps =>
                   <FormControl className={styles.nameControl}>
                     <TextField
@@ -167,6 +186,7 @@ const PropFieldArray = props => {
                       onChange={e => {
                         innerProps.onChange(e.target.value)
                         if (props.callback) {
+                          // console.log(`callback`, e.target.value, innerProps.name)
                           props.callback(e.target.value, innerProps.name)
                         }
                       }}
@@ -192,7 +212,6 @@ const PropFieldArray = props => {
                       name={`${props.name}[${index}].value`}
                       control={control}
                       defaultValue={item?.value}
-                      callback={props.callback}
                       render={innerProps =>
                         (
                           <FormControl key="boolean" className={styles.valueControl}>
@@ -213,11 +232,7 @@ const PropFieldArray = props => {
                   )
                 }
                 {
-                  (
-                    propType === 'js/string'
-                    || propType === 'js/number'
-                    || propType === 'js/expression'
-                  )
+                  (propType === 'js/string')
                   &&
                   (
                     <Controller
@@ -225,7 +240,102 @@ const PropFieldArray = props => {
                       name={`${props.name}[${index}].value`}
                       control={control}
                       defaultValue={item?.value}
-                      callback={props.callback}
+                      rules={{
+                        required: "Property value is required"
+                      }}
+                      render={innerProps =>
+                        (
+                          <FormControl key="data" className={styles.valueControl}>
+                            <TextField
+                              className={styles.formControl}
+                              name={innerProps.name}
+                              value={innerProps.value}
+                              onChange={e => {
+                                innerProps.onChange(e.target.value)
+                                if (props.callback) {
+                                  props.callback(e.target.value, innerProps.name)
+                                }
+                              }}
+                              error={
+                                !!_.get(errors, props.name)
+                                && !!_.get(errors, props.name)[index]?.value
+                              }
+                              helperText={
+                                !!_.get(errors, props.name)
+                                && _.get(errors, props.name)[index]?.value?.message
+                              }
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  )
+                }
+                {
+                  (propType === 'js/number')
+                  &&
+                  (
+                    <Controller
+                      key='value'
+                      name={`${props.name}[${index}].value`}
+                      control={control}
+                      defaultValue={item?.value}
+                      rules={{
+                        required: "Number is required",
+                        validate: {
+                          checkNumber: value => !isNaN(Number(value)) || "Must be a number",
+                        }
+                      }}
+                      render={innerProps =>
+                        (
+                          <FormControl key="data" className={styles.valueControl}>
+                            <TextField
+                              className={styles.formControl}
+                              name={innerProps.name}
+                              value={innerProps.value}
+                              onChange={e => {
+                                innerProps.onChange(e.target.value)
+                                if (props.callback) {
+                                  props.callback(e.target.value, innerProps.name)
+                                }
+                              }}
+                              error={
+                                !!_.get(errors, props.name)
+                                && !!_.get(errors, props.name)[index]?.value
+                              }
+                              helperText={
+                                !!_.get(errors, props.name)
+                                && _.get(errors, props.name)[index]?.value?.message
+                              }
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  )
+                }
+                {
+                  (propType === 'js/expression')
+                  &&
+                  (
+                    <Controller
+                      key='value'
+                      name={`${props.name}[${index}].value`}
+                      control={control}
+                      defaultValue={item?.value}
+                      rules={{
+                        required: "Expression is required",
+                        validate: {
+                          expressionSyntax: value => {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
                       render={innerProps =>
                         (
                           <FormControl key="data" className={styles.valueControl}>
@@ -327,6 +437,7 @@ PropFieldArray.propTypes = {
     value: PropTypes.any.isRequired,
   })),
   options: PropTypes.array,                 // for prop name autocomplete
+  otherNames: PropTypes.array,              // other prop names for validation
   callback: PropTypes.func,
   className: PropTypes.string,              // display className for element
 }

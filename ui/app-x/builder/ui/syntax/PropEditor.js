@@ -24,11 +24,12 @@ import {
   Tabs,
 } from 'antd'
 const { TabPane } = Tabs;
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm, FormProvider, Controller } from "react-hook-form"
 import { parse, parseExpression } from "@babel/parser"
 // context provider
 import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
 // utilities
@@ -69,6 +70,14 @@ const PropEditor = (props) => {
       overflow: 'scroll',
     },
   }))()
+
+  // nav context
+  const {
+    navDeployment,
+    navComponent,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
 
   // context
   const {
@@ -125,17 +134,57 @@ const PropEditor = (props) => {
   }, [watch__customRef])
 
   useEffect(() => {
-    // lookup node
-    const lookupNode = tree_lookup(treeData, selectedKey)
-    const lookupParent = !!lookupNode ? tree_lookup(treeData, lookupNode.parentKey) : null
-    setTreeNode(_.cloneDeep(lookupNode))
-    setParentNode(_.cloneDeep(lookupParent))
-    // console.log(lookupNode)
-    // console.log(parentNode)
-    if (lookupNode) {
-      setNodeType(lookupNode.data.type)
+    // check validity
+    if
+    (
+      !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !! navDeployment.ui_deployment
+      && !! navSelected.type
+      &&
+      (
+        (
+          navSelected.type === 'ui_component'
+          && !!navComponent.ui_component_name
+          && !!navComponent.ui_component_type
+        )
+        ||
+        (
+          navSelected.type === 'ui_route'
+          && !!navRoute.ui_route_name
+        )
+      )
+    )
+    {
+      // lookup node
+      const lookupNode = tree_lookup(treeData, selectedKey)
+      const lookupParent = !!lookupNode ? tree_lookup(treeData, lookupNode.parentKey) : null
+      setTreeNode(_.cloneDeep(lookupNode))
+      setParentNode(_.cloneDeep(lookupParent))
+      // console.log(lookupNode)
+      // console.log(parentNode)
+      if (lookupNode) {
+        setNodeType(lookupNode.data.type)
+      }
     }
-  }, [selectedKey])
+    else
+    {
+      setTreeNode(null)
+      setParentNode(null)
+    }
+  },
+  [
+    navDeployment.namespace,
+    navDeployment.ui_name,
+    navDeployment.ui_ver,
+    navDeployment.ui_deployment,
+    navSelected.type,
+    navComponent.ui_component_name,
+    navComponent.ui_component_type,
+    navRoute.ui_route_name,
+    selectedKey
+  ])
 
   // setValue when treeNode change
   useEffect(() => {
@@ -154,7 +203,11 @@ const PropEditor = (props) => {
           && !treeNode.data.__ref.startsWith('...'))
       }
     }
-  }, [treeNode])
+  },
+  [
+    treeNode,
+    parentNode,
+  ])
 
   // base submit timer
   const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())

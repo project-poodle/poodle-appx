@@ -35,7 +35,7 @@ const AutoComplete = (props) => {
     setError,
     clearErrors,
     setValue,
-    getValuess,
+    getValues,
     trigger,
     control,
     formState,
