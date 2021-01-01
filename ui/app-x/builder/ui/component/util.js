@@ -119,8 +119,8 @@ function default_spec_for_type (type) {
           position: 'absolute',
         }
       },
-      component: {
-        type: 'react/component',
+      element: {
+        type: 'react/element',
         name: '@material-ui/core.Box',
         props: {
           display: 'flex',
@@ -133,7 +133,7 @@ function default_spec_for_type (type) {
         },
         children: [
           {
-            type: 'react/component',
+            type: 'react/element',
             name: '@material-ui/core.Typography',
             props: {
               variant: 'h6',
