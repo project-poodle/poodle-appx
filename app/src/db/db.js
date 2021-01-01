@@ -53,7 +53,7 @@ var getPool = (mysql_conf_file) => {
             }
         })
 
-        console.log(`INFO: [DB POOL] connecting to ${chosen_host}`)
+        console.log(`INFO: [DB POOL] try connecting to ${chosen_host}`)
     }
 
     return db_pool

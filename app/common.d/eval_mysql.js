@@ -113,7 +113,7 @@ for (let i=0; i<max_retries; i++) {
             }
         })
 
-        console.error(`INFO: [DB] connecting to ${chosen_host}...`)
+        console.error(`INFO: [DB] try connecting to ${chosen_host}...`)
 
         ////////////////////////////////////////////////////////////////////////////////
         // execute sql commands
