@@ -29,21 +29,29 @@ import { parse, parseExpression } from "@babel/parser"
 // context provider
 import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
+import PropFieldArray from 'app-x/component/PropFieldArray'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
 // utilities
 import {
+  parse_js,
+  parse_js_object,
+  parse_js_primitive,
+  parse_js_expression,
+  parse_js_import,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
   valid_import_names,
   valid_html_tags,
+  reorder_children,
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref,
+  remove_child_by_ref,
   gen_js,
 } from 'app-x/builder/ui/syntax/util_tree'
 
@@ -68,6 +76,18 @@ const PropEditor = (props) => {
       width: '100%',
       height: '100%',
       overflow: 'scroll',
+    },
+    properties: {
+      width: '100%',
+      margin: theme.spacing(2, 0),
+      padding: theme.spacing(0, 0),
+      // border
+      border: 1,
+      borderLeft: 0,
+      borderRight: 0,
+      borderBottom: 0,
+      borderStyle: 'dotted',
+      borderColor: theme.palette.divider,
     },
   }))()
 
@@ -97,6 +117,8 @@ const PropEditor = (props) => {
   const [ treeNode,             setTreeNode             ] = useState(null)
   const [ parentNode,           setParentNode           ] = useState(null)
   const [ isSwitchDefault,      setSwitchDefault        ] = useState(props.isSwitchDefault)
+  // properties and otherNames for js/object, react/element, and react/html
+  const [ otherNames,           setOtherNames           ] = useState([])
 
   // react hook form
   const hookForm = useForm({
@@ -202,6 +224,60 @@ const PropEditor = (props) => {
           !!treeNode.data.__ref
           && !treeNode.data.__ref.startsWith('...'))
       }
+      // set properties
+      if
+      (
+        treeNode.data.type === 'js/object'
+        || treeNode.data.type === 'react/element'
+        || treeNode.data.type === 'react/html'
+      )
+      {
+        const children =
+          treeNode.data.type === 'js/object'
+          ? treeNode.children
+          : lookup_child_by_ref(treeNode, 'props')?.children
+        // keep a list of properties and other names
+        const props = []
+        const others = []
+        children?.map(child => {
+          if (child.data.type === 'js/null')
+          {
+            props.push({
+              type: child.data.type,
+              name: child.data.__ref,
+              value: null,
+            })
+          }
+          else if
+          (
+            child.data.type === 'js/string'
+            || child.data.type === 'js/number'
+            || child.data.type === 'js/boolean'
+            || child.data.type === 'js/expression'
+          ) {
+            props.push({
+              type: child.data.type,
+              name: child.data.__ref,
+              value: child.data.data,
+            })
+          }
+          else if (child.data.type === 'js/import')
+          {
+            props.push({
+              type: child.data.type,
+              name: child.data.__ref,
+              value: child.data.name,
+            })
+          }
+          else
+          {
+            others.push(child.data.__ref)
+          }
+        })
+        // console.log(`setProperties`, props, others)
+        setValue(`__props`, props)
+        setOtherNames(others)
+      }
     }
   },
   [
@@ -233,7 +309,7 @@ const PropEditor = (props) => {
         lookupNode.data.__ref = null
       }
       // check if lookupNode is react/state, and __customRef is false
-      if (lookupNode.data?.type === 'react/state') {
+      if (lookupNode.data.type === 'react/state') {
         if (!data.__customRef) {
           lookupNode.data.__ref = `...${lookupNode.data.name}`
         }
@@ -248,9 +324,138 @@ const PropEditor = (props) => {
           lookupNode.data.condition = data.condition
         }
       }
+      // update lookup node title and icon
       lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
       lookupNode.icon = lookup_icon_for_input(data)
       // console.log(lookupNode)
+      //////////////////////////////////////////////////////////////////////
+      // handle properties
+      if (lookupNode.data.type === 'js/object'
+          || lookupNode.data.type === 'react/element'
+          || lookupNode.data.type === 'react/html')
+      {
+        // add props child if exist
+        if (lookupNode.data.type === 'react/element'
+            || lookupNode.data.type === 'react/html')
+        {
+          const propChild = lookup_child_by_ref(lookupNode, 'props')
+          if (!propChild) {
+            // add props if not exist
+            lookupNode.children.push(parse_js_object({}, lookupNode.key, 'props', {}))
+          }
+        }
+        // lookup childParent node
+        const childParent =
+          lookupNode.data.type === 'js/object'
+          ? lookupNode
+          : lookup_child_by_ref(lookupNode, 'props')
+        // add child properties as proper childNode (replace existing or add new)
+        const properties = _.get(getValues(), '__props') || []
+        // console.log(`properties`, properties)
+        properties.map(child => {
+          const childNode = lookup_child_by_ref(childParent, child.name)
+          if (!!childNode)
+          {
+            // found child node, reuse existing key
+            if (child.type === 'js/null')
+            {
+              childNode.data.__ref = child.name
+              childNode.data.type = child.type
+              childNode.data.data = null
+              childNode.title = lookup_title_for_input(child.name, childNode.data)
+              childNode.icon = lookup_icon_for_input(childNode.data)
+            }
+            else if (child.type === 'js/string'
+                    || child.type === 'js/number'
+                    || child.type === 'js/boolean'
+                    || child.type === 'js/expression')
+            {
+              childNode.data.__ref = child.name
+              childNode.data.type = child.type
+              childNode.data.data = child.value
+              childNode.title = lookup_title_for_input(child.name, childNode.data)
+              childNode.icon = lookup_icon_for_input(childNode.data)
+            }
+            else if (child.type === 'js/import')
+            {
+              childNode.data.__ref = child.name
+              childNode.data.type = child.type
+              childNode.data.name = child.value
+              childNode.title = lookup_title_for_input(child.name, childNode.data)
+              childNode.icon = lookup_icon_for_input(childNode.data)
+            }
+            else
+            {
+              throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+            }
+          }
+          else
+          {
+            // no child node, create new child node
+            if (child.type === 'js/null'
+                || child.type === 'js/string'
+                || child.type === 'js/number'
+                || child.type === 'js/boolean')
+            {
+              const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
+              childParent.children.push(newChildNode)
+              // update child title and icon
+              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+            }
+            else if (child.type === 'js/expression')
+            {
+              const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
+              childParent.children.push(newChildNode)
+              // update child title and icon
+              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+            }
+            else if (child.type === 'js/import')
+            {
+              const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
+              childParent.children.push(newChildNode)
+              // update child title and icon
+              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+            }
+            else
+            {
+              throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+            }
+          }
+        })
+        ////////////////////////////////////////
+        // remove any primitive child
+        childParent.children = childParent.children.filter(child => {
+          if (child.data.type === 'js/null'
+              || child.data.type === 'js/string'
+              || child.data.type === 'js/number'
+              || child.data.type === 'js/boolean'
+              || child.data.type === 'js/expression'
+              || child.data.type === 'js/import')
+          {
+            const found = properties.find(prop => prop.name === child.data.__ref)
+            return found
+          }
+          else
+          {
+            return true
+          }
+        })
+        ////////////////////////////////////////
+        // if lookupNode is react/element or react/html, remove empty props
+        if (lookupNode.data.type === 'react/element'
+            || lookupNode.data.type === 'react/html')
+        {
+          if (!childParent.children.length) {
+            remove_child_by_ref(lookupNode, 'props')
+          }
+        }
+        // reorder children
+        reorder_children(childParent)
+        reorder_children(lookupNode)
+      }
       // setTreeData(resultTree)
       updateAction(
         `Update [${lookupNode.title}]`,
@@ -487,11 +692,11 @@ const PropEditor = (props) => {
                   !!nodeType
                   &&
                   (
-                    nodeType == 'js/string'
-                    || nodeType == 'js/number'
-                    || nodeType == 'js/boolean'
-                    || nodeType == 'js/null'
-                    || nodeType == 'js/expression'
+                    nodeType === 'js/string'
+                    || nodeType === 'js/number'
+                    || nodeType === 'js/boolean'
+                    || nodeType === 'js/null'
+                    || nodeType === 'js/expression'
                   )
                 )
                 &&
@@ -703,7 +908,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/array')
+                (treeNode && treeNode.data && nodeType === 'js/array')
                 &&
                 (
                   <Box>
@@ -744,7 +949,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/object')
+                (treeNode && treeNode.data && nodeType === 'js/object')
                 &&
                 (
                   <Box>
@@ -785,7 +990,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'A')
+                (treeNode && treeNode.data && nodeType === 'A')
                 &&
                 (
                   <Box>
@@ -845,7 +1050,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/block')
+                (treeNode && treeNode.data && nodeType === 'js/block')
                 &&
                 (
                   <Box>
@@ -924,7 +1129,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/function')
+                (treeNode && treeNode.data && nodeType === 'js/function')
                 &&
                 (
                   <Box>
@@ -1021,7 +1226,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/switch')
+                (treeNode && treeNode.data && nodeType === 'js/switch')
                 &&
                 (
                   <Box>
@@ -1062,7 +1267,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/map')
+                (treeNode && treeNode.data && nodeType === 'js/map')
                 &&
                 (
                   <Box>
@@ -1103,7 +1308,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/reduce')
+                (treeNode && treeNode.data && nodeType === 'js/reduce')
                 &&
                 (
                   <Box>
@@ -1214,7 +1419,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'js/filter')
+                (treeNode && treeNode.data && nodeType === 'js/filter')
                 &&
                 (
                   <Box>
@@ -1294,8 +1499,8 @@ const PropEditor = (props) => {
                 (treeNode && treeNode.data
                   &&
                   (
-                    nodeType == 'react/element'
-                    || nodeType == 'react/html'
+                    nodeType === 'react/element'
+                    || nodeType === 'react/html'
                   )
                 )
                 &&
@@ -1386,7 +1591,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'react/state')
+                (treeNode && treeNode.data && nodeType === 'react/state')
                 &&
                 (
                   <Box>
@@ -1515,7 +1720,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'react/effect')
+                (treeNode && treeNode.data && nodeType === 'react/effect')
                 &&
                 (
                   <Box>
@@ -1618,7 +1823,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'mui/style')
+                (treeNode && treeNode.data && nodeType === 'mui/style')
                 &&
                 (
                   <Box>
@@ -1659,7 +1864,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType == 'appx/route')
+                (treeNode && treeNode.data && nodeType === 'appx/route')
                 &&
                 (
                   <Box>
@@ -1695,6 +1900,36 @@ const PropEditor = (props) => {
                           </FormControl>
                         )
                       }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (
+                  !!treeNode
+                  && !!treeNode.data
+                  &&
+                  (
+                    nodeType === 'js/object'
+                    || nodeType === 'react/element'
+                    || nodeType === 'react/html'
+                  )
+                )
+                &&
+                (
+                  <Box
+                    className={styles.properties}
+                    >
+                    <PropFieldArray
+                      name={`__props`}
+                      label="Properties"
+                      defaultValue={[]}
+                      otherNames={otherNames}
+                      className={styles.formControl}
+                      callback={d => {
+                        // console.log(`callback`)
+                        setBaseSubmitTimer(new Date())
+                      }}
                     />
                   </Box>
                 )

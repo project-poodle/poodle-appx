@@ -51,6 +51,10 @@ const PropFieldArray = props => {
       width: '100%',
       padding: theme.spacing(0, 1),
     },
+    hiddenPrompt: {
+      width: '100%',
+      paddingLeft: theme.spacing(1),
+    },
   }))()
 
   const {
@@ -410,6 +414,15 @@ const PropFieldArray = props => {
             </Box>
           )
         })
+      }
+      {
+        (
+          !!props.otherNames?.length
+        )
+        &&
+        (
+          <FormHelperText className={styles.hiddenPrompt} key="otherNames">Hidden composite properties: [ {`${props.otherNames.toString()}`} ]</FormHelperText>
+        )
       }
       <IconButton
         key="add"

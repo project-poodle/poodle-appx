@@ -421,6 +421,7 @@ function new_root_node() {
 // create primitive tree node
 function parse_js_primitive(js_context, parentKey, ref, input) {
 
+  // console.log(`parse_js_primitive`, js_context, parentKey, ref, input)
   const prefix = ref ? ref + ': ' : ''
 
   // tree node data
@@ -2224,6 +2225,10 @@ const reorder_children = (parentNode) => {
 
 export {
   parse_js,
+  parse_js_object,
+  parse_js_primitive,
+  parse_js_expression,
+  parse_js_import,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,

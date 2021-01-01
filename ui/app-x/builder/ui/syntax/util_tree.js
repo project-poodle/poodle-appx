@@ -16,6 +16,14 @@ function lookup_child_by_ref(treeNode, ref) {
   }
 }
 
+// remove child by ref
+function remove_child_by_ref(treeNode, ref) {
+  // lookup child by ref
+  treeNode.children = treeNode.children?.filter(child => {
+    return (child.data.__ref !== ref)
+  })
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // traverse method
@@ -988,4 +996,5 @@ export {
   tree_lookup,
   gen_js,
   lookup_child_by_ref,
+  remove_child_by_ref,
 }
