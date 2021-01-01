@@ -179,18 +179,18 @@ obj:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       obj_type: "spec"
       obj_spec:
-          comment: "initialize: ui_element"
+          comment: "initialize: ui_component"
 
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_component_status"
       obj_type: "status"
       obj_spec:
-          comment: "initialize: ui_element_status"
+          comment: "initialize: ui_component_status"
 
     - namespace: "sys"
       app_name: "appx"

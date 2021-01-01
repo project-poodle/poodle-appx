@@ -36,16 +36,16 @@ import { v4 as uuidv4 } from 'uuid'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
-import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import ComponentProvider from 'app-x/builder/ui/component/ComponentProvider'
 import {
   tree_traverse,
   tree_lookup,
   lookup_icon_for_type,
   lookup_desc_for_type,
-} from 'app-x/builder/ui/element/util'
+} from 'app-x/builder/ui/component/util'
 
 // make context menu
-const ElementMenu = (props) => {
+const ComponentMenu = (props) => {
 
   // styles
   const styles = makeStyles((theme) => ({
@@ -77,7 +77,7 @@ const ElementMenu = (props) => {
     setDeleteDialogContext,
     deleteDialogCallback,
     setDeleteDialogCallback,
-  } = useContext(ElementProvider.Context)
+  } = useContext(ComponentProvider.Context)
 
   const [ selectedNode,     setSelectedNode   ] = useState(null)
 
@@ -185,4 +185,4 @@ const ElementMenu = (props) => {
   )
 }
 
-export default ElementMenu
+export default ComponentMenu

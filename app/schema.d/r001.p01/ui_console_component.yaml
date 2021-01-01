@@ -1,11 +1,11 @@
-ui_element:
+ui_component:
     ############################################################
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /index
-      ui_element_type: html
-      ui_element_spec:
+      ui_component_name: /index
+      ui_component_type: html
+      ui_component_spec:
           entry: /Router
           title: Design Your Own Apps with App-X
 
@@ -13,9 +13,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /Router
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /Router
+      ui_component_type: react/component
+      ui_component_spec:
           propTypes:
               title: PropTypes.string.isRequired
           styles:
@@ -56,9 +56,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/landing/Home
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/landing/Home
+      ui_component_type: react/component
+      ui_component_spec:
           styles:
               type: mui/style
               grid:
@@ -226,9 +226,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/landing/Unsplash_bg
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/landing/Unsplash_bg
+      ui_component_type: react/component
+      ui_component_spec:
           styles:
               type: mui/style
               root:
@@ -256,9 +256,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/auth/Login
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/auth/Login
+      ui_component_type: react/component
+      ui_component_spec:
           styles:
               type: mui/style
               root:
@@ -277,9 +277,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/auth/SignInForm
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/auth/SignInForm
+      ui_component_type: react/component
+      ui_component_spec:
           propTypes:
               consoleUrl: PropTypes.string.isRequired
           styles:
@@ -586,9 +586,9 @@ ui_element:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_element_name: /page/Console
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/Console
+      ui_component_type: react/component
+      ui_component_spec:
           styles:
               type: mui/style
               container:

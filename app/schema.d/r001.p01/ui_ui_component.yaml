@@ -1,11 +1,11 @@
-ui_element:
+ui_component:
     ############################################################
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /index
-      ui_element_type: html
-      ui_element_spec:
+      ui_component_name: /index
+      ui_component_type: html
+      ui_component_spec:
           entry: /Router
           title: Design Your Own Apps with App-X
 
@@ -13,9 +13,9 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /Router
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /Router
+      ui_component_type: react/component
+      ui_component_spec:
           propTypes:
               title: PropTypes.string.isRequired
           styles:
@@ -49,9 +49,9 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /page/header/Header_user
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/header/Header_user
+      ui_component_type: react/component
+      ui_component_spec:
           propTypes:
               suffix: PropTypes.element
           element:
@@ -91,9 +91,9 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /page/Console
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/Console
+      ui_component_type: react/component
+      ui_component_spec:
           states:
               ...navOpen:
                   type: react/state
@@ -159,27 +159,27 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /page/Builder
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /page/Builder
+      ui_component_type: react/component
+      ui_component_spec:
           states:
               builder:
                   type: react/state
                   name: data
                   setter: setData
                   init:
-                      ui_builder_type: ui_element
-                      ui_element_name: /nav/uiNav
+                      ui_builder_type: ui_component
+                      ui_component_name: /nav/uiNav
                       ui_route_name: ''
           handlers:
-              handleElementSelected:
+              handleComponentSelected:
                   type: js/function
                   params:
                       - event
                   body: |
                       states.builder.setData({
-                          ui_builder_type: 'ui_element',
-                          ui_element_name: event.ui_element_name,
+                          ui_builder_type: 'ui_component',
+                          ui_component_name: event.ui_component_name,
                           ui_route_name: '',
                       })
                       // console.log(event)
@@ -191,7 +191,7 @@ ui_element:
                   body: |
                       states.builder.setData({
                           ui_builder_type: 'ui_route',
-                          ui_element_name: '',
+                          ui_component_name: '',
                           ui_route_name: event.ui_route_name,
                       })
           element:
@@ -219,9 +219,9 @@ ui_element:
                                 name: 'self/nav/uiNav'
                                 props:
                                     handlers:
-                                        handleElementSelected:
+                                        handleComponentSelected:
                                             type: js/expression
-                                            data: handlers.handleElementSelected
+                                            data: handlers.handleComponentSelected
                                         handleRouteSelected:
                                             type: js/expression
                                             data: handlers.handleRouteSelected
@@ -235,9 +235,9 @@ ui_element:
                             ui_builder_type:
                                 type: js/expression
                                 data: states.builder.data.ui_builder_type
-                            ui_element_name:
+                            ui_component_name:
                                 type: js/expression
-                                data: states.builder.data.ui_element_name
+                                data: states.builder.data.ui_component_name
                             ui_route_name:
                                 type: js/expression
                                 data: states.builder.data.ui_route_name
@@ -260,9 +260,9 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /nav/uiNav
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /nav/uiNav
+      ui_component_type: react/component
+      ui_component_spec:
           styles:
             type: mui/style
             divider:
@@ -280,7 +280,7 @@ ui_element:
               name: uiDeployments
               setter: setUiDeployments
               init: "['a','b','c']"
-            uiElementNav:
+            uiComponentNav:
               type: react/state
               name: open
               setter: setOpen
@@ -291,9 +291,9 @@ ui_element:
               setter: setOpen
               init: "false"
           handlers:
-            handleElementSelected:
+            handleComponentSelected:
               type: js/expression
-              data: props.handleElementSelected
+              data: props.handleComponentSelected
             handleRouteSelected:
               type: js/expression
               data: props.handleRouteSelected
@@ -418,7 +418,7 @@ ui_element:
                         type: js/expression
                         data: |
                           () => {
-                            states.uiElementNav.setOpen(!states.uiElementNav.open)
+                            states.uiComponentNav.setOpen(!states.uiComponentNav.open)
                           }
                     children:
                       - type: react/element
@@ -431,16 +431,16 @@ ui_element:
                       - type: react/element
                         name: "@material-ui/core.ListItemText"
                         props:
-                          primary: UI Elements
+                          primary: UI Components
                       - type: js/switch
                         children:
-                          - condition: "!!states.uiElementNav.open"
+                          - condition: "!!states.uiComponentNav.open"
                             result:
                               type: react/element
                               name: "@material-ui/icons.ExpandLess"
                               props:
                                 fontSize: small
-                          - condition: "!states.uiElementNav.open"
+                          - condition: "!states.uiComponentNav.open"
                             result:
                               type: react/element
                               name: "@material-ui/icons.ExpandMore"
@@ -452,17 +452,17 @@ ui_element:
                       in:
                         type: js/expression
                         data: |
-                          states.uiElementNav.open
+                          states.uiComponentNav.open
                       unmountOnExit: true
                     children:
                       - type: react/element
                         name: "@material-ui/core.Box"
                         children:
                           - type: react/element
-                            name: app-x/builder/ui/element/ElementProvider
+                            name: app-x/builder/ui/component/ComponentProvider
                             children:
                               - type: react/element
-                                name: app-x/builder/ui/element/ElementTree
+                                name: app-x/builder/ui/component/ComponentTree
                                 props:
                                   namespace: sys
                                   ui_name: ui
@@ -547,9 +547,9 @@ ui_element:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_element_name: /GridLayoutTest
-      ui_element_type: react/component
-      ui_element_spec:
+      ui_component_name: /GridLayoutTest
+      ui_component_type: react/component
+      ui_component_spec:
           layouts:
             lg:
               - i: a

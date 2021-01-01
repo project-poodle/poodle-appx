@@ -244,8 +244,8 @@ relation:
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
-      objn_name: "ui_element_status"
+      obj_name: "ui_component"
+      objn_name: "ui_component_status"
       relation_spec:
           kind:
               type: "n"
@@ -256,9 +256,9 @@ relation:
                 tgt: "namespace"
               - src: "ui_name"
                 tgt: "ui_name"
-              - src: "ui_element_name"
-                tgt: "ui_element_name"
-          comment: "initialize: ui_element -> ui_element_status (n)"
+              - src: "ui_component_name"
+                tgt: "ui_component_name"
+          comment: "initialize: ui_component -> ui_component_status (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -627,7 +627,7 @@ relation:
       app_ver: "internal"
       app_rev: "default"
       obj_name: "ui"
-      objn_name: "ui_element"
+      objn_name: "ui_component"
       relation_spec:
           type:
               type: "n"
@@ -640,7 +640,7 @@ relation:
                 tgt: "ui_name"
               - src: "ui_ver"
                 tgt: "ui_ver"
-          comment: "initialize: ui -> ui_element (n)"
+          comment: "initialize: ui -> ui_component (n)"
 
     ######################################################################
     - namespace: "sys"
@@ -648,7 +648,7 @@ relation:
       app_ver: "internal"
       app_rev: "default"
       obj_name: "ui_deployment"
-      objn_name: "ui_element_status"
+      objn_name: "ui_component_status"
       relation_spec:
           type:
               type: "n"
@@ -661,7 +661,7 @@ relation:
                 tgt: "ui_name"
               - src: "ui_deployment"
                 tgt: "ui_deployment"
-          comment: "initialize: ui_deployment -> ui_element_status (n)"
+          comment: "initialize: ui_deployment -> ui_component_status (n)"
 
     ######################################################################
     - namespace: "sys"

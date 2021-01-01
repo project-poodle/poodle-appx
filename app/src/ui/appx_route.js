@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const objPath = require("object-path")
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const prettier = require("prettier")
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
@@ -144,7 +144,7 @@ function handle_appx_route(req, res) {
       //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
       t.addComment(testDeclaration, 'trailing', ' Test', true)
       test_statements.push(testDeclaration)
-      // ElementName.Test = Test
+      // ComponentName.Test = Test
       const testAssignment = t.expressionStatement(
         t.assignmentExpression(
           '=',

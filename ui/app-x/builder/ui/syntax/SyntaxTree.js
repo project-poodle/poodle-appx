@@ -139,7 +139,7 @@ const SyntaxTree = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -197,14 +197,14 @@ const SyntaxTree = (props) => {
 
     // data check
     let spec_data = {}
-    if (navSelected?.type === 'ui_element') {
+    if (navSelected?.type === 'ui_component') {
       // check data sanity
-      if (!('ui_element_spec' in data)) {
+      if (!('ui_component_spec' in data)) {
         // fresh action
         makeAction(`init`, [], null, [], null, true)
         return
       } else {
-        spec_data = data.ui_element_spec
+        spec_data = data.ui_component_spec
       }
     } else if (navSelected?.type === 'ui_route') {
       // check data sanity
@@ -245,7 +245,7 @@ const SyntaxTree = (props) => {
 
     // console.log(navDeployment)
     // console.log(navSelected)
-    // console.log(navElement)
+    // console.log(navComponent)
 
     if
     (
@@ -258,11 +258,11 @@ const SyntaxTree = (props) => {
     )
     {
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
-        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
         // console.log(url)
         api.get(
           'sys',
@@ -278,7 +278,7 @@ const SyntaxTree = (props) => {
           error => {
             console.error(error)
             notification['error']({
-              message: `Failed to load UI element [${navElement.ui_element_name}]`,
+              message: `Failed to load UI component [${navComponent.ui_component_name}]`,
               description: error.toString(),
               placement: 'bottomLeft',
             })
@@ -328,7 +328,7 @@ const SyntaxTree = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
-    navElement.ui_element_name,
+    navComponent.ui_component_name,
     navRoute.ui_route_name,
     navSelected.type,
     loadTrigger,
@@ -359,23 +359,23 @@ const SyntaxTree = (props) => {
         : genData
       // console.log(spec)
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
         // url
-        const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
         // console.log(url)
         api.put(
           'sys',
           'appx',
           saveUrl,
           {
-            ui_element_spec: spec,
+            ui_component_spec: spec,
           },
           data => {
             // console.log(data)
-            const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+            const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
             api.get(
               'sys',
               'appx',
@@ -390,7 +390,7 @@ const SyntaxTree = (props) => {
               error => {
                 console.error(error)
                 notification['error']({
-                  message: `Failed to load UI element [${navElement.ui_element_name}]`,
+                  message: `Failed to load UI component [${navComponent.ui_component_name}]`,
                   description: error.toString(),
                   placement: 'bottomLeft',
                 })
@@ -403,7 +403,7 @@ const SyntaxTree = (props) => {
           error => {
             console.error(error)
             notification['error']({
-              message: `Failed to save UI element [${navElement.ui_element_name}]`,
+              message: `Failed to save UI component [${navComponent.ui_component_name}]`,
               description: error.toString(),
               placement: 'bottomLeft',
             })
@@ -629,7 +629,7 @@ const SyntaxTree = (props) => {
             if (!child.data.__ref) {
               count = count+1
             }
-            // check if we'd insert before first element with no __ref
+            // check if we'd insert before first component with no __ref
             if (nodeData.__pos === 0 && count !== 0) {
               found = true
               lookupParent.children.splice(index, 0, parsed)
@@ -648,7 +648,7 @@ const SyntaxTree = (props) => {
       }
       reorder_children(lookupParent)
     } else {
-      // add to the root as first element
+      // add to the root as first component
       resultTree.splice(1, 0, parsed)
     }
     // console.log(gen_js({topLevel: true}, resultTree))
@@ -948,7 +948,7 @@ const SyntaxTree = (props) => {
       ||
       (
         (
-          dropParent.data.type === 'react/element'
+          dropParent.data.type === 'react/component'
           || dropParent.data.type === 'react/html'
         )
         &&
@@ -1128,12 +1128,12 @@ const SyntaxTree = (props) => {
         &&
         (
           (
-            navSelected.type === 'ui_element'
-            && !!navElement.ui_element_name
+            navSelected.type === 'ui_component'
+            && !!navComponent.ui_component_name
             &&
             (
-              navElement.ui_element_type === 'react/component'
-              || navElement.ui_element_type === 'react/provider'
+              navComponent.ui_component_type === 'react/component'
+              || navComponent.ui_component_type === 'react/provider'
             )
           )
           ||
@@ -1152,7 +1152,7 @@ const SyntaxTree = (props) => {
           alignItems="center"
           >
           <Typography variant="body2">
-            Select a UI element or route
+            Select a UI component or route
           </Typography>
         </Box>
       )
@@ -1167,12 +1167,12 @@ const SyntaxTree = (props) => {
         &&
         (
           (
-            navSelected.type === 'ui_element'
-            && !!navElement.ui_element_name
+            navSelected.type === 'ui_component'
+            && !!navComponent.ui_component_name
             &&
             (
-              navElement.ui_element_type === 'react/component'
-              || navElement.ui_element_type === 'react/provider'
+              navComponent.ui_component_type === 'react/component'
+              || navComponent.ui_component_type === 'react/provider'
             )
           )
           ||
@@ -1295,9 +1295,9 @@ const SyntaxTree = (props) => {
           {
             (
               (
-                navSelected.type === 'ui_element'
-                && !!navElement.ui_element_name
-                && navElement.ui_element_type === 'react/component'
+                navSelected.type === 'ui_component'
+                && !!navComponent.ui_component_name
+                && navComponent.ui_component_type === 'react/component'
               )
               ||
               (
@@ -1365,7 +1365,7 @@ SyntaxTree.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default SyntaxTree

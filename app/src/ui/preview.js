@@ -6,8 +6,8 @@ const prettier = require("prettier")
 const Mustache = require('mustache')
 
 const db = require('../db/db')
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
-const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { get_ui_deployment, get_ui_component, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
 const { handle_react_component } = require('./react_component')
@@ -41,9 +41,9 @@ function handle_preview(req, res) {
         ui_spec,
         ui_deployment,
         ui_deployment_spec,
-        ui_element_name,
-        ui_element_type,
-        ui_element_spec,
+        ui_component_name,
+        ui_component_type,
+        ui_component_spec,
         ui_route_name,
         ui_route_spec,
     } = req_data
@@ -72,11 +72,11 @@ function handle_preview(req, res) {
     }
 
     // check req_type
-    if (req_type === 'ui_element') {
-      // handle ui_element
+    if (req_type === 'ui_component') {
+      // handle ui_component
       if (req_output === 'code') {
 
-        if (ui_element_type == 'react/component') {
+        if (ui_component_type == 'react/component') {
           // render source code
           const result = handle_react_component(req, res)
           res.status(result.status)
@@ -84,7 +84,7 @@ function handle_preview(req, res) {
               .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
           return
 
-        } else if (ui_element_type == 'react/provider') {
+        } else if (ui_component_type == 'react/provider') {
           // render source code
           const result = handle_react_provider(req, res)
           res.status(result.status)
@@ -93,10 +93,10 @@ function handle_preview(req, res) {
           return
 
         } else {
-          // unrecognized ui_element_type
+          // unrecognized ui_component_type
           res.status(422).json({
               status: FAILURE,
-              message: `ERROR: unrecognized ui_element_type [${ui_element_type}]`
+              message: `ERROR: unrecognized ui_component_type [${ui_component_type}]`
           })
           return
         }

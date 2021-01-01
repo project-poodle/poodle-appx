@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const objPath = require("object-path")
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const prettier = require("prettier")
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
@@ -23,7 +23,7 @@ const db = require('../db/db')
  */
 function handle_react_component(req, res) {
 
-    // const { ui_deployment, ui_element } = req.context
+    // const { ui_deployment, ui_component } = req.context
     // console.log(req.context)
 
     if (! ('ui_spec' in req.context)
@@ -39,24 +39,24 @@ function handle_react_component(req, res) {
         }
     }
 
-    if (! ('ui_element_spec' in req.context)
-        || ! (req.context.ui_element_spec.element)
+    if (! ('ui_component_spec' in req.context)
+        || ! (req.context.ui_component_spec.element)
     ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.element not defined [${req.context.ui_element_spec}]`
+                message: `ERROR: ui_component_spec.element not defined [${req.context.ui_component_spec}]`
             }
         }
     }
 
-    if (! ('type' in req.context.ui_element_spec.element)
+    if (! ('type' in req.context.ui_component_spec.element)
         ||
         (
-          req.context.ui_element_spec.element.type != 'react/element'
-          && req.context.ui_element_spec.element.type != 'react/html'
+          req.context.ui_component_spec.element.type != 'react/element'
+          && req.context.ui_component_spec.element.type != 'react/html'
         )
     ) {
         return {
@@ -64,7 +64,7 @@ function handle_react_component(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_element_spec.element.type}]`
+                message: `ERROR: ui_component_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_component_spec.element.type}]`
             }
         }
     }
@@ -82,22 +82,22 @@ function handle_react_component(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_element_name))
+    const ui_elem_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
+    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_component_name))
     js_context.self = ui_elem_name
     //console.log(get_js_variable(js_context, ui_elem_name))
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    const input = req.context.ui_element_spec
+    const input = req.context.ui_component_spec
 
     // create react component function
     const component_func = react_component(js_context, input)
 
     // handle test statements
     const test_statements = []
-    if ('__test' in req.context.ui_element_spec) {
+    if ('__test' in req.context.ui_component_spec) {
       // register variable
       const ui_test_name = ui_elem_name + '.Test'
       reg_js_variable(js_context, ui_test_name)
@@ -106,8 +106,8 @@ function handle_react_component(req, res) {
         type: 'react/element',
         name: ui_elem_name,
       }
-      if (!!req.context.ui_element_spec.__test.providers) {
-        req.context.ui_element_spec.__test.providers
+      if (!!req.context.ui_component_spec.__test.providers) {
+        req.context.ui_component_spec.__test.providers
           .reverse()
           .filter(provider => provider.type === 'react/element')
           .map(provider => {
@@ -145,7 +145,7 @@ function handle_react_component(req, res) {
       //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
       t.addComment(testDeclaration, 'trailing', ' Test', true)
       test_statements.push(testDeclaration)
-      // ElementName.Test = Test
+      // ComponentName.Test = Test
       const testAssignment = t.expressionStatement(
         t.assignmentExpression(
           '=',

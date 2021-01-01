@@ -41,7 +41,7 @@ import {
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import NavProvider from 'app-x/builder/ui/NavProvider'
-import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import ComponentProvider from 'app-x/builder/ui/component/ComponentProvider'
 import {
   tree_traverse,
   tree_lookup,
@@ -52,10 +52,10 @@ import {
   default_spec_for_type,
   reorder_array,
   PATH_SEPARATOR,
-} from 'app-x/builder/ui/element/util'
+} from 'app-x/builder/ui/component/util'
 
 // Add dialog
-const ElementAddDialog = (props) => {
+const ComponentAddDialog = (props) => {
 
   const styles = makeStyles((theme) => ({
     dialog: {
@@ -78,15 +78,15 @@ const ElementAddDialog = (props) => {
   const {
     navDeployment,
     setNavDeployment,
-    navElement,
-    setNavElement,
+    navComponent,
+    setNavComponent,
     navRoute,
     setNavRoute,
     navSelected,
     setNavSelected,
   } = useContext(NavProvider.Context)
 
-  // element context
+  // component context
   const {
     // basic data
     treeData,
@@ -104,7 +104,7 @@ const ElementAddDialog = (props) => {
     setAddDialogContext,
     addDialogCallback,
     setAddDialogCallback,
-  } = useContext(ElementProvider.Context)
+  } = useContext(ComponentProvider.Context)
 
   // react hook form
   const hookForm = useForm()
@@ -124,21 +124,21 @@ const ElementAddDialog = (props) => {
     formState,
   } = hookForm
 
-  // create element
-  const createElement = (parentNode, name, type) => {
+  // create component
+  const createComponent = (parentNode, name, type) => {
 
-    // createElement
+    // createComponent
     const spec = default_spec_for_type(type)
     const newNode = new_component_node(addDialogContext.parentNode.key, name, type, spec)
     // api request
-    const postUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(newNode.key)}`
+    const postUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_component/base64:${btoa(newNode.key)}`
     api.post(
       'sys',
       'appx',
       postUrl,
       {
-        ui_element_type: type,
-        ui_element_spec: spec,
+        ui_component_type: type,
+        ui_component_spec: spec,
       },
       data => {
         // console.log(data)
@@ -210,19 +210,19 @@ const ElementAddDialog = (props) => {
 
     } else if (data.type === 'react/component') {
 
-      createElement(addDialogContext.parentNode, data.name, data.type)
+      createComponent(addDialogContext.parentNode, data.name, data.type)
 
     } else if (data.type === 'react/provider') {
 
-      createElement(addDialogContext.parentNode, data.name, data.type)
+      createComponent(addDialogContext.parentNode, data.name, data.type)
 
     } else if (data.type === 'react/html') {
 
-      createElement(addDialogContext.parentNode, data.name, data.type)
+      createComponent(addDialogContext.parentNode, data.name, data.type)
 
     } else {
       notification['error']({
-        message: 'Failed to Add Element',
+        message: 'Failed to Add Component',
         description: `Unknown type [ ${data.type} ]`,
         placement: 'bottomLeft',
       })
@@ -321,17 +321,17 @@ const ElementAddDialog = (props) => {
               control={control}
               defaultValue=''
               rules={{
-                required: "Element name is required",
+                required: "Component name is required",
                 pattern: {
                   value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
-                  message: 'Element name must be a valid variable name',
+                  message: 'Component name must be a valid variable name',
                 },
                 validate: {
                   checkDuplicate: value =>
                     addDialogContext.parentNode.children
                       .filter(child => child.subName.toUpperCase() === value.toUpperCase())
                       .length === 0
-                    || 'Element name is duplicate with an existing child',
+                    || 'Component name is duplicate with an existing child',
                   checkRootFolder: value => {
                     if (addDialogContext.parentNode.key !== '/') {
                       return true
@@ -343,7 +343,7 @@ const ElementAddDialog = (props) => {
                     }
                     else
                     {
-                      return 'Element name is duplicate with an existing child'
+                      return 'Component name is duplicate with an existing child'
                     }
                   }
                 }
@@ -355,7 +355,7 @@ const ElementAddDialog = (props) => {
                       label={
                         addDialogContext?.nodeType === 'folder'
                         ? 'Folder Name'
-                        : 'Element Name'
+                        : 'Component Name'
                       }
                       multiline={false}
                       name={props.name}
@@ -401,4 +401,4 @@ const ElementAddDialog = (props) => {
   )
 }
 
-export default ElementAddDialog
+export default ComponentAddDialog

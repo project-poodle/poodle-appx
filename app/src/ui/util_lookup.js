@@ -3,6 +3,7 @@ const path = require('path')
 const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 
 /**
  * get_ui_deployment
@@ -51,33 +52,33 @@ function get_ui_deployment(req, res) {
 }
 
 /**
- * get_ui_element
+ * get_ui_component
  */
-function get_ui_element(req, res) {
+function get_ui_component(req, res) {
 
     let context = req.context
 
-    let cache_ui_element = cache.get_cache_for('ui_element')
-    //console.log(JSON.stringify(cache_ui_element, null, 4))
+    let cache_ui_component = cache.get_cache_for('ui_component')
+    //console.log(JSON.stringify(cache_ui_component, null, 4))
 
     let elem_prop = [
         context.namespace,
         "ui_deployments",
         context.ui_name,
         context.ui_deployment,
-        "ui_elements",
-        context.ui_element_name
+        "ui_components",
+        context.ui_component_name
     ]
-    let elem = objPath.get(cache_ui_element, elem_prop)
+    let elem = objPath.get(cache_ui_component, elem_prop)
     if (!elem) {
-        let msg = `ERROR: element not found [${context.ui_element_name}] - [${JSON.stringify(context)}] !`
+        let msg = `ERROR: element not found [${context.ui_component_name}] - [${JSON.stringify(context)}] !`
         log_elem_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return
     }
 
-    let element_spec = objPath.get(elem, ["ui_element_spec"])
+    let element_spec = objPath.get(elem, ["ui_component_spec"])
     if (!element_spec) {
         let msg = `ERROR: element_spec not found - [${JSON.stringify(context)}] !`
         log_elem_status(context, FAILURE, msg)
@@ -97,7 +98,7 @@ function get_ui_route(req, res) {
     let context = req.context
 
     let cache_ui_route = cache.get_cache_for('ui_route')
-    //console.log(JSON.stringify(cache_ui_element, null, 4))
+    //console.log(JSON.stringify(cache_ui_component, null, 4))
 
     let route_prop = [
         context.namespace,
@@ -128,6 +129,97 @@ function get_ui_route(req, res) {
     return route
 }
 
+/**
+ * log_deployment_status
+ */
+const log_deployment_status = (deployment_context, status, message) => {
+
+    // console.log(message)
+    db.query_sync(`INSERT INTO ui_deployment_status
+                    (
+                        namespace,
+                        ui_name,
+                        ui_deployment,
+                        ui_deployment_status
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?,
+                        JSON_OBJECT('status', ?, 'message', ?)
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        ui_deployment_status=VALUES(ui_deployment_status)`,
+                    [
+                        deployment_context.namespace,
+                        deployment_context.ui_name,
+                        deployment_context.ui_deployment,
+                        status,
+                        message
+                    ])
+}
+
+/**
+ * log_elem_status
+ */
+const log_elem_status = (elem_context, status, message) => {
+
+    // console.log(message)
+    db.query_sync(`INSERT INTO ui_component_status
+                    (
+                        namespace,
+                        ui_name,
+                        ui_deployment,
+                        ui_component_name,
+                        ui_component_status
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?, ?,
+                        JSON_OBJECT('status', ?, 'message', ?)
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        ui_component_status=VALUES(ui_component_status)`,
+                    [
+                        elem_context.namespace,
+                        elem_context.ui_name,
+                        elem_context.ui_deployment,
+                        elem_context.ui_component_name,
+                        status,
+                        message
+                    ])
+}
+
+/**
+ * log_route_status
+ */
+const log_route_status = (route_context, status, message) => {
+
+    // console.log(message)
+    db.query_sync(`INSERT INTO ui_route_status
+                    (
+                        namespace,
+                        ui_name,
+                        ui_deployment,
+                        ui_route_name,
+                        ui_route_status
+                    )
+                    VALUES
+                    (
+                        ?, ?, ?, ?,
+                        JSON_OBJECT('status', ?, 'message', ?)
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        ui_route_status=VALUES(ui_route_status)`,
+                    [
+                        route_context.namespace,
+                        route_context.ui_name,
+                        route_context.ui_deployment,
+                        route_context.ui_route_name,
+                        status,
+                        message
+                    ])
+}
+
 // walk folder recursivelly
 const walk_recursive = function(dir, done) {
   var results = []
@@ -152,9 +244,13 @@ const walk_recursive = function(dir, done) {
   })
 }
 
+
 module.exports = {
   get_ui_deployment: get_ui_deployment,
-  get_ui_element: get_ui_element,
+  get_ui_component: get_ui_component,
   get_ui_route: get_ui_route,
+  log_elem_status: log_elem_status,
+  log_route_status: log_route_status,
+  log_deployment_status: log_deployment_status,
   walk_recursive: walk_recursive,
 }

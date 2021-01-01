@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const ElementContext = React.createContext()
+const ComponentContext = React.createContext()
 
-const ElementProvider = (() => {
+const ComponentProvider = (() => {
 
   const f = (props) => {
 
@@ -21,7 +21,7 @@ const ElementProvider = (() => {
     const [ deleteDialogCallback,   setDeleteDialogCallback   ] = useState(null)
 
     return (
-      <ElementContext.Provider
+      <ComponentContext.Provider
         value={{
           // basic data
           treeData,
@@ -49,16 +49,16 @@ const ElementProvider = (() => {
         }}
       >
         {props.children}
-      </ElementContext.Provider>
+      </ComponentContext.Provider>
     )
   }
 
   // update Context variable
-  f.Context = ElementContext
+  f.Context = ComponentContext
 
   return f
 }) ()
 
-export { ElementContext as Context }
+export { ComponentContext as Context }
 
-export default ElementProvider
+export default ComponentProvider

@@ -32,8 +32,8 @@ DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_deployment_status`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element`;
-DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_element_status`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_component`;
+DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_component_status`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_route`;
 DROP TABLE IF EXISTS `{{{global.schema_prefix}}}`.`ui_route_status`;
 
@@ -567,33 +567,33 @@ CREATE TABLE `{{{global.schema_prefix}}}`.`ui_deployment_status` (
 )
 CHARACTER SET utf8 COLLATE utf8_bin;
 
-CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_component` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `ui_name`               VARCHAR(15)             NOT NULL,
     `ui_ver`                VARCHAR(32)             NOT NULL,
-    `ui_element_name`       VARCHAR(255)            NOT NULL,
-    `ui_element_type`       VARCHAR(32)             NOT NULL,
-    `ui_element_spec`       JSON                    NOT NULL,
+    `ui_component_name`       VARCHAR(255)            NOT NULL,
+    `ui_component_type`       VARCHAR(32)             NOT NULL,
+    `ui_component_spec`       JSON                    NOT NULL,
     `create_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `ui_name`, `ui_ver`, `ui_element_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `ui_name`, `ui_ver`, `ui_component_name`),
     PRIMARY KEY (`id`, `namespace`, `ui_name`, `ui_ver`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
 PARTITION BY KEY(`namespace`, `ui_name`, `ui_ver`) PARTITIONS 20;
 
-CREATE TABLE `{{{global.schema_prefix}}}`.`ui_element_status` (
+CREATE TABLE `{{{global.schema_prefix}}}`.`ui_component_status` (
     `id`                    BIGINT                  NOT NULL AUTO_INCREMENT,
     `namespace`             VARCHAR(32)             NOT NULL,
     `ui_name`               VARCHAR(15)             NOT NULL,
     `ui_deployment`         VARCHAR(32)             NOT NULL,
-    `ui_element_name`       VARCHAR(255)            NOT NULL,
-    `ui_element_status`     JSON                    NOT NULL,
+    `ui_component_name`       VARCHAR(255)            NOT NULL,
+    `ui_component_status`     JSON                    NOT NULL,
     `status_time`           TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted`               TINYINT(1)              NOT NULL DEFAULT 0,
-    UNIQUE INDEX `unique_idx`(`namespace`, `ui_name`, `ui_deployment`, `ui_element_name`),
+    UNIQUE INDEX `unique_idx`(`namespace`, `ui_name`, `ui_deployment`, `ui_component_name`),
     PRIMARY KEY (`id`, `namespace`, `ui_name`, `ui_deployment`)
 )
 CHARACTER SET utf8 COLLATE utf8_bin
@@ -1067,33 +1067,33 @@ INSERT INTO
 {{/.}}
 {{/ui_deployment}}
 
--- ui_element --
-{{#ui_element}}
+-- ui_component --
+{{#ui_component}}
 {{#.}}
 INSERT INTO
-    `{{{global.schema_prefix}}}`.`ui_element`
+    `{{{global.schema_prefix}}}`.`ui_component`
     (
         `namespace`,
         `ui_name`,
         `ui_ver`,
-        `ui_element_name`,
-        `ui_element_type`,
-        `ui_element_spec`
+        `ui_component_name`,
+        `ui_component_type`,
+        `ui_component_spec`
     )
     VALUES
     (
         '{{{namespace}}}',
         '{{{ui_name}}}',
         '{{{ui_ver}}}',
-        '{{{ui_element_name}}}',
-        '{{{ui_element_type}}}',
-        {{#ui_element_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_element_spec}}
+        '{{{ui_component_name}}}',
+        '{{{ui_component_type}}}',
+        {{#ui_component_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_component_spec}}
     )
     ON DUPLICATE KEY UPDATE
-        ui_element_type=VALUES(ui_element_type),
-        ui_element_spec=VALUES(ui_element_spec);
+        ui_component_type=VALUES(ui_component_type),
+        ui_component_spec=VALUES(ui_component_spec);
 {{/.}}
-{{/ui_element}}
+{{/ui_component}}
 
 -- ui_route --
 {{#ui_route}}

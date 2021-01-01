@@ -6,8 +6,8 @@ const prettier = require("prettier")
 const Mustache = require('mustache')
 
 const db = require('../db/db')
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
-const { get_ui_deployment, get_ui_element, get_ui_route } = require ('./util_lookup')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { get_ui_deployment, get_ui_component, get_ui_route } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
@@ -29,9 +29,9 @@ function handle_render(req, res, load_from_db=true) {
       ui_spec,
       ui_deployment,
       ui_deployment_spec,
-      ui_element_name,
-      ui_element_type,
-      ui_element_spec,
+      ui_component_name,
+      ui_component_type,
+      ui_component_spec,
       ui_route_name,
       ui_route_spec,
     } = req.context
@@ -44,20 +44,20 @@ function handle_render(req, res, load_from_db=true) {
       ui_spec,
       ui_deployment,
       ui_deployment_spec,
-      ui_element_name,
-      ui_element_type,
-      ui_element_spec
+      ui_component_name,
+      ui_component_type,
+      ui_component_spec
     )
     */
 
-    // get ui_element from context
-    // let { ui_element } = req.context
+    // get ui_component from context
+    // let { ui_component } = req.context
 
     // if loading from db
     if (load_from_db) {
 
-        if (req_type === 'ui_element') {
-            // handle ui_element
+        if (req_type === 'ui_component') {
+            // handle ui_component
             let elem_result = db.query_sync(`
                 SELECT
                     ui.namespace,
@@ -66,33 +66,33 @@ function handle_render(req, res, load_from_db=true) {
                     ui.ui_spec,
                     ui_deployment.ui_deployment,
                     ui_deployment.ui_deployment_spec,
-                    ui_element.ui_element_name,
-                    ui_element.ui_element_type,
-                    ui_element.ui_element_spec,
-                    ui_element.create_time,
-                    ui_element.update_time
-                FROM ui_element
+                    ui_component.ui_component_name,
+                    ui_component.ui_component_type,
+                    ui_component.ui_component_spec,
+                    ui_component.create_time,
+                    ui_component.update_time
+                FROM ui_component
                 JOIN ui
-                    ON ui_element.namespace = ui.namespace
-                    AND ui_element.ui_name = ui.ui_name
-                    AND ui_element.ui_ver = ui.ui_ver
+                    ON ui_component.namespace = ui.namespace
+                    AND ui_component.ui_name = ui.ui_name
+                    AND ui_component.ui_ver = ui.ui_ver
                 JOIN ui_deployment
-                    ON ui_element.namespace = ui_deployment.namespace
-                    AND ui_element.ui_name = ui_deployment.ui_name
-                    AND ui_element.ui_ver = ui_deployment.ui_ver
+                    ON ui_component.namespace = ui_deployment.namespace
+                    AND ui_component.ui_name = ui_deployment.ui_name
+                    AND ui_component.ui_ver = ui_deployment.ui_ver
                 WHERE
                     ui.namespace = ?
                     AND ui.ui_name = ?
                     AND ui_deployment.ui_deployment = ?
-                    AND ui_element.ui_element_name = ?
+                    AND ui_component.ui_component_name = ?
                     AND ui.deleted=0
-                    AND ui_element.deleted=0
+                    AND ui_component.deleted=0
                     AND ui_deployment.deleted=0`,
                 [
                     namespace,
                     ui_name,
                     ui_deployment,
-                    ui_element_name,
+                    ui_component_name,
                 ]
             )
 
@@ -102,7 +102,7 @@ function handle_render(req, res, load_from_db=true) {
                     type: 'application/json',
                     data: {
                         status: FAILURE,
-                        message: `ERROR: unable to find ui_element [${ui_element_name}]`
+                        message: `ERROR: unable to find ui_component [${ui_component_name}]`
                     }
                 }
             }
@@ -120,9 +120,9 @@ function handle_render(req, res, load_from_db=true) {
             ui_spec             = elem_result[0].ui_spec
             ui_deployment       = elem_result[0].ui_deployment
             ui_deployment_spec  = elem_result[0].ui_deployment_spec
-            ui_element_name     = elem_result[0].ui_element_name
-            ui_element_type     = elem_result[0].ui_element_type
-            ui_element_spec     = elem_result[0].ui_element_spec
+            ui_component_name     = elem_result[0].ui_component_name
+            ui_component_type     = elem_result[0].ui_component_type
+            ui_component_spec     = elem_result[0].ui_component_spec
 
         } else if (req_type === 'ui_route') {
             // handle ui_route
@@ -250,19 +250,19 @@ function handle_render(req, res, load_from_db=true) {
         }
     }
 
-    // check for ui_element_spec
-    if (req_type === 'ui_element' && (!ui_element_spec) ) {
+    // check for ui_component_spec
+    if (req_type === 'ui_component' && (!ui_component_spec) ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec not defined [${ui_element_spec}]`
+                message: `ERROR: ui_component_spec not defined [${ui_component_spec}]`
             }
         }
     }
 
-    // check for ui_element_spec
+    // check for ui_component_spec
     if (req_type === 'ui_route' && (!ui_route_spec) ) {
         return {
             status: 422,
@@ -274,7 +274,7 @@ function handle_render(req, res, load_from_db=true) {
         }
     }
 
-    // console.log(ui_element)
+    // console.log(ui_component)
 
     const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
     const html_content = fs.readFileSync(path.join(rootDir, 'render.html'), "utf8")
@@ -308,7 +308,7 @@ function handle_render(req, res, load_from_db=true) {
       }
       context.element_js = element_js.data
 
-    } else if (ui_element_type == 'react/component') {
+    } else if (ui_component_type == 'react/component') {
       // process source code [element_js]
       const element_js = handle_react_component(req, res)
       if (element_js.status !== 200) {
@@ -316,7 +316,7 @@ function handle_render(req, res, load_from_db=true) {
       }
       context.element_js = element_js.data
 
-    } else if (ui_element_type == 'react/provider') {
+    } else if (ui_component_type == 'react/provider') {
       // process source code [element_js]
       const element_js = handle_react_provider(req, res)
       if (element_js.status !== 200) {

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const objPath = require("object-path")
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const prettier = require("prettier")
 const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
@@ -22,7 +22,7 @@ const db = require('../db/db')
  */
 function handle_react_provider(req, res) {
 
-    // const { ui_deployment, ui_element } = req.context
+    // const { ui_deployment, ui_component } = req.context
     // console.log(req.context)
 
     if (! ('ui_spec' in req.context)
@@ -38,15 +38,15 @@ function handle_react_provider(req, res) {
         }
     }
 
-    if (! ('ui_element_spec' in req.context)
-        || ! (req.context.ui_element_spec.provider)
+    if (! ('ui_component_spec' in req.context)
+        || ! (req.context.ui_component_spec.provider)
     ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.provider not defined [${req.context.ui_element_spec}]`
+                message: `ERROR: ui_component_spec.provider not defined [${req.context.ui_component_spec}]`
             }
         }
     }
@@ -64,8 +64,8 @@ function handle_react_provider(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + req.context.ui_element_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_element_name))
+    const ui_elem_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
+    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_component_name))
     js_context.self = ui_elem_name
 
     // register other variables
@@ -76,7 +76,7 @@ function handle_react_provider(req, res) {
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
-    const input = req.context.ui_element_spec
+    const input = req.context.ui_component_spec
 
     // check if there are any block statements
     const block_statements = []
@@ -179,14 +179,14 @@ function handle_react_provider(req, res) {
 
     // provider expression
     const providerExpression =
-      !!req.context.ui_element_spec.provider
+      !!req.context.ui_component_spec.provider
       ? t.objectExpression
         (
           Object
-            .keys(req.context.ui_element_spec.provider)
+            .keys(req.context.ui_component_spec.provider)
             .map(key =>
             {
-              const value = req.context.ui_element_spec.provider[key]
+              const value = req.context.ui_component_spec.provider[key]
               return t.objectProperty(
                 t.identifier(key),
                 js_process
@@ -200,7 +200,7 @@ function handle_react_provider(req, res) {
         )
       : t.arrayExpression([])
 
-    // console.log(req.context.ui_element_spec)
+    // console.log(req.context.ui_component_spec)
     // console.log(js_context.states)
 
     // create ast tree for the program
@@ -244,7 +244,7 @@ function handle_react_provider(req, res) {
                                   [
                                     // insert block_statements from earlier
                                     ...block_statements,
-                                    // react_element(js_context, req.context.ui_element_spec.element)
+                                    // react_element(js_context, req.context.ui_component_spec.element)
                                     t.returnStatement(
                                       t.jSXElement(
                                         t.jSXOpeningElement(

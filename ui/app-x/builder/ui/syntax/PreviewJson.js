@@ -31,7 +31,7 @@ const PreviewJson = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -71,15 +71,15 @@ const PreviewJson = (props) => {
     )
     {
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
         // set loading status
         setJsonLoading(true)
         // loading url
         const ui_root = globalThis.appx.UI_ROOT
-        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
 
         api.get(
           'sys',
@@ -92,11 +92,11 @@ const PreviewJson = (props) => {
               data = data[0]
             }
 
-            if (!('ui_element_spec' in data)) {
+            if (!('ui_component_spec' in data)) {
               setJson('')
             }
 
-            setJson(JSON.stringify(data.ui_element_spec, null, 2))
+            setJson(JSON.stringify(data.ui_component_spec, null, 2))
           },
           error => {
             console.error(error)
@@ -199,7 +199,7 @@ PreviewJson.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default PreviewJson

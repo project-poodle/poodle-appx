@@ -109,7 +109,7 @@ ui_deployment:
                               module: "../cache/cache"
                               method: "load_cache_for"
                               params:
-                                  - '"ui_element"'
+                                  - '"ui_component"'
                                   - namespace: "@ns"
                                     ui_name: "@@dp"
                                     ui_deployment: "@dp"
@@ -123,13 +123,13 @@ ui_deployment:
                                     ui_deployment: "@dp"
 
 ##################################################
-ui_element:
+ui_component:
     params:
         - namespace
         - ui_name
         - ui_deployment
-    sql_input: "ui_element.sql.yaml"
-    transform: "ui_element.transform.yaml"
+    sql_input: "ui_component.sql.yaml"
+    transform: "ui_component.transform.yaml"
     reconcile:
         min: 180
         max: 360

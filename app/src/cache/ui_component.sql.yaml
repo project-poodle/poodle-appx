@@ -41,35 +41,35 @@
             - "$@.ui_deployment"
         value: "$@"
 
-# ui_element
+# ui_component
 - query: "SELECT
-                ui_element.id,
-                ui_element.namespace,
-                ui_element.ui_name,
-                ui_element.ui_ver,
+                ui_component.id,
+                ui_component.namespace,
+                ui_component.ui_name,
+                ui_component.ui_ver,
                 ui_deployment.ui_deployment,
-                ui_element.ui_element_name,
-                ui_element.ui_element_type,
-                ui_element.ui_element_spec,
-                ui_element.create_time,
-                ui_element.update_time,
-                ui_element.deleted
-            FROM ui_element
+                ui_component.ui_component_name,
+                ui_component.ui_component_type,
+                ui_component.ui_component_spec,
+                ui_component.create_time,
+                ui_component.update_time,
+                ui_component.deleted
+            FROM ui_component
             JOIN ui_deployment
-                ON ui_element.namespace = ui_deployment.namespace
-                AND ui_element.ui_name = ui_deployment.ui_name
-                AND ui_element.ui_ver = ui_deployment.ui_ver
+                ON ui_component.namespace = ui_deployment.namespace
+                AND ui_component.ui_name = ui_deployment.ui_name
+                AND ui_component.ui_ver = ui_deployment.ui_ver
             WHERE
-                ui_element.namespace = '{{params.namespace}}'
-                AND ui_element.ui_name = '{{params.ui_name}}'
+                ui_component.namespace = '{{params.namespace}}'
+                AND ui_component.ui_name = '{{params.ui_name}}'
                 AND ui_deployment.ui_deployment = '{{params.ui_deployment}}'
-                AND ui_element.deleted = 0
+                AND ui_component.deleted = 0
                 AND ui_deployment.deleted = 0"
   map_def:
-      - name: sql_ui_elements
+      - name: sql_ui_components
         key:
             - "$@.namespace"
             - "$@.ui_name"
             - "$@.ui_deployment"
-            - "$@.ui_element_name"
+            - "$@.ui_component_name"
         value: "$@"

@@ -226,7 +226,7 @@ const PropEditor = (props) => {
             className={styles.root}
             >
             <Typography variant="body2">
-              Select a syntax element
+                 Select a syntax element
             </Typography>
           </Box>
         )

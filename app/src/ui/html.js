@@ -4,7 +4,7 @@ const path = require('path');
 const objPath = require("object-path")
 const prettier = require("prettier")
 const Mustache = require('mustache')
-const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 
 const rootDir = path.join(__dirname, '../../../ui/')
 // const INDEX_HTML = 'index.html'
@@ -79,7 +79,7 @@ const KEY_VALUE = function() {
  */
 function handle_html(req, res) {
 
-    // const { ui_deployment, ui_element } = req.context
+    // const { ui_deployment, ui_component } = req.context
 
     // check for importMaps
     if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
@@ -105,26 +105,26 @@ function handle_html(req, res) {
         }
     }
 
-    // check for ui_element_spec
-    if (! ('ui_element_spec' in req.context) ) {
+    // check for ui_component_spec
+    if (! ('ui_component_spec' in req.context) ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec not defined [${ui_element}]`
+                message: `ERROR: ui_component_spec not defined [${ui_component}]`
             }
         }
     }
 
-    // check for ui_element_spec.entry
-    if (! ('entry' in req.context.ui_element_spec) ) {
+    // check for ui_component_spec.entry
+    if (! ('entry' in req.context.ui_component_spec) ) {
         return {
             status: 422,
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_element_spec.entry not defined [${ui_element}]`
+                message: `ERROR: ui_component_spec.entry not defined [${ui_component}]`
             }
         }
     }
@@ -147,8 +147,8 @@ function handle_html(req, res) {
             IMPORT_MAPS: req.context.ui_spec.importMaps,
             API_MAPS: req.context.ui_deployment_spec.apiMaps,
         },
-        entry: req.context.ui_element_spec.entry,
-        data: req.context.ui_element_spec,
+        entry: req.context.ui_component_spec.entry,
+        data: req.context.ui_component_spec,
     }
 
     context.init_js = Mustache.render(initjs_content, context)

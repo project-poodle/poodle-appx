@@ -1463,14 +1463,14 @@ api:
               desc: "post ui_deployment status for :namespace / :ui_name / :ui_deployment"
 
     ######################################################################
-    # ui_element
+    # ui_component
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_element"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1479,15 +1479,15 @@ api:
                   - obj: "ui"
                   - obj: "namespace"
           doc:
-              desc: "list ui_elements for :namespace / :ui_name / :ui_ver"
+              desc: "list ui_components for :namespace / :ui_name / :ui_ver"
     # list by ui_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_element"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_component"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1496,18 +1496,18 @@ api:
                   - obj: "ui"
                   - obj: "ui_deployment"
                   - obj: "namespace"
-                  - obj: "ui_element_status"
+                  - obj: "ui_component_status"
                     type: "left"
           doc:
-              desc: "list ui_deployment of ui_elements for :namespace / :ui_deployment"
+              desc: "list ui_deployment of ui_components for :namespace / :ui_deployment"
     # get
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_element/:ui_element_name"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component/:ui_component_name"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1516,15 +1516,15 @@ api:
                   - obj: "ui"
                   - obj: "namespace"
           doc:
-              desc: "get obj for :namespace / :ui_name / :ui_ver / :ui_element_name"
+              desc: "get obj for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # get by ui_deployment
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_element/:ui_element_name"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_component/:ui_component_name"
       api_spec:
           permission: "ui.read"
           syntax:
@@ -1533,66 +1533,66 @@ api:
                   - obj: "ui"
                   - obj: "ui_deployment"
                   - obj: "namespace"
-                  - obj: "ui_element_status"
+                  - obj: "ui_component_status"
                     type: "left"
           doc:
-              desc: "get ui_element for :namespace / :ui_name / :ui_ver / :app_runtime / :ui_element_name"
+              desc: "get ui_component for :namespace / :ui_name / :ui_ver / :app_runtime / :ui_component_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_element/:ui_element_name"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component/:ui_component_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "upsert"
           doc:
-              desc: "upsert ui_element for :namespace / :ui_name / :ui_ver / :ui_element_name"
+              desc: "upsert ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # update
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "put"
-      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_element/:ui_element_name"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component/:ui_component_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "update"
           doc:
-              desc: "update ui_element for :namespace / :ui_name / :ui_ver / :ui_element_name"
+              desc: "update ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       api_method: "delete"
-      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_element/:ui_element_name"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component/:ui_component_name"
       api_spec:
           permission: "ui.write"
           syntax:
               verb: "delete"
           doc:
-              desc: "delete ui_element for :namespace / :ui_name / :ui_ver / :ui_element_name (logical deletion)"
+              desc: "delete ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name (logical deletion)"
     # status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
       app_rev: "default"
-      obj_name: "ui_element_status"
+      obj_name: "ui_component_status"
       api_method: "post"
-      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_element/:ui_element_name/status"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment/ui_component/:ui_component_name/status"
       api_spec:
           permission: "ui.status"
           syntax:
               verb: "status"
           doc:
-              desc: "post ui_element status for :namespace / :ui_name / :ui_deployment / :ui_element_name"
+              desc: "post ui_component status for :namespace / :ui_name / :ui_deployment / :ui_component_name"
 
     ######################################################################
     # ui_route
@@ -1631,7 +1631,7 @@ api:
                   - obj: "ui_route_status"
                     type: "left"
           doc:
-              desc: "list ui_deployment of ui_elements for :namespace / :ui_name / :ui_deployment"
+              desc: "list ui_deployment of ui_components for :namespace / :ui_name / :ui_deployment"
     # get
     - namespace: "sys"
       app_name: "appx"
@@ -1668,7 +1668,7 @@ api:
                   - obj: "ui_route_status"
                     type: "left"
           doc:
-              desc: "get ui_element for :namespace / :ui_name / :ui_ver / :ui_deployment / :ui_route_name"
+              desc: "get ui_component for :namespace / :ui_name / :ui_ver / :ui_deployment / :ui_route_name"
     # upsert
     - namespace: "sys"
       app_name: "appx"

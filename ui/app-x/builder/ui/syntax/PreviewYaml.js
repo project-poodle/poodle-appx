@@ -31,7 +31,7 @@ const PreviewYaml = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -72,15 +72,15 @@ const PreviewYaml = (props) => {
     )
     {
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
         // set loading status
         setYamltLoading(true)
         // loading url
         const ui_root = globalThis.appx.UI_ROOT
-        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_element/base64:${btoa(navElement.ui_element_name)}`
+        const url = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
 
         api.get(
           'sys',
@@ -93,12 +93,12 @@ const PreviewYaml = (props) => {
               data = data[0]
             }
 
-            if (!('ui_element_spec' in data)) {
+            if (!('ui_component_spec' in data)) {
               setYaml('')
             }
 
             const doc = new YAML.Document()
-            doc.contents = data.ui_element_spec
+            doc.contents = data.ui_component_spec
             // console.log(doc.toString())
             setYaml(doc.toString())
           },
@@ -158,7 +158,7 @@ const PreviewYaml = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
-    navElement.ui_element_name,
+    navComponent.ui_component_name,
     navRoute.ui_route_name,
     navSelected.type,
   ])
@@ -216,7 +216,7 @@ PreviewYaml.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default PreviewYaml

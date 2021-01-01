@@ -85,7 +85,7 @@ function lookup_desc_for_type (type) {
 
   if (type === 'react/component') {
 
-    return 'React Element'
+    return 'React Component'
 
   } else if (type === 'react/provider') {
 
@@ -119,8 +119,8 @@ function default_spec_for_type (type) {
           position: 'absolute',
         }
       },
-      element: {
-        type: 'react/element',
+      component: {
+        type: 'react/component',
         name: '@material-ui/core.Box',
         props: {
           display: 'flex',
@@ -133,7 +133,7 @@ function default_spec_for_type (type) {
         },
         children: [
           {
-            type: 'react/element',
+            type: 'react/component',
             name: '@material-ui/core.Typography',
             props: {
               variant: 'h6',

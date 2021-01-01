@@ -88,7 +88,7 @@ const TestEditor = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -205,7 +205,7 @@ const TestEditor = (props) => {
   },
   [
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
     loadTimer,

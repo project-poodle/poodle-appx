@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db/db')
 const cache = require('../cache/cache')
-const { REGEX_VAR, SUCCESS, FAILURE }  = require('../api/util')
+const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 const { load_ui_router }  = require('./ui_router')
 
 

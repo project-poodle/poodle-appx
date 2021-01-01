@@ -1083,11 +1083,11 @@ attr:
           type: "JSON"
 
     ######################################################################
-    # ui_element
+    # ui_component
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       attr_name: "namespace"
       attr_spec:
           key: true
@@ -1095,7 +1095,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       attr_name: "ui_name"
       attr_spec:
           key: true
@@ -1103,7 +1103,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
+      obj_name: "ui_component"
       attr_name: "ui_ver"
       attr_spec:
           key: true
@@ -1111,34 +1111,34 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
-      attr_name: "ui_element_name"
+      obj_name: "ui_component"
+      attr_name: "ui_component_name"
       attr_spec:
           key: true
           type: "VARCHAR(255)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
-      attr_name: "ui_element_type"
+      obj_name: "ui_component"
+      attr_name: "ui_component_type"
       attr_spec:
           key: false
           type: "VARCHAR(32)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element"
-      attr_name: "ui_element_spec"
+      obj_name: "ui_component"
+      attr_name: "ui_component_spec"
       attr_spec:
           key: false
           type: "JSON"
 
     ######################################################################
-    # ui_element_status
+    # ui_component_status
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_component_status"
       attr_name: "namespace"
       attr_spec:
           key: true
@@ -1146,7 +1146,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_component_status"
       attr_name: "ui_name"
       attr_spec:
           key: true
@@ -1154,7 +1154,7 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
+      obj_name: "ui_component_status"
       attr_name: "ui_deployment"
       attr_spec:
           key: true
@@ -1162,16 +1162,16 @@ attr:
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
-      attr_name: "ui_element_name"
+      obj_name: "ui_component_status"
+      attr_name: "ui_component_name"
       attr_spec:
           key: true
           type: "VARCHAR(255)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
-      obj_name: "ui_element_status"
-      attr_name: "ui_element_status"
+      obj_name: "ui_component_status"
+      attr_name: "ui_component_status"
       attr_spec:
           key: false
           type: "JSON"

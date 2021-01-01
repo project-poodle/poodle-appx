@@ -14,14 +14,14 @@ const NavProvider = (() => {
       ui_deployment: 'base',
     })
 
-    // ui_element
-    const [ navElement,       setNavElement      ] = useState({
-      ui_element_name: null,
-      ui_element_type: null,
-      ui_element_spec: null,
+    // ui_component
+    const [ navComponent,       setNavComponent      ] = useState({
+      ui_component_name: null,
+      ui_component_type: null,
+      ui_component_spec: null,
     })
 
-    // ui_element
+    // ui_component
     const [ navRoute,         setNavRoute       ] = useState({
       ui_route_name: null,
       ui_route_spec: null,
@@ -29,7 +29,7 @@ const NavProvider = (() => {
 
     // selected object
     const [ navSelected,      setNavSelected    ] = useState({
-      type: null,         // ui_element or ui_route
+      type: null,         // ui_component or ui_route
     })
 
     return (
@@ -37,8 +37,8 @@ const NavProvider = (() => {
         value={{
           navDeployment,
           setNavDeployment,
-          navElement,
-          setNavElement,
+          navComponent,
+          setNavComponent,
           navRoute,
           setNavRoute,
           navSelected,

@@ -199,7 +199,7 @@ const UI_Builder = (props) => {
                   namespace={props.namespace}
                   ui_name={props.ui_name}
                   ui_deployment={props.ui_deployment}
-                  ui_element_name={props.ui_element_name}
+                  ui_component_name={props.ui_component_name}
                   >
                 </PreviewTabs>
               </PreviewProvider>
@@ -217,7 +217,7 @@ const UI_Builder = (props) => {
                 namespace={props.namespace}
                 ui_name={props.ui_name}
                 ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
+                ui_component_name={props.ui_component_name}
               />
             </Box>
           </Box>
@@ -233,7 +233,7 @@ const UI_Builder = (props) => {
                 namespace={props.namespace}
                 ui_name={props.ui_name}
                 ui_deployment={props.ui_deployment}
-                ui_element_name={props.ui_element_name}
+                ui_component_name={props.ui_component_name}
                 >
               </PropEditor>
             </Box>
@@ -249,7 +249,7 @@ UI_Builder.propTypes = {
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
   ui_builder_type: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
   ui_route_name: PropTypes.string.isRequired,
 }
 

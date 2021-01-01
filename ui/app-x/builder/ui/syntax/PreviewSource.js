@@ -30,7 +30,7 @@ const PreviewSource = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -75,15 +75,15 @@ const PreviewSource = (props) => {
     )
     {
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
-        && !!navElement.ui_element_type
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
+        && !!navComponent.ui_component_type
       ) {
         setSourceLoading(true)
         // loading url
         const ui_root = globalThis.appx.UI_ROOT
-        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navElement.ui_element_name}.source`.replace(/\/+/g, '/')
+        const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/_elem/${navComponent.ui_component_name}.source`.replace(/\/+/g, '/')
         // console.log(url)
         fetch(url)
           .then(response => response.text())
@@ -137,8 +137,8 @@ const PreviewSource = (props) => {
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
     navSelected.type,
-    navElement.ui_element_name,
-    navElement.ui_element_type,
+    navComponent.ui_component_name,
+    navComponent.ui_component_type,
     navRoute.ui_route_name,
   ])
 
@@ -168,10 +168,10 @@ const PreviewSource = (props) => {
       const url = `/${ui_root}/${navDeployment.namespace}/${navDeployment.ui_name}/${navDeployment.ui_deployment}/`.replace(/\/+/g, '/')
       // check object type
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
-        && !!navElement.ui_element_type
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
+        && !!navComponent.ui_component_type
       ) {
         // preview source code
         setSourceLoading(true)
@@ -181,9 +181,9 @@ const PreviewSource = (props) => {
           ui_name: navDeployment.ui_name,
           ui_ver: navDeployment.ui_ver,
           ui_deployment: navDeployment.ui_deployment,
-          ui_element_name: navElement.ui_element_name,
-          ui_element_type: navElement.ui_element_type,
-          ui_element_spec: spec
+          ui_component_name: navComponent.ui_component_name,
+          ui_component_type: navComponent.ui_component_type,
+          ui_component_spec: spec
         }
         // console.log(postData)
         fetch(
@@ -275,8 +275,8 @@ const PreviewSource = (props) => {
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
     navSelected.type,
-    navElement.ui_element_name,
-    navElement.ui_element_type,
+    navComponent.ui_component_name,
+    navComponent.ui_component_type,
     navRoute.ui_route_name,
     treeData,
   ])
@@ -310,7 +310,7 @@ PreviewSource.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default PreviewSource

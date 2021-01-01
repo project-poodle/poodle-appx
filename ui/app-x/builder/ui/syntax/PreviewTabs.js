@@ -75,7 +75,7 @@ const PreviewTabs = (props) => {
   // nav context
   const {
     navDeployment,
-    navElement,
+    navComponent,
     navRoute,
     navSelected,
   } = useContext(NavProvider.Context)
@@ -135,9 +135,9 @@ const PreviewTabs = (props) => {
     {
       // check selected type
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
         // setPreviewLoading(true)
         // widget loading
@@ -149,7 +149,7 @@ const PreviewTabs = (props) => {
           + '/' + navDeployment.namespace
           + '/' + navDeployment.ui_name
           + '/' + navDeployment.ui_deployment
-          + '/_elem' + navElement.ui_element_name + '.html').replace(/\+/g, '/')
+          + '/_elem' + navComponent.ui_component_name + '.html').replace(/\+/g, '/')
         // console.log(iframeUrl)
         iframeRef.current.src=iframeUrl
         setPreviewInitialized(false)
@@ -189,7 +189,7 @@ const PreviewTabs = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
-    navElement.ui_element_name,
+    navComponent.ui_component_name,
     navRoute.ui_route_name,
     navSelected.type,
     loadTimer,
@@ -201,7 +201,7 @@ const PreviewTabs = (props) => {
 
     // console.log(navDeployment)
     // console.log(navSelected)
-    // console.log(navElement)
+    // console.log(navComponent)
 
     // load from UI context if livePreview
     if
@@ -229,9 +229,9 @@ const PreviewTabs = (props) => {
 
       // check selected type
       if (
-        navSelected.type === 'ui_element'
-        && !!navElement
-        && !!navElement.ui_element_name
+        navSelected.type === 'ui_component'
+        && !!navComponent
+        && !!navComponent.ui_component_name
       ) {
         // widget loading
         setWidgetLoading(true)
@@ -239,16 +239,16 @@ const PreviewTabs = (props) => {
         // setPreviewLoading(true)
         // preview data
         const submitData = {
-          type: 'ui_element',
+          type: 'ui_component',
           output: 'html',
           data: {
             namespace: navDeployment.namespace,
             ui_name: navDeployment.ui_name,
             ui_ver: navDeployment.ui_ver,
             ui_deployment: navDeployment.ui_deployment,
-            ui_element_name: navElement.ui_element_name,
-            ui_element_type: navElement.ui_element_type,
-            ui_element_spec: spec
+            ui_component_name: navComponent.ui_component_name,
+            ui_component_type: navComponent.ui_component_type,
+            ui_component_spec: spec
           },
         }
         // console.log(submitData)
@@ -308,8 +308,8 @@ const PreviewTabs = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
-    navElement.ui_element_name,
-    navElement.ui_element_type,
+    navComponent.ui_component_name,
+    navComponent.ui_component_type,
     navRoute.ui_route_name,
     navSelected.type,
     livePreview,
@@ -347,9 +347,9 @@ const PreviewTabs = (props) => {
           : data
         // check selected type
         if (
-          navSelected.type === 'ui_element'
-          && !!navElement
-          && !!navElement.ui_element_name
+          navSelected.type === 'ui_component'
+          && !!navComponent
+          && !!navComponent.ui_component_name
         ) {
           // live widget update
           setLiveWidgetUpdating(true)
@@ -362,7 +362,7 @@ const PreviewTabs = (props) => {
               + '/' + navDeployment?.ui_deployment
               + '/',
             data: {
-              type: 'ui_element',
+              type: 'ui_component',
               output: 'code',
               data: {
                 namespace: navDeployment.namespace,
@@ -371,9 +371,9 @@ const PreviewTabs = (props) => {
                 ui_spec: navDeployment.ui_spec,
                 ui_deployment: navDeployment.ui_deployment,
                 ui_deployment_spec: navDeployment.ui_deployment_spec,
-                ui_element_name: navElement.ui_element_name,
-                ui_element_type: navElement.ui_element_type,
-                ui_element_spec: spec
+                ui_component_name: navComponent.ui_component_name,
+                ui_component_type: navComponent.ui_component_type,
+                ui_component_spec: spec
               }
             }
           }
@@ -440,8 +440,8 @@ const PreviewTabs = (props) => {
     navDeployment.ui_name,
     navDeployment.ui_ver,
     navDeployment.ui_deployment,
-    navElement.ui_element_name,
-    navElement.ui_element_type,
+    navComponent.ui_component_name,
+    navComponent.ui_component_type,
     navRoute.ui_route_name,
     navSelected.type,
     livePreview,
@@ -461,8 +461,8 @@ const PreviewTabs = (props) => {
         &&
         (
           (
-            navSelected.type === 'ui_element'
-            && !!navElement.ui_element_name
+            navSelected.type === 'ui_component'
+            && !!navComponent.ui_component_name
           )
           ||
           (
@@ -480,7 +480,7 @@ const PreviewTabs = (props) => {
           alignItems="center"
           >
           <Typography variant="body2">
-            Select a UI element or route
+            Select a UI component or route
           </Typography>
         </Box>
       )
@@ -495,8 +495,8 @@ const PreviewTabs = (props) => {
         &&
         (
           (
-            navSelected.type === 'ui_element'
-            && !!navElement.ui_element_name
+            navSelected.type === 'ui_component'
+            && !!navComponent.ui_component_name
           )
           ||
           (
@@ -522,7 +522,7 @@ const PreviewTabs = (props) => {
             method="POST"
             target="live_preview"
             >
-            <input name="type" value="ui_element" readOnly/>
+            <input name="type" value="ui_component" readOnly/>
             <input name="output" value="html" readOnly/>
             <input name="data[]" value="3" readOnly/>
           </form>
@@ -571,12 +571,12 @@ const PreviewTabs = (props) => {
             {
               (
                 (
-                  navSelected.type === 'ui_element'
-                  && !!navElement.ui_element_name
+                  navSelected.type === 'ui_component'
+                  && !!navComponent.ui_component_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/component'
-                    || navElement?.ui_element_type === 'html'
+                    navComponent?.ui_component_type === 'react/component'
+                    || navComponent?.ui_component_type === 'html'
                   )
                 )
                 ||
@@ -600,12 +600,12 @@ const PreviewTabs = (props) => {
             {
               (
                 (
-                  navSelected.type === 'ui_element'
-                  && !!navElement.ui_element_name
+                  navSelected.type === 'ui_component'
+                  && !!navComponent.ui_component_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/component'
-                    || navElement?.ui_element_type === 'react/provider'
+                    navComponent?.ui_component_type === 'react/component'
+                    || navComponent?.ui_component_type === 'react/provider'
                   )
                 )
                 ||
@@ -621,7 +621,7 @@ const PreviewTabs = (props) => {
                     namespace={props.namespace}
                     ui_name={props.ui_name}
                     ui_deployment={props.ui_deployment}
-                    ui_element_name={props.ui_element_name}
+                    ui_component_name={props.ui_component_name}
                   />
                 </TabPane>
               )
@@ -629,12 +629,12 @@ const PreviewTabs = (props) => {
             {
               (
                 (
-                  navSelected.type === 'ui_element'
-                  && !!navElement.ui_element_name
+                  navSelected.type === 'ui_component'
+                  && !!navComponent.ui_component_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/component'
-                    || navElement?.ui_element_type === 'react/provider'
+                    navComponent?.ui_component_type === 'react/component'
+                    || navComponent?.ui_component_type === 'react/provider'
                   )
                 )
                 ||
@@ -650,7 +650,7 @@ const PreviewTabs = (props) => {
                     namespace={props.namespace}
                     ui_name={props.ui_name}
                     ui_deployment={props.ui_deployment}
-                    ui_element_name={props.ui_element_name}
+                    ui_component_name={props.ui_component_name}
                   />
                 </TabPane>
               )
@@ -658,12 +658,12 @@ const PreviewTabs = (props) => {
             {
               (
                 (
-                  navSelected.type === 'ui_element'
-                  && !!navElement.ui_element_name
+                  navSelected.type === 'ui_component'
+                  && !!navComponent.ui_component_name
                   &&
                   (
-                    navElement?.ui_element_type === 'react/component'
-                    || navElement?.ui_element_type === 'react/provider'
+                    navComponent?.ui_component_type === 'react/component'
+                    || navComponent?.ui_component_type === 'react/provider'
                   )
                 )
                 ||
@@ -679,7 +679,7 @@ const PreviewTabs = (props) => {
                     namespace={props.namespace}
                     ui_name={props.ui_name}
                     ui_deployment={props.ui_deployment}
-                    ui_element_name={props.ui_element_name}
+                    ui_component_name={props.ui_component_name}
                   />
                 </TabPane>
               )
@@ -696,7 +696,7 @@ PreviewTabs.propTypes = {
   namespace: PropTypes.string.isRequired,
   ui_name: PropTypes.string.isRequired,
   ui_deployment: PropTypes.string.isRequired,
-  ui_element_name: PropTypes.string.isRequired,
+  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default PreviewTabs

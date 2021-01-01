@@ -19,13 +19,13 @@
                 ui_ver: "$dp.ui_ver"
                 ui_deployment_spec: "$dp.ui_deployment_spec"
 
-                ui_elements:
-                    "#elem{$sql_ui_elements[@ns][@@dp][@dp]}":                              # ui_element_name
+                ui_components:
+                    "#elem{$sql_ui_components[@ns][@@dp][@dp]}":                              # ui_component_name
                             namespace: "@ns"
                             ui_name: "@@dp"
                             ui_deployment: "@dp"
                             ui_ver: "$dp.ui_ver"
                             ui_deployment_spec: "$dp.ui_deployment_spec"
-                            ui_element_name: "@elem"
-                            ui_element_type: "$elem.ui_element_type"
-                            ui_element_spec: "$elem.ui_element_spec"
+                            ui_component_name: "@elem"
+                            ui_component_type: "$elem.ui_component_type"
+                            ui_component_spec: "$elem.ui_component_spec"

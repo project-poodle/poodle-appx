@@ -38,13 +38,13 @@ eval_template -t ${CURR_DIR}/appx.sql \
               -y3 ${CURR_DIR}/relation.yaml \
               -y4 ${CURR_DIR}/attr.yaml \
               -y5 ${CURR_DIR}/api.yaml \
-              -y6 ${CURR_DIR}/ui_console_element.yaml \
+              -y6 ${CURR_DIR}/ui_console_component.yaml \
               -y7 ${CURR_DIR}/ui_console_route.yaml \
-              -y8 ${CURR_DIR}/ui_service_element.yaml \
+              -y8 ${CURR_DIR}/ui_service_component.yaml \
               -y9 ${CURR_DIR}/ui_service_route.yaml \
-              -y10 ${CURR_DIR}/ui_ui_element.yaml \
+              -y10 ${CURR_DIR}/ui_ui_component.yaml \
               -y11 ${CURR_DIR}/ui_ui_route.yaml \
-              -y12 ${CURR_DIR}/ui_auth_element.yaml \
+              -y12 ${CURR_DIR}/ui_auth_component.yaml \
               -y13 ${CURR_DIR}/ui_auth_route.yaml \
               > /tmp/$$/appx.sql
 if [ $? -ne 0 ]; then

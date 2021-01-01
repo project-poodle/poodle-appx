@@ -31,7 +31,7 @@ import {
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import NavProvider from 'app-x/builder/ui/NavProvider'
-import ElementProvider from 'app-x/builder/ui/element/ElementProvider'
+import ComponentProvider from 'app-x/builder/ui/component/ComponentProvider'
 import {
   tree_traverse,
   tree_lookup,
@@ -39,10 +39,10 @@ import {
   lookup_desc_for_type,
   reorder_array,
   PATH_SEPARATOR,
-} from 'app-x/builder/ui/element/util'
+} from 'app-x/builder/ui/component/util'
 
 // delete dialog
-const ElementDeleteDialog = (props) => {
+const ComponentDeleteDialog = (props) => {
 
   const styles = makeStyles((theme) => ({
     dialog: {
@@ -65,15 +65,15 @@ const ElementDeleteDialog = (props) => {
   const {
     navDeployment,
     setNavDeployment,
-    navElement,
-    setNavElement,
+    navComponent,
+    setNavComponent,
     navRoute,
     setNavRoute,
     navSelected,
     setNavSelected,
   } = useContext(NavProvider.Context)
 
-  // element context
+  // component context
   const {
     // basic data
     treeData,
@@ -91,17 +91,17 @@ const ElementDeleteDialog = (props) => {
     setDeleteDialogContext,
     deleteDialogCallback,
     setDeleteDialogCallback,
-  } = useContext(ElementProvider.Context)
+  } = useContext(ComponentProvider.Context)
 
-  // delete element
-  const deleteElement = (elementPath) => {
+  // delete component
+  const deleteComponent = (componentPath) => {
 
-    // deleteElement
+    // deleteComponent
     const resultTree = _.cloneDeep(treeData)
-    const lookupNode = tree_lookup(resultTree, elementPath)
+    const lookupNode = tree_lookup(resultTree, componentPath)
     const lookupParent = tree_lookup(resultTree, lookupNode?.parentKey)
     // api request
-    const deleteUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_element/base64:${btoa(elementPath)}`
+    const deleteUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_component/base64:${btoa(componentPath)}`
     api.del(
       'sys',
       'appx',
@@ -111,7 +111,7 @@ const ElementDeleteDialog = (props) => {
         if (!!data.status && data.status === 'ok') {
           notification['success']({
             message: `SUCCESS`,
-            description: `Successfully deleted ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ]`,
+            description: `Successfully deleted ${lookup_desc_for_type(lookupNode?.type)} [ ${componentPath} ]`,
             placement: 'bottomLeft',
           })
           // check that lookupNode and lookupParent exists
@@ -119,7 +119,7 @@ const ElementDeleteDialog = (props) => {
             // delete node from result tree
             const children = []
             lookupParent.children
-              .filter(child => child.key !== elementPath)
+              .filter(child => child.key !== componentPath)
               .map(child => {
                 children.push(child)
               })
@@ -135,7 +135,7 @@ const ElementDeleteDialog = (props) => {
           setLoadTimer(new Date())
           notification['error']({
             message: `FAILURE`,
-            description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${data.message}`,
+            description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${componentPath} ] - ${data.message}`,
             placement: 'bottomLeft',
           })
         }
@@ -144,7 +144,7 @@ const ElementDeleteDialog = (props) => {
         console.error(error)
         notification['error']({
           message: `FAILURE`,
-          description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${elementPath} ] - ${error.toString()}`,
+          description: `Failed to delete ${lookup_desc_for_type(lookupNode?.type)} [ ${componentPath} ] - ${error.toString()}`,
           placement: 'bottomLeft',
         })
         setLoadTimer(new Date())
@@ -155,7 +155,7 @@ const ElementDeleteDialog = (props) => {
   // potentially recurssivelly delete
   const onDelete = (node) => {
     if (!!node.isLeaf) {
-      deleteElement(node.key)
+      deleteComponent(node.key)
       return
     } else if (!!node.children.length) {
       // do not delete non empty folder
@@ -248,4 +248,4 @@ const ElementDeleteDialog = (props) => {
   )
 }
 
-export default ElementDeleteDialog
+export default ComponentDeleteDialog
