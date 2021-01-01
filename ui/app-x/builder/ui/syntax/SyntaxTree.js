@@ -948,7 +948,7 @@ const SyntaxTree = (props) => {
       ||
       (
         (
-          dropParent.data.type === 'react/component'
+          dropParent.data.type === 'react/element'
           || dropParent.data.type === 'react/html'
         )
         &&

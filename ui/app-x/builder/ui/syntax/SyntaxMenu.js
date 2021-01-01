@@ -55,6 +55,7 @@ import {
   tree_lookup,
   lookup_child_by_ref
 } from 'app-x/builder/ui/syntax/util_tree'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 
 // make context menu
@@ -70,6 +71,14 @@ const SyntaxMenu = (props) => {
     },
   }))()
 
+  // nav context
+  const {
+    navDeployment,
+    navComponent,
+    navRoute,
+    navSelected,
+  } = useContext(NavProvider.Context)
+
   // context
   const {
     treeData,
@@ -81,12 +90,11 @@ const SyntaxMenu = (props) => {
 
   // const [ menuPosition, setMenuPosition ] = useState(null)
 
-  // check props.selectedNode
-  if (!props.selectedNode) {
-    return null
-  }
+  // useEffect(() => {
+  //   console.log(props.selectedNode)
+  // }, [props.selectedNode])
 
-  const valid_child_types = lookup_valid_child_types(props.selectedNode.data.type)
+  const valid_child_types = lookup_valid_child_types(props.selectedNode?.data.type)
 
   return (
     <Menu
@@ -364,7 +372,40 @@ const SyntaxMenu = (props) => {
         !!props.selectedNode
         && !!props.selectedNode.data
         && !!props.selectedNode.data.type
-        && props.selectedNode.data.type !== '/'
+        &&
+        !(
+          (props.selectedNode?.key === '/')
+          ||
+          (
+            (
+              (
+                navSelected.type === 'ui_component'
+                && navComponent.ui_component_type === 'react/component'
+              )
+              ||
+              (
+                navSelected.type === 'ui_route'
+              )
+            )
+            && props.selectedNode?.data.__ref === 'element'
+            &&
+            (
+              props.selectedNode?.parentKey === '/'
+              || props.selectedNode?.parentKey === null
+            )
+          )
+          ||
+          (
+            navSelected.type === 'ui_component'
+            && navComponent.ui_component_type=== 'react/provider'
+            && props.selectedNode?.data.__ref === 'provider'
+            &&
+            (
+              props.selectedNode?.parentKey === '/'
+              || props.selectedNode?.parentKey === null
+            )
+          )
+        )
         &&
         (
           <Box>
