@@ -1,5 +1,5 @@
 {
-    "host": "{{{appx.init.mysql_host}}}",
+    "host": {{#appx.init.mysql_host}}{{#APPX.TO_JSON}}{{/APPX.TO_JSON}}{{/appx.init.mysql_host}},
     "port": "{{{appx.init.mysql_port}}}",
     "user": "{{{appx.init.mysql_admin_user}}}",
     "pass": "{{{appx.init.mysql_admin_pass}}}",

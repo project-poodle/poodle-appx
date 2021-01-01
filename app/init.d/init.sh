@@ -45,6 +45,10 @@ export INIT_YAML=/tmp/$$/init.yaml
 parse_yaml "${INIT_YAML}" > /tmp/$$/env.sh
 source /tmp/$$/env.sh
 
+# echo "------------------------------------------------------------"
+# cat $INIT_YAML
+# echo "------------------------------------------------------------"
+
 # echo "--------------------"
 # eval_template -t ${CURR_DIR}/`uname`/init.template.sh -y1 ${INIT_YAML} > /tmp/$$/init.`uname`.sh
 # if [ $? -ne 0 ]; then
@@ -62,6 +66,10 @@ if [ $? -ne 0 ]; then
 fi
 # chown ${appx__init__service_usr_admin}:${appx__init__service_grp_admin} ${MYSQL_ADMIN_FILE}
 chmod 644 ${MYSQL_ADMIN_FILE}
+
+# echo "------------------------------------------------------------"
+# cat $MYSQL_ADMIN_FILE
+# echo "------------------------------------------------------------"
 
 # LOG_DIR_MYSQL=/var/log/appx-mysql/
 LOG_DIR_MYSQL=${BASE_DIR}/log.d/appx-mysql/

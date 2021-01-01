@@ -3,10 +3,23 @@ const mysql = require('mysql');
 const deasync = require('deasync');
 
 const DEFAULT_POOL_SIZE = 15;
+const DEFAULT_MAX_RETRIES = 9
 
 var db_pool = null;
 var conf_file = null;
 
+////////////////////////////////////////////////////////////////////////////////
+// get a random host
+function get_host_or_random(input) {
+    if (typeof input === 'object' && Array.isArray(input.list)) {
+      const random = Math.floor(Math.random() * input.list.length);
+      return input.list[random]
+    } else {
+      return input
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // get cached pool if exist, otherwise, create the pool
 var getPool = (mysql_conf_file) => {
 
@@ -17,10 +30,12 @@ var getPool = (mysql_conf_file) => {
         }
 
         mysql_conf = JSON.parse(fs.readFileSync(conf_file, 'utf8'))
+        // chose a random host
+        const chosen_host = get_host_or_random(mysql_conf.host)
 
         db_pool = mysql.createPool({
             connectionLimit : ('appx_node_pool' in mysql_conf ? mysql_conf['appx_node_pool'] : DEFAULT_POOL_SIZE),
-            host            : mysql_conf.host,
+            host            : chosen_host,
             port            : mysql_conf.port,
             user            : mysql_conf.user,
             password        : mysql_conf.pass,
@@ -36,7 +51,9 @@ var getPool = (mysql_conf_file) => {
                 }
                 return next()
             }
-        });
+        })
+
+        console.log(`INFO: [DB POOL] connecting to ${chosen_host}`)
     }
 
     return db_pool
@@ -48,17 +65,17 @@ function get_random_between(min, max) {
 }
 
 function get_sleep_ms(query_conn_retries) {
-    const rand = Math.round(get_random_between(500, 1000))
-    if (query_conn_retries > 5) {
+    const rand = Math.round(get_random_between(1, 500))
+    if (query_conn_retries > DEFAULT_MAX_RETRIES - 1) {
         return rand
     } else {
         // connection retries
-        return rand + (5 - query_conn_retries) * 1000
+        return rand + (DEFAULT_MAX_RETRIES - 1 - query_conn_retries) * 500
     }
 }
 
 // async query method
-var query = (sql, variables, callback, query_conn_retries=6) => {
+var query = (sql, variables, callback, query_conn_retries=DEFAULT_MAX_RETRIES) => {
 
     if (query_conn_retries <= 0) {
         // we have exhausted all the retry count

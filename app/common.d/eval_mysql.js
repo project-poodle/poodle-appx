@@ -3,16 +3,18 @@ const mysql = require('mysql');
 const deasync = require('deasync');
 const { ArgumentParser } = require('argparse');
 
+const DEFAULT_MAX_RETRIES = 9
 
 const parser = new ArgumentParser({
   description: 'evaluate mysql commands'
 });
 
-parser.add_argument('-c', '--conf',     { help: 'mysql config file', required: true });
-parser.add_argument('-f', '--filepath', { help: 'mysql command(s) filepath' });
-parser.add_argument('-e', '--execute',  { help: 'execute mysql command line' });
-parser.add_argument('-p', '--print',    { action: 'store_true', help: 'print command' });
-parser.add_argument('-r', '--result',   { action: 'store_true', help: 'print results' });
+parser.add_argument('-c', '--conf',         { help: 'mysql config file', required: true });
+parser.add_argument('-f', '--filepath',     { help: 'mysql command(s) filepath' });
+parser.add_argument('-e', '--execute',      { help: 'execute mysql command line' });
+parser.add_argument('-p', '--print',        { action: 'store_true', help: 'print command' });
+parser.add_argument('-r', '--result',       { action: 'store_true', help: 'print results' });
+parser.add_argument('-y', '--max_retries',  { help: 'max retry count' });
 
 args = parser.parse_args();
 
@@ -55,26 +57,11 @@ if (!fs.existsSync(args.conf)) {
 }
 
 let mysql_conf = JSON.parse(fs.readFileSync(args.conf, 'utf8'))
-
-let conn = mysql.createConnection({
-    host: mysql_conf.host,
-    port: mysql_conf.port,
-    user: mysql_conf.user,
-    password: mysql_conf.pass,
-    typeCast: function(field, next) {
-        if ((field.type == 'BLOB' || field.type == 'JSON') && field.length == 4294967295) {
-            let value = field.string();
-            try {
-                return JSON.parse(value);
-            } catch (e) {
-                return value;
-            }
-        }
-        return next();
-    }
-})
+// console.log(mysql_conf)
 
 ////////////////////////////////////////////////////////////////////////////////
+// db connection
+let conn = null
 // get synchronous method
 let query_async = (sql, params, callback) => {
     conn.query(sql, params, (error, results, fields) => {
@@ -84,36 +71,111 @@ let query_async = (sql, params, callback) => {
 let query_sync = deasync(query_async)
 
 ////////////////////////////////////////////////////////////////////////////////
-// execute sql commands
-commands.forEach((command) => {
+// get a random host
+function get_host_or_random(input) {
+    if (typeof input === 'object' && Array.isArray(input.list)) {
+      const random = Math.floor(Math.random() * input.list.length);
+      return input.list[random]
+    } else {
+      return input
+    }
+}
+
+// utility method
+function get_random_between(min, max) {
+    return min + Math.random() * Math.abs(max - min)
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// max retries
+const max_retries = !!args.max_retries ? args.max_retries : DEFAULT_MAX_RETRIES
+for (let i=0; i<max_retries; i++) {
 
     try {
 
-        // skip empty command
-        if (command.trim() == "") {
-            return
-        }
+        const chosen_host = get_host_or_random(mysql_conf.host)
 
-        // execute query
-        let results = query_sync(command, [])
+        conn = mysql.createConnection({
+            host: chosen_host,
+            port: mysql_conf.port,
+            user: mysql_conf.user,
+            password: mysql_conf.pass,
+            typeCast: function(field, next) {
+                if ((field.type == 'BLOB' || field.type == 'JSON') && field.length == 4294967295) {
+                    let value = field.string();
+                    try {
+                        return JSON.parse(value);
+                    } catch (e) {
+                        return value;
+                    }
+                }
+                return next();
+            }
+        })
 
-        // print command
-        if (args.print) {
-            console.log(`INFO: success! [${command}]`)
-        }
+        console.error(`INFO: [DB] connecting to ${chosen_host}...`)
 
-        // print result
-        if (args.result) {
-            console.log(JSON.stringify(results, null, 4))
-        }
+        ////////////////////////////////////////////////////////////////////////////////
+        // execute sql commands
+        commands.forEach((command) => {
+
+            try {
+
+                // skip empty command
+                if (command.trim() == "") {
+                    return
+                }
+
+                // execute query
+                let results = query_sync(command, [])
+
+                // print command
+                if (args.print) {
+                    console.log(`INFO: success! [${command}]`)
+                }
+
+                // print result
+                if (args.result) {
+                    console.log(JSON.stringify(results, null, 4))
+                }
+
+            } catch (error) {
+
+                if (error.fatal) {
+                    // connection error, retry
+                    // console.log(error)
+                    throw error
+
+                } else {
+                    console.error(`ERROR: [${command}]` + (error.length > 255 ? error.substring(0,255) : error));
+                    process.exit(1);
+                }
+            }
+        });
+
+        conn.end();
+
+        // success, exit 0
+        process.exit(0)
 
     } catch (error) {
 
-        if (error) {
-            console.log(`ERROR: [${command}]` + (error.length > 255 ? error.substring(0,255) : error));
-            process.exit(1);
+        if (error.fatal) {
+            // for connection errors
+            const sleep_ms = Math.round(get_random_between(1, 500) + 500 * i)
+            if (i < max_retries - 1) {
+                console.error(`ERROR: connection error [${i+1}] [${error.toString()}], retry in [${sleep_ms} ms] ...`)
+            } else {
+                console.error(`ERROR: connection error [${error.toString()}], query terminated.`)
+            }
+            deasync.sleep(sleep_ms)
+
+        } else {
+            // for all other errors, just quit
+            process.exit(1)
         }
     }
-});
+}
 
-conn.end();
+// we are here all retries has failed
+process.exit(1)

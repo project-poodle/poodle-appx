@@ -20,7 +20,7 @@ for (let i = 1; i <= MAX_COUNT; i++) {
     parser.add_argument('-js' +i,   '--json_scope' +i, { help: 'json variable scope '+i });
 }
 args = parser.parse_args();
-//console.log(JSON.stringify(args, null, 4))
+// console.log(`args`, JSON.stringify(args, null, 4))
 //process.exit(0)
 
 // validate template file
@@ -56,6 +56,41 @@ let variables = {
         "DOT_KEY": function() {
             return function(text, render) {
                 return objPath.get(this, [text], "")
+            }
+        },
+
+        "TO_JSON": function() {
+
+            let process = function(data, depth) {
+
+                if (typeof data == null || typeof data == "undefined") {
+                    return 'null';
+                } else if (typeof data == "number") {
+                    return data.toString()
+                } else if (typeof data == "boolean") {
+                    return data.toString()
+                } else if (typeof data == "string") {
+                    return '"' + data.replace(/"/g, '\\"') + '"'
+                } else if (Array.isArray(data) || (data instanceof Array)) {
+                    let results = []
+                    data.forEach((value) => {
+                        results.push(process(value, depth+1))
+                    })
+                    return '[ ' + results.join(', ') + ' ]'
+                } else {
+                    let results = []
+                    Object.keys(data).forEach((key) => {
+                        results.push('"' + key + '": ' + process(data[key], depth+1))
+                    })
+                    return '{ ' + results.join(', ') + ' }'
+                }
+            }
+
+            return function(text, render) {
+                // console.log(`this`, this, (typeof this), Array.isArray(this), (typeof this.valueOf()), Object.keys(this))
+                const result =  process(this, 0)
+                // console.log(`result`, result)
+                return result
             }
         },
 
@@ -153,9 +188,11 @@ for (let i = 1; i < MAX_COUNT; i++) {
         }
 
         if (args['yaml_scope'+i] != undefined) {
-            variables[args['yaml_scope'+i]] = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
+            const yamlVar = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
+            variables[args['yaml_scope'+i]] = yamlVar
         } else {
-            variables = merge(variables, YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8')))
+            const yamlVar = YAML.parse(fs.readFileSync(args['yaml_file'+i], 'utf8'))
+            variables = merge(variables, yamlVar)
         }
 
         variable_initialized = true
@@ -170,9 +207,11 @@ for (let i = 1; i < MAX_COUNT; i++) {
         }
 
         if (args['json_scope'+i] != undefined) {
-            variables[args['json_scope'+i]] = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
+            const jsonVar = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
+            variables[args['json_scope'+i]] = jsonVar
         } else {
-            variables = merge(variables, JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8')))
+            const jsonVar = JSON.parse(fs.readFileSync(args['json_file'+i], 'utf8'))
+            variables = merge(variables, jsonVar)
         }
 
         variable_initialized = true
@@ -184,7 +223,6 @@ if (! variable_initialized) {
     console.error("ERROR: at least one variable file, either yaml or json is required !")
     process.exit(1)
 }
-
 
 // evaluate template with variables
 let rendered = Mustache.render(template, variables);

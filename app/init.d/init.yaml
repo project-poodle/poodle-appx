@@ -18,7 +18,14 @@ appx:
         appx_node_pass: "P@@dle101"
         appx_node_pool: 20
         # mysql init values - CHANGE THIS to mysql credentials
-        mysql_host: "192.168.1.200"
+        mysql_host:
+            list:
+                - "192.168.1.200"
+                - "192.168.1.201"
+                - "192.168.1.202"
+                - "192.168.1.203"
+                - "192.168.1.204"
+                - "192.168.1.11"
         mysql_port: "3306"
         mysql_admin_user: "root"
         mysql_admin_pass: "Vlt6DF6RcV"
