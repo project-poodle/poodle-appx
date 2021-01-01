@@ -1,5 +1,6 @@
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
+require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss'})
 
 //////////////////////////////////////////////////
 // process cli arguments

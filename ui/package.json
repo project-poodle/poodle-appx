@@ -26,6 +26,7 @@
     "axios": "^0.21.0",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
+    "console-stamp": "^0.2.9",
     "hookrouter": "^1.2.3",
     "js-yaml": "^3.14.1",
     "lodash": "^4.17.20",
