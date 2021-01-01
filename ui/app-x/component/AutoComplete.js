@@ -47,7 +47,6 @@ const AutoComplete = (props) => {
   }, [props.options])
 
   return (
-    <Box className={props.className} key={props.name}>
       <Controller
         key={props.name}
         name={props.name}
@@ -56,7 +55,7 @@ const AutoComplete = (props) => {
         defaultValue={props.defaultValue}
         rules={props.rules}
         render={innerProps =>
-          <FormControl className={styles.formControl}>
+          <FormControl className={props.className}>
             <AntAutoComplete
               key="autocomplete"
               options={options}
@@ -98,7 +97,6 @@ const AutoComplete = (props) => {
           </FormControl>
         }
       />
-    </Box>
   )
 }
 
