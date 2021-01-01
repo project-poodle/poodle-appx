@@ -273,7 +273,9 @@ const SyntaxTree = (props) => {
             process_api_data(data)
             setLoadTrigger(0)
             setLoadTimer(new Date())
-            setPreviewInitialized(false)
+            if (navComponent.ui_component_type === 'react/component') {
+              setPreviewInitialized(false)
+            }
           },
           error => {
             console.error(error)
@@ -284,7 +286,9 @@ const SyntaxTree = (props) => {
             })
             setLoadTrigger(0)
             setLoadTimer(new Date())
-            setPreviewInitialized(false)
+            if (navComponent.ui_component_type === 'react/component') {
+              setPreviewInitialized(false)
+            }
           }
         )
       }
@@ -385,7 +389,9 @@ const SyntaxTree = (props) => {
                 process_api_data(data)
                 setSaveTrigger(0)
                 setLoadTimer(new Date())
-                setPreviewInitialized(false)
+                if (navComponent.ui_component_type === 'react/component') {
+                  setPreviewInitialized(false)
+                }
               },
               error => {
                 console.error(error)
@@ -396,7 +402,9 @@ const SyntaxTree = (props) => {
                 })
                 setSaveTrigger(0)
                 setLoadTimer(new Date())
-                setPreviewInitialized(false)
+                if (navComponent.ui_component_type === 'react/component') {
+                  setPreviewInitialized(false)
+                }
               }
             )
           },
@@ -409,7 +417,9 @@ const SyntaxTree = (props) => {
             })
             setSaveTrigger(0)
             setLoadTimer(new Date())
-            setPreviewInitialized(false)
+            if (navComponent.ui_component_type === 'react/component') {
+              setPreviewInitialized(false)
+            }
           }
         )
       }

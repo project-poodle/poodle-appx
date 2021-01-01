@@ -159,7 +159,7 @@ const PropFieldArray = props => {
                 rules={{
                   required: "Property name is required",
                   pattern: {
-                    value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                    value: /^[_a-zA-Z][_a-zA-Z0-9\-]*$/,
                     message: "Property name must be valid variable name",
                   },
                   validate: {

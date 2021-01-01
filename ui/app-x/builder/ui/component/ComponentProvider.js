@@ -10,6 +10,7 @@ const ComponentProvider = (() => {
     const [ treeData,               setTreeData               ] = useState(null)
     const [ expandedKeys,           setExpandedKeys           ] = useState([])
     const [ selectedKey,            setSelectedKey            ] = useState(null)
+    const [ contextKey,             setContextKey             ] = useState(null)
     const [ loadTimer,              setLoadTimer              ] = useState(null)
     // add dialog
     const [ addDialogOpen,          setAddDialogOpen          ] = useState(false)
@@ -30,6 +31,8 @@ const ComponentProvider = (() => {
           setExpandedKeys,
           selectedKey,
           setSelectedKey,
+          contextKey,
+          setContextKey,
           loadTimer,
           setLoadTimer,
           // add dialog

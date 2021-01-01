@@ -175,6 +175,8 @@ const ComponentTree = (props) => {
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    contextKey,
+    setContextKey,
     loadTimer,
     setLoadTimer,
     // add dialog
@@ -235,6 +237,7 @@ const ComponentTree = (props) => {
   useEffect(() => {
     if (navSelected?.type !== 'ui_component') {
       setSelectedKey(null)
+      setContextKey(null)
     }
   }, [ navSelected.type ])
 
@@ -243,7 +246,11 @@ const ComponentTree = (props) => {
   const onRightClick = info => {
     // console.log(info)
     // set selected key
-    setSelectedKey(info.node.key)
+    setContextKey(info.node.key)
+    if (info.node.isLeaf) {
+      setSelectedKey(info.node.key)
+    }
+
     // find draggable target, open context menu
     let target = info.event.target
     while (target.parentNode && !target.draggable) {
@@ -274,9 +281,10 @@ const ComponentTree = (props) => {
   const onSelect = key => {
     // console.log(key)
     tree_traverse(treeData, key[0], (item, index, arr) => {
-      setSelectedKey(item.key)
       if (item.isLeaf) {
         // console.log(item)
+        setSelectedKey(item.key)
+        setContextKey(item.key)
         setNavSelected({
           type: 'ui_component'
         })

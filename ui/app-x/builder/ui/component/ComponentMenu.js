@@ -63,6 +63,8 @@ const ComponentMenu = (props) => {
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    contextKey,
+    setContextKey,
     // add dialog
     addDialogOpen,
     setAddDialogOpen,
@@ -84,13 +86,13 @@ const ComponentMenu = (props) => {
   // lookup
   useEffect(() => {
     // lookup selected node
-    const lookupNode = tree_lookup(treeData, selectedKey)
+    const lookupNode = tree_lookup(treeData, contextKey)
     if (!!lookupNode) {
       setSelectedNode(lookupNode)
     } else {
       setSelectedNode(null)
     }
-  }, [treeData, selectedKey])
+  }, [treeData, contextKey])
 
   // render
   return (

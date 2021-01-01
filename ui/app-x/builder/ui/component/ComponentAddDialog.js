@@ -93,8 +93,6 @@ const ComponentAddDialog = (props) => {
     setTreeData,
     expandedKeys,
     setExpandedKeys,
-    selectedKey,
-    setSelectedKey,
     loadTimer,
     setLoadTimer,
     // add dialog

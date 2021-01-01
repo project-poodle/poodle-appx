@@ -80,8 +80,6 @@ const ComponentDeleteDialog = (props) => {
     setTreeData,
     expandedKeys,
     setExpandedKeys,
-    selectedKey,
-    setSelectedKey,
     loadTimer,
     setLoadTimer,
     // delete dialog
