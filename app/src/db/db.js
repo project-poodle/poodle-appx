@@ -102,7 +102,7 @@ var query = (sql, variables, callback, query_conn_retries=DEFAULT_MAX_RETRIES) =
         } else {
             // sleep before retry
             const sleep_ms = get_sleep_ms(query_conn_retries)
-            console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+            console.log(`INFO: db_pool is closed, sleep [${sleep_ms}] ms before retry connection [${query_conn_retries}] ...`)
             // we cannot have dasync within dasync, use setTimeout here
             setTimeout(() => {
               // re-establish connection, and try again
@@ -140,7 +140,7 @@ var query = (sql, variables, callback, query_conn_retries=DEFAULT_MAX_RETRIES) =
                 } else {
                     // sleep before retry
                     const sleep_ms = get_sleep_ms(query_conn_retries)
-                    console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry [${query_conn_retries}] ...`)
+                    console.log(`INFO: db_pool sleep [${sleep_ms}] ms before retry connection [${query_conn_retries}] ...`)
                     // we cannot have dasync within dasync, use setTimeout here
                     setTimeout(() => {
                       // re-establish connection, and try again
