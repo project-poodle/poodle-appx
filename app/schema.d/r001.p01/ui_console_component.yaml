@@ -67,7 +67,7 @@ ui_component:
                   zIndex: 0
           effect:
               type: react/effect
-              data: |+
+              body: |+
                   // console.log(props)
           element:
               type: react/element
@@ -635,7 +635,7 @@ ui_component:
                   init: []
           effect:
               type: react/effect
-              data: |
+              body: |
                   $r('app-x/api.get')(
                       'sys',
                       'appx',
