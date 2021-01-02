@@ -408,23 +408,27 @@ const SyntaxMenu = (props) => {
         )
         &&
         (
-          <Box>
-            <Divider key={uuidv4()} />
-            <MenuItem
-              dense={true}
-              className={styles.menuItem}
-              onClick={
-                () => props.deleteMenuClicked({
-                  nodeKey: selectedKey,
-                })
-              }
-              >
-              <ListItemIcon>
-                <DeleteOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
-          </Box>
+          (() => {
+            return (
+              <Box>
+                <Divider key={uuidv4()} />
+                <MenuItem
+                  dense={true}
+                  className={styles.menuItem}
+                  onClick={
+                    () => props.deleteMenuClicked({
+                      nodeKey: selectedKey,
+                    })
+                  }
+                  >
+                  <ListItemIcon>
+                    <DeleteOutlined />
+                  </ListItemIcon>
+                  <ListItemText primary="Delete" />
+                </MenuItem>
+              </Box>
+            )
+          })()
         )
       }
     </Menu>

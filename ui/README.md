@@ -2,15 +2,13 @@
 
     —————————————————————————
 
-    - type: appx/route          # no attribute
-
     - type: react/element
-      name:                     # element name
+      name:                     # element name          (autosuggest import)
       props:                    # properties
       children:                 # children
 
     - type: react/html
-      name:                     # html element name
+      name:                     # html tag name         (autosuggest - non-restrictive)
       props:                    # properties
       children:                 # children
 
@@ -20,24 +18,128 @@
       init:                     # init value
 
     - type: react/context
-      name:                     # name of the state
-      setter:                   # name of the setter
-      context:                  # context name
+      name:                     # context name          (autosuggest import)
 
     - type: react/effect
-      data:                     # code block
+      body:                     # code body
+      states:                   # state expressions
+        - s1
+        - s2
 
-    - type: mui/style
-      ...:                      # styles in json
+    - type: react/form
+      name:                     # name for the form     (unique for an element tree)
+      onSubmit:                 # function for submit
+      onError:                  # function for error
+      props:                    # props for html tag
+      formProps:                # props for hook form
+        mode: 'onSubmit',
+        reValidateMode: 'onChange',
+        defaultValues: {},
+        resolver: undefined,
+        context: undefined,
+        criteriaMode: "firstError",
+        shouldFocusError: true,
+        shouldUnregister: true,
 
-                                    - type: mui/control         # TODO
-                                      name:                     # element name
-                                      props:                    # properties
 
     —————————————————————————
 
+    - type: mui/style
+      ...:                      # styles in json        (js/object overlaps)
+
+
+    —————————————————————————
+
+    - type: input/text
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      multiline:                # allow multiline
+      autocomplete:             # true or false
+      options:                  # options { value: v, render: r }
+      inputType:                # text, mnumber, password, email, tel, url, search, date, time, datetime-local
+      rules:                    # input rules
+      array:                    # whether this control is an array
+                                # TODO : allowNull
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/select
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      options:                  # options { value: v, render: r }
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/switch
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/radio
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      options:                  # options { value: v, render: r }
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/datetime
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      inputType:                # date, time, datetime
+      keyboard:                 # whehter to allow keyboard input
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/slider
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/custom
+      name:                     # name of input
+      label:                    # input label
+      defaultValue:             # default value
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+    - type: input/array
+      name:                     # name of array input
+      label:                    # input label
+      defaultValue:             # default value
+      rules:                    # input rules
+      callback:                 # callback function when value change
+      props:                    # properties
+
+
+    —————————————————————————
+
+    - type: js/null
+
+    - type: js/string
+      data:                     # string data
+
+    - type: js/number
+      data:                     # number data
+
+    - type: js/boolean
+      data:                     # boolean data
+
     - type: js/import
-      name:                     # import name
+      name:                     # import name           (autosuggest import)
 
     - type: js/expression
       data:                     # expression
@@ -46,7 +148,7 @@
       params:
         - p1
         - p2
-      body:                     # code block
+      body:                     # code body
 
     - type: js/block
       data:                     # code block
@@ -77,38 +179,28 @@
       filter:                   # filter expression
 
 
-                                    - type: js/api              # TODO
-                                      namespace:                # namespace
-                                      app:                      # app_name
-                                      method:                   # get/post/put/delete
-                                      endpoint:                 # api endpoint
-                                      data:                     # request data in json
-                                      success:                  # code to do with success
-                                      fail:                     # code to do with fail
-
                                     - type: js/promise          # TODO
                                       name:                     # variable or named import
                                       params:                   # params
                                         - p1
                                         - p2
                                       body:                     # code body
-                                      success:                  # code success
-                                      fail:                     # code failure
+                                      resolve:                  # code success
+                                      reject:                   # code failure
 
-
-                                    - type: js/call/transform   # TODO
+                                    - type: js/transform        # TODO
                                       data:                     # input data
                                       transform:                # transform syntax
 
-                                    - type: js/call/trigger     # TODO deferred
+                                    - type: js/trigger          # TODO
                                       data:                     # input data
                                       trigger:                  # trigger syntax
 
+                                    - type: js/variable         # TODO
+                                      kind:                     # (var / let / const)
+                                      name:                     # variable name
+                                      data:                     # js/expression, js/call, js/function
 
-                                                        - type: js/variable       # deferred
-                                                          kind:                   # (var / let / const)
-                                                          name:                   # variable name
-                                                          expression:             # js/expression, js/call, js/function
 
                                                         - type: js/control        # deferred
                                                             - if/else
@@ -117,13 +209,30 @@
                                                             - map
                                                             - array
 
-                                                        - type: js/return         # deferred
-
                                                         - type: js/call           # deferred
                                                           name:                   # variable or named import
                                                           params:
                                                             - primitive/json
                                                             - js/expression
                                                             - js/call
+
+                                                        - type: js/return         # deferred
+
+
+    —————————————————————————
+
+    - type: appx/route
+      name:                     # route folder name     (default to '/')
+
+    - type: appx/api
+      namespace:                # namespace
+      app_name:                 # app_name
+      method:                   # get, post, put, etc
+      endpoint:                 # endpoint              (autosuggest endpoint)
+      data:                     # api data              (only for post, put, patch)
+      prep:                     # prep code
+      result:                   # result code
+      error:                    # error code
+
 
     —————————————————————————

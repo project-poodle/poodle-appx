@@ -470,9 +470,8 @@ const PropEditor = (props) => {
 
   // render
   return (
-    <Box className={styles.root}>
     <FormProvider {...hookForm}>
-      <form onSubmit={() => {return false}} className={styles.root}>
+      <form onSubmit={() => {handleSubmit(onBaseSubmit)}} className={styles.root}>
       {
         (!treeNode)
         &&
@@ -1944,7 +1943,6 @@ const PropEditor = (props) => {
       }
       </form>
     </FormProvider>
-    </Box>
   )
 }
 

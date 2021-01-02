@@ -98,7 +98,6 @@ const TextFieldArray = props => {
                 key="remove"
                 aria-label="Remove"
                 onClick={e => {
-                  console.log('herer!!')
                   remove(index)
                   if (!!props.callback) {
                     props.callback()

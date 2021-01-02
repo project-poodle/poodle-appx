@@ -1,8 +1,10 @@
-import * as React from 'react'
-const [ state, setSatte ]  = useState()
-
 const member1 = b[1]
 const member2 = d.e
+
+const tl = `hello${member1}.${member2}3`
+
+import * as React from 'react'
+const [ state, setSatte ]  = useState()
 
 const a = {
   a: 1,

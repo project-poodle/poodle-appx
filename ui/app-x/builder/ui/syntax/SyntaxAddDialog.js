@@ -169,7 +169,7 @@ const SyntaxAddDialog = (props) => {
       aria-describedby="alert-dialog-description"
       >
       <FormProvider {...hookForm}>
-        <form onSubmit={() => {return false}}>
+        <form onSubmit={() => {handleSubmit(onSubmit)}}>
           <DialogTitle
             className={styles.dialog}
             disableTypography={true}

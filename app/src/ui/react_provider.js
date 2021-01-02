@@ -7,13 +7,15 @@ const babel = require('@babel/standalone')
 const generate = require('@babel/generator').default
 const t = require("@babel/types")
 const {
+  isPrimitive,
+  capitalize,
+} = require('./util_base')
+const {
     reg_js_variable,
     reg_js_import,
     react_element,
     js_process,
     js_resolve_ids,
-    isPrimitive,
-    capitalize,
 } = require('./util_code')
 const db = require('../db/db')
 
@@ -60,6 +62,7 @@ function handle_react_provider(req, res) {
         variables: {},
         imports: {},
         states: {},
+        forms: {},
         appx: req.context
     }
 
