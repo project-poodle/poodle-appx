@@ -767,6 +767,38 @@ function gen_react_state(tree_context, treeNode) {
   }
 }
 
+// generate react/context from tree
+function gen_react_context(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/context') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/context] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
 // generate react/effect from tree
 function gen_react_effect(tree_context, treeNode) {
 
@@ -791,6 +823,163 @@ function gen_react_effect(tree_context, treeNode) {
     type: treeNode.data.type,
     data: treeNode.data.data,
     states: treeNode.data.states,
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate react/form from tree
+function gen_react_form(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'react/form') {
+    throw new Error(`ERROR: treeNode.data.type is not [react/form] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+    onSubmit: treeNode.data.onSubmit,
+    onError: treeNode.data.onError,
+  }
+
+  // process props
+  const childProps = lookup_child_by_ref(treeNode, 'props')
+  if (childProps) {
+    data.props = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childProps
+    ).data
+  }
+
+  // process props
+  const formProps = lookup_child_by_ref(treeNode, 'formProps')
+  if (formProps) {
+    data.formProps = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      formProps
+    ).data
+  }
+
+  // process children
+  if (treeNode.children.length) {
+    treeNode.children.map(child => {
+      // process only child with null ref
+      if (child.data.__ref === null) {
+        if (! ('children' in data)) {
+          data.children = []
+        }
+        data.children.push(
+          gen_js(
+            {
+              ...tree_context,
+              topLevel: false,
+            },
+            child
+          ).data
+        )
+      }
+    })
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate input/text from tree
+function gen_input_text(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'input/text') {
+    throw new Error(`ERROR: treeNode.data.type is not [input/text] [${treeNode.data.type}]`)
+  }
+
+  if (! ('name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
+  }
+
+  if (! ('label' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [label] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    name: treeNode.data.name,
+    label: treeNode.data.label,
+    array: treeNode.data.array,
+    inputType: treeNode.data.inputType,
+    defaultValue: treeNode.data.defaultValue,
+    multiline: treeNode.data.multiline,
+    autocomplete: treeNode.data.autocomplete,
+    options: treeNode.data.options,
+    rules: treeNode.data.rules,
+    callback: treeNode.data.callback,
+  }
+
+  // process props
+  const childProps = lookup_child_by_ref(treeNode, 'props')
+  if (childProps) {
+    data.props = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      childProps
+    ).data
+  }
+
+  // process children
+  if (treeNode.children.length) {
+    treeNode.children.map(child => {
+      // process only child with null ref
+      if (child.data.__ref === null) {
+        if (! ('children' in data)) {
+          data.children = []
+        }
+        data.children.push(
+          gen_js(
+            {
+              ...tree_context,
+              topLevel: false,
+            },
+            child
+          ).data
+        )
+      }
+    })
   }
 
   // return
@@ -831,6 +1020,57 @@ function gen_mui_style(tree_context, treeNode) {
       )
       data[childResult.ref] = childResult.data
     })
+  }
+
+  // return
+  return {
+    ref: treeNode.data.__ref,
+    data: data,
+  }
+}
+
+// generate appx/api from tree
+function gen_appx_api(tree_context, treeNode) {
+
+  if (! ('data' in treeNode)) {
+    throw new Error(`ERROR: missing [data] in treeNode`)
+  }
+
+  if (! ('type' in treeNode.data)) {
+    throw new Error(`ERROR: missing [type] in treeNode.data`)
+  }
+
+  if (treeNode.data.type !== 'appx/api') {
+    throw new Error(`ERROR: treeNode.data.type is not [appx/route] [${treeNode.data.type}]`)
+  }
+
+  if (! ('namespace' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [namespace] in treeNode.data`)
+  }
+
+  if (! ('app_name' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [app_name] in treeNode.data`)
+  }
+
+  if (! ('method' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [method] in treeNode.data`)
+  }
+
+  if (! ('endpoint' in treeNode.data)) {
+    throw new Error(`ERROR: [${treeNode.data.type}] missing [endpoint] in treeNode.data`)
+  }
+
+  // generate data
+  const data = {
+    type: treeNode.data.type,
+    namespace: treeNode.data.namespace,
+    app_name: treeNode.data.app_name,
+    method: treeNode.data.method,
+    endpoint: treeNode.data.endpoint,
+    data: treeNode.data.data,
+    prep: treeNode.data.prep,
+    result: treeNode.data.result,
+    error: treeNode.data.error,
   }
 
   // return
@@ -957,22 +1197,33 @@ function gen_js(tree_context, treeNode) {
 
     return gen_react_html(tree_context, treeNode)
 
+  } else if (treeNode.data.type === 'react/form') {
+
+    return gen_react_form(tree_context, treeNode)
+
   } else if (treeNode.data.type === 'react/state') {
 
     return gen_react_state(tree_context, treeNode)
+
+  } else if (treeNode.data.type === 'react/context') {
+
+    return gen_react_context(tree_context, treeNode)
 
   } else if (treeNode.data.type === 'react/effect') {
 
     return gen_react_effect(tree_context, treeNode)
 
+  } else if (treeNode.data.type === 'input/text') {
+
+    return gen_input_text(tree_context, treeNode)
+
   } else if (treeNode.data.type === 'mui/style') {
 
     return gen_mui_style(tree_context, treeNode)
 
-  } else if (treeNode.data.type === 'mui/control') {
+  } else if (treeNode.data.type === 'appx/api') {
 
-    // TODO
-    throw new Error(`ERROR: unrecognized treeNode.data.type [${treeNode.data.type}] [${JSON.stringify(treeNode.data)}]`)
+    return gen_appx_api(tree_context, treeNode)
 
   } else if (treeNode.data.type === 'appx/route') {
 

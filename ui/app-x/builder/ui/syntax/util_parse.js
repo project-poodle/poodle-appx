@@ -58,6 +58,11 @@ import Branch from 'app-x/icon/Branch'
 import Route from 'app-x/icon/Route'
 import Effect from 'app-x/icon/Effect'
 import State from 'app-x/icon/State'
+import Form from 'app-x/icon/Form'
+import Context from 'app-x/icon/Context'
+import InputText from 'app-x/icon/InputText'
+import Filter from 'app-x/icon/Filter'
+import API from 'app-x/icon/API'
 import Style from 'app-x/icon/Style'
 import Pointer from 'app-x/icon/Pointer'
 
@@ -185,7 +190,7 @@ function lookup_icon_for_input(input) {
 
   } else if (input.type === 'js/filter') {
 
-    return <FilterOutlined />
+    return <Filter />
 
   } else if (input.type === 'react/element') {
 
@@ -199,18 +204,29 @@ function lookup_icon_for_input(input) {
 
     return <State />
 
+  } else if (input.type === 'react/context') {
+
+    return <Context />
+
   } else if (input.type === 'react/effect') {
 
     return <Effect />
+
+  } else if (input.type === 'react/form') {
+
+    return <Form />
+
+  } else if (input.type === 'input/text') {
+
+    return <InputText />
 
   } else if (input.type === 'mui/style') {
 
     return <Style />
 
-  } else if (input.type === 'mui/control') {
+  } else if (input.type === 'appx/api') {
 
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+    return <API />
 
   } else if (input.type === 'appx/route') {
 
@@ -353,6 +369,10 @@ function lookup_title_for_input(ref, input) {
       return prefix + input.name
     }
 
+  } else if (input.type === 'react/context') {
+
+    return ref ? ref : ''
+
   } else if (input.type === 'react/effect') {
 
     const name = 'effect [' +
@@ -366,14 +386,21 @@ function lookup_title_for_input(ref, input) {
       +  ']'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
+  } else if (input.type === 'react/form') {
+
+    return prefix + input.name
+
+  } else if (input.type === 'input/test') {
+
+    return prefix + 'TextInput'
+
   } else if (input.type === 'mui/style') {
 
     return ref ? ref : ''
 
-  } else if (input.type === 'mui/control') {
+  } else if (input.type === 'appx/api') {
 
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+    return prefix + 'API'
 
   } else if (input.type === 'appx/route') {
 
@@ -1256,6 +1283,34 @@ function parse_react_state(js_context, parentKey, ref, input) {
   return node
 }
 
+// create react context ast
+function parse_react_context(js_context, parentKey, ref, input) {
+
+  if (!('type' in input) || input.type !== 'react/context') {
+    throw new Error(`ERROR: input.type is not [react/context] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/context] [${JSON.stringify(input)}]`)
+  }
+
+  // tree node data
+  const data = {
+    __ref: ref,
+    type: input.type,
+    name: input.name,
+  }
+
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
+
+  return node
+}
+
 // create react effect block ast (do not allow return outside of function)
 function parse_react_effect(js_context, parentKey, ref, input) {
 
@@ -1285,6 +1340,72 @@ function parse_react_effect(js_context, parentKey, ref, input) {
   return node
 }
 
+// create react form ast
+function parse_react_form(js_context, parentKey, ref, input) {
+
+  if (!('type' in input) || input.type !== 'react/form') {
+    throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/form] [${JSON.stringify(input)}]`)
+  }
+
+  // tree node data
+  const data = {
+    __ref: ref,
+    type: input.type,
+    name: input.name,
+    onSubmit: input.onSubmit,
+    onError: input.onError
+  }
+
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
+
+  return node
+}
+
+// create react form ast
+function parse_input_text(js_context, parentKey, ref, input) {
+
+  if (!('type' in input) || input.type !== 'input/text') {
+    throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [input/text] [${JSON.stringify(input)}]`)
+  }
+
+  // tree node data
+  const data = {
+    __ref: ref,
+    type: input.type,
+    name: input.name,
+    label: input.label,
+    defaultValue: input.defaultValue,
+    inputType: input.inputType,
+    multiline: input.multiline,
+    autocomplete: input.autocomplete,
+    options: input.options,
+    array: input.array,
+    rules: input.rules,
+    callback: input.callback,
+  }
+
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data,
+    parentKey,
+    true)
+
+  return node
+}
 
 // create mui style expression
 function parse_mui_style(js_context, parentKey, ref, input) {
@@ -1339,7 +1460,53 @@ function parse_mui_style(js_context, parentKey, ref, input) {
   return node
 }
 
-// create jsx route ast
+// create appx api ast
+function parse_appx_api(js_context, parentKey, ref, input) {
+
+  if (!('type' in input) || input.type !== 'appx/api') {
+    throw new Error(`ERROR: input.type is not [appx/api] [${input.type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('namespace' in input)) {
+    throw new Error(`ERROR: input.namespace missing in [appx/api] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('app_name' in input)) {
+    throw new Error(`ERROR: input.app_name missing in [appx/api] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('method' in input)) {
+    throw new Error(`ERROR: input.method missing in [appx/api] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('endpoint' in input)) {
+    throw new Error(`ERROR: input.endpoint missing in [appx/api] [${JSON.stringify(input)}]`)
+  }
+
+  // tree node data
+  const data = {
+    __ref: ref,
+    type: input.type,
+    namespace: input.namespace,
+    app_name: input.app_name,
+    method: input.method,
+    endpoint: input.endpoint,
+    data: input.data,
+    pref: input.prep,
+    result: input.result,
+    error: input.error
+  }
+
+  const node = new_js_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    data, parentKey,
+    true)
+
+  return node
+}
+
+// create appx route ast
 function parse_appx_route(js_context, parentKey, ref, input) {
 
   if (!('type' in input) || input.type !== 'appx/route') {
@@ -1440,18 +1607,29 @@ function parse_js(js_context, parentKey, ref, input) {
 
     return parse_react_state(js_context, parentKey, ref, input)
 
+  } else if (input.type === 'react/context') {
+
+    return parse_react_context(js_context, parentKey, ref, input)
+
   } else if (input.type === 'react/effect') {
 
     return parse_react_effect(js_context, parentKey, ref, input)
+
+  } else if (input.type === 'react/form') {
+
+    return parse_react_form(js_context, parentKey, ref, input)
+
+  } else if (input.type === 'input/text') {
+
+    return parse_input_text(js_context, parentKey, ref, input)
 
   } else if (input.type === 'mui/style') {
 
     return parse_mui_style(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'mui/control') {
+  } else if (input.type === 'appx/api') {
 
-    // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+    return parse_appx_api(js_context, parentKey, ref, input)
 
   } else if (input.type === 'appx/route') {
 
@@ -1703,7 +1881,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           'react/state',
+          'react/context',
           'react/effect',
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1716,6 +1898,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           null,
           'mui/style',
+          'appx/api',
           'appx/route',
         ]
       }
@@ -1744,7 +1927,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           'react/state',
+          'react/context',
           // 'react/effect',  // effect code not allowed
+          // null,
+          // 'react/form',    // react/form not allowed
+          // 'input/text',    // input/text not allowed
           null,
           'js/import',
           'js/expression',
@@ -1756,7 +1943,8 @@ function lookup_valid_child_types(type) {
           'js/reduce',
           'js/filter',
           // null,
-          // 'mui/style',     // mui style not allowed
+          // 'mui/style',     // mui/style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1776,7 +1964,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           'react/state',
+          'react/context',
           // 'react/effect',  // effect code not allowed
+          // null,
+          // 'react/form',    // react/form not allowed
+          // 'input/text',    // input/text not allowed
           null,
           'js/import',
           'js/expression',
@@ -1789,6 +1981,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1819,7 +2012,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
           // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1832,6 +2029,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       },
@@ -1851,7 +2049,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
           // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1864,6 +2066,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1887,7 +2090,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
           // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1900,6 +2107,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1922,7 +2130,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
           // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1935,6 +2147,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1957,7 +2170,11 @@ function lookup_valid_child_types(type) {
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
           // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/import',
           'js/expression',
@@ -1970,6 +2187,7 @@ function lookup_valid_child_types(type) {
           'js/filter',
           // null,
           // 'mui/style',     // mui style not allowed
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',    // appx/route not allowed
         ]
       }
@@ -1988,8 +2206,12 @@ function lookup_valid_child_types(type) {
         types: [
           'react/element',
           'react/html',
-          // 'react/state',
-          // 'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
+          // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/string',
           // 'js/number',
@@ -2009,6 +2231,7 @@ function lookup_valid_child_types(type) {
           'js/reduce',
           'js/filter',
           // 'mui/style',
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',
         ]
       }
@@ -2027,8 +2250,12 @@ function lookup_valid_child_types(type) {
         types: [
           'react/element',
           'react/html',
-          // 'react/state',
-          // 'react/effect',
+          // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
+          // 'react/effect',  // effect code not allowed
+          null,
+          'react/form',
+          'input/text',
           null,
           'js/string',
           // 'js/number',
@@ -2048,13 +2275,63 @@ function lookup_valid_child_types(type) {
           'js/reduce',
           'js/filter',
           // 'mui/style',
+          // 'appx/api'       // appx/api not allowed
+          // 'appx/route',
+        ]
+      }
+    }
+  } else if (type === 'react/form') {
+    return {
+      ref: {
+        names: [
+          'props',
+          'formProps',
+        ],
+        types: [
+          'js/object',
+        ]
+      },
+      '_': {
+        types: [
+          'react/element',
+          'react/html',
+          // 'react/state',   // state code not allowed
+          // 'react/context', // context code not allowed
+          // 'react/effect',  // effect code not allowed
+          null,
+          // 'react/form',    // nested form not allowed
+          'input/text',
+          null,
+          'js/string',
+          // 'js/number',
+          // 'js/boolean',
+          // 'js/null',
+          // null,
+          // 'js/object',
+          // 'js/array',
+          // null,
+          // 'js/import',
+          'js/expression',
+          'js/function',
+          // 'js/block',  // code block not allowed
+          null,
+          'js/switch',
+          'js/map',
+          'js/reduce',
+          'js/filter',
+          // 'mui/style',
+          // 'appx/api'       // appx/api not allowed
           // 'appx/route',
         ]
       }
     }
   } else if (type === 'react/state') {
     return null         // leaf
+  } else if (type === 'react/context') {
+    return null         // leaf
   } else if (type === 'react/effect') {
+    return null         // leaf
+  } else if (type === 'input/text') {
     return null         // leaf
   } else if (type === 'mui/style') {
     return {
@@ -2080,12 +2357,19 @@ function lookup_valid_child_types(type) {
           // 'react/element',
           // 'react/html',
           // 'react/state',
+          // 'react/context',
           // 'react/effect',
+          // null,
+          // 'react/form',
+          // 'input/text',
           // 'mui/style',
+          // 'appx/api',
           // 'appx/route',
         ]
       }
     }
+  } else if (type === 'appx/api') {
+    return null         // leaf
   } else if (type === 'appx/route') {
     return null         // leaf
   } else {

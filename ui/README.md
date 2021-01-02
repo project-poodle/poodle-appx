@@ -54,10 +54,10 @@
       name:                     # name of input
       label:                    # input label
       defaultValue:             # default value
+      inputType:                # text, mnumber, password, email, tel, url, search, date, time, datetime-local
       multiline:                # allow multiline
       autocomplete:             # true or false
       options:                  # options { value: v, render: r }
-      inputType:                # text, mnumber, password, email, tel, url, search, date, time, datetime-local
       rules:                    # input rules
       array:                    # whether this control is an array
                                 # TODO : allowNull

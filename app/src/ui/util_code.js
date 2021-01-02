@@ -1940,6 +1940,10 @@ function js_process(js_context, input) {
 
     return react_effect(js_context, input)
 
+  } else if (input.type === 'react/form') {
+
+    return react_form(js_context, input)
+
   } else if (input.type === 'mui/style') {
 
     return mui_style(js_context, input)

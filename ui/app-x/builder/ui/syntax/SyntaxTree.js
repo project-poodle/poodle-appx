@@ -1071,7 +1071,10 @@ const SyntaxTree = (props) => {
             'react/element',
             'react/html',
             'react/state',
+            'react/context',
             'react/effect',
+            'react/form',
+            'input/text',
             'js/import',
             'js/expression',
             'js/function',
@@ -1081,6 +1084,7 @@ const SyntaxTree = (props) => {
             'js/reduce',
             'js/filter',
             'mui/style',
+            'appx/api',
             'appx/route',
           ].map(type => {
             return (
