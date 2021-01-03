@@ -53,7 +53,6 @@
     - type: input/text
       name:                     # name of input
       array:                    # whether this control is an array
-      rules:                    # input rules
       props:                    # properties
         type:                   # text, number, password, email, tel, url, search, date, time, datetime-local
         label:                  # input label
@@ -63,6 +62,11 @@
         options:                # options { value: v, render: r }
         callback:               # callback function when value change
                                 # TODO : allowNull
+      rules:                    # input rules
+        required:               # whether required
+        pattern:                # pattern & message
+        validate:               # validation condition & message
+
 
     - type: input/select
       name:                     # name of input

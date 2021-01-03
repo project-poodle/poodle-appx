@@ -1443,15 +1443,7 @@ function parse_input_text(js_context, parentKey, ref, input) {
     __ref: ref,
     type: input.type,
     name: input.name,
-    label: input.label,
-    defaultValue: input.defaultValue,
-    inputType: input.inputType,
-    multiline: input.multiline,
-    autocomplete: input.autocomplete,
-    options: input.options,
     array: input.array,
-    rules: input.rules,
-    callback: input.callback,
   }
 
   const node = new_js_node(
@@ -1459,7 +1451,37 @@ function parse_input_text(js_context, parentKey, ref, input) {
     lookup_icon_for_input(input),
     data,
     parentKey,
-    true)
+    false)
+
+  // add input.props if exist
+  if (!!input.props) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'props',
+        input.props
+      )
+    )
+  }
+
+  // add input.rules if exist
+  if (!!input.rules) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'rules',
+        input.rules
+      )
+    )
+  }
 
   return node
 }
@@ -2403,7 +2425,17 @@ function lookup_valid_child_types(type) {
   } else if (type === 'react/effect') {
     return null         // leaf
   } else if (type === 'input/text') {
-    return null         // leaf
+    return {
+      ref: {
+        names: [
+          'props',
+          'rules',
+        ],
+        types: [
+          'js/object',
+        ]
+      }
+    }
   } else if (type === 'mui/style') {
     return {
       ref: {

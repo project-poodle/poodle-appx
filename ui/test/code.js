@@ -1,5 +1,5 @@
 const member1 = b[1]
-const member2 = d.e
+const member2 = d?.e
 
 const tl = `hello${member1}.${member2}3`
 

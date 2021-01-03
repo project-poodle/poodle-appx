@@ -930,23 +930,11 @@ function gen_input_text(tree_context, treeNode) {
     throw new Error(`ERROR: [${treeNode.data.type}] missing [name] in treeNode.data`)
   }
 
-  if (! ('label' in treeNode.data)) {
-    throw new Error(`ERROR: [${treeNode.data.type}] missing [label] in treeNode.data`)
-  }
-
   // generate data
   const data = {
     type: treeNode.data.type,
     name: treeNode.data.name,
-    label: treeNode.data.label,
     array: treeNode.data.array,
-    inputType: treeNode.data.inputType,
-    defaultValue: treeNode.data.defaultValue,
-    multiline: treeNode.data.multiline,
-    autocomplete: treeNode.data.autocomplete,
-    options: treeNode.data.options,
-    rules: treeNode.data.rules,
-    callback: treeNode.data.callback,
   }
 
   // process props
@@ -961,25 +949,16 @@ function gen_input_text(tree_context, treeNode) {
     ).data
   }
 
-  // process children
-  if (treeNode.children.length) {
-    treeNode.children.map(child => {
-      // process only child with null ref
-      if (child.data.__ref === null) {
-        if (! ('children' in data)) {
-          data.children = []
-        }
-        data.children.push(
-          gen_js(
-            {
-              ...tree_context,
-              topLevel: false,
-            },
-            child
-          ).data
-        )
-      }
-    })
+  // process rules
+  const ruleProps = lookup_child_by_ref(treeNode, 'rules')
+  if (ruleProps) {
+    data.rules = gen_js(
+      {
+        ...tree_context,
+        topLevel: false,
+      },
+      ruleProps
+    ).data
   }
 
   // return

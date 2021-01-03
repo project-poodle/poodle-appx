@@ -156,6 +156,9 @@ function importMapPlugin(import_maps, globalImports) {
                     return
                   }
 
+                  // use a lib_identifier that is not likely to conflict with source code
+                  const lib_identifier = `${lib_key}$$`
+
                   // compute import key based on configured origin and configured key
                   const lib_path =
                     !!import_maps.origin && !lib.path.includes('//')
@@ -165,10 +168,10 @@ function importMapPlugin(import_maps, globalImports) {
                   if (src_val == module_name) {
 
                     found = true
-                    // console.log(lib_key, module_name)
+                    // console.log(lib_identifier, module_name)
 
                     // add lib_path to global imports
-                    globalImports[lib_key] = lib_path
+                    globalImports[lib_identifier] = lib_path
                     //console.log(globalImports)
 
                     path.replaceWithMultiple(
@@ -178,7 +181,7 @@ function importMapPlugin(import_maps, globalImports) {
                             t.variableDeclarator(
                               t.identifier(specifier.local.name),
                               t.memberExpression(
-                                t.identifier(lib_key),
+                                t.identifier(lib_identifier),
                                 t.stringLiteral(module_name),
                                 true
                               )
@@ -189,7 +192,7 @@ function importMapPlugin(import_maps, globalImports) {
                             t.variableDeclarator(
                               t.identifier(specifier.local.name),
                               t.memberExpression(
-                                t.identifier(lib_key),
+                                t.identifier(lib_identifier),
                                 t.stringLiteral(module_name),
                                 true
                               )
@@ -205,7 +208,7 @@ function importMapPlugin(import_maps, globalImports) {
                                 )
                               ]),
                               t.memberExpression(
-                                t.identifier(lib_key),
+                                t.identifier(lib_identifier),
                                 t.stringLiteral(module_name),
                                 true
                               )
@@ -216,7 +219,7 @@ function importMapPlugin(import_maps, globalImports) {
                     )
                   } else if (src_val.startsWith(module_name + '/')) {
 
-                    // console.log(lib_key, module_name)
+                    // console.log(lib_identifier, module_name)
                     // throw new Error('ERROR: submodule not yet implemented [' + src_val + '].')
                     // just return and keep searching
                     return

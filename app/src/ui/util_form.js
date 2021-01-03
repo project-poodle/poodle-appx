@@ -37,6 +37,46 @@ function react_form(js_context, input) {
     throw new Error(`ERROR: input.name not set in [react/form] [${JSON.stringify(input)}]`)
   }
 
+  // formProps expression
+  const formProps = (() => {
+    if (!!input.formProps) {
+      return t.objectExpression(
+        Object.keys(input.formProps)
+          .map(key => (
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  topLevel: false,
+                  parentRef: null,
+                  parentPath: null,
+                  JSX_CONTEXT: false,
+                },
+                input.formProps[key]
+              )
+            )
+          )
+        )
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // register import
+  reg_js_import(js_context, 'react-hook-form.useForm')
+  reg_js_import(js_context, 'react-hook-form.FormProvider')
+  // register react hook form with [input.name]
+  const qualifiedName = `react-hook-form.useForm.${input.name}`
+  reg_js_variable(js_context, qualifiedName)
+  // register form
+  reg_react_form(js_context, input.name, qualifiedName, formProps)
+  // console.log(`js_context.reactForm`, js_context.reactForm)
+
+  //////////////////////////////////////////////////////////////////////
+  // start processing after reg_react_form
   const onSubmitStatements = (() => {
     if (!!input.onSubmit) {
       return _js_parse_statements(js_context, input.onSubmit)
@@ -81,34 +121,6 @@ function react_form(js_context, input) {
     }
   })
 
-  // formProps expression
-  const formProps = (() => {
-    if (!!input.formProps) {
-      return t.objectExpression(
-        Object.keys(input.formProps)
-          .map(key => (
-            t.objectProperty(
-              t.identifier(key),
-              js_process(
-                {
-                  ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
-                  JSX_CONTEXT: false,
-                },
-                input.formProps[key]
-              )
-            )
-          )
-        )
-      )
-    } else {
-      // return {}
-      return t.objectExpression([])
-    }
-  })()
-
   // process children
   const children_elements = (() => {
     if (!!input.children) {
@@ -129,13 +141,6 @@ function react_form(js_context, input) {
       return []
     }
   })()
-
-  // register react hook form with [input.name]
-  const qualifiedName = `react-hook-form.useForm.${input.name}`
-  reg_react_form(js_context, input.name, qualifiedName, formProps)
-  // register import
-  reg_js_import(js_context, 'react-hook-form.useForm')
-  reg_js_import(js_context, 'react-hook-form.FormProvider')
 
   // register variables
   REACT_FORM_METHODS.map(method => {
@@ -224,21 +229,32 @@ function input_text(js_context, input) {
     return input_text_array(js_context, input)
   }
 
-  // check valid input types
-  const inputType = (() => {
-    if (!!input.type && VALID_INPUT_TYPES.includes(input.type.toLowerCase()))
-    {
-      return input.type.toLowerCase()
-    }
-    else
-    {
-      return 'text'
-    }
-  })()
+  //////////////////////////////////////////////////////////////////////
+  // process form context and reg_js_form before processing others
 
-  // process defaultValue
-  const defaultValue = (() => {
-    if (!!input.defaultValue) {
+  // check for js_context.reactForm exist
+  if (!(js_context.reactForm)) {
+    // console.log(`reg_js_import`, `react-hook-form.useFormContext`)
+    reg_js_import(js_context, `react-hook-form.useFormContext`)
+  }
+  // qualified name
+  const qualifiedName = !!(js_context.reactForm)
+    ? `react-hook-form.useForm.${js_context.reactForm}`
+    : `react-hook-form.useFormContext`
+  // console.log(`js_context.reactForm`, js_context.reactForm, qualifiedName)
+  // if js_context.reactForm is not already set, register empty string
+  if (!js_context.reactForm) {
+    reg_react_form(js_context, '', qualifiedName, null)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // start processing after reg_react_form
+
+  // process name
+  const name = (() => {
+    if (isPrimitive(input.name)) {
+      return t.stringLiteral(String(input.name))
+    } else {
       return js_process(
         {
           ...js_context,
@@ -247,43 +263,32 @@ function input_text(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
-        input.defaultValue
+        input.name
       )
-    } else {
-      return []
     }
   })()
 
-  // process options
-  const options = (() => {
-    if (!!input.options) {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.options
-      )
-    } else {
-      return []
-    }
-  })()
-
-  // process rules
+  // rules expression
   const rules = (() => {
     if (!!input.rules) {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.rules
+      return t.objectExpression(
+        Object.keys(input.rules)
+          .map(key => (
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  topLevel: false,
+                  parentRef: null,
+                  parentPath: null,
+                  JSX_CONTEXT: false,
+                },
+                input.props[key]
+              )
+            )
+          )
+        )
       )
     } else {
       // return {}
@@ -291,9 +296,73 @@ function input_text(js_context, input) {
     }
   })()
 
-  // process callback
-  const callback = (() => {
-    if (!!input.callback) {
+  // restPropss expression
+  const restProps = (() => {
+    if (!!input.props) {
+      return t.objectExpression(
+        Object.keys(input.props)
+          .filter(key => (
+            key !== 'type'
+            && key !== 'label'
+            && key !== 'defaultValue'
+            && key !== 'multiline'
+            && key !== 'autocomplete'
+            && key !== 'options'
+            && key !== 'callback'
+          ))
+          .map(key => (
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  topLevel: false,
+                  parentRef: null,
+                  parentPath: null,
+                  JSX_CONTEXT: false,
+                },
+                input.props[key]
+              )
+            )
+          )
+        )
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // console.log(restProps)
+
+  // process main props
+  const props = input.props || {}
+
+  // label
+  const label = (() => {
+    if (!!props.label) {
+      if (isPrimitive(props.label)) {
+        return t.stringLiteral(String(props.label))
+      } else {
+        return js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          input.name
+        )
+      }
+    } else {
+      return t.nullLiteral()
+    }
+  })()
+
+  // defaultValue
+  const defaultValue = (() => {
+    if (!!props.defaultValue) {
       return js_process(
         {
           ...js_context,
@@ -302,7 +371,43 @@ function input_text(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
-        input.callback
+        props.defaultValue
+      )
+    } else {
+      return t.nullLiteral()
+    }
+  })()
+
+  // process options
+  const options = (() => {
+    if (!!props.options) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        props.options
+      )
+    } else {
+      return t.arrayExpression()
+    }
+  })()
+
+  // process callback
+  const callback = (() => {
+    if (!!props.callback) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        props.callback
       )
     } else {
       // return null
@@ -310,17 +415,21 @@ function input_text(js_context, input) {
     }
   })()
 
-  // other options
-  const multiline = !!input.multiline || false
-  const autocomplete = !!input.autocomplete || false
-  const qualifiedName = !!js_context.reactForm
-    ? `react-hook-form.useForm.${js_context.reactForm}`
-    : `react-hook-form.useContext`
-
-  // if js_context.reactForm is not already set, register empty string
-  if (!js_context.reactForm) {
-    reg_react_form(js_context, '', qualifiedName, null)
-  }
+  // basic types - extension not supported
+  // multiline and autocomplete options
+  const multiline = !!props.multiline || false
+  const autocomplete = !!props.autocomplete || false
+  // check valid input types
+  const inputType = (() => {
+    if (!!props.type && VALID_INPUT_TYPES.includes(props.type.toLowerCase()))
+    {
+      return props.type.toLowerCase()
+    }
+    else
+    {
+      return 'text'
+    }
+  })()
 
   // register import
   reg_js_import(js_context, 'lodash.default')
@@ -335,22 +444,25 @@ function input_text(js_context, input) {
     t.jSXOpeningElement(
       t.jSXIdentifier('@material-ui/core.TextField'),
       [
-        // key="textfield"
-        t.jSXAttribute(
-          t.jSXIdentifier('key'),
-          t.stringLiteral('textfield')
-        ),
-        // name={input.label}
-        t.jSXAttribute(
-          t.jSXIdentifier('label'),
-          t.stringLiteral(input.label)
+        // {...restProps} - the styles goes here
+        t.jSXSpreadAttribute(
+          restProps
         ),
         // name={input.name}
         t.jSXAttribute(
           t.jSXIdentifier('name'),
-          t.stringLiteral(input.name)
+          t.jSXExpressionContainer(
+            name,
+          )
         ),
-        // type={inputType}
+        // label={props.label}
+        t.jSXAttribute(
+          t.jSXIdentifier('label'),
+          t.jSXExpressionContainer(
+            label,
+          )
+        ),
+        // type={props.type}
         t.jSXAttribute(
           t.jSXIdentifier('type'),
           t.stringLiteral(inputType)
@@ -383,20 +495,22 @@ function input_text(js_context, input) {
               t.blockStatement(
                 [
                   // innerProps.onChange(e.target.value)
-                  t.callExpression(
-                    t.memberExpression(
-                      t.identifier('innerProps'),
-                      t.identifier('onChange')
-                    ),
-                    [
+                  t.expressionStatement(
+                    t.callExpression(
                       t.memberExpression(
+                        t.identifier('innerProps'),
+                        t.identifier('onChange')
+                      ),
+                      [
                         t.memberExpression(
-                          t.identifier('e'),
-                          t.identifier('target')
-                        ),
-                        t.identifier('value')
-                      )
-                    ]
+                          t.memberExpression(
+                            t.identifier('e'),
+                            t.identifier('target')
+                          ),
+                          t.identifier('value')
+                        )
+                      ]
+                    )
                   ),
                   // if (props.callback) {
                   //   props.callback(e.target.value)
@@ -444,7 +558,7 @@ function input_text(js_context, input) {
                   ),
                   [
                     t.identifier(`${qualifiedName}.errors`),
-                    t.stringLiteral(input.name)
+                    name
                   ]
                 )
               )
@@ -455,7 +569,7 @@ function input_text(js_context, input) {
           t.jSXIdentifier('helperText'),
           t.jSXExpressionContainer(
             // lodash.get(errors, props.name)?.message
-            t.memberExpression(
+            t.optionalMemberExpression(
               t.callExpression(
                 t.memberExpression(
                   t.identifier('lodash.default'),
@@ -463,7 +577,7 @@ function input_text(js_context, input) {
                 ),
                 [
                   t.identifier(`${qualifiedName}.errors`),
-                  t.stringLiteral(input.name)
+                  name
                 ]
               ),
               t.identifier('message'),
@@ -507,7 +621,9 @@ function input_text(js_context, input) {
                   ),
                   t.callExpression(
                     t.identifier('react.useState'),
-                    options
+                    [
+                      options
+                    ]
                   )
                 )
               ]
@@ -518,14 +634,9 @@ function input_text(js_context, input) {
                 t.jSXOpeningElement(
                   t.jSXIdentifier('antd.AutoComplete'),
                   [
-                    // key="autocomplete"
-                    t.jSXAttribute(
-                      t.jSXIdentifier('key'),
-                      t.stringLiteral('autocomplete')
-                    ),
                     // options={states.options}
                     t.jSXAttribute(
-                      t.identifier('options'),
+                      t.jSXIdentifier('options'),
                       t.jSXExpressionContainer(
                         t.identifier('__searchOptions')
                       )
@@ -551,16 +662,17 @@ function input_text(js_context, input) {
                           t.blockStatement(
                             [
                               // innerProps.onChange(data)
-                              t.callExpression(
-                                t.memberExpression(
-                                  t.identifier('innerProps'),
-                                  t.identifier('onChange')
-                                ),
-                                [
-                                  t.identifier('data')
-                                ]
+                              t.expressionStatement(
+                                t.callExpression(
+                                  t.memberExpression(
+                                    t.identifier('innerProps'),
+                                    t.identifier('onChange')
+                                  ),
+                                  [
+                                    t.identifier('data')
+                                  ]
+                                )
                               ),
-                              /*
                               // if (props.callback) {
                               //   props.callback(data)
                               // }
@@ -587,7 +699,6 @@ function input_text(js_context, input) {
                                   )
                                 )
                               )
-                              */
                             ]
                           )
                         )
@@ -595,7 +706,7 @@ function input_text(js_context, input) {
                     ),
                     // onSearch={s => {...}}
                     t.jSXAttribute(
-                      t.identifier('onSearch'),
+                      t.jSXIdentifier('onSearch'),
                       t.jSXExpressionContainer(
                         t.arrowFunctionExpression(
                           [
@@ -632,14 +743,14 @@ function input_text(js_context, input) {
                                         t.arrowFunctionExpression(
                                           [
                                             t.identifier('s'),
+                                          ],
+                                          t.unaryExpression(
+                                            '!',
                                             t.unaryExpression(
                                               '!',
-                                              t.unaryExpression(
-                                                '!',
-                                                t.identifier('s')
-                                              )
+                                              t.identifier('s')
                                             )
-                                          ]
+                                          )
                                         )
                                       ]
                                     )
@@ -653,9 +764,9 @@ function input_text(js_context, input) {
                               //    true)
                               // })
                               t.variableDeclaration(
+                                'const',
                                 [
                                   t.variableDeclarator(
-                                    'const',
                                     t.identifier('found_options'),
                                     t.callExpression(
                                       t.memberExpression(
@@ -670,9 +781,9 @@ function input_text(js_context, input) {
                                           t.blockStatement(
                                             [
                                               t.variableDeclaration(
+                                                'const',
                                                 [
                                                   t.variableDeclarator(
-                                                    'const',
                                                     t.identifier('name_upper'),
                                                     t.callExpression(
                                                       t.memberExpression(
@@ -696,7 +807,7 @@ function input_text(js_context, input) {
                                                         t.identifier('accumulator'),
                                                         t.identifier('item')
                                                       ],
-                                                      t.binaryExpression(
+                                                      t.logicalExpression(
                                                         '&&',
                                                         t.unaryExpression(
                                                           '!',
@@ -704,18 +815,20 @@ function input_text(js_context, input) {
                                                             '!',
                                                             t.identifier('accumulator')
                                                           )
-                                                        )
-                                                      ),
-                                                      t.callExpression(
-                                                        t.memberExpression(
-                                                          t.identifier('name_upper'),
-                                                          t.identifier('includes')
                                                         ),
-                                                        t.memberExpression(
-                                                          t.identifier('item'),
-                                                          t.identifier('value'),
-                                                          computed=false,
-                                                          optional=true,
+                                                        t.callExpression(
+                                                          t.memberExpression(
+                                                            t.identifier('name_upper'),
+                                                            t.identifier('includes')
+                                                          ),
+                                                          [
+                                                            t.optionalMemberExpression(
+                                                              t.identifier('item'),
+                                                              t.identifier('value'),
+                                                              computed=false,
+                                                              optional=true,
+                                                            )
+                                                          ]
                                                         )
                                                       )
                                                     ),
@@ -732,9 +845,13 @@ function input_text(js_context, input) {
                                 ]
                               ),
                               // setOptions(found_options)
-                              t.callExpression(
-                                t.identifier('__setSearchOptions'),
-                                t.identifier(found_options)
+                              t.expressionStatement(
+                                t.callExpression(
+                                  t.identifier('__setSearchOptions'),
+                                  [
+                                    t.identifier('found_options')
+                                  ]
+                                )
                               )
                             ]
                           )
@@ -758,6 +875,8 @@ function input_text(js_context, input) {
     )
   }
 
+  // console.log(innerElement)
+
   // register imported components
   reg_js_import(js_context, 'react-hook-form.Controller')
   reg_js_import(js_context, '@material-ui/core.FormControl')
@@ -768,61 +887,76 @@ function input_text(js_context, input) {
       [
         // key={props.name}
         t.jSXAttribute(
-          t.identifier('key'),
+          t.jSXIdentifier('key'),
           t.jSXExpressionContainer(
-            t.memberExpression(
-              t.identifier('props'),
-              t.identifier('name')
-            )
+            name
           )
         ),
         // name={input.name}
         t.jSXAttribute(
-          t.identifier('name'),
-          t.stringLiteral(input.name)
+          t.jSXIdentifier('name'),
+          t.jSXExpressionContainer(
+            name
+          )
         ),
         // control={qualifiedName.control}
         t.jSXAttribute(
-          t.identifier('control'),
+          t.jSXIdentifier('control'),
           t.jSXExpressionContainer(
             t.identifier(`${qualifiedName}.control`)
           )
         ),
         // defaultValue={props.defaultValue}
         t.jSXAttribute(
-          t.identifier('defaultValue'),
-          defaultValue
+          t.jSXIdentifier('defaultValue'),
+          t.jSXExpressionContainer(
+            defaultValue
+          )
         ),
         // rules={props.rules}
         t.jSXAttribute(
-          t.identifier('rules'),
-          rules,
+          t.jSXIdentifier('rules'),
+          t.jSXExpressionContainer(
+            rules,
+          )
         ),
         // render={<Element>...</Element>}
         t.jSXAttribute(
-          t.identifier('render'),
+          t.jSXIdentifier('render'),
           t.jSXExpressionContainer(
-            t.jSXElement(
-              t.jSXOpeningElement(
-                t.jSXIdentifier('@material-ui/core.FormControl'),
+            t.arrowFunctionExpression(
+              [
+                t.identifier('innerProps')
+              ],
+              t.jSXElement(
+                t.jSXOpeningElement(
+                  t.jSXIdentifier('@material-ui/core.FormControl'),
+                  [
+                    // className={props.className}
+                    t.jSXSpreadAttribute(
+                      restProps
+                    )
+                  ]
+                ),
+                t.jSXClosingElement(
+                  t.jSXIdentifier('@material-ui/core.FormControl')
+                ),
                 [
-                  // className={props.className}
-                  t.jSXSpreadAttribute(
-                    t.identifier('props')
+                  t.jSXExpressionContainer(
+                    innerElement  // innerElement here
                   )
                 ]
-              ),
-              t.jSXClosingElement(
-                t.jSXIdentifier('@material-ui/core.FormControl')
-              ),
-              [
-                innerElement  // innerElement here
-              ]
+              )
             )
           )
         )
       ]
-    )
+    ),
+    t.jSXClosingElement(
+      t.jSXIdentifier('react-hook-form.Controller')
+    ),
+    // no children
+    []
   )
 
   // return <Controller>...</Controller>
@@ -927,7 +1061,7 @@ function input_text_array(js_context, input) {
   const autocomplete = !!input.autocomplete || false
   const qualifiedName = !!js_context.reactForm
     ? `react-hook-form.useForm.${js_context.reactForm}`
-    : `react-hook-form.useContext`
+    : `react-hook-form.useFormContext`
 
   // if js_context.reactForm is not already set, register empty string
   if (!js_context.reactForm) {
@@ -1084,7 +1218,7 @@ function input_text_array(js_context, input) {
                 '!',
                 t.unaryExpression(
                   '!',
-                  t.memberExpression(
+                  t.optionalMemberExpression(
                     t.memberExpression(
                       t.callExpression(
                         t.memberExpression(
@@ -1133,8 +1267,8 @@ function input_text_array(js_context, input) {
                 )
               ),
               // !!lodash.get(errors, props.name)[index]?.value
-              t.memberExpression(
-                t.memberExpression(
+              t.optionalMemberExpression(
+                t.optionalMemberExpression(
                   t.memberExpression(
                     t.callExpression(
                       t.memberExpression(
@@ -1371,7 +1505,7 @@ function input_text_array(js_context, input) {
                                                           t.identifier('name_upper'),
                                                           t.identifier('includes')
                                                         ),
-                                                        t.memberExpression(
+                                                        t.optionalMemberExpression(
                                                           t.identifier('item'),
                                                           t.identifier('value'),
                                                           computed=false,

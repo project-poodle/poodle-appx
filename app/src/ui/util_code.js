@@ -33,21 +33,37 @@ const {
 // create primitive js ast
 function js_primitive(js_context, input) {
 
+  let result = null
   switch (typeof input) {
     case 'string':
-      return t.stringLiteral(input)
+      result = t.stringLiteral(input)
+      break
     case 'number':
-      return t.numericLiteral(input)
+      result = t.numericLiteral(input)
+      break
     case 'boolean':
-      return t.booleanLiteral(input)
+      result = t.booleanLiteral(input)
+      break
     case 'object':
       if (input === null) {
-        return t.nullLiteral()
+        result = t.nullLiteral()
+        break
       } else {
         throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
       }
+    case 'undefined':
+      result = t.nullLiteral()
+      break
     default:
       throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+  }
+
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      result
+    )
+  } else {
+    return result
   }
 }
 
@@ -58,7 +74,13 @@ function js_string(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/string] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  return t.stringLiteral(String(input.data))
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      t.stringLiteral(String(input.data))
+    )
+  } else {
+    return t.stringLiteral(String(input.data))
+  }
 }
 
 // create numeric ast
@@ -68,7 +90,13 @@ function js_number(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/number] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  return t.numericLiteral(Number(input.data))
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      t.numericLiteral(Number(input.data))
+    )
+  } else {
+    return t.numericLiteral(Number(input.data))
+  }
 }
 
 // create boolean ast
@@ -78,7 +106,13 @@ function js_boolean(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/boolean] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  return t.booleanLiteral(Boolean(input.data))
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      t.booleanLiteral(Boolean(input.data))
+    )
+  } else {
+    return t.booleanLiteral(Boolean(input.data))
+  }
 }
 
 // create null ast
@@ -88,7 +122,13 @@ function js_null(js_context, input) {
     throw new Error(`ERROR: input.type is not [js/null] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  return t.nullLiteral()
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      t.nullLiteral()
+    )
+  } else {
+    return t.nullLiteral()
+  }
 }
 
 // create array js ast
@@ -2077,7 +2117,7 @@ function react_component(js_context, input) {
   // process elements, this will register such as 'forms'
   const result_element = react_element(js_context, input.element)
 
-  // console.log(`react_component`, js_context)
+  // console.log(`react_component - js_context.forms`, JSON.stringify(js_context.forms, null, 4))
 
   // add react/form useForm or useFormContext here (AFTER react_element)
   if (!!js_context.forms && !!Object.keys(js_context.forms).length) {
