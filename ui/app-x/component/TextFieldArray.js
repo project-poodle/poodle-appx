@@ -83,22 +83,35 @@ const TextFieldArray = props => {
         fields.map((item, index) => {
           return (
             <Box key={item.id} display="flex" className={styles.formControl}>
-              <AutoComplete
-                className={styles.formControl}
-                key="value"
+              <Controller
+                key="controller"
                 name={`${props.name}[${index}].value`}
-                type={props.type}
+                type={!!props.type ? props.type : 'text'}
+                control={control}
                 defaultValue={item?.value}
-                size={props.size}
-                options={!!props.options ? props.options : []}
                 rules={props.rules}
-                callback={props.callback}
+                render={innerProps =>
+                  <FormControl className={styles.formControl}>
+                    <AutoComplete
+                      className={styles.formControl}
+                      key="value"
+                      name={`${props.name}[${index}].value`}
+                      type={innerProps.type}
+                      size={props.size}
+                      value={innerProps.value}
+                      onChange={innerProps.onChange}
+                      options={!!props.options ? props.options : []}
+                      callback={props.callback}
+                      >
+                    </AutoComplete>
+                  </FormControl>
+                }
                 >
-              </AutoComplete>
+              </Controller>
               <IconButton
                 key="remove"
                 aria-label="Remove"
-                size="small"
+                size={props.size}
                 onClick={e => {
                   remove(index)
                   if (!!props.callback) {
@@ -115,7 +128,7 @@ const TextFieldArray = props => {
       <IconButton
         key="add"
         aria-label="Add"
-        size="small"
+        size={props.size}
         onClick={e => {
           append({
             value: '',

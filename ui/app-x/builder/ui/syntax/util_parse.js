@@ -390,9 +390,9 @@ function lookup_title_for_input(ref, input) {
 
     return prefix + input.name
 
-  } else if (input.type === 'input/test') {
+  } else if (input.type === 'input/text') {
 
-    return prefix + 'TextInput'
+    return prefix + `Input [${input.name}]`
 
   } else if (input.type === 'mui/style') {
 

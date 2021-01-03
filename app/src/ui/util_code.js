@@ -1499,14 +1499,6 @@ function react_effect(js_context, input) {
     throw new Error(`ERROR: input.body missing in [react/effect] [${JSON.stringify(input)}]`)
   }
 
-  const program = parse(input.body, {
-    // sourceType: 'module', // do not support module here
-    // allowReturnOutsideFunction: true, // allow return in the block statement
-    plugins: [
-      'jsx', // support jsx here
-    ]
-  })
-
   const statesExpression =
     !!input.states
     ? t.arrayExpression
@@ -1541,7 +1533,13 @@ function react_effect(js_context, input) {
   reg_js_import(js_context, 'react.useEffect')
 
   // parse user code snippet
-  const statements = _js_parse_statements(js_context, program)
+  const statements = _js_parse_statements(js_context, input.body, {
+    // sourceType: 'module', // do not support module here
+    // allowReturnOutsideFunction: true, // allow return in the block statement
+    plugins: [
+      'jsx', // support jsx here
+    ]
+  })
 
   return t.callExpression(
     t.identifier('react.useEffect'),

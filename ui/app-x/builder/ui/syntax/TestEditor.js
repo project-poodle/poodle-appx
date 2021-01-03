@@ -325,14 +325,10 @@ const TestEditor = (props) => {
                   <Box key={item.id} className={styles.contextProvider}>
                     <FormHelperText>Context Provider</FormHelperText>
                     <Box key='element' display="flex" className={styles.formControl}>
-                      <AutoComplete
-                        className={styles.formControl}
-                        key="name"
+                      <Controller
                         name={`providers[${index}].name`}
-                        type="text"
+                        control={control}
                         defaultValue={item.name}
-                        size="small"
-                        options={valid_import_names()}
                         rules={{
                           required: 'Context provider name is required',
                           validate: {
@@ -342,12 +338,26 @@ const TestEditor = (props) => {
                             )
                           }
                         }}
-                        callback={d => {
-                          // console.log(`submit providers[${index}].name`)
-                          setTestSubmitTimer(new Date())
-                        }}
-                        >
-                      </AutoComplete>
+                        render={innerProps =>
+                          (
+                            <FormControl className={styles.formControl}>
+                              <AutoComplete
+                                key="name"
+                                name={`providers[${index}].name`}
+                                className={styles.formControl}
+                                value={innerProps.value}
+                                onChange={innerProps.onChange}
+                                options={valid_import_names()}
+                                callback={d => {
+                                  // console.log(`submit providers[${index}].name`)
+                                  setTestSubmitTimer(new Date())
+                                }}
+                                >
+                              </AutoComplete>
+                            </FormControl>
+                          )
+                        }
+                      />
                       <IconButton
                         key="remove"
                         aria-label="Remove"

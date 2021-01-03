@@ -47,57 +47,45 @@ const AutoComplete = (props) => {
   }, [props.options])
 
   return (
-      <Controller
-        key={props.name}
-        name={props.name}
-        type={!!props.type ? props.type : 'text'}
-        control={control}
-        defaultValue={props.defaultValue}
-        rules={props.rules}
-        render={innerProps =>
-          <FormControl className={props.className}>
-            <AntAutoComplete
-              key="autocomplete"
-              options={options}
-              value={innerProps.value}
-              onChange={data => {
-                innerProps.onChange(data)
-                if (props.callback) {
-                  props.callback(data)
-                }
-              }}
-              onSearch={s => {
-                const valid_names = props.options
-                const s_list = s.toUpperCase().split(' ').filter(s => !!s)
-                const found_options = valid_names.filter(name => {
-                  const name_upper = name.toUpperCase()
-                  return s_list.reduce(
-                    (result, obj) => !!result && name_upper.includes(obj),
-                    true)
-                }).map(n => ({value: n}))
-                setOptions(found_options)
-              }}
-              >
-              <TextField
-                key="textfield"
-                className={styles.formControl}
-                label={props.label}
-                name={innerProps.name}
-                value={innerProps.value}
-                size={props.size}
-                onChange={e => {
-                  innerProps.onChange(e.target.value)
-                  if (props.callback) {
-                    props.callback(e.target.value)
-                  }
-                }}
-                error={!!_.get(errors, props.name)}
-                helperText={_.get(errors, props.name)?.message}
-              />
-            </AntAutoComplete>
-          </FormControl>
+    <AntAutoComplete
+      key="autocomplete"
+      options={options}
+      value={props.value}
+      onChange={data => {
+        props.onChange(data)
+        if (props.callback) {
+          props.callback(data)
         }
+      }}
+      onSearch={s => {
+        const valid_names = props.options
+        const s_list = s.toUpperCase().split(' ').filter(s => !!s)
+        const found_options = valid_names.filter(name => {
+          const name_upper = name.toUpperCase()
+          return s_list.reduce(
+            (result, obj) => !!result && name_upper.includes(obj),
+            true)
+        }).map(n => ({value: n}))
+        setOptions(found_options)
+      }}
+      >
+      <TextField
+        key="textfield"
+        className={styles.formControl}
+        label={props.label}
+        name={props.name}
+        value={props.value}
+        size={props.size}
+        onChange={e => {
+          props.onChange(e.target.value)
+          if (props.callback) {
+            props.callback(e.target.value)
+          }
+        }}
+        error={!!_.get(errors, props.name)}
+        helperText={_.get(errors, props.name)?.message}
       />
+    </AntAutoComplete>
   )
 }
 

@@ -1115,11 +1115,9 @@ const PropEditor = (props) => {
                         )
                       }
                     />
-                    <AutoComplete
-                      className={styles.formControl}
+                    <Controller
                       name="name"
-                      label="Import Name"
-                      options={valid_import_names()}
+                      control={control}
                       defaultValue={treeNode?.data?.name}
                       rules={{
                         required: "Import name is required",
@@ -1130,9 +1128,23 @@ const PropEditor = (props) => {
                           )
                         }
                       }}
-                      callback={data => {
-                        setBaseSubmitTimer(new Date())
-                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <AutoComplete
+                              label="Import Name"
+                              name="name"
+                              value={props.value}
+                              onChange={props.onChange}
+                              size="small"
+                              options={valid_import_names()}
+                              callback={data => {
+                                setBaseSubmitTimer(new Date())
+                              }}
+                            />
+                          </FormControl>
+                        )
+                      }
                     />
                   </Box>
                 )
@@ -1650,12 +1662,9 @@ const PropEditor = (props) => {
                     {
                       nodeType === 'react/element'
                       &&
-                      <AutoComplete
-                        className={styles.formControl}
+                      <Controller
                         name="name"
-                        label="Element Name"
-                        size="small"
-                        options={valid_import_names()}
+                        control={control}
                         defaultValue={treeNode?.data?.name}
                         rules={{
                           required: "Element name is required",
@@ -1666,26 +1675,52 @@ const PropEditor = (props) => {
                             )
                           }
                         }}
-                        callback={data => {
-                          setBaseSubmitTimer(new Date())
-                        }}
+                        render={props =>
+                          (
+                            <FormControl className={styles.formControl}>
+                              <AutoComplete
+                                label="Element Name"
+                                name="name"
+                                value={props.value}
+                                onChange={props.onChange}
+                                size="small"
+                                options={valid_import_names()}
+                                callback={data => {
+                                  setBaseSubmitTimer(new Date())
+                                }}
+                              />
+                            </FormControl>
+                          )
+                        }
                       />
                     }
                     {
                       nodeType === 'react/html'
                       &&
-                      <AutoComplete
-                        className={styles.formControl}
+                      <Controller
                         name="name"
-                        label="Import Name"
-                        options={valid_html_tags()}
+                        control={control}
                         defaultValue={treeNode?.data?.name}
                         rules={{
                           required: "HTML tag is required",
                         }}
-                        callback={data => {
-                          setBaseSubmitTimer(new Date())
-                        }}
+                        render={props =>
+                          (
+                            <FormControl className={styles.formControl}>
+                              <AutoComplete
+                                label="HTML Tag"
+                                name="name"
+                                value={props.value}
+                                onChange={props.onChange}
+                                size="small"
+                                options={valid_html_tags()}
+                                callback={data => {
+                                  setBaseSubmitTimer(new Date())
+                                }}
+                              />
+                            </FormControl>
+                          )
+                        }
                       />
                     }
                   </Box>
@@ -1878,16 +1913,19 @@ const PropEditor = (props) => {
                       }}
                       render={props =>
                         (
-                          <AutoComplete
-                            className={styles.formControl}
-                            name="name"
-                            label="Context Name"
-                            options={valid_import_names()}
-                            defaultValue={treeNode?.data?.name}
-                            callback={data => {
-                              setBaseSubmitTimer(new Date())
-                            }}
-                          />
+                          <FormControl className={styles.formControl}>
+                            <AutoComplete
+                              label="Context Name"
+                              name="name"
+                              value={props.value}
+                              onChange={props.onChange}
+                              size="small"
+                              options={valid_import_names()}
+                              callback={data => {
+                                setBaseSubmitTimer(new Date())
+                              }}
+                            />
+                          </FormControl>
                         )
                       }
                     />
@@ -2490,6 +2528,7 @@ const PropEditor = (props) => {
                               multiline={true}
                               onChange={props.onChange}
                               value={props.value}
+                              size="small"
                               error={!!errors.prep}
                               helperText={errors.prep?.message}
                               />
@@ -2520,6 +2559,7 @@ const PropEditor = (props) => {
                               label="Data"
                               onChange={props.onChange}
                               value={props.value}
+                              size="small"
                               error={!!errors.data}
                               helperText={errors.data?.message}
                               />
@@ -2550,6 +2590,7 @@ const PropEditor = (props) => {
                               label="Result Handler"
                               onChange={props.onChange}
                               value={props.value}
+                              size="small"
                               error={!!errors.result}
                               helperText={errors.result?.message}
                               />
@@ -2580,6 +2621,7 @@ const PropEditor = (props) => {
                               label="Error Handler"
                               onChange={props.onChange}
                               value={props.value}
+                              size="small"
                               error={!!errors.error}
                               helperText={errors.error?.message}
                               />

@@ -291,7 +291,9 @@ const SyntaxAddDialog = (props) => {
                         label="Reference"
                         onChange={props.onChange}
                         value={props.value}
+                        size="small"
                         error={!!errors.__ref}
+                        size="small"
                         helperText={errors.__ref?.message}
                         />
                     </FormControl>
@@ -381,7 +383,9 @@ const SyntaxAddDialog = (props) => {
                         label="Condition"
                         onChange={props.onChange}
                         value={props.value}
+                        size="small"
                         error={!!errors.condition}
+                        size="small"
                         helperText={errors.condition?.message}
                         />
                     </FormControl>
@@ -419,6 +423,7 @@ const SyntaxAddDialog = (props) => {
                             select={true}
                             name={props.name}
                             value={props.value}
+                            size="small"
                             onChange={
                               e => {
                                 setNodeType(e.target.value)
@@ -492,6 +497,7 @@ const SyntaxAddDialog = (props) => {
                                 multiline={false}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={props.onChange}
                                 error={!!errors.data}
                                 helperText={errors.data?.message}
@@ -525,6 +531,7 @@ const SyntaxAddDialog = (props) => {
                                 multiline={false}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={props.onChange}
                                 error={!!errors.data}
                                 helperText={errors.data?.message}
@@ -588,6 +595,7 @@ const SyntaxAddDialog = (props) => {
                                   multiline={true}
                                   name={props.name}
                                   value={props.value}
+                                  size="small"
                                   onChange={props.onChange}
                                   error={!!errors.data}
                                   helperText={errors.data?.message}
@@ -626,6 +634,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -670,6 +679,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -714,6 +724,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -730,11 +741,9 @@ const SyntaxAddDialog = (props) => {
                       )
                     }
                   />
-                  <AutoComplete
-                    className={styles.formControl}
+                  <Controller
                     name="name"
-                    label="Import Name"
-                    options={valid_import_names()}
+                    control={control}
                     defaultValue=''
                     rules={{
                       required: "Import name is required",
@@ -745,6 +754,23 @@ const SyntaxAddDialog = (props) => {
                         )
                       }
                     }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <AutoComplete
+                            label="Import Name"
+                            name="name"
+                            value={props.value}
+                            onChange={props.onChange}
+                            size="small"
+                            options={valid_import_names()}
+                            callback={data => {
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        </FormControl>
+                      )
+                    }
                   />
                 </Box>
               )
@@ -774,6 +800,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -817,6 +844,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.data}
                             helperText={errors.data?.message}
                             />
@@ -853,6 +881,7 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             error={!!errors.type}
+                            size="small"
                             helperText={errors.type?.message}
                             >
                             <MenuItem value="js/function">
@@ -911,6 +940,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.body}
                             helperText={errors.body?.message}
                             />
@@ -946,6 +976,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -990,6 +1021,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1034,6 +1066,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1075,6 +1108,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.reducer}
                             helperText={errors.reducer?.message}
                             />
@@ -1109,6 +1143,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.init}
                             helperText={errors.init?.message}
                             />
@@ -1144,6 +1179,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1185,6 +1221,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.filter}
                             helperText={errors.filter?.message}
                             />
@@ -1227,6 +1264,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1254,11 +1292,9 @@ const SyntaxAddDialog = (props) => {
                   {
                     nodeType === 'react/element'
                     &&
-                    <AutoComplete
-                      className={styles.formControl}
+                    <Controller
                       name="name"
-                      label="Import Name"
-                      options={valid_import_names()}
+                      control={control}
                       defaultValue=''
                       rules={{
                         required: "Element name is required",
@@ -1269,20 +1305,52 @@ const SyntaxAddDialog = (props) => {
                           )
                         }
                       }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <AutoComplete
+                              label="Element Name"
+                              name="name"
+                              value={props.value}
+                              onChange={props.onChange}
+                              size="small"
+                              options={valid_import_names()}
+                              callback={data => {
+                                setBaseSubmitTimer(new Date())
+                              }}
+                            />
+                          </FormControl>
+                        )
+                      }
                     />
                   }
                   {
                     nodeType === 'react/html'
                     &&
-                    <AutoComplete
-                      className={styles.formControl}
+                    <Controller
                       name="name"
-                      label="Import Name"
-                      options={valid_html_tags()}
+                      control={control}
                       defaultValue=''
                       rules={{
                         required: "HTML tag is required",
                       }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <AutoComplete
+                              label="HTML Tag"
+                              name="name"
+                              value={props.value}
+                              onChange={props.onChange}
+                              size="small"
+                              options={valid_html_tags()}
+                              callback={data => {
+                                setBaseSubmitTimer(new Date())
+                              }}
+                            />
+                          </FormControl>
+                        )
+                      }
                     />
                   }
                 </Box>
@@ -1313,6 +1381,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1347,6 +1416,7 @@ const SyntaxAddDialog = (props) => {
                             label="Name"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.name}
                             helperText={errors.name?.message}
                             />
@@ -1372,6 +1442,7 @@ const SyntaxAddDialog = (props) => {
                             label="Setter"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.setter}
                             helperText={errors.setter?.message}
                             />
@@ -1405,6 +1476,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.init}
                             helperText={errors.init?.message}
                             />
@@ -1440,6 +1512,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1461,30 +1534,29 @@ const SyntaxAddDialog = (props) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                      required: "Name is required",
-                      pattern: {
-                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
-                        message: "Name must be valid variable name"
+                      required: "Context name is required",
+                      validate: {
+                        valid_name: value => (
+                          valid_import_names().includes(value)
+                          || "Must use a valid name"
+                        )
                       }
                     }}
                     render={props =>
                       (
-                        <AutoComplete
-                          className={styles.formControl}
-                          name="name"
-                          label="Context Name"
-                          options={valid_import_names()}
-                          defaultValue=''
-                          rules={{
-                            required: "Context name is required",
-                            validate: {
-                              valid_name: value => (
-                                valid_import_names().includes(value)
-                                || "Must use a valid name"
-                              )
-                            }
-                          }}
-                        />
+                        <FormControl className={styles.formControl}>
+                          <AutoComplete
+                            label="Context Name"
+                            name="name"
+                            value={props.value}
+                            onChange={props.onChange}
+                            size="small"
+                            options={valid_import_names()}
+                            callback={data => {
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        </FormControl>
                       )
                     }
                   />
@@ -1516,6 +1588,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1561,6 +1634,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.data}
                             helperText={errors.data?.message}
                             />
@@ -1617,6 +1691,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1650,6 +1725,7 @@ const SyntaxAddDialog = (props) => {
                           <TextField
                             label="Form Name"
                             onChange={props.onChange}
+                            size="small"
                             value={props.value}
                             error={!!errors.name}
                             helperText={errors.name?.message}
@@ -1684,6 +1760,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.onSubmit}
                             helperText={errors.onSubmit?.message}
                             />
@@ -1717,6 +1794,7 @@ const SyntaxAddDialog = (props) => {
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.onError}
                             helperText={errors.onError?.message}
                             />
@@ -1752,6 +1830,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1782,6 +1861,7 @@ const SyntaxAddDialog = (props) => {
                             label="Input Name"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.name}
                             helperText={errors.name?.message}
                             />
@@ -1844,6 +1924,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1888,6 +1969,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -1922,6 +2004,7 @@ const SyntaxAddDialog = (props) => {
                             label="Namespace"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.namespace}
                             helperText={errors.namespace?.message}
                             />
@@ -1947,6 +2030,7 @@ const SyntaxAddDialog = (props) => {
                             label="App Name"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.app_name}
                             helperText={errors.app_name?.message}
                             />
@@ -1974,6 +2058,7 @@ const SyntaxAddDialog = (props) => {
                             select={true}
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.method}
                             helperText={errors.method?.message}
                             >
@@ -2003,6 +2088,7 @@ const SyntaxAddDialog = (props) => {
                             label="Endpoint"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.endpoint}
                             helperText={errors.endpoint?.message}
                             />
@@ -2033,6 +2119,7 @@ const SyntaxAddDialog = (props) => {
                             label="Init Code"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.prep}
                             helperText={errors.prep?.message}
                             />
@@ -2063,6 +2150,7 @@ const SyntaxAddDialog = (props) => {
                             label="Data"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.data}
                             helperText={errors.data?.message}
                             />
@@ -2093,6 +2181,7 @@ const SyntaxAddDialog = (props) => {
                             label="Result Handler"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.result}
                             helperText={errors.result?.message}
                             />
@@ -2123,6 +2212,7 @@ const SyntaxAddDialog = (props) => {
                             label="Error Handler"
                             onChange={props.onChange}
                             value={props.value}
+                            size="small"
                             error={!!errors.error}
                             helperText={errors.error?.message}
                             />
@@ -2158,6 +2248,7 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
+                            size="small"
                             error={!!errors.type}
                             helperText={errors.type?.message}
                             >
@@ -2196,6 +2287,7 @@ const SyntaxAddDialog = (props) => {
                           select={true}
                           name={props.name}
                           value={props.value}
+                          size="small"
                           onChange={props.onChange}
                           error={!!errors.__pos}
                           helperText={errors._pos?.message}

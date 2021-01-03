@@ -377,15 +377,11 @@ const PropFieldArray = props => {
                   (propType === 'js/import')
                   &&
                   (
-                    <AutoComplete
+                    <Controller
                       key='value'
-                      className={styles.valueControl}
                       name={`${props.name}[${index}].value`}
-                      size="small"
+                      control={control}
                       defaultValue={item?.value}
-                      options={
-                        valid_import_names()
-                      }
                       rules={{
                         required: "Import name is required",
                         validate: {
@@ -395,13 +391,26 @@ const PropFieldArray = props => {
                           )
                         }
                       }}
-                      callback={data => {
-                        if (props.callback) {
-                          props.callback(data, `${props.name}[${index}].value`)
-                        }
-                      }}
-                      >
-                    </AutoComplete>
+                      render={innerProps =>
+                        (
+                          <FormControl key="data" className={styles.valueControl}>
+                            <AutoComplete
+                              key='value'
+                              name={`${props.name}[${index}].value`}
+                              className={styles.valueControl}
+                              size="small"
+                              value={innerProps.value}
+                              onChange={innerProps.onChange}
+                              options={
+                                valid_import_names()
+                              }
+                              callback={props.callback}
+                              >
+                            </AutoComplete>
+                          </FormControl>
+                        )
+                      }
+                    />
                   )
                 }
               </Box>
