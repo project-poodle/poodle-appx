@@ -57,6 +57,7 @@ import {
   gen_js,
 } from 'app-x/builder/ui/syntax/util_tree'
 
+
 const PropEditor = (props) => {
   // make styles
   const styles = makeStyles((theme) => ({
@@ -219,6 +220,128 @@ const PropEditor = (props) => {
     selectedKey
   ])
 
+  // setValue when treeNode change
+  useEffect(() => {
+    if (!!treeNode) {
+      setNodeType(treeNode.data.type)
+      Object.keys(treeNode.data).map(k => {
+        if (!!k) {
+          // console.log(`setValue`, k, treeNode.data[k])
+          setValue(k, treeNode.data[k])
+        }
+      })
+      if (treeNode.data.type === 'react/state') {
+        // console.log(`__customRef`, treeNode, !!treeNode.data.__ref && !treeNode.data.__ref.startsWith('...'))
+        setValue('__customRef',
+          !!treeNode.data.__ref
+          && !treeNode.data.__ref.startsWith('...'))
+      }
+      // set properties
+      if
+      (
+        treeNode.data.type === 'js/object'
+        || treeNode.data.type === 'react/element'
+        || treeNode.data.type === 'react/html'
+        || treeNode.data.type === 'react/form'
+        || treeNode.data.type === 'input/text'
+      )
+      {
+        _set_form_props(treeNode, 'props')
+      }
+      // set form properties
+      if
+      (
+        treeNode.data.type === 'react/form'
+      )
+      {
+        _set_form_props(treeNode, 'formProps')
+      }
+      // just loaded, set dirty to false
+      setPropBaseDirty(false)
+    }
+  },
+  [
+    treeNode,
+    parentNode,
+  ])
+
+  // base submit timer
+  const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())
+  useEffect(() => {
+    setPropBaseDirty(true)
+    setTimeout(() => {
+      handleSubmit(onBaseSubmit)()
+    }, 300)
+  }, [baseSubmitTimer])
+
+  // submit base tab
+  function onBaseSubmit(data) {
+    const resultTree = _.cloneDeep(treeData)
+    const lookupNode = tree_lookup(resultTree, selectedKey)
+    if (!lookupNode) {
+      setPropBaseDirty(false)
+      return
+    }
+
+    // console.log(data)
+    const preservedRef = lookupNode.data.__ref
+    lookupNode.data = data
+    if (!!data.__ref) {
+      lookupNode.data.__ref = data.__ref
+    } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
+      lookupNode.data.__ref = preservedRef
+    } else {
+      lookupNode.data.__ref = null
+    }
+    // check if lookupNode is react/state, and __customRef is false
+    if (lookupNode.data.type === 'react/state') {
+      if (!data.__customRef) {
+        lookupNode.data.__ref = `...${lookupNode.data.name}`
+      }
+    }
+    // check if parent is js/switch
+    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
+    if (lookupParent?.data?.type === 'js/switch') {
+      if (!!data.default) {
+        lookupNode.data.__ref = 'default'
+      } else {
+        lookupNode.data.__ref = null
+        lookupNode.data.condition = data.condition
+      }
+    }
+    // update lookup node title and icon
+    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
+    lookupNode.icon = lookup_icon_for_input(data)
+    // console.log(lookupNode)
+    //////////////////////////////////////////////////////////////////////
+    // handle 'props'
+    if (lookupNode.data.type === 'js/object'
+        || lookupNode.data.type === 'react/element'
+        || lookupNode.data.type === 'react/html'
+        || lookupNode.data.type === 'react/form'
+        || lookupNode.data.type === 'input/text')
+    {
+      _process_props(lookupNode, 'props')
+    }
+    // handle 'formProps'
+    if (lookupNode.data.type === 'react/form')
+    {
+      _process_props(lookupNode, 'formProps')
+    }
+    // setTreeData(resultTree)
+    updateDesignAction(
+      `Update [${lookupNode.title}]`,
+      resultTree,
+      expandedKeys,
+      selectedKey,
+      lookupNode.key,
+    )
+    // set base dirty falg to false
+    setPropBaseDirty(false)
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // private utilities
   // set form props for refKey
   function _set_form_props(treeNode, refKey) {
     // get proper children
@@ -397,126 +520,7 @@ const PropEditor = (props) => {
     reorder_children(childParent)
     reorder_children(lookupNode)
   }
-
-  // setValue when treeNode change
-  useEffect(() => {
-    if (!!treeNode) {
-      setNodeType(treeNode.data.type)
-      Object.keys(treeNode.data).map(k => {
-        if (!!k) {
-          // console.log(`setValue`, k, treeNode.data[k])
-          setValue(k, treeNode.data[k])
-        }
-      })
-      if (treeNode.data.type === 'react/state') {
-        // console.log(`__customRef`, treeNode, !!treeNode.data.__ref && !treeNode.data.__ref.startsWith('...'))
-        setValue('__customRef',
-          !!treeNode.data.__ref
-          && !treeNode.data.__ref.startsWith('...'))
-      }
-      // set properties
-      if
-      (
-        treeNode.data.type === 'js/object'
-        || treeNode.data.type === 'react/element'
-        || treeNode.data.type === 'react/html'
-        || treeNode.data.type === 'react/form'
-        || treeNode.data.type === 'input/text'
-      )
-      {
-        _set_form_props(treeNode, 'props')
-      }
-      // set form properties
-      if
-      (
-        treeNode.data.type === 'react/form'
-      )
-      {
-        _set_form_props(treeNode, 'formProps')
-      }
-      // just loaded, set dirty to false
-      setPropBaseDirty(false)
-    }
-  },
-  [
-    treeNode,
-    parentNode,
-  ])
-
-  // base submit timer
-  const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())
-  useEffect(() => {
-    setPropBaseDirty(true)
-    setTimeout(() => {
-      handleSubmit(onBaseSubmit)()
-    }, 300)
-  }, [baseSubmitTimer])
-
-  // submit base tab
-  function onBaseSubmit(data) {
-    const resultTree = _.cloneDeep(treeData)
-    const lookupNode = tree_lookup(resultTree, selectedKey)
-    if (!lookupNode) {
-      setPropBaseDirty(false)
-      return
-    }
-
-    // console.log(data)
-    const preservedRef = lookupNode.data.__ref
-    lookupNode.data = data
-    if (!!data.__ref) {
-      lookupNode.data.__ref = data.__ref
-    } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
-      lookupNode.data.__ref = preservedRef
-    } else {
-      lookupNode.data.__ref = null
-    }
-    // check if lookupNode is react/state, and __customRef is false
-    if (lookupNode.data.type === 'react/state') {
-      if (!data.__customRef) {
-        lookupNode.data.__ref = `...${lookupNode.data.name}`
-      }
-    }
-    // check if parent is js/switch
-    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-    if (lookupParent?.data?.type === 'js/switch') {
-      if (!!data.default) {
-        lookupNode.data.__ref = 'default'
-      } else {
-        lookupNode.data.__ref = null
-        lookupNode.data.condition = data.condition
-      }
-    }
-    // update lookup node title and icon
-    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
-    lookupNode.icon = lookup_icon_for_input(data)
-    // console.log(lookupNode)
-    //////////////////////////////////////////////////////////////////////
-    // handle 'props'
-    if (lookupNode.data.type === 'js/object'
-        || lookupNode.data.type === 'react/element'
-        || lookupNode.data.type === 'react/html'
-        || lookupNode.data.type === 'react/form'
-        || lookupNode.data.type === 'input/text')
-    {
-      _process_props(lookupNode, 'props')
-    }
-    // handle 'formProps'
-    if (lookupNode.data.type === 'react/form')
-    {
-      _process_props(lookupNode, 'formProps')
-    }
-    // setTreeData(resultTree)
-    updateDesignAction(
-      `Update [${lookupNode.title}]`,
-      resultTree,
-      expandedKeys,
-      selectedKey,
-      lookupNode.key,
-    )
-    // set base dirty falg to false
-    setPropBaseDirty(false)
-  }
+  ////////////////////////////////////////////////////////////////////////////////
 
   // render
   return (
@@ -2067,7 +2071,7 @@ const PropEditor = (props) => {
                     <Controller
                       name="onSubmit"
                       control={control}
-                      defaultValue={treeNode?.data?.init}
+                      defaultValue={treeNode?.data?.onSubmit}
                       rules={{
                         validate: {
                           validSyntax: value => {
@@ -2106,7 +2110,7 @@ const PropEditor = (props) => {
                     <Controller
                       name="onError"
                       control={control}
-                      defaultValue={treeNode?.data?.init}
+                      defaultValue={treeNode?.data?.onError}
                       rules={{
                         validate: {
                           validSyntax: value => {
