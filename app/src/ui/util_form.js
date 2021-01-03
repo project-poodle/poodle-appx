@@ -268,34 +268,6 @@ function input_text(js_context, input) {
     }
   })()
 
-  // rules expression
-  const rules = (() => {
-    if (!!input.rules) {
-      return t.objectExpression(
-        Object.keys(input.rules)
-          .map(key => (
-            t.objectProperty(
-              t.identifier(key),
-              js_process(
-                {
-                  ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
-                  JSX_CONTEXT: false,
-                },
-                input.props[key]
-              )
-            )
-          )
-        )
-      )
-    } else {
-      // return {}
-      return t.objectExpression([])
-    }
-  })()
-
   // process main props
   const props = input.props || {}
 
@@ -842,7 +814,7 @@ function input_text(js_context, input) {
         t.jSXAttribute(
           t.jSXIdentifier('rules'),
           t.jSXExpressionContainer(
-            rules,
+            t.identifier('rules')
           )
         ),
         // render={<Element>...</Element>}
@@ -857,9 +829,19 @@ function input_text(js_context, input) {
                 t.jSXOpeningElement(
                   t.jSXIdentifier('@material-ui/core.FormControl'),
                   [
-                    // className={props.className}
-                    t.jSXSpreadAttribute(
-                      t.identifier('restProps')
+                    // style={width:"100%"}
+                    t.jSXAttribute(
+                      t.jSXIdentifier('style'),
+                      t.jSXExpressionContainer(
+                        t.objectExpression(
+                          [
+                            t.objectProperty(
+                              t.identifier('width'),
+                              t.stringLiteral('100%')
+                            )
+                          ]
+                        )
+                      )
                     )
                   ]
                 ),
@@ -903,11 +885,31 @@ function input_text(js_context, input) {
     }
   })()
 
-  // return (props => <Controller>...</Controller>)()
+  // compute rules
+  const rulesExpression = (() => {
+    if (!!input.rules) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        input.rules
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // return ((props, rules) => <Controller>...</Controller>)()
   const result = t.callExpression(
     t.arrowFunctionExpression(
       [
-        t.identifier('props')
+        t.identifier('props'),
+        t.identifier('rules')
       ],
       t.blockStatement(
         [
@@ -961,7 +963,8 @@ function input_text(js_context, input) {
       )
     ),
     [
-      propsExpression
+      propsExpression,
+      rulesExpression,
     ]
   )
 
@@ -1033,152 +1036,8 @@ function input_text_array(js_context, input) {
     }
   })()
 
-  // rules expression
-  const rules = (() => {
-    if (!!input.rules) {
-      return t.objectExpression(
-        Object.keys(input.rules)
-          .map(key => (
-            t.objectProperty(
-              t.identifier(key),
-              js_process(
-                {
-                  ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
-                  JSX_CONTEXT: false,
-                },
-                input.props[key]
-              )
-            )
-          )
-        )
-      )
-    } else {
-      // return {}
-      return t.objectExpression([])
-    }
-  })()
-
-  // restProps expression
-  const restProps = (() => {
-    if (!!input.props) {
-      return t.objectExpression(
-        Object.keys(input.props)
-          .filter(key => (
-            key !== 'type'
-            && key !== 'label'
-            && key !== 'defaultValue'
-            && key !== 'multiline'
-            && key !== 'autocomplete'
-            && key !== 'options'
-            && key !== 'callback'
-          ))
-          .map(key => (
-            t.objectProperty(
-              t.identifier(key),
-              js_process(
-                {
-                  ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
-                  JSX_CONTEXT: false,
-                },
-                input.props[key]
-              )
-            )
-          )
-        )
-      )
-    } else {
-      // return {}
-      return t.objectExpression([])
-    }
-  })()
-
-  // console.log(restProps)
-
   // process main props
   const props = input.props || {}
-
-  // label
-  const label = (() => {
-    if (!!props.label) {
-      if (isPrimitive(props.label)) {
-        return t.stringLiteral(String(props.label))
-      } else {
-        return js_process(
-          {
-            ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
-            JSX_CONTEXT: false,
-          },
-          input.name
-        )
-      }
-    } else {
-      return t.nullLiteral()
-    }
-  })()
-
-  // defaultValue
-  const defaultValue = (() => {
-    if (!!props.defaultValue) {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        props.defaultValue
-      )
-    } else {
-      return t.nullLiteral()
-    }
-  })()
-
-  // process options
-  const options = (() => {
-    if (!!props.options) {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        props.options
-      )
-    } else {
-      return t.arrayExpression()
-    }
-  })()
-
-  // process callback
-  const callback = (() => {
-    if (!!props.callback) {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        props.callback
-      )
-    } else {
-      // return null
-      return t.nullLiteral()
-    }
-  })()
 
   // basic types - extension not supported
   // multiline and autocomplete options
@@ -1211,7 +1070,7 @@ function input_text_array(js_context, input) {
       [
         // {...restProps} - the styles goes here
         t.jSXSpreadAttribute(
-          restProps
+          t.identifier('restProps')
         ),
         // name={input.name}
         t.jSXAttribute(
@@ -1271,19 +1130,25 @@ function input_text_array(js_context, input) {
                     )
                   ),
                   // if (props.callback) {
-                  //   props.callback(e.target.value)
+                  //   props.callback(data)
                   // }
                   t.ifStatement(
                     t.unaryExpression(
                       '!',
                       t.unaryExpression(
                         '!',
-                        callback
+                        t.memberExpression(
+                          t.identifier('props'),
+                          t.identifier('callback')
+                        )
                       )
                     ),
                     t.expressionStatement(
                       t.callExpression(
-                        callback,
+                        t.memberExpression(
+                          t.identifier('props'),
+                          t.identifier('callback')
+                        ),
                         [
                           t.memberExpression(
                             t.memberExpression(
@@ -1316,7 +1181,27 @@ function input_text_array(js_context, input) {
                   ),
                   [
                     t.identifier(`${qualifiedName}.errors`),
-                    name
+                    // `name[${index}].value`
+                    t.templateLiteral(
+                      [
+                        t.templateElement({
+                          raw: '',
+                          cooked: '',
+                        }),
+                        t.templateElement({
+                          raw: '[',
+                          cooked: '[',
+                        }),
+                        t.templateElement({
+                          raw: '].value',
+                          cooked: '].value',
+                        }),
+                      ],
+                      [
+                        name,
+                        t.identifier('index')
+                      ]
+                    )
                   ]
                 )
               )
@@ -1335,7 +1220,26 @@ function input_text_array(js_context, input) {
                 ),
                 [
                   t.identifier(`${qualifiedName}.errors`),
-                  name
+                  t.templateLiteral(
+                    [
+                      t.templateElement({
+                        raw: '',
+                        cooked: '',
+                      }),
+                      t.templateElement({
+                        raw: '[',
+                        cooked: '[',
+                      }),
+                      t.templateElement({
+                        raw: '].value',
+                        cooked: '].value',
+                      }),
+                    ],
+                    [
+                      name,
+                      t.identifier('index')
+                    ]
+                  )
                 ]
               ),
               t.identifier('message'),
@@ -1380,7 +1284,14 @@ function input_text_array(js_context, input) {
                   t.callExpression(
                     t.identifier('react.useState'),
                     [
-                      options
+                      t.logicalExpression(
+                        '||',
+                        t.memberExpression(
+                          t.identifier('props'),
+                          t.identifier('options')
+                        ),
+                        t.arrayExpression()
+                      )
                     ]
                   )
                 )
@@ -1528,13 +1439,20 @@ function input_text_array(js_context, input) {
                                     t.identifier('found_options'),
                                     t.callExpression(
                                       t.memberExpression(
-                                        options,
+                                        t.logicalExpression(
+                                          '||',
+                                          t.memberExpression(
+                                            t.identifier('props'),
+                                            t.identifier('options')
+                                          ),
+                                          t.arrayExpression()
+                                        ),
                                         t.identifier('filter')
                                       ),
                                       [
                                         t.arrowFunctionExpression(
                                           [
-                                            t.identifier('name')
+                                            t.identifier('option')
                                           ],
                                           t.blockStatement(
                                             [
@@ -1542,11 +1460,11 @@ function input_text_array(js_context, input) {
                                                 'const',
                                                 [
                                                   t.variableDeclarator(
-                                                    t.identifier('name_upper'),
+                                                    t.identifier('upper'),
                                                     t.callExpression(
                                                       t.optionalMemberExpression(
                                                         t.optionalMemberExpression(
-                                                          t.identifier('name'),
+                                                          t.identifier('option'),
                                                           t.identifier('value'),
                                                           computed=false,
                                                           optional=true,
@@ -1560,6 +1478,19 @@ function input_text_array(js_context, input) {
                                                   )
                                                 ]
                                               ),
+                                              /*
+                                              t.expressionStatement(
+                                                t.callExpression(
+                                                  t.memberExpression(
+                                                    t.identifier('console'),
+                                                    t.identifier('log')
+                                                  ),
+                                                  [
+                                                    t.identifier('upper')
+                                                  ]
+                                                )
+                                              ),
+                                              */
                                               t.returnStatement(
                                                 t.callExpression(
                                                   t.memberExpression(
@@ -1583,16 +1514,11 @@ function input_text_array(js_context, input) {
                                                         ),
                                                         t.callExpression(
                                                           t.memberExpression(
-                                                            t.identifier('name_upper'),
+                                                            t.identifier('upper'),
                                                             t.identifier('includes')
                                                           ),
                                                           [
-                                                            t.optionalMemberExpression(
-                                                              t.identifier('item'),
-                                                              t.identifier('value'),
-                                                              computed=false,
-                                                              optional=true,
-                                                            )
+                                                            t.identifier('item')
                                                           ]
                                                         )
                                                       )
@@ -1690,6 +1616,9 @@ function input_text_array(js_context, input) {
   reg_js_import(js_context, 'react-hook-form.Controller')
   reg_js_import(js_context, '@material-ui/core.FormControl')
   reg_js_import(js_context, '@material-ui/core.FormHelperText')
+  reg_js_import(js_context, '@material-ui/core.IconButton')
+  reg_js_import(js_context, '@material-ui/icons.AddCircleOutline')
+  reg_js_import(js_context, '@material-ui/icons.RemoveCircleOutline')
 
   const controlElement = t.jSXElement(
     t.jSXOpeningElement(
@@ -1712,13 +1641,16 @@ function input_text_array(js_context, input) {
       //    )
       // }
       t.jSXExpressionContainer(
-        t.binaryExpression(
+        t.logicalExpression(
           '&&',
           t.unaryExpression(
             '!',
             t.unaryExpression(
               '!',
-              t.stringLiteral(input.label || '')
+              t.memberExpression(
+                t.identifier('props'),
+                t.identifier('label')
+              )
             )
           ),
           t.jSXElement(
@@ -1735,7 +1667,12 @@ function input_text_array(js_context, input) {
               t.jSXIdentifier('@material-ui/core.FormHelperText')
             ),
             [
-              t.stringLiteral(input.label || '')
+              t.jSXExpressionContainer(
+                t.memberExpression(
+                  t.identifier('props'),
+                  t.identifier('label')
+                )
+              )
             ]
           )
         )
@@ -1763,14 +1700,13 @@ function input_text_array(js_context, input) {
                 t.identifier('item'),
                 t.identifier('index')
               ],
-              // <Controller>...</Controller>
               t.jSXElement(
                 t.jSXOpeningElement(
-                  t.jSXIdentifier('react-hook-form.Controller'),
+                  t.jSXIdentifier('@material-ui/core.Box'),
                   [
-                    // key={props.name}
+                    // key={item.id}
                     t.jSXAttribute(
-                      t.identifier('key'),
+                      t.jSXIdentifier('key'),
                       t.jSXExpressionContainer(
                         t.memberExpression(
                           t.identifier('item'),
@@ -1778,102 +1714,442 @@ function input_text_array(js_context, input) {
                         )
                       )
                     ),
-                    // name={"input.name[${index}].value"}
+                    // display="flex"
                     t.jSXAttribute(
-                      t.identifier('name'),
+                      t.jSXIdentifier('display'),
+                      t.stringLiteral('flex')
+                    ),
+                    // style={width: '100%'}
+                    t.jSXAttribute(
+                      t.jSXIdentifier('style'),
                       t.jSXExpressionContainer(
-                        t.templateLiteral(
+                        t.objectExpression(
                           [
-                            t.templateElement({
-                              raw: `${input.name}[`,
-                              cooked: `${input.name}[`,
-                            }),
-                            t.templateElement({
-                              raw: `].value`,
-                              cooked: `].value`,
-                            })
-                          ],
-                          [
-                            t.identifier('index')
-                          ]
-                        )
-                      )
-                    ),
-                    // control={qualifiedName.control}
-                    t.jSXAttribute(
-                      t.identifier('control'),
-                      t.jSXExpressionContainer(
-                        t.identifier(`${qualifiedName}.control`)
-                      )
-                    ),
-                    // defaultValue={props.defaultValue}
-                    t.jSXAttribute(
-                      t.identifier('defaultValue'),
-                      t.jSXExpressionContainer(
-                        defaultValue
-                      )
-                    ),
-                    // rules={props.rules}
-                    t.jSXAttribute(
-                      t.identifier('rules'),
-                      t.jSXExpressionContainer(
-                        rules
-                      )
-                    ),
-                    // render={<Element>...</Element>}
-                    t.jSXAttribute(
-                      t.identifier('render'),
-                      t.jSXExpressionContainer(
-                        t.jSXElement(
-                          t.jSXOpeningElement(
-                            t.jSXIdentifier('@material-ui/core.FormControl'),
-                            [
-                              // style={width:"100%"}
-                              t.jSXAttribute(
-                                t.identifier('style'),
-                                t.jSXExpressionContainer(
-                                  t.objectExpression(
-                                    [
-                                      t.objectProperty(
-                                        t.identifier('width'),
-                                        t.stringLiteral('100%')
-                                      )
-                                    ]
-                                  )
-                                )
-                              )
-                            ]
-                          ),
-                          t.jSXClosingElement(
-                            t.jSXIdentifier('@material-ui/core.FormControl')
-                          ),
-                          [
-                            innerElement  // innerElement here
+                            t.objectProperty(
+                              t.identifier('width'),
+                              t.stringLiteral('100%')
+                            )
                           ]
                         )
                       )
                     )
                   ]
-                )
+                ),
+                t.jSXClosingElement(
+                  t.jSXIdentifier('@material-ui/core.Box')
+                ),
+                [
+                  // <Controller>...</Controller>
+                  t.jSXElement(
+                    t.jSXOpeningElement(
+                      t.jSXIdentifier('react-hook-form.Controller'),
+                      [
+                        // key={item.id}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('key'),
+                          t.jSXExpressionContainer(
+                            t.memberExpression(
+                              t.identifier('item'),
+                              t.identifier('id')
+                            )
+                          )
+                        ),
+                        // name={"input.name[${index}].value"}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('name'),
+                          t.jSXExpressionContainer(
+                            // `name[${index}].value`
+                            t.templateLiteral(
+                              [
+                                t.templateElement({
+                                  raw: '',
+                                  cooked: '',
+                                }),
+                                t.templateElement({
+                                  raw: '[',
+                                  cooked: '[',
+                                }),
+                                t.templateElement({
+                                  raw: '].value',
+                                  cooked: '].value',
+                                }),
+                              ],
+                              [
+                                name,
+                                t.identifier('index')
+                              ]
+                            )
+                          )
+                        ),
+                        // control={qualifiedName.control}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('control'),
+                          t.jSXExpressionContainer(
+                            t.identifier(`${qualifiedName}.control`)
+                          )
+                        ),
+                        // defaultValue={props.defaultValue}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('defaultValue'),
+                          t.jSXExpressionContainer(
+                            t.optionalMemberExpression(
+                              t.identifier('item'),
+                              t.identifier('value'),
+                              computed=false,
+                              optional=true,
+                            )
+                          )
+                        ),
+                        // rules={props.rules}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('rules'),
+                          t.jSXExpressionContainer(
+                            t.identifier('rules')
+                          )
+                        ),
+                        // render={<Element>...</Element>}
+                        t.jSXAttribute(
+                          t.jSXIdentifier('render'),
+                          t.jSXExpressionContainer(
+                            t.arrowFunctionExpression(
+                              [
+                                t.identifier('innerProps')
+                              ],
+                              t.jSXElement(
+                                t.jSXOpeningElement(
+                                  t.jSXIdentifier('@material-ui/core.FormControl'),
+                                  [
+                                    // style={width: '100%'}
+                                    t.jSXAttribute(
+                                      t.jSXIdentifier('style'),
+                                      t.jSXExpressionContainer(
+                                        t.objectExpression(
+                                          [
+                                            t.objectProperty(
+                                              t.identifier('width'),
+                                              t.stringLiteral('100%')
+                                            )
+                                          ]
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
+                                t.jSXClosingElement(
+                                  t.jSXIdentifier('@material-ui/core.FormControl')
+                                ),
+                                [
+                                  t.jSXExpressionContainer(
+                                    innerElement  // innerElement here
+                                  )
+                                ]
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    ),
+                    t.jSXClosingElement(
+                      t.jSXIdentifier('react-hook-form.Controller'),
+                    ),
+                    []
+                  ),
+                  // <IconButton
+                  //   key="remove"
+                  //   aria-label="Remove"
+                  //   size={props.size}
+                  //   onClick={e => {
+                  //     remove(index)
+                  //     if (!!props.callback) {
+                  //       props.callback()
+                  //     }
+                  //   }}
+                  //   >
+                  //   <RemoveCircleOutline />
+                  // </IconButton>
+                  t.jSXElement(
+                    t.jSXOpeningElement(
+                      t.jSXIdentifier('@material-ui/core.IconButton'),
+                      [
+                        t.jSXAttribute(
+                          t.jSXIdentifier('key'),
+                          t.stringLiteral('remove')
+                        ),
+                        t.jSXAttribute(
+                          t.jSXIdentifier('aria-label'),
+                          t.stringLiteral('Remove')
+                        ),
+                        t.jSXAttribute(
+                          t.jSXIdentifier('size'),
+                          t.jSXExpressionContainer(
+                            t.memberExpression(
+                              t.identifier('props'),
+                              t.identifier('size')
+                            )
+                          )
+                        ),
+                        t.jSXAttribute(
+                          t.jSXIdentifier('onClick'),
+                          t.jSXExpressionContainer(
+                            t.arrowFunctionExpression(
+                              [
+                                t.identifier('e')
+                              ],
+                              t.blockStatement(
+                                [
+                                  t.expressionStatement(
+                                    t.callExpression(
+                                      t.identifier(`${qualifiedName}.useFieldArray.${input.name}.remove`),
+                                      [
+                                        t.identifier('index')
+                                      ]
+                                    )
+                                  ),
+                                  t.ifStatement(
+                                    t.unaryExpression(
+                                      '!',
+                                      t.unaryExpression(
+                                        '!',
+                                        t.memberExpression(
+                                          t.identifier('props'),
+                                          t.identifier('callback')
+                                        )
+                                      )
+                                    ),
+                                    t.expressionStatement(
+                                      t.callExpression(
+                                        t.memberExpression(
+                                          t.identifier('props'),
+                                          t.identifier('callback')
+                                        ),
+                                        []
+                                      )
+                                    )
+                                  )
+                                ]
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    ),
+                    t.jSXClosingElement(
+                      t.jSXIdentifier('@material-ui/core.IconButton')
+                    ),
+                    [
+                      t.jSXElement(
+                        t.jSXOpeningElement(
+                          t.jSXIdentifier('@material-ui/icons.RemoveCircleOutline'),
+                          []
+                        ),
+                        t.jSXClosingElement(
+                          t.jSXIdentifier('@material-ui/icons.RemoveCircleOutline')
+                        ),
+                        []
+                      )
+                    ]
+                  )
+                ]
               )
             )
           ]
         )
+      ),
+      // <IconButton
+      //   key="add"
+      //   aria-label="Add"
+      //   size={props.size}
+      //   onClick={e => {
+      //     append({
+      //       value: '',
+      //     })
+      //   }}
+      //   >
+      //   <AddCircleOutline />
+      // </IconButton>
+      t.jSXElement(
+        t.jSXOpeningElement(
+          t.jSXIdentifier('@material-ui/core.IconButton'),
+          [
+            t.jSXAttribute(
+              t.jSXIdentifier('key'),
+              t.stringLiteral('add')
+            ),
+            t.jSXAttribute(
+              t.jSXIdentifier('aria-label'),
+              t.stringLiteral('Add')
+            ),
+            t.jSXAttribute(
+              t.jSXIdentifier('size'),
+              t.jSXExpressionContainer(
+                t.memberExpression(
+                  t.identifier('props'),
+                  t.identifier('size')
+                )
+              )
+            ),
+            t.jSXAttribute(
+              t.jSXIdentifier('onClick'),
+              t.jSXExpressionContainer(
+                t.arrowFunctionExpression(
+                  [
+                    t.identifier('e')
+                  ],
+                  t.blockStatement(
+                    [
+                      t.expressionStatement(
+                        t.callExpression(
+                          t.identifier(`${qualifiedName}.useFieldArray.${input.name}.append`),
+                          [
+                            t.objectExpression(
+                              [
+                                t.objectProperty(
+                                  t.identifier('value'),
+                                  t.stringLiteral('')
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      )
+                    ]
+                  )
+                )
+              )
+            )
+          ]
+        ),
+        t.jSXClosingElement(
+          t.jSXIdentifier('@material-ui/core.IconButton'),
+        ),
+        [
+          t.jSXElement(
+            t.jSXOpeningElement(
+              t.jSXIdentifier('@material-ui/icons.AddCircleOutline'),
+              []
+            ),
+            t.jSXClosingElement(
+              t.jSXIdentifier('@material-ui/icons.AddCircleOutline')
+            ),
+            []
+          )
+        ]
       )
     ]
   )
 
-  // return (() => {
-  //  const {...} = useFieldArray()
-  //  return <Controller>...</Controller>
-  // })()
-  return t.callExpression(
+  //////////////////////////////////////////////////////////////////////
+  // compute props
+  const propsExpression = (() => {
+    if (!!input.props) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        input.props
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // compute rules
+  const rulesExpression = (() => {
+    if (!!input.rules) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        input.rules
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // set values
+  const setValueExpression = (() => {
+    return t.callExpression(
+      t.identifier(`${qualifiedName}.setValue`),
+      [
+        name,
+        t.memberExpression(
+          t.identifier('props'),
+          t.identifier('defaultValue')
+        )
+      ]
+    )
+  })()
+
+  // return ((props, rules) => <Controller>...</Controller>)()
+  const result = t.callExpression(
     t.arrowFunctionExpression(
-      [],
+      [
+        t.identifier('props'),
+        t.identifier('rules')
+      ],
       t.blockStatement(
         [
           // const {...} = useFieldArray()
           fieldArrayVariables,
+          // const {...} = props
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.objectPattern(
+                  [
+                    t.objectProperty(
+                      t.identifier('type'),
+                      t.identifier('type')
+                    ),
+                    t.objectProperty(
+                      t.identifier('label'),
+                      t.identifier('label')
+                    ),
+                    t.objectProperty(
+                      t.identifier('defaultValue'),
+                      t.identifier('defaultValue')
+                    ),
+                    t.objectProperty(
+                      t.identifier('multiline'),
+                      t.identifier('multiline')
+                    ),
+                    t.objectProperty(
+                      t.identifier('autocomplete'),
+                      t.identifier('autocomplete')
+                    ),
+                    t.objectProperty(
+                      t.identifier('options'),
+                      t.identifier('options')
+                    ),
+                    t.objectProperty(
+                      t.identifier('callback'),
+                      t.identifier('callback')
+                    ),
+                    t.restElement(
+                      t.identifier('restProps')
+                    )
+                  ]
+                ),
+                t.identifier('props')
+              )
+            ]
+          ),
+          // setValue(input.name, props.defaultValue)
+          t.expressionStatement(
+            setValueExpression
+          ),
           //  return <Controller>...</Controller>
           t.returnStatement(
             controlElement
@@ -1881,8 +2157,20 @@ function input_text_array(js_context, input) {
         ]
       )
     ),
-    []
+    [
+      propsExpression,
+      rulesExpression,
+    ]
   )
+
+  // check for JSX_CONTEXT
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      result
+    )
+  } else {
+    return result
+  }
 }
 
 // export

@@ -764,9 +764,6 @@ const SyntaxAddDialog = (props) => {
                             onChange={props.onChange}
                             size="small"
                             options={valid_import_names()}
-                            callback={data => {
-                              setBaseSubmitTimer(new Date())
-                            }}
                           />
                         </FormControl>
                       )
@@ -1315,9 +1312,6 @@ const SyntaxAddDialog = (props) => {
                               onChange={props.onChange}
                               size="small"
                               options={valid_import_names()}
-                              callback={data => {
-                                setBaseSubmitTimer(new Date())
-                              }}
                             />
                           </FormControl>
                         )
@@ -1344,9 +1338,6 @@ const SyntaxAddDialog = (props) => {
                               onChange={props.onChange}
                               size="small"
                               options={valid_html_tags()}
-                              callback={data => {
-                                setBaseSubmitTimer(new Date())
-                              }}
                             />
                           </FormControl>
                         )
@@ -1552,9 +1543,6 @@ const SyntaxAddDialog = (props) => {
                             onChange={props.onChange}
                             size="small"
                             options={valid_import_names()}
-                            callback={data => {
-                              setBaseSubmitTimer(new Date())
-                            }}
                           />
                         </FormControl>
                       )
