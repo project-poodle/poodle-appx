@@ -50,6 +50,8 @@ import {
   tree_lookup,
 } from 'app-x/builder/ui/syntax/util_tree'
 
+let pendingTimer = new Date()
+
 const TestEditor = (props) => {
   // make styles
   const styles = makeStyles((theme) => ({
@@ -158,13 +160,21 @@ const TestEditor = (props) => {
   )
 
   // test submit timer
-  const [ testSubmitTimer, setTestSubmitTimer ] = useState(0)
+  const [ testSubmitTimer,    setTestSubmitTimer  ] = useState(0)
   useEffect(() => {
     if (testSubmitTimer > 0) {
+      setTestDirty(true)
+      pendingTimer = testSubmitTimer
       setTimeout(() => {
-        // console.log(`errors`, errors)
-        handleSubmit(onTestSubmit)()
-      }, 500)
+        const timeDiff = (new Date()).getTime() - pendingTimer.getTime()
+        if (timeDiff < 500) {
+          return  // do not process, just return
+        } else {
+          // console.log(`errors`, errors)
+          // console.log(`onTestSubmit [${pendingTimer.getTime()}]`)
+          handleSubmit(onTestSubmit)()
+        }
+      }, 550)
     }
   }, [testSubmitTimer])
 
@@ -234,6 +244,8 @@ const TestEditor = (props) => {
     )
     // set default value
     setValue('providers', defaultValues)
+    // clear testDirty
+    setTestDirty(false)
   },
   [
     navDeployment,
@@ -241,7 +253,7 @@ const TestEditor = (props) => {
     navRoute,
     navSelected,
     loadTimer,
-    !!testData,
+    testData,
   ])
 
   // submit test data
@@ -312,6 +324,8 @@ const TestEditor = (props) => {
       `Update [test]`,
       resultTestData,
     )
+    // clear test dirty flag
+    setTestDirty(false)
   }
 
   return (
@@ -323,9 +337,10 @@ const TestEditor = (props) => {
               fieldsProvider.map((item, index) => {
                 return (
                   <Box key={item.id} className={styles.contextProvider}>
-                    <FormHelperText>Context Provider</FormHelperText>
+                    <FormHelperText key="title">Context Provider</FormHelperText>
                     <Box key='element' display="flex" className={styles.formControl}>
                       <Controller
+                        key="controller"
                         name={`providers[${index}].name`}
                         control={control}
                         defaultValue={item.name}
@@ -340,9 +355,9 @@ const TestEditor = (props) => {
                         }}
                         render={innerProps =>
                           (
-                            <FormControl className={styles.formControl}>
+                            <FormControl key="formcontrol" className={styles.formControl}>
                               <AutoComplete
-                                key="name"
+                                key={item.id}
                                 name={`providers[${index}].name`}
                                 className={styles.formControl}
                                 value={innerProps.value}

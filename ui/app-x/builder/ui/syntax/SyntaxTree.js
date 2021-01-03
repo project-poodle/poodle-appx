@@ -160,8 +160,8 @@ const SyntaxTree = (props) => {
     // test data
     testData,
     // dirty flags
-    designDirty,
-    setDesignDirty,
+    syntaxDirty,
+    setSyntaxDirty,
     testDirty,
     setTestDirty,
     // common
@@ -1231,7 +1231,7 @@ const SyntaxTree = (props) => {
                     icon={<Save />}
                     shape="circle"
                     onClick={e => { setSaveTrigger(new Date()) }}
-                    danger={designDirty || testDirty}
+                    danger={syntaxDirty}
                     loading={!!saveTrigger}
                     >
                   </AntButton>
@@ -1301,14 +1301,6 @@ const SyntaxTree = (props) => {
             tab={
               <span>
                 Design
-                {
-                  !!designDirty
-                  &&
-                  (
-                    <Asterisk className={styles.asterisk}>
-                    </Asterisk>
-                  )
-                }
               </span>
             }
             key="design"

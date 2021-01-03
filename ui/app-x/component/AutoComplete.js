@@ -76,12 +76,12 @@ const AutoComplete = (props) => {
         name={props.name}
         value={props.value}
         size={props.size}
-        onChange={e => {
-          props.onChange(e.target.value)
-          if (props.callback) {
-            props.callback(e.target.value)
-          }
-        }}
+        //onChange={e => {
+        //  props.onChange(e.target.value)
+        //  if (props.callback) {
+        //    props.callback(e.target.value)
+        //  }
+        //}}
         error={!!_.get(errors, props.name)}
         helperText={_.get(errors, props.name)?.message}
       />

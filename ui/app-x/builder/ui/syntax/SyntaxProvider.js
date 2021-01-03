@@ -15,7 +15,8 @@ const SyntaxProvider = (() => {
     // test data
     const [ testData,           setTestData           ] = useState([])
     // dirty flags
-    const [ designDirty,        setDesignDirty        ] = useState(false)
+    const [ syntaxDirty,        setSyntaxDirty        ] = useState(false)
+    // const [ designDirty,        setDesignDirty        ] = useState(false)
     const [ testDirty,          setTestDirty          ] = useState(false)
     const [ propBaseDirty,      setPropBaseDirty      ] = useState(false)
     const [ propYamlDirty,      setPropYamlDirty      ] = useState(false)
@@ -32,15 +33,18 @@ const SyntaxProvider = (() => {
     })
 
     // update design action
-    const updateDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey) => {
+    const updateDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey, lookupKey) => {
 
       // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
 
-      if (!nodeKey || (updateKey !== nodeKey)) {
-        setUpdateKey(nodeKey)
-        makeDesignAction(action, newTreeData, newExpandedKeys, newSelectedKey)
+      if (!lookupKey || (lookupKey !== updateKey)) {
+        // setUpdateKey(lookupKey)
+        // console.log(`make ${lookupKey} ${updateKey}`)
+        makeDesignAction(action, newTreeData, newExpandedKeys, newSelectedKey, lookupKey)
         return
       }
+
+      // console.log(`update ${lookupKey}`)
 
       // if node key is same as updateKey
       const newHistory = {
@@ -51,9 +55,8 @@ const SyntaxProvider = (() => {
           testData: testData,
           expandedKeys: newExpandedKeys,
           selectedKey: newSelectedKey,
-          updateKey: nodeKey,
-          designDirty: true,
-          testDirty: testDirty,
+          updateKey: lookupKey,
+          syntaxDirty: true,
         },
         redo: _.cloneDeep(history.redo),
       }
@@ -62,10 +65,9 @@ const SyntaxProvider = (() => {
       setTreeData(newTreeData)
       setExpandedKeys(newExpandedKeys)
       setSelectedKey(newSelectedKey)
-      setUpdateKey(nodeKey)
-      setDesignDirty(true)
+      setUpdateKey(lookupKey)
+      setSyntaxDirty(true)
 
-      console.log('here2', newHistory)
       // set history
       setHistory(newHistory)
     }
@@ -90,8 +92,7 @@ const SyntaxProvider = (() => {
           expandedKeys: expandedKeys,
           selectedKey: selectedKey,
           updateKey: '__test',
-          designDirty: designDirty,
-          testDirty: true,
+          syntaxDirty: true,
         },
         redo: _.cloneDeep(history.redo),
       }
@@ -99,7 +100,7 @@ const SyntaxProvider = (() => {
       // update state from record
       setTestData(newTestData)
       setUpdateKey('__test')
-      setTestDirty(true)
+      setSyntaxDirty(true)
 
       // set history
       setHistory(newHistory)
@@ -119,8 +120,7 @@ const SyntaxProvider = (() => {
           expandedKeys: newExpandedKeys,
           selectedKey: newSelectedKey,
           updateKey: null,
-          designDirty: false,
-          testDirty: false,
+          syntaxDirty: false,
         },
         redo: [],
       }
@@ -131,8 +131,7 @@ const SyntaxProvider = (() => {
       setExpandedKeys(newExpandedKeys)
       setSelectedKey(newSelectedKey)
       setUpdateKey(null)
-      setDesignDirty(false)
-      setTestDirty(false)
+      setSyntaxDirty(false)
 
       // set history
       setHistory(newHistory)
@@ -140,7 +139,9 @@ const SyntaxProvider = (() => {
     }
 
     // make design action
-    const makeDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey) => {
+    const makeDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey, lookupKey) => {
+
+      // console.log(`makeDesignAction`)
 
       // keep the record
       const record = {
@@ -149,9 +150,8 @@ const SyntaxProvider = (() => {
         testData: testData,
         expandedKeys: !!newExpandedKeys ? newExpandedKeys : expandedKeys,
         selectedKey: !!newSelectedKey ? newSelectedKey : selectedKey,
-        updateKey: null,
-        designDirty: true,
-        testDirty: testDirty,
+        updateKey: lookupKey,
+        syntaxDirty: true,
       }
 
       // keep history record, clear redo buffer
@@ -172,8 +172,8 @@ const SyntaxProvider = (() => {
       setTreeData(record.treeData)
       setExpandedKeys(record.expandedKeys)
       setSelectedKey(record.selectedKey)
-      setUpdateKey(null)
-      setDesignDirty(true)
+      setUpdateKey(lookupKey)
+      setSyntaxDirty(true)
 
       // console.log(newHistory)
       // set history
@@ -191,8 +191,7 @@ const SyntaxProvider = (() => {
         expandedKeys: expandedKeys,
         selectedKey: selectedKey,
         updateKey: '__test',
-        designDirty: designDirty,
-        testDirty: true,
+        syntaxDirty: true,
       }
 
       // keep history record, clear redo buffer
@@ -211,10 +210,10 @@ const SyntaxProvider = (() => {
 
       // update state from action
       setTestData(record.testData)
-      setUpdateKey(null)
-      setTestDirty(true)
+      setUpdateKey('__test')
+      setSyntaxDirty(true)
 
-      console.log(newHistory)
+      // console.log(newHistory)
       // set history
       setHistory(newHistory)
     }
@@ -243,8 +242,7 @@ const SyntaxProvider = (() => {
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
         setUpdateKey(record.updateKey)
-        setDesignDirty(record.designDirty)
-        setTestDirty(record.testDirty)
+        setSyntaxDirty(record.syntaxDirty)
 
         // set history
         setHistory(newHistory)
@@ -275,8 +273,7 @@ const SyntaxProvider = (() => {
         setExpandedKeys(record.expandedKeys)
         setSelectedKey(record.selectedKey)
         setUpdateKey(record.updateKey)
-        setDesignDirty(record.designDirty)
-        setTestDirty(record.testDirty)
+        setSyntaxDirty(record.syntaxDirty)
 
         // set history
         setHistory(newHistory)
@@ -295,8 +292,8 @@ const SyntaxProvider = (() => {
           // test data
           testData,
           // dirty flags
-          designDirty,
-          setDesignDirty,
+          syntaxDirty,
+          setSyntaxDirty,
           testDirty,
           setTestDirty,
           propBaseDirty,

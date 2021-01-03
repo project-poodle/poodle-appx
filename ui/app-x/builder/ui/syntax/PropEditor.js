@@ -57,6 +57,7 @@ import {
   gen_js,
 } from 'app-x/builder/ui/syntax/util_tree'
 
+let pendingTimer = new Date()
 
 const PropEditor = (props) => {
   // make styles
@@ -266,12 +267,18 @@ const PropEditor = (props) => {
   ])
 
   // base submit timer
-  const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())
+  const [ baseSubmitTimer,  setBaseSubmitTimer  ] = useState(new Date())
   useEffect(() => {
     setPropBaseDirty(true)
+    pendingTimer = baseSubmitTimer
     setTimeout(() => {
-      handleSubmit(onBaseSubmit)()
-    }, 300)
+      const timeDiff = (new Date()).getTime() - pendingTimer.getTime()
+      if (timeDiff < 500) {
+        return  // do not process, just return
+      } else {
+        handleSubmit(onBaseSubmit)()
+      }
+    }, 550)
   }, [baseSubmitTimer])
 
   // submit base tab
