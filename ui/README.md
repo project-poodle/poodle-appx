@@ -52,40 +52,31 @@
 
     - type: input/text
       name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      inputType:                # text, mnumber, password, email, tel, url, search, date, time, datetime-local
-      multiline:                # allow multiline
-      autocomplete:             # true or false
-      options:                  # options { value: v, render: r }
-      rules:                    # input rules
       array:                    # whether this control is an array
-                                # TODO : allowNull
-      callback:                 # callback function when value change
+      rules:                    # input rules
       props:                    # properties
+        type:                   # text, number, password, email, tel, url, search, date, time, datetime-local
+        label:                  # input label
+        defaultValue:           # default value
+        multiline:              # allow multiline
+        autocomplete:           # true or false
+        options:                # options { value: v, render: r }
+        callback:               # callback function when value change
+                                # TODO : allowNull
 
     - type: input/select
       name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      options:                  # options { value: v, render: r }
       rules:                    # input rules
-      callback:                 # callback function when value change
       props:                    # properties
+        label:                  # input label
+        defaultValue:           # default value
+        options:                # options { value: v, render: r }
+        callback:               # callback function when value change
 
     - type: input/switch
       name:                     # name of input
       label:                    # input label
       defaultValue:             # default value
-      rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
-
-    - type: input/radio
-      name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      options:                  # options { value: v, render: r }
       rules:                    # input rules
       callback:                 # callback function when value change
       props:                    # properties

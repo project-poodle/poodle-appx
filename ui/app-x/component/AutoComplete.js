@@ -60,7 +60,6 @@ const AutoComplete = (props) => {
               key="autocomplete"
               options={options}
               value={innerProps.value}
-              size={props.size}
               onChange={data => {
                 innerProps.onChange(data)
                 if (props.callback) {

@@ -113,10 +113,32 @@ function _js_parse_snippet(js_context, parsed) {
   return parsed
 }
 
+// parse user code snippet
+function _js_parse_statements(js_context, data, options) {
+
+  try {
+
+    const program = parse(data, options)
+
+    // parse user code snippet
+    _js_parse_snippet(js_context, program)
+
+    return t.blockStatement(
+      program.program.body
+    )
+
+  } catch (err) {
+
+    console.log(`_js_parse_statements error [${data}]`)
+    throw err
+  }
+}
+
 // parse expression with support of '$r' syntax
 function _js_parse_expression(js_context, data) {
 
   try {
+    // console.log(`_js_parse_expression`, data)
     const parsed = parseExpression(data)
 
     // parse user code snippet
@@ -137,7 +159,7 @@ function _js_parse_expression(js_context, data) {
 
   } catch (err) {
 
-    // console.log(data)
+    console.log(`_js_parse_expression error [${data}]`)
     throw err
   }
 }
@@ -302,6 +324,8 @@ function reg_react_form(js_context, name, qualifiedName, formProps) {
     qualifiedName: qualifiedName,
     formProps: formProps,
   }
+
+  // console.log(`reg_react_form`, js_context.forms)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -433,7 +457,8 @@ module.exports = {
   reg_react_state,
   reg_react_form,
   js_resolve_ids,
-  _js_parse_snippet,
+  // _js_parse_snippet,
+  _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,
 }

@@ -1347,8 +1347,8 @@ function parse_react_form(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('name' in input)) {
-    throw new Error(`ERROR: input.name missing in [react/form] [${JSON.stringify(input)}]`)
+  if (!input.name) {
+    throw new Error(`ERROR: input.name not set in [react/form] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
@@ -1365,7 +1365,64 @@ function parse_react_form(js_context, parentKey, ref, input) {
     lookup_icon_for_input(input),
     data,
     parentKey,
-    true)
+    false)
+
+  // expand react html by default
+  js_context.expandedKeys.push(node.key)
+
+  // add input.props if exist
+  if (!!input.props) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'props',
+        input.props
+      )
+    )
+  }
+
+  // add input.formProps if exist
+  if (!!input.formProps) {
+    node.children.push(
+      parse_js(
+        {
+          ...js_context,
+          topLevel: false,
+        },
+        node.key,
+        'formProps',
+        input.formProps
+      )
+    )
+  }
+
+  // add input.children
+  if (!!input.children) {
+    if (!Array.isArray(input.children)) {
+      throw new Error(`ERROR: input.children is not Array [${typeof input.children}]`)
+    }
+
+    input.children.map(child => {
+      node.children.push(
+        parse_js(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          node.key,
+          null,
+          child
+        )
+      )
+    })
+  }
+
+  // reorder
+  reorder_children(node)
 
   return node
 }
@@ -1639,6 +1696,20 @@ function parse_js(js_context, parentKey, ref, input) {
 
     throw new Error(`ERROR: unrecognized input.type [${input.type}] [${JSON.stringify(input)}]`)
   }
+}
+
+const api_methods = [
+  'get',
+  'post',
+  'put',
+  'delete',
+  'head',
+  'patch',
+]
+
+// return a list of valid html tags
+function valid_api_methods() {
+  return api_methods
 }
 
 // https://html.spec.whatwg.org/#elements-3
@@ -2426,12 +2497,19 @@ const reorder_children = (parentNode) => {
     parentNode.children = children
 
   } else if (parentNode.data.type === 'react/element'
-            || parentNode.data.type === 'react/html') {
+            || parentNode.data.type === 'react/html'
+            || parentNode.data.type === 'react/form') {
 
     const children = []
     // add __ref === 'props'
     parentNode.children
       .filter(child => child.data.__ref === 'props')
+      .map(child => {
+        children.push(child)
+      })
+    // add __ref === 'props'
+    parentNode.children
+      .filter(child => child.data.__ref === 'formProps')
       .map(child => {
         children.push(child)
       })
@@ -2519,6 +2597,7 @@ export {
   lookup_valid_child_types,
   lookup_classname_by_type,
   lookup_type_by_classname,
+  valid_api_methods,
   valid_import_names,
   valid_html_tags,
   reorder_children,

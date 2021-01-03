@@ -44,6 +44,7 @@ import {
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
+  valid_api_methods,
   valid_import_names,
   valid_html_tags,
   reorder_children,
@@ -129,8 +130,6 @@ const PropEditor = (props) => {
   const [ treeNode,             setTreeNode             ] = useState(null)
   const [ parentNode,           setParentNode           ] = useState(null)
   const [ isSwitchDefault,      setSwitchDefault        ] = useState(props.isSwitchDefault)
-  // properties and otherNames for js/object, react/element, and react/html
-  const [ otherNames,           setOtherNames           ] = useState([])
 
   // react hook form
   const hookForm = useForm({
@@ -220,6 +219,185 @@ const PropEditor = (props) => {
     selectedKey
   ])
 
+  // set form props for refKey
+  function _set_form_props(treeNode, refKey) {
+    // get proper children
+    const children =
+      treeNode.data.type === 'js/object'
+      ? treeNode.children
+      : lookup_child_by_ref(treeNode, refKey)?.children
+    // keep a list of props and other names
+    const props = []
+    const others = []
+    children?.map(child => {
+      if (child.data.type === 'js/null')
+      {
+        props.push({
+          type: child.data.type,
+          name: child.data.__ref,
+          value: null,
+        })
+      }
+      else if
+      (
+        child.data.type === 'js/string'
+        || child.data.type === 'js/number'
+        || child.data.type === 'js/boolean'
+        || child.data.type === 'js/expression'
+      ) {
+        props.push({
+          type: child.data.type,
+          name: child.data.__ref,
+          value: child.data.data,
+        })
+      }
+      else if (child.data.type === 'js/import')
+      {
+        props.push({
+          type: child.data.type,
+          name: child.data.__ref,
+          value: child.data.name,
+        })
+      }
+      else
+      {
+        others.push(child.data.__ref)
+      }
+    })
+    // console.log(`setProperties`, props, others)
+    setValue(`__${refKey}`, props)
+    setValue(`__${refKey}_otherNames`, others)
+  }
+
+  // process props for childParent
+  function _process_childParent_props(childParent, properties) {
+    // console.log(`properties`, properties)
+    properties.map(child => {
+      const childNode = lookup_child_by_ref(childParent, child.name)
+      if (!!childNode)
+      {
+        // found child node, reuse existing key
+        if (child.type === 'js/null')
+        {
+          childNode.data.__ref = child.name
+          childNode.data.type = child.type
+          childNode.data.data = null
+          childNode.title = lookup_title_for_input(child.name, childNode.data)
+          childNode.icon = lookup_icon_for_input(childNode.data)
+        }
+        else if (child.type === 'js/string'
+                || child.type === 'js/number'
+                || child.type === 'js/boolean'
+                || child.type === 'js/expression')
+        {
+          childNode.data.__ref = child.name
+          childNode.data.type = child.type
+          childNode.data.data = child.value
+          childNode.title = lookup_title_for_input(child.name, childNode.data)
+          childNode.icon = lookup_icon_for_input(childNode.data)
+        }
+        else if (child.type === 'js/import')
+        {
+          childNode.data.__ref = child.name
+          childNode.data.type = child.type
+          childNode.data.name = child.value
+          childNode.title = lookup_title_for_input(child.name, childNode.data)
+          childNode.icon = lookup_icon_for_input(childNode.data)
+        }
+        else
+        {
+          throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+        }
+      }
+      else
+      {
+        // no child node, create new child node
+        if (child.type === 'js/null'
+            || child.type === 'js/string'
+            || child.type === 'js/number'
+            || child.type === 'js/boolean')
+        {
+          const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
+          childParent.children.push(newChildNode)
+          // update child title and icon
+          newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+          newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+        }
+        else if (child.type === 'js/expression')
+        {
+          const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
+          childParent.children.push(newChildNode)
+          // update child title and icon
+          newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+          newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+        }
+        else if (child.type === 'js/import')
+        {
+          const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
+          childParent.children.push(newChildNode)
+          // update child title and icon
+          newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+          newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+        }
+        else
+        {
+          throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+        }
+      }
+    })
+    ////////////////////////////////////////
+    // remove any primitive child
+    childParent.children = childParent.children.filter(child => {
+      if (child.data.type === 'js/null'
+          || child.data.type === 'js/string'
+          || child.data.type === 'js/number'
+          || child.data.type === 'js/boolean'
+          || child.data.type === 'js/expression'
+          || child.data.type === 'js/import')
+      {
+        const found = properties.find(prop => prop.name === child.data.__ref)
+        return found
+      }
+      else
+      {
+        return true
+      }
+    })
+  }
+
+  // process props
+  function _process_props(lookupNode, refKey) {
+    // add props child if exist
+    if (lookupNode.data.type !== 'js/object')
+    {
+      const propChild = lookup_child_by_ref(lookupNode, refKey)
+      if (!propChild) {
+        // add props if not exist
+        lookupNode.children.push(parse_js_object({}, lookupNode.key, refKey, {}))
+      }
+    }
+    // lookup childParent node
+    const childParent =
+      lookupNode.data.type === 'js/object'
+      ? lookupNode
+      : lookup_child_by_ref(lookupNode, refKey)
+    // add child properties as proper childNode (replace existing or add new)
+    const properties = _.get(getValues(), `__${refKey}`) || []
+    // process childParent props
+    _process_childParent_props(childParent, properties)
+    ////////////////////////////////////////
+    // if lookupNode is react/element or react/html, remove empty props
+    if (lookupNode.data.type !== 'js/object')
+    {
+      if (!childParent.children.length) {
+        remove_child_by_ref(lookupNode, refKey)
+      }
+    }
+    // reorder children
+    reorder_children(childParent)
+    reorder_children(lookupNode)
+  }
+
   // setValue when treeNode change
   useEffect(() => {
     if (!!treeNode) {
@@ -242,53 +420,19 @@ const PropEditor = (props) => {
         treeNode.data.type === 'js/object'
         || treeNode.data.type === 'react/element'
         || treeNode.data.type === 'react/html'
+        || treeNode.data.type === 'react/form'
+        || treeNode.data.type === 'input/text'
       )
       {
-        const children =
-          treeNode.data.type === 'js/object'
-          ? treeNode.children
-          : lookup_child_by_ref(treeNode, 'props')?.children
-        // keep a list of properties and other names
-        const props = []
-        const others = []
-        children?.map(child => {
-          if (child.data.type === 'js/null')
-          {
-            props.push({
-              type: child.data.type,
-              name: child.data.__ref,
-              value: null,
-            })
-          }
-          else if
-          (
-            child.data.type === 'js/string'
-            || child.data.type === 'js/number'
-            || child.data.type === 'js/boolean'
-            || child.data.type === 'js/expression'
-          ) {
-            props.push({
-              type: child.data.type,
-              name: child.data.__ref,
-              value: child.data.data,
-            })
-          }
-          else if (child.data.type === 'js/import')
-          {
-            props.push({
-              type: child.data.type,
-              name: child.data.__ref,
-              value: child.data.name,
-            })
-          }
-          else
-          {
-            others.push(child.data.__ref)
-          }
-        })
-        // console.log(`setProperties`, props, others)
-        setValue(`__props`, props)
-        setOtherNames(others)
+        _set_form_props(treeNode, 'props')
+      }
+      // set form properties
+      if
+      (
+        treeNode.data.type === 'react/form'
+      )
+      {
+        _set_form_props(treeNode, 'formProps')
       }
       // just loaded, set dirty to false
       setPropBaseDirty(false)
@@ -314,6 +458,7 @@ const PropEditor = (props) => {
     const lookupNode = tree_lookup(resultTree, selectedKey)
     if (!lookupNode) {
       setPropBaseDirty(false)
+      return
     }
 
     // console.log(data)
@@ -347,132 +492,19 @@ const PropEditor = (props) => {
     lookupNode.icon = lookup_icon_for_input(data)
     // console.log(lookupNode)
     //////////////////////////////////////////////////////////////////////
-    // handle properties
+    // handle 'props'
     if (lookupNode.data.type === 'js/object'
         || lookupNode.data.type === 'react/element'
-        || lookupNode.data.type === 'react/html')
+        || lookupNode.data.type === 'react/html'
+        || lookupNode.data.type === 'react/form'
+        || lookupNode.data.type === 'input/text')
     {
-      // add props child if exist
-      if (lookupNode.data.type === 'react/element'
-          || lookupNode.data.type === 'react/html')
-      {
-        const propChild = lookup_child_by_ref(lookupNode, 'props')
-        if (!propChild) {
-          // add props if not exist
-          lookupNode.children.push(parse_js_object({}, lookupNode.key, 'props', {}))
-        }
-      }
-      // lookup childParent node
-      const childParent =
-        lookupNode.data.type === 'js/object'
-        ? lookupNode
-        : lookup_child_by_ref(lookupNode, 'props')
-      // add child properties as proper childNode (replace existing or add new)
-      const properties = _.get(getValues(), '__props') || []
-      // console.log(`properties`, properties)
-      properties.map(child => {
-        const childNode = lookup_child_by_ref(childParent, child.name)
-        if (!!childNode)
-        {
-          // found child node, reuse existing key
-          if (child.type === 'js/null')
-          {
-            childNode.data.__ref = child.name
-            childNode.data.type = child.type
-            childNode.data.data = null
-            childNode.title = lookup_title_for_input(child.name, childNode.data)
-            childNode.icon = lookup_icon_for_input(childNode.data)
-          }
-          else if (child.type === 'js/string'
-                  || child.type === 'js/number'
-                  || child.type === 'js/boolean'
-                  || child.type === 'js/expression')
-          {
-            childNode.data.__ref = child.name
-            childNode.data.type = child.type
-            childNode.data.data = child.value
-            childNode.title = lookup_title_for_input(child.name, childNode.data)
-            childNode.icon = lookup_icon_for_input(childNode.data)
-          }
-          else if (child.type === 'js/import')
-          {
-            childNode.data.__ref = child.name
-            childNode.data.type = child.type
-            childNode.data.name = child.value
-            childNode.title = lookup_title_for_input(child.name, childNode.data)
-            childNode.icon = lookup_icon_for_input(childNode.data)
-          }
-          else
-          {
-            throw new Error(`ERROR: unrecognized child type [${child.type}]`)
-          }
-        }
-        else
-        {
-          // no child node, create new child node
-          if (child.type === 'js/null'
-              || child.type === 'js/string'
-              || child.type === 'js/number'
-              || child.type === 'js/boolean')
-          {
-            const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
-            childParent.children.push(newChildNode)
-            // update child title and icon
-            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-          }
-          else if (child.type === 'js/expression')
-          {
-            const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
-            childParent.children.push(newChildNode)
-            // update child title and icon
-            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-          }
-          else if (child.type === 'js/import')
-          {
-            const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
-            childParent.children.push(newChildNode)
-            // update child title and icon
-            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-          }
-          else
-          {
-            throw new Error(`ERROR: unrecognized child type [${child.type}]`)
-          }
-        }
-      })
-      ////////////////////////////////////////
-      // remove any primitive child
-      childParent.children = childParent.children.filter(child => {
-        if (child.data.type === 'js/null'
-            || child.data.type === 'js/string'
-            || child.data.type === 'js/number'
-            || child.data.type === 'js/boolean'
-            || child.data.type === 'js/expression'
-            || child.data.type === 'js/import')
-        {
-          const found = properties.find(prop => prop.name === child.data.__ref)
-          return found
-        }
-        else
-        {
-          return true
-        }
-      })
-      ////////////////////////////////////////
-      // if lookupNode is react/element or react/html, remove empty props
-      if (lookupNode.data.type === 'react/element'
-          || lookupNode.data.type === 'react/html')
-      {
-        if (!childParent.children.length) {
-          remove_child_by_ref(lookupNode, 'props')
-        }
-      }
-      // reorder children
-      reorder_children(childParent)
-      reorder_children(lookupNode)
+      _process_props(lookupNode, 'props')
+    }
+    // handle 'formProps'
+    if (lookupNode.data.type === 'react/form')
+    {
+      _process_props(lookupNode, 'formProps')
     }
     // setTreeData(resultTree)
     updateDesignAction(
@@ -1789,6 +1821,76 @@ const PropEditor = (props) => {
                 )
               }
               {
+                (treeNode && treeNode.data && nodeType === 'react/context')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              size="small"
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="react/context">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/context') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/context
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="name"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Context name is required",
+                        validate: {
+                          valid_name: value => (
+                            valid_import_names().includes(value)
+                            || "Must use a valid name"
+                          )
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <AutoComplete
+                            className={styles.formControl}
+                            name="name"
+                            label="Context Name"
+                            options={valid_import_names()}
+                            defaultValue={treeNode?.data?.name}
+                            callback={data => {
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
                 (treeNode && treeNode.data && nodeType === 'react/effect')
                 &&
                 (
@@ -1894,6 +1996,260 @@ const PropEditor = (props) => {
                 )
               }
               {
+                (treeNode && treeNode.data && nodeType === 'react/form')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              size="small"
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="react/form">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('react/form') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  react/form
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="name"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Form name is required",
+                        pattern: {
+                          value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                          message: 'Form name must be a valid variable name',
+                        },
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Form Name"
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.name}
+                              helperText={errors.name?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="onSubmit"
+                      control={control}
+                      defaultValue={treeNode?.data?.init}
+                      rules={{
+                        validate: {
+                          validSyntax: value => {
+                            if (!value) {
+                              return true
+                            }
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="onSubmit"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.onSubmit}
+                              helperText={errors.onSubmit?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="onError"
+                      control={control}
+                      defaultValue={treeNode?.data?.init}
+                      rules={{
+                        validate: {
+                          validSyntax: value => {
+                            if (!value) {
+                              return true
+                            }
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="onError"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.onError}
+                              helperText={errors.onError?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType === 'input/text')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              size="small"
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="input/text">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('input/text') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  input/text
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      key="name"
+                      name="name"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Input name is required",
+                        pattern: {
+                          value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                          message: 'Input name must be a valid variable name',
+                        },
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Input Name"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.name}
+                              helperText={errors.name?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      control={control}
+                      key='array'
+                      name='array'
+                      type="boolean"
+                      defaultValue={!treeNode?.data?.__ref?.startsWith('...')}
+                      render={props =>
+                        (
+                          <FormControl
+                            className={styles.formControl}
+                            error={!!errors.array}
+                            >
+                            <FormHelperText>Is Array</FormHelperText>
+                            <Switch
+                              name={props.name}
+                              checked={props.value}
+                              onChange={e => {
+                                props.onChange(e.target.checked)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                            />
+                            {
+                              !!errors.array
+                              &&
+                              <FormHelperText>{errors.array?.message}</FormHelperText>
+                            }
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
                 (treeNode && treeNode.data && nodeType === 'mui/style')
                 &&
                 (
@@ -1928,6 +2284,301 @@ const PropEditor = (props) => {
                                 </Typography>
                               </MenuItem>
                             </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                  </Box>
+                )
+              }
+              {
+                (treeNode && treeNode.data && nodeType === 'appx/api')
+                &&
+                (
+                  <Box>
+                    <Controller
+                      name="type"
+                      control={control}
+                      defaultValue={nodeType}
+                      rules={{
+                        required: 'Type is required',
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Type"
+                              select={true}
+                              value={props.value}
+                              size="small"
+                              onChange={e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              >
+                              <MenuItem value="appx/api">
+                                <ListItemIcon>
+                                  { lookup_icon_for_type('appx/api') }
+                                </ListItemIcon>
+                                <Typography variant="inherit" noWrap={true}>
+                                  appx/api
+                                </Typography>
+                              </MenuItem>
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      key="namespace"
+                      name="namespace"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Namespace is required",
+                        pattern: {
+                          value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                          message: 'Namespace must be a valid variable name',
+                        },
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Namespace"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.namespace}
+                              helperText={errors.namespace?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      key="app_name"
+                      name="app_name"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "App name is required",
+                        pattern: {
+                          value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                          message: 'App name must be a valid variable name',
+                        },
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="App Name"
+                              multiline={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.app_name}
+                              helperText={errors.app_name?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      key="method"
+                      name="method"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Method is required",
+                        validate: {
+                          validMethod: value =>
+                            valid_api_methods.includes(value)
+                            || "Must be a valid method"
+                        },
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Method"
+                              select={true}
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.method}
+                              helperText={errors.method?.message}
+                            >
+                            {
+                              valid_api_methods.map(method => (
+                                <MenuItem key={method} value={method}>
+                                  { method.toUpperCase() }
+                                </MenuItem>
+                              ))
+                            }
+                            </TextField>
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      key="endpoint"
+                      name="endpoint"
+                      control={control}
+                      defaultValue={treeNode?.data?.name}
+                      rules={{
+                        required: "Endpoint is required",
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Endpoint"
+                              name={props.name}
+                              value={props.value}
+                              size="small"
+                              onChange={ e => {
+                                props.onChange(e.target.value)
+                                setBaseSubmitTimer(new Date())
+                              }}
+                              error={!!errors.endpoint}
+                              helperText={errors.endpoint?.message}
+                            />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="prep"
+                      control={control}
+                      defaultValue={treeNode?.data?.prep}
+                      rules={{
+                        validate: {
+                          syntax: value => {
+                            try {
+                              parse(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Init Code"
+                              multiline={true}
+                              onChange={props.onChange}
+                              value={props.value}
+                              error={!!errors.prep}
+                              helperText={errors.prep?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="data"
+                      control={control}
+                      defaultValue={treeNode?.data?.data}
+                      rules={{
+                        validate: {
+                          syntax: value => {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Data"
+                              onChange={props.onChange}
+                              value={props.value}
+                              error={!!errors.data}
+                              helperText={errors.data?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="result"
+                      control={control}
+                      defaultValue={treeNode?.data?.result}
+                      rules={{
+                        validate: {
+                          syntax: value => {
+                            try {
+                              parse(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Result Handler"
+                              onChange={props.onChange}
+                              value={props.value}
+                              error={!!errors.result}
+                              helperText={errors.result?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                    <Controller
+                      name="error"
+                      control={control}
+                      defaultValue={treeNode?.data?.error}
+                      rules={{
+                        validate: {
+                          syntax: value => {
+                            try {
+                              parse(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label="Error Handler"
+                              onChange={props.onChange}
+                              value={props.value}
+                              error={!!errors.error}
+                              helperText={errors.error?.message}
+                              />
                           </FormControl>
                         )
                       }
@@ -1986,6 +2637,8 @@ const PropEditor = (props) => {
                     nodeType === 'js/object'
                     || nodeType === 'react/element'
                     || nodeType === 'react/html'
+                    || nodeType === 'react/form'
+                    || nodeType === 'input/text'
                   )
                 )
                 &&
@@ -1997,7 +2650,35 @@ const PropEditor = (props) => {
                       name={`__props`}
                       label="Properties"
                       defaultValue={[]}
-                      otherNames={otherNames}
+                      otherNames={watch(`__props_otherNames`)}
+                      className={styles.formControl}
+                      callback={d => {
+                        // console.log(`callback`)
+                        setBaseSubmitTimer(new Date())
+                      }}
+                    />
+                  </Box>
+                )
+              }
+              {
+                (
+                  !!treeNode
+                  && !!treeNode.data
+                  &&
+                  (
+                    nodeType === 'react/form'
+                  )
+                )
+                &&
+                (
+                  <Box
+                    className={styles.properties}
+                    >
+                    <PropFieldArray
+                      name={`__formProps`}
+                      label="Form Properties"
+                      defaultValue={[]}
+                      otherNames={watch(`__formProps_otherNames`)}
                       className={styles.formControl}
                       callback={d => {
                         // console.log(`callback`)

@@ -51,6 +51,7 @@ import {
   parse_js,
   lookup_icon_for_type,
   lookup_title_for_input,
+  valid_api_methods,
   valid_import_names,
   valid_html_tags,
 } from 'app-x/builder/ui/syntax/util_parse'
@@ -1415,6 +1416,82 @@ const SyntaxAddDialog = (props) => {
               )
             }
             {
+              (!!nodeType && nodeType == 'react/context')
+              &&
+              (
+                <Box>
+                  <Controller
+                    name="type"
+                    control={control}
+                    defaultValue={nodeType}
+                    rules={{
+                      required: "Type is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Type"
+                            select={true}
+                            onChange={
+                              e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e)
+                              }
+                            }
+                            value={props.value}
+                            error={!!errors.type}
+                            helperText={errors.type?.message}
+                            >
+                            <MenuItem value="react/context">
+                              <ListItemIcon>
+                                { lookup_icon_for_type('react/context') }
+                              </ListItemIcon>
+                              <Typography variant="inherit" noWrap={true}>
+                                react/context
+                              </Typography>
+                            </MenuItem>
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="name"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Name is required",
+                      pattern: {
+                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                        message: "Name must be valid variable name"
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <AutoComplete
+                          className={styles.formControl}
+                          name="name"
+                          label="Context Name"
+                          options={valid_import_names()}
+                          defaultValue=''
+                          rules={{
+                            required: "Context name is required",
+                            validate: {
+                              valid_name: value => (
+                                valid_import_names().includes(value)
+                                || "Must use a valid name"
+                              )
+                            }
+                          }}
+                        />
+                      )
+                    }
+                  />
+                </Box>
+              )
+            }
+            {
               (!!nodeType && nodeType == 'react/effect')
               &&
               (
@@ -1516,6 +1593,233 @@ const SyntaxAddDialog = (props) => {
               )
             }
             {
+              (!!nodeType && nodeType == 'react/form')
+              &&
+              (
+                <Box>
+                  <Controller
+                    name="type"
+                    control={control}
+                    defaultValue={nodeType}
+                    rules={{
+                      required: "Type is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Type"
+                            select={true}
+                            onChange={
+                              e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e)
+                              }
+                            }
+                            value={props.value}
+                            error={!!errors.type}
+                            helperText={errors.type?.message}
+                            >
+                            <MenuItem value="react/form">
+                              <ListItemIcon>
+                                { lookup_icon_for_type('react/form') }
+                              </ListItemIcon>
+                              <Typography variant="inherit" noWrap={true}>
+                                react/form
+                              </Typography>
+                            </MenuItem>
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="name"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Form name is required",
+                      pattern: {
+                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                        message: "Form name must be valid variable name"
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Form Name"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="onSubmit"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        validSyntax: value => {
+                          if (value) {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="onSubmit"
+                            multiline={true}
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.onSubmit}
+                            helperText={errors.onSubmit?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="onError"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        validSyntax: value => {
+                          if (value) {
+                            try {
+                              parseExpression(String(value))
+                              return true
+                            } catch (err) {
+                              return String(err)
+                            }
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="onError"
+                            multiline={true}
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.onError}
+                            helperText={errors.onError?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                </Box>
+              )
+            }
+            {
+              (!!nodeType && nodeType == 'input/text')
+              &&
+              (
+                <Box>
+                  <Controller
+                    name="type"
+                    control={control}
+                    defaultValue={nodeType}
+                    rules={{
+                      required: "Type is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Type"
+                            select={true}
+                            onChange={
+                              e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e)
+                              }
+                            }
+                            value={props.value}
+                            error={!!errors.type}
+                            helperText={errors.type?.message}
+                            >
+                            <MenuItem value="input/text">
+                              <ListItemIcon>
+                                { lookup_icon_for_type('input/text') }
+                              </ListItemIcon>
+                              <Typography variant="inherit" noWrap={true}>
+                                input/text
+                              </Typography>
+                            </MenuItem>
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="name"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Input name is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Input Name"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="array"
+                    control={control}
+                    defaultValue={false}
+                    render={props =>
+                      (
+                        <FormControl
+                          className={styles.formControl}
+                          error={!!errors.array}
+                          >
+                          <FormHelperText>Is Array</FormHelperText>
+                          <Switch
+                            name={props.name}
+                            checked={props.value}
+                            onChange={e => {
+                              props.onChange(e.target.checked)
+                            }}
+                          />
+                          {
+                            !!errors.array
+                            &&
+                            <FormHelperText>{errors.array?.message}</FormHelperText>
+                          }
+                        </FormControl>
+                      )
+                    }
+                  />
+                </Box>
+              )
+            }
+            {
               (!!nodeType && nodeType == 'mui/style')
               &&
               (
@@ -1552,6 +1856,276 @@ const SyntaxAddDialog = (props) => {
                               </Typography>
                             </MenuItem>
                           </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                </Box>
+              )
+            }
+            {
+              (!!nodeType && nodeType == 'appx/api')
+              &&
+              (
+                <Box>
+                  <Controller
+                    name="type"
+                    control={control}
+                    defaultValue={nodeType}
+                    rules={{
+                      required: "Type is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Type"
+                            select={true}
+                            onChange={
+                              e => {
+                                setNodeType(e.target.value)
+                                props.onChange(e)
+                              }
+                            }
+                            value={props.value}
+                            error={!!errors.type}
+                            helperText={errors.type?.message}
+                            >
+                            <MenuItem value="appx/api">
+                              <ListItemIcon>
+                                { lookup_icon_for_type('appx/api') }
+                              </ListItemIcon>
+                              <Typography variant="inherit" noWrap={true}>
+                                appx/api
+                              </Typography>
+                            </MenuItem>
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="namespace"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Namespace is required",
+                      pattern: {
+                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                        message: "Namespace must be valid variable name"
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Namespace"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.namespace}
+                            helperText={errors.namespace?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="app_name"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "App name is required",
+                      pattern: {
+                        value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
+                        message: "App name must be valid variable name"
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="App Name"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.app_name}
+                            helperText={errors.app_name?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="method"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Method is required",
+                      validate: {
+                        validMethod: value =>
+                          valid_api_methods.includes(value)
+                          || "Must be a valid method"
+                      },
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Method"
+                            select={true}
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.method}
+                            helperText={errors.method?.message}
+                            >
+                            {
+                              valid_api_methods.map(method => (
+                                <MenuItem key={method} value={method}>
+                                  { method.toUpperCase() }
+                                </MenuItem>
+                              ))
+                            }
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="endpoint"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      required: "Endpoint is required",
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Endpoint"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.endpoint}
+                            helperText={errors.endpoint?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="prep"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        syntax: value => {
+                          try {
+                            parse(String(value))
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Init Code"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.prep}
+                            helperText={errors.prep?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="data"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        syntax: value => {
+                          try {
+                            parseExpression(String(value))
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Data"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.data}
+                            helperText={errors.data?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="result"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        syntax: value => {
+                          try {
+                            parse(String(value))
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Result Handler"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.result}
+                            helperText={errors.result?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                  <Controller
+                    name="error"
+                    control={control}
+                    defaultValue=''
+                    rules={{
+                      validate: {
+                        syntax: value => {
+                          try {
+                            parse(String(value))
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                    }}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Error Handler"
+                            onChange={props.onChange}
+                            value={props.value}
+                            error={!!errors.error}
+                            helperText={errors.error?.message}
+                            />
                         </FormControl>
                       )
                     }

@@ -17,6 +17,7 @@ const {
   reg_react_form,
   js_resolve_ids,
   _js_parse_snippet,
+  _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,
 } = require('./util_base')
@@ -29,35 +30,25 @@ function react_form(js_context, input) {
     throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!! input.name) {
+  if (!input.name) {
     throw new Error(`ERROR: input.name not set in [react/form] [${JSON.stringify(input)}]`)
   }
 
-  const onSubmit = (() => {
+  const onSubmitStatements = (() => {
     if (!!input.onSubmit) {
-      return _js_parse_expression(input.onSubmit)
+      return _js_parse_statements(js_context, input.onSubmit)
     } else {
-      return t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          []
-        )
-      )
+      return t.blockStatement([])
     }
-  })
+  })()
 
-  const onError = (() => {
+  const onErrorStatements = (() => {
     if (!!input.onError) {
-      return _js_parse_expression(input.onError)
+      return _js_parse_statements(js_context, input.onError)
     } else {
-      return t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          []
-        )
-      )
+      return t.blockStatement([])
     }
-  })
+  })()
 
   // props expression
   const props = (() => {
@@ -85,7 +76,7 @@ function react_form(js_context, input) {
       )
     } else {
       // return {}
-      return t.objectExpression()
+      return t.objectExpression([])
     }
   })
 
@@ -115,7 +106,7 @@ function react_form(js_context, input) {
       )
     } else {
       // return {}
-      return t.objectExpression()
+      return t.objectExpression([])
     }
   })()
 
@@ -156,17 +147,15 @@ function react_form(js_context, input) {
   const resultElement = t.jSXElement(
     t.jSXOpeningElement(
       t.jSXIdentifier('react-hook-form.FormProvider'),
-      [
-        // add all hook form methods
-        ...REACT_FORM_METHODS.map(method => {
-          t.jSXAttribute(
-            t.identifier(method),
-            t.jSXExpressionContainer(
-              t.identifier(`${qualifiedName}.${method}`)
-            )
+      // add all hook form methods
+      REACT_FORM_METHODS.map(method => (
+        t.jSXAttribute(
+          t.jSXIdentifier(method),
+          t.jSXExpressionContainer(
+            t.identifier(`${qualifiedName}.${method}`)
           )
-        }),
-      ]
+        )
+      ))
     ),
     t.jSXClosingElement(
       t.jSXIdentifier('react-hook-form.FormProvider'),
@@ -174,21 +163,31 @@ function react_form(js_context, input) {
     [
       t.jSXElement(
         t.jSXOpeningElement(
-          t.identifier('form'),
+          t.jSXIdentifier('form'),
           [
             // {...props}
             t.jSXSpreadAttribute(
-              props
+              t.identifier('props')
             ),
             // onSubmit={handleSubmit(onSubmit, onError)}
             t.jSXAttribute(
-              t.identifier('onSubmit'),
+              t.jSXIdentifier('onSubmit'),
               t.jSXExpressionContainer(
                 t.callExpression(
                   t.identifier(`${qualifiedName}.handleSubmit`),
                   [
-                    onSubmit,
-                    onError,
+                    t.arrowFunctionExpression(
+                      [
+                        t.identifier('data')
+                      ],
+                      onSubmitStatements,
+                    ),
+                    t.arrowFunctionExpression(
+                      [
+                        t.identifier('error')
+                      ],
+                      onErrorStatements,
+                    )
                   ]
                 )
               )
@@ -196,7 +195,7 @@ function react_form(js_context, input) {
           ]
         ),
         t.jSXClosingElement(
-          t.identifier('form')
+          t.jSXIdentifier('form')
         ),
         children_elements
       )
@@ -215,12 +214,8 @@ function input_text(js_context, input) {
     throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('name' in input)) {
-    throw new Error(`ERROR: input.name missing in [input/text] [${JSON.stringify(input)}]`)
-  }
-
-  if (! ('label' in input)) {
-    throw new Error(`ERROR: input.label missing in [input/text] [${JSON.stringify(input)}]`)
+  if (!input.name) {
+    throw new Error(`ERROR: input.name not set in [input/text] [${JSON.stringify(input)}]`)
   }
 
   if (!!input.array) {
@@ -290,7 +285,7 @@ function input_text(js_context, input) {
       )
     } else {
       // return {}
-      return t.objectExpression()
+      return t.objectExpression([])
     }
   })()
 
@@ -767,7 +762,7 @@ function input_text(js_context, input) {
 
   const controlElement = t.jSXElement(
     t.jSXOpeningElement(
-      t.identifier('react-hook-form.Controller'),
+      t.jSXIdentifier('react-hook-form.Controller'),
       [
         // key={props.name}
         t.jSXAttribute(
@@ -807,7 +802,7 @@ function input_text(js_context, input) {
           t.jSXExpressionContainer(
             t.jSXElement(
               t.jSXOpeningElement(
-                t.identifier('@material-ui/core.FormControl'),
+                t.jSXIdentifier('@material-ui/core.FormControl'),
                 [
                   // className={props.className}
                   t.jSXSpreadAttribute(
@@ -816,7 +811,7 @@ function input_text(js_context, input) {
                 ]
               ),
               t.jSXClosingElement(
-                t.identifier('@material-ui/core.FormControl')
+                t.jSXIdentifier('@material-ui/core.FormControl')
               ),
               [
                 innerElement  // innerElement here
@@ -840,12 +835,8 @@ function input_text_array(js_context, input) {
     throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('name' in input)) {
-    throw new Error(`ERROR: input.name missing in [input/text] [${JSON.stringify(input)}]`)
-  }
-
-  if (! ('label' in input)) {
-    throw new Error(`ERROR: input.label missing in [input/text] [${JSON.stringify(input)}]`)
+  if (!input.name) {
+    throw new Error(`ERROR: input.name not set in [input/text] [${JSON.stringify(input)}]`)
   }
 
   if (!input.array) {
@@ -903,7 +894,7 @@ function input_text_array(js_context, input) {
       )
     } else {
       // return {}
-      return t.objectExpression()
+      return t.objectExpression([])
     }
   })()
 
@@ -1473,7 +1464,7 @@ function input_text_array(js_context, input) {
 
   const controlElement = t.jSXElement(
     t.jSXOpeningElement(
-      t.identifier('@material-ui/core.Box'),
+      t.jSXIdentifier('@material-ui/core.Box'),
       [
         t.jSXSpreadAttribute(
           t.identifier('props')
@@ -1481,7 +1472,7 @@ function input_text_array(js_context, input) {
       ]
     ),
     t.jSXClosingElement(
-      t.identifier('@material-ui/core.Box')
+      t.jSXIdentifier('@material-ui/core.Box')
     ),
     [
       // {
@@ -1503,7 +1494,7 @@ function input_text_array(js_context, input) {
           ),
           t.jSXElement(
             t.jSXOpeningElement(
-              t.identifier('@material-ui/core.FormHelperText'),
+              t.jSXIdentifier('@material-ui/core.FormHelperText'),
               [
                 t.jSXAttribute(
                   t.jSXIdentifier('key'),
@@ -1512,7 +1503,7 @@ function input_text_array(js_context, input) {
               ]
             ),
             t.jSXClosingElement(
-              t.identifier('@material-ui/core.FormHelperText')
+              t.jSXIdentifier('@material-ui/core.FormHelperText')
             ),
             [
               t.stringLiteral(input.label || '')
@@ -1546,7 +1537,7 @@ function input_text_array(js_context, input) {
               // <Controller>...</Controller>
               t.jSXElement(
                 t.jSXOpeningElement(
-                  t.identifier('react-hook-form.Controller'),
+                  t.jSXIdentifier('react-hook-form.Controller'),
                   [
                     // key={props.name}
                     t.jSXAttribute(
@@ -1606,7 +1597,7 @@ function input_text_array(js_context, input) {
                       t.jSXExpressionContainer(
                         t.jSXElement(
                           t.jSXOpeningElement(
-                            t.identifier('@material-ui/core.FormControl'),
+                            t.jSXIdentifier('@material-ui/core.FormControl'),
                             [
                               // style={width:"100%"}
                               t.jSXAttribute(
@@ -1625,7 +1616,7 @@ function input_text_array(js_context, input) {
                             ]
                           ),
                           t.jSXClosingElement(
-                            t.identifier('@material-ui/core.FormControl')
+                            t.jSXIdentifier('@material-ui/core.FormControl')
                           ),
                           [
                             innerElement  // innerElement here
@@ -1667,7 +1658,6 @@ function input_text_array(js_context, input) {
 
 // export
 module.exports = {
-  reg_react_form: reg_react_form,
   react_form: react_form,
   input_text: input_text,
 }

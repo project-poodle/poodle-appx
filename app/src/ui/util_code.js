@@ -19,7 +19,7 @@ const {
   reg_react_state,
   reg_react_form,
   js_resolve_ids,
-  _js_parse_snippet,
+  _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,
 } = require('./util_base')
@@ -331,7 +331,8 @@ function js_block(js_context, input) {
     data = input.data
   }
 
-  const program = parse(data, {
+  // parse user code snippet
+  const statements = _js_parse_statements(js_context, data, {
     // sourceType: 'module', // do not support module here
     allowReturnOutsideFunction: true, // allow return in the block statement
     plugins: [
@@ -339,12 +340,7 @@ function js_block(js_context, input) {
     ]
   })
 
-  // parse user code snippet
-  _js_parse_snippet(js_context, program)
-
-  return t.blockStatement(
-    program.program.body
-  )
+  return statements
 }
 
 // create array function ast
@@ -1545,16 +1541,14 @@ function react_effect(js_context, input) {
   reg_js_import(js_context, 'react.useEffect')
 
   // parse user code snippet
-  _js_parse_snippet(js_context, program)
+  const statements = _js_parse_statements(js_context, program)
 
   return t.callExpression(
     t.identifier('react.useEffect'),
     [
       t.arrowFunctionExpression(
         [],
-        t.blockStatement(
-          program.program.body
-        )
+        statements,
       ),
       statesExpression,
     ]
@@ -1983,65 +1977,6 @@ function react_component(js_context, input) {
 
   const block_statements = []
 
-  // add react/form useForm or useFormContext here
-  if (!!js_context.forms && !!Object.keys(js_context.forms).length) {
-    Object.keys(js_context.forms).map(name => {
-      if (!!name) {
-        // no name, useFormContext
-        block_statements.push(
-          // const { ... } = useFormContext()
-          t.variableDeclaration(
-            'const',
-            [
-              t.variableDeclarator(
-                t.objectPattern(
-                  REACT_FORM_METHODS.map(method => (
-                    t.objectProperty(
-                      t.identifier(method),
-                      t.identifier(`${js_context.forms[name].qualifiedName}.${method}`)
-                    )
-                  ))
-                ),
-                // useFormContext()
-                t.callExpression(
-                  t.identifier('react-hook-form.useFormContext'),
-                  []
-                )
-              )
-            ]
-          )
-        )
-      } else {
-        // has name, useForm
-        block_statements.push(
-          // const { ... } = useForm(formProps)
-          t.variableDeclaration(
-            'const',
-            [
-              t.variableDeclarator(
-                t.objectPattern(
-                  REACT_FORM_METHODS.map(method => (
-                    t.objectProperty(
-                      t.identifier(method),
-                      t.identifier(`${js_context.forms[name].qualifiedName}.${method}`)
-                    )
-                  ))
-                ),
-                // useForm(formProps)
-                t.callExpression(
-                  t.identifier('react-hook-form.useForm'),
-                  [
-                    js_context.forms[name].formProps
-                  ]
-                )
-              )
-            ]
-          )
-        )
-      }
-    })
-  }
-
   // check if there are any block statements
   Object.keys(input).map(key => {
     // ignore type / name / props / children
@@ -2141,6 +2076,75 @@ function react_component(js_context, input) {
     }
   })
 
+  // process elements, this will register such as 'forms'
+  const result_element = react_element(js_context, input.element)
+
+  // console.log(`react_component`, js_context)
+
+  // add react/form useForm or useFormContext here (AFTER react_element)
+  if (!!js_context.forms && !!Object.keys(js_context.forms).length) {
+    // console.log(`js_context.forms`)
+    Object.keys(js_context.forms).sort().reverse().map(name => {
+      if (!name) {
+        // no name, useFormContext
+        // const { ... } = useFormContext()
+        const formDeclaration = t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.objectPattern(
+                REACT_FORM_METHODS.map(method => (
+                  t.objectProperty(
+                    t.identifier(method),
+                    t.identifier(`${js_context.forms[name].qualifiedName}.${method}`)
+                  )
+                ))
+              ),
+              // useFormContext()
+              t.callExpression(
+                t.identifier('react-hook-form.useFormContext'),
+                []
+              )
+            )
+          ]
+        )
+        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+        t.addComment(formDeclaration, 'trailing', ` useFormContext()`, true)
+        // add formDeclaration
+        block_statements.unshift(formDeclaration)
+      } else {
+        // has name, useForm
+        // const { ... } = useForm(formProps)
+        const formDeclaration = t.variableDeclaration(
+          'const',
+          [
+            t.variableDeclarator(
+              t.objectPattern(
+                REACT_FORM_METHODS.map(method => (
+                  t.objectProperty(
+                    t.identifier(method),
+                    t.identifier(`${js_context.forms[name].qualifiedName}.${method}`)
+                  )
+                ))
+              ),
+              // useForm(formProps)
+              t.callExpression(
+                t.identifier('react-hook-form.useForm'),
+                [
+                  js_context.forms[name].formProps
+                ]
+              )
+            )
+          ]
+        )
+        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
+        t.addComment(formDeclaration, 'trailing', ` useForm[${name}]`, true)
+        // add formDeclaration
+        block_statements.unshift(formDeclaration)
+      }
+    })
+  }
+
   // return arrow function
   const result = t.arrowFunctionExpression(
     [
@@ -2150,7 +2154,7 @@ function react_component(js_context, input) {
       [
         ...block_statements,
         t.returnStatement(
-          react_element(js_context, input.element)
+          result_element,
         )
       ]
     )
