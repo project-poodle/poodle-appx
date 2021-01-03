@@ -81,7 +81,10 @@ const TestEditor = (props) => {
     },
     props: {
       width: '100%',
-      paddingLeft: theme.spacing(5)
+      padding: theme.spacing(2, 0, 2, 5),
+    },
+    addProvider: {
+      margin: theme.spacing(2, 0),
     },
   }))()
 
@@ -95,15 +98,27 @@ const TestEditor = (props) => {
 
   // context
   const {
+    // tree data
     treeData,
-    expandedKeys,
-    selectedKey,
     // test data
     testData,
+    // dirty flags
+    testDirty,
+    setTestDirty,
     // common
     loadTimer,
-    // update action
-    updateAction,
+    setLoadTimer,
+    previewInitialized,
+    setPreviewInitialized,
+    // history and actions
+    // makeFreshAction,
+    // makeDesignAction,
+    // makeTestAction,
+    // updateDesignAction,
+    updateTestAction,
+    // history,
+    // undo,
+    // redo,
   } = useContext(SyntaxProvider.Context)
 
   // react hook form
@@ -293,13 +308,9 @@ const TestEditor = (props) => {
     })
     // console.log(lookupNode)
     // console.log(`resultTestData`, resultTestData)
-    updateAction(
+    updateTestAction(
       `Update [test]`,
-      treeData,
       resultTestData,
-      expandedKeys,
-      selectedKey,
-      '__test',
     )
   }
 
@@ -320,6 +331,7 @@ const TestEditor = (props) => {
                         name={`providers[${index}].name`}
                         type="text"
                         defaultValue={item.name}
+                        size="small"
                         options={valid_import_names()}
                         rules={{
                           required: 'Context provider name is required',
@@ -339,6 +351,7 @@ const TestEditor = (props) => {
                       <IconButton
                         key="remove"
                         aria-label="Remove"
+                        size="small"
                         onClick={e => {
                           removeProvider(index)
                           // console.log(`remove providers[${index}].name`)
@@ -369,6 +382,7 @@ const TestEditor = (props) => {
               color="secondary"
               aria-label="Add Context Provider"
               startIcon={<AddCircleOutline />}
+              className={styles.addProvider}
               onClick={e => {
                 appendProvider({
                   //id: `providers[${fields.length}]`,

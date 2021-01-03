@@ -43,7 +43,6 @@ const PreviewJson = (props) => {
     selectedKey,
     testData,
     loadTimer,
-    treeDirty,
     livePreview,
   } = useContext(SyntaxProvider.Context)
 

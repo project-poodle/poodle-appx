@@ -46,6 +46,7 @@ import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import Asterisk from 'app-x/icon/Asterisk'
 import Save from 'app-x/icon/Save'
 import Reset from 'app-x/icon/Reset'
 import Undo from 'app-x/icon/Undo'
@@ -117,6 +118,10 @@ const SyntaxTree = (props) => {
         minWidth: 600,
       },
     },
+    asterisk: {
+      // paddingLeft: theme.spacing(1),
+      color: theme.palette.error.light,
+    },
     dialogContent: {
       padding: theme.spacing(0, 5, 3),
     },
@@ -154,15 +159,23 @@ const SyntaxTree = (props) => {
     setSelectedKey,
     // test data
     testData,
+    // dirty flags
+    designDirty,
+    setDesignDirty,
+    testDirty,
+    setTestDirty,
     // common
     loadTimer,
     setLoadTimer,
-    treeDirty,
     previewInitialized,
     setPreviewInitialized,
     // history and actions
+    makeFreshAction,
+    makeDesignAction,
+    // makeTestAction,
+    updateDesignAction,
+    // updateTestAction,
     history,
-    makeAction,
     undo,
     redo,
   } = useContext(SyntaxProvider.Context)
@@ -201,7 +214,7 @@ const SyntaxTree = (props) => {
       // check data sanity
       if (!('ui_component_spec' in data)) {
         // fresh action
-        makeAction(`init`, [], null, [], null, true)
+        makeFreshAction(`init`, [], null, [], null, true)
         return
       } else {
         spec_data = data.ui_component_spec
@@ -210,7 +223,7 @@ const SyntaxTree = (props) => {
       // check data sanity
       if (!('ui_route_spec' in data)) {
         // fresh action
-        makeAction(`init`, [], null, [], null, true)
+        makeFreshAction(`init`, [], null, [], null, true)
         return
       } else {
         spec_data = data.ui_route_spec
@@ -237,7 +250,7 @@ const SyntaxTree = (props) => {
 
     // console.log(`parsed`, parsedTree, parsedTest)
     // fresh action
-    makeAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
+    makeFreshAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
   }
 
   // load data via api
@@ -673,10 +686,9 @@ const SyntaxTree = (props) => {
       newExpandedKeys.push(lookupParent.key)
     }
     // take action
-    makeAction(
+    makeDesignAction(
       `Add [${parsed?.title}]`,
       resultTree,
-      testData,
       newExpandedKeys,
       selectedKey,
     )
@@ -721,10 +733,9 @@ const SyntaxTree = (props) => {
       setSelectedKey(null)
     }
     // take action
-    makeAction(
+    makeDesignAction(
       `Delete [${lookupNode?.title}]`,
       resultTree,
-      testData,
       expandedKeys,
       null,
     )
@@ -930,10 +941,9 @@ const SyntaxTree = (props) => {
       }
 
       // take action
-      makeAction(
+      makeDesignAction(
         `Drag & Drop [${dragObj.title}]`,
         resultData,
-        testData,
         newExpandedKeys,
         dragObj.key
       )
@@ -1221,7 +1231,7 @@ const SyntaxTree = (props) => {
                     icon={<Save />}
                     shape="circle"
                     onClick={e => { setSaveTrigger(new Date()) }}
-                    danger={treeDirty}
+                    danger={designDirty || testDirty}
                     loading={!!saveTrigger}
                     >
                   </AntButton>
@@ -1288,7 +1298,19 @@ const SyntaxTree = (props) => {
           }}
           >
           <TabPane
-            tab="Design"
+            tab={
+              <span>
+                Design
+                {
+                  !!designDirty
+                  &&
+                  (
+                    <Asterisk className={styles.asterisk}>
+                    </Asterisk>
+                  )
+                }
+              </span>
+            }
             key="design"
             className={styles.pane}
             onContextMenu={handleSyntaxMenu}
@@ -1322,7 +1344,19 @@ const SyntaxTree = (props) => {
             &&
             (
               <TabPane
-                tab="Test"
+                tab={
+                  <span>
+                    Test
+                    {
+                      !!testDirty
+                      &&
+                      (
+                        <Asterisk className={styles.asterisk}>
+                        </Asterisk>
+                      )
+                    }
+                  </span>
+                }
                 key="test"
                 className={styles.pane}
                 onContextMenu={handleSyntaxMenu}

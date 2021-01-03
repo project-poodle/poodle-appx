@@ -27,6 +27,7 @@ const { TabPane } = Tabs;
 import { useForm, FormProvider, Controller } from "react-hook-form"
 import { parse, parseExpression } from "@babel/parser"
 // context provider
+import Asterisk from 'app-x/icon/Asterisk'
 import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import PropFieldArray from 'app-x/component/PropFieldArray'
@@ -66,16 +67,22 @@ const PropEditor = (props) => {
     formControl: {
       width: '100%',
       // margin: theme.spacing(1),
-      padding: theme.spacing(2, 0, 2, 2),
+      padding: theme.spacing(2, 2, 2, 2),
     },
     editor: {
       width: '100%',
       height: '100%',
     },
+    tabs: {
+      margin: theme.spacing(1, 1),
+    },
     basicTab: {
       width: '100%',
       height: '100%',
       overflow: 'scroll',
+    },
+    asterisk: {
+      color: theme.palette.error.light,
     },
     properties: {
       width: '100%',
@@ -109,8 +116,13 @@ const PropEditor = (props) => {
     setSelectedKey,
     // test data
     testData,
+    // dirt flags
+    propBaseDirty,
+    setPropBaseDirty,
+    propYamlDirty,
+    setPropYamlDirty,
     // update action
-    updateAction,
+    updateDesignAction,
   } = useContext(SyntaxProvider.Context)
 
   const [ nodeType,             setNodeType             ] = useState('')
@@ -278,6 +290,8 @@ const PropEditor = (props) => {
         setValue(`__props`, props)
         setOtherNames(others)
       }
+      // just loaded, set dirty to false
+      setPropBaseDirty(false)
     }
   },
   [
@@ -288,6 +302,7 @@ const PropEditor = (props) => {
   // base submit timer
   const [ baseSubmitTimer, setBaseSubmitTimer ] = useState(new Date())
   useEffect(() => {
+    setPropBaseDirty(true)
     setTimeout(() => {
       handleSubmit(onBaseSubmit)()
     }, 300)
@@ -297,175 +312,178 @@ const PropEditor = (props) => {
   function onBaseSubmit(data) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
-    if (!!lookupNode) {
-      // console.log(data)
-      const preservedRef = lookupNode.data.__ref
-      lookupNode.data = data
-      if (!!data.__ref) {
-        lookupNode.data.__ref = data.__ref
-      } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
-        lookupNode.data.__ref = preservedRef
+    if (!lookupNode) {
+      setPropBaseDirty(false)
+    }
+
+    // console.log(data)
+    const preservedRef = lookupNode.data.__ref
+    lookupNode.data = data
+    if (!!data.__ref) {
+      lookupNode.data.__ref = data.__ref
+    } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
+      lookupNode.data.__ref = preservedRef
+    } else {
+      lookupNode.data.__ref = null
+    }
+    // check if lookupNode is react/state, and __customRef is false
+    if (lookupNode.data.type === 'react/state') {
+      if (!data.__customRef) {
+        lookupNode.data.__ref = `...${lookupNode.data.name}`
+      }
+    }
+    // check if parent is js/switch
+    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
+    if (lookupParent?.data?.type === 'js/switch') {
+      if (!!data.default) {
+        lookupNode.data.__ref = 'default'
       } else {
         lookupNode.data.__ref = null
+        lookupNode.data.condition = data.condition
       }
-      // check if lookupNode is react/state, and __customRef is false
-      if (lookupNode.data.type === 'react/state') {
-        if (!data.__customRef) {
-          lookupNode.data.__ref = `...${lookupNode.data.name}`
-        }
-      }
-      // check if parent is js/switch
-      const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-      if (lookupParent?.data?.type === 'js/switch') {
-        if (!!data.default) {
-          lookupNode.data.__ref = 'default'
-        } else {
-          lookupNode.data.__ref = null
-          lookupNode.data.condition = data.condition
-        }
-      }
-      // update lookup node title and icon
-      lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
-      lookupNode.icon = lookup_icon_for_input(data)
-      // console.log(lookupNode)
-      //////////////////////////////////////////////////////////////////////
-      // handle properties
-      if (lookupNode.data.type === 'js/object'
-          || lookupNode.data.type === 'react/element'
+    }
+    // update lookup node title and icon
+    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
+    lookupNode.icon = lookup_icon_for_input(data)
+    // console.log(lookupNode)
+    //////////////////////////////////////////////////////////////////////
+    // handle properties
+    if (lookupNode.data.type === 'js/object'
+        || lookupNode.data.type === 'react/element'
+        || lookupNode.data.type === 'react/html')
+    {
+      // add props child if exist
+      if (lookupNode.data.type === 'react/element'
           || lookupNode.data.type === 'react/html')
       {
-        // add props child if exist
-        if (lookupNode.data.type === 'react/element'
-            || lookupNode.data.type === 'react/html')
-        {
-          const propChild = lookup_child_by_ref(lookupNode, 'props')
-          if (!propChild) {
-            // add props if not exist
-            lookupNode.children.push(parse_js_object({}, lookupNode.key, 'props', {}))
-          }
+        const propChild = lookup_child_by_ref(lookupNode, 'props')
+        if (!propChild) {
+          // add props if not exist
+          lookupNode.children.push(parse_js_object({}, lookupNode.key, 'props', {}))
         }
-        // lookup childParent node
-        const childParent =
-          lookupNode.data.type === 'js/object'
-          ? lookupNode
-          : lookup_child_by_ref(lookupNode, 'props')
-        // add child properties as proper childNode (replace existing or add new)
-        const properties = _.get(getValues(), '__props') || []
-        // console.log(`properties`, properties)
-        properties.map(child => {
-          const childNode = lookup_child_by_ref(childParent, child.name)
-          if (!!childNode)
-          {
-            // found child node, reuse existing key
-            if (child.type === 'js/null')
-            {
-              childNode.data.__ref = child.name
-              childNode.data.type = child.type
-              childNode.data.data = null
-              childNode.title = lookup_title_for_input(child.name, childNode.data)
-              childNode.icon = lookup_icon_for_input(childNode.data)
-            }
-            else if (child.type === 'js/string'
-                    || child.type === 'js/number'
-                    || child.type === 'js/boolean'
-                    || child.type === 'js/expression')
-            {
-              childNode.data.__ref = child.name
-              childNode.data.type = child.type
-              childNode.data.data = child.value
-              childNode.title = lookup_title_for_input(child.name, childNode.data)
-              childNode.icon = lookup_icon_for_input(childNode.data)
-            }
-            else if (child.type === 'js/import')
-            {
-              childNode.data.__ref = child.name
-              childNode.data.type = child.type
-              childNode.data.name = child.value
-              childNode.title = lookup_title_for_input(child.name, childNode.data)
-              childNode.icon = lookup_icon_for_input(childNode.data)
-            }
-            else
-            {
-              throw new Error(`ERROR: unrecognized child type [${child.type}]`)
-            }
-          }
-          else
-          {
-            // no child node, create new child node
-            if (child.type === 'js/null'
-                || child.type === 'js/string'
-                || child.type === 'js/number'
-                || child.type === 'js/boolean')
-            {
-              const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
-              childParent.children.push(newChildNode)
-              // update child title and icon
-              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-            }
-            else if (child.type === 'js/expression')
-            {
-              const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
-              childParent.children.push(newChildNode)
-              // update child title and icon
-              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-            }
-            else if (child.type === 'js/import')
-            {
-              const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
-              childParent.children.push(newChildNode)
-              // update child title and icon
-              newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-              newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-            }
-            else
-            {
-              throw new Error(`ERROR: unrecognized child type [${child.type}]`)
-            }
-          }
-        })
-        ////////////////////////////////////////
-        // remove any primitive child
-        childParent.children = childParent.children.filter(child => {
-          if (child.data.type === 'js/null'
-              || child.data.type === 'js/string'
-              || child.data.type === 'js/number'
-              || child.data.type === 'js/boolean'
-              || child.data.type === 'js/expression'
-              || child.data.type === 'js/import')
-          {
-            const found = properties.find(prop => prop.name === child.data.__ref)
-            return found
-          }
-          else
-          {
-            return true
-          }
-        })
-        ////////////////////////////////////////
-        // if lookupNode is react/element or react/html, remove empty props
-        if (lookupNode.data.type === 'react/element'
-            || lookupNode.data.type === 'react/html')
-        {
-          if (!childParent.children.length) {
-            remove_child_by_ref(lookupNode, 'props')
-          }
-        }
-        // reorder children
-        reorder_children(childParent)
-        reorder_children(lookupNode)
       }
-      // setTreeData(resultTree)
-      updateAction(
-        `Update [${lookupNode.title}]`,
-        resultTree,
-        testData,
-        expandedKeys,
-        selectedKey,
-        lookupNode.key,
-      )
+      // lookup childParent node
+      const childParent =
+        lookupNode.data.type === 'js/object'
+        ? lookupNode
+        : lookup_child_by_ref(lookupNode, 'props')
+      // add child properties as proper childNode (replace existing or add new)
+      const properties = _.get(getValues(), '__props') || []
+      // console.log(`properties`, properties)
+      properties.map(child => {
+        const childNode = lookup_child_by_ref(childParent, child.name)
+        if (!!childNode)
+        {
+          // found child node, reuse existing key
+          if (child.type === 'js/null')
+          {
+            childNode.data.__ref = child.name
+            childNode.data.type = child.type
+            childNode.data.data = null
+            childNode.title = lookup_title_for_input(child.name, childNode.data)
+            childNode.icon = lookup_icon_for_input(childNode.data)
+          }
+          else if (child.type === 'js/string'
+                  || child.type === 'js/number'
+                  || child.type === 'js/boolean'
+                  || child.type === 'js/expression')
+          {
+            childNode.data.__ref = child.name
+            childNode.data.type = child.type
+            childNode.data.data = child.value
+            childNode.title = lookup_title_for_input(child.name, childNode.data)
+            childNode.icon = lookup_icon_for_input(childNode.data)
+          }
+          else if (child.type === 'js/import')
+          {
+            childNode.data.__ref = child.name
+            childNode.data.type = child.type
+            childNode.data.name = child.value
+            childNode.title = lookup_title_for_input(child.name, childNode.data)
+            childNode.icon = lookup_icon_for_input(childNode.data)
+          }
+          else
+          {
+            throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+          }
+        }
+        else
+        {
+          // no child node, create new child node
+          if (child.type === 'js/null'
+              || child.type === 'js/string'
+              || child.type === 'js/number'
+              || child.type === 'js/boolean')
+          {
+            const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
+            childParent.children.push(newChildNode)
+            // update child title and icon
+            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+          }
+          else if (child.type === 'js/expression')
+          {
+            const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
+            childParent.children.push(newChildNode)
+            // update child title and icon
+            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+          }
+          else if (child.type === 'js/import')
+          {
+            const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
+            childParent.children.push(newChildNode)
+            // update child title and icon
+            newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
+            newChildNode.icon = lookup_icon_for_input(newChildNode.data)
+          }
+          else
+          {
+            throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+          }
+        }
+      })
+      ////////////////////////////////////////
+      // remove any primitive child
+      childParent.children = childParent.children.filter(child => {
+        if (child.data.type === 'js/null'
+            || child.data.type === 'js/string'
+            || child.data.type === 'js/number'
+            || child.data.type === 'js/boolean'
+            || child.data.type === 'js/expression'
+            || child.data.type === 'js/import')
+        {
+          const found = properties.find(prop => prop.name === child.data.__ref)
+          return found
+        }
+        else
+        {
+          return true
+        }
+      })
+      ////////////////////////////////////////
+      // if lookupNode is react/element or react/html, remove empty props
+      if (lookupNode.data.type === 'react/element'
+          || lookupNode.data.type === 'react/html')
+      {
+        if (!childParent.children.length) {
+          remove_child_by_ref(lookupNode, 'props')
+        }
+      }
+      // reorder children
+      reorder_children(childParent)
+      reorder_children(lookupNode)
     }
+    // setTreeData(resultTree)
+    updateDesignAction(
+      `Update [${lookupNode.title}]`,
+      resultTree,
+      expandedKeys,
+      selectedKey,
+      lookupNode.key,
+    )
+    // set base dirty falg to false
+    setPropBaseDirty(false)
   }
 
   // render
@@ -492,8 +510,34 @@ const PropEditor = (props) => {
         (treeNode)
         &&
         (
-          <Tabs defaultActiveKey="basic" className={styles.editor} tabPosition="right" size="small">
-            <TabPane tab="Base" key="basic" className={styles.basicTab}>
+          <Tabs
+            defaultActiveKey="basic"
+            className={styles.editor}
+            tabPosition="bottom"
+            size="small"
+            tabBarExtraContent={{
+              left:
+                <Box className={styles.tabs}>
+                </Box>
+            }}
+            >
+            <TabPane
+              tab={
+                <span>
+                  Base
+                  {
+                    !!propBaseDirty
+                    &&
+                    (
+                      <Asterisk className={styles.asterisk}>
+                      </Asterisk>
+                    )
+                  }
+                </span>
+              }
+              key="basic"
+              className={styles.basicTab}
+              >
               <Box className={styles.editor}>
               {
                 (
@@ -593,6 +637,7 @@ const PropEditor = (props) => {
                             label="Reference"
                             name={props.name}
                             value={props.value}
+                            size="small"
                             onChange={ e => {
                               props.onChange(e.target.value)
                               setBaseSubmitTimer(new Date())
@@ -674,6 +719,7 @@ const PropEditor = (props) => {
                           label="Condition"
                           name={props.name}
                           value={props.value}
+                          size="small"
                           onChange={e => {
                             props.onChange(e.target.value)
                             setBaseSubmitTimer(new Date())
@@ -715,6 +761,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -785,6 +832,7 @@ const PropEditor = (props) => {
                                   multiline={false}
                                   name={props.name}
                                   value={props.value}
+                                  size="small"
                                   onChange={ e => {
                                     props.onChange(e.target.value)
                                     setBaseSubmitTimer(new Date())
@@ -821,6 +869,7 @@ const PropEditor = (props) => {
                                   multiline={false}
                                   name={props.name}
                                   value={props.value}
+                                  size="small"
                                   onChange={ e => {
                                     props.onChange(e.target.value)
                                     setBaseSubmitTimer(new Date())
@@ -890,6 +939,7 @@ const PropEditor = (props) => {
                                     multiline={true}
                                     name={props.name}
                                     value={props.value}
+                                    size="small"
                                     onChange={ e => {
                                       props.onChange(e.target.value)
                                       setBaseSubmitTimer(new Date())
@@ -925,6 +975,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -966,6 +1017,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1007,6 +1059,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1067,6 +1120,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1113,6 +1167,7 @@ const PropEditor = (props) => {
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1146,6 +1201,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1210,6 +1266,7 @@ const PropEditor = (props) => {
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1243,6 +1300,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1284,6 +1342,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1325,6 +1384,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1369,6 +1429,7 @@ const PropEditor = (props) => {
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1407,6 +1468,7 @@ const PropEditor = (props) => {
                               multiline={true}
                               onChange={props.onChange}
                               value={props.value}
+                              size="small"
                               error={!!errors.init}
                               helperText={errors.init?.message}
                               />
@@ -1436,6 +1498,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1480,6 +1543,7 @@ const PropEditor = (props) => {
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1519,6 +1583,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1553,6 +1618,7 @@ const PropEditor = (props) => {
                         className={styles.formControl}
                         name="name"
                         label="Element Name"
+                        size="small"
                         options={valid_import_names()}
                         defaultValue={treeNode?.data?.name}
                         rules={{
@@ -1608,6 +1674,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1641,6 +1708,7 @@ const PropEditor = (props) => {
                                 label="Name"
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1666,6 +1734,7 @@ const PropEditor = (props) => {
                                 label="Setter"
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1704,6 +1773,7 @@ const PropEditor = (props) => {
                               multiline={true}
                               name={props.name}
                               value={props.value}
+                              size="small"
                               onChange={ e => {
                                 props.onChange(e.target.value)
                                 setBaseSubmitTimer(new Date())
@@ -1737,6 +1807,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1783,6 +1854,7 @@ const PropEditor = (props) => {
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}
+                                size="small"
                                 onChange={ e => {
                                   props.onChange(e.target.value)
                                   setBaseSubmitTimer(new Date())
@@ -1840,6 +1912,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1881,6 +1954,7 @@ const PropEditor = (props) => {
                               label="Type"
                               select={true}
                               value={props.value}
+                              size="small"
                               onChange={e => {
                                 setNodeType(e.target.value)
                                 props.onChange(e.target.value)
@@ -1935,7 +2009,23 @@ const PropEditor = (props) => {
               }
               </Box>
             </TabPane>
-            <TabPane tab="YAML" key="advanced" className={styles.editor}>
+            <TabPane
+            tab={
+              <span>
+                YAML
+                {
+                  !!propYamlDirty
+                  &&
+                  (
+                    <Asterisk className={styles.asterisk}>
+                    </Asterisk>
+                  )
+                }
+              </span>
+            }
+              key="yaml"
+              className={styles.editor}
+              >
               <YamlEditor />
             </TabPane>
           </Tabs>

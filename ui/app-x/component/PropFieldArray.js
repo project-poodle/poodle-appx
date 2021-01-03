@@ -117,6 +117,7 @@ const PropFieldArray = props => {
                       select={true}
                       name={innerProps.name}
                       value={innerProps.value}
+                      size="small"
                       onChange={e => {
                         innerProps.onChange(e.target.value)
                         if (props.callback) {
@@ -187,6 +188,7 @@ const PropFieldArray = props => {
                     <TextField
                       name={innerProps.name}
                       value={innerProps.value}
+                      size="small"
                       onChange={e => {
                         innerProps.onChange(e.target.value)
                         if (props.callback) {
@@ -254,6 +256,7 @@ const PropFieldArray = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
                                 if (props.callback) {
@@ -297,6 +300,7 @@ const PropFieldArray = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
                                 if (props.callback) {
@@ -347,6 +351,7 @@ const PropFieldArray = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
                                 if (props.callback) {
@@ -376,6 +381,7 @@ const PropFieldArray = props => {
                       key='value'
                       className={styles.valueControl}
                       name={`${props.name}[${index}].value`}
+                      size="small"
                       defaultValue={item?.value}
                       options={
                         valid_import_names()
@@ -402,6 +408,7 @@ const PropFieldArray = props => {
               <IconButton
                 key="remove"
                 aria-label="Remove"
+                size="small"
                 onClick={e => {
                   remove(index)
                   if (!!props.callback) {
@@ -427,6 +434,7 @@ const PropFieldArray = props => {
       <IconButton
         key="add"
         aria-label="Add"
+        size="small"
         onClick={e => {
           append({
             type: 'js/string',

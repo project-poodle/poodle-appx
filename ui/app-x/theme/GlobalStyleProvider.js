@@ -48,6 +48,9 @@ const GlobalStyleProvider = (() => {
         '.ant-notification': {
           zIndex: 2010,
         },
+        '.ant-tabs-tab .anticon': {
+          margin: 0,
+        },
         '.MuiSelect-select.MuiSelect-select': {
           display: 'flex',
           alignItems: 'center',

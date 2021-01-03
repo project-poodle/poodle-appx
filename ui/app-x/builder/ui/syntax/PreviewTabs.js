@@ -90,7 +90,6 @@ const PreviewTabs = (props) => {
     testData,
     // global
     loadTimer,
-    treeDirty,
     livePreview,
     setLivePreview,
     previewInitialized,

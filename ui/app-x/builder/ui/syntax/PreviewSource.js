@@ -45,7 +45,6 @@ const PreviewSource = (props) => {
     testData,
     // common
     loadTimer,
-    treeDirty,
     livePreview,
     setLiveUpdate,
   } = useContext(SyntaxProvider.Context)

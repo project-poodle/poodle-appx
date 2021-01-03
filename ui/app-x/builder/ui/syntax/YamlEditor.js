@@ -62,15 +62,16 @@ const YamlEditor = props => {
     setExpandedKeys,
     selectedKey,
     setSelectedKey,
+    propYamlDirty,
+    setPropYamlDirty,
     history,
-    makeAction,
-    updateAction,
+    makeDesignAction,
+    updateDesignAction,
     undo,
     redo,
   } = useContext(SyntaxProvider.Context)
 
   const [ treeNode,         setTreeNode       ] = useState(null)
-  const [ yamlDirty,        setYamlDirty      ] = useState(false)
   const [ yamlMsg,          setYamlMsg        ] = useState('')
   const [ yamlError,        setYamlError      ] = useState(false)
   const [ yamlContent,      setYamlContent    ] = useState('')
@@ -105,10 +106,6 @@ const YamlEditor = props => {
     fab: {
       margin: theme.spacing(1),
     },
-    asterisk: {
-      padding: theme.spacing(1, 1, 1, 0),
-      color: theme.palette.primary.main,
-    }
   }))()
 
   // compute treeNode
@@ -144,18 +141,18 @@ const YamlEditor = props => {
       // replace current tree node
       const resultTree = _.cloneDeep(treeData)
       const lookupNode = tree_lookup(resultTree, selectedKey)
-      if (lookupNode) {
+      if (!!lookupNode) {
         const js_context = { topLevel: false }
         const parsed = parse_js(js_context, lookupNode.parentKey, null, loaded)
 
         if (treeNode?.data?.type === '/') {
 
           // replace the entire tree
-          makeAction(
+          makeDesignAction(
             `Full Replace`,
             parsed,
             js_context.expandedKeys,
-            null,
+            '/',
           )
 
         } else {
@@ -176,14 +173,14 @@ const YamlEditor = props => {
           lookupNode.icon = lookup_icon_for_input(parsed.data)
           // lookupNode.parentKey = lookupNode.parentKey // no need to change parentKey
           // console.log(lookupNode)
-          makeAction(
+          makeDesignAction(
             `Replace [${lookupNode.title}]`,
             resultTree,
             expandedKeys,
             lookupNode.key,   // update selected key
           )
           // if we are successful, reset changed flag
-          setYamlDirty(false)
+          setPropYamlDirty(false)
           setYamlError(false)
           setYamlMsg('')
         }
@@ -201,7 +198,7 @@ const YamlEditor = props => {
 
   // editor change
   const handleEditorChange = (ev, value) => {
-    setYamlDirty(true)
+    setPropYamlDirty(true)
     setYamlContent(value)
   }
 
@@ -233,13 +230,6 @@ const YamlEditor = props => {
         <Layout>
           <Content>
             <Box display="flex" alignItems="center" justifyContent="left" className={styles.yamlMsg}>
-              {
-                !!yamlDirty
-                &&
-                (
-                  <Asterisk className={styles.asterisk} />
-                )
-              }
               <Typography variant="body2" color={yamlError ? "error" : "textSecondary"}>
                 {yamlMsg}
               </Typography>
@@ -262,7 +252,7 @@ const YamlEditor = props => {
                   onClick={e => {
                     // reset prop editor data
                     reset_yaml_content()
-                    setYamlDirty(false)
+                    setPropYamlDirty(false)
                     setYamlError(false)
                     setYamlMsg('')
                   }}

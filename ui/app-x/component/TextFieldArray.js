@@ -89,6 +89,7 @@ const TextFieldArray = props => {
                 name={`${props.name}[${index}].value`}
                 type={props.type}
                 defaultValue={item?.value}
+                size={props.size}
                 options={!!props.options ? props.options : []}
                 rules={props.rules}
                 callback={props.callback}
@@ -97,6 +98,7 @@ const TextFieldArray = props => {
               <IconButton
                 key="remove"
                 aria-label="Remove"
+                size="small"
                 onClick={e => {
                   remove(index)
                   if (!!props.callback) {
@@ -113,6 +115,7 @@ const TextFieldArray = props => {
       <IconButton
         key="add"
         aria-label="Add"
+        size="small"
         onClick={e => {
           append({
             value: '',

@@ -43,7 +43,6 @@ const PreviewYaml = (props) => {
     selectedKey,
     testData,
     loadTimer,
-    treeDirty,
     livePreview,
   } = useContext(SyntaxProvider.Context)
 
