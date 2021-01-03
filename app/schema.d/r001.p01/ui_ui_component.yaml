@@ -552,47 +552,53 @@ ui_component:
       ui_component_spec:
           layouts:
             lg:
-              - i: a
+              - h: 2
+                i: a
+                w: 1
                 x: 0
                 y: 0
-                w: 1
-                h: 2
-              - i: b
+              - h: 5
+                i: b
+                w: 4
                 x: 1
                 y: 0
-                w: 3
-                h: 2
-              - i: c
+              - h: 2
+                i: c
+                w: 1
                 x: 4
                 y: 0
-                w: 1
-                h: 2
             md:
-              - i: a
+              - h: 3
+                i: a
+                w: 4
                 x: 0
                 y: 0
-                w: 1
-                h: 2
-              - i: b
+              - h: 6
+                i: b
+                w: 5
                 x: 1
                 y: 0
-                w: 3
-                h: 2
-              - i: c
+              - h: 2
+                i: c
+                w: 1
                 x: 4
                 y: 0
-                w: 1
-                h: 2
           styles:
             type: mui/style
-            root:
-              height: 100%
-              width: 100%
             box:
-              borderStyle: solid
               borderColor:
                 type: js/expression
                 data: theme.palette.divider
+              borderStyle: solid
+            formControl:
+              width: 100%
+            innerBox:
+              margin:
+                type: js/expression
+                data: theme.spacing(1)
+            root:
+              height: 100%
+              width: 100%
           snippet:
             type: js/block
             data: |
@@ -609,45 +615,127 @@ ui_component:
                 name: react-grid-layout.Responsive
                 props:
                   breakpoints:
-                    md: 0
                     lg: 1200
+                    md: 0
                   className:
                     type: js/expression
                     data: styles.root
-                  layouts:
-                    type: js/expression
-                    data: layouts
                   cols:
                     lg: 12
                     md: 12
+                  layouts:
+                    type: js/expression
+                    data: layouts
                   rowHeight: 30
                   width: 800
                 children:
                   - type: react/element
                     name: "@material-ui/core.Box"
                     props:
-                      key: a
                       className:
                         type: js/expression
                         data: styles.box
+                      key: a
                     children:
-                      - a
+                      - type: react/element
+                        name: "@material-ui/core.Box"
+                        props:
+                          className:
+                            type: js/expression
+                            data: styles.innerBox
+                          onClick:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onDrag:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onMouseDown:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onMouseUp:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                        children:
+                          - type: react/form
+                            name: a
+                            onSubmit: console.log(data)
+                            onError: ""
+                            props:
+                              classname:
+                                type: js/expression
+                                data: styles.root
+                            formProps:
+                              mode: onChange
+                              revalidateMode: onChange
+                            children:
+                              - type: input/text
+                                name: a
+                                array: false
+                                props:
+                                  autocomplete: true
+                                  options:
+                                    type: js/expression
+                                    data: "[{value:'a'},{value:'abc'},{value:'def'}]"
+                              - a
                   - type: react/element
                     name: "@material-ui/core.Box"
                     props:
-                      key: b
                       className:
                         type: js/expression
                         data: styles.box
+                      key: b
                     children:
+                      - type: react/element
+                        name: "@material-ui/core.Box"
+                        props:
+                          className:
+                            type: js/expression
+                            data: styles.innerBox
+                          onClick:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onDrag:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onMouseDown:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                          onMouseUp:
+                            type: js/expression
+                            data: e => e.stopPropagation()
+                        children:
+                          - type: react/form
+                            name: b
+                            onSubmit: console.log(data)
+                            onError: ""
+                            formProps:
+                              mode: onChange
+                            children:
+                              - type: input/text
+                                name: input
+                                array: true
+                                props:
+                                  autocomplete: true
+                                  callback:
+                                    type: js/expression
+                                    data: "(data) => {console.log(`callback data: ${data}`)}"
+                                  className:
+                                    type: js/expression
+                                    data: styles.formControl
+                                  defaultValue: "[{value:'a'},{value:'b'}]"
+                                  label: auto complete label
+                                  multiline: false
+                                  options:
+                                    type: js/expression
+                                    data: "[{value:\"abc\"},{value:\"def\"},{value:'k'},{value:'cat'}]"
                       - b
                   - type: react/element
                     name: "@material-ui/core.Box"
                     props:
-                      key: c
                       className:
                         type: js/expression
                         data: styles.box
+                      key: c
                     children:
                       - c
           __test:
@@ -659,7 +747,7 @@ ui_component:
                     type: js/import
                     name: app-x/redux/store.default
               - type: react/element
-                name: "app-x/theme/GlobalStyleProvider"
+                name: app-x/theme/GlobalStyleProvider
                 props:
                   theme:
                     type: js/import
