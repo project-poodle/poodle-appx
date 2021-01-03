@@ -26,6 +26,9 @@ const {
 // create react/form ast
 function react_form(js_context, input) {
 
+  // require here to avoid circular require reference
+  const { js_process } = require('./util_code')
+
   if (!('type' in input) || input.type !== 'react/form') {
     throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
   }
@@ -54,25 +57,23 @@ function react_form(js_context, input) {
   const props = (() => {
     if (!!input.props) {
       return t.objectExpression(
-        [
-          Object.keys(input.props)
-            .map(key => (
-              t.objectProperty(
-                t.identifier(key),
-                js_process(
-                  {
-                    ...js_context,
-                    topLevel: false,
-                    parentRef: null,
-                    parentPath: null,
-                    JSX_CONTEXT: false,
-                  },
-                  input.props[key]
-                )
+        Object.keys(input.props)
+          .map(key => (
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  topLevel: false,
+                  parentRef: null,
+                  parentPath: null,
+                  JSX_CONTEXT: false,
+                },
+                input.props[key]
               )
             )
           )
-        ]
+        )
       )
     } else {
       // return {}
@@ -84,25 +85,23 @@ function react_form(js_context, input) {
   const formProps = (() => {
     if (!!input.formProps) {
       return t.objectExpression(
-        [
-          Object.keys(input.formProps)
-            .map(key => (
-              t.objectProperty(
-                t.identifier(key),
-                js_process(
-                  {
-                    ...js_context,
-                    topLevel: false,
-                    parentRef: null,
-                    parentPath: null,
-                    JSX_CONTEXT: false,
-                  },
-                  input.formProps[key]
-                )
+        Object.keys(input.formProps)
+          .map(key => (
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  topLevel: false,
+                  parentRef: null,
+                  parentPath: null,
+                  JSX_CONTEXT: false,
+                },
+                input.formProps[key]
               )
             )
           )
-        ]
+        )
       )
     } else {
       // return {}
@@ -209,6 +208,9 @@ function react_form(js_context, input) {
 ////////////////////////////////////////////////////////////////////////////////
 // create input/text ast
 function input_text(js_context, input) {
+
+  // require here to avoid circular require reference
+  const { js_process } = require('./util_code')
 
   if (!('type' in input) || input.type !== 'input/text') {
     throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
@@ -830,6 +832,9 @@ function input_text(js_context, input) {
 ////////////////////////////////////////////////////////////////////////////////
 // create input/text [array] ast
 function input_text_array(js_context, input) {
+
+  // require here to avoid circular require reference
+  const { js_process } = require('./util_code')
 
   if (!('type' in input) || input.type !== 'input/text') {
     throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
