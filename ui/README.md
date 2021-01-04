@@ -27,7 +27,7 @@
         - s2
 
     - type: react/form                                  (~jsx|~expression)
-      name:                     # name for the form     (:string) - unique in file
+      name:                     # name of the form      (:string)             - unique in a file
       onSubmit:                 # function for submit   (:string|:array<:statement>)
       onError:                  # function for error    (:string|:array<:statement>)
       props:                    # props for 'form' tag  (:object<:any>)
@@ -35,12 +35,6 @@
       formProps:                # props for hook form   (:object<:any>)
         mode: 'onSubmit',
         reValidateMode: 'onChange',
-
-
-    —————————————————————————
-
-    - type: mui/style                                   (~expression|~statement)
-      ...:                      # styles in json        (:object<:any>) - js/object overlaps
 
 
     —————————————————————————
@@ -181,14 +175,26 @@
       filter:                   # filter expression     (:expression)
 
 
-                                    - type: js/promise          # TODO
-                                      name:                     # variable or named import
-                                      params:                   # params
+                                    - type: js/promise          # TODO    (~statement)
+                                      name:                     #         (:expression)
+                                      params:                   #         (:array<:expression>)
                                         - p1
                                         - p2
-                                      body:                     # code body
-                                      resolve:                  # code success
-                                      reject:                   # code failure
+                                      body:                     # body    (:string|:array<:statement>)
+                                      resolve:                  # resolve (:string|:array<:statement>)
+                                      reject:                   # reject  (:string|:array<:statement>)
+
+                                    - type: js/variable         # TODO    (~statement)
+                                      kind:                     # (var / let / const)
+                                      name:                     # variable name
+                                      data:                     # js/expression, js/call, js/function
+
+                                    - type: js/call             # TODO    (~statement)
+                                      name:                     #         (:expression)
+                                      params:                             (:array<:expression>)
+                                        - primitive/json
+                                        - js/expression
+                                        - js/call
 
                                     - type: js/transform        # TODO
                                       data:                     # input data
@@ -198,11 +204,6 @@
                                       data:                     # input data
                                       trigger:                  # trigger syntax
 
-                                    - type: js/variable         # TODO    (~statement)
-                                      kind:                     # (var / let / const)
-                                      name:                     # variable name
-                                      data:                     # js/expression, js/call, js/function
-
 
                                                         - type: js/control        # deferred
                                                             - if/else
@@ -211,14 +212,13 @@
                                                             - map
                                                             - array
 
-                                                        - type: js/call           # deferred
-                                                          name:                   # variable or named import
-                                                          params:
-                                                            - primitive/json
-                                                            - js/expression
-                                                            - js/call
-
                                                         - type: js/return         # deferred
+
+
+    —————————————————————————
+
+    - type: mui/style                                   (~expression)
+      ...:                      # styles in json        (:object<:any>)
 
 
     —————————————————————————
