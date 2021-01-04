@@ -1,19 +1,19 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/object                                   (~object|~expression)
 export const js_object = {
 
   name: 'js/object',
   desc: 'Object',
-  types: [
+  kinds: [
     {
-      type: 'object',
+      kind: 'object',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'js_basics',
@@ -21,9 +21,9 @@ export const js_object = {
     {
       name: '*',
       desc: 'Children',
-      types: [
+      kinds: [
         {
-          type: 'any'
+          kind: 'any'
         },
       ],
       _variants: [

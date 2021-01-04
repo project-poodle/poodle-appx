@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/expression                               (~expression)
 // data:                     # expression
@@ -9,9 +9,9 @@ export const js_expression = {
 
   name: 'js/expression',
   desc: 'Expression',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
   ],
   _group: 'js_advanced',
@@ -19,9 +19,9 @@ export const js_expression = {
     {
       name: 'data',
       desc: 'Expression',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [

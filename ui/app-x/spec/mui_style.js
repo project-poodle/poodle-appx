@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: mui/style                                   (~expression)
 // ...:                      # styles in json        (:object<:any>)
@@ -9,9 +9,9 @@ export const mui_style = {
 
   name: 'mui/style',
   desc: 'MUI Style',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'mui',
@@ -19,9 +19,9 @@ export const mui_style = {
     {
       name: '*',
       desc: 'Children',
-      types: [
+      kinds: [
         {
-          type: 'any'
+          kind: 'any'
         },
       ],
       _variants: [

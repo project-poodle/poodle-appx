@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/boolean                                  (~boolean|~primitive|~expression)
 // data:                     # boolean data
@@ -9,15 +9,15 @@ export const js_boolean = {
 
   name: 'js/boolean',
   desc: 'Boolean',
-  types: [
+  kinds: [
     {
-      type: 'boolean',
+      kind: 'boolean',
     },
     {
-      type: 'primitive',
+      kind: 'primitive',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'js_basics',
@@ -25,9 +25,9 @@ export const js_boolean = {
     {
       name: 'data',
       desc: 'Boolean',
-      types: [
+      kinds: [
         {
-          type: 'boolean'
+          kind: 'boolean'
         },
       ],
       _variants: [

@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/switch                                   (~expression|~statement)
 // children:
@@ -12,12 +12,12 @@ export const js_switch = {
 
   name: 'js/switch',
   desc: 'Switch',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
     {
-      type: 'statement',
+      kind: 'statement',
     },
   ],
   _group: 'js_controls',
@@ -25,19 +25,19 @@ export const js_switch = {
     {
       name: 'children',
       desc: 'Conditional',
-      types: [
+      kinds: [
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'object',
+              kind: 'object',
               shape: [
                 {
                   name: 'condition',
                   desc: 'Condition',
-                  types: [
+                  kinds: [
                     {
-                      type: 'expression'
+                      kind: 'expression'
                     }
                   ],
                   rules: [
@@ -56,12 +56,12 @@ export const js_switch = {
                 {
                   name: 'result',
                   desc: 'Result',
-                  types: [
+                  kinds: [
                     {
-                      type: 'expression'
+                      kind: 'expression'
                     },
                     {
-                      type: 'statement'
+                      kind: 'statement'
                     },
                   ],
                 },
@@ -74,12 +74,12 @@ export const js_switch = {
     {
       name: 'default',
       desc: 'Default',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         },
         {
-          type: 'statement'
+          kind: 'statement'
         },
       ],
     },

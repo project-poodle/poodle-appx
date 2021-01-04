@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/function                                 (~expression)
 // params:                                           (:array<:string>)
@@ -12,9 +12,9 @@ export const js_function = {
 
   name: 'js/function',
   desc: 'Function',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
   ],
   _group: 'js_advanced',
@@ -22,12 +22,12 @@ export const js_function = {
     {
       name: 'params',
       desc: 'Parameters',
-      types: [
+      kinds: [
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'string'
+              kind: 'string'
             }
           ]
         },
@@ -48,15 +48,15 @@ export const js_function = {
     {
       name: 'body',
       desc: 'Body',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },

@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: react/state                                 (~expression|~statement)
 // name:                     # name of the state     (:string)
@@ -11,12 +11,12 @@ export const react_state = {
 
   name: 'react/state',
   desc: 'React State',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
     {
-      type: 'statement',
+      kind: 'statement',
     }
   ],
   _group: 'react_concepts',
@@ -24,9 +24,9 @@ export const react_state = {
     {
       name: 'name',
       desc: 'State Name',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
       ],
       rules: [
@@ -57,9 +57,9 @@ export const react_state = {
     {
       name: 'setter',
       desc: 'State Setter',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         }
       ],
       rules: [
@@ -90,9 +90,9 @@ export const react_state = {
     {
       name: 'init',
       desc: 'Init Value',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         }
       ],
       _variants: [

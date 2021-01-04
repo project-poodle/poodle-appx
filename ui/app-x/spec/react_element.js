@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 //import {
 //  REGEX_VAR,
-//  types
-//} from 'app-x/spec/types.js'
+//  type
+//} from 'app-x/spec/kinds.js'
 
-// type: react/element                               (~jsx|~expression)
+// kind: react/element                               (~jsx|~expression)
 // name:                     # element name          (:string|:expression) - autosuggest import
 // props:                    # properties            (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
@@ -16,12 +16,12 @@ export const react_element = {
 
   name: 'react/element',
   desc: 'React Element',
-  types: [
+  kinds: [
     {
-      type: 'jsx',
+      kind: 'jsx',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'react_concepts',
@@ -29,12 +29,12 @@ export const react_element = {
     {
       name: 'name',
       desc: 'Element Name',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         }
       ],
       rules: [
@@ -51,9 +51,9 @@ export const react_element = {
       ],
       _suggestions: [
         {
-          __type: 'js/call',
+          __kind: 'js/call',
           name: {
-            __type: 'js/import',
+            __kind: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_import_names',
           }
         }
@@ -72,13 +72,13 @@ export const react_element = {
     },
     {
       name: 'props',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }
@@ -92,19 +92,19 @@ export const react_element = {
     {
       name: 'children',
       desc: 'Child Elements',
-      types:
+      kinds:
       [
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'jsx',
+              kind: 'jsx',
             },
             {
-              type: 'primitive',
+              kind: 'primitive',
             },
             {
-              type: 'expression',
+              kind: 'expression',
             }
           ]
         }

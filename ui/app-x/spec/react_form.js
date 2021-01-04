@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: react/form                                  (~jsx|~expression)
 // name:                     # name of the form      (:string)             - unique in a file
@@ -14,12 +14,12 @@ export const react_form = {
 
   name: 'react/form',
   desc: 'React Form',
-  types: [
+  kinds: [
     {
-      type: 'jsx',
+      kind: 'jsx',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     },
   ],
   _group: 'form_input',
@@ -27,9 +27,9 @@ export const react_form = {
     {
       name: 'name',
       desc: 'Form Name',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
       ],
       rules: [
@@ -53,15 +53,15 @@ export const react_form = {
     {
       name: 'onSubmit',
       desc: 'onSubmit',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },
@@ -75,15 +75,15 @@ export const react_form = {
     {
       name: 'onError',
       desc: 'onError',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },
@@ -96,13 +96,13 @@ export const react_form = {
     },
     {
       name: 'props',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }
@@ -115,13 +115,13 @@ export const react_form = {
     },
     {
       name: 'formProps',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }
@@ -135,19 +135,19 @@ export const react_form = {
     {
       name: 'children',
       desc: 'Child Elements',
-      types:
+      kinds:
       [
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'jsx',
+              kind: 'jsx',
             },
             {
-              type: 'primitive',
+              kind: 'primitive',
             },
             {
-              type: 'expression',
+              kind: 'expression',
             }
           ]
         }

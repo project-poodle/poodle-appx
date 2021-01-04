@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/number                                   (~number|~primitive|~expression)
 // data:                     # number data
@@ -9,15 +9,15 @@ export const js_number = {
 
   name: 'js/number',
   desc: 'Number',
-  types: [
+  kinds: [
     {
-      type: 'number',
+      kind: 'number',
     },
     {
-      type: 'primitive',
+      kind: 'primitive',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'js_basics',
@@ -25,9 +25,9 @@ export const js_number = {
     {
       name: 'data',
       desc: 'Number',
-      types: [
+      kinds: [
         {
-          type: 'number'
+          kind: 'number'
         },
       ],
       _variants: [

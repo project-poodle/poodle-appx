@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: react/context                               (~expression|~statement)
 // name:                     # context name          (:string) - autosuggest import
@@ -9,12 +9,12 @@ export const react_context = {
 
   name: 'react/context',
   desc: 'React Context',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
     {
-      type: 'statement',
+      kind: 'statement',
     }
   ],
   _group: 'react_concepts',
@@ -22,9 +22,9 @@ export const react_context = {
     {
       name: 'name',
       desc: 'Context Name',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -41,9 +41,9 @@ export const react_context = {
       ],
       _suggestions: [
         {
-          __type: 'js/call',
+          __kind: 'js/call',
           name: {
-            __type: 'js/import',
+            __kind: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_import_names',
           }
         }

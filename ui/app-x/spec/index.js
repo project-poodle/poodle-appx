@@ -1,6 +1,6 @@
 // this file is the spec of APP-X UI builder language
 
-import types from 'app-x/spec/types.js'
+import kinds from 'app-x/spec/kinds.js'
 // react constructs
 import react_element from 'app-x/spec/react_element.js'
 import react_html from 'app-x/spec/react_html.js'
@@ -9,7 +9,7 @@ import react_context from 'app-x/spec/react_context.js'
 // forms and inputs
 import react_form from 'app-x/spec/react_form.js'
 import input_text from 'app-x/spec/input_text.js'
-// javascript types
+// javascript kinds
 import js_null from 'app-x/spec/js_null.js'
 import js_string from 'app-x/spec/js_string.js'
 import js_number from 'app-x/spec/js_number.js'
@@ -33,7 +33,7 @@ import appx_route from 'app-x/spec/appx_route.js'
 
 // export specific spec
 export {
-  types,
+  kinds,
   // react constructs
   react_element,
   react_html,
@@ -42,7 +42,7 @@ export {
   // form and inputs
   react_form,
   input_text,
-  // javascript types,
+  // javascript kinds,
   js_null,
   js_string,
   js_number,
@@ -67,7 +67,7 @@ export {
 
 // also export default
 export default {
-  types,
+  kinds,
   // react constructs
   react_element,
   react_html,
@@ -76,7 +76,7 @@ export default {
   // form and inputs
   react_form,
   input_text,
-  // javascript types,
+  // javascript kinds,
   js_null,
   js_string,
   js_number,

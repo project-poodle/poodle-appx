@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: react/html                                  (~jsx|~expression)
 // name:                     # html tag name         (:expression) - autosuggest non-restrictive
@@ -11,12 +11,12 @@ export const react_html = {
 
   name: 'react/html',
   desc: 'HTML Tag',
-  types: [
+  kinds: [
     {
-      type: 'jsx',
+      kind: 'jsx',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'react_concepts',
@@ -24,12 +24,12 @@ export const react_html = {
     {
       name: 'name',
       desc: 'HTML Tag',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         }
       ],
       rules: [
@@ -46,9 +46,9 @@ export const react_html = {
       ],
       _suggestions: [
         {
-          __type: 'js/call',
+          __kind: 'js/call',
           name: {
-            __type: 'js/import',
+            __kind: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_html_tags',
           }
         }
@@ -64,13 +64,13 @@ export const react_html = {
     },
     {
       name: 'props',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }
@@ -84,22 +84,22 @@ export const react_html = {
     {
       name: 'children',
       desc: 'Child Elements',
-      types:
+      kinds:
       [
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
               name: '.+',
-              type: 'jsx',
+              kind: 'jsx',
             },
             {
               name: '.+',
-              type: 'primitive',
+              kind: 'primitive',
             },
             {
               name: '.+',
-              type: 'expression',
+              kind: 'expression',
             }
           ]
         }

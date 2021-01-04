@@ -1,7 +1,7 @@
 export const REGEX_VAR = /^[_a-zA-Z][_a-zA-Z0-9]*$/
 
-export const types = [
-  // all types
+export const kinds = [
+  // all kinds
   'string',
   'number',
   'boolean',
@@ -15,4 +15,4 @@ export const types = [
   'any',
 ]
 
-export default types
+export default kinds

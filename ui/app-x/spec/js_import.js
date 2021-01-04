@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/import                                   (~expression)
 // name:                     # import name           (:string|:expression) - autosuggest import
@@ -9,9 +9,9 @@ export const js_import = {
 
   name: 'js/import',
   desc: 'Import',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     },
   ],
   _group: 'js_advanced',
@@ -19,9 +19,9 @@ export const js_import = {
     {
       name: 'name',
       desc: 'Import Name',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -38,9 +38,9 @@ export const js_import = {
       ],
       _suggestions: [
         {
-          __type: 'js/call',
+          __kind: 'js/call',
           name: {
-            __type: 'js/import',
+            __kind: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_import_names',
           }
         }

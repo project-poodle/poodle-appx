@@ -1,22 +1,22 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: js/null             # null                  (~null|~primitive|~expression)
 export const js_null = {
 
   name: 'js/null',
   desc: 'Null',
-  types: [
+  kinds: [
     {
-      type: 'null',
+      kind: 'null',
     },
     {
-      type: 'primitive',
+      kind: 'primitive',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'js_basics',

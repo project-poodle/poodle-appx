@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: input/text                                  (~jsx|~expression)
 // name:                     # name of input         (:string|:expression)
@@ -12,12 +12,12 @@ export const input_text = {
 
   name: 'input/text',
   desc: 'Text Input',
-  types: [
+  kinds: [
     {
-      type: 'jsx',
+      kind: 'jsx',
     },
     {
-      type: 'expression',
+      kind: 'expression',
     },
   ],
   _group: 'form_input',
@@ -25,12 +25,12 @@ export const input_text = {
     {
       name: 'name',
       desc: 'Input Name',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -52,9 +52,9 @@ export const input_text = {
     {
       name: 'array',
       desc: 'Is Array',
-      types: [
+      kinds: [
         {
-          type: 'boolean'
+          kind: 'boolean'
         },
       ],
       _variants: [
@@ -65,13 +65,13 @@ export const input_text = {
     },
     {
       name: 'props',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }
@@ -84,13 +84,13 @@ export const input_text = {
     },
     {
       name: 'rules',
-      types: [
+      kinds: [
         {
-          type: 'object',
-          types: [
+          kind: 'object',
+          kinds: [
             {
               name: '.+',
-              type: 'any'
+              kind: 'any'
             }
           ]
         }

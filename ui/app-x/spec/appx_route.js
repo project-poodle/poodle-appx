@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: appx/route                                  (~expression)
 // name:                     # route folder name     (:string|:expression) - default to '/'
@@ -9,9 +9,9 @@ export const appx_route = {
 
   name: 'appx/route',
   desc: 'Routes',
-  types: [
+  kinds: [
     {
-      type: 'expression',
+      kind: 'expression',
     }
   ],
   _group: 'appx',
@@ -19,9 +19,9 @@ export const appx_route = {
     {
       name: 'name',
       desc: 'Router Path',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
       ],
       rules: [

@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  types
-} from 'app-x/spec/types.js'
+  kinds
+} from 'app-x/spec/kinds.js'
 
 // type: appx/api                                    (~statement)
 // namespace:                # namespace             (:string|:expression)
@@ -16,9 +16,9 @@ export const appx_api = {
 
   name: 'appx/api',
   desc: 'API',
-  types: [
+  kinds: [
     {
-      type: 'statement',
+      kind: 'statement',
     }
   ],
   _group: 'appx',
@@ -26,12 +26,12 @@ export const appx_api = {
     {
       name: 'namespace',
       desc: 'Namespace',
-      types: [
+      kinds: [
         {
-          type: 'js/string'
+          kind: 'js/string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -50,12 +50,12 @@ export const appx_api = {
     {
       name: 'app_name',
       desc: 'App Name',
-      types: [
+      kinds: [
         {
-          type: 'js/string'
+          kind: 'js/string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -74,12 +74,12 @@ export const appx_api = {
     {
       name: 'method',
       desc: 'Method',
-      types: [
+      kinds: [
         {
-          type: 'js/string'
+          kind: 'js/string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -98,12 +98,12 @@ export const appx_api = {
     {
       name: 'endpoint',
       desc: 'Endpoint',
-      types: [
+      kinds: [
         {
-          type: 'js/string'
+          kind: 'js/string'
         },
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
       rules: [
@@ -122,18 +122,18 @@ export const appx_api = {
     {
       name: 'data',
       desc: 'Data',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         },
       ],
     },
     {
       name: 'filterr',
       desc: 'Filter',
-      types: [
+      kinds: [
         {
-          type: 'expression'
+          kind: 'expression'
         }
       ],
       _variants: [
@@ -145,15 +145,15 @@ export const appx_api = {
     {
       name: 'init',
       desc: 'Initial Code',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },
@@ -167,15 +167,15 @@ export const appx_api = {
     {
       name: 'result',
       desc: 'Result Handler',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },
@@ -189,15 +189,15 @@ export const appx_api = {
     {
       name: 'error',
       desc: 'Error Handler',
-      types: [
+      kinds: [
         {
-          type: 'string'
+          kind: 'string'
         },
         {
-          type: 'array',
-          types: [
+          kind: 'array',
+          kinds: [
             {
-              type: 'statement'
+              kind: 'statement'
             }
           ]
         },
