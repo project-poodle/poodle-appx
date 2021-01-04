@@ -20,6 +20,7 @@ const js_switch = {
       type: 'statement',
     },
   ],
+  _group: 'js_controls',
   children: [
     {
       name: 'children',

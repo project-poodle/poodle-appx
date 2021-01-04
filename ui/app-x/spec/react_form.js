@@ -22,6 +22,7 @@ const react_form = {
       type: 'expression',
     },
   ],
+  _group: 'form_input',
   children: [
     {
       name: 'name',

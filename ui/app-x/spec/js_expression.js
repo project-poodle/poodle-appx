@@ -14,6 +14,7 @@ const js_expression = {
       type: 'expression',
     },
   ],
+  _group: 'js_advanced',
   children: [
     {
       name: 'data',

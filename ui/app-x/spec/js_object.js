@@ -16,6 +16,7 @@ const js_object = {
       type: 'expression',
     }
   ],
+  _group: 'js_basics',
   children: [
     {
       name: '*',

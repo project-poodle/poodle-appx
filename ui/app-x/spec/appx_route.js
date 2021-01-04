@@ -14,6 +14,7 @@ const appx_route = {
       type: 'expression',
     }
   ],
+  _group: 'appx',
   children: [
     {
       name: 'name',

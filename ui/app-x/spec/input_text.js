@@ -20,6 +20,7 @@ const input_text = {
       type: 'expression',
     },
   ],
+  _group: 'form_input',
   children: [
     {
       name: 'name',

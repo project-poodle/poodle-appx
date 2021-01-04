@@ -18,6 +18,7 @@ const js_map = {
       type: 'statement',
     },
   ],
+  _group: 'js_controls',
   children: [
     {
       name: 'data',

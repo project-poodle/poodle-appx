@@ -14,6 +14,7 @@ const js_statement = {
       type: 'statement',
     },
   ],
+  _group: 'js_advanced',
   children: [
     {
       name: 'body',

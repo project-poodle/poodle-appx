@@ -21,6 +21,7 @@ const appx_api = {
       type: 'statement',
     }
   ],
+  _group: 'appx',
   children: [
     {
       name: 'namespace',

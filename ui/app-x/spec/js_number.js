@@ -20,6 +20,7 @@ const js_number = {
       type: 'expression',
     }
   ],
+  _group: 'js_basics',
   children: [
     {
       name: 'data',

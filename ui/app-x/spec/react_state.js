@@ -19,6 +19,7 @@ const react_state = {
       type: 'statement',
     }
   ],
+  _group: 'react_concepts',
   children: [
     {
       name: 'name',

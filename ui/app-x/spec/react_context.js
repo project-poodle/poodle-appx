@@ -17,6 +17,7 @@ const react_context = {
       type: 'statement',
     }
   ],
+  _group: 'react_concepts',
   children: [
     {
       name: 'name',

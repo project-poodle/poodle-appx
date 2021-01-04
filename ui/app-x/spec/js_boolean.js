@@ -20,6 +20,7 @@ const js_boolean = {
       type: 'expression',
     }
   ],
+  _group: 'js_basics',
   children: [
     {
       name: 'data',

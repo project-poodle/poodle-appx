@@ -14,6 +14,7 @@ const js_import = {
       type: 'expression',
     },
   ],
+  _group: 'js_advanced',
   children: [
     {
       name: 'name',

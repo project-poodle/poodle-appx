@@ -19,6 +19,7 @@ const js_null = {
       type: 'expression',
     }
   ],
+  _group: 'js_basics',
   children: []
 }
 

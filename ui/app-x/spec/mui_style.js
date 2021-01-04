@@ -14,6 +14,7 @@ const mui_style = {
       type: 'expression',
     }
   ],
+  _group: 'mui',
   children: [
     {
       name: '*',

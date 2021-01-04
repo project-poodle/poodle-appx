@@ -15,6 +15,7 @@ const js_filter = {
       type: 'expression',
     },
   ],
+  _group: 'js_controls',
   children: [
     {
       name: 'data',

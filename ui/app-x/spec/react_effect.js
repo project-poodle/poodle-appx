@@ -17,6 +17,7 @@ const react_effect = {
       type: 'statement',
     }
   ],
+  _group: 'react_concepts',
   children: [
     {
       name: 'body',

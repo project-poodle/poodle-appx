@@ -19,6 +19,7 @@ const react_element = {
       type: 'expression',
     }
   ],
+  _group: 'react_concepts',
   children: [
     {
       name: 'name',

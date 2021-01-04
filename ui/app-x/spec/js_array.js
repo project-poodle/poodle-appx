@@ -16,6 +16,7 @@ const js_array = {
       type: 'expression',
     }
   ],
+  _group: 'js_basics',
   children: [
     {
       name: '',

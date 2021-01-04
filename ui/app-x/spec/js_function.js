@@ -17,6 +17,7 @@ const js_function = {
       type: 'expression',
     },
   ],
+  _group: 'js_advanced',
   children: [
     {
       name: 'params',
