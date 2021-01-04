@@ -13,12 +13,12 @@
       children:                 # children              (:array<:jsx|:primitive|:expression>)
 
     - type: react/state                                 (~expression|~statement)
-      name:                     # name of the state     (:string|:expression)
-      setter:                   # name of the setter    (:string|:expression)
+      name:                     # name of the state     (:string)
+      setter:                   # name of the setter    (:string)
       init:                     # init value            (:expression)
 
     - type: react/context                               (~expression|~statement)
-      name:                     # context name          (:expression) - autosuggest import)
+      name:                     # context name          (:expression) - autosuggest import
 
     - type: react/effect                                (~statement)
       body:                     # code body             (:string|:array<:statement>)
@@ -56,7 +56,7 @@
                                 # { value: v, render: r }
         callback:               # callback function     (:function)
                                 # TODO : allowNull
-      rules:                    # input rules           (:object<any>)
+      rules:                    # input rules           (:object<:any>)
         required:               # whether required      (:boolean|:expression)
         pattern:                # pattern & message     (:object<pattern:string,message:string)
                                 # { pattern: p, message: m}
@@ -149,70 +149,69 @@
     - type: js/statement                                (~statement)
       body:                     # code block            (:string|:array<:statement>)
 
-                                    - type: js/module           # TODO
+                                  - type: js/module           # TODO
 
-                                    - type: js/export           # TODO
-                                      name
-                                      default: boolean
+                                  - type: js/export           # TODO
+                                    name
+                                    default: boolean
 
     - type: js/switch                                   (~expression|~statement)
       children:
         - condition:            # condition expression  (:expression)
-          result:               # result data           (:string|:expression|:statement)
-      default:                  # default data          (:string|:expression|:statement)
+          result:               # result data           (:expression|:statement)
+      default:                  # default data          (:expression|:statement)
 
     - type: js/map                                      (~expression|~statement)
       data:                     # input data            (:expression)
-      result:                   # map result            (:expression)
+      result:                   # map result            (:expression|:statement)
 
-    - type: js/reduce                                   (~expression|~statement)
+    - type: js/reduce                                   (~expression)
       data:                     # input data            (:expression)
-      reducer:                  # reducer expression    (:expression)
+      reducer:                  # return expression     (:expression)
       init:                     # init data             (:expression)
 
-    - type: js/filter                                   (~expression|~statement)
+    - type: js/filter                                   (~expression)
       data:                     # input data            (:expression)
       filter:                   # filter expression     (:expression)
 
+                                  - type: js/variable         # TODO    (~statement)
+                                    kind:                     # (var / let / const)
+                                    name:                     # variable name
+                                    data:                     # js/expression, js/call, js/function
 
-                                    - type: js/promise          # TODO    (~statement)
-                                      name:                     #         (:expression)
-                                      params:                   #         (:array<:expression>)
-                                        - p1
-                                        - p2
-                                      body:                     # body    (:string|:array<:statement>)
-                                      resolve:                  # resolve (:string|:array<:statement>)
-                                      reject:                   # reject  (:string|:array<:statement>)
+                                  - type: js/call             # TODO    (~statement)
+                                    name:                     #         (:expression)
+                                    params:                             (:array<:expression>)
+                                      - primitive/json
+                                      - js/expression
+                                      - js/call
 
-                                    - type: js/variable         # TODO    (~statement)
-                                      kind:                     # (var / let / const)
-                                      name:                     # variable name
-                                      data:                     # js/expression, js/call, js/function
+                                  - type: js/promise          # TODO    (~statement)
+                                    name:                     #         (:expression)
+                                    params:                   #         (:array<:expression>)
+                                      - p1
+                                      - p2
+                                    body:                     # body    (:string|:array<:statement>)
+                                    resolve:                  # resolve (:string|:array<:statement>)
+                                    reject:                   # reject  (:string|:array<:statement>)
 
-                                    - type: js/call             # TODO    (~statement)
-                                      name:                     #         (:expression)
-                                      params:                             (:array<:expression>)
-                                        - primitive/json
-                                        - js/expression
-                                        - js/call
+                                  - type: js/transform        # TODO
+                                    data:                     # input data
+                                    transform:                # transform syntax
 
-                                    - type: js/transform        # TODO
-                                      data:                     # input data
-                                      transform:                # transform syntax
-
-                                    - type: js/trigger          # TODO
-                                      data:                     # input data
-                                      trigger:                  # trigger syntax
+                                  - type: js/trigger          # TODO
+                                    data:                     # input data
+                                    trigger:                  # trigger syntax
 
 
-                                                        - type: js/control        # deferred
+                                                        - type: js/control          # deferred
                                                             - if/else
                                                             - for
                                                             - while
                                                             - map
                                                             - array
 
-                                                        - type: js/return         # deferred
+                                                        - type: js/return           # deferred
 
 
     —————————————————————————
@@ -231,8 +230,8 @@
       app_name:                 # app_name              (:string|:expression)
       method:                   # get, post, put, etc   (:string|:expression)
       endpoint:                 # endpoint              (:string|:expression) - autosuggest
-      data:                     # api data              (:object<:any>) - for post, put, patch
-      prep:                     # prep code             (:string|:array<:statement>)
+      data:                     # api data              (:expression)         - for post, put, patch
+      init:                     # init code             (:string|:array<:statement>)
       result:                   # result code           (:string|:array<:statement>)
       error:                    # error code            (:string|:array<:statement>)
 
