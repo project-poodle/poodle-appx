@@ -81,7 +81,7 @@ function react_form(js_context, input) {
     if (!!input.onSubmit) {
       return _js_parse_statements(js_context, input.onSubmit)
     } else {
-      return t.blockStatement([])
+      return []
     }
   })()
 
@@ -89,7 +89,7 @@ function react_form(js_context, input) {
     if (!!input.onError) {
       return _js_parse_statements(js_context, input.onError)
     } else {
-      return t.blockStatement([])
+      return []
     }
   })()
 
@@ -184,13 +184,17 @@ function react_form(js_context, input) {
                       [
                         t.identifier('data')
                       ],
-                      onSubmitStatements,
+                      t.blockStatement(
+                        onSubmitStatements,
+                      )
                     ),
                     t.arrowFunctionExpression(
                       [
                         t.identifier('error')
                       ],
-                      onErrorStatements,
+                      t.blockStatement(
+                        onErrorStatements,
+                      )
                     )
                   ]
                 )

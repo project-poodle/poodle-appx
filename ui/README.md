@@ -2,151 +2,158 @@
 
     —————————————————————————
 
-    - type: react/element
-      name:                     # element name          (autosuggest import)
-      props:                    # properties
-      children:                 # children
+    - type: react/element                               (~jsx|~expression)
+      name:                     # element name          (:string|:expression) - autosuggest import
+      props:                    # properties            (:object<:any>)
+      children:                 # children              (:array<:jsx|:primitive|:expression>)
 
-    - type: react/html
-      name:                     # html tag name         (autosuggest - non-restrictive)
-      props:                    # properties
-      children:                 # children
+    - type: react/html                                  (~jsx|~expression)
+      name:                     # html tag name         (:expression) - autosuggest non-restrictive
+      props:                    # properties            (:object<:any>)
+      children:                 # children              (:array<:jsx|:primitive|:expression>)
 
-    - type: react/state
-      name:                     # name of the state
-      setter:                   # name of the setter
-      init:                     # init value
+    - type: react/state                                 (~expression|~statement)
+      name:                     # name of the state     (:string|:expression)
+      setter:                   # name of the setter    (:string|:expression)
+      init:                     # init value            (:expression)
 
-    - type: react/context
-      name:                     # context name          (autosuggest import)
+    - type: react/context                               (~expression|~statement)
+      name:                     # context name          (:expression) - autosuggest import)
 
-    - type: react/effect
-      body:                     # code body
-      states:                   # state expressions
+    - type: react/effect                                (~statement)
+      body:                     # code body             (:string|:array<:statement>)
+      states:                   # state expressions     (:array<:expression>)
         - s1
         - s2
 
-    - type: react/form
-      name:                     # name for the form     (unique for an element tree)
-      onSubmit:                 # function for submit
-      onError:                  # function for error
-      props:                    # props for html tag
-      formProps:                # props for hook form
+    - type: react/form                                  (~jsx|~expression)
+      name:                     # name for the form     (:string) - unique in file
+      onSubmit:                 # function for submit   (:string|:array<:statement>)
+      onError:                  # function for error    (:string|:array<:statement>)
+      props:                    # props for 'form' tag  (:object<:any>)
+      children:                 # children              (:array<:jsx|:primitive|:expression>)
+      formProps:                # props for hook form   (:object<:any>)
         mode: 'onSubmit',
         reValidateMode: 'onChange',
-        defaultValues: {},
-        resolver: undefined,
-        context: undefined,
-        criteriaMode: "firstError",
-        shouldFocusError: true,
-        shouldUnregister: true,
 
 
     —————————————————————————
 
-    - type: mui/style
-      ...:                      # styles in json        (js/object overlaps)
+    - type: mui/style                                   (~expression|~statement)
+      ...:                      # styles in json        (:object<:any>) - js/object overlaps
 
 
     —————————————————————————
 
-    - type: input/text
-      name:                     # name of input
-      array:                    # whether this control is an array
-      props:                    # properties
-        type:                   # text, number, password, email, tel, url, search, date, time, datetime-local
-        label:                  # input label
-        defaultValue:           # default value
-        multiline:              # allow multiline
-        autocomplete:           # true or false
-        options:                # options { value: v, render: r }
-        callback:               # callback function when value change
+    - type: input/text                                  (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      array:                    # whether array         (:boolean)
+      props:                    # properties            (:object<:any>)
+        type:                   # text, number,         (:string|:expression)
+                                # password, email,
+                                # tel, url, search,
+                                # date, time,
+                                # datetime-local
+        label:                  # input label           (:string|:expression)
+        defaultValue:           # default value         (:object<:any>|:expression)
+        multiline:              # allow multiline       (:boolean|:expression)
+        autocomplete:           # true or false         (:boolean|:expression)
+        options:                # options               (:object)
+                                # { value: v, render: r }
+        callback:               # callback function     (:function)
                                 # TODO : allowNull
-      rules:                    # input rules
-        required:               # whether required
-        pattern:                # pattern & message
-        validate:               # validation condition & message
+      rules:                    # input rules           (:object<any>)
+        required:               # whether required      (:boolean|:expression)
+        pattern:                # pattern & message     (:object<pattern:string,message:string)
+                                # { pattern: p, message: m}
+        validate:               # validation            (:object<condition:expression,message:string>)
+                                # { condition: c, message: message}
 
 
-    - type: input/select
-      name:                     # name of input
-      rules:                    # input rules
-      props:                    # properties
+    - type: input/select                                (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
         label:                  # input label
         defaultValue:           # default value
         options:                # options { value: v, render: r }
-        callback:               # callback function when value change
+        callback:               # callback function
 
-    - type: input/switch
-      name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
+    - type: input/switch                                (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
+        label:                  # input label
+        defaultValue:           # default value
+        callback:               # callback function
 
-    - type: input/datetime
-      name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      inputType:                # date, time, datetime
-      keyboard:                 # whehter to allow keyboard input
+    - type: input/datetime                              (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      variant:                  # date, time, datetime  (:string|:expression)
+      keyboard:                 # allow keyboard input  (:boolean|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
+        label:                  # input label
+        defaultValue:           # default value
+        callback:               # callback function
       rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
 
-    - type: input/slider
-      name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
+    - type: input/slider                                (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
+        label:                  # input label
+        defaultValue:           # default value
+        callback:               # callback function
 
-    - type: input/custom
-      name:                     # name of input
-      label:                    # input label
-      defaultValue:             # default value
-      rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
+    - type: input/custom                                (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
+        label:                  # input label
+        defaultValue:           # default value
+        callback:               # callback function
 
-    - type: input/array
-      name:                     # name of array input
-      label:                    # input label
-      defaultValue:             # default value
-      rules:                    # input rules
-      callback:                 # callback function when value change
-      props:                    # properties
+    - type: input/array                                 (~jsx|~expression)
+      name:                     # name of input         (:string|:expression)
+      rules:                    # input rules           (:object<:any>)
+      props:                    # properties            (:object<:any>)
+        label:                  # input label
+        defaultValue:           # default value
+        callback:               # callback function
 
 
     —————————————————————————
 
-    - type: js/null
+    - type: js/null             # null                  (~null|~primitive|~expression)
 
-    - type: js/string
+    - type: js/string                                   (~string|~primitive|~expression)
       data:                     # string data
 
-    - type: js/number
+    - type: js/number                                   (~number|~primitive|~expression)
       data:                     # number data
 
-    - type: js/boolean
+    - type: js/boolean                                  (~boolean|~primitive|~expression)
       data:                     # boolean data
 
-    - type: js/import
-      name:                     # import name           (autosuggest import)
+    - type: js/object                                   (~object|~expression)
 
-    - type: js/expression
+    - type: js/array                                    (~array|~expression)
+
+    - type: js/import                                   (~expression)
+      name:                     # import name           (:string|:expression) - autosuggest import
+
+    - type: js/expression                               (~expression)
       data:                     # expression
 
-    - type: js/function
-      params:
+    - type: js/function                                 (~expression)
+      params:                                           (:array<:string>)
         - p1
         - p2
-      body:                     # code body
+      body:                     # code body             (:string|:array<:statement>)
 
-    - type: js/block
-      data:                     # code block
+    - type: js/statement                                (~statement)
+      body:                     # code block            (:string|:array<:statement>)
 
                                     - type: js/module           # TODO
 
@@ -154,24 +161,24 @@
                                       name
                                       default: boolean
 
-    - type: js/switch
+    - type: js/switch                                   (~expression|~statement)
       children:
-        - condition:            # condition expression
-          result:               # result data for condition
-      default:                  # default data
+        - condition:            # condition expression  (:expression)
+          result:               # result data           (:string|:expression|:statement)
+      default:                  # default data          (:string|:expression|:statement)
 
-    - type: js/map
-      data:                     # input data
-      result:                   # map result
+    - type: js/map                                      (~expression|~statement)
+      data:                     # input data            (:expression)
+      result:                   # map result            (:expression)
 
-    - type: js/reduce
-      data:                     # input data
-      reducer:                  # reducer expression
-      init:                     # init data
+    - type: js/reduce                                   (~expression|~statement)
+      data:                     # input data            (:expression)
+      reducer:                  # reducer expression    (:expression)
+      init:                     # init data             (:expression)
 
-    - type: js/filter
-      data:                     # input data
-      filter:                   # filter expression
+    - type: js/filter                                   (~expression|~statement)
+      data:                     # input data            (:expression)
+      filter:                   # filter expression     (:expression)
 
 
                                     - type: js/promise          # TODO
@@ -191,7 +198,7 @@
                                       data:                     # input data
                                       trigger:                  # trigger syntax
 
-                                    - type: js/variable         # TODO
+                                    - type: js/variable         # TODO    (~statement)
                                       kind:                     # (var / let / const)
                                       name:                     # variable name
                                       data:                     # js/expression, js/call, js/function
@@ -216,18 +223,18 @@
 
     —————————————————————————
 
-    - type: appx/route
-      name:                     # route folder name     (default to '/')
+    - type: appx/route                                  (~expression)
+      name:                     # route folder name     (:string|:expression) - default to '/'
 
-    - type: appx/api
-      namespace:                # namespace
-      app_name:                 # app_name
-      method:                   # get, post, put, etc
-      endpoint:                 # endpoint              (autosuggest endpoint)
-      data:                     # api data              (only for post, put, patch)
-      prep:                     # prep code
-      result:                   # result code
-      error:                    # error code
+    - type: appx/api                                    (~statement)
+      namespace:                # namespace             (:string|:expression)
+      app_name:                 # app_name              (:string|:expression)
+      method:                   # get, post, put, etc   (:string|:expression)
+      endpoint:                 # endpoint              (:string|:expression) - autosuggest
+      data:                     # api data              (:object<:any>) - for post, put, patch
+      prep:                     # prep code             (:string|:array<:statement>)
+      result:                   # result code           (:string|:array<:statement>)
+      error:                    # error code            (:string|:array<:statement>)
 
 
     —————————————————————————

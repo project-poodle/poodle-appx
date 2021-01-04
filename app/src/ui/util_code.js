@@ -380,7 +380,9 @@ function js_block(js_context, input) {
     ]
   })
 
-  return statements
+  return t.blockStatement(
+    statements
+  )
 }
 
 // create array function ast
@@ -1586,7 +1588,9 @@ function react_effect(js_context, input) {
     [
       t.arrowFunctionExpression(
         [],
-        statements,
+        t.blockStatement(
+          statements,
+        )
       ),
       statesExpression,
     ]
@@ -1695,55 +1699,86 @@ function appx_api(js_context, input) {
   })()
 
   // add prep code if exist
-  const prep_statements = []
-  if (!!input.prep) {
-    prep_statements.push(
-      js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.prep
-      )
-    )
-  }
+  const prep_statements = (() => {
+    if (!!input.prep) {
+      if (isPrimitive(input.prep)) {
+        return _js_parse_statements(
+          js_context,
+          String(input.prep)
+        )
+      } else {
+        return [
+          js_process(
+            {
+              ...js_context,
+              topLevel: false,
+              parentRef: null,
+              parentPath: null,
+              JSX_CONTEXT: false,
+            },
+            input.prep
+          )
+        ]
+      }
+    } else {
+      return []
+    }
+  })()
 
   // add result handler if exist
-  const result_statements = []
-  if (!!input.result) {
-    result_statements.push(
-      js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.result
-      )
-    )
-  }
+  const result_statements = (() => {
+    if (!!input.result) {
+      if (isPrimitive(input.result)) {
+        return _js_parse_statements(
+          js_context,
+          String(input.result)
+        )
+      } else {
+        return [
+          js_process(
+            {
+              ...js_context,
+              topLevel: false,
+              parentRef: null,
+              parentPath: null,
+              JSX_CONTEXT: false,
+            },
+            input.result
+          )
+        ]
+      }
+    } else {
+      return []
+    }
+  })()
+  // console.log(result_statements)
 
   // add error handler if exist
-  const error_statements = []
-  if (!!input.result) {
-    error_statements.push(
-      js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.result
-      )
-    )
-  }
+  const error_statements = (() => {
+    if (!!input.error) {
+      if (isPrimitive(input.error)) {
+        return _js_parse_statements(
+          js_context,
+          String(input.error)
+        )
+      } else {
+        return [
+          js_process(
+            {
+              ...js_context,
+              topLevel: false,
+              parentRef: null,
+              parentPath: null,
+              JSX_CONTEXT: false,
+            },
+            input.result
+          )
+        ]
+      }
+    } else {
+      return []
+    }
+  })()
 
   // register react.useContext
   reg_js_import(js_context, 'app-x/api')
@@ -1753,40 +1788,41 @@ function appx_api(js_context, input) {
     t.arrowFunctionExpression(
       [],
       t.blockStatement(
-        ...prep_statements,
-        t.expressionStatement(
-          t.callExpression(
-            t.memberExpression(
-              t.identifier('app-x/api'),
-              t.identifier(method),
-            ),
-            [
-              t.stringLiteral(input.namespace),
-              t.stringLiteral(input.app_name),
-              t.stringLiteral(method),
-              t.stringLiteral(input.endpoint),
-              (method === 'post' || method === 'put' || method === 'patch')
-              ? data
-              : undefined,
-              t.arrowFunctionExpression(
-                [
-                  t.identifier('result')
-                ],
-                t.blockStatement(
-                  ...result_statements
-                )
+        [
+          ...prep_statements,
+          t.expressionStatement(
+            t.callExpression(
+              t.memberExpression(
+                t.identifier('app-x/api'),
+                t.identifier(method),
               ),
-              t.arrowFunctionExpression(
-                [
-                  t.identifier('error')
-                ],
-                t.blockStatement(
-                  ...error_statements
-                )
-              ),
-            ].filter(item => typeof item !== 'undefined')
+              [
+                t.stringLiteral(input.namespace),
+                t.stringLiteral(input.app_name),
+                t.stringLiteral(input.endpoint),
+                (method === 'post' || method === 'put' || method === 'patch')
+                ? data
+                : undefined,
+                t.arrowFunctionExpression(
+                  [
+                    t.identifier('result')
+                  ],
+                  t.blockStatement(
+                    result_statements
+                  )
+                ),
+                t.arrowFunctionExpression(
+                  [
+                    t.identifier('error')
+                  ],
+                  t.blockStatement(
+                    error_statements
+                  )
+                ),
+              ].filter(item => typeof item !== 'undefined')
+            )
           )
-        )
+        ]
       )
     ),
     []

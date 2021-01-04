@@ -123,9 +123,7 @@ function _js_parse_statements(js_context, data, options) {
     // parse user code snippet
     _js_parse_snippet(js_context, program)
 
-    return t.blockStatement(
-      program.program.body
-    )
+    return program.program.body
 
   } catch (err) {
 

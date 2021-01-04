@@ -2034,7 +2034,7 @@ const SyntaxAddDialog = (props) => {
                       required: "Method is required",
                       validate: {
                         validMethod: value =>
-                          valid_api_methods.includes(value)
+                          valid_api_methods().includes(value)
                           || "Must be a valid method"
                       },
                     }}
@@ -2051,7 +2051,7 @@ const SyntaxAddDialog = (props) => {
                             helperText={errors.method?.message}
                             >
                             {
-                              valid_api_methods.map(method => (
+                              valid_api_methods().map(method => (
                                 <MenuItem key={method} value={method}>
                                   { method.toUpperCase() }
                                 </MenuItem>
