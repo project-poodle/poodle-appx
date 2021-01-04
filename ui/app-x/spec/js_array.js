@@ -1,10 +1,10 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/array                                    (~array|~expression)
-const js_array = {
+export const js_array = {
 
   name: 'js/array',
   desc: 'Array',

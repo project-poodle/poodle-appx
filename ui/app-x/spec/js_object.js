@@ -1,10 +1,10 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/object                                   (~object|~expression)
-const js_object = {
+export const js_object = {
 
   name: 'js/object',
   desc: 'Object',

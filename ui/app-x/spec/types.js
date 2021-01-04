@@ -1,6 +1,6 @@
 export const REGEX_VAR = /^[_a-zA-Z][_a-zA-Z0-9]*$/
 
-const appx_types = [
+export const types = [
   // all types
   'string',
   'number',
@@ -15,4 +15,4 @@ const appx_types = [
   'any',
 ]
 
-export default appx_types
+export default types

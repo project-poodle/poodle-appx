@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: input/text                                  (~jsx|~expression)
 // name:                     # name of input         (:string|:expression)
 // array:                    # whether array         (:boolean)
 // props:                    # properties            (:object<:any>)
 // rules:                    # input rules           (:object<:any>)
-const input_text = {
+export const input_text = {
 
   name: 'input/text',
   desc: 'Text Input',

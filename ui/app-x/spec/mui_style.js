@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: mui/style                                   (~expression)
 // ...:                      # styles in json        (:object<:any>)
-const mui_style = {
+export const mui_style = {
 
   name: 'mui/style',
   desc: 'MUI Style',

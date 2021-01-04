@@ -1,13 +1,13 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/reduce                                   (~expression)
 // data:                     # input data            (:expression)
 // reducer:                  # return expression     (:expression)
 // init:                     # init data             (:expression)
-const js_reduce = {
+export const js_reduce = {
 
   name: 'js/reduce',
   desc: 'Reduce',

@@ -1,13 +1,13 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: react/html                                  (~jsx|~expression)
 // name:                     # html tag name         (:expression) - autosuggest non-restrictive
 // props:                    # properties            (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
-const react_html = {
+export const react_html = {
 
   name: 'react/html',
   desc: 'HTML Tag',

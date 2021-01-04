@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: react/form                                  (~jsx|~expression)
 // name:                     # name of the form      (:string)             - unique in a file
@@ -10,7 +10,7 @@ import {
 // props:                    # props for 'form' tag  (:object<:any>)
 // formProps:                # props for hook form   (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
-const react_form = {
+export const react_form = {
 
   name: 'react/form',
   desc: 'React Form',

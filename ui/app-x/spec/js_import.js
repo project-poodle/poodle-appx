@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/import                                   (~expression)
 // name:                     # import name           (:string|:expression) - autosuggest import
-const js_import = {
+export const js_import = {
 
   name: 'js/import',
   desc: 'Import',

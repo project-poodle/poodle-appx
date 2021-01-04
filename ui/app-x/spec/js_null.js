@@ -1,10 +1,10 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/null             # null                  (~null|~primitive|~expression)
-const js_null = {
+export const js_null = {
 
   name: 'js/null',
   desc: 'Null',

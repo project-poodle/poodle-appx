@@ -2,6 +2,15 @@ const fs = require('fs')
 const path = require('path')
 require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss', label: false})
 
+// load spec
+let appx_spec = null
+async function load_spec() {
+  appx_spec = (await import('./appx_spec.mjs')).default
+  console.log(`INFO: appx_spec`, Object.keys(appx_spec))
+}
+load_spec()
+
+
 //////////////////////////////////////////////////
 // process cli arguments
 const { ArgumentParser } = require('argparse')
@@ -94,6 +103,7 @@ app.use(mount_options.api_root, bodyParser.json())
 app.use(mount_options.api_root,
   (req, res, next) => {
     req.mount_options = mount_options
+    req.appx_spec = appx_spec
     next()
   },
   authenticator,
@@ -109,6 +119,7 @@ app.use(mount_options.api_root,
     (req, res, next) => {
       req.mount_options = mount_options
       req.appx_paths = appx_paths
+      req.appx_spec = appx_spec
       next()
     },
     ui_dispatcher)

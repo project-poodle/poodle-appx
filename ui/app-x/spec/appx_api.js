@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: appx/api                                    (~statement)
 // namespace:                # namespace             (:string|:expression)
@@ -12,7 +12,7 @@ import {
 // prep:                     # prep code             (:string|:array<:statement>)
 // result:                   # result code           (:string|:array<:statement>)
 // error:                    # error code            (:string|:array<:statement>)
-const appx_api = {
+export const appx_api = {
 
   name: 'appx/api',
   desc: 'API',

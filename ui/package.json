@@ -5,6 +5,7 @@
   "proxy_api_base": "/appx/api",
   "proxy_ui_base": "/appx/ui",
   "dist": "dist/lib",
+  "type": "module",
   "scripts": {
     "build": "rollup -c",
     "start": "lite-server -c bs-config.js",
@@ -23,6 +24,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.10.0",
     "@monaco-editor/react": "^3.7.4",
+    "app-x": "../ui/",
     "axios": "^0.21.0",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",

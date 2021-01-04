@@ -1,13 +1,18 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
+
+//import {
+//  REGEX_VAR,
+//  types
+//} from 'app-x/spec/types.js'
 
 // type: react/element                               (~jsx|~expression)
 // name:                     # element name          (:string|:expression) - autosuggest import
 // props:                    # properties            (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
-const react_element = {
+export const react_element = {
 
   name: 'react/element',
   desc: 'React Element',
@@ -59,10 +64,10 @@ const react_element = {
         '@material-ui/core.TextField',
         '@material-ui/icons.AddCircleOutline',
         '@material-ui/icons.RemoveCircleOutline',
-        'antd.Layout.Header'
-        'antd.Layout.Footer'
-        'antd.Layout.Sider'
-        'antd.Layout.Content'
+        'antd.Layout.Header',
+        'antd.Layout.Footer',
+        'antd.Layout.Sider',
+        'antd.Layout.Content',
       ],
     },
     {

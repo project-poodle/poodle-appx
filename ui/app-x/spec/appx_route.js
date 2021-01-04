@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: appx/route                                  (~expression)
 // name:                     # route folder name     (:string|:expression) - default to '/'
-const appx_route = {
+export const appx_route = {
 
   name: 'appx/route',
   desc: 'Routes',

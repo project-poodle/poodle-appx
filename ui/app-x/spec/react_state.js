@@ -1,13 +1,13 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: react/state                                 (~expression|~statement)
 // name:                     # name of the state     (:string)
 // setter:                   # name of the setter    (:string)
 // init:                     # init value            (:expression)
-const react_state = {
+export const react_state = {
 
   name: 'react/state',
   desc: 'React State',

@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: react/effect                                (~statement)
 // body:                     # code body             (:string|:array<:statement>)
 // states:                   # state expressions     (:array<:expression>)
 //   - s1
 //   - s2
-const react_effect = {
+export const react_effect = {
 
   name: 'react/effect',
   desc: 'React Effect',

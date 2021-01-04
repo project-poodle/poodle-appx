@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/function                                 (~expression)
 // params:                                           (:array<:string>)
 //   - p1
 //   - p2
 // body:                     # code body             (:string|:array<:statement>)
-const js_function = {
+export const js_function = {
 
   name: 'js/function',
   desc: 'Function',

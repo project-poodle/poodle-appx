@@ -44,6 +44,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { useForm, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 
+import spec from 'app-x/spec'
+console.log(spec)
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import Asterisk from 'app-x/icon/Asterisk'

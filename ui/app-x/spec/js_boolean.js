@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/boolean                                  (~boolean|~primitive|~expression)
 // data:                     # boolean data
-const js_boolean = {
+export const js_boolean = {
 
   name: 'js/boolean',
   desc: 'Boolean',

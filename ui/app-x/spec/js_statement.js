@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/statement                                (~statement)
 // body:                     # code block            (:string|:array<:statement>)
-const js_statement = {
+export const js_statement = {
 
   name: 'js/statement',
   desc: 'Statement',

@@ -1,12 +1,12 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/filter                                   (~expression)
 // data:                     # input data            (:expression)
 // filter:                   # filter expression     (:expression)
-const js_filter = {
+export const js_filter = {
 
   name: 'js/filter',
   desc: 'Filter',

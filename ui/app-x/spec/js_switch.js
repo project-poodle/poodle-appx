@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: js/switch                                   (~expression|~statement)
 // children:
 //   - condition:            # condition expression  (:expression)
 //     result:               # result data           (:expression|:statement)
 // default:                  # default data          (:expression|:statement)
-const js_switch = {
+export const js_switch = {
 
   name: 'js/switch',
   desc: 'Switch',

@@ -1,35 +1,35 @@
 // this file is the spec of APP-X UI builder language
 
-import types from 'app-x/spec/types'
+import types from 'app-x/spec/types.js'
 // react constructs
-import react_element from 'app-x/spec/react_element'
-import react_html from 'app-x/spec/react_html'
-import react_state from 'app-x/spec/react_state'
-import react_context from 'app-x/spec/react_context'
+import react_element from 'app-x/spec/react_element.js'
+import react_html from 'app-x/spec/react_html.js'
+import react_state from 'app-x/spec/react_state.js'
+import react_context from 'app-x/spec/react_context.js'
 // forms and inputs
-import react_form from 'app-x/spec/react_form'
-import input_text from 'app-x/spec/input_text'
+import react_form from 'app-x/spec/react_form.js'
+import input_text from 'app-x/spec/input_text.js'
 // javascript types
-import js_null from 'app-x/spec/js_null'
-import js_string from 'app-x/spec/js_string'
-import js_number from 'app-x/spec/js_number'
-import js_boolean from 'app-x/spec/js_boolean'
-import js_object from 'app-x/spec/js_object'
-import js_array from 'app-x/spec/js_array'
+import js_null from 'app-x/spec/js_null.js'
+import js_string from 'app-x/spec/js_string.js'
+import js_number from 'app-x/spec/js_number.js'
+import js_boolean from 'app-x/spec/js_boolean.js'
+import js_object from 'app-x/spec/js_object.js'
+import js_array from 'app-x/spec/js_array.js'
 // expressin, function,
-import js_import from 'app-x/spec/js_import'
-import js_expression from 'app-x/spec/js_expression'
-import js_statement from 'app-x/spec/js_statement'
-import js_function from 'app-x/spec/js_function'
+import js_import from 'app-x/spec/js_import.js'
+import js_expression from 'app-x/spec/js_expression.js'
+import js_statement from 'app-x/spec/js_statement.js'
+import js_function from 'app-x/spec/js_function.js'
 // map, reduce, swith, filter
-import js_switch from 'app-x/spec/js_switch'
-import js_map from 'app-x/spec/js_map'
-import js_reduce from 'app-x/spec/js_reduce'
-import js_filter from 'app-x/spec/js_filter'
+import js_switch from 'app-x/spec/js_switch.js'
+import js_map from 'app-x/spec/js_map.js'
+import js_reduce from 'app-x/spec/js_reduce.js'
+import js_filter from 'app-x/spec/js_filter.js'
 // others
-import mui_style from 'app-x/spec/mui_style'
-import appx_api from 'app-x/spec/appx_api'
-import appx_route from 'app-x/spec/appx_route'
+import mui_style from 'app-x/spec/mui_style.js'
+import appx_api from 'app-x/spec/appx_api.js'
+import appx_route from 'app-x/spec/appx_route.js'
 
 // export specific spec
 export {

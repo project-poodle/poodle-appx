@@ -1,11 +1,11 @@
 import {
   REGEX_VAR,
   types
-} from 'app-x/spec/types'
+} from 'app-x/spec/types.js'
 
 // type: react/context                               (~expression|~statement)
 // name:                     # context name          (:string) - autosuggest import
-const react_context = {
+export const react_context = {
 
   name: 'react/context',
   desc: 'React Context',
