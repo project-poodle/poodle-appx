@@ -142,7 +142,7 @@ self.addEventListener('fetch', function(event) {
 
     } else if (url.endsWith('.js') || url.endsWith('.jsx')) {
 
-      console.log(`Service Worker: transpile [${url}]`)
+      // console.log(`Service Worker: transpile [${url}]`)
 
       let p = getTranspiler(event.request)
 
