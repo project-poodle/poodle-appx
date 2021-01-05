@@ -1,185 +1,185 @@
 # Classes
 
-_string_: {
-  _js/string_
-}
+    _string_: {
+      _js/string_
+    }
 
-_number_: {
-  _js/number_
-}
+    _number_: {
+      _js/number_
+    }
 
-_boolean_: {
-  _js/boolean_
-}
+    _boolean_: {
+      _js/boolean_
+    }
 
-_null_: {
-  _js/null_
-}
+    _null_: {
+      _js/null_
+    }
 
-_primitive_: {
-  _string_ |
-  _number_ |
-  _boolean_ |
-  _null_
-}
+    _primitive_: {
+      _string_ |
+      _number_ |
+      _boolean_ |
+      _null_
+    }
 
-_array_: {
-  _js/array_
-}
+    _array_: {
+      _js/array_
+    }
 
-_object_: {
-  _js/object_
-}
+    _object_: {
+      _js/object_
+    }
 
-_expression_: {
-  _primitive_ |
-  _jsx_ |
-  _js/array_ |
-  _js/object_ |
-  _js/import_ |
-  _js/expression_ |
-  _js/function_ |
-  _js/call_ |
-  _js/switch_ |
-  _js/map_ |
-  _js/reduce_ |
-  _js/filter_ |
-  _mui/styles_ |
-  _appx/route_
-}
+    _expression_: {
+      _primitive_ |
+      _jsx_ |
+      _js/array_ |
+      _js/object_ |
+      _js/import_ |
+      _js/expression_ |
+      _js/function_ |
+      _js/call_ |
+      _js/switch_ |
+      _js/map_ |
+      _js/reduce_ |
+      _js/filter_ |
+      _mui/styles_ |
+      _appx/route_
+    }
 
-_statement_: {
-  _js/statement_ |
-  _js/variable_ |
-  _js/call_ |
-  _react/state_ |
-  _react/context_ |
-  _react/effect_ |
-  _js/switch_ |
-  _js/map_ |
-  _appx/api_
-}
+    _statement_: {
+      _js/statement_ |
+      _js/variable_ |
+      _js/call_ |
+      _react/state_ |
+      _react/context_ |
+      _react/effect_ |
+      _js/switch_ |
+      _js/map_ |
+      _appx/api_
+    }
 
-_jsx_: {
-  _react/element_ |
-  _react/html_ |
-  _react/form_ |
-  _input/text_
-}
+    _jsx_: {
+      _react/element_ |
+      _react/html_ |
+      _react/form_ |
+      _input/text_
+    }
 
-_any_: {
-  _primitive_ |
-  _array_ |
-  _object_ |
-  _expression_ |
-  _statement_
-}
+    _any_: {
+      _primitive_ |
+      _array_ |
+      _object_ |
+      _expression_ |
+      _statement_
+    }
 
 # Types
 
-_js/string_: {
-  _JS_STRING_LITERAL_ |
-  {
-    _type: "js/string",
-    data: _JS_STRING_LITERAL_
-  }
-}
-
-_js/number_: {
-  _JS_NUMBER_LITERAL_ |
-  {
-    _type: "js/number",
-    data: _JS_NUMBER_LITERAL_
-  }
-}
-
-_js/boolean_: {
-  _JS_BOOLEAN_LITERAL_  |
-  {
-    _type: "js/number",
-    data: _JS_BOOLEAN_LITERAL_
-  }
-}
-
-_js/boolean_: {
-  _JS_NULL_LITERAL_ |
-  {
-    _type: "js/null"
-  }
-}
-
-_js/array_: {
-  [
-    _any_,
-    ...
-  ]
-    |
-  {
-    type: "js/array",
-    children:
-    [
-      _any_,
-      ...
-    ]
-  }
-}
-
-_js/object_: {
-  {
-    _js/string_: _any_,
-    ...
-  }
-    |
-  {
-    _type: "js/object",
-    _js/string_: _any_,
-    ...
-  }
-}
-
-_js/import_: {
-  {
-    _type: "js/import",
-    name: _js/string_
-  }
-}
-
-_js/expression_: {
-  {
-    _type: "js/expression",
-    data: _JS_STRING_LITERAL_
-  }
-}
-
-_js/function_: {
-  {
-    _type: "js/function",
-    params: [
-      _JS_STRING_LITERAL_,
-      ...
-    ],
-    body: {
+    _js/string_: {
       _JS_STRING_LITERAL_ |
+      {
+        _type: "js/string",
+        data: _JS_STRING_LITERAL_
+      }
+    }
+
+    _js/number_: {
+      _JS_NUMBER_LITERAL_ |
+      {
+        _type: "js/number",
+        data: _JS_NUMBER_LITERAL_
+      }
+    }
+
+    _js/boolean_: {
+      _JS_BOOLEAN_LITERAL_  |
+      {
+        _type: "js/number",
+        data: _JS_BOOLEAN_LITERAL_
+      }
+    }
+
+    _js/boolean_: {
+      _JS_NULL_LITERAL_ |
+      {
+        _type: "js/null"
+      }
+    }
+
+    _js/array_: {
       [
-        _statement_,
+        _any_,
         ...
       ]
+        |
+      {
+        type: "js/array",
+        children:
+        [
+          _any_,
+          ...
+        ]
+      }
     }
-  }
-}
 
-_js/statement_: {
-  {
-    _type: "js/statement",
-    body: {
-      _JS_STRING_LITERAL_ |
-      [
-        _statement_,
+    _js/object_: {
+      {
+        _js/string_: _any_,
         ...
-      ]
+      }
+        |
+      {
+        _type: "js/object",
+        _js/string_: _any_,
+        ...
+      }
     }
-  }
-}
+
+    _js/import_: {
+      {
+        _type: "js/import",
+        name: _js/string_
+      }
+    }
+
+    _js/expression_: {
+      {
+        _type: "js/expression",
+        data: _JS_STRING_LITERAL_
+      }
+    }
+
+    _js/function_: {
+      {
+        _type: "js/function",
+        params: [
+          _JS_STRING_LITERAL_,
+          ...
+        ],
+        body: {
+          _JS_STRING_LITERAL_ |
+          [
+            _statement_,
+            ...
+          ]
+        }
+      }
+    }
+
+    _js/statement_: {
+      {
+        _type: "js/statement",
+        body: {
+          _JS_STRING_LITERAL_ |
+          [
+            _statement_,
+            ...
+          ]
+        }
+      }
+    }
 
 
     —————————————————————————
