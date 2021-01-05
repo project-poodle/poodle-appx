@@ -20,7 +20,7 @@ export const js_object = {
   children: [
     {
       name: '*',
-      desc: 'Children',
+      desc: 'Property',
       classes: [
         {
           class: 'any'
