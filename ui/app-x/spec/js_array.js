@@ -19,15 +19,26 @@ export const js_array = {
   _group: 'js_basics',
   children: [
     {
-      name: null,
+      name: 'children',
       desc: 'Children',
       classes: [
         {
-          class: 'any'
+          class: 'array',
+          classes: [
+            {
+              class: 'any',
+            }
+          ]
         },
       ],
       _child: {
         array: true,
+        generate: '` \
+          parentData.children.map(child => generate(child)) \
+        `',
+        parse: ' \
+          parentNode._children.map(child => parse(child))
+        `',
       }
     },
   ]

@@ -47,11 +47,6 @@ export const js_switch = {
                       message: 'Condition is required'
                     },
                   ],
-                  _inputs: [
-                    {
-                      input: 'js/expression'
-                    }
-                  ],
                 },
                 {
                   name: 'result',

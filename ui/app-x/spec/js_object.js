@@ -31,7 +31,10 @@ export const js_object = {
           input: 'js/object'
         }
       ],
-      _child: {}
+      _child: {
+        generate: '`generate(data)`',
+        parse: '`parse(node)`',
+      }
     },
   ]
 }

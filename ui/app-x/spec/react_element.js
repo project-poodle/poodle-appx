@@ -123,8 +123,7 @@ export const react_element = {
         parse: ' \
           parentNode._children \
             .filter(child => !child._ref) \
-            .map(child => \
-              parse(child) \
+            .map(child => parse(child) \
             ) \
         `',
       }
