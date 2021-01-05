@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: react/html                                  (~jsx|~expression)
 // name:                     # html tag name         (:expression) - autosuggest non-restrictive
@@ -11,12 +11,12 @@ export const react_html = {
 
   name: 'react/html',
   desc: 'HTML Tag',
-  kinds: [
+  classes: [
     {
-      kind: 'jsx',
+      class: 'jsx',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     }
   ],
   _group: 'react_concepts',
@@ -24,12 +24,12 @@ export const react_html = {
     {
       name: 'name',
       desc: 'HTML Tag',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         }
       ],
       rules: [
@@ -39,16 +39,17 @@ export const react_html = {
           message: 'HTML tag is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
+      _child: {},
       _suggestions: [
         {
-          __kind: 'js/call',
+          __class: 'js/call',
           name: {
-            __kind: 'js/import',
+            __class: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_html_tags',
           }
         }
@@ -64,46 +65,65 @@ export const react_html = {
     },
     {
       name: 'props',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {
+        generate: '`generate(data)`',
+        parse: '`parse(node)`',
+      }
     },
     {
       name: 'children',
       desc: 'Child Elements',
-      kinds:
+      classes:
       [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
               name: '.+',
-              kind: 'jsx',
+              class: 'jsx',
             },
             {
               name: '.+',
-              kind: 'primitive',
+              class: 'primitive',
             },
             {
               name: '.+',
-              kind: 'expression',
+              class: 'expression',
             }
           ]
         }
       ],
+      _child: {
+        array: true,
+        generate: '` \
+          parentData.children.map( \
+            child => generate(child) \
+          ) \
+        `',
+        parse: ' \
+          parentNode._children \
+            .filter(child => !child._ref) \
+            .map(child => \
+              parse(child) \
+            ) \
+        `',
+      },
     },
   ]
 }

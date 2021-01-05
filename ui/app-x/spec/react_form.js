@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: react/form                                  (~jsx|~expression)
 // name:                     # name of the form      (:string)             - unique in a file
@@ -14,12 +14,12 @@ export const react_form = {
 
   name: 'react/form',
   desc: 'React Form',
-  kinds: [
+  classes: [
     {
-      kind: 'jsx',
+      class: 'jsx',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     },
   ],
   _group: 'form_input',
@@ -27,9 +27,9 @@ export const react_form = {
     {
       name: 'name',
       desc: 'Form Name',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
       ],
       rules: [
@@ -44,114 +44,142 @@ export const react_form = {
           message: 'Must be a valid variable name',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },
     {
       name: 'onSubmit',
       desc: 'onSubmit',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
         }
       ],
+      _child: {}
     },
     {
       name: 'onError',
       desc: 'onError',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
         }
       ],
+      _child: {}
     },
     {
       name: 'props',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {}
     },
     {
       name: 'formProps',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {
+        generate: '`generate(data)`',
+        parse: '`parse(node)`',
+      }
     },
     {
       name: 'children',
       desc: 'Child Elements',
-      kinds:
+      classes:
       [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'jsx',
+              class: 'jsx',
             },
             {
-              kind: 'primitive',
+              class: 'primitive',
             },
             {
-              kind: 'expression',
+              class: 'expression',
             }
           ]
         }
       ],
+      _child: {
+        array: true,
+        generate: '` \
+          parentData.children.map( \
+            child => generate(child) \
+          ) \
+        `',
+        parse: ' \
+          parentNode._children \
+            .filter(child => !child._ref) \
+            .map(child => \
+              parse(child) \
+            ) \
+        `',
+      },
     },
   ]
 }

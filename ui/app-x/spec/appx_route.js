@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: appx/route                                  (~expression)
 // name:                     # route folder name     (:string|:expression) - default to '/'
@@ -9,9 +9,9 @@ export const appx_route = {
 
   name: 'appx/route',
   desc: 'Routes',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     }
   ],
   _group: 'appx',
@@ -19,21 +19,21 @@ export const appx_route = {
     {
       name: 'name',
       desc: 'Router Path',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
       ],
       rules: [
         {
           kind: 'required',
           required: true,
-          message: 'Form name is required',
+          message: 'Router path is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },

@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/reduce                                   (~expression)
 // data:                     # input data            (:expression)
@@ -11,9 +11,9 @@ export const js_reduce = {
 
   name: 'js/reduce',
   desc: 'Reduce',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
   ],
   _group: 'js_controls',
@@ -21,37 +21,38 @@ export const js_reduce = {
     {
       name: 'data',
       desc: 'Data',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
+      _child: {}
     },
     {
       name: 'reducer',
       desc: 'Reducer',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/expression'
+          input: 'js/expression'
         }
       ],
     },
     {
       name: 'init',
       desc: 'Initial Value',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/expression'
+          input: 'js/expression'
         }
       ],
     },

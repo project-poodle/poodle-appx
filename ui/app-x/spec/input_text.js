@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: input/text                                  (~jsx|~expression)
 // name:                     # name of input         (:string|:expression)
@@ -12,12 +12,12 @@ export const input_text = {
 
   name: 'input/text',
   desc: 'Text Input',
-  kinds: [
+  classes: [
     {
-      kind: 'jsx',
+      class: 'jsx',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     },
   ],
   _group: 'form_input',
@@ -25,12 +25,12 @@ export const input_text = {
     {
       name: 'name',
       desc: 'Input Name',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
       rules: [
@@ -40,66 +40,68 @@ export const input_text = {
           message: 'Input name is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         },
         {
-          variant: 'js/expression'
+          input: 'js/expression'
         },
       ],
     },
     {
       name: 'array',
       desc: 'Is Array',
-      kinds: [
+      classes: [
         {
-          kind: 'boolean'
+          class: 'boolean'
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/boolean'
+          input: 'js/boolean'
         },
       ],
     },
     {
       name: 'props',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {}
     },
     {
       name: 'rules',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {}
     },
   ]
 }

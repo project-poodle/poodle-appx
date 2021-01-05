@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/filter                                   (~expression)
 // data:                     # input data            (:expression)
@@ -10,9 +10,9 @@ export const js_filter = {
 
   name: 'js/filter',
   desc: 'Filter',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
   ],
   _group: 'js_controls',
@@ -20,23 +20,24 @@ export const js_filter = {
     {
       name: 'data',
       desc: 'Data',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
+      _child: {}
     },
     {
       name: 'filterr',
       desc: 'Filter',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/expression'
+          input: 'js/expression'
         }
       ],
     },

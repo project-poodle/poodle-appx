@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/string                                   (~string|~primitive|~expression)
 // data:                     # string data
@@ -9,15 +9,15 @@ export const js_string = {
 
   name: 'js/string',
   desc: 'String',
-  kinds: [
+  classes: [
     {
-      kind: 'string',
+      class: 'string',
     },
     {
-      kind: 'primitive',
+      class: 'primitive',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     }
   ],
   _group: 'js_basics',
@@ -25,14 +25,14 @@ export const js_string = {
     {
       name: 'data',
       desc: 'String',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },

@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/function                                 (~expression)
 // params:                                           (:array<:string>)
@@ -12,9 +12,9 @@ export const js_function = {
 
   name: 'js/function',
   desc: 'Function',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
   ],
   _group: 'js_advanced',
@@ -22,25 +22,26 @@ export const js_function = {
     {
       name: 'params',
       desc: 'Parameters',
-      kinds: [
+      classes: [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'string'
+              class: 'string'
             }
           ]
         },
       ],
       rules: [
         {
+          kind: 'pattern',
           pattern: REGEX_VAR,
           message: 'Must be a valid variable name',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string',
+          input: 'js/string',
           array: true,
         }
       ],
@@ -48,24 +49,28 @@ export const js_function = {
     {
       name: 'body',
       desc: 'Body',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
         }
       ],
+      _child: {}
     },
   ]
 }

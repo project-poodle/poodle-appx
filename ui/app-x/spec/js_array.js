@@ -1,31 +1,34 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/array                                    (~array|~expression)
 export const js_array = {
 
   name: 'js/array',
   desc: 'Array',
-  kinds: [
+  classes: [
     {
-      kind: 'array',
+      class: 'array',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     }
   ],
   _group: 'js_basics',
   children: [
     {
-      name: '',
+      name: null,
       desc: 'Children',
-      kinds: [
+      classes: [
         {
-          kind: 'any'
+          class: 'any'
         },
       ],
+      _child: {
+        array: true,
+      }
     },
   ]
 }

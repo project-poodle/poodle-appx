@@ -1,14 +1,14 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 //import {
 //  REGEX_VAR,
 //  type
-//} from 'app-x/spec/kinds.js'
+//} from 'app-x/spec/classes.js'
 
-// kind: react/element                               (~jsx|~expression)
+// class: react/element                               (~jsx|~expression)
 // name:                     # element name          (:string|:expression) - autosuggest import
 // props:                    # properties            (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
@@ -16,12 +16,12 @@ export const react_element = {
 
   name: 'react/element',
   desc: 'React Element',
-  kinds: [
+  classes: [
     {
-      kind: 'jsx',
+      class: 'jsx',
     },
     {
-      kind: 'expression',
+      class: 'expression',
     }
   ],
   _group: 'react_concepts',
@@ -29,12 +29,12 @@ export const react_element = {
     {
       name: 'name',
       desc: 'Element Name',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         }
       ],
       rules: [
@@ -44,16 +44,16 @@ export const react_element = {
           message: 'Element name is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/import'
+          input: 'js/import'
         }
       ],
       _suggestions: [
         {
-          __kind: 'js/call',
+          __class: 'js/call',
           name: {
-            __kind: 'js/import',
+            __class: 'js/import',
             name: 'app-x/builder/ui/syntax/util_parse.valid_import_names',
           }
         }
@@ -72,43 +72,62 @@ export const react_element = {
     },
     {
       name: 'props',
-      kinds: [
+      classes: [
         {
-          kind: 'object',
-          kinds: [
+          class: 'object',
+          classes: [
             {
               name: '.+',
-              kind: 'any'
+              class: 'any'
             }
           ]
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/object'
+          input: 'js/object'
         }
       ],
+      _child: {
+        generate: '`generate(data)`',
+        parse: '`parse(node)`',
+      }
     },
     {
       name: 'children',
       desc: 'Child Elements',
-      kinds:
+      classes:
       [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'jsx',
+              class: 'jsx',
             },
             {
-              kind: 'primitive',
+              class: 'primitive',
             },
             {
-              kind: 'expression',
+              class: 'expression',
             }
           ]
         }
       ],
+      _child: {
+        array: true,
+        generate: '` \
+          parentData.children.map( \
+            child => generate(child) \
+          ) \
+        `',
+        parse: ' \
+          parentNode._children \
+            .filter(child => !child._ref) \
+            .map(child => \
+              parse(child) \
+            ) \
+        `',
+      }
     },
   ]
 }

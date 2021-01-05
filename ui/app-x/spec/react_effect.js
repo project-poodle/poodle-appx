@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: react/effect                                (~statement)
 // body:                     # code body             (:string|:array<:statement>)
@@ -12,9 +12,9 @@ export const react_effect = {
 
   name: 'react/effect',
   desc: 'React Effect',
-  kinds: [
+  classes: [
     {
-      kind: 'statement',
+      class: 'statement',
     }
   ],
   _group: 'react_concepts',
@@ -22,41 +22,45 @@ export const react_effect = {
     {
       name: 'body',
       desc: 'Body',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
         }
       ],
+      _child: {}
     },
     {
       name: 'states',
       desc: 'States',
-      kinds: [
+      classes: [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'expression'
+              class: 'expression'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/expression',
+          input: 'js/expression',
           array: true,
         }
       ],

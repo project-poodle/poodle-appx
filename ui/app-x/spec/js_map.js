@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/map                                      (~expression|~statement)
 // data:                     # input data            (:expression)
@@ -10,12 +10,12 @@ export const js_map = {
 
   name: 'js/map',
   desc: 'Map',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
     {
-      kind: 'statement',
+      class: 'statement',
     },
   ],
   _group: 'js_controls',
@@ -23,23 +23,25 @@ export const js_map = {
     {
       name: 'data',
       desc: 'Data',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
+      _child: {}
     },
     {
       name: 'result',
       desc: 'Result',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
         {
-          kind: 'statement'
+          class: 'statement'
         },
       ],
+      _child: {}
     },
   ]
 }

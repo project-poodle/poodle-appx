@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/switch                                   (~expression|~statement)
 // children:
@@ -12,12 +12,12 @@ export const js_switch = {
 
   name: 'js/switch',
   desc: 'Switch',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
     {
-      kind: 'statement',
+      class: 'statement',
     },
   ],
   _group: 'js_controls',
@@ -25,19 +25,19 @@ export const js_switch = {
     {
       name: 'children',
       desc: 'Conditional',
-      kinds: [
+      classes: [
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'object',
+              class: 'object',
               shape: [
                 {
                   name: 'condition',
                   desc: 'Condition',
-                  kinds: [
+                  classes: [
                     {
-                      kind: 'expression'
+                      class: 'expression'
                     }
                   ],
                   rules: [
@@ -47,21 +47,21 @@ export const js_switch = {
                       message: 'Condition is required'
                     },
                   ],
-                  _variants: [
+                  _inputs: [
                     {
-                      variant: 'js/expression'
+                      input: 'js/expression'
                     }
                   ],
                 },
                 {
                   name: 'result',
                   desc: 'Result',
-                  kinds: [
+                  classes: [
                     {
-                      kind: 'expression'
+                      class: 'expression'
                     },
                     {
-                      kind: 'statement'
+                      class: 'statement'
                     },
                   ],
                 },
@@ -70,20 +70,142 @@ export const js_switch = {
           ],
         },
       ],
+      _child: {
+        array: true,
+        generate: '` \
+          parentData.children.map( \
+            child => (() => { \
+              const node = generate(child.result); \
+              node.data._isDefault = false; \
+              node.data._condition = child.condition; \
+              return node \
+            })() \
+          ) \
+        `',
+        parse: ' \
+          parentNode._children \
+            .filter(child => !child._isDefault) \
+            .map(child => { \
+              condition: child.data._condition, \
+              result: parse(child) \
+            }) \
+        `',
+        customs: [
+          {
+            name: '_isDefault',
+            desc: 'Is Default',
+            classes: [
+              {
+                class: 'boolean'
+              }
+            ],
+            _inputs: [
+              {
+                input: 'js/boolean'
+              }
+            ],
+            _init: false
+          },
+          {
+            name: '_condition',
+            desc: 'Condition',
+            condition: '`!node.data._isDefault`',
+            classes: [
+              {
+                class: 'expression',
+              }
+            ],
+            _inputs: [
+              {
+                input: 'js/expression'
+              }
+            ],
+          },
+        ],
+        effects: [
+          {
+            body: '` \
+              node.data._ref = \
+                !!node.data._isDefault \
+                ? 'default' \
+                : null \
+            `',
+            states: [
+              '`node.data._isDefault`'
+            ]
+          }
+        ]
+      }
     },
     {
       name: 'default',
       desc: 'Default',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
         {
-          kind: 'statement'
+          class: 'statement'
         },
       ],
+      _child: {
+        generate: '` \
+          (() => { \
+            const node = generate(data); \
+            node.data._isDefault = true; \
+            node.data._condition = ''; \
+            return node \
+          })() \
+        `',
+        parse: '`parse(node)`',
+        customs: [
+          {
+            name: '_isDefault',
+            desc: 'Is Default',
+            classes: [
+              {
+                class: 'boolean'
+              }
+            ],
+            _inputs: [
+              {
+                input: 'js/boolean'
+              }
+            ],
+            _init: true
+          },
+          {
+            name: '_condition',
+            desc: 'Condition',
+            condition: '`!node.data._isDefault`',
+            classes: [
+              {
+                class: 'expression',
+              }
+            ],
+            _inputs: [
+              {
+                input: 'js/expression'
+              }
+            ],
+          },
+        ],
+        effects: [
+          {
+            body: '` \
+              node.data._ref = \
+                !!node.data._isDefault \
+                ? 'default' \
+                : null \
+            `',
+            states: [
+              '`node.data._isDefault`'
+            ]
+          }
+        ]
+      }
     },
-  ]
+  ],
 }
 
 export default js_switch

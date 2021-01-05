@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: appx/api                                    (~statement)
 // namespace:                # namespace             (:string|:expression)
@@ -16,9 +16,9 @@ export const appx_api = {
 
   name: 'appx/api',
   desc: 'API',
-  kinds: [
+  classes: [
     {
-      kind: 'statement',
+      class: 'statement',
     }
   ],
   _group: 'appx',
@@ -26,12 +26,12 @@ export const appx_api = {
     {
       name: 'namespace',
       desc: 'Namespace',
-      kinds: [
+      classes: [
         {
-          kind: 'js/string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
       rules: [
@@ -41,21 +41,21 @@ export const appx_api = {
           message: 'Namespace is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         },
       ],
     },
     {
       name: 'app_name',
       desc: 'App Name',
-      kinds: [
+      classes: [
         {
-          kind: 'js/string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
       rules: [
@@ -65,21 +65,21 @@ export const appx_api = {
           message: 'App name is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },
     {
       name: 'method',
       desc: 'Method',
-      kinds: [
+      classes: [
         {
-          kind: 'js/string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
       rules: [
@@ -89,21 +89,21 @@ export const appx_api = {
           message: 'Method is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },
     {
       name: 'endpoint',
       desc: 'Endpoint',
-      kinds: [
+      classes: [
         {
-          kind: 'js/string'
+          class: 'string'
         },
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
       rules: [
@@ -113,100 +113,107 @@ export const appx_api = {
           message: 'Endpoint is required',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
     },
     {
       name: 'data',
       desc: 'Data',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         },
       ],
-    },
-    {
-      name: 'filterr',
-      desc: 'Filter',
-      kinds: [
+      _inputs: [
         {
-          kind: 'expression'
-        }
-      ],
-      _variants: [
+          input: 'js/expression'
+        },
         {
-          variant: 'js/expression'
-        }
+          input: 'js/child'
+        },
       ],
+      _child: {},
     },
     {
       name: 'init',
       desc: 'Initial Code',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
-        }
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
+        },
       ],
+      _child: {},
     },
     {
       name: 'result',
       desc: 'Result Handler',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
-            }
+              class: 'statement'
+            },
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
-        }
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
+        },
       ],
+      _child: {},
     },
     {
       name: 'error',
       desc: 'Error Handler',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
-            }
+              class: 'statement'
+            },
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
-        }
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
+        },
       ],
+      _child: {},
     },
   ]
 }

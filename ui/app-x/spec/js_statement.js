@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: js/statement                                (~statement)
 // body:                     # code block            (:string|:array<:statement>)
@@ -9,9 +9,9 @@ export const js_statement = {
 
   name: 'js/statement',
   desc: 'Statement',
-  kinds: [
+  classes: [
     {
-      kind: 'statement',
+      class: 'statement',
     },
   ],
   _group: 'js_advanced',
@@ -19,24 +19,28 @@ export const js_statement = {
     {
       name: 'body',
       desc: 'Body',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
         {
-          kind: 'array',
-          kinds: [
+          class: 'array',
+          classes: [
             {
-              kind: 'statement'
+              class: 'statement'
             }
           ]
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/statement'
+          input: 'js/statement'
+        },
+        {
+          input: 'js/child'
         }
       ],
+      _child: {}
     },
   ]
 }

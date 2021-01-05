@@ -1,7 +1,7 @@
 import {
   REGEX_VAR,
-  kinds
-} from 'app-x/spec/kinds.js'
+  classes
+} from 'app-x/spec/classes.js'
 
 // type: react/state                                 (~expression|~statement)
 // name:                     # name of the state     (:string)
@@ -11,12 +11,12 @@ export const react_state = {
 
   name: 'react/state',
   desc: 'React State',
-  kinds: [
+  classes: [
     {
-      kind: 'expression',
+      class: 'expression',
     },
     {
-      kind: 'statement',
+      class: 'statement',
     }
   ],
   _group: 'react_concepts',
@@ -24,9 +24,9 @@ export const react_state = {
     {
       name: 'name',
       desc: 'State Name',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         },
       ],
       rules: [
@@ -40,9 +40,9 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
       _examples: [
@@ -57,9 +57,9 @@ export const react_state = {
     {
       name: 'setter',
       desc: 'State Setter',
-      kinds: [
+      classes: [
         {
-          kind: 'string'
+          class: 'string'
         }
       ],
       rules: [
@@ -69,13 +69,14 @@ export const react_state = {
           message: 'State setter is required',
         },
         {
+          kind: 'pattern',
           pattern: REGEX_VAR,
           message: 'Must be a valid variable name',
         },
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/string'
+          input: 'js/string'
         }
       ],
       _examples: [
@@ -90,14 +91,14 @@ export const react_state = {
     {
       name: 'init',
       desc: 'Init Value',
-      kinds: [
+      classes: [
         {
-          kind: 'expression'
+          class: 'expression'
         }
       ],
-      _variants: [
+      _inputs: [
         {
-          variant: 'js/expression'
+          input: 'js/expression'
         }
       ],
       _examples: [
