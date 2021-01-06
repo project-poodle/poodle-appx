@@ -104,6 +104,8 @@ export const react_form = {
     },
     {
       name: 'props',
+      desc: 'Properties',
+      optional: true,
       classes: [
         {
           class: 'object',
@@ -124,6 +126,8 @@ export const react_form = {
     },
     {
       name: 'formProps',
+      desc: 'Form Properties',
+      optional: true,
       classes: [
         {
           class: 'object',
@@ -148,6 +152,7 @@ export const react_form = {
     {
       name: 'children',
       desc: 'Child Elements',
+      optional: true,
       classes:
       [
         {

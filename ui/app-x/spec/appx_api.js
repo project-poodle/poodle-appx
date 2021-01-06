@@ -122,6 +122,7 @@ export const appx_api = {
     {
       name: 'data',
       desc: 'Data',
+      optional: true,
       classes: [
         {
           class: 'expression'
@@ -139,7 +140,8 @@ export const appx_api = {
     },
     {
       name: 'init',
-      desc: 'Initial Code',
+      desc: 'Init Code',
+      optional: true,
       classes: [
         {
           class: 'string'
@@ -166,6 +168,7 @@ export const appx_api = {
     {
       name: 'result',
       desc: 'Result Handler',
+      optional: true,
       classes: [
         {
           class: 'string'
@@ -192,6 +195,7 @@ export const appx_api = {
     {
       name: 'error',
       desc: 'Error Handler',
+      optional: true,
       classes: [
         {
           class: 'string'

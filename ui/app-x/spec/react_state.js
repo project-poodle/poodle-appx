@@ -91,6 +91,7 @@ export const react_state = {
     {
       name: 'init',
       desc: 'Init Value',
+      optional: true,
       classes: [
         {
           class: 'expression'

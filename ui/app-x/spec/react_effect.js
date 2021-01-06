@@ -48,6 +48,7 @@ export const react_effect = {
     {
       name: 'states',
       desc: 'States',
+      optional: true,
       classes: [
         {
           class: 'array',

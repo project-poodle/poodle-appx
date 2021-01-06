@@ -65,6 +65,8 @@ export const react_html = {
     },
     {
       name: 'props',
+      desc: 'Properties',
+      optional: true,
       classes: [
         {
           class: 'object',
@@ -89,6 +91,7 @@ export const react_html = {
     {
       name: 'children',
       desc: 'Child Elements',
+      optional: true,
       classes:
       [
         {

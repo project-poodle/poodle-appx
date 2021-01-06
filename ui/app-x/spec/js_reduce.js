@@ -45,6 +45,7 @@ export const js_reduce = {
     {
       name: 'init',
       desc: 'Initial Value',
+      optional: true,
       classes: [
         {
           class: 'expression'

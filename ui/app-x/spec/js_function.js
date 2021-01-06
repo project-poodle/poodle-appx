@@ -22,6 +22,7 @@ export const js_function = {
     {
       name: 'params',
       desc: 'Parameters',
+      optional: true,
       classes: [
         {
           class: 'array',

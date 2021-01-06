@@ -52,6 +52,7 @@ export const input_text = {
     {
       name: 'array',
       desc: 'Is Array',
+      optional: true,
       classes: [
         {
           class: 'boolean'
@@ -65,6 +66,8 @@ export const input_text = {
     },
     {
       name: 'props',
+      desc: 'Properties',
+      optional: true,
       classes: [
         {
           class: 'object',
@@ -85,6 +88,8 @@ export const input_text = {
     },
     {
       name: 'rules',
+      desc: 'Rules',
+      optional: true,
       classes: [
         {
           class: 'object',

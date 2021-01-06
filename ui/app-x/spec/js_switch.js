@@ -135,6 +135,7 @@ export const js_switch = {
     {
       name: 'default',
       desc: 'Default',
+      optional: true,
       classes: [
         {
           class: 'expression'
