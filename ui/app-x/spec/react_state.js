@@ -33,7 +33,7 @@ export const react_state = {
         {
           kind: 'required',
           required: true,
-          message: 'State name is required',
+          message: 'Name is required',
         },
         {
           pattern: REGEX_VAR,
@@ -66,7 +66,7 @@ export const react_state = {
         {
           kind: 'required',
           required: true,
-          message: 'State setter is required',
+          message: 'Setter is required',
         },
         {
           kind: 'pattern',
