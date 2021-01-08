@@ -67,7 +67,7 @@ import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/syntax/SyntaxAddDialog'

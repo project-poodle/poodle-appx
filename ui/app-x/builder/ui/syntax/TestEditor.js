@@ -48,7 +48,7 @@ import {
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_lookup,
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 
 let pendingTimer = new Date()
 

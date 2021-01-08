@@ -37,7 +37,7 @@ import PreviewYaml from 'app-x/builder/ui/syntax/PreviewYaml'
 import PreviewJson from 'app-x/builder/ui/syntax/PreviewJson'
 import {
   gen_js,
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewTabs = (props) => {
 

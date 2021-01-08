@@ -50,7 +50,7 @@ import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 
 // add dialog
 const SyntaxMoveDialog = (props) => {

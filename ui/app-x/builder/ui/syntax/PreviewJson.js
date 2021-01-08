@@ -16,7 +16,7 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
   gen_js,
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewJson = (props) => {
 

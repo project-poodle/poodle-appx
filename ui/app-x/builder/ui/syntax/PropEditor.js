@@ -51,7 +51,7 @@ import {
   lookup_child_by_ref,
   remove_child_by_ref,
   gen_js,
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 
 let pendingTimer = new Date()
 

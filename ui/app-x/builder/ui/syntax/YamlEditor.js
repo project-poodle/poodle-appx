@@ -40,7 +40,7 @@ import {
   tree_lookup,
   lookup_child_by_ref,
   gen_js,
-} from 'app-x/builder/ui/syntax/util_tree'
+} from 'app-x/builder/ui/syntax/util_parse'
 // context provider
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import ControlledEditor from 'app-x/builder/ui/syntax/ControlledEditor'
