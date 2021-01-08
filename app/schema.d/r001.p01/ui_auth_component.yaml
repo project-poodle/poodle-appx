@@ -28,6 +28,7 @@ ui_component:
               props:
                   routes:
                       _type: appx/route
+                      name: /
                   redux_store_provider:
                       _type: js/import
                       name: app-x/redux/store.default
