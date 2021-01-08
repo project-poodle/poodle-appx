@@ -619,7 +619,7 @@ const SyntaxTree = (props) => {
     // ref
     const ref =
       (nodeData.type === 'react/state')
-      ? !!nodeData.__customRef        // special handle of 'react/state'
+      ? !!nodeData._customRef        // special handle of 'react/state'
         ? nodeData._ref
         : `...${nodeData.name}`
       : !!nodeRef ? nodeRef : (nodeData._ref ? nodeData._ref : null)

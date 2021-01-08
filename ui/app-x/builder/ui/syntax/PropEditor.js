@@ -154,19 +154,19 @@ const PropEditor = (props) => {
     formState,
   } = hookForm
 
-  // watch __customRef
-  const watch__customRef = watch('__customRef')
+  // watch _customRef
+  const watch_customRef = watch('_customRef')
   useEffect(() => {
     if (treeNode?.data?._type === 'react/state') {
-      if (!!watch__customRef) {
+      if (!!watch_customRef) {
         if (!getValues(`_ref`)) {
           setValue(`_ref`, `${getValues('name')}`)
         }
-      } else if (!watch__customRef) {
+      } else if (!watch_customRef) {
         setValue(`_ref`, `...${getValues('name')}`)
       }
     }
-  }, [watch__customRef])
+  }, [watch_customRef])
 
   useEffect(() => {
     // check validity
@@ -232,8 +232,8 @@ const PropEditor = (props) => {
         }
       })
       if (treeNode.data._type === 'react/state') {
-        // console.log(`__customRef`, treeNode, !!treeNode.data._ref && !treeNode.data._ref.startsWith('...'))
-        setValue('__customRef',
+        // console.log(`_customRef`, treeNode, !!treeNode.data._ref && !treeNode.data._ref.startsWith('...'))
+        setValue('_customRef',
           !!treeNode.data._ref
           && !treeNode.data._ref.startsWith('...'))
       }
@@ -300,9 +300,9 @@ const PropEditor = (props) => {
     } else {
       lookupNode.data._ref = null
     }
-    // check if lookupNode is react/state, and __customRef is false
+    // check if lookupNode is react/state, and _customRef is false
     if (lookupNode.data._type === 'react/state') {
-      if (!data.__customRef) {
+      if (!data._customRef) {
         lookupNode.data._ref = `...${lookupNode.data.name}`
       }
     }
@@ -590,15 +590,15 @@ const PropEditor = (props) => {
                 (
                   <Controller
                     control={control}
-                    key='__customRef'
-                    name='__customRef'
+                    key='_customRef'
+                    name='_customRef'
                     type="boolean"
                     defaultValue={!treeNode?.data?._ref?.startsWith('...')}
                     render={props =>
                       (
                         <FormControl
                           className={styles.formControl}
-                          error={!!errors.__customRef}
+                          error={!!errors._customRef}
                           >
                           <FormHelperText>Custom Reference</FormHelperText>
                           <Switch
@@ -610,9 +610,9 @@ const PropEditor = (props) => {
                             }}
                           />
                           {
-                            !!errors.__customRef
+                            !!errors._customRef
                             &&
-                            <FormHelperText>{errors.__customRef?.message}</FormHelperText>
+                            <FormHelperText>{errors._customRef?.message}</FormHelperText>
                           }
                         </FormControl>
                       )
@@ -632,7 +632,7 @@ const PropEditor = (props) => {
                   && !
                   (
                     (treeNode?.data?._type === 'react/state')
-                    && !getValues('__customRef')
+                    && !getValues('_customRef')
                   )
                 )
                 &&

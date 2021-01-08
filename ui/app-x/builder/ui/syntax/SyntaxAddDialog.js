@@ -142,19 +142,19 @@ const SyntaxAddDialog = (props) => {
   // console.log(nodeType)
   // console.log(props)
 
-  // watch__customRef
-  const watch__customRef = watch('__customRef')
+  // watch_customRef
+  const watch_customRef = watch('_customRef')
   useEffect(() => {
     if (nodeType === 'react/state') {
-      if (!!watch__customRef) {
+      if (!!watch_customRef) {
         if (!getValues(`_ref`)) {
           setValue(`_ref`, `${getValues('name')}`)
         }
-      } else if (!watch__customRef) {
+      } else if (!watch_customRef) {
         setValue(`_ref`, `...${getValues('name')}`)
       }
     }
-  }, [watch__customRef])
+  }, [watch_customRef])
 
 
   return (
@@ -195,15 +195,15 @@ const SyntaxAddDialog = (props) => {
               (
                 <Controller
                   control={control}
-                  key='__customRef'
-                  name='__customRef'
+                  key='_customRef'
+                  name='_customRef'
                   type="boolean"
                   defaultValue={false}
                   render={props =>
                     (
                       <FormControl
                         className={styles.formControl}
-                        error={!!errors.__customRef}
+                        error={!!errors._customRef}
                         >
                         <FormHelperText>Custom Reference</FormHelperText>
                         <Switch
@@ -219,9 +219,9 @@ const SyntaxAddDialog = (props) => {
                           }}
                         />
                         {
-                          !!errors.__customRef
+                          !!errors._customRef
                           &&
-                          <FormHelperText>{errors.__customRef?.message}</FormHelperText>
+                          <FormHelperText>{errors._customRef?.message}</FormHelperText>
                         }
                       </FormControl>
                     )
@@ -239,7 +239,7 @@ const SyntaxAddDialog = (props) => {
                 ||
                 (
                   (nodeType === 'react/state')
-                  && !!getValues('__customRef')
+                  && !!getValues('_customRef')
                 )
               )
               &&
