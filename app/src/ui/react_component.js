@@ -54,11 +54,11 @@ function handle_react_component(req, res) {
         }
     }
 
-    if (! ('type' in req.context.ui_component_spec.element)
+    if (! ('_type' in req.context.ui_component_spec.element)
         ||
         (
-          req.context.ui_component_spec.element.type != 'react/element'
-          && req.context.ui_component_spec.element.type != 'react/html'
+          req.context.ui_component_spec.element._type != 'react/element'
+          && req.context.ui_component_spec.element._type != 'react/html'
         )
     ) {
         return {
@@ -66,7 +66,7 @@ function handle_react_component(req, res) {
             type: 'application/json',
             data: {
                 status: FAILURE,
-                message: `ERROR: ui_component_spec.element.type must be [react/element] or [react/html], received [${req.context.ui_component_spec.element.type}]`
+                message: `ERROR: ui_component_spec.element._type must be [react/element] or [react/html], received [${req.context.ui_component_spec.element._type}]`
             }
         }
     }
@@ -106,16 +106,16 @@ function handle_react_component(req, res) {
       reg_js_variable(js_context, ui_test_name)
       // process providers
       let test_element = {
-        type: 'react/element',
+        _type: 'react/element',
         name: ui_elem_name,
       }
       if (!!req.context.ui_component_spec.__test.providers) {
         req.context.ui_component_spec.__test.providers
           .reverse()
-          .filter(provider => provider.type === 'react/element')
+          .filter(provider => provider._type === 'react/element')
           .map(provider => {
             test_element = {
-              type: provider.type,
+              _type: provider._type,
               name: provider.name,
               props: provider.props,
               children: [

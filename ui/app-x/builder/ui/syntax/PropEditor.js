@@ -157,7 +157,7 @@ const PropEditor = (props) => {
   // watch __customRef
   const watch__customRef = watch('__customRef')
   useEffect(() => {
-    if (treeNode?.data?.type === 'react/state') {
+    if (treeNode?.data?._type === 'react/state') {
       if (!!watch__customRef) {
         if (!getValues(`__ref`)) {
           setValue(`__ref`, `${getValues('name')}`)
@@ -176,7 +176,7 @@ const PropEditor = (props) => {
       && !!navDeployment.ui_name
       && !!navDeployment.ui_ver
       && !! navDeployment.ui_deployment
-      && !! navSelected.type
+      && !! navSelected._type
       &&
       (
         (
@@ -200,7 +200,7 @@ const PropEditor = (props) => {
       // console.log(lookupNode)
       // console.log(parentNode)
       if (lookupNode) {
-        setNodeType(lookupNode.data.type)
+        setNodeType(lookupNode.data._type)
       }
     }
     else
@@ -224,14 +224,14 @@ const PropEditor = (props) => {
   // setValue when treeNode change
   useEffect(() => {
     if (!!treeNode) {
-      setNodeType(treeNode.data.type)
+      setNodeType(treeNode.data._type)
       Object.keys(treeNode.data).map(k => {
         if (!!k) {
           // console.log(`setValue`, k, treeNode.data[k])
           setValue(k, treeNode.data[k])
         }
       })
-      if (treeNode.data.type === 'react/state') {
+      if (treeNode.data._type === 'react/state') {
         // console.log(`__customRef`, treeNode, !!treeNode.data.__ref && !treeNode.data.__ref.startsWith('...'))
         setValue('__customRef',
           !!treeNode.data.__ref
@@ -240,11 +240,11 @@ const PropEditor = (props) => {
       // set properties
       if
       (
-        treeNode.data.type === 'js/object'
-        || treeNode.data.type === 'react/element'
-        || treeNode.data.type === 'react/html'
-        || treeNode.data.type === 'react/form'
-        || treeNode.data.type === 'input/text'
+        treeNode.data._type === 'js/object'
+        || treeNode.data._type === 'react/element'
+        || treeNode.data._type === 'react/html'
+        || treeNode.data._type === 'react/form'
+        || treeNode.data._type === 'input/text'
       )
       {
         _set_form_props(treeNode, 'props')
@@ -252,7 +252,7 @@ const PropEditor = (props) => {
       // set form properties
       if
       (
-        treeNode.data.type === 'react/form'
+        treeNode.data._type === 'react/form'
       )
       {
         _set_form_props(treeNode, 'formProps')
@@ -301,14 +301,14 @@ const PropEditor = (props) => {
       lookupNode.data.__ref = null
     }
     // check if lookupNode is react/state, and __customRef is false
-    if (lookupNode.data.type === 'react/state') {
+    if (lookupNode.data._type === 'react/state') {
       if (!data.__customRef) {
         lookupNode.data.__ref = `...${lookupNode.data.name}`
       }
     }
     // check if parent is js/switch
     const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-    if (lookupParent?.data?.type === 'js/switch') {
+    if (lookupParent?.data?._type === 'js/switch') {
       if (!!data.default) {
         lookupNode.data.__ref = 'default'
       } else {
@@ -322,16 +322,16 @@ const PropEditor = (props) => {
     // console.log(lookupNode)
     //////////////////////////////////////////////////////////////////////
     // handle 'props'
-    if (lookupNode.data.type === 'js/object'
-        || lookupNode.data.type === 'react/element'
-        || lookupNode.data.type === 'react/html'
-        || lookupNode.data.type === 'react/form'
-        || lookupNode.data.type === 'input/text')
+    if (lookupNode.data._type === 'js/object'
+        || lookupNode.data._type === 'react/element'
+        || lookupNode.data._type === 'react/html'
+        || lookupNode.data._type === 'react/form'
+        || lookupNode.data._type === 'input/text')
     {
       _process_props(lookupNode, 'props')
     }
     // handle 'formProps'
-    if (lookupNode.data.type === 'react/form')
+    if (lookupNode.data._type === 'react/form')
     {
       _process_props(lookupNode, 'formProps')
     }
@@ -353,38 +353,38 @@ const PropEditor = (props) => {
   function _set_form_props(treeNode, refKey) {
     // get proper children
     const children =
-      treeNode.data.type === 'js/object'
+      treeNode.data._type === 'js/object'
       ? treeNode.children
       : lookup_child_by_ref(treeNode, refKey)?.children
     // keep a list of props and other names
     const props = []
     const others = []
     children?.map(child => {
-      if (child.data.type === 'js/null')
+      if (child.data._type === 'js/null')
       {
         props.push({
-          type: child.data.type,
+          type: child.data._type,
           name: child.data.__ref,
           value: null,
         })
       }
       else if
       (
-        child.data.type === 'js/string'
-        || child.data.type === 'js/number'
-        || child.data.type === 'js/boolean'
-        || child.data.type === 'js/expression'
+        child.data._type === 'js/string'
+        || child.data._type === 'js/number'
+        || child.data._type === 'js/boolean'
+        || child.data._type === 'js/expression'
       ) {
         props.push({
-          type: child.data.type,
+          type: child.data._type,
           name: child.data.__ref,
           value: child.data.data,
         })
       }
-      else if (child.data.type === 'js/import')
+      else if (child.data._type === 'js/import')
       {
         props.push({
-          type: child.data.type,
+          type: child.data._type,
           name: child.data.__ref,
           value: child.data.name,
         })
@@ -407,45 +407,45 @@ const PropEditor = (props) => {
       if (!!childNode)
       {
         // found child node, reuse existing key
-        if (child.type === 'js/null')
+        if (child._type === 'js/null')
         {
           childNode.data.__ref = child.name
-          childNode.data.type = child.type
+          childNode.data._type = child._type
           childNode.data.data = null
           childNode.title = lookup_title_for_input(child.name, childNode.data)
           childNode.icon = lookup_icon_for_input(childNode.data)
         }
-        else if (child.type === 'js/string'
-                || child.type === 'js/number'
-                || child.type === 'js/boolean'
-                || child.type === 'js/expression')
+        else if (child._type === 'js/string'
+                || child._type === 'js/number'
+                || child._type === 'js/boolean'
+                || child._type === 'js/expression')
         {
           childNode.data.__ref = child.name
-          childNode.data.type = child.type
+          childNode.data._type = child._type
           childNode.data.data = child.value
           childNode.title = lookup_title_for_input(child.name, childNode.data)
           childNode.icon = lookup_icon_for_input(childNode.data)
         }
-        else if (child.type === 'js/import')
+        else if (child._type === 'js/import')
         {
           childNode.data.__ref = child.name
-          childNode.data.type = child.type
+          childNode.data._type = child._type
           childNode.data.name = child.value
           childNode.title = lookup_title_for_input(child.name, childNode.data)
           childNode.icon = lookup_icon_for_input(childNode.data)
         }
         else
         {
-          throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+          throw new Error(`ERROR: unrecognized child type [${child._type}]`)
         }
       }
       else
       {
         // no child node, create new child node
-        if (child.type === 'js/null'
-            || child.type === 'js/string'
-            || child.type === 'js/number'
-            || child.type === 'js/boolean')
+        if (child._type === 'js/null'
+            || child._type === 'js/string'
+            || child._type === 'js/number'
+            || child._type === 'js/boolean')
         {
           const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
           childParent.children.push(newChildNode)
@@ -453,7 +453,7 @@ const PropEditor = (props) => {
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
           newChildNode.icon = lookup_icon_for_input(newChildNode.data)
         }
-        else if (child.type === 'js/expression')
+        else if (child._type === 'js/expression')
         {
           const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
           childParent.children.push(newChildNode)
@@ -461,7 +461,7 @@ const PropEditor = (props) => {
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
           newChildNode.icon = lookup_icon_for_input(newChildNode.data)
         }
-        else if (child.type === 'js/import')
+        else if (child._type === 'js/import')
         {
           const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
           childParent.children.push(newChildNode)
@@ -471,19 +471,19 @@ const PropEditor = (props) => {
         }
         else
         {
-          throw new Error(`ERROR: unrecognized child type [${child.type}]`)
+          throw new Error(`ERROR: unrecognized child type [${child._type}]`)
         }
       }
     })
     ////////////////////////////////////////
     // remove any primitive child
     childParent.children = childParent.children.filter(child => {
-      if (child.data.type === 'js/null'
-          || child.data.type === 'js/string'
-          || child.data.type === 'js/number'
-          || child.data.type === 'js/boolean'
-          || child.data.type === 'js/expression'
-          || child.data.type === 'js/import')
+      if (child.data._type === 'js/null'
+          || child.data._type === 'js/string'
+          || child.data._type === 'js/number'
+          || child.data._type === 'js/boolean'
+          || child.data._type === 'js/expression'
+          || child.data._type === 'js/import')
       {
         const found = properties.find(prop => prop.name === child.data.__ref)
         return found
@@ -498,7 +498,7 @@ const PropEditor = (props) => {
   // process props
   function _process_props(lookupNode, refKey) {
     // add props child if exist
-    if (lookupNode.data.type !== 'js/object')
+    if (lookupNode.data._type !== 'js/object')
     {
       const propChild = lookup_child_by_ref(lookupNode, refKey)
       if (!propChild) {
@@ -508,7 +508,7 @@ const PropEditor = (props) => {
     }
     // lookup childParent node
     const childParent =
-      lookupNode.data.type === 'js/object'
+      lookupNode.data._type === 'js/object'
       ? lookupNode
       : lookup_child_by_ref(lookupNode, refKey)
     // add child properties as proper childNode (replace existing or add new)
@@ -517,7 +517,7 @@ const PropEditor = (props) => {
     _process_childParent_props(childParent, properties)
     ////////////////////////////////////////
     // if lookupNode is react/element or react/html, remove empty props
-    if (lookupNode.data.type !== 'js/object')
+    if (lookupNode.data._type !== 'js/object')
     {
       if (!childParent.children.length) {
         remove_child_by_ref(lookupNode, refKey)
@@ -584,7 +584,7 @@ const PropEditor = (props) => {
               <Box className={styles.editor}>
               {
                 (
-                  treeNode?.data?.type === 'react/state'
+                  treeNode?.data?._type === 'react/state'
                 )
                 &&
                 (
@@ -623,15 +623,15 @@ const PropEditor = (props) => {
               {
                 (
                   treeNode?.data?.__ref !== null
-                  && parentNode?.data?.type !== 'js/switch'
-                  && parentNode?.data?.type !== 'js/map'
-                  && parentNode?.data?.type !== 'js/reduce'
-                  && parentNode?.data?.type !== 'js/filter'
-                  && parentNode?.data?.type !== 'react/element'
-                  && parentNode?.data?.type !== 'react/html'
+                  && parentNode?.data?._type !== 'js/switch'
+                  && parentNode?.data?._type !== 'js/map'
+                  && parentNode?.data?._type !== 'js/reduce'
+                  && parentNode?.data?._type !== 'js/filter'
+                  && parentNode?.data?._type !== 'react/element'
+                  && parentNode?.data?._type !== 'react/html'
                   && !
                   (
-                    (treeNode?.data?.type === 'react/state')
+                    (treeNode?.data?._type === 'react/state')
                     && !getValues('__customRef')
                   )
                 )
@@ -695,7 +695,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                parentNode?.data?.type === 'js/switch'
+                parentNode?.data?._type === 'js/switch'
                 &&
                 (
                   <Controller
@@ -735,7 +735,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                parentNode?.data?.type === 'js/switch'
+                parentNode?.data?._type === 'js/switch'
                 && !isSwitchDefault
                 &&
                 (

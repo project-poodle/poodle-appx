@@ -69,9 +69,9 @@ function js_primitive(js_context, input) {
 
 // create string ast
 function js_string(js_context, input) {
-  // check input.type
-  if (!('type' in input) || input.type !== 'js/string') {
-    throw new Error(`ERROR: input.type is not [js/string] [${input.type}] [${JSON.stringify(input)}]`)
+  // check input._type
+  if (!('_type' in input) || input._type !== 'js/string') {
+    throw new Error(`ERROR: input._type is not [js/string] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (js_context.JSX_CONTEXT) {
@@ -85,9 +85,9 @@ function js_string(js_context, input) {
 
 // create numeric ast
 function js_number(js_context, input) {
-  // check input.type
-  if (!('type' in input) || input.type !== 'js/number') {
-    throw new Error(`ERROR: input.type is not [js/number] [${input.type}] [${JSON.stringify(input)}]`)
+  // check input._type
+  if (!('_type' in input) || input._type !== 'js/number') {
+    throw new Error(`ERROR: input._type is not [js/number] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (js_context.JSX_CONTEXT) {
@@ -101,9 +101,9 @@ function js_number(js_context, input) {
 
 // create boolean ast
 function js_boolean(js_context, input) {
-  // check input.type
-  if (!('type' in input) || input.type !== 'js/boolean') {
-    throw new Error(`ERROR: input.type is not [js/boolean] [${input.type}] [${JSON.stringify(input)}]`)
+  // check input._type
+  if (!('_type' in input) || input._type !== 'js/boolean') {
+    throw new Error(`ERROR: input._type is not [js/boolean] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (js_context.JSX_CONTEXT) {
@@ -117,9 +117,9 @@ function js_boolean(js_context, input) {
 
 // create null ast
 function js_null(js_context, input) {
-  // check input.type
-  if (!('type' in input) || input.type !== 'js/null') {
-    throw new Error(`ERROR: input.type is not [js/null] [${input.type}] [${JSON.stringify(input)}]`)
+  // check input._type
+  if (!('_type' in input) || input._type !== 'js/null') {
+    throw new Error(`ERROR: input._type is not [js/null] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (js_context.JSX_CONTEXT) {
@@ -227,8 +227,8 @@ function js_object(js_context, input) {
 // create import ast
 function js_import(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/import') {
-    throw new Error(`ERROR: input.type is not [js/import] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/import') {
+    throw new Error(`ERROR: input._type is not [js/import] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -244,8 +244,8 @@ function js_import(js_context, input) {
 // create export ast
 function js_export(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/export') {
-    throw new Error(`ERROR: input.type is not [js/export] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/export') {
+    throw new Error(`ERROR: input._type is not [js/export] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -269,8 +269,8 @@ function js_export(js_context, input) {
 // create variable declaration ast
 function js_variable(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/variable') {
-    throw new Error(`ERROR: input.type is not [js/variable] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/variable') {
+    throw new Error(`ERROR: input._type is not [js/variable] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -296,7 +296,7 @@ function js_variable(js_context, input) {
                 parentPath: null,
               },
               {
-                type: 'js/expression',
+                _type: 'js/expression',
                 data: String(input.expression)
               }
             )
@@ -329,8 +329,8 @@ function js_expression(js_context, input) {
 
   } else {
 
-    if (!('type' in input) || input.type !== 'js/expression') {
-      throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
+    if (!('_type' in input) || input._type !== 'js/expression') {
+      throw new Error(`ERROR: input._type is not [js/expression] [${input._type}] [${JSON.stringify(input)}]`)
     }
 
     if (! ('data' in input)) {
@@ -360,8 +360,8 @@ function js_block(js_context, input) {
     data = input
 
   } else {
-    if (!('type' in input) || input.type !== 'js/block') {
-      throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
+    if (!('_type' in input) || input._type !== 'js/block') {
+      throw new Error(`ERROR: input._type is not [js/block] [${input._type}] [${JSON.stringify(input)}]`)
     }
 
     if (! ('data' in input)) {
@@ -388,8 +388,8 @@ function js_block(js_context, input) {
 // create array function ast
 function js_function(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/function') {
-    throw new Error(`ERROR: input.type is not [js/function] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/function') {
+    throw new Error(`ERROR: input._type is not [js/function] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('body' in input)) {
@@ -430,8 +430,8 @@ function js_function(js_context, input) {
 // create call ast
 function js_call(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/function') {
-    throw new Error(`ERROR: input.type is not [js/call] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/function') {
+    throw new Error(`ERROR: input._type is not [js/call] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -458,8 +458,8 @@ function js_call(js_context, input) {
 // create switch ast
 function js_switch(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/switch') {
-    throw new Error(`ERROR: input.type is not [js/switch] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/switch') {
+    throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('children' in input)) {
@@ -508,7 +508,7 @@ function js_switch(js_context, input) {
           JSX_CONTEXT: false,
         },
         {
-          type: 'js/expression',
+          _type: 'js/expression',
           data: String(child.condition),
         }
       ),
@@ -554,8 +554,8 @@ function js_switch(js_context, input) {
 // create js map ast
 function js_map(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/map') {
-    throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/map') {
+    throw new Error(`ERROR: input._type is not [js/map] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // process input expression
@@ -762,8 +762,8 @@ function js_map(js_context, input) {
 // create js reduce ast
 function js_reduce(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/reduce') {
-    throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/reduce') {
+    throw new Error(`ERROR: input._type is not [js/reduce] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('reducer' in input)) {
@@ -799,7 +799,7 @@ function js_reduce(js_context, input) {
           JSX_CONTEXT: false,
         },
         {
-          type: 'js/expression',
+          _type: 'js/expression',
           data: String(input.reducer)
         }
       )
@@ -822,7 +822,7 @@ function js_reduce(js_context, input) {
             JSX_CONTEXT: false,
           },
           {
-            type: 'js/expression',
+            _type: 'js/expression',
             data: String(input.init)
           }
         )
@@ -1014,8 +1014,8 @@ function js_reduce(js_context, input) {
 // create js reduce ast
 function js_filter(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'js/filter') {
-    throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/filter') {
+    throw new Error(`ERROR: input._type is not [js/filter] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('filter' in input)) {
@@ -1051,7 +1051,7 @@ function js_filter(js_context, input) {
           JSX_CONTEXT: false,
         },
         {
-          type: 'js/expression',
+          _type: 'js/expression',
           data: String(input.filter),
         }
       )
@@ -1230,8 +1230,8 @@ function js_filter(js_context, input) {
 // create jsx element ast
 function react_element(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'react/element') {
-    throw new Error(`ERROR: input.type is not [react/element] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/element') {
+    throw new Error(`ERROR: input._type is not [react/element] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1275,8 +1275,8 @@ function react_element(js_context, input) {
 // create jsx html element ast
 function react_html(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'react/html') {
-    throw new Error(`ERROR: input.type is not [react/html] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/html') {
+    throw new Error(`ERROR: input._type is not [react/html] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1391,8 +1391,8 @@ function react_element_children(js_context, children) {
 // create react state ast
 function react_state(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'react/state') {
-    throw new Error(`ERROR: input.type is not [react/state] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/state') {
+    throw new Error(`ERROR: input._type is not [react/state] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1416,7 +1416,7 @@ function react_state(js_context, input) {
             JSX_CONTEXT: false,
           },
           {
-            type: 'js/expression',
+            _type: 'js/expression',
             data: String(input.init)
           }
         )
@@ -1507,8 +1507,8 @@ function react_state(js_context, input) {
 // create react context ast
 function react_context(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'react/context') {
-    throw new Error(`ERROR: input.type is not [react/context] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/context') {
+    throw new Error(`ERROR: input._type is not [react/context] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1533,8 +1533,8 @@ function react_context(js_context, input) {
 // create react effect block ast (do not allow return outside of function)
 function react_effect(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'react/effect') {
-    throw new Error(`ERROR: input.type is not [react/effect] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/effect') {
+    throw new Error(`ERROR: input._type is not [react/effect] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('body' in input)) {
@@ -1559,7 +1559,7 @@ function react_effect(js_context, input) {
                 JSX_CONTEXT: false,
               },
               {
-                type: 'js/expression',
+                _type: 'js/expression',
                 data:
                   isPrimitive(state)
                     ? String(state)
@@ -1601,8 +1601,8 @@ function react_effect(js_context, input) {
 // create mui style ast
 function mui_style(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'mui/style') {
-    throw new Error(`ERROR: input.type is not [mui/style] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'mui/style') {
+    throw new Error(`ERROR: input._type is not [mui/style] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // register material ui makeStyles
@@ -1610,7 +1610,7 @@ function mui_style(js_context, input) {
 
   // prepare styles object
   const styles = { ...input }
-  delete styles.type
+  delete styles._type
 
   // return function call
   return t.callExpression(
@@ -1641,8 +1641,8 @@ function mui_style(js_context, input) {
 // create appx api ast
 function appx_api(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'appx/api') {
-    throw new Error(`ERROR: input.type is not [appx/api] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'appx/api') {
+    throw new Error(`ERROR: input._type is not [appx/api] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('namespace' in input)) {
@@ -1832,8 +1832,8 @@ function appx_api(js_context, input) {
 // create appx route ast
 function appx_route(js_context, input) {
 
-  if (!('type' in input) || input.type !== 'appx/route') {
-    throw new Error(`ERROR: input.type is not [appx/route] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'appx/route') {
+    throw new Error(`ERROR: input._type is not [appx/route] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (!('appx' in js_context) || !('ui_deployment' in js_context.appx)) {
@@ -1912,137 +1912,137 @@ function js_process(js_context, input) {
     return js_array(js_context, input)
   }
 
-  if (! ('type' in input)) {
-    // no 'type' is treated as json object
+  if (! ('_type' in input)) {
+    // no '_type' is treated as json object
     return js_object(js_context, input)
   }
 
-  // 'type' is presented in the json object
-  if (input.type === 'js/string') {
+  // '_type' is presented in the json object
+  if (input._type === 'js/string') {
 
     return js_string(js_context, input)
 
-  } else if (input.type === 'js/number') {
+  } else if (input._type === 'js/number') {
 
     return js_number(js_context, input)
 
-  } else if (input.type === 'js/boolean') {
+  } else if (input._type === 'js/boolean') {
 
     return js_boolean(js_context, input)
 
-  } else if (input.type === 'js/null') {
+  } else if (input._type === 'js/null') {
 
     return js_null(js_context, input)
 
-  } else if (input.type === 'js/import') {
+  } else if (input._type === 'js/import') {
 
     return js_import(js_context, input)
 
-  } else if (input.type === 'js/export') {
+  } else if (input._type === 'js/export') {
 
     return js_export(js_context, input)
 
-  } else if (input.type === 'js/variable') {
+  } else if (input._type === 'js/variable') {
 
     return js_variable(js_context, input)
 
-  } else if (input.type === 'js/expression') {
+  } else if (input._type === 'js/expression') {
 
     return js_expression(js_context, input)
 
-  } else if (input.type === 'js/block') {
+  } else if (input._type === 'js/block') {
 
     return js_block(js_context, input)
 
-  } else if (input.type === 'js/function') {
+  } else if (input._type === 'js/function') {
 
     return js_function(js_context, input)
 
-  } else if (input.type === 'js/call') {
+  } else if (input._type === 'js/call') {
 
     return js_call(js_context, input)
 
-  } else if (input.type === 'js/switch') {
+  } else if (input._type === 'js/switch') {
 
     return js_switch(js_context, input)
 
-  } else if (input.type === 'js/map') {
+  } else if (input._type === 'js/map') {
 
     return js_map(js_context, input)
 
-  } else if (input.type === 'js/reduce') {
+  } else if (input._type === 'js/reduce') {
 
     return js_reduce(js_context, input)
 
-  } else if (input.type === 'js/filter') {
+  } else if (input._type === 'js/filter') {
 
     return js_filter(js_context, input)
 
-  } else if (input.type === 'js/transform') {
+  } else if (input._type === 'js/transform') {
 
     // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+    throw new Error(`ERROR: unsupported input._type [${input._type}]`)
 
-  } else if (input.type === 'js/trigger') {
+  } else if (input._type === 'js/trigger') {
 
     // TODO
-    throw new Error(`ERROR: unsupported input.type [${input.type}]`)
+    throw new Error(`ERROR: unsupported input._type [${input._type}]`)
 
-  } else if (input.type === 'react/element') {
+  } else if (input._type === 'react/element') {
 
     return react_element(js_context, input)
 
-  } else if (input.type === 'react/html') {
+  } else if (input._type === 'react/html') {
 
     return react_html(js_context, input)
 
-  } else if (input.type === 'react/state') {
+  } else if (input._type === 'react/state') {
 
     return react_state(js_context, input)
 
-  } else if (input.type === 'react/context') {
+  } else if (input._type === 'react/context') {
 
     return react_context(js_context, input)
 
-  } else if (input.type === 'react/effect') {
+  } else if (input._type === 'react/effect') {
 
     return react_effect(js_context, input)
 
-  } else if (input.type === 'react/form') {
+  } else if (input._type === 'react/form') {
 
     return react_form(js_context, input)
 
-  } else if (input.type === 'mui/style') {
+  } else if (input._type === 'mui/style') {
 
     return mui_style(js_context, input)
 
-  } else if (input.type === 'input/text') {
+  } else if (input._type === 'input/text') {
 
     return input_text(js_context, input)
 
-  } else if (input.type === 'input/select') {
+  } else if (input._type === 'input/select') {
 
     return input_select(js_context, input)
 
-  } else if (input.type === 'input/switch') {
+  } else if (input._type === 'input/switch') {
 
     return input_switch(js_context, input)
 
-  } else if (input.type === 'input/custom') {
+  } else if (input._type === 'input/custom') {
 
     return input_custom(js_context, input)
 
-  } else if (input.type === 'appx/api') {
+  } else if (input._type === 'appx/api') {
 
     return appx_api(js_context, input)
 
-  } else if (input.type === 'appx/route') {
+  } else if (input._type === 'appx/route') {
 
     return appx_route(js_context, input)
 
   } else {
 
-    throw new Error(`ERROR: unrecognized input.type [${input.type}] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: unrecognized input._type [${input._type}] [${JSON.stringify(input)}]`)
   }
 }
 
@@ -2054,7 +2054,7 @@ function react_component(js_context, input) {
   // check if there are any block statements
   Object.keys(input).map(key => {
     // ignore type / name / props / children
-    if (key === 'type' || key === 'element' || key === 'propTypes' || key === '__test') {
+    if (key === '_type' || key === 'element' || key === 'propTypes' || key === '__test') {
       return
     }
 
@@ -2081,7 +2081,7 @@ function react_component(js_context, input) {
         variableDeclaration
       )
 
-    } else if (input[key].type === 'js/block') {
+    } else if (input[key]._type === 'js/block') {
       // if input[key] is 'js/block'
       // adds each of the block statement
       block_statements.push(...(js_process(
@@ -2091,7 +2091,7 @@ function react_component(js_context, input) {
 
     } else if (key.startsWith('...')) {
       // if input[key] starts with '...'
-      if (input[key].type === 'react/state') {
+      if (input[key]._type === 'react/state') {
         const variableDeclaration = t.variableDeclaration(
           'const',
           [
@@ -2121,7 +2121,7 @@ function react_component(js_context, input) {
 
       } else {
         // unrecognized component definition starting with '...'
-        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key].type}]`)
+        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
       }
 
     } else {

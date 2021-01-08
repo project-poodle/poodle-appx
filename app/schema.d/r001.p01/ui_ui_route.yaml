@@ -5,21 +5,21 @@ ui_route:
       ui_route_name: /
       ui_route_spec:
           element:
-              type: react/element
+              _type: react/element
               name: self/page/Console
           __test:
             providers:
-              - type: react/element
+              - _type: react/element
                 name: react-redux.Provider
                 props:
                   store:
-                    type: js/import
+                    _type: js/import
                     name: app-x/redux/store.default
-              - type: react/element
+              - _type: react/element
                 name: app-x/theme/GlobalStyleProvider
                 props:
                   theme:
-                    type: js/import
+                    _type: js/import
                     name: app-x/theme.default
 
     - namespace: sys
@@ -28,26 +28,26 @@ ui_route:
       ui_route_name: /404
       ui_route_spec:
           element:
-            type: react/element
+            _type: react/element
             name: app-x/page/layout/HeaderLayout
             props:
               header:
-                type: react/element
+                _type: react/element
                 name: self/page/header/Header_user
             children:
-              - type: react/element
+              - _type: react/element
                 name: app-x/view/error/NotFoundView
           __test:
             providers:
-              - type: react/element
+              - _type: react/element
                 name: react-redux.Provider
                 props:
                   store:
-                    type: js/import
+                    _type: js/import
                     name: app-x/redux/store.default
-              - type: react/element
+              - _type: react/element
                 name: app-x/theme/GlobalStyleProvider
                 props:
                   theme:
-                    type: js/import
+                    _type: js/import
                     name: app-x/theme.default

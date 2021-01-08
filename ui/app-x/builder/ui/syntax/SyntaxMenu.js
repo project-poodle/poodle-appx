@@ -94,7 +94,7 @@ const SyntaxMenu = (props) => {
   //   console.log(props.selectedNode)
   // }, [props.selectedNode])
 
-  const valid_child_types = lookup_valid_child_types(props.selectedNode?.data.type)
+  const valid_child_types = lookup_valid_child_types(props.selectedNode?.data._type)
 
   return (
     <Menu
@@ -116,8 +116,8 @@ const SyntaxMenu = (props) => {
         (
           !!props.selectedNode
           && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
+          && !!props.selectedNode.data._type
+          && (!!valid_child_types?._?._types && !!valid_child_types?.ref?._types)
         )
         &&
         (
@@ -161,7 +161,7 @@ const SyntaxMenu = (props) => {
                                   nodeRefRequired: true,
                                   nodeKey: props.selectedNode.key,
                                   nodeType: type,
-                                  isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
+                                  isSwitchDefault: (props.selectedNode.data._type && name === 'default'),
                                 })
                               }
                               >
@@ -218,8 +218,8 @@ const SyntaxMenu = (props) => {
         (
           !!props.selectedNode
           && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!!valid_child_types?._?.types && !valid_child_types?.ref?.types)
+          && !!props.selectedNode.data._type
+          && (!!valid_child_types?._?._types && !valid_child_types?.ref?._types)
         )
         &&
         (
@@ -261,8 +261,8 @@ const SyntaxMenu = (props) => {
         (
           !!props.selectedNode
           && !!props.selectedNode.data
-          && !!props.selectedNode.data.type
-          && (!valid_child_types?._?.types && !!valid_child_types?.ref?.types)
+          && !!props.selectedNode.data._type
+          && (!valid_child_types?._?._types && !!valid_child_types?.ref?._types)
         )
         &&
         (
@@ -309,7 +309,7 @@ const SyntaxMenu = (props) => {
                                     nodeRefRequired: true,
                                     nodeKey: props.selectedNode.key,
                                     nodeType: type,
-                                    isSwitchDefault: (props.selectedNode.data.type && name === 'default'),
+                                    isSwitchDefault: (props.selectedNode.data._type && name === 'default'),
                                   })
                                 }
                                 >
@@ -371,7 +371,7 @@ const SyntaxMenu = (props) => {
       {
         !!props.selectedNode
         && !!props.selectedNode.data
-        && !!props.selectedNode.data.type
+        && !!props.selectedNode.data._type
         &&
         !(
           (props.selectedNode?.key === '/')

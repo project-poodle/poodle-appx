@@ -29,8 +29,8 @@ function react_form(js_context, input) {
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
 
-  if (!('type' in input) || input.type !== 'react/form') {
-    throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'react/form') {
+    throw new Error(`ERROR: input._type is not [react/form] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (!input.name) {
@@ -221,8 +221,8 @@ function input_text(js_context, input) {
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
 
-  if (!('type' in input) || input.type !== 'input/text') {
-    throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'input/text') {
+    throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (!input.name) {
@@ -989,8 +989,8 @@ function input_text_array(js_context, input) {
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
 
-  if (!('type' in input) || input.type !== 'input/text') {
-    throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'input/text') {
+    throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (!input.name) {

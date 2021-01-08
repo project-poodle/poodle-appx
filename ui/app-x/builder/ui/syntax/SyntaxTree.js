@@ -554,15 +554,15 @@ const SyntaxTree = (props) => {
             // console.log('canDrop', draggable)
             draggable.style.cursor = 'pointer'
           })
-        } else if (valid_child_types?.ref?.types.includes(selectedTool)
-            || valid_child_types?._?.types.includes(selectedTool)) {
-          // if selected tool is one of the valid child types
+        } else if (valid_child_types?.ref?._types.includes(selectedTool)
+            || valid_child_types?._?._types.includes(selectedTool)) {
+          // if selected tool is one of the valid child _types
           draggableList.forEach(draggable => {
             // console.log('canDrop', draggable)
             draggable.style.cursor = syntaxTreeCursor
           })
         } else {
-          // if selected tool is not one of the valid child types
+          // if selected tool is not one of the valid child _types
           draggableList.forEach(draggable => {
             // console.log('noDrop', draggable)
             draggable.style.cursor = 'not-allowed'
@@ -627,7 +627,7 @@ const SyntaxTree = (props) => {
     const parse_context = {}
     var parsed = null
     // handle js/switch specially
-    if (lookupParent?.data?.type === 'js/switch') {
+    if (lookupParent?.data?._type === 'js/switch') {
       if (nodeData.default) {
         parsed = parse_js(parse_context, parentKey, 'default', nodeData)
       } else {
@@ -771,13 +771,13 @@ const SyntaxTree = (props) => {
           // console.log('here2', selectedTool, parentNode)
           setNodeParent(parentNode)
           const valid_child_types = lookup_valid_child_types(parentNode.data.type)
-          if (valid_child_types?._?.types.includes(selectedTool)) {
+          if (valid_child_types?._?._types.includes(selectedTool)) {
             setAddNodeRef(null)
             setAddNodeRefRequired(false)
             setAddNodeType(selectedTool)
             setSwitchDefault(false)
             setAddDialogOpen(true)
-          } else if (valid_child_types?.ref?.types.includes(selectedTool)) {
+          } else if (valid_child_types?.ref?._types.includes(selectedTool)) {
             setAddNodeRef(null)
             setAddNodeRefRequired(true)
             setAddNodeType(selectedTool)

@@ -259,28 +259,28 @@ const SyntaxAddDialog = (props) => {
                         lookup_child_by_ref(parentNode, value) === null
                         || 'Reference name is duplicate with an existing child',
                       checkSwitchChild: value =>
-                        parentNode?.data?.type !== 'js/switch'
+                        parentNode?.data?._type !== 'js/switch'
                         || value === 'default'
                         || 'Reference name for js/switch must be [default]',
                       checkMapChild: value =>
-                        parentNode?.data?.type !== 'js/map'
+                        parentNode?.data?._type !== 'js/map'
                         || value === 'data'
                         || value === 'result'
                         || 'Reference name for js/map must be [data] or [result]',
                       checkReduceChild: value =>
-                        parentNode?.data?.type !== 'js/reduce'
+                        parentNode?.data?._type !== 'js/reduce'
                         || value === 'data'
                         || 'Reference name for js/reduce must be [data]',
                       checkFilterChild: value =>
-                        parentNode?.data?.type !== 'js/filter'
+                        parentNode?.data?._type !== 'js/filter'
                         || value === 'data'
                         || 'Reference name for js/filter must be [data]',
                       checkReactElementChild: value =>
-                        parentNode?.data?.type !== 'react/element'
+                        parentNode?.data?._type !== 'react/element'
                         || value === 'props'
                         || 'Reference name for react/element must be [props]',
                       checkReactHtmlChild: value =>
-                        parentNode?.data?.type !== 'react/html'
+                        parentNode?.data?._type !== 'react/html'
                         || value === 'props'
                         || 'Reference name for react/html must b3 [props]',
                     },
@@ -304,8 +304,8 @@ const SyntaxAddDialog = (props) => {
             {
               !!props.nodeParent
               && !!props.nodeParent.data
-              && !!props.nodeParent.data.type
-              && props.nodeParent.data.type === 'js/switch'
+              && !!props.nodeParent.data._type
+              && props.nodeParent.data._type === 'js/switch'
               &&
               (
                 <Controller
@@ -355,8 +355,8 @@ const SyntaxAddDialog = (props) => {
             {
               !!props.nodeParent
               && !!props.nodeParent.data
-              && !!props.nodeParent.data.type
-              && props.nodeParent.data.type === 'js/switch'
+              && !!props.nodeParent.data._type
+              && props.nodeParent.data._type === 'js/switch'
               && !isSwitchDefault
               &&
               (
@@ -430,8 +430,8 @@ const SyntaxAddDialog = (props) => {
                                 props.onChange(e)
                               }
                             }
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/string">
                               <ListItemIcon>
@@ -635,8 +635,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/array">
                               <ListItemIcon>
@@ -680,8 +680,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/object">
                               <ListItemIcon>
@@ -725,8 +725,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/import">
                               <ListItemIcon>
@@ -798,8 +798,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/block">
                               <ListItemIcon>
@@ -877,9 +877,9 @@ const SyntaxAddDialog = (props) => {
                               }
                             }
                             value={props.value}
-                            error={!!errors.type}
+                            error={!!errors._type}
                             size="small"
-                            helperText={errors.type?.message}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/function">
                               <ListItemIcon>
@@ -974,8 +974,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/switch">
                               <ListItemIcon>
@@ -1019,8 +1019,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/map">
                               <ListItemIcon>
@@ -1064,8 +1064,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/reduce">
                               <ListItemIcon>
@@ -1177,8 +1177,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="js/filter">
                               <ListItemIcon>
@@ -1262,8 +1262,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="react/element">
                               <ListItemIcon>
@@ -1373,8 +1373,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="react/state">
                               <ListItemIcon>
@@ -1504,8 +1504,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="react/context">
                               <ListItemIcon>
@@ -1577,8 +1577,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="react/effect">
                               <ListItemIcon>
@@ -1680,8 +1680,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="react/form">
                               <ListItemIcon>
@@ -1819,8 +1819,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="input/text">
                               <ListItemIcon>
@@ -1913,8 +1913,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="mui/style">
                               <ListItemIcon>
@@ -1958,8 +1958,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="appx/api">
                               <ListItemIcon>
@@ -2237,8 +2237,8 @@ const SyntaxAddDialog = (props) => {
                             }
                             value={props.value}
                             size="small"
-                            error={!!errors.type}
-                            helperText={errors.type?.message}
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
                             >
                             <MenuItem value="appx/route">
                               <ListItemIcon>
@@ -2298,7 +2298,7 @@ const SyntaxAddDialog = (props) => {
                                 value={index+1}
                                 >
                                 <ListItemIcon>
-                                  { lookup_icon_for_type(child.data?.type) }
+                                  { lookup_icon_for_type(child.data?._type) }
                                 </ListItemIcon>
                                 <Typography variant="inherit" noWrap={true}>
                                   Add after [{ lookup_title_for_input(null, child.data) }]

@@ -19,30 +19,30 @@ ui_component:
           propTypes:
               title: PropTypes.string.isRequired
           styles:
-              type: mui/style
+              _type: mui/style
               root:
                   height: "100%"
           element:
-              type: react/element
+              _type: react/element
               name: app-x/app/MUI_theme_redux
               props:
                   routes:
-                      type: appx/route
+                      _type: appx/route
                   redux_store_provider:
-                      type: js/import
+                      _type: js/import
                       name: app-x/redux/store.default
                   theme_provider:
-                      type: js/import
+                      _type: js/import
                       name: app-x/theme.default
                   not_found_view:
-                      type: react/element
+                      _type: react/element
                       name: app-x/page/layout/HeaderLayout
                       props:
                           header:
-                              type: react/element
+                              _type: react/element
                               name: self/page/header/Header_user
                       children:
-                          - type: react/element
+                          - _type: react/element
                             name: app-x/view/error/NotFoundView
 
     ############################################################
@@ -55,12 +55,12 @@ ui_component:
           propTypes:
               suffix: PropTypes.element
           element:
-              type: react/element
+              _type: react/element
               name: app-x/page/header/Header_user
               props:
                   title: Role Editor
                   titleIcon:
-                      type: react/element
+                      _type: react/element
                       name: "@material-ui/icons.ViewQuiltRounded"
                   rootUrl: '/console'
                   baseUrl: '/'
@@ -70,7 +70,7 @@ ui_component:
                       ui_name: console
                       ui_deployment: base
                   suffix:
-                      type: js/expression
+                      _type: js/expression
                       data: props.suffix
 
     ############################################################
@@ -82,39 +82,39 @@ ui_component:
       ui_component_spec:
           states:
               mobileNav:
-                  type: react/state
+                  _type: react/state
                   name: open
                   setter: setOpen
                   init: false
           handlers:
               sideNavHandler:
-                  type: js/function
+                  _type: js/function
                   body: |
                       states.mobileNav.setOpen(!states.mobileNav.open)
           element:
-              type: react/element
+              _type: react/element
               name: app-x/page/layout/HeaderLayout
               props:
                   header:
-                      type: react/element
+                      _type: react/element
                       name: self/page/header/Header_user
                       props:
                           suffix:
-                              type: react/element
+                              _type: react/element
                               name: '@material-ui/core.Hidden'
                               props:
                                   lgUp: true
                               children:
-                                  - type: react/element
+                                  - _type: react/element
                                     name: '@material-ui/core.IconButton'
                                     props:
                                         color: inherit
                                         onClick:
-                                            type: js/expression
+                                            _type: js/expression
                                             data: handlers.sideNavHandler
                                     children:
-                                        - type: react/element
+                                        - _type: react/element
                                           name: '@material-ui/icons.Menu'
               children:
-                  - type: react/element
+                  - _type: react/element
                     name: app-x/view/error/NotFoundView

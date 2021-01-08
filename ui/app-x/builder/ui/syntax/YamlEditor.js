@@ -123,7 +123,7 @@ const YamlEditor = props => {
   // reset yaml content
   function reset_yaml_content() {
     const tree_context = { topLevel: true }
-    const { ref, data } = gen_js(tree_context, treeNode?.data?.type === '/' ? treeData : treeNode)
+    const { ref, data } = gen_js(tree_context, treeNode?.data?._type === '/' ? treeData : treeNode)
     // yaml data
     const yamlDoc = new YAML.Document()
     yamlDoc.contents = data
@@ -145,7 +145,7 @@ const YamlEditor = props => {
         const js_context = { topLevel: false }
         const parsed = parse_js(js_context, lookupNode.parentKey, null, loaded)
 
-        if (treeNode?.data?.type === '/') {
+        if (treeNode?.data?._type === '/') {
 
           // replace the entire tree
           makeDesignAction(
@@ -160,7 +160,7 @@ const YamlEditor = props => {
           parsed.data.__ref = lookupNode.data.__ref
           // check if parent is js/switch
           const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-          if (lookupParent?.data?.type === 'js/switch') {
+          if (lookupParent?.data?._type === 'js/switch') {
             // if yes, preserve condition
             if (lookupNode?.data?.__ref !== 'default') {
               parsed.data.condition = lookupNode.data.condition

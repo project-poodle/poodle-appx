@@ -188,7 +188,7 @@ const TestEditor = (props) => {
     // we are here if provider exists
     const defaultValues = []
     testData.providers
-      .filter(provider => provider?.type === 'react/element')
+      .filter(provider => provider?._type === 'react/element')
       .map((provider, index) => {
         // console.log(`provider`, provider)
         // iterate props
@@ -199,19 +199,19 @@ const TestEditor = (props) => {
           )
           ? Object.keys(provider.props)
               .filter(key => (
-                provider.props[key]?.type === 'js/string'
-                || provider.props[key]?.type === 'js/number'
-                || provider.props[key]?.type === 'js/boolean'
-                || provider.props[key]?.type === 'js/null'
-                || provider.props[key]?.type === 'js/impression'
-                || provider.props[key]?.type === 'js/import'
+                provider.props[key]?._type === 'js/string'
+                || provider.props[key]?._type === 'js/number'
+                || provider.props[key]?._type === 'js/boolean'
+                || provider.props[key]?._type === 'js/null'
+                || provider.props[key]?._type === 'js/impression'
+                || provider.props[key]?._type === 'js/import'
               ))
               .map((key, childIndex) => {
                 return {
                   // id: `providers[${index}].props[${childIndex}]`,
-                  type: provider.props[key].type,
+                  type: provider.props[key]._type,
                   name: key,
-                  value: provider.props[key].type === 'js/import'
+                  value: provider.props[key]._type === 'js/import'
                         ? provider.props[key].name
                         : provider.props[key].data,
                 }
@@ -225,12 +225,12 @@ const TestEditor = (props) => {
         )
         ? Object.keys(provider.props)
             .filter(key => (
-              provider.props[key]?.type !== 'js/string'
-              && provider.props[key]?.type !== 'js/number'
-              && provider.props[key]?.type !== 'js/boolean'
-              && provider.props[key]?.type !== 'js/null'
-              && provider.props[key]?.type !== 'js/impression'
-              && provider.props[key]?.type !== 'js/import'
+              provider.props[key]?._type !== 'js/string'
+              && provider.props[key]?._type !== 'js/number'
+              && provider.props[key]?._type !== 'js/boolean'
+              && provider.props[key]?._type !== 'js/null'
+              && provider.props[key]?._type !== 'js/impression'
+              && provider.props[key]?._type !== 'js/import'
             ))
             .map(key => key)
         : []
@@ -283,34 +283,34 @@ const TestEditor = (props) => {
       // we are here if provider.props has data
       providerElem.props = {}
       provider.props.map(child => {
-        if (child.type === 'js/string') {
+        if (child._type === 'js/string') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             data: String(child.value)
           }
-        } else if (child.type === 'js/number') {
+        } else if (child._type === 'js/number') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             data: Number(child.value)
           }
-        } else if (child.type === 'js/boolean') {
+        } else if (child._type === 'js/boolean') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             data: Boolean(child.value)
           }
-        } else if (child.type === 'js/null') {
+        } else if (child._type === 'js/null') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             data: null
           }
-        } else if (child.type === 'js/expression') {
+        } else if (child._type === 'js/expression') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             data: child.value
           }
-        } else if (child.type === 'js/import') {
+        } else if (child._type === 'js/import') {
           providerElem.props[child.name] = {
-            type: child.type,
+            type: child._type,
             name: child.value
           }
         }

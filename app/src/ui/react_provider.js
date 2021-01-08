@@ -85,7 +85,7 @@ function handle_react_provider(req, res) {
     const block_statements = []
     Object.keys(input).map(key => {
       // ignore type / name / props / children
-      if (key === 'type' || key === 'provider' || key === 'propTypes') {
+      if (key === '_type' || key === 'provider' || key === 'propTypes') {
         return
       }
 
@@ -112,7 +112,7 @@ function handle_react_provider(req, res) {
           variableDeclaration
         )
 
-      } else if (input[key].type === 'js/block') {
+      } else if (input[key]._type === 'js/block') {
         // if input[key] is 'js/block'
         // adds each of the block statement
         block_statements.push(...(js_process(
@@ -122,7 +122,7 @@ function handle_react_provider(req, res) {
 
       } else if (key.startsWith('...')) {
         // if input[key] starts with '...'
-        if (input[key].type === 'react/state') {
+        if (input[key]._type === 'react/state') {
           const variableDeclaration = t.variableDeclaration(
             'const',
             [
@@ -151,7 +151,7 @@ function handle_react_provider(req, res) {
           )
 
         } else {
-            throw new Error(`ERROR: unrecognized top level definition [${key}] [${input[key].type}]`)
+            throw new Error(`ERROR: unrecognized top level definition [${key}] [${input[key]._type}]`)
         }
 
       } else {

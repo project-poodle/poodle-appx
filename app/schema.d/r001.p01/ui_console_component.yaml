@@ -19,37 +19,37 @@ ui_component:
           propTypes:
               title: PropTypes.string.isRequired
           styles:
-              type: mui/style
+              _type: mui/style
               root:
                   height: "100%"
           element:
-              type: react/element
+              _type: react/element
               name: app-x/app/MUI_theme_redux
               props:
                   routes:
-                      type: appx/route
+                      _type: appx/route
                   redux_store_provider:
-                      type: js/import
+                      _type: js/import
                       name: app-x/redux/store.default
                   theme_provider:
-                      type: js/import
+                      _type: js/import
                       name: app-x/theme.default
                   not_found_view:
-                      type: react/element
+                      _type: react/element
                       name: app-x/page/layout/HeaderLayout
                       props:
                           header:
-                              type: react/element
+                              _type: react/element
                               name: app-x/page/header/Header_plain
                               props:
                                   title: App-X
                                   titleIcon:
-                                      type: react/element
+                                      _type: react/element
                                       name: "@material-ui/icons.ViewQuiltRounded"
                                   rootUrl: '/'
                                   baseUrl: '/'
                       children:
-                          - type: react/element
+                          - _type: react/element
                             name: app-x/view/error/NotFoundView
 
     ############################################################
@@ -60,17 +60,17 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
           styles:
-              type: mui/style
+              _type: mui/style
               grid:
                   position: fixed
                   bottom: "10%"
                   zIndex: 0
           effect:
-              type: react/effect
+              _type: react/effect
               body: |+
                   // console.log(props)
           element:
-              type: react/element
+              _type: react/element
               name: app-x/page/landing/YouTube_fs
               props:
                   youtube_playlist:
@@ -122,22 +122,22 @@ ui_component:
                       - vid: 'vOxmsqd8f58' # water drop
                         start: 0
               children:
-                  - type: react/element
+                  - _type: react/element
                     name: "@material-ui/core.Container"
                     props:
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: "styles.grid"
                     children:
-                        - type: react/element
+                        - _type: react/element
                           name: "@material-ui/core.Grid"
                           props:
                               container: true
                               spacing: 2
                           children:
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.CssBaseline"
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -146,7 +146,7 @@ ui_component:
                                     md: 1
                                     lg: 2
                                     xl: 3
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -156,22 +156,22 @@ ui_component:
                                     lg: 3
                                     xl: 2
                                 children:
-                                    - type: react/element
+                                    - _type: react/element
                                       name: "@material-ui/core.Button"
                                       props:
                                           variant: contained
                                           color: primary
                                           fullWidth: true
                                           startIcon:
-                                              type: react/element
+                                              _type: react/element
                                               name: "@material-ui/icons.MenuBook"
                                           onClick:
-                                              type: js/function
+                                              _type: js/function
                                               body: "$r('app-x/router.navigate')('/docs')"
                                           size: large
                                       children:
                                           - "Getting Started"
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -179,7 +179,7 @@ ui_component:
                                     md: 1
                                     lg: 1
                                     xl: 1
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -187,7 +187,7 @@ ui_component:
                                     md: 1
                                     lg: 1
                                     xl: 1
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -197,22 +197,22 @@ ui_component:
                                     lg: 3
                                     xl: 2
                                 children:
-                                    - type: react/element
+                                    - _type: react/element
                                       name: "@material-ui/core.Button"
                                       props:
                                           variant: contained
                                           color: primary
                                           fullWidth: true
                                           startIcon:
-                                              type: react/element
+                                              _type: react/element
                                               name: "@material-ui/icons.Slideshow"
                                           onClick:
-                                              type: js/function
+                                              _type: js/function
                                               body: "$r('app-x/router.navigate')('/console')"
                                           size: large
                                       children:
                                           - "Live Demo"
-                              - type: react/element
+                              - _type: react/element
                                 name: "@material-ui/core.Grid"
                                 props:
                                     item: true
@@ -230,11 +230,11 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
           styles:
-              type: mui/style
+              _type: mui/style
               root:
                   height: "100%"
           element:
-              type: react/element
+              _type: react/element
               name: app-x/page/landing/Unsplash_bg
               props:
                   unsplashCollections:
@@ -249,7 +249,7 @@ ui_component:
                       - 427860          # view angle
                       - 353649          # sea me now
               children:
-                  - type: js/expression
+                  - _type: js/expression
                     data: props.children
 
     ############################################################
@@ -260,14 +260,14 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
           styles:
-              type: mui/style
+              _type: mui/style
               root:
                   height: "100%"
           element:
-              type: react/element
+              _type: react/element
               name: self/page/landing/Unsplash_bg
               children:
-                  - type: react/element
+                  - _type: react/element
                     name: self/page/auth/SignInForm
                     props:
                         consoleUrl: /console
@@ -283,26 +283,26 @@ ui_component:
           propTypes:
               consoleUrl: PropTypes.string.isRequired
           styles:
-              type: mui/style
+              _type: mui/style
               paper:
                   position: fixed
                   top: 0
                   right: 0
                   width: 432
                   margin:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(12, 3)
                   padding:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(6, 3)
                   display: flex
                   flexDirection: column
                   alignItems: center
                   backgroundColor:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.palette.background.paper
                   color:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.palette.text.main
               facebook:
                   backgroundColor: '#4267B2'
@@ -310,58 +310,58 @@ ui_component:
                   backgroundColor: '#DB4437'
               avatar:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(1)
                 backgroundColor:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.palette.secondary.main
               line:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(1)
               error:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(1)
                 color:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.palette.text.error
               button:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(1)
               form:
                 width: '100%'  # Fix IE 11 issue.
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(1)
               grid:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(2, 0, 2)
               submit:
                 margin:
-                    type: js/expression
+                    _type: js/expression
                     data: theme.spacing(2, 0, 2)
           states:
               username:
-                  type: react/state
+                  _type: react/state
                   name: value
                   setter: setValue
                   init: ''
               password:
-                  type: react/state
+                  _type: react/state
                   name: value
                   setter: setValue
                   init: ''
               error:
-                  type: react/state
+                  _type: react/state
                   name: value
                   setter: setValue
                   init: ''
           handlers:
               handleSubmit:
-                  type: js/function
+                  _type: js/function
                   params:
                       - event
                   body: |
@@ -392,101 +392,101 @@ ui_component:
                           }
                       )
           element:
-              type: react/element
+              _type: react/element
               name: '@material-ui/core.Container'
               props:
                   className:
-                      type: js/expression
+                      _type: js/expression
                       data: styles.paper
               children:
-                  - type: react/element
+                  - _type: react/element
                     name: '@material-ui/core.Avatar'
                     props:
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: styles.avatar
                     children:
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/icons.ViewQuiltRounded'
-                  - type: react/element
+                  - _type: react/element
                     name: '@material-ui/core.Typography'
                     props:
                         component: h1
                         variant: h6
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: styles.line
                     children:
                         - Sign in to App-X
-                  - type: react/element
+                  - _type: react/element
                     name: '@material-ui/core.Grid'
                     props:
                         container: true
                         spacing: 2
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: styles.grid
                     children:
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.Grid'
                           props:
                               item: true
                               xs: 12
                           children:
-                              - type: react/element
+                              - _type: react/element
                                 name: '@material-ui/core.Button'
                                 props:
                                     color: primary
                                     className:
-                                        type: js/expression
+                                        _type: js/expression
                                         data: styles.facebook
                                     fullWidth: true
                                     startIcon:
-                                        type: react/element
+                                        _type: react/element
                                         name: 'app-x/icon/Facebook'
                                     onClick:
-                                        type: js/expression
+                                        _type: js/expression
                                         data: handlers.handleSubmit
                                     size: large
                                     variant: contained
                                 children:
                                     - Login with Facebook
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.Grid'
                           props:
                               item: true
                               xs: 12
                           children:
-                              - type: react/element
+                              - _type: react/element
                                 name: '@material-ui/core.Button'
                                 props:
                                     color: primary
                                     className:
-                                        type: js/expression
+                                        _type: js/expression
                                         data: styles.google
                                     fullWidth: true
                                     startIcon:
-                                        type: react/element
+                                        _type: react/element
                                         name: 'app-x/icon/Google'
                                     onClick:
-                                        type: js/expression
+                                        _type: js/expression
                                         data: handlers.handleSubmit
                                     size: large
                                     variant: contained
                                 children:
                                     - Login with Google
-                  - type: react/html
+                  - _type: react/html
                     name: 'form'
                     props:
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: styles.form
                         onSubmit:
-                            type: js/expression
+                            _type: js/expression
                             data: handlers.handleSubmit
                         noValidate: true
                     children:
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.TextField'
                           props:
                               variant: outlined
@@ -498,16 +498,16 @@ ui_component:
                               autoComplete: username
                               autoFocus: true
                               value:
-                                  type: js/expression
+                                  _type: js/expression
                                   data: states.username.value
                               onChange:
-                                  type: js/function
+                                  _type: js/function
                                   params:
                                       - e
                                   body: |
                                       states.username.setValue(e.target.value)
                                       states.error.setValue('')
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.TextField'
                           props:
                               variant: outlined
@@ -519,59 +519,59 @@ ui_component:
                               type: password
                               autoComplete: current-password
                               value:
-                                  type: js/expression
+                                  _type: js/expression
                                   data: states.password.value
                               onChange:
-                                  type: js/function
+                                  _type: js/function
                                   params:
                                       - e
                                   body: |
                                       states.password.setValue(e.target.value)
                                       states.error.setValue('')
-                        - type: js/switch
+                        - _type: js/switch
                           default: null
                           children:
                               - condition: states.error.value
                                 result:
-                                    type: react/element
+                                    _type: react/element
                                     name: '@material-ui/core.Grid'
                                     props:
                                         item: true
                                         xs: 12
                                     children:
-                                        - type: react/element
+                                        - _type: react/element
                                           name: '@material-ui/core.Typography'
                                           props:
                                               component: h1
                                               variant: subtitle1
                                               className:
-                                                  type: js/expression
+                                                  _type: js/expression
                                                   data: styles.error
                                           children:
-                                              - type: js/expression
+                                              - _type: js/expression
                                                 data: states.error.value
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.Button'
                           props:
-                              type: submit
+                              _type: submit
                               onClick:
-                                  type: js/expression
+                                  _type: js/expression
                                   data: handlers.handleSubmit
                               fullWidth: true
                               variant: contained
                               color: primary
                               size: large
                               className:
-                                  type: js/expression
+                                  _type: js/expression
                                   data: styles.submit
                           children:
                               - Sign In
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.Box'
                           props:
                               mt: 5
                           children:
-                              - type: react/element
+                              - _type: react/element
                                 name: '@material-ui/core.Typography'
                                 props:
                                     variant: body2
@@ -579,7 +579,7 @@ ui_component:
                                     align: center
                                 children:
                                     - 'Copyright © app-x.org '
-                                    - type: js/expression
+                                    - _type: js/expression
                                       data: new Date().getFullYear()
 
     ############################################################
@@ -590,7 +590,7 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
           styles:
-              type: mui/style
+              _type: mui/style
               container:
                   # width: 100%
                   # alignItems: center
@@ -603,7 +603,7 @@ ui_component:
                   flexWrap: wrap
                   justifyContent: space-evenly
                   padding:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(4, 2)
               card:
                   width: 360
@@ -611,30 +611,30 @@ ui_component:
                   maxWidth: 360
                   zIndex: 0
                   margin:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(3, 2)
                   backgroundColor:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.palette.background.paper
               cardContent:
                   margin:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(1)
               avatar:
                   backgroundColor:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.palette.secondary.main
                   margin:
-                      type: js/expression
+                      _type: js/expression
                       data: theme.spacing(1)
           states:
               ui:
-                  type: react/state
+                  _type: react/state
                   name: deployments
                   setter: setDeployments
                   init: []
           effect:
-              type: react/effect
+              _type: react/effect
               body: |
                   $r('app-x/api.get')(
                       'sys',
@@ -649,111 +649,111 @@ ui_component:
                       }
                   )
           element:
-              type: react/element
+              _type: react/element
               name: self/page/landing/Unsplash_bg
               children:
-                  - type: react/element
+                  - _type: react/element
                     name: '@material-ui/core.Container'
                     props:
                         className:
-                            type: js/expression
+                            _type: js/expression
                             data: styles.container
                     children:
-                        - type: react/element
+                        - _type: react/element
                           name: '@material-ui/core.Box'
                           props:
                               className:
-                                  type: js/expression
+                                  _type: js/expression
                                   data: styles.box
                           children:
-                              - type: js/map
+                              - _type: js/map
                                 data:
-                                    type: js/filter
+                                    _type: js/filter
                                     data:
-                                        type: js/expression
+                                        _type: js/expression
                                         data: states.ui.deployments
                                     filter: |
                                         !(item.namespace == 'sys' && item.ui_name == 'console')
                                 result:
-                                    type: react/element
+                                    _type: react/element
                                     name: '@material-ui/core.Card'
                                     props:
                                         draggable: true
                                         style:
                                             cursor: move
                                         key:
-                                            type: js/expression
+                                            _type: js/expression
                                             data: item.id
                                         className:
-                                            type: js/expression
+                                            _type: js/expression
                                             data: styles.card
                                     children:
-                                        - type: react/element
+                                        - _type: react/element
                                           name: '@material-ui/core.CardActionArea'
                                           children:
-                                              - type: react/element
+                                              - _type: react/element
                                                 name: app-x/router.HLink
                                                 props:
                                                     namespace:
-                                                        type: js/expression
+                                                        _type: js/expression
                                                         data: item.namespace
                                                     ui_name:
-                                                        type: js/expression
+                                                        _type: js/expression
                                                         data: item.ui_name
                                                     ui_deployment:
-                                                        type: js/expression
+                                                        _type: js/expression
                                                         data: item.ui_deployment
                                                     href: '/'
                                                 children:
-                                                    - type: react/element
+                                                    - _type: react/element
                                                       name: '@material-ui/core.CardContent'
                                                       children:
-                                                          - type: react/element
+                                                          - _type: react/element
                                                             name: '@material-ui/core.Avatar'
                                                             props:
                                                                 className:
-                                                                    type: js/expression
+                                                                    _type: js/expression
                                                                     data: styles.avatar
                                                             children:
-                                                                - type: react/element
+                                                                - _type: react/element
                                                                   name: '@material-ui/icons.ViewQuiltRounded'
-                                                          - type: react/element
+                                                          - _type: react/element
                                                             name: '@material-ui/core.Typography'
                                                             props:
                                                                 variant: body2
                                                                 className:
-                                                                    type: js/expression
+                                                                    _type: js/expression
                                                                     data: styles.cardContent
                                                             children:
-                                                                - type: js/expression
+                                                                - _type: js/expression
                                                                   data: item.namespace
                                                                 - ' / '
-                                                                - type: js/expression
+                                                                - _type: js/expression
                                                                   data: item.ui_name
                                                                 - ' / '
-                                                                - type: js/expression
+                                                                - _type: js/expression
                                                                   data: item.ui_deployment
-                                                          - type: react/element
+                                                          - _type: react/element
                                                             name: '@material-ui/core.Typography'
                                                             props:
                                                                 variant: h6
                                                                 className:
-                                                                    type: js/expression
+                                                                    _type: js/expression
                                                                     data: styles.cardContent
                                                             children:
-                                                                - type: js/expression
+                                                                - _type: js/expression
                                                                   data: item.ui_spec.description
-                                        - type: react/element
+                                        - _type: react/element
                                           name: '@material-ui/core.CardActions'
                                           children:
-                                              - type: react/element
+                                              - _type: react/element
                                                 name: '@material-ui/core.Button'
                                                 props:
                                                     size: small
                                                     color: primary
                                                     # variant: contained
                                                     className:
-                                                        type: js/expression
+                                                        _type: js/expression
                                                         data: styles.cardContent
                                                 children:
                                                     - Details

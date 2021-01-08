@@ -131,7 +131,7 @@ const SyntaxMoveDialog = (props) => {
             >
             <ListItem style={{padding:0}}>
               <IconButton>
-                { lookup_icon_for_type(props.moveDragNode?.data?.type) }
+                { lookup_icon_for_type(props.moveDragNode?.data?._type) }
               </IconButton>
               <Typography id="alert-dialog-title" variant="h6">
                 { lookup_title_for_input(props.moveDragNode?.data?.__ref, props.moveDragNode?.data) }
@@ -143,7 +143,7 @@ const SyntaxMoveDialog = (props) => {
             >
             {
               (
-                props.moveDropParent?.data?.type !== 'js/switch'
+                props.moveDropParent?.data?._type !== 'js/switch'
               )
               &&
               (
@@ -162,28 +162,28 @@ const SyntaxMoveDialog = (props) => {
                         lookup_child_by_ref(props.moveDropParent, value) === null
                         || 'Reference name is duplicate with an existing child',
                       checkSwitchChild: value =>
-                        props.moveDropParent?.data?.type !== 'js/switch'
+                        props.moveDropParent?.data?._type !== 'js/switch'
                         || value === 'default'
                         || 'Reference name for js/switch must be [default]',
                       checkMapChild: value =>
-                        props.moveDropParent?.data?.type !== 'js/map'
+                        props.moveDropParent?.data?._type !== 'js/map'
                         || value === 'data'
                         || value === 'result'
                         || 'Reference name for js/map must be [data] or [result]',
                       checkReduceChild: value =>
-                        props.moveDropParent?.data?.type !== 'js/reduce'
+                        props.moveDropParent?.data?._type !== 'js/reduce'
                         || value === 'data'
                         || 'Reference name for js/reduce must be [data]',
                       checkFilterChild: value =>
-                        props.moveDropParent?.data?.type !== 'js/filter'
+                        props.moveDropParent?.data?._type !== 'js/filter'
                         || value === 'data'
                         || 'Reference name for js/filter must be [data]',
                       checkReactElementChild: value =>
-                        props.moveDropParent?.data?.type !== 'react/element'
+                        props.moveDropParent?.data?._type !== 'react/element'
                         || value === 'props'
                         || 'Reference name for react/element must be [props]',
                       checkReactHtmlChild: value =>
-                        props.moveDropParent?.data?.type !== 'react/html'
+                        props.moveDropParent?.data?._type !== 'react/html'
                         || value === 'props'
                         || 'Reference name for react/html must b3 [props]',
                     },
@@ -203,7 +203,7 @@ const SyntaxMoveDialog = (props) => {
               )
             }
             {
-              props.moveDropParent?.data?.type === 'js/switch'
+              props.moveDropParent?.data?._type === 'js/switch'
               &&
               (
                 <Controller
@@ -251,7 +251,7 @@ const SyntaxMoveDialog = (props) => {
             }
             {
               (
-                props.moveDropParent?.data?.type === 'js/switch'
+                props.moveDropParent?.data?._type === 'js/switch'
                 && !isSwitchDefault
               )
               &&

@@ -99,7 +99,7 @@ function lookup_icon_for_type(type) {
   return lookup_icon_for_input({type: type, data: ''})
 }
 
-// lookup icon for input (input.type)
+// lookup icon for input (input._type)
 function lookup_icon_for_input(input) {
 
   function _primitive_icon(data) {
@@ -136,107 +136,107 @@ function lookup_icon_for_input(input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/string') {
+  if (input._type === 'js/string') {
 
     return <Text />
 
-  } else if (input.type === 'js/number') {
+  } else if (input._type === 'js/number') {
 
     return  <NumberOutlined />
 
-  } else if (input.type === 'js/boolean') {
+  } else if (input._type === 'js/boolean') {
 
     return  <PoweroffOutlined />
 
-  } else if (input.type === 'js/null') {
+  } else if (input._type === 'js/null') {
 
     return  <MinusCircleOutlined />
 
-  } else if (input.type === 'js/array') {
+  } else if (input._type === 'js/array') {
 
     return  <Bracket />
 
-  } else if (input.type === 'js/object') {
+  } else if (input._type === 'js/object') {
 
     return <CurlyBracket />
 
-  } else if (input.type === 'js/import') {
+  } else if (input._type === 'js/import') {
 
     return <Import />
 
-  } else if (input.type === 'js/expression') {
+  } else if (input._type === 'js/expression') {
 
     return <PercentageOutlined />
 
-  } else if (input.type === 'js/block') {
+  } else if (input._type === 'js/block') {
 
     return <Code />
 
-  } else if (input.type === 'js/function') {
+  } else if (input._type === 'js/function') {
 
     return <Function />
 
-  } else if (input.type === 'js/switch') {
+  } else if (input._type === 'js/switch') {
 
     return <Branch />
 
-  } else if (input.type === 'js/map') {
+  } else if (input._type === 'js/map') {
 
     return <DoubleRightOutlined />
 
-  } else if (input.type === 'js/reduce') {
+  } else if (input._type === 'js/reduce') {
 
     return <CompressOutlined />
 
-  } else if (input.type === 'js/filter') {
+  } else if (input._type === 'js/filter') {
 
     return <Filter />
 
-  } else if (input.type === 'react/element') {
+  } else if (input._type === 'react/element') {
 
     return <ReactIcon />
 
-  } else if (input.type === 'react/html') {
+  } else if (input._type === 'react/html') {
 
     return <Html />
 
-  } else if (input.type === 'react/state') {
+  } else if (input._type === 'react/state') {
 
     return <State />
 
-  } else if (input.type === 'react/context') {
+  } else if (input._type === 'react/context') {
 
     return <Context />
 
-  } else if (input.type === 'react/effect') {
+  } else if (input._type === 'react/effect') {
 
     return <Effect />
 
-  } else if (input.type === 'react/form') {
+  } else if (input._type === 'react/form') {
 
     return <Form />
 
-  } else if (input.type === 'input/text') {
+  } else if (input._type === 'input/text') {
 
     return <InputText />
 
-  } else if (input.type === 'mui/style') {
+  } else if (input._type === 'mui/style') {
 
     return <Style />
 
-  } else if (input.type === 'appx/api') {
+  } else if (input._type === 'appx/api') {
 
     return <API />
 
-  } else if (input.type === 'appx/route') {
+  } else if (input._type === 'appx/route') {
 
     return <Route />
 
-  } else if (input.type === 'pointer') {
+  } else if (input._type === 'pointer') {
 
     return <Pointer />
 
-  } else if (input.type === '/') {
+  } else if (input._type === '/') {
 
     return <HomeOutlined />
 
@@ -246,7 +246,7 @@ function lookup_icon_for_input(input) {
   }
 }
 
-// lookup title for input (input.type / input.name / input.data ...)
+// lookup title for input (input._type / input.name / input.data ...)
 function lookup_title_for_input(ref, input) {
 
   const prefix = ref ? ref + ': ' : ''
@@ -285,44 +285,44 @@ function lookup_title_for_input(ref, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/string') {
+  if (input._type === 'js/string') {
 
     return _primitive_title(String(input.data))
 
-  } else if (input.type === 'js/number') {
+  } else if (input._type === 'js/number') {
 
     return _primitive_title(isNaN(Number(input.data)) ? 0 : Number(input.data))
 
-  } else if (input.type === 'js/boolean') {
+  } else if (input._type === 'js/boolean') {
 
     return _primitive_title(Boolean(input.data))
 
-  } else if (input.type === 'js/null') {
+  } else if (input._type === 'js/null') {
 
     return _primitive_title(null)
 
-  } else if (input.type === 'js/array') {
+  } else if (input._type === 'js/array') {
 
     return ref ? ref : ''
 
-  } else if (input.type === 'js/object') {
+  } else if (input._type === 'js/object') {
 
     return ref ? ref : ''
 
-  } else if (input.type === 'js/import') {
+  } else if (input._type === 'js/import') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + parsed.full_paths.pop()
 
-  } else if (input.type === 'js/expression') {
+  } else if (input._type === 'js/expression') {
 
     return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  } else if (input.type === 'js/block') {
+  } else if (input._type === 'js/block') {
 
     return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  } else if (input.type === 'js/function') {
+  } else if (input._type === 'js/function') {
 
     const name = 'func (' +
       (
@@ -335,33 +335,33 @@ function lookup_title_for_input(ref, input) {
       +  ')'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
-  } else if (input.type === 'js/switch') {
+  } else if (input._type === 'js/switch') {
 
     return prefix + 'Switch'
 
-  } else if (input.type === 'js/map') {
+  } else if (input._type === 'js/map') {
 
     return prefix + 'Map'
 
-  } else if (input.type === 'js/reduce') {
+  } else if (input._type === 'js/reduce') {
 
     return prefix + 'Reduce'
 
-  } else if (input.type === 'js/filter') {
+  } else if (input._type === 'js/filter') {
 
     return prefix + 'Filter'
 
-  } else if (input.type === 'react/element') {
+  } else if (input._type === 'react/element') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + parsed.full_paths.pop()
 
-  } else if (input.type === 'react/html') {
+  } else if (input._type === 'react/html') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + parsed.full_paths.pop()
 
-  } else if (input.type === 'react/state') {
+  } else if (input._type === 'react/state') {
 
     if (!!ref && ref.startsWith('...')) {
       return ref
@@ -369,11 +369,11 @@ function lookup_title_for_input(ref, input) {
       return prefix + input.name
     }
 
-  } else if (input.type === 'react/context') {
+  } else if (input._type === 'react/context') {
 
     return ref ? ref : ''
 
-  } else if (input.type === 'react/effect') {
+  } else if (input._type === 'react/effect') {
 
     const name = 'effect [' +
       (
@@ -386,23 +386,23 @@ function lookup_title_for_input(ref, input) {
       +  ']'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
-  } else if (input.type === 'react/form') {
+  } else if (input._type === 'react/form') {
 
     return prefix + input.name
 
-  } else if (input.type === 'input/text') {
+  } else if (input._type === 'input/text') {
 
     return prefix + `Input [${input.name}]`
 
-  } else if (input.type === 'mui/style') {
+  } else if (input._type === 'mui/style') {
 
     return ref ? ref : ''
 
-  } else if (input.type === 'appx/api') {
+  } else if (input._type === 'appx/api') {
 
     return prefix + 'API'
 
-  } else if (input.type === 'appx/route') {
+  } else if (input._type === 'appx/route') {
 
     return ref ? ref : ''
 
@@ -434,7 +434,7 @@ function new_root_node() {
     title: '/',
     data: {
       __ref: null,
-      type: '/'
+      _type: '/'
     },
     icon: lookup_icon_for_type('/'),
     isLeaf: true,
@@ -454,7 +454,7 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: (input === null || typeof input === 'undefined') ? 'js/null' : ('js/' + typeof input),
+    _type: (input === null || typeof input === 'undefined') ? 'js/null' : ('js/' + typeof input),
     data: (input === null || typeof input === 'undefined') ? null : input,
   }
 
@@ -515,7 +515,7 @@ function parse_js_array(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: true
     },
-    type: 'js/array',
+    _type: 'js/array',
   }
 
   // empty input
@@ -597,7 +597,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: false
     },
-    type: 'js/object',
+    _type: 'js/object',
   }
 
   // empty input
@@ -688,8 +688,8 @@ function parse_js_object(js_context, parentKey, ref, input) {
 // create import tree node
 function parse_js_import(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/import') {
-    throw new Error(`ERROR: input.type is not [js/import] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/import') {
+    throw new Error(`ERROR: input._type is not [js/import] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -699,7 +699,7 @@ function parse_js_import(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     name: input.name,
   }
 
@@ -716,8 +716,8 @@ function parse_js_import(js_context, parentKey, ref, input) {
 // create expression tree node
 function parse_js_expression(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/expression') {
-    throw new Error(`ERROR: input.type is not [js/expression] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/expression') {
+    throw new Error(`ERROR: input._type is not [js/expression] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('data' in input)) {
@@ -727,7 +727,7 @@ function parse_js_expression(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     data: input.data,
   }
 
@@ -744,8 +744,8 @@ function parse_js_expression(js_context, parentKey, ref, input) {
 // create block tree node (allow return outside of function)
 function parse_js_block(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/block') {
-    throw new Error(`ERROR: input.type is not [js/block] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/block') {
+    throw new Error(`ERROR: input._type is not [js/block] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('data' in input)) {
@@ -755,7 +755,7 @@ function parse_js_block(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     data: input.data,
   }
 
@@ -770,8 +770,8 @@ function parse_js_block(js_context, parentKey, ref, input) {
 // create array function tree node
 function parse_js_function(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/function') {
-    throw new Error(`ERROR: input.type is not [js/function] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/function') {
+    throw new Error(`ERROR: input._type is not [js/function] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('body' in input)) {
@@ -781,7 +781,7 @@ function parse_js_function(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     params: input.params,
     body: input.body,
   }
@@ -799,8 +799,8 @@ function parse_js_function(js_context, parentKey, ref, input) {
 // create switch tree node
 function parse_js_switch(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/switch') {
-    throw new Error(`ERROR: input.type is not [js/switch] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/switch') {
+    throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   //if (! ('children' in input)) {
@@ -822,7 +822,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
       enable: true,
       extraProps: [ 'condition' ],
     },
-    type: input.type,
+    _type: input._type,
   }
 
   const node = new_js_node(
@@ -887,8 +887,8 @@ function parse_js_switch(js_context, parentKey, ref, input) {
 // create js map tree node
 function parse_js_map(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/map') {
-    throw new Error(`ERROR: input.type is not [js/map] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/map') {
+    throw new Error(`ERROR: input._type is not [js/map] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   //if (! ('data' in input)) {
@@ -909,7 +909,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: false,
     },
-    type: input.type,
+    _type: input._type,
   }
 
   const node = new_js_node(
@@ -961,8 +961,8 @@ function parse_js_map(js_context, parentKey, ref, input) {
 // create js reduce tree node
 function parse_js_reduce(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/reduce') {
-    throw new Error(`ERROR: input.type is not [js/reduce] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/reduce') {
+    throw new Error(`ERROR: input._type is not [js/reduce] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   //if (! ('data' in input)) {
@@ -987,7 +987,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: false,
     },
-    type: input.type,
+    _type: input._type,
     reducer: input.reducer,
   }
 
@@ -1031,8 +1031,8 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
 // create js filter tree node
 function parse_js_filter(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'js/filter') {
-    throw new Error(`ERROR: input.type is not [js/filter] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'js/filter') {
+    throw new Error(`ERROR: input._type is not [js/filter] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   //if (! ('data' in input)) {
@@ -1053,7 +1053,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: false,
     },
-    type: input.type,
+    _type: input._type,
     filter: input.filter,
   }
 
@@ -1094,8 +1094,8 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 // create react element tree node
 function parse_react_element(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/element') {
-    throw new Error(`ERROR: input.type is not [react/element] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/element') {
+    throw new Error(`ERROR: input._type is not [react/element] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1112,7 +1112,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: true,
     },
-    type: input.type,
+    _type: input._type,
     name: input.name,
   }
 
@@ -1171,8 +1171,8 @@ function parse_react_element(js_context, parentKey, ref, input) {
 // create jsx html element ast
 function parse_react_html(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/html') {
-    throw new Error(`ERROR: input.type is not [react/html] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/html') {
+    throw new Error(`ERROR: input._type is not [react/html] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1189,7 +1189,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: true,
     },
-    type: input.type,
+    _type: input._type,
     name: input.name,
   }
 
@@ -1248,8 +1248,8 @@ function parse_react_html(js_context, parentKey, ref, input) {
 // create react state ast
 function parse_react_state(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/state') {
-    throw new Error(`ERROR: input.type is not [react/state] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/state') {
+    throw new Error(`ERROR: input._type is not [react/state] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1267,7 +1267,7 @@ function parse_react_state(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     name: input.name,
     setter: input.setter,
     init: input.init,
@@ -1286,8 +1286,8 @@ function parse_react_state(js_context, parentKey, ref, input) {
 // create react context ast
 function parse_react_context(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/context') {
-    throw new Error(`ERROR: input.type is not [react/context] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/context') {
+    throw new Error(`ERROR: input._type is not [react/context] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1297,7 +1297,7 @@ function parse_react_context(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     name: input.name,
   }
 
@@ -1314,8 +1314,8 @@ function parse_react_context(js_context, parentKey, ref, input) {
 // create react effect block ast (do not allow return outside of function)
 function parse_react_effect(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/effect') {
-    throw new Error(`ERROR: input.type is not [react/effect] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/effect') {
+    throw new Error(`ERROR: input._type is not [react/effect] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('data' in input)) {
@@ -1325,7 +1325,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     data: input.data,
     states: input.states,
   }
@@ -1343,8 +1343,8 @@ function parse_react_effect(js_context, parentKey, ref, input) {
 // create react form ast
 function parse_react_form(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'react/form') {
-    throw new Error(`ERROR: input.type is not [react/form] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'react/form') {
+    throw new Error(`ERROR: input._type is not [react/form] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (!input.name) {
@@ -1354,7 +1354,7 @@ function parse_react_form(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     name: input.name,
     onSubmit: input.onSubmit,
     onError: input.onError
@@ -1430,8 +1430,8 @@ function parse_react_form(js_context, parentKey, ref, input) {
 // create react form ast
 function parse_input_text(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'input/text') {
-    throw new Error(`ERROR: input.type is not [input/text] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'input/text') {
+    throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('name' in input)) {
@@ -1441,7 +1441,7 @@ function parse_input_text(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     name: input.name,
     array: input.array,
   }
@@ -1489,8 +1489,8 @@ function parse_input_text(js_context, parentKey, ref, input) {
 // create mui style expression
 function parse_mui_style(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'mui/style') {
-    throw new Error(`ERROR: input.type is not [mui/style] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'mui/style') {
+    throw new Error(`ERROR: input._type is not [mui/style] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
@@ -1502,7 +1502,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
     __childrenWithoutRef: {
       enable: false,
     },
-    type: input.type,
+    _type: input._type,
   }
 
   const node = new_js_node(
@@ -1542,8 +1542,8 @@ function parse_mui_style(js_context, parentKey, ref, input) {
 // create appx api ast
 function parse_appx_api(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'appx/api') {
-    throw new Error(`ERROR: input.type is not [appx/api] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'appx/api') {
+    throw new Error(`ERROR: input._type is not [appx/api] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('namespace' in input)) {
@@ -1565,7 +1565,7 @@ function parse_appx_api(js_context, parentKey, ref, input) {
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
     namespace: input.namespace,
     app_name: input.app_name,
     method: input.method,
@@ -1588,14 +1588,14 @@ function parse_appx_api(js_context, parentKey, ref, input) {
 // create appx route ast
 function parse_appx_route(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input.type !== 'appx/route') {
-    throw new Error(`ERROR: input.type is not [appx/route] [${input.type}] [${JSON.stringify(input)}]`)
+  if (!('type' in input) || input._type !== 'appx/route') {
+    throw new Error(`ERROR: input._type is not [appx/route] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
   const data = {
     __ref: ref,
-    type: input.type,
+    _type: input._type,
   }
 
   const node = new_js_node(
@@ -1630,93 +1630,93 @@ function parse_js(js_context, parentKey, ref, input) {
   }
 
   // 'type' is presented in the json object
-  if (input.type === 'js/string' || input.type === 'js/number' || input.type === 'js/boolean' || input.type === 'js/null') {
+  if (input._type === 'js/string' || input._type === 'js/number' || input._type === 'js/boolean' || input._type === 'js/null') {
 
     return parse_js_primitive(js_context, parentKey, ref, input.data)
 
-  } else if (input.type === 'js/object') {
+  } else if (input._type === 'js/object') {
 
     return parse_js_object(js_context, parentKey, ref, input.data)
 
-  } else if (input.type === 'js/array') {
+  } else if (input._type === 'js/array') {
 
     return parse_js_array(js_context, parentKey, ref, input.data)
 
-  } else if (input.type === 'js/import') {
+  } else if (input._type === 'js/import') {
 
     return parse_js_import(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/expression') {
+  } else if (input._type === 'js/expression') {
 
     return parse_js_expression(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/block') {
+  } else if (input._type === 'js/block') {
 
     return parse_js_block(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/function') {
+  } else if (input._type === 'js/function') {
 
     return parse_js_function(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/switch') {
+  } else if (input._type === 'js/switch') {
 
     return parse_js_switch(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/map') {
+  } else if (input._type === 'js/map') {
 
     return parse_js_map(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/reduce') {
+  } else if (input._type === 'js/reduce') {
 
     return parse_js_reduce(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'js/filter') {
+  } else if (input._type === 'js/filter') {
 
     return parse_js_filter(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/element') {
+  } else if (input._type === 'react/element') {
 
     return parse_react_element(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/html') {
+  } else if (input._type === 'react/html') {
 
     return parse_react_html(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/state') {
+  } else if (input._type === 'react/state') {
 
     return parse_react_state(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/context') {
+  } else if (input._type === 'react/context') {
 
     return parse_react_context(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/effect') {
+  } else if (input._type === 'react/effect') {
 
     return parse_react_effect(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'react/form') {
+  } else if (input._type === 'react/form') {
 
     return parse_react_form(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'input/text') {
+  } else if (input._type === 'input/text') {
 
     return parse_input_text(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'mui/style') {
+  } else if (input._type === 'mui/style') {
 
     return parse_mui_style(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'appx/api') {
+  } else if (input._type === 'appx/api') {
 
     return parse_appx_api(js_context, parentKey, ref, input)
 
-  } else if (input.type === 'appx/route') {
+  } else if (input._type === 'appx/route') {
 
     return parse_appx_route(js_context, parentKey, ref, input)
 
   } else {
 
-    throw new Error(`ERROR: unrecognized input.type [${input.type}] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: unrecognized input._type [${input._type}] [${JSON.stringify(input)}]`)
   }
 }
 
@@ -1956,13 +1956,13 @@ function valid_import_names() {
   return _valid_import_names
 }
 
-// valid child types
+// valid child _types
 function lookup_valid_child_types(type) {
   if (!type || type === '/') {
     return {
       'ref': {
         names: null,
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2008,7 +2008,7 @@ function lookup_valid_child_types(type) {
     return {
       'ref': {
         names: null,
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2045,7 +2045,7 @@ function lookup_valid_child_types(type) {
   } else if (type === 'js/array') {
     return {
       '_': {
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2093,7 +2093,7 @@ function lookup_valid_child_types(type) {
         names: [
           'default'
         ],
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2130,7 +2130,7 @@ function lookup_valid_child_types(type) {
         attrs: [
           'condition'
         ],
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2171,7 +2171,7 @@ function lookup_valid_child_types(type) {
           'data',
           'result',
         ],
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2211,7 +2211,7 @@ function lookup_valid_child_types(type) {
         names: [
           'data',
         ],
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2251,7 +2251,7 @@ function lookup_valid_child_types(type) {
         names: [
           'data',
         ],
-        types: [
+        _types: [
           'js/string',
           'js/number',
           'js/boolean',
@@ -2291,12 +2291,12 @@ function lookup_valid_child_types(type) {
         names: [
           'props',
         ],
-        types: [
+        _types: [
           'js/object',
         ]
       },
       '_': {
-        types: [
+        _types: [
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
@@ -2335,12 +2335,12 @@ function lookup_valid_child_types(type) {
         names: [
           'props',
         ],
-        types: [
+        _types: [
           'js/object',
         ]
       },
       '_': {
-        types: [
+        _types: [
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
@@ -2380,12 +2380,12 @@ function lookup_valid_child_types(type) {
           'props',
           'formProps',
         ],
-        types: [
+        _types: [
           'js/object',
         ]
       },
       '_': {
-        types: [
+        _types: [
           'react/element',
           'react/html',
           // 'react/state',   // state code not allowed
@@ -2431,7 +2431,7 @@ function lookup_valid_child_types(type) {
           'props',
           'rules',
         ],
-        types: [
+        _types: [
           'js/object',
         ]
       }
@@ -2440,7 +2440,7 @@ function lookup_valid_child_types(type) {
     return {
       ref: {
         names: null,
-        types: [
+        _types: [
           // 'js/string',
           // 'js/number',
           // 'js/boolean',
@@ -2497,7 +2497,7 @@ function lookup_type_by_classname(className) {
   }
   // search others
   let found = null
-  lookup_valid_child_types('/').ref.types.forEach(type => {
+  lookup_valid_child_types('/').ref._types.forEach(type => {
     if (!type || found) {
       return
     }
@@ -2512,8 +2512,8 @@ function lookup_type_by_classname(className) {
 // reorder children
 const reorder_children = (parentNode) => {
 
-  if (parentNode.data.type === 'js/object'
-      || parentNode.data.type === 'mui/style') {
+  if (parentNode.data._type === 'js/object'
+      || parentNode.data._type === 'mui/style') {
 
     const children = []
     // add __ref !== null
@@ -2528,9 +2528,9 @@ const reorder_children = (parentNode) => {
     // update children
     parentNode.children = children
 
-  } else if (parentNode.data.type === 'react/element'
-            || parentNode.data.type === 'react/html'
-            || parentNode.data.type === 'react/form') {
+  } else if (parentNode.data._type === 'react/element'
+            || parentNode.data._type === 'react/html'
+            || parentNode.data._type === 'react/form') {
 
     const children = []
     // add __ref === 'props'
@@ -2554,7 +2554,7 @@ const reorder_children = (parentNode) => {
     // update children
     parentNode.children = children
 
-  } else if (parentNode.data.type === 'js/switch') {
+  } else if (parentNode.data._type === 'js/switch') {
 
     const children = []
     // add __ref === null
@@ -2572,7 +2572,7 @@ const reorder_children = (parentNode) => {
     // update children
     parentNode.children = children
 
-  } else if (parentNode.data.type === 'js/map') {
+  } else if (parentNode.data._type === 'js/map') {
 
     const children = []
     // add __ref === 'data'
@@ -2590,7 +2590,7 @@ const reorder_children = (parentNode) => {
     // update children
     parentNode.children = children
 
-  } else if (parentNode.data.type === 'js/reduce') {
+  } else if (parentNode.data._type === 'js/reduce') {
 
     const children = []
     // add __ref === 'data'
@@ -2602,7 +2602,7 @@ const reorder_children = (parentNode) => {
     // update children
     parentNode.children = children
 
-  } else if (parentNode.data.type === 'js/filter') {
+  } else if (parentNode.data._type === 'js/filter') {
 
     const children = []
     // add __ref === 'data'
