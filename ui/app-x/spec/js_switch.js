@@ -26,7 +26,6 @@ export const js_switch = {
     {
       name: 'children',
       desc: 'Conditional',
-      array: true,
       optional: true,
       classes: [
         {
@@ -69,6 +68,7 @@ export const js_switch = {
         },
       ],
       _childNode: {
+        array: true,
         generate: ' \
           thisData.children.map( \
             child => (() => { \
@@ -81,11 +81,11 @@ export const js_switch = {
         ',
         parse: ' \
           thisNode.children \
-            .filter(child => !child._isDefault) \
-            .map(child => { \
-              condition: child.data._condition, \
-              result: parse(child) \
-            }) \
+            .filter(childNode => !childNode.data._isDefault) \
+            .map(childNode => ({ \
+              condition: childNode.data._condition, \
+              result: parse(childNode) \
+            })) \
         ',
         customs: [
           {
@@ -152,7 +152,7 @@ export const js_switch = {
             return node \
           })() \
         ',
-        // parse: 'parse(node)',
+        parse: 'parse(node)',
         customs: [
           {
             name: '_isDefault',

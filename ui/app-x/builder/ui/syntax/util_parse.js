@@ -1250,32 +1250,36 @@ function parse_tree_node(tree_context, treeNode) {
   // topLevel
   if (tree_context.topLevel) {
     // top level must be array
-    if (! Array.isArray(treeNode)) {
-      throw new Error(`ERROR: topLevel tree data is not array [${treeNode.data?._type}] [${JSON.stringify(treeNode)}]`)
-    }
-    // return result as object
-    const result = {}
-    treeNode.map(child => {
-      // ignore '/' node
-      if (child.key === '/') {
-        return
+    if (Array.isArray(treeNode)) {
+      // return result as object
+      const result = {}
+      treeNode.map(child => {
+        // ignore '/' node
+        if (child.key === '/') {
+          return
+        }
+        // process each child
+        const childResult = parse_tree_node(
+          child_context,
+          child
+        )
+        // add child to result
+        if (!!child.data._ref) {
+          result[child.data._ref] = childResult
+        }
+      })
+      // log
+      console.log(`result`, result)
+      // return
+      return {
+        ref: null,
+        data: result,
       }
-      // process each child
-      const childResult = parse_tree_node(
-        child_context,
-        child
-      )
-      // add child to result
-      if (!!child.data._ref) {
-        result[child.data._ref] = childResult
+    } else {
+      return {
+        ref: treeNode.data._ref,
+        data: parse_tree_node(child_context, treeNode),
       }
-    })
-    // log
-    console.log(`result`, result)
-    // return
-    return {
-      ref: null,
-      data: result,
     }
   }
 
