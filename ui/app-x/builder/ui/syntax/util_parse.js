@@ -1306,6 +1306,8 @@ function parse_tree_node(tree_context, treeNode) {
   spec.children.map((childSpec) => {
 
     function _process_this(_ref, node) {
+      // node data
+      const nodeData = node.data[_ref]
       // update data if _thisNode is defined
       if (!!childSpec._thisNode) {
         // no need to check conditional
