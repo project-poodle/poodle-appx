@@ -224,7 +224,7 @@ const PreviewTabs = (props) => {
       const { ref, data: genData } = gen_js(tree_context, treeData)
       // console.log(genData)
       const spec = !!testData
-        ? { ...genData, __test: testData }
+        ? { ...genData, _test: testData }
         : genData
 
       // check selected type
@@ -343,7 +343,7 @@ const PreviewTabs = (props) => {
         const { ref, data } = gen_js(tree_context, treeData)
         // preview loading
         const spec = !!testData
-          ? { ...data, __test: testData }
+          ? { ...data, _test: testData }
           : data
         // check selected type
         if (

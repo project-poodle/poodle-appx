@@ -97,7 +97,7 @@ function handle_appx_route(req, res) {
 
     // handle test statements
     const test_statements = []
-    if ('__test' in req.context.ui_route_spec) {
+    if ('_test' in req.context.ui_route_spec) {
       // register variable
       const ui_test_name = ui_route_name + '.Test'
       reg_js_variable(js_context, ui_test_name)
@@ -106,8 +106,8 @@ function handle_appx_route(req, res) {
         type: 'react/element',
         name: ui_route_name,
       }
-      if (!!req.context.ui_route_spec.__test.providers) {
-        req.context.ui_route_spec.__test.providers
+      if (!!req.context.ui_route_spec._test.providers) {
+        req.context.ui_route_spec._test.providers
           .reverse()
           .filter(provider => provider._type === 'react/element')
           .map(provider => {

@@ -233,9 +233,9 @@ const SyntaxTree = (props) => {
     }
     // console.log(`spec_data`, spec_data)
 
-    // remove __test if exist
+    // remove _test if exist
     const filtered = Object.keys(spec_data)
-      .filter(key => key !== '__test')
+      .filter(key => key !== '_test')
       .reduce((obj, key) => {
         obj[key] = spec_data[key]
         return obj
@@ -246,8 +246,8 @@ const SyntaxTree = (props) => {
     const parsedTree = parse_js(js_context, null, null, filtered)
     // console.log(parsedTree)
 
-    const parsedTest = !!spec_data.__test
-      ? spec_data.__test
+    const parsedTest = !!spec_data._test
+      ? spec_data._test
       : null
 
     // console.log(`parsed`, parsedTree, parsedTest)
@@ -374,7 +374,7 @@ const SyntaxTree = (props) => {
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
       const spec = !!testData
-        ? { ...genData, __test: testData }
+        ? { ...genData, _test: testData }
         : genData
       // console.log(spec)
       if (
@@ -620,9 +620,9 @@ const SyntaxTree = (props) => {
     const ref =
       (nodeData.type === 'react/state')
       ? !!nodeData.__customRef        // special handle of 'react/state'
-        ? nodeData.__ref
+        ? nodeData._ref
         : `...${nodeData.name}`
-      : !!nodeRef ? nodeRef : (nodeData.__ref ? nodeData.__ref : null)
+      : !!nodeRef ? nodeRef : (nodeData._ref ? nodeData._ref : null)
     // console.log(parentKey, ref, nodeData)
     const parse_context = {}
     var parsed = null
@@ -651,10 +651,10 @@ const SyntaxTree = (props) => {
             if (found) {
               return
             }
-            if (!child.data.__ref) {
+            if (!child.data._ref) {
               count = count+1
             }
-            // check if we'd insert before first component with no __ref
+            // check if we'd insert before first component with no _ref
             if (nodeData.__pos === 0 && count !== 0) {
               found = true
               lookupParent.children.splice(index, 0, parsed)
@@ -918,17 +918,17 @@ const SyntaxTree = (props) => {
       // console.log(dragObj, data)
       if (dropParent.data.type === 'js/switch') {
         if (!!data.default) {
-          dragObj.data.__ref = 'default'
-          dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+          dragObj.data._ref = 'default'
+          dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
         } else {
-          dragObj.data.__ref = null
-          dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+          dragObj.data._ref = null
+          dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
           dragObj.data.condition = data.condition
         }
       } else {
         // set ref
-        dragObj.data.__ref = data.__ref
-        dragObj.title = lookup_title_for_input(dragObj.data.__ref, dragObj.data)
+        dragObj.data._ref = data._ref
+        dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
       }
 
       // drag & drop
@@ -955,7 +955,7 @@ const SyntaxTree = (props) => {
     // console.log(dragObj.parentKey)
     if (dropParent.key === dragObj.parentKey) {
       thisMoveCallback({
-         __ref: dragObj.data.__ref     // keep __ref
+         _ref: dragObj.data._ref     // keep _ref
       })
 
     } else if (
@@ -988,7 +988,7 @@ const SyntaxTree = (props) => {
     } else {
       // invoke callback directly if no ref needed
       thisMoveCallback({
-         __ref: null      // clear __ref
+         _ref: null      // clear _ref
       })
     }
   }

@@ -100,7 +100,7 @@ function handle_react_component(req, res) {
 
     // handle test statements
     const test_statements = []
-    if ('__test' in req.context.ui_component_spec) {
+    if ('_test' in req.context.ui_component_spec) {
       // register variable
       const ui_test_name = ui_elem_name + '.Test'
       reg_js_variable(js_context, ui_test_name)
@@ -109,8 +109,8 @@ function handle_react_component(req, res) {
         _type: 'react/element',
         name: ui_elem_name,
       }
-      if (!!req.context.ui_component_spec.__test.providers) {
-        req.context.ui_component_spec.__test.providers
+      if (!!req.context.ui_component_spec._test.providers) {
+        req.context.ui_component_spec._test.providers
           .reverse()
           .filter(provider => provider._type === 'react/element')
           .map(provider => {

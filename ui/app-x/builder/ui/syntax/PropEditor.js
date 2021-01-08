@@ -159,11 +159,11 @@ const PropEditor = (props) => {
   useEffect(() => {
     if (treeNode?.data?._type === 'react/state') {
       if (!!watch__customRef) {
-        if (!getValues(`__ref`)) {
-          setValue(`__ref`, `${getValues('name')}`)
+        if (!getValues(`_ref`)) {
+          setValue(`_ref`, `${getValues('name')}`)
         }
       } else if (!watch__customRef) {
-        setValue(`__ref`, `...${getValues('name')}`)
+        setValue(`_ref`, `...${getValues('name')}`)
       }
     }
   }, [watch__customRef])
@@ -176,7 +176,7 @@ const PropEditor = (props) => {
       && !!navDeployment.ui_name
       && !!navDeployment.ui_ver
       && !! navDeployment.ui_deployment
-      && !! navSelected._type
+      && !! navSelected.type
       &&
       (
         (
@@ -232,10 +232,10 @@ const PropEditor = (props) => {
         }
       })
       if (treeNode.data._type === 'react/state') {
-        // console.log(`__customRef`, treeNode, !!treeNode.data.__ref && !treeNode.data.__ref.startsWith('...'))
+        // console.log(`__customRef`, treeNode, !!treeNode.data._ref && !treeNode.data._ref.startsWith('...'))
         setValue('__customRef',
-          !!treeNode.data.__ref
-          && !treeNode.data.__ref.startsWith('...'))
+          !!treeNode.data._ref
+          && !treeNode.data._ref.startsWith('...'))
       }
       // set properties
       if
@@ -291,33 +291,33 @@ const PropEditor = (props) => {
     }
 
     // console.log(data)
-    const preservedRef = lookupNode.data.__ref
+    const preservedRef = lookupNode.data._ref
     lookupNode.data = data
-    if (!!data.__ref) {
-      lookupNode.data.__ref = data.__ref
-    } else if (!!preservedRef) { // preserve lookupNode.data.__ref is exist
-      lookupNode.data.__ref = preservedRef
+    if (!!data._ref) {
+      lookupNode.data._ref = data._ref
+    } else if (!!preservedRef) { // preserve lookupNode.data._ref is exist
+      lookupNode.data._ref = preservedRef
     } else {
-      lookupNode.data.__ref = null
+      lookupNode.data._ref = null
     }
     // check if lookupNode is react/state, and __customRef is false
     if (lookupNode.data._type === 'react/state') {
       if (!data.__customRef) {
-        lookupNode.data.__ref = `...${lookupNode.data.name}`
+        lookupNode.data._ref = `...${lookupNode.data.name}`
       }
     }
     // check if parent is js/switch
     const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
     if (lookupParent?.data?._type === 'js/switch') {
       if (!!data.default) {
-        lookupNode.data.__ref = 'default'
+        lookupNode.data._ref = 'default'
       } else {
-        lookupNode.data.__ref = null
+        lookupNode.data._ref = null
         lookupNode.data.condition = data.condition
       }
     }
     // update lookup node title and icon
-    lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, data)
+    lookupNode.title = lookup_title_for_input(lookupNode.data._ref, data)
     lookupNode.icon = lookup_icon_for_input(data)
     // console.log(lookupNode)
     //////////////////////////////////////////////////////////////////////
@@ -363,8 +363,8 @@ const PropEditor = (props) => {
       if (child.data._type === 'js/null')
       {
         props.push({
-          type: child.data._type,
-          name: child.data.__ref,
+          _type: child.data._type,
+          name: child.data._ref,
           value: null,
         })
       }
@@ -376,22 +376,22 @@ const PropEditor = (props) => {
         || child.data._type === 'js/expression'
       ) {
         props.push({
-          type: child.data._type,
-          name: child.data.__ref,
+          _type: child.data._type,
+          name: child.data._ref,
           value: child.data.data,
         })
       }
       else if (child.data._type === 'js/import')
       {
         props.push({
-          type: child.data._type,
-          name: child.data.__ref,
+          _type: child.data._type,
+          name: child.data._ref,
           value: child.data.name,
         })
       }
       else
       {
-        others.push(child.data.__ref)
+        others.push(child.data._ref)
       }
     })
     // console.log(`setProperties`, props, others)
@@ -409,7 +409,7 @@ const PropEditor = (props) => {
         // found child node, reuse existing key
         if (child._type === 'js/null')
         {
-          childNode.data.__ref = child.name
+          childNode.data._ref = child.name
           childNode.data._type = child._type
           childNode.data.data = null
           childNode.title = lookup_title_for_input(child.name, childNode.data)
@@ -420,7 +420,7 @@ const PropEditor = (props) => {
                 || child._type === 'js/boolean'
                 || child._type === 'js/expression')
         {
-          childNode.data.__ref = child.name
+          childNode.data._ref = child.name
           childNode.data._type = child._type
           childNode.data.data = child.value
           childNode.title = lookup_title_for_input(child.name, childNode.data)
@@ -428,7 +428,7 @@ const PropEditor = (props) => {
         }
         else if (child._type === 'js/import')
         {
-          childNode.data.__ref = child.name
+          childNode.data._ref = child.name
           childNode.data._type = child._type
           childNode.data.name = child.value
           childNode.title = lookup_title_for_input(child.name, childNode.data)
@@ -485,7 +485,7 @@ const PropEditor = (props) => {
           || child.data._type === 'js/expression'
           || child.data._type === 'js/import')
       {
-        const found = properties.find(prop => prop.name === child.data.__ref)
+        const found = properties.find(prop => prop.name === child.data._ref)
         return found
       }
       else
@@ -593,7 +593,7 @@ const PropEditor = (props) => {
                     key='__customRef'
                     name='__customRef'
                     type="boolean"
-                    defaultValue={!treeNode?.data?.__ref?.startsWith('...')}
+                    defaultValue={!treeNode?.data?._ref?.startsWith('...')}
                     render={props =>
                       (
                         <FormControl
@@ -622,7 +622,7 @@ const PropEditor = (props) => {
               }
               {
                 (
-                  treeNode?.data?.__ref !== null
+                  treeNode?.data?._ref !== null
                   && parentNode?.data?._type !== 'js/switch'
                   && parentNode?.data?._type !== 'js/map'
                   && parentNode?.data?._type !== 'js/reduce'
@@ -638,9 +638,9 @@ const PropEditor = (props) => {
                 &&
                 (
                   <Controller
-                    name="__ref"
+                    name="_ref"
                     control={control}
-                    defaultValue={treeNode?.data?.__ref}
+                    defaultValue={treeNode?.data?._ref}
                     rules={{
                       required: 'Reference name is required',
                       pattern: {
@@ -663,13 +663,13 @@ const PropEditor = (props) => {
                             // check if child node matches current key
                             .reduce(
                               (result, item) => {
-                                return result || item.data.__ref === treeNode?.data?.__ref
+                                return result || item.data._ref === treeNode?.data?._ref
                               },
                               false
                             )
                           // not found, or error
                           return !found
-                            || `Duplicate reference name [${treeNode?.data?.__ref}]`
+                            || `Duplicate reference name [${treeNode?.data?._ref}]`
                         }
                       },
                     }}
@@ -685,8 +685,8 @@ const PropEditor = (props) => {
                               props.onChange(e.target.value)
                               setBaseSubmitTimer(new Date())
                             }}
-                            error={!!errors.__ref}
-                            helperText={errors.__ref?.message}
+                            error={!!errors._ref}
+                            helperText={errors._ref?.message}
                             />
                         </FormControl>
                       )
@@ -702,7 +702,7 @@ const PropEditor = (props) => {
                     name="default"
                     type="boolean"
                     control={control}
-                    defaultValue={treeNode?.data?.__ref === 'default'}
+                    defaultValue={treeNode?.data?._ref === 'default'}
                     rules={{
                       validate: {
                       },
@@ -791,7 +791,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1005,7 +1005,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1047,7 +1047,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1089,7 +1089,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1162,7 +1162,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1243,7 +1243,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1342,7 +1342,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1384,7 +1384,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1426,7 +1426,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1540,7 +1540,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1625,7 +1625,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1739,7 +1739,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1872,7 +1872,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -1945,7 +1945,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -2050,7 +2050,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -2200,7 +2200,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -2270,7 +2270,7 @@ const PropEditor = (props) => {
                       key='array'
                       name='array'
                       type="boolean"
-                      defaultValue={!treeNode?.data?.__ref?.startsWith('...')}
+                      defaultValue={!treeNode?.data?._ref?.startsWith('...')}
                       render={props =>
                         (
                           <FormControl
@@ -2304,7 +2304,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -2346,7 +2346,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{
@@ -2645,7 +2645,7 @@ const PropEditor = (props) => {
                 (
                   <Box>
                     <Controller
-                      name="type"
+                      name="_type"
                       control={control}
                       defaultValue={nodeType}
                       rules={{

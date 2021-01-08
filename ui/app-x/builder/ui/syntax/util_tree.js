@@ -5,7 +5,7 @@
 function lookup_child_by_ref(treeNode, ref) {
   // lookup child by ref
   const found = treeNode.children?.filter(child => {
-    return (child.data.__ref === ref)
+    return (child.data._ref === ref)
   })
   // check if found
   if (found?.length) {
@@ -20,7 +20,7 @@ function lookup_child_by_ref(treeNode, ref) {
 function remove_child_by_ref(treeNode, ref) {
   // lookup child by ref
   treeNode.children = treeNode.children?.filter(child => {
-    return (child.data.__ref !== ref)
+    return (child.data._ref !== ref)
   })
 }
 
@@ -62,7 +62,7 @@ function gen_js_string(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -72,7 +72,7 @@ function gen_js_string(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: String(treeNode.data.data),
   }
 }
@@ -84,7 +84,7 @@ function gen_js_number(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -94,7 +94,7 @@ function gen_js_number(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: isNaN(Number(treeNode.data.data)) ? 0 : Number(treeNode.data.data),
   }
 }
@@ -106,7 +106,7 @@ function gen_js_boolean(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -116,7 +116,7 @@ function gen_js_boolean(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: Boolean(treeNode.data.data),
   }
 }
@@ -128,7 +128,7 @@ function gen_js_null(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -138,7 +138,7 @@ function gen_js_null(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: null,
   }
 }
@@ -192,7 +192,7 @@ function gen_js_array(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -214,7 +214,7 @@ function gen_js_array(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -226,7 +226,7 @@ function gen_js_object(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -249,7 +249,7 @@ function gen_js_object(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -261,7 +261,7 @@ function gen_js_import(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -277,7 +277,7 @@ function gen_js_import(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -289,7 +289,7 @@ function gen_js_expression(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -305,7 +305,7 @@ function gen_js_expression(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -317,7 +317,7 @@ function gen_js_block(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -333,7 +333,7 @@ function gen_js_block(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -345,7 +345,7 @@ function gen_js_function(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -362,7 +362,7 @@ function gen_js_function(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -374,7 +374,7 @@ function gen_js_switch(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -392,10 +392,10 @@ function gen_js_switch(tree_context, treeNode) {
   if (treeNode.children.length) {
     treeNode.children.map(child => {
 
-      if (child.data.__ref) {
+      if (child.data._ref) {
 
         // process 'default' child
-        if (child.data.__ref === 'default') {
+        if (child.data._ref === 'default') {
           data.default = gen_js(
             {
               ...tree_context,
@@ -432,7 +432,7 @@ function gen_js_switch(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -444,7 +444,7 @@ function gen_js_map(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -487,7 +487,7 @@ function gen_js_map(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -499,7 +499,7 @@ function gen_js_reduce(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -545,7 +545,7 @@ function gen_js_reduce(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -557,7 +557,7 @@ function gen_js_filter(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -590,7 +590,7 @@ function gen_js_filter(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -602,7 +602,7 @@ function gen_react_element(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -636,7 +636,7 @@ function gen_react_element(tree_context, treeNode) {
   if (treeNode.children.length) {
     treeNode.children.map(child => {
       // process only child with null ref
-      if (child.data.__ref === null) {
+      if (child.data._ref === null) {
         if (! ('children' in data)) {
           data.children = []
         }
@@ -655,7 +655,7 @@ function gen_react_element(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -667,7 +667,7 @@ function gen_react_html(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -701,7 +701,7 @@ function gen_react_html(tree_context, treeNode) {
   if (treeNode.children.length) {
     treeNode.children.map(child => {
       // process only child with null ref
-      if (child.data.__ref === null) {
+      if (child.data._ref === null) {
         if (! ('children' in data)) {
           data.children = []
         }
@@ -720,7 +720,7 @@ function gen_react_html(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -732,7 +732,7 @@ function gen_react_state(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -762,7 +762,7 @@ function gen_react_state(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -774,7 +774,7 @@ function gen_react_context(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -794,7 +794,7 @@ function gen_react_context(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -806,7 +806,7 @@ function gen_react_effect(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -827,7 +827,7 @@ function gen_react_effect(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -839,7 +839,7 @@ function gen_react_form(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -887,7 +887,7 @@ function gen_react_form(tree_context, treeNode) {
   if (treeNode.children.length) {
     treeNode.children.map(child => {
       // process only child with null ref
-      if (child.data.__ref === null) {
+      if (child.data._ref === null) {
         if (! ('children' in data)) {
           data.children = []
         }
@@ -906,7 +906,7 @@ function gen_react_form(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -918,7 +918,7 @@ function gen_input_text(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -963,7 +963,7 @@ function gen_input_text(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -975,7 +975,7 @@ function gen_mui_style(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -1003,7 +1003,7 @@ function gen_mui_style(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -1015,7 +1015,7 @@ function gen_appx_api(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -1054,7 +1054,7 @@ function gen_appx_api(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -1066,7 +1066,7 @@ function gen_appx_route(tree_context, treeNode) {
     throw new Error(`ERROR: missing [data] in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
@@ -1081,7 +1081,7 @@ function gen_appx_route(tree_context, treeNode) {
 
   // return
   return {
-    ref: treeNode.data.__ref,
+    ref: treeNode.data._ref,
     data: data,
   }
 }
@@ -1104,12 +1104,12 @@ function gen_js(tree_context, treeNode) {
     throw new Error(`ERROR: missing data in treeNode`)
   }
 
-  if (! ('type' in treeNode.data)) {
+  if (! ('_type' in treeNode.data)) {
     throw new Error(`ERROR: missing type in treeNode.data`)
   }
 
-  if (! ('__ref' in treeNode.data)) {
-    throw new Error(`ERROR: missing __ref in treeNode.data`)
+  if (! ('_ref' in treeNode.data)) {
+    throw new Error(`ERROR: missing _ref in treeNode.data`)
   }
 
   if (treeNode.data._type === 'js/string') {

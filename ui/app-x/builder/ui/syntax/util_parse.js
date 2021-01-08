@@ -96,7 +96,7 @@ function parse_var_full_path(var_full_path) {
 
 // lookup icon by type
 function lookup_icon_for_type(type) {
-  return lookup_icon_for_input({type: type, data: ''})
+  return lookup_icon_for_input({_type: type, data: ''})
 }
 
 // lookup icon for input (input._type)
@@ -131,11 +131,11 @@ function lookup_icon_for_input(input) {
     return <Bracket />
   }
 
-  if (! ('type' in input)) {
+  if (! ('_type' in input)) {
     return <CurlyBracket />
   }
 
-  // 'type' is presented in the json object
+  // '_type' is presented in the json object
   if (input._type === 'js/string') {
 
     return <Text />
@@ -280,11 +280,11 @@ function lookup_title_for_input(ref, input) {
     return ref ? ref : ''
   }
 
-  if (! ('type' in input)) {
+  if (! ('_type' in input)) {
     return ref ? ref : ''
   }
 
-  // 'type' is presented in the json object
+  // '_type' is presented in the json object
   if (input._type === 'js/string') {
 
     return _primitive_title(String(input.data))
@@ -418,7 +418,7 @@ function new_js_node(title, icon, data, parentKey, isLeaf) {
   return {
     key: uuidv4(),
     parentKey: parentKey,
-    title: title ? title : (data ? (data.__ref ? data.__ref : '') : ''),
+    title: title ? title : (data ? (data._ref ? data._ref : '') : ''),
     data: data ? data : null,
     icon: icon ? icon : <QuestionOutlined />,
     isLeaf: isLeaf ? true : false,
@@ -433,7 +433,7 @@ function new_root_node() {
     parentKey: null,
     title: '/',
     data: {
-      __ref: null,
+      _ref: null,
       _type: '/'
     },
     icon: lookup_icon_for_type('/'),
@@ -453,7 +453,7 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: (input === null || typeof input === 'undefined') ? 'js/null' : ('js/' + typeof input),
     data: (input === null || typeof input === 'undefined') ? null : input,
   }
@@ -508,7 +508,7 @@ function parse_js_array(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: false
     },
@@ -590,7 +590,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true
     },
@@ -688,7 +688,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
 // create import tree node
 function parse_js_import(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/import') {
+  if (!('_type' in input) || input._type !== 'js/import') {
     throw new Error(`ERROR: input._type is not [js/import] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -698,7 +698,7 @@ function parse_js_import(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     name: input.name,
   }
@@ -716,7 +716,7 @@ function parse_js_import(js_context, parentKey, ref, input) {
 // create expression tree node
 function parse_js_expression(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/expression') {
+  if (!('_type' in input) || input._type !== 'js/expression') {
     throw new Error(`ERROR: input._type is not [js/expression] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -726,7 +726,7 @@ function parse_js_expression(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     data: input.data,
   }
@@ -744,7 +744,7 @@ function parse_js_expression(js_context, parentKey, ref, input) {
 // create block tree node (allow return outside of function)
 function parse_js_block(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/block') {
+  if (!('_type' in input) || input._type !== 'js/block') {
     throw new Error(`ERROR: input._type is not [js/block] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -754,7 +754,7 @@ function parse_js_block(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     data: input.data,
   }
@@ -770,7 +770,7 @@ function parse_js_block(js_context, parentKey, ref, input) {
 // create array function tree node
 function parse_js_function(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/function') {
+  if (!('_type' in input) || input._type !== 'js/function') {
     throw new Error(`ERROR: input._type is not [js/function] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -780,7 +780,7 @@ function parse_js_function(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     params: input.params,
     body: input.body,
@@ -799,7 +799,7 @@ function parse_js_function(js_context, parentKey, ref, input) {
 // create switch tree node
 function parse_js_switch(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/switch') {
+  if (!('_type' in input) || input._type !== 'js/switch') {
     throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -813,7 +813,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'default' ],
@@ -887,7 +887,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
 // create js map tree node
 function parse_js_map(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/map') {
+  if (!('_type' in input) || input._type !== 'js/map') {
     throw new Error(`ERROR: input._type is not [js/map] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -901,7 +901,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'data', 'result' ],
@@ -961,7 +961,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
 // create js reduce tree node
 function parse_js_reduce(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/reduce') {
+  if (!('_type' in input) || input._type !== 'js/reduce') {
     throw new Error(`ERROR: input._type is not [js/reduce] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -979,7 +979,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'data', 'init' ],
@@ -1031,7 +1031,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
 // create js filter tree node
 function parse_js_filter(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'js/filter') {
+  if (!('_type' in input) || input._type !== 'js/filter') {
     throw new Error(`ERROR: input._type is not [js/filter] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1045,7 +1045,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'data' ],
@@ -1094,7 +1094,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
 // create react element tree node
 function parse_react_element(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/element') {
+  if (!('_type' in input) || input._type !== 'react/element') {
     throw new Error(`ERROR: input._type is not [react/element] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1104,7 +1104,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'props' ],
@@ -1171,7 +1171,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
 // create jsx html element ast
 function parse_react_html(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/html') {
+  if (!('_type' in input) || input._type !== 'react/html') {
     throw new Error(`ERROR: input._type is not [react/html] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1181,7 +1181,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
       validRefs: [ 'props' ],
@@ -1248,7 +1248,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
 // create react state ast
 function parse_react_state(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/state') {
+  if (!('_type' in input) || input._type !== 'react/state') {
     throw new Error(`ERROR: input._type is not [react/state] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1266,7 +1266,7 @@ function parse_react_state(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     name: input.name,
     setter: input.setter,
@@ -1286,7 +1286,7 @@ function parse_react_state(js_context, parentKey, ref, input) {
 // create react context ast
 function parse_react_context(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/context') {
+  if (!('_type' in input) || input._type !== 'react/context') {
     throw new Error(`ERROR: input._type is not [react/context] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1296,7 +1296,7 @@ function parse_react_context(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     name: input.name,
   }
@@ -1314,7 +1314,7 @@ function parse_react_context(js_context, parentKey, ref, input) {
 // create react effect block ast (do not allow return outside of function)
 function parse_react_effect(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/effect') {
+  if (!('_type' in input) || input._type !== 'react/effect') {
     throw new Error(`ERROR: input._type is not [react/effect] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1324,7 +1324,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     data: input.data,
     states: input.states,
@@ -1343,7 +1343,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
 // create react form ast
 function parse_react_form(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'react/form') {
+  if (!('_type' in input) || input._type !== 'react/form') {
     throw new Error(`ERROR: input._type is not [react/form] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1353,7 +1353,7 @@ function parse_react_form(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     name: input.name,
     onSubmit: input.onSubmit,
@@ -1430,7 +1430,7 @@ function parse_react_form(js_context, parentKey, ref, input) {
 // create react form ast
 function parse_input_text(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'input/text') {
+  if (!('_type' in input) || input._type !== 'input/text') {
     throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1440,7 +1440,7 @@ function parse_input_text(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     name: input.name,
     array: input.array,
@@ -1489,13 +1489,13 @@ function parse_input_text(js_context, parentKey, ref, input) {
 // create mui style expression
 function parse_mui_style(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'mui/style') {
+  if (!('_type' in input) || input._type !== 'mui/style') {
     throw new Error(`ERROR: input._type is not [mui/style] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     __childrenWithRef: {
       enable: true,
     },
@@ -1517,7 +1517,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
 
   // add all styles children
   Object.keys(input).map(key => {
-    if (key == 'type') {
+    if (key == '_type') {
       return
     }
     node.children.push(
@@ -1542,7 +1542,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
 // create appx api ast
 function parse_appx_api(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'appx/api') {
+  if (!('_type' in input) || input._type !== 'appx/api') {
     throw new Error(`ERROR: input._type is not [appx/api] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -1564,7 +1564,7 @@ function parse_appx_api(js_context, parentKey, ref, input) {
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
     namespace: input.namespace,
     app_name: input.app_name,
@@ -1588,13 +1588,13 @@ function parse_appx_api(js_context, parentKey, ref, input) {
 // create appx route ast
 function parse_appx_route(js_context, parentKey, ref, input) {
 
-  if (!('type' in input) || input._type !== 'appx/route') {
+  if (!('_type' in input) || input._type !== 'appx/route') {
     throw new Error(`ERROR: input._type is not [appx/route] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
   const data = {
-    __ref: ref,
+    _ref: ref,
     _type: input._type,
   }
 
@@ -1624,12 +1624,12 @@ function parse_js(js_context, parentKey, ref, input) {
     return parse_js_array(js_context, parentKey, ref, input)
   }
 
-  if (! ('type' in input)) {
-    // no 'type' is treated as json object
+  if (! ('_type' in input)) {
+    // no '_type' is treated as json object
     return parse_js_object(js_context, parentKey, ref, input)
   }
 
-  // 'type' is presented in the json object
+  // '_type' is presented in the json object
   if (input._type === 'js/string' || input._type === 'js/number' || input._type === 'js/boolean' || input._type === 'js/null') {
 
     return parse_js_primitive(js_context, parentKey, ref, input.data)
@@ -2516,11 +2516,11 @@ const reorder_children = (parentNode) => {
       || parentNode.data._type === 'mui/style') {
 
     const children = []
-    // add __ref !== null
+    // add _ref !== null
     parentNode.children
-      .filter(child => !!child.data.__ref)
+      .filter(child => !!child.data._ref)
       .sort((a, b) => {
-        return a.data.__ref.localeCompare(b.data.__ref)
+        return a.data._ref.localeCompare(b.data._ref)
       })
       .map(child => {
         children.push(child)
@@ -2533,21 +2533,21 @@ const reorder_children = (parentNode) => {
             || parentNode.data._type === 'react/form') {
 
     const children = []
-    // add __ref === 'props'
+    // add _ref === 'props'
     parentNode.children
-      .filter(child => child.data.__ref === 'props')
+      .filter(child => child.data._ref === 'props')
       .map(child => {
         children.push(child)
       })
-    // add __ref === 'props'
+    // add _ref === 'props'
     parentNode.children
-      .filter(child => child.data.__ref === 'formProps')
+      .filter(child => child.data._ref === 'formProps')
       .map(child => {
         children.push(child)
       })
-    // add __ref === null
+    // add _ref === null
     parentNode.children
-      .filter(child => child.data.__ref === null)
+      .filter(child => child.data._ref === null)
       .map(child => {
         children.push(child)
       })
@@ -2557,15 +2557,15 @@ const reorder_children = (parentNode) => {
   } else if (parentNode.data._type === 'js/switch') {
 
     const children = []
-    // add __ref === null
+    // add _ref === null
     parentNode.children
-      .filter(child => child.data.__ref === null)
+      .filter(child => child.data._ref === null)
       .map(child => {
         children.push(child)
       })
-    // add __ref === 'default'
+    // add _ref === 'default'
     parentNode.children
-      .filter(child => child.data.__ref === 'default')
+      .filter(child => child.data._ref === 'default')
       .map(child => {
         children.push(child)
       })
@@ -2575,15 +2575,15 @@ const reorder_children = (parentNode) => {
   } else if (parentNode.data._type === 'js/map') {
 
     const children = []
-    // add __ref === 'data'
+    // add _ref === 'data'
     parentNode.children
-      .filter(child => child.data.__ref === 'data')
+      .filter(child => child.data._ref === 'data')
       .map(child => {
         children.push(child)
       })
-    // add __ref === 'result'
+    // add _ref === 'result'
     parentNode.children
-      .filter(child => child.data.__ref === 'result')
+      .filter(child => child.data._ref === 'result')
       .map(child => {
         children.push(child)
       })
@@ -2593,9 +2593,9 @@ const reorder_children = (parentNode) => {
   } else if (parentNode.data._type === 'js/reduce') {
 
     const children = []
-    // add __ref === 'data'
+    // add _ref === 'data'
     parentNode.children
-      .filter(child => child.data.__ref === 'data')
+      .filter(child => child.data._ref === 'data')
       .map(child => {
         children.push(child)
       })
@@ -2605,9 +2605,9 @@ const reorder_children = (parentNode) => {
   } else if (parentNode.data._type === 'js/filter') {
 
     const children = []
-    // add __ref === 'data'
+    // add _ref === 'data'
     parentNode.children
-      .filter(child => child.data.__ref === 'data')
+      .filter(child => child.data._ref === 'data')
       .map(child => {
         children.push(child)
       })

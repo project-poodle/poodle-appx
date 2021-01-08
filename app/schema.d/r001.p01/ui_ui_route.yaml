@@ -7,7 +7,7 @@ ui_route:
           element:
               _type: react/element
               name: self/page/Console
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider
@@ -37,7 +37,7 @@ ui_route:
             children:
               - _type: react/element
                 name: app-x/view/error/NotFoundView
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider

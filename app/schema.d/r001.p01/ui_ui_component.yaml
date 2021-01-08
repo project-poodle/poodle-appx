@@ -72,7 +72,7 @@ ui_component:
                   suffix:
                       _type: js/expression
                       data: props.suffix
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider
@@ -140,7 +140,7 @@ ui_component:
                             sideNavHandler:
                                 _type: js/expression
                                 data: handlers.sideNavHandler
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider
@@ -241,7 +241,7 @@ ui_component:
                             ui_route_name:
                                 _type: js/expression
                                 data: states.builder.data.ui_route_name
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider
@@ -525,7 +525,7 @@ ui_component:
                                   namespace: sys
                                   ui_name: ui
                                   ui_deployment: base
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider
@@ -738,7 +738,7 @@ ui_component:
                       key: c
                     children:
                       - c
-          __test:
+          _test:
             providers:
               - _type: react/element
                 name: react-redux.Provider

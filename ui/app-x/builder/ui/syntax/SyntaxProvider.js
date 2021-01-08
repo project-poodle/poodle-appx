@@ -77,8 +77,8 @@ const SyntaxProvider = (() => {
 
       // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
 
-      if (updateKey !== '__test') {
-        setUpdateKey('__test')
+      if (updateKey !== '_test') {
+        setUpdateKey('_test')
         makeTestAction(action, newTestData)
         return
       }
@@ -91,7 +91,7 @@ const SyntaxProvider = (() => {
           testData: newTestData,
           expandedKeys: expandedKeys,
           selectedKey: selectedKey,
-          updateKey: '__test',
+          updateKey: '_test',
           syntaxDirty: true,
         },
         redo: _.cloneDeep(history.redo),
@@ -99,7 +99,7 @@ const SyntaxProvider = (() => {
 
       // update state from record
       setTestData(newTestData)
-      setUpdateKey('__test')
+      setUpdateKey('_test')
       setSyntaxDirty(true)
 
       // set history
@@ -190,7 +190,7 @@ const SyntaxProvider = (() => {
         testData: newTestData,
         expandedKeys: expandedKeys,
         selectedKey: selectedKey,
-        updateKey: '__test',
+        updateKey: '_test',
         syntaxDirty: true,
       }
 
@@ -210,7 +210,7 @@ const SyntaxProvider = (() => {
 
       // update state from action
       setTestData(record.testData)
-      setUpdateKey('__test')
+      setUpdateKey('_test')
       setSyntaxDirty(true)
 
       // console.log(newHistory)

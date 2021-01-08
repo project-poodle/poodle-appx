@@ -134,7 +134,7 @@ const SyntaxMoveDialog = (props) => {
                 { lookup_icon_for_type(props.moveDragNode?.data?._type) }
               </IconButton>
               <Typography id="alert-dialog-title" variant="h6">
-                { lookup_title_for_input(props.moveDragNode?.data?.__ref, props.moveDragNode?.data) }
+                { lookup_title_for_input(props.moveDragNode?.data?._ref, props.moveDragNode?.data) }
               </Typography>
             </ListItem>
           </DialogTitle>
@@ -148,9 +148,9 @@ const SyntaxMoveDialog = (props) => {
               &&
               (
                 <Controller
-                  name="__ref"
+                  name="_ref"
                   control={control}
-                  defaultValue={props.moveDragNode?.data?.__ref}
+                  defaultValue={props.moveDragNode?.data?._ref}
                   rules={{
                     required: "Reference name is required",
                     pattern: {
@@ -194,8 +194,8 @@ const SyntaxMoveDialog = (props) => {
                         label="Reference"
                         onChange={props.onChange}
                         value={props.value}
-                        error={!!errors.__ref}
-                        helperText={errors.__ref?.message}
+                        error={!!errors._ref}
+                        helperText={errors._ref?.message}
                         />
                     </FormControl>
                   }

@@ -148,7 +148,7 @@ const SyntaxMenu = (props) => {
                     parentMenuOpen={!!props.contextAnchorEl}
                     >
                     {
-                      valid_child_types?.ref.types.map(type => {
+                      valid_child_types?.ref._types.map(type => {
                         if (!!type) {
                           return (
                             <MenuItem
@@ -182,7 +182,7 @@ const SyntaxMenu = (props) => {
                 )
               })
               .concat([<Divider key={uuidv4()} />])
-              .concat(valid_child_types?._.types.map(type => {
+              .concat(valid_child_types?._._types.map(type => {
                 if (!!type) {
                   return (
                     <MenuItem
@@ -225,7 +225,7 @@ const SyntaxMenu = (props) => {
         (
           <Box>
             {
-              valid_child_types?._.types.map(type => {
+              valid_child_types?._._types.map(type => {
                 if (!!type) {
                   return (
                     <MenuItem
@@ -296,7 +296,7 @@ const SyntaxMenu = (props) => {
                       parentMenuOpen={!!props.contextAnchorEl}
                       >
                       {
-                        valid_child_types?.ref.types.map(type => {
+                        valid_child_types?.ref._types.map(type => {
                           if (!!type) {
                             return (
                               <MenuItem
@@ -335,7 +335,7 @@ const SyntaxMenu = (props) => {
               !valid_child_types?.ref?.names
               &&
               (
-                valid_child_types?.ref.types.map(type => {
+                valid_child_types?.ref._types.map(type => {
                   if (!!type) {
                     return (
                       <MenuItem
@@ -387,7 +387,7 @@ const SyntaxMenu = (props) => {
                 navSelected.type === 'ui_route'
               )
             )
-            && props.selectedNode?.data.__ref === 'element'
+            && props.selectedNode?.data._ref === 'element'
             &&
             (
               props.selectedNode?.parentKey === '/'
@@ -398,7 +398,7 @@ const SyntaxMenu = (props) => {
           (
             navSelected.type === 'ui_component'
             && navComponent.ui_component_type=== 'react/provider'
-            && props.selectedNode?.data.__ref === 'provider'
+            && props.selectedNode?.data._ref === 'provider'
             &&
             (
               props.selectedNode?.parentKey === '/'

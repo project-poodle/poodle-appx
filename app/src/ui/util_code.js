@@ -2054,7 +2054,7 @@ function react_component(js_context, input) {
   // check if there are any block statements
   Object.keys(input).map(key => {
     // ignore type / name / props / children
-    if (key === '_type' || key === 'element' || key === 'propTypes' || key === '__test') {
+    if (key === '_type' || key === 'element' || key === 'propTypes' || key === '_test') {
       return
     }
 

@@ -98,7 +98,7 @@ const SyntaxAddDialog = (props) => {
     const lookupNode = tree_lookup(treeData, selectedKey)
     setParentNode(lookupNode)
     // console.log(lookupNode)
-    // console.log(lookupNode?.children.filter(child => child.data?.__ref === null))
+    // console.log(lookupNode?.children.filter(child => child.data?._ref === null))
     // console.log(parentNode)
   }, [selectedKey])
 
@@ -147,11 +147,11 @@ const SyntaxAddDialog = (props) => {
   useEffect(() => {
     if (nodeType === 'react/state') {
       if (!!watch__customRef) {
-        if (!getValues(`__ref`)) {
-          setValue(`__ref`, `${getValues('name')}`)
+        if (!getValues(`_ref`)) {
+          setValue(`_ref`, `${getValues('name')}`)
         }
       } else if (!watch__customRef) {
-        setValue(`__ref`, `...${getValues('name')}`)
+        setValue(`_ref`, `...${getValues('name')}`)
       }
     }
   }, [watch__customRef])
@@ -212,9 +212,9 @@ const SyntaxAddDialog = (props) => {
                           onChange={e => {
                             props.onChange(e.target.checked)
                             if (e.target.checked) {
-                              setValue(`__ref`, `${getValues('name')}`)
+                              setValue(`_ref`, `${getValues('name')}`)
                             } else {
-                              setValue(`__ref`, `...${getValues('name')}`)
+                              setValue(`_ref`, `...${getValues('name')}`)
                             }
                           }}
                         />
@@ -245,7 +245,7 @@ const SyntaxAddDialog = (props) => {
               &&
               (
                 <Controller
-                  name="__ref"
+                  name="_ref"
                   control={control}
                   defaultValue=""
                   rules={{
@@ -292,9 +292,9 @@ const SyntaxAddDialog = (props) => {
                         onChange={props.onChange}
                         value={props.value}
                         size="small"
-                        error={!!errors.__ref}
+                        error={!!errors._ref}
                         size="small"
-                        helperText={errors.__ref?.message}
+                        helperText={errors._ref?.message}
                         />
                     </FormControl>
                   }
@@ -409,7 +409,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -615,7 +615,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -660,7 +660,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -705,7 +705,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -778,7 +778,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -858,7 +858,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -954,7 +954,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -999,7 +999,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1044,7 +1044,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1157,7 +1157,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1242,7 +1242,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1353,7 +1353,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1484,7 +1484,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1557,7 +1557,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1660,7 +1660,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1799,7 +1799,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1893,7 +1893,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1938,7 +1938,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -2217,7 +2217,7 @@ const SyntaxAddDialog = (props) => {
               (
                 <Box>
                   <Controller
-                    name="type"
+                    name="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -2259,7 +2259,7 @@ const SyntaxAddDialog = (props) => {
             {
               (
                 !!parentNode?.children
-                && parentNode?.children.filter(child => child.data.__ref === null).length > 0
+                && parentNode?.children.filter(child => child.data._ref === null).length > 0
               )
               &&
               (
@@ -2292,7 +2292,7 @@ const SyntaxAddDialog = (props) => {
                             </Typography>
                           </MenuItem>
                           {
-                            parentNode.children.filter(child => child.data?.__ref === null).map((child, index) => (
+                            parentNode.children.filter(child => child.data?._ref === null).map((child, index) => (
                               <MenuItem
                                 key={`${index+1}`}
                                 value={index+1}

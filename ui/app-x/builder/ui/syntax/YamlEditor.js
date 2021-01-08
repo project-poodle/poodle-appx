@@ -156,20 +156,20 @@ const YamlEditor = props => {
           )
 
         } else {
-          // preserve data.__ref
-          parsed.data.__ref = lookupNode.data.__ref
+          // preserve data._ref
+          parsed.data._ref = lookupNode.data._ref
           // check if parent is js/switch
           const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
           if (lookupParent?.data?._type === 'js/switch') {
             // if yes, preserve condition
-            if (lookupNode?.data?.__ref !== 'default') {
+            if (lookupNode?.data?._ref !== 'default') {
               parsed.data.condition = lookupNode.data.condition
             }
           }
           lookupNode.key = parsed.key   // update node key
           lookupNode.data = parsed.data
           lookupNode.children = parsed.children
-          lookupNode.title = lookup_title_for_input(lookupNode.data.__ref, parsed.data)
+          lookupNode.title = lookup_title_for_input(lookupNode.data._ref, parsed.data)
           lookupNode.icon = lookup_icon_for_input(parsed.data)
           // lookupNode.parentKey = lookupNode.parentKey // no need to change parentKey
           // console.log(lookupNode)

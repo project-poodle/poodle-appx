@@ -156,7 +156,7 @@ const PreviewJson = (props) => {
       const tree_context = { topLevel: true }
       const { ref, data: genData } = gen_js(tree_context, treeData)
       const spec = !!testData
-        ? { ...genData, __test: testData }
+        ? { ...genData, _test: testData }
         : genData
       // set editor value
       setJson(JSON.stringify(spec, null, 2))
