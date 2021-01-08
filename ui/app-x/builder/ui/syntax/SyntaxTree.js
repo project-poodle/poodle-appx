@@ -644,7 +644,7 @@ const SyntaxTree = (props) => {
       if (!!ref) {
         lookupParent.children.unshift(parsed)
       } else {
-        if ('__pos' in nodeData) {
+        if ('_pos' in nodeData) {
           let count = 0
           let found = false
           lookupParent.children.map((child, index) => {
@@ -655,19 +655,19 @@ const SyntaxTree = (props) => {
               count = count+1
             }
             // check if we'd insert before first component with no _ref
-            if (nodeData.__pos === 0 && count !== 0) {
+            if (nodeData._pos === 0 && count !== 0) {
               found = true
               lookupParent.children.splice(index, 0, parsed)
               return
             }
-            if (count >= nodeData.__pos) {
+            if (count >= nodeData._pos) {
               found = true
               lookupParent.children.splice(index+1, 0, parsed)
               return
             }
           })
         } else {
-          // no __pos, simply add to the end
+          // no _pos, simply add to the end
           lookupParent.children.push(parsed)
         }
       }

@@ -2264,7 +2264,7 @@ const SyntaxAddDialog = (props) => {
               &&
               (
                 <Controller
-                  name="__pos"
+                  name="_pos"
                   control={control}
                   defaultValue={0}
                   render={props =>
@@ -2277,7 +2277,7 @@ const SyntaxAddDialog = (props) => {
                           value={props.value}
                           size="small"
                           onChange={props.onChange}
-                          error={!!errors.__pos}
+                          error={!!errors._pos}
                           helperText={errors._pos?.message}
                           >
                           <MenuItem
