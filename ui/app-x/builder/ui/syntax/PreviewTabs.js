@@ -36,7 +36,7 @@ import PreviewSource from 'app-x/builder/ui/syntax/PreviewSource'
 import PreviewYaml from 'app-x/builder/ui/syntax/PreviewYaml'
 import PreviewJson from 'app-x/builder/ui/syntax/PreviewJson'
 import {
-  gen_js,
+  parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewTabs = (props) => {
@@ -221,7 +221,7 @@ const PreviewTabs = (props) => {
     {
       // console.log(treeData)
       const tree_context = { topLevel: true }
-      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = parse_tree_node(tree_context, treeData)
       // console.log(genData)
       const spec = !!testData
         ? { ...genData, _test: testData }
@@ -340,7 +340,7 @@ const PreviewTabs = (props) => {
       try {
         // generate data
         const tree_context = { topLevel: true }
-        const { ref, data } = gen_js(tree_context, treeData)
+        const { ref, data } = parse_tree_node(tree_context, treeData)
         // preview loading
         const spec = !!testData
           ? { ...data, _test: testData }

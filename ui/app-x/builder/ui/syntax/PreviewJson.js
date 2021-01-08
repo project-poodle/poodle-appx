@@ -15,7 +15,7 @@ import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
-  gen_js,
+  parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewJson = (props) => {
@@ -154,7 +154,7 @@ const PreviewJson = (props) => {
     // load from UI context if livePreview
     if (livePreview) {
       const tree_context = { topLevel: true }
-      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = parse_tree_node(tree_context, treeData)
       const spec = !!testData
         ? { ...genData, _test: testData }
         : genData

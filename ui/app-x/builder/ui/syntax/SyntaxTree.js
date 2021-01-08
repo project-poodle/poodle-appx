@@ -63,7 +63,7 @@ import {
   reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
-  gen_js,
+  parse_tree_node,
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
@@ -377,7 +377,7 @@ const SyntaxTree = (props) => {
     {
       // generate spec
       const tree_context = { topLevel: true }
-      const { ref, data: genData } = gen_js(tree_context, treeData)
+      const { ref, data: genData } = parse_tree_node(tree_context, treeData)
       const spec = !!testData
         ? { ...genData, _test: testData }
         : genData
@@ -681,7 +681,7 @@ const SyntaxTree = (props) => {
       // add to the root as first component
       resultTree.splice(1, 0, parsed)
     }
-    // console.log(gen_js({topLevel: true}, resultTree))
+    // console.log(parse_tree_node({topLevel: true}, resultTree))
     // process expanded keys
     const newExpandedKeys = _.cloneDeep(expandedKeys)
     parse_context.expandedKeys.map(key => {

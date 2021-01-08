@@ -111,8 +111,8 @@ export const react_html = {
           ) \
         ',
         parse: ' \
-          thisNode._children \
-            .filter(child => !child._ref) \
+          thisNode.children \
+            .filter(child => !child.data._ref) \
             .map(child => parse(child)) \
         ',
       },

@@ -55,6 +55,10 @@ function tree_lookup(data, key) {
   return null
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// parse methods
+
+/*
 // generate js/string from tree
 function gen_js_string(tree_context, treeNode) {
 
@@ -1225,11 +1229,231 @@ function gen_js(tree_context, treeNode) {
     throw err
   }
 }
+*/
+
+// parse tree data
+function parse_tree_node(tree_context, treeNode) {
+
+  if (!treeNode) {
+    return {
+      ref: null,
+      data: null,
+    }
+  }
+
+  // child_context
+  const child_context = {
+    ...tree_context,
+    topLevel: false,
+  }
+
+  // topLevel
+  if (tree_context.topLevel) {
+    // top level must be array
+    if (! Array.isArray(treeNode)) {
+      throw new Error(`ERROR: topLevel tree data is not array [${treeNode.data?._type}] [${JSON.stringify(treeNode)}]`)
+    }
+    // return result as object
+    const result = {}
+    treeNode.map(child => {
+      // ignore '/' node
+      if (child.key === '/') {
+        return
+      }
+      // process each child
+      const childResult = parse_tree_node(
+        child_context,
+        child
+      )
+      // add child to result
+      if (!!child.data._ref) {
+        result[child.data._ref] = childResult
+      }
+    })
+    // log
+    console.log(`result`, result)
+    // return
+    return {
+      ref: null,
+      data: result,
+    }
+  }
+
+  // we are here if we are not top level
+  if (!treeNode.data?._type) {
+    throw new Error(`ERROR: missing tree node type`)
+  } else if (! (treeNode.data._type in globalThis.appx.SPEC.types)) {
+    throw new Error(`ERROR: unrecognized tree node type [${treeNode.data._type}]`)
+  }
+
+  // get spec
+  const classes = globalThis.appx.SPEC.classes
+  const spec = globalThis.appx.SPEC.types[treeNode.data._type]
+
+  // create evaluation variables
+  // thisNode
+  const thisNode = treeNode
+  // thisData
+  let thisData = {
+    _type: treeNode.data._type
+  }
+
+  // process children (not including '*')
+  spec.children.map((childSpec) => {
+
+    function _process_this(_ref, node) {
+      // update data if _thisNode is defined
+      if (!!childSpec._thisNode) {
+        // no need to check conditional
+        // if (!!childSpec._thisNode.condition && ! eval(childSpec._thisNode.condition)) {
+        //  // condition evaluated to false
+        // } else {
+        // }
+        // parse data
+        if (!!childSpec._thisNode.parse) {
+          return eval(childSpec._thisNode.parse)
+        } else if (!!childSpec._thisNode.array) {
+          throw new Error(`ERROR: array type missing parse method [${JSON.stringify(childSpec._thisNode)}]`)
+        } else if (childSpec._thisNode.input === 'js/string') {
+          return String(node.data[_ref])
+        } else if (childSpec._thisNode.input === 'js/number') {
+          return Number(node.data[_ref])
+        } else if (childSpec._thisNode.input === 'js/boolean') {
+          return Boolean(node.data[_ref])
+        } else if (childSpec._thisNode.input === 'js/null') {
+          return null
+        } else if (childSpec._thisNode.input === 'js/expression') {
+          return String(node.data[_ref])
+        } else if (childSpec._thisNode.input === 'js/import') {
+          return String(node.data[_ref])
+        } else if (childSpec._thisNode.input === 'js/statement') {
+          return String(node.data[_ref])
+        } else {
+          throw new Error(`ERROR: node type [${childSpec._thisNode.input}] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+        }
+      }
+    }
+
+    function _process_child(node) {
+      // node data
+      const nodeData = node.data
+      // parse function
+      const parse = (node) => {
+        return parse_tree_node(child_context, node)
+      }
+
+      // update data if _childNode is defined
+      if (!!childSpec._childNode) {
+        // if (!!childSpec._childNode.condition && ! eval(childSpec._childNode.condition)) {
+        //  // condition evaluated to false
+        // } else {
+        // }
+        // console.log(`childSpec._childNode`, childSpec._childNode)
+        // parse child node
+        if (!!childSpec._childNode.array) {
+          // console.log(`childSpec._childNode [array]`, childSpec._childNode)
+          // check parse definition
+          if (!!childSpec._childNode.parse) {
+            // console.log(childSpec._childNode.parse)
+            const children = eval(childSpec._childNode.parse)
+            // console.log(`children`, children)
+            return children
+          } else {
+            throw new Error(`ERROR: child node array missing parse method [${JSON.stringify(childSpec._childNode)}]`)
+          }
+
+        } else {
+          // check parse definition
+          if (!!childSpec._childNode.parse) {
+            // parse child node
+            const child = eval(childSpec._childNode.parse)
+            return child
+          } else {
+            const child = parse_tree_node(child_context, node)
+            return child
+          }
+        }
+      }
+    }
+
+    let _ref = childSpec.name
+    let data = undefined
+    if (childSpec.name === '*') {
+
+      thisNode.children.map(childNode => {
+        // ignore _type
+        if (childNode.data?._ref === '_type') {
+          return
+        }
+        // process child node
+        try {
+          _ref = childNode.data._ref
+          thisData[_ref] = _process_child(childNode)
+        } catch (err) {
+          console.error(err)
+          throw err
+        }
+      })
+
+    } else {
+
+      try {
+        // get _ref
+        const _ref = childSpec.name
+        // process this
+        data = _process_this(_ref, thisNode)
+        // get childNode
+        const childNode = lookup_child_by_ref(thisNode, _ref)
+        if (!!childNode) {
+          // process child node if exists
+          data = _process_child(childNode)
+        } else if (!!childSpec._childNode && !!childSpec._childNode.array) {
+          // console.log(`childNode`, thisNode, _ref)
+          data = _process_child(thisNode)
+        }
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
+
+      // check if data exist
+      if (data === undefined) {
+        if (!!childSpec.optional) {
+          // ignore optional node
+        } else {
+          throw new Error(`ERROR: [${thisNode.data?._type}] missing [${_ref}] [${JSON.stringify(thisNode.data)}]`)
+        }
+      }
+    }
+
+    if (thisNode.data._type === 'js/array') {
+      console.log(`js/array`, data)
+      thisData = data || [] // special handling for js/array
+    } else if (data !== undefined) {
+      thisData[_ref] = data
+    }
+  })
+
+  if (thisData._type === 'js/object') {
+    delete thisData._type
+  } else if (thisData._type === 'js/string') {
+    return String(thisData.data)
+  } else if (thisData._type === 'js/number') {
+    return Number(thisData.data)
+  } else if (thisData._type === 'js/boolean') {
+    return Boolean(thisData.data)
+  } else if (thisData._type === 'js/null') {
+    return null
+  }
+
+  // console.log(thisData)
+  return thisData
+}
 
 export {
   tree_traverse,
   tree_lookup,
-  gen_js,
+  parse_tree_node,
   lookup_child_by_ref,
   remove_child_by_ref,
 }

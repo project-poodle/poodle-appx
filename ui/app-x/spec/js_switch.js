@@ -26,6 +26,7 @@ export const js_switch = {
     {
       name: 'children',
       desc: 'Conditional',
+      array: true,
       classes: [
         {
           class: 'array',
@@ -67,7 +68,6 @@ export const js_switch = {
         },
       ],
       _childNode: {
-        array: true,
         generate: ' \
           thisData.children.map( \
             child => (() => { \

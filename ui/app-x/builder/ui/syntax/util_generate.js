@@ -2716,11 +2716,14 @@ function generate_tree_node(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: unrecognized input type [${input._type}] [${JSON.stringify(input)}]`)
   }
 
+  // get spec
   const classes = globalThis.appx.SPEC.classes
-
   const spec = globalThis.appx.SPEC.types[input._type]
 
-  // create current node as thisNode
+  // setup evaluation variables
+  // thisData
+  const thisData = input
+  // create thisNode
   const thisNode = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
@@ -2738,23 +2741,16 @@ function generate_tree_node(js_context, parentKey, ref, input) {
         .reduce((accumulator, item) => accumulator || item, false)
     )
   )
-  // set default expand
+
+  // setup default expand
   if (!!spec._expand) {
     js_context.expandedKeys.push(thisNode.key)
   }
-
-  // setup context variable
-  const thisData = input
 
   // process children (not including '*')
   spec.children.map((childSpec) => {
 
     function _process_child(_ref, data) {
-
-      // ignore _type
-      if (_ref === '_type') {
-        return
-      }
 
       // check if exist
       if (! (_ref in input)) {
@@ -2770,7 +2766,8 @@ function generate_tree_node(js_context, parentKey, ref, input) {
 
         if (!!childSpec._thisNode.condition && ! eval(childSpec._thisNode.condition)) {
           // condition evaluated to false
-          // ignore and continue
+          // set undefined and continue
+          thisNode.data[_ref] = undefined
         } else {
           // add to current node
           if (!!childSpec._thisNode.generate) {
@@ -2842,12 +2839,17 @@ function generate_tree_node(js_context, parentKey, ref, input) {
     if (childSpec.name === '*') {
 
       Object.keys(input).map(key => {
-
-        const _ref = key
-        const data = input[_ref]
+        // ignore _type
+        if (key === '_type') {
+          return
+        }
 
         try {
+          const _ref = key
+          const data = input[_ref]
+
           _process_child(_ref, data)
+
         } catch (err) {
           console.error(err)
           throw err
@@ -2856,11 +2858,12 @@ function generate_tree_node(js_context, parentKey, ref, input) {
 
     } else {
 
-      const _ref = childSpec.name
-      const data = input[_ref]
-
       try {
+        const _ref = childSpec.name
+        const data = input[_ref]
+
         _process_child(_ref, data)
+
       } catch (err) {
         console.error(err)
         throw err
@@ -2876,12 +2879,7 @@ function generate_tree_node(js_context, parentKey, ref, input) {
 
 
 export {
-  // parse_js,
   generate_tree_node,
-  // parse_js_object,
-  // parse_js_primitive,
-  // parse_js_expression,
-  // parse_js_import,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,

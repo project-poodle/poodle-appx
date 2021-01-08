@@ -21,6 +21,7 @@ export const js_object = {
     {
       name: '*',
       desc: 'Property',
+      optional: true,
       classes: [
         {
           class: 'any'

@@ -33,7 +33,8 @@ export const js_statement = {
         },
       ],
       _thisNode: {
-        input: 'js/statement'
+        condition: '!data || typeof data === "string"',
+        input: 'js/string'
       },
       _childNode: {}
     },

@@ -21,6 +21,7 @@ export const js_array = {
     {
       name: 'children',
       desc: 'Children',
+      optional: true,
       classes: [
         {
           class: 'array',
@@ -37,7 +38,7 @@ export const js_array = {
           thisData.children.map(child => generate(child)) \
         ',
         parse: ' \
-          thisNode._children.map(child => parse(child)) \
+          thisNode.children.map(child => parse(child)) \
         ',
       }
     },

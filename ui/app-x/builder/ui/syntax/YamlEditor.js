@@ -39,7 +39,7 @@ import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref,
-  gen_js,
+  parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 // context provider
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
@@ -123,7 +123,7 @@ const YamlEditor = props => {
   // reset yaml content
   function reset_yaml_content() {
     const tree_context = { topLevel: true }
-    const { ref, data } = gen_js(tree_context, treeNode?.data?._type === '/' ? treeData : treeNode)
+    const { ref, data } = parse_tree_node(tree_context, treeNode?.data?._type === '/' ? treeData : treeNode)
     // yaml data
     const yamlDoc = new YAML.Document()
     yamlDoc.contents = data

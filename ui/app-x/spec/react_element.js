@@ -43,7 +43,7 @@ export const react_element = {
         },
       ],
       _thisNode: {
-        input: 'js/import'
+        input: 'js/string'
       },
       _suggestions: [
         {
@@ -116,8 +116,8 @@ export const react_element = {
           ) \
         ',
         parse: ' \
-          thisNode._children \
-            .filter(child => !child._ref) \
+          thisNode.children \
+            .filter(child => !child.data._ref) \
             .map(child => parse(child)) \
         ',
       }

@@ -61,7 +61,7 @@ export const react_effect = {
         generate: 'data.map(item => ({ \
           value: item \
         })',
-        parse: 'node.map(item => item.value)',
+        parse: 'nodeData.map(item => item.value)',
       }
     },
   ]
