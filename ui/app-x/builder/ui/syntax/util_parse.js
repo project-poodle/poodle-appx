@@ -1427,7 +1427,7 @@ function parse_tree_node(tree_context, treeNode) {
     }
 
     if (thisNode.data._type === 'js/array') {
-      console.log(`js/array`, data)
+      // console.log(`js/array`, data)
       thisData = data || [] // special handling for js/array
     } else if (data !== undefined) {
       thisData[_ref] = data
