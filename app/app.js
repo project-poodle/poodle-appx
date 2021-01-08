@@ -1,6 +1,14 @@
 const fs = require('fs')
 const path = require('path')
+const process = require('process')
 require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss', label: false})
+
+/*
+process.on('unhandledRejection', function(...rest) {
+    console.log(`WARN: Unhandled Rejection`)
+    console.log(rest)
+})
+*/
 
 // load spec
 let appx_spec = null

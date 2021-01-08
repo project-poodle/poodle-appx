@@ -44,7 +44,6 @@ export const react_html = {
           input: 'js/string'
         }
       ],
-      _child: {},
       _suggestions: [
         {
           __class: 'js/call',
@@ -122,9 +121,7 @@ export const react_html = {
         parse: ' \
           parentNode._children \
             .filter(child => !child._ref) \
-            .map(child => \
-              parse(child) \
-            ) \
+            .map(child => parse(child)) \
         `',
       },
     },

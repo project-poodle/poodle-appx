@@ -36,8 +36,8 @@ export const js_array = {
         generate: '` \
           parentData.children.map(child => generate(child)) \
         `',
-        parse: ' \
-          parentNode._children.map(child => parse(child))
+        parse: '` \
+          parentNode._children.map(child => parse(child)) \
         `',
       }
     },

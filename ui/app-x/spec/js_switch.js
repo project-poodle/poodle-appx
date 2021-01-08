@@ -104,7 +104,7 @@ export const js_switch = {
           {
             name: '_condition',
             desc: 'Condition',
-            condition: '`!node.data._isDefault`',
+            hidden: '`!!node.data._isDefault`',
             classes: [
               {
                 class: 'expression',
@@ -122,8 +122,9 @@ export const js_switch = {
             body: '` \
               node.data._ref = \
                 !!node.data._isDefault \
-                ? 'default' \
-                : null \
+                ? "default" \
+                : null; \
+              node.setHidden("_condition", !!node.data._isDefault) \
             `',
             states: [
               '`node.data._isDefault`'
@@ -149,7 +150,7 @@ export const js_switch = {
           (() => { \
             const node = generate(data); \
             node.data._isDefault = true; \
-            node.data._condition = ''; \
+            node.data._condition = ""; \
             return node \
           })() \
         `',
@@ -173,7 +174,7 @@ export const js_switch = {
           {
             name: '_condition',
             desc: 'Condition',
-            condition: '`!node.data._isDefault`',
+            hidden: '`!!node.data._isDefault`',
             classes: [
               {
                 class: 'expression',
@@ -191,8 +192,9 @@ export const js_switch = {
             body: '` \
               node.data._ref = \
                 !!node.data._isDefault \
-                ? 'default' \
-                : null \
+                ? "default" \
+                : null; \
+              node.setHidden("_condition", !!node.data._isDefault) \
             `',
             states: [
               '`node.data._isDefault`'

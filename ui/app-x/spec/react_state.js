@@ -20,6 +20,20 @@ export const react_state = {
     }
   ],
   _group: 'react_concepts',
+  _ref: {
+    hidden: true,
+    effects: [
+      {
+        body: '` \
+          node.data._ref = \
+            "..." + node.data.name \
+        `',
+        states: [
+          '`node.data.name`'
+        ]
+      }
+    ]
+  },
   children: [
     {
       name: 'name',

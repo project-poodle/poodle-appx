@@ -18,7 +18,7 @@ export const mui_style = {
   children: [
     {
       name: '*',
-      desc: 'Children',
+      desc: 'Styles',
       classes: [
         {
           class: 'any'

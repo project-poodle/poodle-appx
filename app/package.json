@@ -18,7 +18,7 @@
     "console-stamp": "^0.2.9",
     "cookie-parser": "^1.4.5",
     "crypto-js": "^4.0.0",
-    "deasync": "^0.1.20",
+    "deasync": "^0.1.21",
     "deep-equal": "^2.0.4",
     "escodegen": "^2.0.0",
     "esprima": "^4.0.1",

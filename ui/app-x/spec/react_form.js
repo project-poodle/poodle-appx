@@ -100,7 +100,6 @@ export const react_form = {
           input: 'js/child'
         }
       ],
-      _child: {}
     },
     {
       name: 'props',
@@ -122,7 +121,10 @@ export const react_form = {
           input: 'js/object'
         }
       ],
-      _child: {}
+      _child: {
+        generate: '`generate(data)`',
+        parse: '`parse(node)`',
+      }
     },
     {
       name: 'formProps',
@@ -180,9 +182,7 @@ export const react_form = {
         parse: ' \
           parentNode._children \
             .filter(child => !child._ref) \
-            .map(child => \
-              parse(child) \
-            ) \
+            .map(child => parse(child)) \
         `',
       },
     },
