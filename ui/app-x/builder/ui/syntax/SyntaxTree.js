@@ -1052,7 +1052,7 @@ const SyntaxTree = (props) => {
               icon={data.icon}
               isLeaf={data.isLeaf}
               data={data.data}
-              className={`appx-tree-node ${lookup_classname_by_type(data.data.type)}`}
+              className={`appx-tree-node ${lookup_classname_by_type(data.data?._type)}`}
               children={data.children?.map(child => {
                   return ConvertTreeNode(child)
               })}

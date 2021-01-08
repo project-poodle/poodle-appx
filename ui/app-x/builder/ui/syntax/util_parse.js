@@ -5,7 +5,7 @@
 function lookup_child_by_ref(treeNode, ref) {
   // lookup child by ref
   const found = treeNode.children?.filter(child => {
-    return (child.data._ref === ref)
+    return (child.data?._ref === ref)
   })
   // check if found
   if (found?.length) {
