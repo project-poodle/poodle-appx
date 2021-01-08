@@ -30,11 +30,9 @@ export const js_number = {
           class: 'number'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/number'
-        }
-      ],
+      _thisNode: {
+        input: 'js/number'
+      }
     },
   ]
 }

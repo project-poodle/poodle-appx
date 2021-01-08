@@ -19,6 +19,7 @@ export const js_map = {
     },
   ],
   _group: 'js_controls',
+  _expand: true,
   children: [
     {
       name: 'data',
@@ -28,7 +29,11 @@ export const js_map = {
           class: 'expression'
         },
       ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || data._type === "js/expression"',
+        input: 'js/expression',
+      },
+      _childNode: {}
     },
     {
       name: 'result',
@@ -41,7 +46,7 @@ export const js_map = {
           class: 'statement'
         },
       ],
-      _child: {}
+      _childNode: {}
     },
   ]
 }

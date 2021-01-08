@@ -48,7 +48,6 @@ import AutoComplete from 'app-x/component/AutoComplete'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
-  parse_js,
   lookup_icon_for_type,
   lookup_title_for_input,
   valid_api_methods,
@@ -361,7 +360,7 @@ const SyntaxAddDialog = (props) => {
               &&
               (
                 <Controller
-                  name="condition"
+                  name="_condition"
                   control={control}
                   defaultValue=""
                   rules={{
@@ -384,9 +383,9 @@ const SyntaxAddDialog = (props) => {
                         onChange={props.onChange}
                         value={props.value}
                         size="small"
-                        error={!!errors.condition}
+                        error={!!errors._condition}
                         size="small"
-                        helperText={errors.condition?.message}
+                        helperText={errors._condition?.message}
                         />
                     </FormControl>
                   }
@@ -773,7 +772,7 @@ const SyntaxAddDialog = (props) => {
               )
             }
             {
-              (!!nodeType && nodeType == 'js/block')
+              (!!nodeType && nodeType == 'js/statement')
               &&
               (
                 <Box>
@@ -801,12 +800,12 @@ const SyntaxAddDialog = (props) => {
                             error={!!errors._type}
                             helperText={errors._type?.message}
                             >
-                            <MenuItem value="js/block">
+                            <MenuItem value="js/statement">
                               <ListItemIcon>
-                                { lookup_icon_for_type('js/block') }
+                                { lookup_icon_for_type('js/statement') }
                               </ListItemIcon>
                               <Typography variant="inherit" noWrap={true}>
-                                js/block
+                                js/statement
                               </Typography>
                             </MenuItem>
                           </TextField>
@@ -815,11 +814,11 @@ const SyntaxAddDialog = (props) => {
                     }
                   />
                   <Controller
-                    name="data"
+                    name="body"
                     control={control}
                     defaultValue=''
                     rules={{
-                      required: "Code block is required",
+                      required: "Code body is required",
                       validate: {
                         validSyntax: value => {
                           try {
@@ -837,7 +836,7 @@ const SyntaxAddDialog = (props) => {
                       (
                         <FormControl className={styles.formControl}>
                           <TextField
-                            label="Code Block"
+                            label="Code Body"
                             multiline={true}
                             onChange={props.onChange}
                             value={props.value}

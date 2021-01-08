@@ -21,6 +21,7 @@ export const js_switch = {
     },
   ],
   _group: 'js_controls',
+  _expand: true,
   children: [
     {
       name: 'children',
@@ -65,10 +66,10 @@ export const js_switch = {
           ],
         },
       ],
-      _child: {
+      _childNode: {
         array: true,
-        generate: '` \
-          parentData.children.map( \
+        generate: ' \
+          thisData.children.map( \
             child => (() => { \
               const node = generate(child.result); \
               node.data._isDefault = false; \
@@ -76,15 +77,15 @@ export const js_switch = {
               return node \
             })() \
           ) \
-        `',
+        ',
         parse: ' \
-          parentNode._children \
+          thisNode._children \
             .filter(child => !child._isDefault) \
             .map(child => { \
               condition: child.data._condition, \
               result: parse(child) \
             }) \
-        `',
+        ',
         customs: [
           {
             name: '_isDefault',
@@ -94,40 +95,36 @@ export const js_switch = {
                 class: 'boolean'
               }
             ],
-            _inputs: [
-              {
-                input: 'js/boolean'
-              }
-            ],
+            _thisNode: {
+              input: 'js/boolean'
+            },
             _init: false
           },
           {
             name: '_condition',
             desc: 'Condition',
-            hidden: '`!!node.data._isDefault`',
+            hidden: '!!node.data._isDefault',
             classes: [
               {
                 class: 'expression',
               }
             ],
-            _inputs: [
-              {
-                input: 'js/expression'
-              }
-            ],
+            _thisNode: {
+              input: 'js/expression'
+            },
           },
         ],
         effects: [
           {
-            body: '` \
+            body: ' \
               node.data._ref = \
                 !!node.data._isDefault \
                 ? "default" \
                 : null; \
               node.setHidden("_condition", !!node.data._isDefault) \
-            `',
+            ',
             states: [
-              '`node.data._isDefault`'
+              'node.data._isDefault'
             ]
           }
         ]
@@ -145,16 +142,16 @@ export const js_switch = {
           class: 'statement'
         },
       ],
-      _child: {
-        generate: '` \
+      _childNode: {
+        generate: ' \
           (() => { \
             const node = generate(data); \
             node.data._isDefault = true; \
             node.data._condition = ""; \
             return node \
           })() \
-        `',
-        parse: '`parse(node)`',
+        ',
+        parse: 'parse(node)',
         customs: [
           {
             name: '_isDefault',
@@ -164,40 +161,36 @@ export const js_switch = {
                 class: 'boolean'
               }
             ],
-            _inputs: [
-              {
-                input: 'js/boolean'
-              }
-            ],
+            _thisNode: {
+              input: 'js/boolean'
+            },
             _init: true
           },
           {
             name: '_condition',
             desc: 'Condition',
-            hidden: '`!!node.data._isDefault`',
+            hidden: '!!node.data._isDefault',
             classes: [
               {
                 class: 'expression',
               }
             ],
-            _inputs: [
-              {
-                input: 'js/expression'
-              }
-            ],
+            _thisNode: {
+              input: 'js/expression'
+            },
           },
         ],
         effects: [
           {
-            body: '` \
+            body: ' \
               node.data._ref = \
                 !!node.data._isDefault \
                 ? "default" \
                 : null; \
               node.setHidden("_condition", !!node.data._isDefault) \
-            `',
+            ',
             states: [
-              '`node.data._isDefault`'
+              'node.data._isDefault'
             ]
           }
         ]

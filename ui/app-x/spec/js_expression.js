@@ -31,11 +31,9 @@ export const js_expression = {
           message: 'Expression is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        }
-      ],
+      _thisNode: {
+        input: 'js/expression',
+      },
     },
   ]
 }

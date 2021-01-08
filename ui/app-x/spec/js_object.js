@@ -26,14 +26,8 @@ export const js_object = {
           class: 'any'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {
-        generate: '`generate(data)`',
-        parse: '`parse(node)`',
+      _childNode: {
+        input: 'js/object',
       }
     },
   ]

@@ -30,9 +30,6 @@ export const appx_api = {
         {
           class: 'string'
         },
-        {
-          class: 'expression'
-        },
       ],
       rules: [
         {
@@ -41,11 +38,9 @@ export const appx_api = {
           message: 'Namespace is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        },
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'app_name',
@@ -53,9 +48,6 @@ export const appx_api = {
       classes: [
         {
           class: 'string'
-        },
-        {
-          class: 'expression'
         },
       ],
       rules: [
@@ -65,11 +57,9 @@ export const appx_api = {
           message: 'App name is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'method',
@@ -77,9 +67,6 @@ export const appx_api = {
       classes: [
         {
           class: 'string'
-        },
-        {
-          class: 'expression'
         },
       ],
       rules: [
@@ -89,11 +76,9 @@ export const appx_api = {
           message: 'Method is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'endpoint',
@@ -101,9 +86,6 @@ export const appx_api = {
       classes: [
         {
           class: 'string'
-        },
-        {
-          class: 'expression'
         },
       ],
       rules: [
@@ -113,11 +95,9 @@ export const appx_api = {
           message: 'Endpoint is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'data',
@@ -128,15 +108,11 @@ export const appx_api = {
           class: 'expression'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        },
-        {
-          input: 'js/child'
-        },
-      ],
-      _child: {},
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/expression',
+      },
+      _childNode: {},
     },
     {
       name: 'init',
@@ -155,15 +131,11 @@ export const appx_api = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        },
-      ],
-      _child: {},
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement',
+      },
+      _childNode: {},
     },
     {
       name: 'result',
@@ -182,15 +154,11 @@ export const appx_api = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        },
-      ],
-      _child: {},
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement',
+      },
+      _childNode: {},
     },
     {
       name: 'error',
@@ -209,15 +177,11 @@ export const appx_api = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        },
-      ],
-      _child: {},
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement',
+      },
+      _childNode: {},
     },
   ]
 }

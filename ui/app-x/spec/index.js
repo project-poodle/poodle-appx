@@ -31,70 +31,53 @@ import mui_style from 'app-x/spec/mui_style.js'
 import appx_api from 'app-x/spec/appx_api.js'
 import appx_route from 'app-x/spec/appx_route.js'
 
+const types = [
+  // react constructs
+  react_element,
+  react_html,
+  react_state,
+  react_context,
+  // form and inputs
+  react_form,
+  input_text,
+  // javascript classes,
+  js_null,
+  js_string,
+  js_number,
+  js_boolean,
+  js_object,
+  js_array,
+  // expression, function and etc
+  js_import,
+  js_expression,
+  js_statement,
+  js_function,
+  // map, reduce, switch, filter
+  js_switch,
+  js_map,
+  js_reduce,
+  js_filter,
+  // others
+  mui_style,
+  appx_api,
+  appx_route,
+  // map
+].map(item => ({
+  key: item.name,
+  value: item
+})).reduce(
+  (accumulator, item) => { accumulator[item.key] = item.value; return accumulator; },
+  {}
+)
+
 // export specific spec
 export {
-  classes,
-  // react constructs
-  react_element,
-  react_html,
-  react_state,
-  react_context,
-  // form and inputs
-  react_form,
-  input_text,
-  // javascript classes,
-  js_null,
-  js_string,
-  js_number,
-  js_boolean,
-  js_object,
-  js_array,
-  // expression, function and etc
-  js_import,
-  js_expression,
-  js_statement,
-  js_function,
-  // map, reduce, switch, filter
-  js_switch,
-  js_map,
-  js_reduce,
-  js_filter,
-  // others
-  mui_style,
-  appx_api,
-  appx_route,
+  classes as classes,
+  types as types,
 }
 
-// also export default
+// export default
 export default {
-  classes,
-  // react constructs
-  react_element,
-  react_html,
-  react_state,
-  react_context,
-  // form and inputs
-  react_form,
-  input_text,
-  // javascript classes,
-  js_null,
-  js_string,
-  js_number,
-  js_boolean,
-  js_object,
-  js_array,
-  // expression, function and etc
-  js_import,
-  js_expression,
-  js_statement,
-  js_function,
-  // map, reduce, switch, filter
-  js_switch,
-  js_map,
-  js_reduce,
-  js_filter,
-  // others
-  mui_style,
-  appx_api,
-  appx_route,
+  classes: classes,
+  types: types,
 }

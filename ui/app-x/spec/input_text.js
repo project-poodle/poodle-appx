@@ -4,7 +4,7 @@ import {
 } from 'app-x/spec/classes.js'
 
 // type: input/text                                  (~jsx|~expression)
-// name:                     # name of input         (:string|:expression)
+// name:                     # name of input         (:string)
 // array:                    # whether array         (:boolean)
 // props:                    # properties            (:object<:any>)
 // rules:                    # input rules           (:object<:any>)
@@ -29,9 +29,6 @@ export const input_text = {
         {
           class: 'string'
         },
-        {
-          class: 'expression'
-        },
       ],
       rules: [
         {
@@ -40,14 +37,9 @@ export const input_text = {
           message: 'Input name is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        },
-        {
-          input: 'js/expression'
-        },
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'array',
@@ -58,11 +50,9 @@ export const input_text = {
           class: 'boolean'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/boolean'
-        },
-      ],
+      _thisNode: {
+        input: 'js/boolean'
+      },
     },
     {
       name: 'props',
@@ -79,12 +69,9 @@ export const input_text = {
           ]
         }
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {}
+      _childNode: {
+        input: 'js/object'
+      },
     },
     {
       name: 'rules',
@@ -101,12 +88,9 @@ export const input_text = {
           ]
         }
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {}
+      _childNode: {
+        input: 'js/rule'
+      }
     },
   ]
 }

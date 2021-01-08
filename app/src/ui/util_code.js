@@ -352,7 +352,7 @@ function js_expression(js_context, input) {
 }
 
 // create block ast (allow return outside of function)
-function js_block(js_context, input) {
+function js_statement(js_context, input) {
 
   let data = ''
   if (typeof input === 'string') {
@@ -360,15 +360,15 @@ function js_block(js_context, input) {
     data = input
 
   } else {
-    if (!('_type' in input) || input._type !== 'js/block') {
-      throw new Error(`ERROR: input._type is not [js/block] [${input._type}] [${JSON.stringify(input)}]`)
+    if (!('_type' in input) || input._type !== 'js/statement') {
+      throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
     }
 
-    if (! ('data' in input)) {
-      throw new Error(`ERROR: input.data missing in [js/block] [${JSON.stringify(input)}]`)
+    if (! ('body' in input)) {
+      throw new Error(`ERROR: input.data missing in [js/statement] [${JSON.stringify(input)}]`)
     }
 
-    data = input.data
+    data = input.body
   }
 
   // parse user code snippet
@@ -416,7 +416,7 @@ function js_function(js_context, input) {
 
   return t.arrowFunctionExpression(
     params,
-    js_block(
+    js_statement(
       {
         ...js_context,
         JSX_CONTEXT: false
@@ -1950,9 +1950,9 @@ function js_process(js_context, input) {
 
     return js_expression(js_context, input)
 
-  } else if (input._type === 'js/block') {
+  } else if (input._type === 'js/statement') {
 
-    return js_block(js_context, input)
+    return js_statement(js_context, input)
 
   } else if (input._type === 'js/function') {
 
@@ -2081,8 +2081,8 @@ function react_component(js_context, input) {
         variableDeclaration
       )
 
-    } else if (input[key]._type === 'js/block') {
-      // if input[key] is 'js/block'
+    } else if (input[key]._type === 'js/statement') {
+      // if input[key] is 'js/statement'
       // adds each of the block statement
       block_statements.push(...(js_process(
         js_context,
@@ -2267,7 +2267,7 @@ module.exports = {
   js_variable,
   js_expression,
   js_function,
-  js_block,
+  js_statement,
   js_call,
   input_text,
   appx_api,

@@ -291,6 +291,7 @@ function handle_render(req, res, load_from_db=true) {
             APPX_PATHS: { 'paths': req.appx_paths },
             IMPORT_MAPS: ui_spec.importMaps,
             API_MAPS: ui_deployment_spec.apiMaps,
+            SPEC: req.appx_spec,
         },
         entry: '$render$',
         // props: req.data.props,

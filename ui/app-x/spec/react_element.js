@@ -9,7 +9,7 @@ import {
 //} from 'app-x/spec/classes.js'
 
 // class: react/element                               (~jsx|~expression)
-// name:                     # element name          (:string|:expression) - autosuggest import
+// name:                     # element name          (:string) - autosuggest import
 // props:                    # properties            (:object<:any>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_element = {
@@ -25,6 +25,7 @@ export const react_element = {
     }
   ],
   _group: 'react_concepts',
+  _expand: true,
   children: [
     {
       name: 'name',
@@ -33,9 +34,6 @@ export const react_element = {
         {
           class: 'string'
         },
-        {
-          class: 'expression'
-        }
       ],
       rules: [
         {
@@ -44,11 +42,9 @@ export const react_element = {
           message: 'Element name is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/import'
-        }
-      ],
+      _thisNode: {
+        input: 'js/import'
+      },
       _suggestions: [
         {
           __class: 'js/call',
@@ -85,14 +81,10 @@ export const react_element = {
           ]
         }
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {
-        generate: '`generate(data)`',
-        parse: '`parse(node)`',
+      _childNode: {
+        input: 'js/object',
+        generate: 'generate(data)',
+        parse: 'parse(node)',
       }
     },
     {
@@ -116,18 +108,18 @@ export const react_element = {
           ]
         }
       ],
-      _child: {
+      _childNode: {
         array: true,
-        generate: '` \
-          parentData.children.map( \
+        generate: ' \
+          thisData.children.map( \
             child => generate(child) \
           ) \
-        `',
+        ',
         parse: ' \
-          parentNode._children \
+          thisNode._children \
             .filter(child => !child._ref) \
             .map(child => parse(child)) \
-        `',
+        ',
       }
     },
   ]

@@ -36,11 +36,7 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
 // utilities
 import {
-  parse_js,
-  parse_js_object,
-  parse_js_primitive,
-  parse_js_expression,
-  parse_js_import,
+  generate_tree_node,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
@@ -202,6 +198,7 @@ const PropEditor = (props) => {
       if (lookupNode) {
         setNodeType(lookupNode.data._type)
       }
+      console.log(`lookupNode`, lookupNode)
     }
     else
     {
@@ -313,7 +310,7 @@ const PropEditor = (props) => {
         lookupNode.data._ref = 'default'
       } else {
         lookupNode.data._ref = null
-        lookupNode.data.condition = data.condition
+        lookupNode.data._condition = data._condition
       }
     }
     // update lookup node title and icon
@@ -447,7 +444,7 @@ const PropEditor = (props) => {
             || child._type === 'js/number'
             || child._type === 'js/boolean')
         {
-          const newChildNode = parse_js_primitive({}, childParent.key, child.name, child.value)
+          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: child._type, data: child.value})
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -455,7 +452,7 @@ const PropEditor = (props) => {
         }
         else if (child._type === 'js/expression')
         {
-          const newChildNode = parse_js_expression({}, childParent.key, child.name, {type: 'js/expression', data: child.value})
+          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: 'js/expression', data: child.value})
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -463,7 +460,7 @@ const PropEditor = (props) => {
         }
         else if (child._type === 'js/import')
         {
-          const newChildNode = parse_js_import({}, childParent.key, child.name, {type: 'js/import', name: child.value})
+          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: 'js/import', name: child.value})
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -503,7 +500,7 @@ const PropEditor = (props) => {
       const propChild = lookup_child_by_ref(lookupNode, refKey)
       if (!propChild) {
         // add props if not exist
-        lookupNode.children.push(parse_js_object({}, lookupNode.key, refKey, {}))
+        lookupNode.children.push(generate_tree_node({}, lookupNode.key, refKey, {}))
       }
     }
     // lookup childParent node
@@ -740,9 +737,9 @@ const PropEditor = (props) => {
                 &&
                 (
                   <Controller
-                    name="condition"
+                    name="_condition"
                     control={control}
-                    defaultValue={treeNode?.data?.condition}
+                    defaultValue={treeNode?.data?._condition}
                     rules={{
                       required: "Condition is required",
                       validate: {
@@ -767,8 +764,8 @@ const PropEditor = (props) => {
                             props.onChange(e.target.value)
                             setBaseSubmitTimer(new Date())
                           }}
-                          error={!!errors.condition}
-                          helperText={errors.condition?.message}
+                          error={!!errors._condition}
+                          helperText={errors._condition?.message}
                           />
                       </FormControl>
                     }
@@ -1157,7 +1154,7 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (treeNode && treeNode.data && nodeType === 'js/block')
+                (treeNode && treeNode.data && nodeType === 'js/statement')
                 &&
                 (
                   <Box>
@@ -1182,12 +1179,12 @@ const PropEditor = (props) => {
                                 setBaseSubmitTimer(new Date())
                               }}
                               >
-                              <MenuItem value="js/block">
+                              <MenuItem value="js/statement">
                                 <ListItemIcon>
-                                  { lookup_icon_for_type('js/block') }
+                                  { lookup_icon_for_type('js/statement') }
                                 </ListItemIcon>
                                 <Typography variant="inherit" noWrap={true}>
-                                  js/block
+                                  js/statement
                                 </Typography>
                               </MenuItem>
                             </TextField>
@@ -1196,7 +1193,7 @@ const PropEditor = (props) => {
                       }
                     />
                     <Controller
-                      name="data"
+                      name="body"
                       control={control}
                       defaultValue={treeNode?.data?.data}
                       rules={{
@@ -1218,7 +1215,7 @@ const PropEditor = (props) => {
                         (
                           <FormControl className={styles.formControl}>
                               <TextField
-                                label="Code"
+                                label="Code Body"
                                 multiline={true}
                                 name={props.name}
                                 value={props.value}

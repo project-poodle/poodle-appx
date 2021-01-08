@@ -54,7 +54,7 @@ import Reset from 'app-x/icon/Reset'
 import Undo from 'app-x/icon/Undo'
 import Redo from 'app-x/icon/Redo'
 import {
-  parse_js,
+  generate_tree_node,
   lookup_icon_for_type,
   lookup_title_for_input,
   lookup_valid_child_types,
@@ -243,8 +243,8 @@ const SyntaxTree = (props) => {
     // console.log(`filtered`, filtered)
 
     const js_context = { topLevel: true }
-    const parsedTree = parse_js(js_context, null, null, filtered)
-    // console.log(parsedTree)
+    const parsedTree = generate_tree_node(js_context, null, null, filtered)
+    console.log(`parsedTree`, parsedTree)
 
     const parsedTest = !!spec_data._test
       ? spec_data._test
@@ -629,14 +629,14 @@ const SyntaxTree = (props) => {
     // handle js/switch specially
     if (lookupParent?.data?._type === 'js/switch') {
       if (nodeData.default) {
-        parsed = parse_js(parse_context, parentKey, 'default', nodeData)
+        parsed = generate_tree_node(parse_context, parentKey, 'default', nodeData)
       } else {
-        parsed = parse_js(parse_context, parentKey, null, nodeData)
+        parsed = generate_tree_node(parse_context, parentKey, null, nodeData)
         parsed.data.condition = nodeData.condition
       }
     } else {
       // parse nodeData
-      parsed = parse_js(parse_context, parentKey, ref, nodeData)
+      parsed = generate_tree_node(parse_context, parentKey, ref, nodeData)
     }
     // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location
@@ -1090,7 +1090,7 @@ const SyntaxTree = (props) => {
             'js/import',
             'js/expression',
             'js/function',
-            'js/block',
+            'js/statement',
             'js/switch',
             'js/map',
             'js/reduce',

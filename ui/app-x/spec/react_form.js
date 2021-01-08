@@ -23,6 +23,7 @@ export const react_form = {
     },
   ],
   _group: 'form_input',
+  _expand: true,
   children: [
     {
       name: 'name',
@@ -44,11 +45,9 @@ export const react_form = {
           message: 'Must be a valid variable name',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
     },
     {
       name: 'onSubmit',
@@ -66,15 +65,11 @@ export const react_form = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        }
-      ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement'
+      },
+      _childNode: {}
     },
     {
       name: 'onError',
@@ -92,14 +87,11 @@ export const react_form = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        }
-      ],
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement'
+      },
+      _childNode: {}
     },
     {
       name: 'props',
@@ -116,14 +108,10 @@ export const react_form = {
           ]
         }
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {
-        generate: '`generate(data)`',
-        parse: '`parse(node)`',
+      _childNode: {
+        input: 'js/object',
+        generate: 'generate(data)',
+        parse: 'parse(node)',
       }
     },
     {
@@ -141,14 +129,10 @@ export const react_form = {
           ]
         }
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {
-        generate: '`generate(data)`',
-        parse: '`parse(node)`',
+      _childNode: {
+        input: 'js/object',
+        generate: 'generate(data)',
+        parse: 'parse(node)',
       }
     },
     {
@@ -172,18 +156,18 @@ export const react_form = {
           ]
         }
       ],
-      _child: {
+      _childNode: {
         array: true,
-        generate: '` \
-          parentData.children.map( \
+        generate: ' \
+          thisData.children.map( \
             child => generate(child) \
           ) \
-        `',
+        ',
         parse: ' \
-          parentNode._children \
+          thisNode._children \
             .filter(child => !child._ref) \
             .map(child => parse(child)) \
-        `',
+        ',
       },
     },
   ]

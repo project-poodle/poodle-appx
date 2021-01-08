@@ -34,11 +34,9 @@ export const react_context = {
           message: 'Context name is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/import'
-        }
-      ],
+      _thisNode: {
+        input: 'js/import'
+      },
       _suggestions: [
         {
           __class: 'js/call',

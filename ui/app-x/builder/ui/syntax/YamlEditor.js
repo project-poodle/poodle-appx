@@ -28,7 +28,7 @@ import {
 
 // utilities
 import {
-  parse_js,
+  generate_tree_node,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
@@ -143,7 +143,7 @@ const YamlEditor = props => {
       const lookupNode = tree_lookup(resultTree, selectedKey)
       if (!!lookupNode) {
         const js_context = { topLevel: false }
-        const parsed = parse_js(js_context, lookupNode.parentKey, null, loaded)
+        const parsed = generate_tree_node(js_context, lookupNode.parentKey, null, loaded)
 
         if (treeNode?.data?._type === '/') {
 

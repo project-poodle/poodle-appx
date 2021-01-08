@@ -26,7 +26,11 @@ export const js_reduce = {
           class: 'expression'
         },
       ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || data._type === "js/expression"',
+        input: 'js/expression',
+      },
+      _childNode: {}
     },
     {
       name: 'reducer',
@@ -36,11 +40,9 @@ export const js_reduce = {
           class: 'expression'
         }
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        }
-      ],
+      _thisNode: {
+        input: 'js/expression'
+      }
     },
     {
       name: 'init',
@@ -51,11 +53,9 @@ export const js_reduce = {
           class: 'expression'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        }
-      ],
+      _thisNode: {
+        input: 'js/expression'
+      }
     },
   ]
 }

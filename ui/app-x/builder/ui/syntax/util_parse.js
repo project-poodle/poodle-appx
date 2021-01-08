@@ -168,7 +168,7 @@ function lookup_icon_for_input(input) {
 
     return <PercentageOutlined />
 
-  } else if (input._type === 'js/block') {
+  } else if (input._type === 'js/statement') {
 
     return <Code />
 
@@ -318,7 +318,7 @@ function lookup_title_for_input(ref, input) {
 
     return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
-  } else if (input._type === 'js/block') {
+  } else if (input._type === 'js/statement') {
 
     return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
 
@@ -413,37 +413,8 @@ function lookup_title_for_input(ref, input) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// create new node
-function new_js_node(title, icon, data, parentKey, isLeaf) {
-  return {
-    key: uuidv4(),
-    parentKey: parentKey,
-    title: title ? title : (data ? (data._ref ? data._ref : '') : ''),
-    data: data ? data : null,
-    icon: icon ? icon : <QuestionOutlined />,
-    isLeaf: isLeaf ? true : false,
-    children: isLeaf ? [] : [],
-  }
-}
-
-// create new root node
-function new_root_node() {
-  return {
-    key: '/',
-    parentKey: null,
-    title: '/',
-    data: {
-      _ref: null,
-      _type: '/'
-    },
-    icon: lookup_icon_for_type('/'),
-    isLeaf: true,
-    children: null,
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // processors
+/*
 
 // create primitive tree node
 function parse_js_primitive(js_context, parentKey, ref, input) {
@@ -460,28 +431,28 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
 
   switch (typeof input) {
     case 'string':
-      return new_js_node(
+      return new_tree_node(
         lookup_title_for_input(ref, input),
         lookup_icon_for_input(input),
         data,
         parentKey,
         true)
     case 'number':
-      return new_js_node(
+      return new_tree_node(
         lookup_title_for_input(ref, input),
         lookup_icon_for_input(input),
         data,
         parentKey,
         true)
     case 'boolean':
-      return new_js_node(
+      return new_tree_node(
         lookup_title_for_input(ref, input),
         lookup_icon_for_input(input),
         data,
         parentKey,
         true)
     case 'undefined':                         // treat undefined as null
-      return new_js_node(
+      return new_tree_node(
         lookup_title_for_input(ref, input),
         lookup_icon_for_input(input),
         data,
@@ -489,7 +460,7 @@ function parse_js_primitive(js_context, parentKey, ref, input) {
         true)
     case 'object':
       if (input === null) {
-        return new_js_node(
+        return new_tree_node(
           lookup_title_for_input(ref, input),
           lookup_icon_for_input(input),
           data,
@@ -521,7 +492,7 @@ function parse_js_array(js_context, parentKey, ref, input) {
   // empty input
   if (!input) {
 
-    return new_js_node(
+    return new_tree_node(
       lookup_title_for_input(ref, {type: 'js/array'}),
       lookup_icon_for_input({type: 'js/array'}),
       data,
@@ -542,7 +513,7 @@ function parse_js_array(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input is not array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -603,7 +574,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
   // empty input
   if (!input) {
 
-    return new_js_node(
+    return new_tree_node(
       lookup_title_for_input(ref, {type: 'js/object'}),
       lookup_icon_for_input({type: 'js/object'}),
       data,
@@ -624,7 +595,7 @@ function parse_js_object(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: input is array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -703,7 +674,7 @@ function parse_js_import(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -731,7 +702,7 @@ function parse_js_expression(js_context, parentKey, ref, input) {
     data: input.data,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -742,27 +713,27 @@ function parse_js_expression(js_context, parentKey, ref, input) {
 }
 
 // create block tree node (allow return outside of function)
-function parse_js_block(js_context, parentKey, ref, input) {
+function parse_js_statement(js_context, parentKey, ref, input) {
 
-  if (!('_type' in input) || input._type !== 'js/block') {
-    throw new Error(`ERROR: input._type is not [js/block] [${input._type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/statement') {
+    throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   if (! ('data' in input)) {
-    throw new Error(`ERROR: input.data missing in [js/block] [${JSON.stringify(input)}]`)
+    throw new Error(`ERROR: input.data missing in [js/statement] [${JSON.stringify(input)}]`)
   }
 
   // tree node data
   const data = {
     _ref: ref,
     _type: input._type,
-    data: input.data,
+    body: input.body,
   }
 
   // compute title
   const title = lookup_title_for_input(ref, input)
 
-  const node = new_js_node(title, lookup_icon_for_input(input), data, parentKey, true)
+  const node = new_tree_node(title, lookup_icon_for_input(input), data, parentKey, true)
 
   return node
 }
@@ -786,7 +757,7 @@ function parse_js_function(js_context, parentKey, ref, input) {
     body: input.body,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -825,7 +796,7 @@ function parse_js_switch(js_context, parentKey, ref, input) {
     _type: input._type,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -912,7 +883,7 @@ function parse_js_map(js_context, parentKey, ref, input) {
     _type: input._type,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -991,7 +962,7 @@ function parse_js_reduce(js_context, parentKey, ref, input) {
     reducer: input.reducer,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1057,7 +1028,7 @@ function parse_js_filter(js_context, parentKey, ref, input) {
     filter: input.filter,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1116,7 +1087,7 @@ function parse_react_element(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1193,7 +1164,7 @@ function parse_react_html(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1273,7 +1244,7 @@ function parse_react_state(js_context, parentKey, ref, input) {
     init: input.init,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1301,7 +1272,7 @@ function parse_react_context(js_context, parentKey, ref, input) {
     name: input.name,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1330,7 +1301,7 @@ function parse_react_effect(js_context, parentKey, ref, input) {
     states: input.states,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1360,7 +1331,7 @@ function parse_react_form(js_context, parentKey, ref, input) {
     onError: input.onError
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1446,7 +1417,7 @@ function parse_input_text(js_context, parentKey, ref, input) {
     array: input.array,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1505,7 +1476,7 @@ function parse_mui_style(js_context, parentKey, ref, input) {
     _type: input._type,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data,
@@ -1576,7 +1547,7 @@ function parse_appx_api(js_context, parentKey, ref, input) {
     error: input.error
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data, parentKey,
@@ -1598,7 +1569,7 @@ function parse_appx_route(js_context, parentKey, ref, input) {
     _type: input._type,
   }
 
-  const node = new_js_node(
+  const node = new_tree_node(
     lookup_title_for_input(ref, input),
     lookup_icon_for_input(input),
     data, parentKey,
@@ -1650,9 +1621,9 @@ function parse_js(js_context, parentKey, ref, input) {
 
     return parse_js_expression(js_context, parentKey, ref, input)
 
-  } else if (input._type === 'js/block') {
+  } else if (input._type === 'js/statement') {
 
-    return parse_js_block(js_context, parentKey, ref, input)
+    return parse_js_statement(js_context, parentKey, ref, input)
 
   } else if (input._type === 'js/function') {
 
@@ -1719,7 +1690,10 @@ function parse_js(js_context, parentKey, ref, input) {
     throw new Error(`ERROR: unrecognized input._type [${input._type}] [${JSON.stringify(input)}]`)
   }
 }
+*/
 
+////////////////////////////////////////////////////////////////////////////////
+// api methods
 const api_methods = [
   'get',
   'post',
@@ -1983,7 +1957,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          'js/block',
+          'js/statement',
           null,
           'js/switch',
           'js/map',
@@ -2029,7 +2003,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2066,7 +2040,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2085,7 +2059,7 @@ function lookup_valid_child_types(type) {
     return null         // leaf
   } else if (type === 'js/function') {
     return null         // leaf
-  } else if (type === 'js/block') {
+  } else if (type === 'js/statement') {
     return null         // leaf
   } else if (type === 'js/switch') {
     return {
@@ -2114,7 +2088,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2151,7 +2125,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2192,7 +2166,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2232,7 +2206,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2272,7 +2246,7 @@ function lookup_valid_child_types(type) {
           'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2317,7 +2291,7 @@ function lookup_valid_child_types(type) {
           // 'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2361,7 +2335,7 @@ function lookup_valid_child_types(type) {
           // 'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2406,7 +2380,7 @@ function lookup_valid_child_types(type) {
           // 'js/import',
           'js/expression',
           'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2451,7 +2425,7 @@ function lookup_valid_child_types(type) {
           // 'js/import',
           'js/expression',
           // 'js/function',
-          // 'js/block',  // code block not allowed
+          // 'js/statement',  // code block not allowed
           null,
           'js/switch',
           'js/map',
@@ -2617,12 +2591,297 @@ const reorder_children = (parentNode) => {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// generate tree node
+
+////////////////////////////////////////////////////////////////////////////////
+// create new node
+function new_tree_node(title, icon, data, parentKey, isLeaf) {
+  return {
+    key: uuidv4(),
+    parentKey: parentKey,
+    title: title ? title : (data ? (data._ref ? data._ref : '') : ''),
+    data: data ? data : null,
+    icon: icon ? icon : <QuestionOutlined />,
+    isLeaf: isLeaf ? true : false,
+    children: isLeaf ? [] : [],
+  }
+}
+
+// create new root node
+function new_root_node() {
+  return {
+    key: '/',
+    parentKey: null,
+    title: '/',
+    data: {
+      _ref: null,
+      _type: '/'
+    },
+    icon: lookup_icon_for_type('/'),
+    isLeaf: true,
+    children: null,
+  }
+}
+
+// process input data and return tree data
+// function parse_js(js_context, parentKey, ref, input) {
+function generate_tree_node(js_context, parentKey, ref, input) {
+
+  // add expandedKeys if not exist
+  if (! ('expandedKeys' in js_context)) {
+    js_context.expandedKeys = []
+  }
+
+  if (isPrimitive(input)) {
+    switch (typeof input) {
+      case 'string':
+        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/string', data: input})
+      case 'number':
+        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/number', data: input})
+      case 'boolean':
+        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/boolean', data: input})
+      case 'undefined':                         // treat undefined as null
+        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/null'})
+      case 'object':
+        if (input === null) {
+          return generate_tree_node(js_context, parentKey, ref, {_type: 'js/null'})
+        } else {
+          throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+        }
+      default:
+        throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
+    }
+  }
+
+  // we are here if not primitive
+
+  // if array
+  if (Array.isArray(input)) {
+    return generate_tree_node(
+      js_context,
+      parentKey,
+      ref,
+      {
+        _type: 'js/array',
+        children: input
+      }
+    )
+  }
+
+  // js/object
+  if (!input._type) {
+    return generate_tree_node(
+      js_context,
+      parentKey,
+      ref,
+      {
+        _type: 'js/object',
+        ...input
+      }
+    )
+  }
+
+  // handle topLevel
+  if (js_context.topLevel) {
+    // return children only
+    const results = []
+    Object.keys(input).map(key => {
+      // skip keys starts with '__'
+      if (key.startsWith('_')) {
+        return
+      }
+      // add children to node
+      results.push(
+        generate_tree_node(
+          {
+            ...js_context,
+            topLevel: false,
+          },
+          null,
+          key,
+          input[key]
+        )
+      )
+    })
+
+    // add root element to the top level
+    results.unshift(new_root_node())
+
+    return results
+  }
+
+  // input type
+  if (! (input._type in globalThis.appx?.SPEC?.types)) {
+    throw new Error(`ERROR: unrecognized input type [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  const classes = globalThis.appx.SPEC.classes
+
+  const spec = globalThis.appx.SPEC.types[input._type]
+
+  // create current node as thisNode
+  const thisNode = new_tree_node(
+    lookup_title_for_input(ref, input),
+    lookup_icon_for_input(input),
+    {
+      _ref: ref,
+      _type: input._type,
+      // empty data
+    },
+    parentKey,
+    !(
+      !!spec.children
+      && spec.children.length
+      && spec.children
+        .map(child => '_childNode' in child)
+        .reduce((accumulator, item) => accumulator || item, false)
+    )
+  )
+  // set default expand
+  if (!!spec._expand) {
+    js_context.expandedKeys.push(thisNode.key)
+  }
+
+  // setup context variable
+  const thisData = input
+
+  // process children (not including '*')
+  spec.children.map((childSpec) => {
+
+    function _process_child(_ref, data) {
+
+      // ignore _type
+      if (_ref === '_type') {
+        return
+      }
+
+      // check if exist
+      if (! (_ref in input)) {
+        if (!!childSpec.optional) {
+          return // continue
+        } else {
+          throw new Error(`ERROR:  [${input._type}] missing [${childSpec.name}] [${JSON.stringify(input)}]`)
+        }
+      }
+
+      // add to thisNode.data if _thisNode is defined
+      if (!!childSpec._thisNode) {
+
+        if (!!childSpec._thisNode.condition && ! eval(childSpec._thisNode.condition)) {
+          // condition evaluated to false
+          // ignore and continue
+        } else {
+          // add to current node
+          if (!!childSpec._thisNode.generate) {
+            thisNode.data[_ref] = eval(childSpec._thisNode.generate)
+          } else if (!!childSpec._thisNode.array) {
+            throw new Error(`ERROR: this node array input missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+          } else if (childSpec._thisNode.input === 'js/string') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (childSpec._thisNode.input === 'js/number') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (childSpec._thisNode.input === 'js/boolean') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (childSpec._thisNode.input === 'js/null') {
+            // thisNode.data[_ref] = isPrimitive(data) ? data: data.data
+          } else if (childSpec._thisNode.input === 'js/expression') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (childSpec._thisNode.input === 'js/import') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.name
+          } else if (childSpec._thisNode.input === 'js/statement') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.body
+          } else {
+            throw new Error(`ERROR: this node input type [${childSpec._thisNode.input}] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+          }
+        }
+      }
+
+      // add to thisNode.children if _childNode is defined
+      if (!!childSpec._childNode) {
+
+        if (!!childSpec._childNode.condition && ! eval(childSpec._childNode.condition)) {
+          // condition evaluated to false
+          // ignore and continue
+        } else {
+          // create child node
+          if (!!childSpec._childNode.array) {
+            // generate function
+            const generate = (data) => {
+              return generate_tree_node(js_context, thisNode.key, null, data)
+            }
+            // check generate definition
+            if (!!childSpec._childNode.generate) {
+              // console.log(childSpec._childNode.generate)
+              const children = eval(childSpec._childNode.generate)
+              // console.log(children)
+              children.map(childNode => thisNode.children.push(childNode))
+            } else {
+              throw new Error(`ERROR: child node array missing generate method [${JSON.stringify(childSpec._childNode)}]`)
+            }
+
+          } else {
+            // generate function
+            const generate = (data) => {
+              return generate_tree_node(js_context, thisNode.key, _ref, data)
+            }
+            // check generate definition
+            if (!!childSpec._childNode.generate) {
+              // generate child node
+              const child = eval(childSpec._childNode.generate)
+              thisNode.children.push(child)
+            } else {
+              const childNode = generate_tree_node(js_context, thisNode.key, _ref, data)
+              thisNode.children.push(childNode)
+            }
+          }
+        }
+      }
+    }
+
+    if (childSpec.name === '*') {
+
+      Object.keys(input).map(key => {
+
+        const _ref = key
+        const data = input[_ref]
+
+        try {
+          _process_child(_ref, data)
+        } catch (err) {
+          console.error(err)
+          throw err
+        }
+      })
+
+    } else {
+
+      const _ref = childSpec.name
+      const data = input[_ref]
+
+      try {
+        _process_child(_ref, data)
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
+    }
+
+  })
+
+  return thisNode
+}
+
+// function new_tree_node(title, icon, data, parentKey, isLeaf)
+
+
 export {
-  parse_js,
-  parse_js_object,
-  parse_js_primitive,
-  parse_js_expression,
-  parse_js_import,
+  // parse_js,
+  generate_tree_node,
+  // parse_js_object,
+  // parse_js_primitive,
+  // parse_js_expression,
+  // parse_js_import,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,

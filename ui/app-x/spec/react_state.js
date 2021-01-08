@@ -24,12 +24,12 @@ export const react_state = {
     hidden: true,
     effects: [
       {
-        body: '` \
+        body: ' \
           node.data._ref = \
             "..." + node.data.name \
-        `',
+        ',
         states: [
-          '`node.data.name`'
+          'node.data.name'
         ]
       }
     ]
@@ -54,11 +54,9 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
       _examples: [
         'open',
         'show',
@@ -88,11 +86,9 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      },
       _examples: [
         'setOpen',
         'setShow',
@@ -111,11 +107,11 @@ export const react_state = {
           class: 'expression'
         }
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        }
-      ],
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/expression'
+      },
+      _childNode: {},
       _examples: [
         null,
         true,

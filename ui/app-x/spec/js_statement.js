@@ -32,15 +32,10 @@ export const js_statement = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        }
-      ],
-      _child: {}
+      _thisNode: {
+        input: 'js/statement'
+      },
+      _childNode: {}
     },
   ]
 }

@@ -99,14 +99,14 @@ const PropFieldArray = props => {
       }
       {
         fields.map((item, index) => {
-          const propType = watch(`${props.name}[${index}].type`)
+          const propType = watch(`${props.name}[${index}]._type`)
           return (
             <Box key={item.id} display="flex" className={styles.formControl}>
               <Controller
                 key='type'
-                name={`${props.name}[${index}].type`}
+                name={`${props.name}[${index}]._type`}
                 control={control}
-                defaultValue={item?.type}
+                defaultValue={item?._type}
                 rules={{
                   required: "Property type is required",
                 }}
@@ -126,11 +126,11 @@ const PropFieldArray = props => {
                       }}
                       error={
                         !!_.get(errors, props.name)
-                        && !!_.get(errors, props.name)[index]?.type
+                        && !!_.get(errors, props.name)[index]?._type
                       }
                       helperText={
                         !!_.get(errors, props.name)
-                        && _.get(errors, props.name)[index]?.type?.message
+                        && _.get(errors, props.name)[index]?._type?.message
                       }
                       >
                       {

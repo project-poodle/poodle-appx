@@ -3,21 +3,15 @@ const path = require('path')
 const process = require('process')
 require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss', label: false})
 
-/*
-process.on('unhandledRejection', function(...rest) {
-    console.log(`WARN: Unhandled Rejection`)
-    console.log(rest)
-})
-*/
-
+//////////////////////////////////////////////////
 // load spec
 let appx_spec = null
 async function load_spec() {
   appx_spec = (await import('./appx_spec.mjs')).default
-  console.log(`INFO: appx_spec`, Object.keys(appx_spec))
+  console.log(`INFO: appx_spec [classes]`, Object.keys(appx_spec.classes))
+  console.log(`INFO: appx_spec [types]`, Object.keys(appx_spec.types))
 }
 load_spec()
-
 
 //////////////////////////////////////////////////
 // process cli arguments

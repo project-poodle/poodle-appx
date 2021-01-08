@@ -13,18 +13,18 @@ const RENDER_JSON = function() {
 
     let process = function(data, depth) {
 
-        if (typeof data == null || typeof data == "undefined") {
-            return 'null';
+        if (data === null || typeof data == "undefined") {
+            return 'null'
         } else if (typeof data == "number") {
             return data.toString()
         } else if (typeof data == "boolean") {
             return data.toString()
         } else if (typeof data == "string") {
-            if (data.startsWith('`') && data.endsWith('`')) {
-                return data.substring(1, data.length-1)
-            } else {
+            //if (data.startsWith('`') && data.endsWith('`')) {
+            //    return data.substring(1, data.length-1)
+            //} else {
                 return '"' + data.replace(/"/g, '\\"') + '"'
-            }
+            //}
         } else if (Array.isArray(data)) {
             let results = []
             data.forEach((value) => {
@@ -146,6 +146,7 @@ function handle_html(req, res) {
             APPX_PATHS: { 'paths': req.appx_paths },
             IMPORT_MAPS: req.context.ui_spec.importMaps,
             API_MAPS: req.context.ui_deployment_spec.apiMaps,
+            SPEC: req.appx_spec,
         },
         entry: req.context.ui_component_spec.entry,
         data: req.context.ui_component_spec,

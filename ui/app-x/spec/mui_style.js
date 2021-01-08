@@ -24,12 +24,9 @@ export const mui_style = {
           class: 'any'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/object'
-        }
-      ],
-      _child: {}
+      _childNode: {
+        input: 'js/object'
+      }
     },
   ]
 }

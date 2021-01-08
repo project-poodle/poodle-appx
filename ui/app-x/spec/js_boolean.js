@@ -30,11 +30,9 @@ export const js_boolean = {
           class: 'boolean'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/boolean'
-        }
-      ],
+      _thisNode: {
+        input: 'js/boolean',
+      },
     },
   ]
 }

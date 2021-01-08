@@ -30,11 +30,9 @@ export const js_string = {
           class: 'string'
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string'
-        }
-      ],
+      _thisNode: {
+        input: 'js/string'
+      }
     },
   ]
 }

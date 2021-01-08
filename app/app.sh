@@ -12,5 +12,5 @@ find "${LOG_DIR}" -mtime +7 -exec rm {} \;
 
 LOG_FILE="${LOG_DIR}/appx.`date +%Y-%m-%d_%H-%M-%S`.log"
 
-# exec ${NODE} --trace-warnings appx_spec.mjs ${BASE_DIR}/app.js "$@" 2>&1 | tee ${LOG_FILE}
-exec ${NODE} ${BASE_DIR}/app.js "$@" 2>&1 | tee ${LOG_FILE}
+exec ${NODE} --trace-warnings appx_spec.mjs ${BASE_DIR}/app.js "$@" 2>&1 | tee -a ${LOG_FILE}
+exec ${NODE} ${BASE_DIR}/app.js "$@" 2>&1 | tee -a ${LOG_FILE}

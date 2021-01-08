@@ -31,11 +31,9 @@ export const js_import = {
           message: 'Import name is required',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/import'
-        }
-      ],
+      _thisNode: {
+        input: 'js/import',
+      },
       _suggestions: [
         {
           __class: 'js/call',

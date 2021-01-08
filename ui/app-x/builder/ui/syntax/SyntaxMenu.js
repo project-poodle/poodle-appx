@@ -46,7 +46,6 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import {
-  parse_js,
   lookup_icon_for_type,
   lookup_valid_child_types
 } from 'app-x/builder/ui/syntax/util_parse'

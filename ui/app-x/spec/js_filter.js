@@ -25,21 +25,23 @@ export const js_filter = {
           class: 'expression'
         },
       ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || data._type === "js/expression"',
+        input: 'js/expression',
+      },
+      _childNode: {}
     },
     {
-      name: 'filterr',
+      name: 'filter',
       desc: 'Filter',
       classes: [
         {
           class: 'expression'
         }
       ],
-      _inputs: [
-        {
-          input: 'js/expression'
-        }
-      ],
+      _thisNode: {
+        input: 'js/expression'
+      }
     },
   ]
 }

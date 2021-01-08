@@ -310,8 +310,8 @@ function gen_js_expression(tree_context, treeNode) {
   }
 }
 
-// generate js/block from tree
-function gen_js_block(tree_context, treeNode) {
+// generate js/statement from tree
+function gen_js_statement(tree_context, treeNode) {
 
   if (! ('data' in treeNode)) {
     throw new Error(`ERROR: missing [data] in treeNode`)
@@ -321,14 +321,14 @@ function gen_js_block(tree_context, treeNode) {
     throw new Error(`ERROR: missing [type] in treeNode.data`)
   }
 
-  if (treeNode.data._type !== 'js/block') {
-    throw new Error(`ERROR: treeNode.data._type is not [js/block] [${treeNode.data._type}]`)
+  if (treeNode.data._type !== 'js/statement') {
+    throw new Error(`ERROR: treeNode.data._type is not [js/statement] [${treeNode.data._type}]`)
   }
 
   // block data
   const data = {
     _type: treeNode.data._type,
-    data: treeNode.data.data,
+    body: treeNode.data.body,
   }
 
   // return
@@ -392,7 +392,7 @@ function gen_js_switch(tree_context, treeNode) {
   if (treeNode.children.length) {
     treeNode.children.map(child => {
 
-      if (child.data._ref) {
+      if (!!child.data._ref) {
 
         // process 'default' child
         if (child.data._ref === 'default') {
@@ -411,13 +411,13 @@ function gen_js_switch(tree_context, treeNode) {
             throw new Error(`ERROR: [js/switch] child missing [data] i[${JSON.stringify(child)}]`)
           }
           // verify that condition exist in child.data
-          if (! ('condition' in child.data)) {
-            throw new Error(`ERROR: [js/switch] child.data missing [condition] [${JSON.stringify(child.data)}]`)
+          if (! ('_condition' in child.data)) {
+            throw new Error(`ERROR: [js/switch] child.data missing [_condition] [${JSON.stringify(child.data)}]`)
           }
           // result is the same object, no need to check
           // update data.children
           data.children.push({
-            condition: child.data.condition,
+            condition: child.data._condition,
             result: gen_js(
               {
                 ...tree_context,
@@ -1112,112 +1112,117 @@ function gen_js(tree_context, treeNode) {
     throw new Error(`ERROR: missing _ref in treeNode.data`)
   }
 
-  if (treeNode.data._type === 'js/string') {
+  try {
+    if (treeNode.data._type === 'js/string') {
 
-    return gen_js_string(tree_context, treeNode)
+      return gen_js_string(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/number') {
+    } else if (treeNode.data._type === 'js/number') {
 
-    return gen_js_number(tree_context, treeNode)
+      return gen_js_number(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/boolean') {
+    } else if (treeNode.data._type === 'js/boolean') {
 
-    return gen_js_boolean(tree_context, treeNode)
+      return gen_js_boolean(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/null') {
+    } else if (treeNode.data._type === 'js/null') {
 
-    return gen_js_null(tree_context, treeNode)
+      return gen_js_null(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/array') {
+    } else if (treeNode.data._type === 'js/array') {
 
-    return gen_js_array(tree_context, treeNode)
+      return gen_js_array(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/object') {
+    } else if (treeNode.data._type === 'js/object') {
 
-    return gen_js_object(tree_context, treeNode)
+      return gen_js_object(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/import') {
+    } else if (treeNode.data._type === 'js/import') {
 
-    return gen_js_import(tree_context, treeNode)
+      return gen_js_import(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/expression') {
+    } else if (treeNode.data._type === 'js/expression') {
 
-    return gen_js_expression(tree_context, treeNode)
+      return gen_js_expression(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/block') {
+    } else if (treeNode.data._type === 'js/statement') {
 
-    return gen_js_block(tree_context, treeNode)
+      return gen_js_statement(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/function') {
+    } else if (treeNode.data._type === 'js/function') {
 
-    return gen_js_function(tree_context, treeNode)
+      return gen_js_function(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/switch') {
+    } else if (treeNode.data._type === 'js/switch') {
 
-    return gen_js_switch(tree_context, treeNode)
+      return gen_js_switch(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/map') {
+    } else if (treeNode.data._type === 'js/map') {
 
-    return gen_js_map(tree_context, treeNode)
+      return gen_js_map(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/reduce') {
+    } else if (treeNode.data._type === 'js/reduce') {
 
-    return gen_js_reduce(tree_context, treeNode)
+      return gen_js_reduce(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'js/filter') {
+    } else if (treeNode.data._type === 'js/filter') {
 
-    return gen_js_filter(tree_context, treeNode)
+      return gen_js_filter(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/element') {
+    } else if (treeNode.data._type === 'react/element') {
 
-    return gen_react_element(tree_context, treeNode)
+      return gen_react_element(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/html') {
+    } else if (treeNode.data._type === 'react/html') {
 
-    return gen_react_html(tree_context, treeNode)
+      return gen_react_html(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/form') {
+    } else if (treeNode.data._type === 'react/form') {
 
-    return gen_react_form(tree_context, treeNode)
+      return gen_react_form(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/state') {
+    } else if (treeNode.data._type === 'react/state') {
 
-    return gen_react_state(tree_context, treeNode)
+      return gen_react_state(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/context') {
+    } else if (treeNode.data._type === 'react/context') {
 
-    return gen_react_context(tree_context, treeNode)
+      return gen_react_context(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'react/effect') {
+    } else if (treeNode.data._type === 'react/effect') {
 
-    return gen_react_effect(tree_context, treeNode)
+      return gen_react_effect(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'input/text') {
+    } else if (treeNode.data._type === 'input/text') {
 
-    return gen_input_text(tree_context, treeNode)
+      return gen_input_text(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'mui/style') {
+    } else if (treeNode.data._type === 'mui/style') {
 
-    return gen_mui_style(tree_context, treeNode)
+      return gen_mui_style(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'appx/api') {
+    } else if (treeNode.data._type === 'appx/api') {
 
-    return gen_appx_api(tree_context, treeNode)
+      return gen_appx_api(tree_context, treeNode)
 
-  } else if (treeNode.data._type === 'appx/route') {
+    } else if (treeNode.data._type === 'appx/route') {
 
-    return gen_appx_route(tree_context, treeNode)
+      return gen_appx_route(tree_context, treeNode)
 
-  } else if (treeNode.data._type === '/') {
+    } else if (treeNode.data._type === '/') {
 
-    return {
-      ref: null,
-      data: null
+      return {
+        ref: null,
+        data: null
+      }
+
+    } else {
+
+      throw new Error(`ERROR: unrecognized treeNode.data._type [${treeNode.data._type}] [${JSON.stringify(treeNode.data)}]`)
     }
-
-  } else {
-
-    throw new Error(`ERROR: unrecognized treeNode.data._type [${treeNode.data._type}] [${JSON.stringify(treeNode.data)}]`)
+  } catch (err) {
+    console.error(err)
+    throw err
   }
 }
 

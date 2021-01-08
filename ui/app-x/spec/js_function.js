@@ -40,12 +40,14 @@ export const js_function = {
           message: 'Must be a valid variable name',
         },
       ],
-      _inputs: [
-        {
-          input: 'js/string',
-          array: true,
-        }
-      ],
+      _thisNode: {
+        array: true,
+        input: 'js/string',
+        generate: 'data.map(item => ({ \
+          value: item \
+        })',
+        parse: 'node.map(item => item.value)',
+      },
     },
     {
       name: 'body',
@@ -63,15 +65,11 @@ export const js_function = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        }
-      ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || data._type === "js/statement"',
+        input: 'js/statement'
+       },
+      _childNode: {}
     },
   ]
 }

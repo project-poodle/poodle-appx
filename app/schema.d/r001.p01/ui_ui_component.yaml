@@ -600,8 +600,8 @@ ui_component:
               height: 100%
               width: 100%
           snippet:
-            _type: js/block
-            data: |
+            _type: js/statement
+            body: |
               // console.log($r('react-grid-layout.default'))
           element:
             _type: react/element

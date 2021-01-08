@@ -35,15 +35,11 @@ export const react_effect = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/statement'
-        },
-        {
-          input: 'js/child'
-        }
-      ],
-      _child: {}
+      _thisNode: {
+        condition: '!data || typeof data === "string"',
+        input: 'js/statement'
+      },
+      _childNode: {}
     },
     {
       name: 'states',
@@ -59,12 +55,14 @@ export const react_effect = {
           ]
         },
       ],
-      _inputs: [
-        {
-          input: 'js/expression',
-          array: true,
-        }
-      ],
+      _thisNode: {
+        array: true,
+        input: 'js/expression',
+        generate: 'data.map(item => ({ \
+          value: item \
+        })',
+        parse: 'node.map(item => item.value)',
+      }
     },
   ]
 }

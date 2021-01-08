@@ -41,7 +41,6 @@ import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
-  parse_js,
   lookup_icon_for_type,
   lookup_title_for_input,
   valid_import_names,
