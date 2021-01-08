@@ -27,8 +27,17 @@ function sql_load(filepath, context) {
     definition = YAML.parse(fs.readFileSync(filepath, 'utf8'))
     definition.forEach((def, i) => {
 
-        //console.log(JSON.stringify(def, null, 4))
-        let results = db.query_sync(Mustache.render(def.query, context), [])
+        let results = null
+        let sql = null
+        try {
+          //console.log(JSON.stringify(def, null, 4))
+          sql = Mustache.render(def.query, context)
+          results = db.query_sync(sql, [])
+        } catch (err) {
+          console.log(`ERROR: Failed to load [${sql}] ${JSON.stringify(def)}`)
+          console.log(err)
+          throw err
+        }
 
         if ('map_def' in def) {
 
