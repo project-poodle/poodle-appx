@@ -320,7 +320,7 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input._type === 'js/statement') {
 
-    return prefix + (input.data.length > 32 ? input.data.substring(0, 30) + '...' : input.data)
+    return prefix + (input.body.length > 32 ? input.body.substring(0, 30) + '...' : input.body)
 
   } else if (input._type === 'js/function') {
 

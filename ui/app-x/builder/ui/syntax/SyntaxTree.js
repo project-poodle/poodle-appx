@@ -233,26 +233,31 @@ const SyntaxTree = (props) => {
     }
     // console.log(`spec_data`, spec_data)
 
-    // remove _test if exist
-    const filtered = Object.keys(spec_data)
-      .filter(key => key !== '_test')
-      .reduce((obj, key) => {
-        obj[key] = spec_data[key]
-        return obj
-      }, {})
-    // console.log(`filtered`, filtered)
+    try {
+      // remove _test if exist
+      const filtered = Object.keys(spec_data)
+        .filter(key => key !== '_test')
+        .reduce((obj, key) => {
+          obj[key] = spec_data[key]
+          return obj
+        }, {})
+      // console.log(`filtered`, filtered)
 
-    const js_context = { topLevel: true }
-    const parsedTree = generate_tree_node(js_context, null, null, filtered)
-    console.log(`parsedTree`, parsedTree)
+      const js_context = { topLevel: true }
+      const parsedTree = generate_tree_node(js_context, null, null, filtered)
+      console.log(`parsedTree`, parsedTree)
 
-    const parsedTest = !!spec_data._test
-      ? spec_data._test
-      : null
+      const parsedTest = !!spec_data._test
+        ? spec_data._test
+        : null
 
-    // console.log(`parsed`, parsedTree, parsedTest)
-    // fresh action
-    makeFreshAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
+      // console.log(`parsed`, parsedTree, parsedTest)
+      // fresh action
+      makeFreshAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
   }
 
   // load data via api
