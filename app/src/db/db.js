@@ -155,8 +155,8 @@ var query = (sql, variables, callback, query_conn_retries=DEFAULT_MAX_RETRIES) =
             }
         } else {
             // callback
-            if (callback) {
-                if (fields) {
+            if (!!callback) {
+                if (!!fields) {
                     callback(error, results, fields)
                 } else {
                     callback(error, results)
