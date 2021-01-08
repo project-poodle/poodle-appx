@@ -48,7 +48,7 @@ import ReactIcon from 'app-x/icon/React'
 import {
   lookup_icon_for_type,
   lookup_valid_child_types
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
   tree_lookup,

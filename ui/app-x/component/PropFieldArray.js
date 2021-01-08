@@ -30,7 +30,7 @@ import AutoComplete from 'app-x/component/AutoComplete'
 import {
   lookup_icon_for_type,
   valid_import_names,
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 
 // array text field
 const PropFieldArray = props => {

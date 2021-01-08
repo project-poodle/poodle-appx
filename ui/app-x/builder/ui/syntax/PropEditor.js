@@ -44,7 +44,7 @@ import {
   valid_import_names,
   valid_html_tags,
   reorder_children,
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
   tree_lookup,

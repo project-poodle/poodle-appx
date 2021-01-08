@@ -45,7 +45,7 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   valid_import_names,
   isPrimitive,
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_lookup,
 } from 'app-x/builder/ui/syntax/util_tree'

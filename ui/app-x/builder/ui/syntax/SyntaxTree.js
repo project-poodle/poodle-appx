@@ -61,7 +61,7 @@ import {
   lookup_classname_by_type,
   lookup_type_by_classname,
   reorder_children,
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 import {
   gen_js,
   tree_traverse,

@@ -53,7 +53,7 @@ import {
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
-} from 'app-x/builder/ui/syntax/util_parse'
+} from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
   tree_lookup,
