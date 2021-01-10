@@ -61,7 +61,7 @@ export const js_switch = {
       ],
       _childNode: [
         {
-          class: 'object',
+          class: 'any',
           generate: ' \
             (() => { \
               const node = generate(data.result); \
@@ -70,23 +70,11 @@ export const js_switch = {
               return node \
             })() \
           ',
-          // generate: ' \
-          //   thisData.children.map( \
-          //     child => (() => { \
-          //      const node = generate(child.result); \
-          //      node.data._isDefault = false; \
-          //      node.data._condition = child.condition; \
-          //      return node \
-          //    })() \
-          //  ) \
-          // ',
           parse: ' \
-            thisNode.children \
-              .filter(childNode => !childNode.data._isDefault) \
-              .map(childNode => ({ \
-                condition: childNode.data._condition, \
-                result: parse(childNode) \
-              })) \
+            (() => ({ \
+              condition: node.data._condition, \
+              result: parse(node) \
+            }))() \
           ',
           customs: [
             {

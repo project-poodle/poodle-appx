@@ -11,7 +11,7 @@ import {
 // lookup child by ref
 function lookup_child_by_ref(treeNode, ref) {
   // lookup child by ref
-  const found = treeNode.children?.filter(child => {
+  const found = treeNode.children.filter(child => {
     return (child.data?._ref === ref)
   })
   // check if found
@@ -20,6 +20,23 @@ function lookup_child_by_ref(treeNode, ref) {
   } else {
     // not found
     return null
+  }
+}
+
+// lookup child array by ref
+function lookup_child_array_by_ref(treeNode, ref) {
+  // lookup child by ref
+  const found = treeNode.children
+    .filter(child => !!child.data._array)
+    .filter(child => {
+      return (child.data?._ref === ref)
+    })
+  // check if found
+  if (found?.length) {
+    return found
+  } else {
+    // not found
+    return []
   }
 }
 
@@ -1385,32 +1402,34 @@ function parse_tree_node(tree_context, treeNode) {
           }
           // check if data matches spec
           if (!type_matches_spec(node.data._type, childNodeSpec)) {
-            console.log(`parse.childNodeSpec NO MATCH : [${JSON.stringify(nodeData)}] [${node.data._type}] not matching [${JSON.stringify(childNodeSpec)}]`)
+            // console.log(`parse.childNodeSpec NO MATCH : [${node.data._type}] [${JSON.stringify(nodeData)}] not matching [${JSON.stringify(childNodeSpec)}]`)
             return
           } else {
-            console.log(`parse.childNodeSpec MATCHES : [${JSON.stringify(nodeData)}] [${node.data._type}] matching [${JSON.stringify(childNodeSpec)}]`)
+            // console.log(`parse.childNodeSpec MATCHES : [${node.data._type}] [${JSON.stringify(nodeData)}] matching [${JSON.stringify(childNodeSpec)}]`)
             found = true
           }
           // parse child node
-          if (!!childNodeSpec.array) {
-            // console.log(`childSpec._childNode [array]`, childSpec._childNode)
-            // check parse definition
-            if (!!childNodeSpec.parse) {
-              // console.log(childSpec._childNode.parse)
-              child = eval(childNodeSpec.parse)
-              // console.log(`children`, children)
-            } else {
-              throw new Error(`ERROR: childNodeSpec [array] missing parse method [${JSON.stringify(childNodeSpec)}]`)
-            }
+          // if (!!childNodeSpec.array) {
+          //   // console.log(`childSpec._childNode [array]`, childSpec._childNode)
+          //   // check parse definition
+          //   if (!!childNodeSpec.parse) {
+          //     // console.log(childSpec._childNode.parse)
+          //     child = eval(childNodeSpec.parse)
+          //     // console.log(`children`, children)
+          //   } else {
+          //     throw new Error(`ERROR: childNodeSpec [array] missing parse method [${JSON.stringify(childNodeSpec)}]`)
+          //   }
+          // } else {
+          // check parse definition
+          if (!!childNodeSpec.parse) {
+            // parse child node
+            // console.log(`childNodeSpec.parse`, childNodeSpec.parse, node)
+            child = eval(childNodeSpec.parse)
+            // console.log(`childNodeSpec.parse`, node, child)
           } else {
-            // check parse definition
-            if (!!childNodeSpec.parse) {
-              // parse child node
-              child = eval(childNodeSpec.parse)
-            } else {
-              child = parse_tree_node(child_context, node)
-            }
+            child = parse_tree_node(child_context, node)
           }
+          // }
         })
         return child
       }
@@ -1443,14 +1462,24 @@ function parse_tree_node(tree_context, treeNode) {
         // process this
         data = _process_this(_ref, thisNode)
         // get childNode
-        const childNode = lookup_child_by_ref(thisNode, _ref)
-        if (!!childNode) {
-          // process child node if exists
-          data = _process_child(childNode)
-        } else if (!!childSpec._childNode && !!childSpec.array) {
-          // console.log(`childNode`, thisNode, _ref)
-          data = _process_child(thisNode)
+        if (!!childSpec.array) {
+          const childNodeArray = lookup_child_array_by_ref(thisNode, _ref)
+          // console.log(`childNodeArray`, childNodeArray)
+          childNodeArray.map(childNode => {
+            if (!data) {
+              data = [] // lazy initialize
+            }
+            // console.log(`childNode`, childNode)
+            data.push(_process_child(childNode))
+          })
+        } else {
+          const childNode = lookup_child_by_ref(thisNode, _ref)
+          if (!!childNode) {
+            // process child node if exists
+            data = _process_child(childNode)
+          }
         }
+
       } catch (err) {
         console.error(err)
         throw err

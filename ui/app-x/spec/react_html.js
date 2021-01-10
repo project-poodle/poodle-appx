@@ -73,7 +73,6 @@ export const react_html = {
         {
           class: 'object',
           input: 'input/properties',
-          parse: 'parse(node)',
         }
       ]
     },
@@ -91,11 +90,6 @@ export const react_html = {
       _childNode: [
         {
           class: 'jsx',
-          parse: ' \
-            thisNode.children \
-              .filter(child => !child.data._ref) \
-              .map(child => parse(child)) \
-          ',
         }
       ]
     },

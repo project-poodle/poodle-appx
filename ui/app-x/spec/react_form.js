@@ -118,7 +118,6 @@ export const react_form = {
         {
           class: 'object',
           input: 'input/properties',
-          parse: 'parse(node)',
         }
       ]
     },
@@ -141,7 +140,6 @@ export const react_form = {
         {
           class: 'object',
           input: 'input/properties',
-          parse: 'parse(node)',
         }
       ]
     },
@@ -159,11 +157,6 @@ export const react_form = {
       _childNode: [
         {
           class: 'jsx',
-          parse: ' \
-            thisNode.children \
-              .filter(child => !child.data._ref) \
-              .map(child => parse(child)) \
-          ',
         }
       ]
     },

@@ -84,7 +84,6 @@ export const react_element = {
         {
           class: 'object',
           input: 'input/properties',
-          parse: 'parse(node)',
         }
       ]
     },

@@ -29,9 +29,9 @@ export const js_array = {
           // generate: ' \
           //   thisData.children.map(child => generate(child)) \
           // ',
-          parse: ' \
-            thisNode.children.map(child => parse(child)) \
-          ',
+          // parse: ' \
+          //  thisNode.children.map(child => parse(child)) \
+          //',
         }
       ]
     },

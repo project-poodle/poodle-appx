@@ -462,14 +462,6 @@ function js_switch(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('children' in input)) {
-    throw new Error(`ERROR: input.children missing in [js/switch] [${JSON.stringify(input)}]`)
-  }
-
-  if (! Array.isArray(input.children)) {
-    throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
-  }
-
   // create default return statement
   let ifElseStatements = t.returnStatement(
     t.nullLiteral()
@@ -489,43 +481,57 @@ function js_switch(js_context, input) {
     )
   }
 
-  // stack the conditions
-  [...input.children].reverse().map(child => {
-    if (! ('condition' in child)) {
-      throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
+  // input.children is optional
+  if (!!input.children) {
+    // check input.children is an array
+    if (! Array.isArray(input.children)) {
+      throw new Error(`ERROR: input.children is not Array [${JSON.stringify(input)}]`)
     }
-    if (! ('result' in child)) {
-      throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
-    }
-    // stack if/else statement
-    ifElseStatements = t.ifStatement(
-      js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        {
-          _type: 'js/expression',
-          data: String(child.condition),
-        }
-      ),
-      t.returnStatement(
+
+    // stack the conditions
+    [...input.children].reverse().map(child => {
+      if (!child) {
+        throw new Error(`ERROR: [js/switch] child is empty [${JSON.stringify(child)}]`)
+      }
+      if (typeof child !== 'object') {
+        throw new Error(`ERROR: [js/switch] child is not object type [${JSON.stringify(child)}]`)
+      }
+      if (! ('condition' in child)) {
+        throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
+      }
+      if (! ('result' in child)) {
+        throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
+      }
+      // stack if/else statement
+      ifElseStatements = t.ifStatement(
         js_process(
           {
             ...js_context,
             topLevel: false,
             parentRef: null,
             parentPath: null,
+            JSX_CONTEXT: false,
           },
-          child.result
-        )
-      ),
-      ifElseStatements
-    )
-  })
+          {
+            _type: 'js/expression',
+            data: String(child.condition),
+          }
+        ),
+        t.returnStatement(
+          js_process(
+            {
+              ...js_context,
+              topLevel: false,
+              parentRef: null,
+              parentPath: null,
+            },
+            child.result
+          )
+        ),
+        ifElseStatements
+      )
+    })
+  }
 
   // generate call expression
   const callExpression = t.callExpression(

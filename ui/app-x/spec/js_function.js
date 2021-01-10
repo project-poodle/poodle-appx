@@ -56,11 +56,6 @@ export const js_function = {
       _childNode: [
         {
           class: 'statement',
-          parse: ' \
-            thisNode.children \
-              .filter(child => !child.data._ref) \
-              .map(child => parse(child)) \
-          ',
         }
       ],
     },
