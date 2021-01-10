@@ -233,9 +233,9 @@ function lookup_icon_for_input(input) {
 }
 
 // lookup title for input (input._type / input.name / input.data ...)
-function lookup_title_for_input(ref, input) {
+function lookup_title_for_input(ref, input, array=false) {
 
-  const prefix = ref ? ref + ': ' : ''
+  const prefix = (array || !!input?._array) ? '' : (ref ? ref + ': ' : '')
 
   function _primitive_title(data) {
     switch (typeof data) {
@@ -1132,7 +1132,10 @@ function generate_tree_node(js_context, conf, input) {
   if (Array.isArray(input)) {
     return generate_tree_node(
       js_context,
-      conf,
+      {
+        ...conf,
+        array: true,
+      },
       {
         _type: 'js/array',
         children: input
@@ -1144,7 +1147,10 @@ function generate_tree_node(js_context, conf, input) {
   if (!input._type) {
     return generate_tree_node(
       js_context,
-      conf,
+      {
+        ...conf,
+        array: false,
+      },
       {
         _type: 'js/object',
         ...input,
@@ -1170,6 +1176,7 @@ function generate_tree_node(js_context, conf, input) {
           },
           {
             ref: key,
+            array: false,
             parentKey: null,
             parentChildSpec: null
           },
@@ -1198,7 +1205,7 @@ function generate_tree_node(js_context, conf, input) {
   const thisData = input
   // create thisNode
   const thisNode = new_tree_node(
-    lookup_title_for_input(conf?.ref || null, input),
+    lookup_title_for_input(conf?.ref || null, input, conf?.array),
     lookup_icon_for_input(input),
     {
       _ref: conf?.ref || null,
@@ -1338,6 +1345,7 @@ function generate_tree_node(js_context, conf, input) {
               js_context,
               {
                 ref: _ref,
+                array: !!childSpec.array,
                 parentKey: thisNode.key,
                 parentChildSpec: childNodeSpec,
               },
@@ -1354,6 +1362,7 @@ function generate_tree_node(js_context, conf, input) {
               js_context,
               {
                 ref: _ref,
+                array: !!childSpec.array,
                 parentKey: thisNode.key,
                 parentChildSpec: childNodeSpec,
               },
