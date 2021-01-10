@@ -38,7 +38,7 @@ export const js_import = {
               __class: 'js/call',
               name: {
                 __class: 'js/import',
-                name: 'app-x/builder/ui/syntax/util_generate.valid_import_names',
+                name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
               }
             }
           ],

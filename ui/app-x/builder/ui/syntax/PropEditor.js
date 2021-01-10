@@ -40,9 +40,6 @@ import {
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
-  valid_api_methods,
-  valid_import_names,
-  valid_html_tags,
   reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
@@ -51,6 +48,11 @@ import {
   lookup_child_by_ref,
   remove_child_by_ref,
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  valid_api_methods,
+  valid_import_names,
+  valid_html_tags,
+} from 'app-x/builder/ui/syntax/util_base'
 
 let pendingTimer = new Date()
 

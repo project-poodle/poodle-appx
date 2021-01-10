@@ -26,12 +26,6 @@ export const js_array = {
       _childNode: [
         {
           class: 'any',
-          // generate: ' \
-          //   thisData.children.map(child => generate(child)) \
-          // ',
-          // parse: ' \
-          //  thisNode.children.map(child => parse(child)) \
-          //',
         }
       ]
     },

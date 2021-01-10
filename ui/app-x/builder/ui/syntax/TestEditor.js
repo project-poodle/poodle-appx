@@ -43,9 +43,11 @@ import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 // utilities
 import {
-  valid_import_names,
   isPrimitive,
-} from 'app-x/builder/ui/syntax/util_generate'
+  valid_api_methods,
+  valid_import_names,
+  valid_html_tags,
+} from 'app-x/builder/ui/syntax/util_base'
 import {
   tree_lookup,
 } from 'app-x/builder/ui/syntax/util_parse'

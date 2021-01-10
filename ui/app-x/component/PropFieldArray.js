@@ -29,8 +29,12 @@ import _ from 'lodash'
 import AutoComplete from 'app-x/component/AutoComplete'
 import {
   lookup_icon_for_type,
-  valid_import_names,
 } from 'app-x/builder/ui/syntax/util_generate'
+import {
+  valid_api_methods,
+  valid_import_names,
+  valid_html_tags,
+} from 'app-x/builder/ui/syntax/util_base'
 
 // array text field
 const PropFieldArray = props => {

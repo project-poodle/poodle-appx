@@ -50,15 +50,17 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   lookup_icon_for_type,
   lookup_title_for_input,
-  valid_api_methods,
-  valid_import_names,
-  valid_html_tags,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_by_ref
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  valid_api_methods,
+  valid_import_names,
+  valid_html_tags,
+} from 'app-x/builder/ui/syntax/util_base'
 
 // add dialog
 const SyntaxAddDialog = (props) => {
