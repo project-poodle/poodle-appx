@@ -13,22 +13,6 @@ export const js_statement = {
     'statement',
   ],
   _group: 'js_advanced',
-  _customs: [
-    {
-      name: '_bodyChildren',
-      default: '',
-    },
-  ],
-  _effects: [
-    {
-      body: ' \
-        form.setValue("_ref", "..." + form.getValues("name") \
-      ',
-      states: [
-        'form.watch("name")'
-      ]
-    }
-  ],
   children: [
     {
       name: 'body',

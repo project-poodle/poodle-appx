@@ -99,8 +99,6 @@ const SyntaxAddDialog = (props) => {
     const lookupNode = tree_lookup(treeData, selectedKey)
     setParentNode(lookupNode)
     // console.log(lookupNode)
-    // console.log(lookupNode?.children.filter(child => child.data?._ref === null))
-    // console.log(parentNode)
   }, [selectedKey])
 
   // nodeType
@@ -190,58 +188,8 @@ const SyntaxAddDialog = (props) => {
             >
             {
               (
-                nodeType === 'react/state'
-              )
-              &&
-              (
-                <Controller
-                  control={control}
-                  key='_customRef'
-                  name='_customRef'
-                  type="boolean"
-                  defaultValue={false}
-                  render={props =>
-                    (
-                      <FormControl
-                        className={styles.formControl}
-                        error={!!errors._customRef}
-                        >
-                        <FormHelperText>Custom Reference</FormHelperText>
-                        <Switch
-                          name={props.name}
-                          checked={props.value}
-                          onChange={e => {
-                            props.onChange(e.target.checked)
-                            if (e.target.checked) {
-                              setValue(`_ref`, `${getValues('name')}`)
-                            } else {
-                              setValue(`_ref`, `...${getValues('name')}`)
-                            }
-                          }}
-                        />
-                        {
-                          !!errors._customRef
-                          &&
-                          <FormHelperText>{errors._customRef?.message}</FormHelperText>
-                        }
-                      </FormControl>
-                    )
-                  }
-                />
-              )
-            }
-            {
-              (
-                (
-                  (nodeType !== 'react/state')
-                  && !!props.addNodeRefRequired
-                  && !props.addNodeRef
-                )
-                ||
-                (
-                  (nodeType === 'react/state')
-                  && !!getValues('_customRef')
-                )
+                !!props.addNodeRefRequired
+                && !props.addNodeRef
               )
               &&
               (

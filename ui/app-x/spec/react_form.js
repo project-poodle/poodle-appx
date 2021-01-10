@@ -81,12 +81,7 @@ export const react_form = {
           class: 'string'
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            }
-          ]
+          class: 'statement',
         },
       ],
       _thisNode: [
