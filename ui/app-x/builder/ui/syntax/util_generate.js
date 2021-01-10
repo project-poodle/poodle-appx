@@ -1013,109 +1013,42 @@ function lookup_type_by_classname(className) {
 // reorder children
 const reorder_children = (parentNode) => {
 
-  if (parentNode.data._type === 'js/object'
-      || parentNode.data._type === 'mui/style') {
+  console.log(`reorder_children - enter`, parentNode.children)
 
-    const children = []
-    // add _ref !== null
-    parentNode.children
-      .filter(child => !!child.data._ref)
-      .sort((a, b) => {
-        return a.data._ref.localeCompare(b.data._ref)
-      })
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
-  } else if (parentNode.data._type === 'react/element'
-            || parentNode.data._type === 'react/html'
-            || parentNode.data._type === 'react/form') {
-
-    const children = []
-    // add _ref === 'props'
-    parentNode.children
-      .filter(child => child.data._ref === 'props')
-      .map(child => {
-        children.push(child)
-      })
-    // add _ref === 'props'
-    parentNode.children
-      .filter(child => child.data._ref === 'formProps')
-      .map(child => {
-        children.push(child)
-      })
-    // add _ref === null
-    parentNode.children
-      .filter(child => child.data._ref === null)
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
-  } else if (parentNode.data._type === 'js/switch') {
-
-    const children = []
-    // add _ref === null
-    parentNode.children
-      .filter(child => child.data._ref === null)
-      .map(child => {
-        children.push(child)
-      })
-    // add _ref === 'default'
-    parentNode.children
-      .filter(child => child.data._ref === 'default')
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
-  } else if (parentNode.data._type === 'js/map') {
-
-    const children = []
-    // add _ref === 'data'
-    parentNode.children
-      .filter(child => child.data._ref === 'data')
-      .map(child => {
-        children.push(child)
-      })
-    // add _ref === 'result'
-    parentNode.children
-      .filter(child => child.data._ref === 'result')
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
-  } else if (parentNode.data._type === 'js/reduce') {
-
-    const children = []
-    // add _ref === 'data'
-    parentNode.children
-      .filter(child => child.data._ref === 'data')
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
-  } else if (parentNode.data._type === 'js/filter') {
-
-    const children = []
-    // add _ref === 'data'
-    parentNode.children
-      .filter(child => child.data._ref === 'data')
-      .map(child => {
-        children.push(child)
-      })
-    // update children
-    parentNode.children = children
-
+  const spec = globalThis.appx.SPEC.types[parentNode.data._type]
+  if (!spec) {
+    throw new Error(`ERROR: unable to find spec for [${parentNode.data._type}]`)
   }
+  console.log(`spec`, spec)
+
+  const children = []
+  spec.children.forEach(childSpec => {
+    // ignore childSpec without _childNode
+    if (!childSpec._childNode) {
+      return
+    }
+    // if childSpec name is '*'
+    if (childSpec.name === '*') {
+      parentNode.children
+        .filter(child => !!child.data._ref)
+        .sort((a, b) => {
+          return a.data._ref.localeCompare(b.data._ref)
+        })
+        .map(child => {
+          children.push(child)
+        })
+    } else {
+      parentNode.children
+        .filter(child => child.data._ref === childSpec.name)
+        .map(child => {
+          children.push(child)
+        })
+    }
+  })
+
+  // update children
+  parentNode.children = children
+  console.log(`reorder_children - exit`, parentNode.children)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

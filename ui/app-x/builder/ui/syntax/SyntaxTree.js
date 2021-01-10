@@ -1025,7 +1025,7 @@ const SyntaxTree = (props) => {
     } else {
       // invoke callback directly if no ref needed
       thisMoveCallback({
-         _ref: null      // clear _ref
+        _ref: dragObj.data._ref      // preserve _ref
       })
     }
   }

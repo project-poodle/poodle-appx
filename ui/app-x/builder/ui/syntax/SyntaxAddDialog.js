@@ -50,6 +50,7 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   lookup_icon_for_type,
   lookup_title_for_input,
+  lookup_type_groups,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
@@ -140,21 +141,6 @@ const SyntaxAddDialog = (props) => {
 
   // console.log(nodeType)
   // console.log(props)
-
-  // watch_customRef
-  const watch_customRef = watch('_customRef')
-  useEffect(() => {
-    if (nodeType === 'react/state') {
-      if (!!watch_customRef) {
-        if (!getValues(`_ref`)) {
-          setValue(`_ref`, `${getValues('name')}`)
-        }
-      } else if (!watch_customRef) {
-        setValue(`_ref`, `...${getValues('name')}`)
-      }
-    }
-  }, [watch_customRef])
-
 
   return (
     <Dialog
