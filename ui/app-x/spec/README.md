@@ -56,26 +56,16 @@
 
     _statement_: _js/statement_;
 
-    _block_:
-           [
-             _js/statement_
-             | _js/variable_
-             | _react/state_
-             | _react/context_
-             | _react/effect_
-             | _js/switch_
-             | _js/map_
-             | _appx/api_
-             ,
-             ...
-           ]
-           ;
-
     _jsx_: _primitive_
          | _react/element_
          | _react/html_
          | _react/form_
          | _input/text_
+         | _js/expression_
+         | _js/switch_
+         | _js/map_
+         | _js/reduce_
+         | _js/filter_
          ;
 
     _any_: _primitive_
@@ -83,7 +73,6 @@
          | _object_
          | _expression_
          | _statement_
-         | _block_
          ;
 
 # JS Types
@@ -158,26 +147,30 @@
     _js/function_:
         {
           _type: "js/function",
-          params: [
+          (params: [
             _string_,
             ...
-          ],
-          body: {
-            _string_
-              |
-            _block_
-          }
+          ])?
+          (body:
+            [
+              (_statement_)?
+              ...
+            ]
+          )?
+          (code: _string_)?
         }
         ;
 
     _js/statement_:
         {
           _type: "js/statement",
-          body: {
-            _string_
-              |
-            _block_
-          }
+          (body:
+            [
+              (_statement_)?
+              ...
+            ]
+          )?
+          (code: _string_)?
         }
         ;
 
@@ -271,15 +264,19 @@
     _react/effect_:
         {
           _type: "react/effect",
-          body:
-              _string_
-                |
-              _block_
-          states:
+          (body:
+            [
+              (_statement_)?
+              ...
+            ]
+          )?
+          (code: _string_)?
+          (states:
             [
               _string_,
               ...
             ]
+          )?
         }
         ;
 
