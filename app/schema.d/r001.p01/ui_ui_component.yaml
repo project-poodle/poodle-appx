@@ -602,7 +602,7 @@ ui_component:
               width: 100%
           snippet:
             _type: js/statement
-            body: |
+            code: |
               // console.log($r('react-grid-layout.default'))
           element:
             _type: react/element

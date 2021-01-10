@@ -51,6 +51,7 @@ export const react_form = {
     {
       name: 'onSubmit',
       desc: 'onSubmit',
+      optional: true,
       classes: [
         {
           class: 'string'
@@ -74,6 +75,7 @@ export const react_form = {
     {
       name: 'onError',
       desc: 'onError',
+      optional: true,
       classes: [
         {
           class: 'string'

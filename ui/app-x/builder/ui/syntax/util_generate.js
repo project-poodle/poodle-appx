@@ -306,7 +306,11 @@ function lookup_title_for_input(ref, input) {
 
   } else if (input._type === 'js/statement') {
 
-    return prefix + (input.body.length > 32 ? input.body.substring(0, 30) + '...' : input.body)
+    if (!!input.code) {
+      return prefix + (input.code?.length > 32 ? input.code.substring(0, 30) + '...' : input.code)
+    } else {
+      return ref
+    }
 
   } else if (input._type === 'js/function') {
 
@@ -2905,7 +2909,7 @@ function generate_tree_node(js_context, conf, input) {
             thisNode.children.push(childNode)
             // console.log(`childNode [*]`, childNode)
           } else {
-            throw new Error(`ERROR: unable to process child data [${JSON.stringify(data)}]`)
+            throw new Error(`ERROR: unable to process child data [*] [${key}] [${JSON.stringify(data)}]`)
           }
         })
 
@@ -2927,7 +2931,7 @@ function generate_tree_node(js_context, conf, input) {
         if (!!childSpec._thisNode) {
           // process _thisNode
           const resultNodeData = _process_this(_ref, data)
-          if (!!resultNodeData) {
+          if (resultNodeData !== undefined) {
             thisNode.data[_ref] = resultNodeData
           }
         }
@@ -2946,7 +2950,7 @@ function generate_tree_node(js_context, conf, input) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode [array]`, childNode)
               } else {
-                throw new Error(`ERROR: unable to process child data [${JSON.stringify(d)}]`)
+                throw new Error(`ERROR: unable to process child data [array] [${_ref}] [${JSON.stringify(d)}]`)
               }
             })
           } else {
@@ -2954,8 +2958,8 @@ function generate_tree_node(js_context, conf, input) {
             if (!!childNode) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode`, childNode)
-            } else {
-              throw new Error(`ERROR: unable to process child data [${JSON.stringify(data)}]`)
+            } else if (!childSpec.optional) {
+              throw new Error(`ERROR: unable to process child data [${_ref}] [${JSON.stringify(data)}]`)
             }
           }
         }

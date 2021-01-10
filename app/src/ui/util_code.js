@@ -354,34 +354,29 @@ function js_expression(js_context, input) {
 // create block ast (allow return outside of function)
 function js_statement(js_context, input) {
 
-  let data = ''
-  if (typeof input === 'string') {
-
-    data = input
-
-  } else {
-    if (!('_type' in input) || input._type !== 'js/statement') {
-      throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
-    }
-
-    if (! ('body' in input)) {
-      throw new Error(`ERROR: input.data missing in [js/statement] [${JSON.stringify(input)}]`)
-    }
-
-    data = input.body
+  if (!('_type' in input) || input._type !== 'js/statement') {
+    throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  // parse user code snippet
-  const statements = _js_parse_statements(js_context, data, {
-    // sourceType: 'module', // do not support module here
-    allowReturnOutsideFunction: true, // allow return in the block statement
-    plugins: [
-      // 'jsx', // do not support jsx here
-    ]
-  })
+  const block_statements = []
+
+  if (!!input.code) {
+    // parse user code snippet
+    const statements = _js_parse_statements(js_context, input.code, {
+      // sourceType: 'module', // do not support module here
+      allowReturnOutsideFunction: true, // allow return in the block statement
+      plugins: [
+        // 'jsx', // do not support jsx here
+      ]
+    })
+
+    statements.map(statement => {
+      block_statements.push(statement)
+    })
+  }
 
   return t.blockStatement(
-    statements
+    block_statements
   )
 }
 
@@ -390,10 +385,6 @@ function js_function(js_context, input) {
 
   if (!('_type' in input) || input._type !== 'js/function') {
     throw new Error(`ERROR: input._type is not [js/function] [${input._type}] [${JSON.stringify(input)}]`)
-  }
-
-  if (! ('body' in input)) {
-    throw new Error(`ERROR: input.body missing in [js/function] [${JSON.stringify(input)}]`)
   }
 
   const params =
@@ -414,14 +405,27 @@ function js_function(js_context, input) {
       )
     : []
 
+  // process input.body
+  const block_statements = []
+  if (!!input.body) {
+    // parse user code snippet
+    const statements = _js_parse_statements(js_context, input.body, {
+      // sourceType: 'module', // do not support module here
+      allowReturnOutsideFunction: true, // allow return in the block statement
+      plugins: [
+        // 'jsx', // do not support jsx here
+      ]
+    })
+
+    statements.map(statement => {
+      block_statements.push(statement)
+    })
+  }
+
   return t.arrowFunctionExpression(
     params,
-    js_statement(
-      {
-        ...js_context,
-        JSX_CONTEXT: false
-      },
-      input.body
+    t.blockStatement(
+      block_statements
     ),
     input.async ? true : false
   )
@@ -1543,10 +1547,6 @@ function react_effect(js_context, input) {
     throw new Error(`ERROR: input._type is not [react/effect] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('body' in input)) {
-    throw new Error(`ERROR: input.body missing in [react/effect] [${JSON.stringify(input)}]`)
-  }
-
   const statesExpression =
     !!input.states
     ? t.arrayExpression
@@ -1580,14 +1580,22 @@ function react_effect(js_context, input) {
   // register react useEffect
   reg_js_import(js_context, 'react.useEffect')
 
-  // parse user code snippet
-  const statements = _js_parse_statements(js_context, input.body, {
-    // sourceType: 'module', // do not support module here
-    // allowReturnOutsideFunction: true, // allow return in the block statement
-    plugins: [
-      'jsx', // support jsx here
-    ]
-  })
+  // process input.body
+  const block_statements = []
+  if (!!input.body) {
+    // parse user code snippet
+    const statements = _js_parse_statements(js_context, input.body, {
+      // sourceType: 'module', // do not support module here
+      // allowReturnOutsideFunction: true, // allow return in the block statement
+      plugins: [
+        'jsx', // support jsx here
+      ]
+    })
+
+    statements.map(statement => {
+      block_statements.push(statement)
+    })
+  }
 
   return t.callExpression(
     t.identifier('react.useEffect'),
@@ -1595,7 +1603,7 @@ function react_effect(js_context, input) {
       t.arrowFunctionExpression(
         [],
         t.blockStatement(
-          statements,
+          block_statements,
         )
       ),
       statesExpression,
