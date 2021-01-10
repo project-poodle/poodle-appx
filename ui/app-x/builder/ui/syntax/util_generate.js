@@ -80,6 +80,61 @@ import {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// lookup interchange types
+function lookup_type_groups(type) {
+  if
+  (
+    type === 'js/string'
+    || type === 'js/number'
+    || type === 'js/boolean'
+    || type === 'js/null'
+    || type === 'js/expression'
+    || type === 'js/import'
+  )
+  {
+    return [
+      'js/string',
+      'js/number',
+      'js/boolean',
+      'js/null',
+      'js/expression',
+      'js/import',
+    ]
+  }
+  else if
+  (
+    type === 'react/element'
+    || type === 'react/html'
+    || type === 'react/form'
+  )
+  {
+    return [
+      'react/element',
+      'react/html',
+      'react/form',
+    ]
+  }
+  else if
+  (
+    type === 'input/text'
+    || type === 'input/select'
+    || type === 'input/switch'
+  )
+  {
+    return [
+      'input/text',
+      'input/select',
+      'input/switch',
+    ]
+  }
+  else
+  {
+    return [
+      type
+    ]
+  }
+}
+
 // lookup icon by type
 function lookup_icon_for_type(type) {
   return lookup_icon_for_input({_type: type, data: ''})
@@ -1468,6 +1523,7 @@ function generate_tree_node(js_context, conf, input) {
 
 export {
   generate_tree_node,
+  lookup_type_groups,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
