@@ -9,18 +9,13 @@ export const js_array = {
   name: 'js/array',
   desc: 'Array',
   classes: [
-    {
-      class: 'array',
-    },
-    {
-      class: 'expression',
-    }
+    'array',
   ],
   _group: 'js_basics',
   children: [
     {
       name: 'children',
-      desc: 'Children',
+      desc: 'Array Items',
       optional: true,
       classes: [
         {
@@ -32,15 +27,18 @@ export const js_array = {
           ]
         },
       ],
-      _childNode: {
-        array: true,
-        generate: ' \
-          thisData.children.map(child => generate(child)) \
-        ',
-        parse: ' \
-          thisNode.children.map(child => parse(child)) \
-        ',
-      }
+      _childNode: [
+        {
+          class: 'array',
+          array: true,
+          generate: ' \
+            thisData.children.map(child => generate(child)) \
+          ',
+          parse: ' \
+            thisNode.children.map(child => parse(child)) \
+          ',
+        }
+      ]
     },
   ]
 }

@@ -1,3 +1,10 @@
+import {
+  isPrimitive,
+  lookup_data_type,
+  type_matches_spec,
+  data_matches_spec,
+} from 'app-x/builder/ui/syntax/util_base'
+
 ////////////////////////////////////////////////////////////////////////////////
 // utilities
 
@@ -1310,33 +1317,46 @@ function parse_tree_node(tree_context, treeNode) {
       const nodeData = node.data[_ref]
       // update data if _thisNode is defined
       if (!!childSpec._thisNode) {
-        // no need to check conditional
-        // if (!!childSpec._thisNode.condition && ! eval(childSpec._thisNode.condition)) {
-        //  // condition evaluated to false
-        // } else {
-        // }
-        // parse data
-        if (!!childSpec._thisNode.parse) {
-          return eval(childSpec._thisNode.parse)
-        } else if (!!childSpec._thisNode.array) {
-          throw new Error(`ERROR: array type missing parse method [${JSON.stringify(childSpec._thisNode)}]`)
-        } else if (childSpec._thisNode.input === 'js/string') {
-          return String(node.data[_ref])
-        } else if (childSpec._thisNode.input === 'js/number') {
-          return Number(node.data[_ref])
-        } else if (childSpec._thisNode.input === 'js/boolean') {
-          return Boolean(node.data[_ref])
-        } else if (childSpec._thisNode.input === 'js/null') {
-          return null
-        } else if (childSpec._thisNode.input === 'js/expression') {
-          return String(node.data[_ref])
-        } else if (childSpec._thisNode.input === 'js/import') {
-          return String(node.data[_ref])
-        } else if (childSpec._thisNode.input === 'js/statement') {
-          return String(node.data[_ref])
-        } else {
-          throw new Error(`ERROR: node type [${childSpec._thisNode.input}] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
-        }
+        // look for thisNodeSpec that matches data
+        let found = false
+        let child = undefined
+        childSpec._thisNode.map(thisNodeSpec => {
+          // return if found
+          if (found) {
+            return
+          }
+          // get class spec
+          const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
+          if (!classSpec) {
+            throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
+          }
+          // check if data matches spec
+          const data_type = lookup_data_type(nodeData)
+          if (!type_matches_spec(data_type, thisNodeSpec)) {
+            console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+            return
+          } else {
+            console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
+            found = true
+          }
+          // parse data
+          if (!!thisNodeSpec.parse) {
+            child = eval(thisNodeSpec.parse)
+          } else if (!!thisNodeSpec.array) {
+            throw new Error(`ERROR: thisNodeSpec [array] missing parse method [${JSON.stringify(thisNodeSpec)}]`)
+          } else if (thisNodeSpec.class === 'string') {
+            child = String(node.data[_ref])
+          } else if (thisNodeSpec.class === 'number') {
+            child = Number(node.data[_ref])
+          } else if (thisNodeSpec.class === 'boolean') {
+            child = Boolean(node.data[_ref])
+          } else if (thisNodeSpec.class === 'null') {
+            child = null
+          } else {
+            throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+          }
+        })
+        return child
       }
     }
 
@@ -1350,35 +1370,47 @@ function parse_tree_node(tree_context, treeNode) {
 
       // update data if _childNode is defined
       if (!!childSpec._childNode) {
-        // if (!!childSpec._childNode.condition && ! eval(childSpec._childNode.condition)) {
-        //  // condition evaluated to false
-        // } else {
-        // }
-        // console.log(`childSpec._childNode`, childSpec._childNode)
-        // parse child node
-        if (!!childSpec._childNode.array) {
-          // console.log(`childSpec._childNode [array]`, childSpec._childNode)
-          // check parse definition
-          if (!!childSpec._childNode.parse) {
-            // console.log(childSpec._childNode.parse)
-            const children = eval(childSpec._childNode.parse)
-            // console.log(`children`, children)
-            return children
-          } else {
-            throw new Error(`ERROR: child node array missing parse method [${JSON.stringify(childSpec._childNode)}]`)
+        // look for checkNodeSpec that matches data
+        let found = false
+        let child = undefined
+        childSpec._childNode.map(childNodeSpec => {
+          // return if found
+          if (found) {
+            return
           }
-
-        } else {
-          // check parse definition
-          if (!!childSpec._childNode.parse) {
-            // parse child node
-            const child = eval(childSpec._childNode.parse)
-            return child
-          } else {
-            const child = parse_tree_node(child_context, node)
-            return child
+          // get class spec
+          const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
+          if (!classSpec) {
+            throw new Error(`ERROR: childNodeSpec not found [childNodeSpec.class]`)
           }
-        }
+          // check if data matches spec
+          if (!type_matches_spec(node.data._type, childNodeSpec)) {
+            return
+          } else {
+            found = true
+          }
+          // parse child node
+          if (!!childNodeSpec.array) {
+            // console.log(`childSpec._childNode [array]`, childSpec._childNode)
+            // check parse definition
+            if (!!childNodeSpec.parse) {
+              // console.log(childSpec._childNode.parse)
+              child = eval(childNodeSpec.parse)
+              // console.log(`children`, children)
+            } else {
+              throw new Error(`ERROR: childNodeSpec [array] missing parse method [${JSON.stringify(childNodeSpec)}]`)
+            }
+          } else {
+            // check parse definition
+            if (!!childNodeSpec.parse) {
+              // parse child node
+              child = eval(childNodeSpec.parse)
+            } else {
+              child = parse_tree_node(child_context, node)
+            }
+          }
+        })
+        return child
       }
     }
 

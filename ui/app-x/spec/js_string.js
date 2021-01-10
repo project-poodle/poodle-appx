@@ -10,15 +10,7 @@ export const js_string = {
   name: 'js/string',
   desc: 'String',
   classes: [
-    {
-      class: 'string',
-    },
-    {
-      class: 'primitive',
-    },
-    {
-      class: 'expression',
-    }
+    'string',
   ],
   _group: 'js_basics',
   children: [
@@ -30,9 +22,12 @@ export const js_string = {
           class: 'string'
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      }
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
   ]
 }

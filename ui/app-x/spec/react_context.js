@@ -10,12 +10,8 @@ export const react_context = {
   name: 'react/context',
   desc: 'React Context',
   classes: [
-    {
-      class: 'expression',
-    },
-    {
-      class: 'statement',
-    }
+    'expression',
+    'statement',
   ],
   _group: 'react_concepts',
   children: [
@@ -34,20 +30,23 @@ export const react_context = {
           message: 'Context name is required',
         },
       ],
-      _thisNode: {
-        input: 'js/import'
-      },
-      _suggestions: [
+      _thisNode: [
         {
-          __class: 'js/call',
-          name: {
-            __class: 'js/import',
-            name: 'app-x/builder/ui/syntax/util_generate.valid_import_names',
-          }
-        }
-      ],
-      _examples: [
-        'app-x/builder/ui/NavProvider.Context',
+          class: 'string',
+          input: 'input/text',
+          suggestions: [
+            {
+              __class: 'js/call',
+              name: {
+                __class: 'js/import',
+                name: 'app-x/builder/ui/syntax/util_generate.valid_import_names',
+              }
+            }
+          ],
+          examples: [
+            'app-x/builder/ui/NavProvider.Context',
+          ],
+        },
       ],
     },
   ]

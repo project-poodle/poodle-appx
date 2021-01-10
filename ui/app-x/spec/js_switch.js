@@ -13,12 +13,8 @@ export const js_switch = {
   name: 'js/switch',
   desc: 'Switch',
   classes: [
-    {
-      class: 'expression',
-    },
-    {
-      class: 'statement',
-    },
+    'expression',
+    'statement',
   ],
   _group: 'js_controls',
   _expand: true,
@@ -67,69 +63,63 @@ export const js_switch = {
           ],
         },
       ],
-      _childNode: {
-        array: true,
-        generate: ' \
-          thisData.children.map( \
-            child => (() => { \
-              const node = generate(child.result); \
-              node.data._isDefault = false; \
-              node.data._condition = child.condition; \
-              return node \
-            })() \
-          ) \
-        ',
-        parse: ' \
-          thisNode.children \
-            .filter(childNode => !childNode.data._isDefault) \
-            .map(childNode => ({ \
-              condition: childNode.data._condition, \
-              result: parse(childNode) \
-            })) \
-        ',
-        customs: [
-          {
-            name: '_isDefault',
-            desc: 'Is Default',
-            classes: [
-              {
-                class: 'boolean'
-              }
-            ],
-            _thisNode: {
-              input: 'js/boolean'
+      _childNode: [
+        {
+          class: 'array',
+          array: true,
+          generate: ' \
+            thisData.children.map( \
+              child => (() => { \
+                const node = generate(child.result); \
+                node.data._isDefault = false; \
+                node.data._condition = child.condition; \
+                return node \
+              })() \
+            ) \
+          ',
+          parse: ' \
+            thisNode.children \
+              .filter(childNode => !childNode.data._isDefault) \
+              .map(childNode => ({ \
+                condition: childNode.data._condition, \
+                result: parse(childNode) \
+              })) \
+          ',
+          customs: [
+            {
+              name: '_ref',
+              hidden: true,
+              default: null,
             },
-            _init: false
-          },
-          {
-            name: '_condition',
-            desc: 'Condition',
-            hidden: '!!node.data._isDefault',
-            classes: [
-              {
-                class: 'expression',
-              }
-            ],
-            _thisNode: {
-              input: 'js/expression'
+            {
+              name: '_isDefault',
+              desc: 'Is Default',
+              input: 'js/boolean',
+              default: false,
             },
-          },
-        ],
-        effects: [
-          {
-            body: ' \
-              node.data._ref = \
-                !!node.data._isDefault \
-                ? "default" \
-                : null; \
-              node.setHidden("_condition", !!node.data._isDefault) \
-            ',
-            states: [
-              'node.data._isDefault'
-            ]
-          }
-        ]
-      }
+            {
+              name: '_condition',
+              desc: 'Condition',
+              condition: '!form.watch("_isDefault")',
+              input: 'js/expression',
+              default: '',
+            },
+          ],
+          effects: [
+            {
+              body: ' \
+              form.setValue("_ref", \
+                !!form.getValues("_isDefault") \
+                  ? "default" \
+                  : null); \
+              ',
+              states: [
+                'form.watch("_isDefault")'
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       name: 'default',
@@ -143,59 +133,56 @@ export const js_switch = {
           class: 'statement'
         },
       ],
-      _childNode: {
-        generate: ' \
-          (() => { \
-            const node = generate(data); \
-            node.data._isDefault = true; \
-            node.data._condition = ""; \
-            return node \
-          })() \
-        ',
-        parse: 'parse(node)',
-        customs: [
-          {
-            name: '_isDefault',
-            desc: 'Is Default',
-            classes: [
-              {
-                class: 'boolean'
-              }
-            ],
-            _thisNode: {
-              input: 'js/boolean'
+      _childNode: [
+        {
+          class: 'expression',
+          otherClasses: [
+            'statement'
+          ],
+          generate: ' \
+            (() => { \
+              const node = generate(data); \
+              node.data._isDefault = true; \
+              node.data._condition = ""; \
+              return node \
+            })() \
+          ',
+          parse: 'parse(node)',
+          customs: [
+            {
+              name: '_ref',
+              hidden: true,
+              default: 'default'
             },
-            _init: true
-          },
-          {
-            name: '_condition',
-            desc: 'Condition',
-            hidden: '!!node.data._isDefault',
-            classes: [
-              {
-                class: 'expression',
-              }
-            ],
-            _thisNode: {
-              input: 'js/expression'
+            {
+              name: '_isDefault',
+              desc: 'Is Default',
+              input: 'js/boolean',
+              default: true
             },
-          },
-        ],
-        effects: [
-          {
-            body: ' \
-              node.data._ref = \
-                !!node.data._isDefault \
-                ? "default" \
-                : null; \
-              node.setHidden("_condition", !!node.data._isDefault) \
-            ',
-            states: [
-              'node.data._isDefault'
-            ]
-          }
-        ]
-      }
+            {
+              name: '_condition',
+              desc: 'Condition',
+              condition: '!form.watch("_isDefault")',
+              input: 'js/expression',
+              default: ''
+            },
+          ],
+          effects: [
+            {
+              body: ' \
+                form.setValue("_ref", \
+                  !!form.getValues("_isDefault") \
+                    ? "default" \
+                    : null); \
+              ',
+              states: [
+                'form.watch("_isDefault")'
+              ]
+            }
+          ]
+        },
+      ],
     },
   ],
 }

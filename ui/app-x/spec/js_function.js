@@ -13,9 +13,7 @@ export const js_function = {
   name: 'js/function',
   desc: 'Function',
   classes: [
-    {
-      class: 'expression',
-    },
+    'expression',
   ],
   _group: 'js_advanced',
   children: [
@@ -40,14 +38,17 @@ export const js_function = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: {
-        array: true,
-        input: 'js/string',
-        generate: 'data.map(item => ({ \
-          value: item \
-        }))',
-        parse: 'nodeData.map(item => item.value)',
-      },
+      _thisNode: [
+        {
+          class: 'array',
+          array: true,
+          input: 'js/string',
+          generate: 'data.map(item => ({ \
+            value: item \
+          }))',
+          parse: 'nodeData.map(item => item.value)',
+        }
+      ],
     },
     {
       name: 'body',
@@ -57,19 +58,31 @@ export const js_function = {
           class: 'string'
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            }
-          ]
+          class: 'block',
         },
       ],
-      _thisNode: {
-        condition: '!data || data._type === "js/statement"',
-        input: 'js/statement'
-       },
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement',
+        }
+      ],
+      _childNode: [
+        {
+          class: 'block',
+          array: true,
+          generate: ' \
+            thisData.children.map( \
+              child => generate(child) \
+            ) \
+          ',
+          parse: ' \
+            thisNode.children \
+              .filter(child => !child.data._ref) \
+              .map(child => parse(child)) \
+          ',
+        }
+      ],
     },
   ]
 }

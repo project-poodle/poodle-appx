@@ -10,9 +10,7 @@ export const js_import = {
   name: 'js/import',
   desc: 'Import',
   classes: [
-    {
-      class: 'expression',
-    },
+    'expression',
   ],
   _group: 'js_advanced',
   children: [
@@ -21,7 +19,7 @@ export const js_import = {
       desc: 'Import Name',
       classes: [
         {
-          class: 'expression'
+          class: 'string',
         },
       ],
       rules: [
@@ -31,26 +29,29 @@ export const js_import = {
           message: 'Import name is required',
         },
       ],
-      _thisNode: {
-        input: 'js/import',
-      },
-      _suggestions: [
+      _thisNode: [
         {
-          __class: 'js/call',
-          name: {
-            __class: 'js/import',
-            name: 'app-x/builder/ui/syntax/util_generate.valid_import_names',
-          }
-        }
-      ],
-      _examples: [
-        'react',
-        'react-dom',
-        'react.useState',
-        'app-x/router.A',
-        'app-x/router.navigate',
-        '@material-ui/icons.AddCircleOutline',
-        '@material-ui/icons.RemoveCircleOutline',
+          class: 'string',
+          input: 'input/text',
+          suggestions: [
+            {
+              __class: 'js/call',
+              name: {
+                __class: 'js/import',
+                name: 'app-x/builder/ui/syntax/util_generate.valid_import_names',
+              }
+            }
+          ],
+          examples: [
+            'react',
+            'react-dom',
+            'react.useState',
+            'app-x/router.A',
+            'app-x/router.navigate',
+            '@material-ui/icons.AddCircleOutline',
+            '@material-ui/icons.RemoveCircleOutline',
+          ],
+        },
       ],
     },
   ]

@@ -1,12 +1,20 @@
 # Classes
 
-    _string_: _JS_STRING_LITERAL_;
+    _string_: _JS_STRING_LITERAL_
+            | _js/string_
+            ;
 
-    _number_: _JS_NUMBER_LITERAL_;
+    _number_: _JS_NUMBER_LITERAL_
+            | _js/number_
+            ;
 
-    _boolean_: _JS_BOOLEAN_LITERAL_;
+    _boolean_: _JS_BOOLEAN_LITERAL_
+             | _js_boolean_
+             ;
 
-    _null_: _JS_NULL_LITERAL_;
+    _null_: _JS_NULL_LITERAL_
+          | _js/null_
+          ;
 
     _primitive_: _string_
                | _number_
@@ -14,9 +22,13 @@
                | _null_
                ;
 
-    _array_: _JS_ARRAY_LITERAL_;
+    _array_: _JS_ARRAY_LITERAL_
+           | _js/array_
+           ;
 
-    _object_: _JS_OBJECT_LITERAL_;
+    _object_: _JS_OBJECT_LITERAL_
+            | _js/object_
+            ;
 
     _expression_: _primitive_
                 | _array_
@@ -42,15 +54,22 @@
                 | _appx/route_
                 ;
 
-    _statement_: _js/statement_
-               | _js/variable_
-               | _react/state_
-               | _react/context_
-               | _react/effect_
-               | _js/switch_
-               | _js/map_
-               | _appx/api_
-               ;
+    _statement_: _js/statement_;
+
+    _block_:
+           [
+             _js/statement_
+             | _js/variable_
+             | _react/state_
+             | _react/context_
+             | _react/effect_
+             | _js/switch_
+             | _js/map_
+             | _appx/api_
+             ,
+             ...
+           ]
+           ;
 
     _jsx_: _react/element_
          | _react/html_
@@ -63,6 +82,7 @@
          | _object_
          | _expression_
          | _statement_
+         | _block_
          ;
 
 # JS Types
@@ -116,8 +136,7 @@
           |
         {
           _type: "js/object",
-          _string_: _any_,
-          ...
+          children: _object_,
         }
         ;
 
@@ -145,10 +164,7 @@
           body: {
             _string_
               |
-            [
-              _statement_,
-              ...
-            ]
+            _block_
           }
         }
         ;
@@ -159,10 +175,7 @@
           body: {
             _string_
               |
-            [
-              (_statement_)?
-              ...
-            ]
+            _block_
           }
         }
         ;
@@ -260,10 +273,7 @@
           body:
               _string_
                 |
-              [
-                (_statement_)?
-                ...
-              ],
+              _block_
           states:
             [
               _string_,
@@ -331,15 +341,30 @@
           method: _string_,
           endpoint: _string_,
           (data: _expression_)?
-          (init: _statement_)?
-          (result: _statement_)?
-          (error: _statement_)?
+          (
+            init:
+              _string_
+                |
+              _statement_
+          )?
+          (
+            result:
+              _string_
+                |
+              _statement_
+          )?
+          (
+            error:
+              _string_
+                |
+              _statement_
+          )?
         }
         ;
 
     _appx/route_:
         {
           _type: "appx/route",
-          (name: _string_)?
+          name: _string_
         }
         ;

@@ -11,9 +11,7 @@ export const js_filter = {
   name: 'js/filter',
   desc: 'Filter',
   classes: [
-    {
-      class: 'expression',
-    },
+    'expression',
   ],
   _group: 'js_controls',
   children: [
@@ -25,23 +23,33 @@ export const js_filter = {
           class: 'expression'
         },
       ],
-      _thisNode: {
-        condition: '!data || data._type === "js/expression"',
-        input: 'js/expression',
-      },
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'expression',
+          input: 'input/expression',
+        }
+      ]
     },
     {
       name: 'filter',
       desc: 'Filter',
       classes: [
         {
-          class: 'expression'
+          class: 'string',
         }
       ],
-      _thisNode: {
-        input: 'js/expression'
-      }
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
     },
   ]
 }

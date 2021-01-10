@@ -10,15 +10,7 @@ export const js_number = {
   name: 'js/number',
   desc: 'Number',
   classes: [
-    {
-      class: 'number',
-    },
-    {
-      class: 'primitive',
-    },
-    {
-      class: 'expression',
-    }
+    'number',
   ],
   _group: 'js_basics',
   children: [
@@ -30,9 +22,12 @@ export const js_number = {
           class: 'number'
         },
       ],
-      _thisNode: {
-        input: 'js/number'
-      }
+      _thisNode: [
+        {
+          class: 'number',
+          input: 'input/text',
+        },
+      ],
     },
   ]
 }

@@ -9,27 +9,25 @@ export const js_object = {
   name: 'js/object',
   desc: 'Object',
   classes: [
-    {
-      class: 'object',
-    },
-    {
-      class: 'expression',
-    }
+    'object',
   ],
   _group: 'js_basics',
   children: [
     {
       name: '*',
-      desc: 'Property',
+      desc: '`${node.data.name}`',
       optional: true,
       classes: [
         {
-          class: 'any'
+          class: 'any',
         },
       ],
-      _childNode: {
-        input: 'js/object',
-      }
+      _childNode: [
+        {
+          class: 'any',
+          input: 'input/properties',
+        }
+      ]
     },
   ]
 }

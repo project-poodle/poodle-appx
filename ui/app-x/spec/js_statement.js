@@ -10,33 +10,65 @@ export const js_statement = {
   name: 'js/statement',
   desc: 'Statement',
   classes: [
-    {
-      class: 'statement',
-    },
+    'statement',
   ],
   _group: 'js_advanced',
+  _customs: [
+    {
+      name: '_bodyChildren',
+      default: '',
+    },
+  ],
+  _effects: [
+    {
+      body: ' \
+        form.setValue("_ref", "..." + form.getValues("name") \
+      ',
+      states: [
+        'form.watch("name")'
+      ]
+    }
+  ],
   children: [
     {
       name: 'body',
       desc: 'Body',
       classes: [
         {
-          class: 'string'
+          class: 'string',
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            }
-          ]
+          class: 'block',
         },
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/string'
-      },
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement',
+        }
+      ],
+      _childNode: [
+        {
+          class: 'block',
+          array: true,
+          generate: ' \
+            thisData.children.map( \
+              child => generate(child) \
+            ) \
+          ',
+          parse: ' \
+            thisNode.children \
+              .filter(child => !child.data._ref) \
+              .map(child => parse(child)) \
+          ',
+        }
+      ],
+      _customs: [
+        {
+          name: '_hasChildren',
+          default: false
+        },
+      ],
     },
   ]
 }

@@ -12,12 +12,8 @@ export const react_html = {
   name: 'react/html',
   desc: 'HTML Tag',
   classes: [
-    {
-      class: 'jsx',
-    },
-    {
-      class: 'expression',
-    }
+    'jsx',
+    'expression',
   ],
   _group: 'react_concepts',
   _expand: true,
@@ -73,11 +69,14 @@ export const react_html = {
           ]
         }
       ],
-      _childNode: {
-        input: 'js/object',
-        generate: 'generate(data)',
-        parse: 'parse(node)',
-      }
+      _childNode: [
+        {
+          class: 'object',
+          input: 'input/properties',
+          generate: 'generate(data)',
+          parse: 'parse(node)',
+        }
+      ]
     },
     {
       name: 'children',
@@ -103,19 +102,22 @@ export const react_html = {
           ]
         }
       ],
-      _childNode: {
-        array: true,
-        generate: ' \
-          thisData.children.map( \
-            child => generate(child) \
-          ) \
-        ',
-        parse: ' \
-          thisNode.children \
-            .filter(child => !child.data._ref) \
-            .map(child => parse(child)) \
-        ',
-      },
+      _childNode: [
+        {
+          class: 'array',
+          array: true,
+          generate: ' \
+            thisData.children.map( \
+              child => generate(child) \
+            ) \
+          ',
+          parse: ' \
+            thisNode.children \
+              .filter(child => !child.data._ref) \
+              .map(child => parse(child)) \
+          ',
+        }
+      ]
     },
   ]
 }

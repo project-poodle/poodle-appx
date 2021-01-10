@@ -443,7 +443,18 @@ const PropEditor = (props) => {
             || child._type === 'js/number'
             || child._type === 'js/boolean')
         {
-          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: child._type, data: child.value})
+          const newChildNode = generate_tree_node(
+            {},
+            {
+              ref: child.name,
+              parentKey: childParent.key,
+              parentChildSpec: null,
+            },
+            {
+              _type: child._type,
+              data: child.value
+            }
+          )
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -451,7 +462,18 @@ const PropEditor = (props) => {
         }
         else if (child._type === 'js/expression')
         {
-          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: 'js/expression', data: child.value})
+          const newChildNode = generate_tree_node(
+            {},
+            {
+              ref: child.name,
+              parentKey: childParent.key,
+              parentChildSpec: null,
+            },
+            {
+              _type: 'js/expression',
+              data: child.value
+            }
+          )
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -459,7 +481,18 @@ const PropEditor = (props) => {
         }
         else if (child._type === 'js/import')
         {
-          const newChildNode = generate_tree_node({}, childParent.key, child.name, {_type: 'js/import', name: child.value})
+          const newChildNode = generate_tree_node(
+            {},
+            {
+              ref: child.name,
+              parentKey: childParent.key,
+              parentChildSpec: null,
+            },
+            {
+              _type: 'js/import',
+              data: child.value
+            }
+          )
           childParent.children.push(newChildNode)
           // update child title and icon
           newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
@@ -499,7 +532,17 @@ const PropEditor = (props) => {
       const propChild = lookup_child_by_ref(lookupNode, refKey)
       if (!propChild) {
         // add props if not exist
-        lookupNode.children.push(generate_tree_node({}, lookupNode.key, refKey, {}))
+        lookupNode.children.push(
+          generate_tree_node(
+            {},
+            {
+              ref: refKey,
+              parentKey: lookupNode.key,
+              parentChildSpec: null
+            },
+            {}
+          )
+        )
       }
     }
     // lookup childParent node

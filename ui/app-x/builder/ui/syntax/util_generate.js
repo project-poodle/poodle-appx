@@ -66,31 +66,16 @@ import API from 'app-x/icon/API'
 import Style from 'app-x/icon/Style'
 import Pointer from 'app-x/icon/Pointer'
 
-const PATH_SEPARATOR = '/'
-const VARIABLE_SEPARATOR = '.'
+import {
+  PATH_SEPARATOR,
+  VARIABLE_SEPARATOR,
+  isPrimitive,
+  parse_var_full_path,
+  lookup_data_type,
+  type_matches_spec,
+  data_matches_spec,
+} from 'app-x/builder/ui/syntax/util_base'
 
-
-////////////////////////////////////////////////////////////////////////////////
-// primitive test
-function isPrimitive(test) {
-    return (test !== Object(test))
-}
-
-// parse variable full path
-function parse_var_full_path(var_full_path) {
-
-  let import_paths = var_full_path.split(PATH_SEPARATOR)
-  let sub_vars = import_paths[import_paths.length - 1].split(VARIABLE_SEPARATOR)
-
-  // add first sub_var to import_path
-  import_paths[import_paths.length - 1] = sub_vars.shift()
-
-  return {
-    full_paths: [].concat(import_paths, sub_vars),
-    import_paths: import_paths,
-    sub_vars: sub_vars
-  }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -2596,14 +2581,15 @@ const reorder_children = (parentNode) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create new node
-function new_tree_node(title, icon, data, parentKey, isLeaf) {
+function new_tree_node(title, icon, data, isLeaf, parentKey, parentChildSpec) {
   return {
     key: uuidv4(),
-    parentKey: parentKey,
     title: title ? title : (data ? (data._ref ? data._ref : '') : ''),
-    data: data ? data : null,
     icon: icon ? icon : <QuestionOutlined />,
+    data: data ? data : null,
     isLeaf: isLeaf ? true : false,
+    parentKey: parentKey,
+    parentChildSpec: parentChildSpec,
     children: isLeaf ? [] : [],
   }
 }
@@ -2612,21 +2598,22 @@ function new_tree_node(title, icon, data, parentKey, isLeaf) {
 function new_root_node() {
   return {
     key: '/',
-    parentKey: null,
     title: '/',
+    icon: lookup_icon_for_type('/'),
     data: {
       _ref: null,
       _type: '/'
     },
-    icon: lookup_icon_for_type('/'),
     isLeaf: true,
+    parentKey: null,
+    parentChildSpec: null,
     children: null,
   }
 }
 
 // process input data and return tree data
-// function parse_js(js_context, parentKey, ref, input) {
-function generate_tree_node(js_context, parentKey, ref, input) {
+// function parse_js(js_context, { ref, parentKey, parentChildSpec }, input) {
+function generate_tree_node(js_context, conf, input) {
 
   // add expandedKeys if not exist
   if (! ('expandedKeys' in js_context)) {
@@ -2636,16 +2623,16 @@ function generate_tree_node(js_context, parentKey, ref, input) {
   if (isPrimitive(input)) {
     switch (typeof input) {
       case 'string':
-        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/string', data: input})
+        return generate_tree_node(js_context, conf, {_type: 'js/string', data: input})
       case 'number':
-        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/number', data: input})
+        return generate_tree_node(js_context, conf, {_type: 'js/number', data: input})
       case 'boolean':
-        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/boolean', data: input})
+        return generate_tree_node(js_context, conf, {_type: 'js/boolean', data: input})
       case 'undefined':                         // treat undefined as null
-        return generate_tree_node(js_context, parentKey, ref, {_type: 'js/null'})
+        return generate_tree_node(js_context, conf, {_type: 'js/null'})
       case 'object':
         if (input === null) {
-          return generate_tree_node(js_context, parentKey, ref, {_type: 'js/null'})
+          return generate_tree_node(js_context, conf, {_type: 'js/null'})
         } else {
           throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
         }
@@ -2660,8 +2647,7 @@ function generate_tree_node(js_context, parentKey, ref, input) {
   if (Array.isArray(input)) {
     return generate_tree_node(
       js_context,
-      parentKey,
-      ref,
+      conf,
       {
         _type: 'js/array',
         children: input
@@ -2673,17 +2659,16 @@ function generate_tree_node(js_context, parentKey, ref, input) {
   if (!input._type) {
     return generate_tree_node(
       js_context,
-      parentKey,
-      ref,
+      conf,
       {
         _type: 'js/object',
-        ...input
+        ...input,
       }
     )
   }
 
   // handle topLevel
-  if (js_context.topLevel) {
+  if (!!js_context.topLevel) {
     // return children only
     const results = []
     Object.keys(input).map(key => {
@@ -2698,8 +2683,11 @@ function generate_tree_node(js_context, parentKey, ref, input) {
             ...js_context,
             topLevel: false,
           },
-          null,
-          key,
+          {
+            ref: key,
+            parentKey: null,
+            parentChildSpec: null
+          },
           input[key]
         )
       )
@@ -2725,21 +2713,16 @@ function generate_tree_node(js_context, parentKey, ref, input) {
   const thisData = input
   // create thisNode
   const thisNode = new_tree_node(
-    lookup_title_for_input(ref, input),
+    lookup_title_for_input(conf?.ref || null, input),
     lookup_icon_for_input(input),
     {
-      _ref: ref,
+      _ref: conf?.ref || null,
       _type: input._type,
       // empty data
     },
-    parentKey,
-    !(
-      !!spec.children
-      && spec.children.length
-      && spec.children
-        .map(child => '_childNode' in child)
-        .reduce((accumulator, item) => accumulator || item, false)
-    )
+    !spec.children?.find(item => !!item._childNode),  // isLeaf
+    conf?.parentKey || null,
+    conf?.parentChildSpec || null,
   )
 
   // setup default expand
@@ -2757,121 +2740,178 @@ function generate_tree_node(js_context, parentKey, ref, input) {
         if (!!childSpec.optional) {
           return // continue
         } else {
-          throw new Error(`ERROR:  [${input._type}] missing [${childSpec.name}] [${JSON.stringify(input)}]`)
+          throw new Error(`ERROR: [${input._type}] missing [${childSpec.name}] [${JSON.stringify(input)}]`)
         }
       }
 
       // add to thisNode.data if _thisNode is defined
       if (!!childSpec._thisNode) {
-
-        if (!!childSpec._thisNode.condition && ! eval(childSpec._thisNode.condition)) {
-          // condition evaluated to false
-          // set undefined and continue
-          thisNode.data[_ref] = undefined
-        } else {
-          // add to current node
-          if (!!childSpec._thisNode.generate) {
-            thisNode.data[_ref] = eval(childSpec._thisNode.generate)
-          } else if (!!childSpec._thisNode.array) {
-            throw new Error(`ERROR: this node array input missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
-          } else if (childSpec._thisNode.input === 'js/string') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
-          } else if (childSpec._thisNode.input === 'js/number') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
-          } else if (childSpec._thisNode.input === 'js/boolean') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
-          } else if (childSpec._thisNode.input === 'js/null') {
-            // thisNode.data[_ref] = isPrimitive(data) ? data: data.data
-          } else if (childSpec._thisNode.input === 'js/expression') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
-          } else if (childSpec._thisNode.input === 'js/import') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.name
-          } else if (childSpec._thisNode.input === 'js/statement') {
-            thisNode.data[_ref] = isPrimitive(data) ? data : data.body
-          } else {
-            throw new Error(`ERROR: this node input type [${childSpec._thisNode.input}] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+        // look for thisNodeSpec that matches data
+        let found = false
+        childSpec._thisNode.map(thisNodeSpec => {
+          // return if found
+          if (found) {
+            return
           }
-        }
+          // get class spec
+          const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
+          if (!classSpec) {
+            throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
+          }
+          // check if data matches spec
+          const data_type = lookup_data_type(data)
+          if (!type_matches_spec(data_type, thisNodeSpec)) {
+            // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+            return
+          } else {
+            // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisNodeSpec)}]`)
+            found = true
+          }
+          // add to current node
+          if (!!thisNodeSpec.generate) {
+            thisNode.data[_ref] = eval(thisNodeSpec.generate)
+          } else if (!!thisNodeSpec.array) {
+            throw new Error(`ERROR: thisNodeSpec [array] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+          } else if (thisNodeSpec.class === 'string') {
+            if (isPrimitive(data)) {
+              thisNode.data[_ref] = data
+            } else if (data._type === 'js/expression') {
+              thisNode.data[_ref] = data.data
+            } else if (data._type === 'js/import') {
+              thisNode.data[_ref] = data.name
+            } else if (data._type === 'js/statement') {
+              if (isPrimitive(data.body)) {
+                thisNode.data[_ref] = data.body
+              } else {
+                thisNode.data[_ref] = undefined
+              }
+            } else {
+              throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+            }
+          } else if (thisNodeSpec.class === 'number') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (thisNodeSpec.class === 'boolean') {
+            thisNode.data[_ref] = isPrimitive(data) ? data : data.data
+          } else if (thisNodeSpec.class === 'null') {
+            // found = true
+          } else {
+            throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+          }
+        })
       }
 
       // add to thisNode.children if _childNode is defined
       if (!!childSpec._childNode) {
-
-        if (!!childSpec._childNode.condition && ! eval(childSpec._childNode.condition)) {
-          // condition evaluated to false
-          // ignore and continue
-        } else {
+        // look for checkNodeSpec that matches data
+        let found = false
+        childSpec._childNode.map(childNodeSpec => {
+          // return if found
+          if (found) {
+            return
+          }
+          // get class spec
+          const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
+          if (!classSpec) {
+            throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
+          }
+          // check if data matches spec
+          const data_type = lookup_data_type(data)
+          if (!type_matches_spec(data_type, childNodeSpec)) {
+            // console.log(`childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
+            return
+          } else {
+            // console.log(`childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childNodeSpec)}]`)
+            found = true
+          }
           // create child node
-          if (!!childSpec._childNode.array) {
+          if (!!childNodeSpec.array) {
             // generate function
             const generate = (data) => {
-              return generate_tree_node(js_context, thisNode.key, null, data)
+              return generate_tree_node(
+                js_context,
+                {
+                  ref: null,
+                  parentKey: thisNode.key,
+                  parentChildSpec: childNodeSpec,
+                },
+                data
+              )
             }
             // check generate definition
-            if (!!childSpec._childNode.generate) {
+            if (!!childNodeSpec.generate) {
               // console.log(childSpec._childNode.generate)
-              const children = eval(childSpec._childNode.generate)
+              const children = eval(childNodeSpec.generate)
               // console.log(children)
               children.map(childNode => thisNode.children.push(childNode))
             } else {
-              throw new Error(`ERROR: child node array missing generate method [${JSON.stringify(childSpec._childNode)}]`)
+              throw new Error(`ERROR: childNodeSpec [array] missing generate method [${JSON.stringify(childNodeSpec)}]`)
             }
 
           } else {
             // generate function
             const generate = (data) => {
-              return generate_tree_node(js_context, thisNode.key, _ref, data)
+              return generate_tree_node(
+                js_context,
+                {
+                  ref: _ref,
+                  parentKey: thisNode.key,
+                  parentChildSpec: childNodeSpec,
+                },
+                data
+              )
             }
             // check generate definition
-            if (!!childSpec._childNode.generate) {
+            if (!!childNodeSpec.generate) {
               // generate child node
-              const child = eval(childSpec._childNode.generate)
+              const child = eval(childNodeSpec.generate)
               thisNode.children.push(child)
             } else {
-              const childNode = generate_tree_node(js_context, thisNode.key, _ref, data)
+              const childNode = generate_tree_node(
+                js_context,
+                {
+                  ref: _ref,
+                  parentKey: thisNode.key,
+                  parentChildSpec: childNodeSpec,
+                },
+                data
+              )
               thisNode.children.push(childNode)
             }
           }
-        }
+        })
       }
     }
 
-    if (childSpec.name === '*') {
+    try {
+      // process children
+      if (childSpec.name === '*') {
 
-      Object.keys(input).map(key => {
-        // ignore _type
-        if (key === '_type') {
-          return
-        }
+        Object.keys(input).map(key => {
+          // ignore _type
+          if (key === '_type') {
+            return
+          }
 
-        try {
           const _ref = key
           const data = input[_ref]
 
           _process_child(_ref, data)
+        })
 
-        } catch (err) {
-          console.error(err)
-          throw err
-        }
-      })
+      } else {
 
-    } else {
-
-      try {
         const _ref = childSpec.name
         const data = input[_ref]
 
         _process_child(_ref, data)
-
-      } catch (err) {
-        console.error(err)
-        throw err
       }
+    } catch (err) {
+      console.error(err)
+      throw err
     }
-
   })
 
+  console.log(`generate_tree_node [${JSON.stringify(thisNode.data)}]`)
   return thisNode
 }
 

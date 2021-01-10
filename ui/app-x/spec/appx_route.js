@@ -10,9 +10,7 @@ export const appx_route = {
   name: 'appx/route',
   desc: 'Routes',
   classes: [
-    {
-      class: 'expression',
-    }
+    'expression',
   ],
   _group: 'appx',
   children: [
@@ -31,9 +29,12 @@ export const appx_route = {
           message: 'Router path is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string',
-      }
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
   ]
 }

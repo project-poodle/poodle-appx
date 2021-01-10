@@ -11,12 +11,8 @@ export const js_map = {
   name: 'js/map',
   desc: 'Map',
   classes: [
-    {
-      class: 'expression',
-    },
-    {
-      class: 'statement',
-    },
+    'expression',
+    'statement',
   ],
   _group: 'js_controls',
   _expand: true,
@@ -29,11 +25,18 @@ export const js_map = {
           class: 'expression'
         },
       ],
-      _thisNode: {
-        condition: '!data || data._type === "js/expression"',
-        input: 'js/expression',
-      },
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'expression',
+          input: 'input/expression',
+        }
+      ]
     },
     {
       name: 'result',
@@ -46,7 +49,22 @@ export const js_map = {
           class: 'statement'
         },
       ],
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'expression',
+          input: 'input/expression',
+        },
+        {
+          class: 'statement',
+          input: 'input/statement',
+        }
+      ]
     },
   ]
 }

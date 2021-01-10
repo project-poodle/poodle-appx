@@ -17,9 +17,7 @@ export const appx_api = {
   name: 'appx/api',
   desc: 'API',
   classes: [
-    {
-      class: 'statement',
-    }
+    'statement',
   ],
   _group: 'appx',
   children: [
@@ -38,9 +36,12 @@ export const appx_api = {
           message: 'Namespace is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
     {
       name: 'app_name',
@@ -57,9 +58,12 @@ export const appx_api = {
           message: 'App name is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
     {
       name: 'method',
@@ -76,9 +80,20 @@ export const appx_api = {
           message: 'Method is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+          options: [
+            "get",
+            "post",
+            "put",
+            "delete",
+            "head",
+            "patch",
+          ]
+        }
+      ],
     },
     {
       name: 'endpoint',
@@ -95,9 +110,12 @@ export const appx_api = {
           message: 'Endpoint is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
     {
       name: 'data',
@@ -105,14 +123,23 @@ export const appx_api = {
       optional: true,
       classes: [
         {
+          class: 'string'
+        },
+        {
           class: 'expression'
         },
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/expression',
-      },
-      _childNode: {},
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'expression',
+        }
+      ],
     },
     {
       name: 'init',
@@ -123,19 +150,20 @@ export const appx_api = {
           class: 'string'
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            }
-          ]
+          class: 'statement',
         },
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/statement',
-      },
-      _childNode: {},
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement'
+        }
+      ],
+      _childNode: [
+        {
+          class: 'statement',
+        }
+      ]
     },
     {
       name: 'result',
@@ -146,19 +174,20 @@ export const appx_api = {
           class: 'string'
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            },
-          ]
+          class: 'statement',
         },
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/statement',
-      },
-      _childNode: {},
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement'
+        }
+      ],
+      _childNode: [
+        {
+          class: 'statement',
+        }
+      ]
     },
     {
       name: 'error',
@@ -169,19 +198,20 @@ export const appx_api = {
           class: 'string'
         },
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'statement'
-            },
-          ]
+          class: 'statement',
         },
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/statement',
-      },
-      _childNode: {},
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement'
+        }
+      ],
+      _childNode: [
+        {
+          class: 'statement',
+        }
+      ]
     },
   ]
 }

@@ -70,6 +70,66 @@ const types = [
   {}
 )
 
+// defint unique
+Object.defineProperty(Array.prototype, 'unique', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: function() {
+    var a = this.concat()
+    for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+        if(a[i] === a[j]) {
+          a.splice(j--, 1)
+        }
+      }
+    }
+    return a
+  }
+})
+
+// update classes to fill all defs
+Object.keys(classes).map(cls => {
+  const def = classes[cls]
+  const newDef = {
+    classes: def.classes || [],
+    types: def.types || [],
+    literals: def.literals || [],
+  }
+  // add self to classes
+  newDef.classes = (def.classes || []).concat(cls).sort().unique()
+  // merge classes
+  newDef.classes.map(derivedClass => {
+    if (!!classes[derivedClass] && !!classes[derivedClass].classes) {
+      newDef.classes = newDef.classes.concat(classes[derivedClass].classes).sort().unique()
+    } else {
+      newDef.classes = newDef.classes.sort().unique()
+    }
+  })
+  // merge types
+  newDef.classes.map(derivedClass => {
+    if (!!classes[derivedClass] && !!classes[derivedClass].types) {
+      newDef.types = (newDef.types || []).concat(classes[derivedClass].types).sort().unique()
+    } else {
+      newDef.types = newDef.types.sort().unique()
+    }
+  })
+  // merge literals
+  newDef.classes.map(derivedClass => {
+    if (!!classes[derivedClass] && !!classes[derivedClass].literals) {
+      newDef.literals = (newDef.literals || []).concat(classes[derivedClass].literals).sort().unique()
+    } else {
+      newDef.literals = newDef.literals.sort().unique()
+    }
+  })
+  // update def
+  classes[cls] = {
+    ...def,
+    ...newDef,
+  }
+})
+// console.log(`classes`, JSON.stringify(classes, null, 2))
+
 // export specific spec
 export {
   classes as classes,

@@ -10,15 +10,7 @@ export const js_boolean = {
   name: 'js/boolean',
   desc: 'Boolean',
   classes: [
-    {
-      class: 'boolean',
-    },
-    {
-      class: 'primitive',
-    },
-    {
-      class: 'expression',
-    }
+    'boolean',
   ],
   _group: 'js_basics',
   children: [
@@ -30,9 +22,12 @@ export const js_boolean = {
           class: 'boolean'
         },
       ],
-      _thisNode: {
-        input: 'js/boolean',
-      },
+      _thisNode: [
+        {
+          class: 'boolean',
+          input: 'input/switch',
+        },
+      ],
     },
   ]
 }

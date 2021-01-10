@@ -10,9 +10,7 @@ export const js_expression = {
   name: 'js/expression',
   desc: 'Expression',
   classes: [
-    {
-      class: 'expression',
-    },
+    'expression',
   ],
   _group: 'js_advanced',
   children: [
@@ -21,7 +19,7 @@ export const js_expression = {
       desc: 'Expression',
       classes: [
         {
-          class: 'expression'
+          class: 'string',
         },
       ],
       rules: [
@@ -31,9 +29,12 @@ export const js_expression = {
           message: 'Expression is required',
         },
       ],
-      _thisNode: {
-        input: 'js/expression',
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
     },
   ]
 }

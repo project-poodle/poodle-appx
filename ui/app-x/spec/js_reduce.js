@@ -12,9 +12,7 @@ export const js_reduce = {
   name: 'js/reduce',
   desc: 'Reduce',
   classes: [
-    {
-      class: 'expression',
-    },
+    'expression',
   ],
   _group: 'js_controls',
   children: [
@@ -26,23 +24,33 @@ export const js_reduce = {
           class: 'expression'
         },
       ],
-      _thisNode: {
-        condition: '!data || data._type === "js/expression"',
-        input: 'js/expression',
-      },
-      _childNode: {}
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'expression',
+          input: 'input/expression',
+        }
+      ]
     },
     {
       name: 'reducer',
       desc: 'Reducer',
       classes: [
         {
-          class: 'expression'
+          class: 'string',
         }
       ],
-      _thisNode: {
-        input: 'js/expression'
-      }
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
+        },
+      ],
     },
     {
       name: 'init',
@@ -50,12 +58,15 @@ export const js_reduce = {
       optional: true,
       classes: [
         {
-          class: 'expression'
+          class: 'string',
+        }
+      ],
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/expression',
         },
       ],
-      _thisNode: {
-        input: 'js/expression'
-      }
     },
   ]
 }

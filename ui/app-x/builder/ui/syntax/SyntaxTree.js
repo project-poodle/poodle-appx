@@ -244,7 +244,15 @@ const SyntaxTree = (props) => {
       // console.log(`filtered`, filtered)
 
       const js_context = { topLevel: true }
-      const parsedTree = generate_tree_node(js_context, null, null, filtered)
+      const parsedTree = generate_tree_node(
+        js_context,
+        {
+          ref: null,
+          parentKey: null,
+          parentChildSpec: null,
+        },
+        filtered
+      )
       console.log(`parsedTree`, parsedTree)
 
       const parsedTest = !!spec_data._test
@@ -634,14 +642,38 @@ const SyntaxTree = (props) => {
     // handle js/switch specially
     if (lookupParent?.data?._type === 'js/switch') {
       if (nodeData.default) {
-        parsed = generate_tree_node(parse_context, parentKey, 'default', nodeData)
+        parsed = generate_tree_node(
+          parse_context,
+          {
+            ref: 'default',
+            parentKey: parentKey,
+            parentChildSpec: null,
+          },
+          nodeData
+        )
       } else {
-        parsed = generate_tree_node(parse_context, parentKey, null, nodeData)
+        parsed = generate_tree_node(
+          parse_context,
+          {
+            ref: null,
+            parentKey: parentKey,
+            parentChildSpec: null,
+          },
+          nodeData
+        )
         parsed.data.condition = nodeData.condition
       }
     } else {
       // parse nodeData
-      parsed = generate_tree_node(parse_context, parentKey, ref, nodeData)
+      parsed = generate_tree_node(
+        parse_context,
+        {
+          ref: ref,
+          parentKey: parentKey,
+          parentChildSpec: null,
+        },
+        nodeData
+      )
     }
     // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location

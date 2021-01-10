@@ -12,28 +12,27 @@ export const react_state = {
   name: 'react/state',
   desc: 'React State',
   classes: [
-    {
-      class: 'expression',
-    },
-    {
-      class: 'statement',
-    }
+    'expression',
+    'statement',
   ],
   _group: 'react_concepts',
-  _ref: {
-    hidden: true,
-    effects: [
-      {
-        body: ' \
-          node.data._ref = \
-            "..." + node.data.name \
-        ',
-        states: [
-          'node.data.name'
-        ]
-      }
-    ]
-  },
+  _customs: [
+    {
+      name: '_ref',
+      hidden: true,
+      default: '...'
+    },
+  ],
+  _effects: [
+    {
+      body: ' \
+        form.setValue("_ref", "..." + form.getValues("name") \
+      ',
+      states: [
+        'form.watch("name")'
+      ]
+    }
+  ],
   children: [
     {
       name: 'name',
@@ -54,16 +53,19 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
-      _examples: [
-        'open',
-        'show',
-        'loaded',
-        'sideNavOpen',
-        'previewEnabled',
-        'peerConnected',
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+          examples: [
+            'open',
+            'show',
+            'loaded',
+            'sideNavOpen',
+            'previewEnabled',
+            'peerConnected',
+          ],
+        },
       ],
     },
     {
@@ -86,16 +88,19 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
-      _examples: [
-        'setOpen',
-        'setShow',
-        'setLoaded',
-        'setSideNavOpen',
-        'setPreviewEnabled',
-        'setPeerConnected',
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+          examples: [
+            'setOpen',
+            'setShow',
+            'setLoaded',
+            'setSideNavOpen',
+            'setPreviewEnabled',
+            'setPeerConnected',
+          ],
+        },
       ],
     },
     {
@@ -104,24 +109,25 @@ export const react_state = {
       optional: true,
       classes: [
         {
-          class: 'expression'
+          class: 'string'
         }
       ],
-      _thisNode: {
-        condition: '!data || typeof data === "string"',
-        input: 'js/expression'
-      },
-      _childNode: {},
-      _examples: [
-        null,
-        true,
-        false,
-        'START',
-        [],
-        {},
+      _thisNode: [
         {
-          initialized: false,
-          data: [],
+          class: 'string',
+          input: 'input/expression',
+          examples: [
+            null,
+            true,
+            false,
+            'START',
+            [],
+            {},
+            {
+              initialized: false,
+              data: [],
+            },
+          ],
         },
       ],
     },

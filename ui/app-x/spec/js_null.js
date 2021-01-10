@@ -9,15 +9,7 @@ export const js_null = {
   name: 'js/null',
   desc: 'Null',
   classes: [
-    {
-      class: 'null',
-    },
-    {
-      class: 'primitive',
-    },
-    {
-      class: 'expression',
-    }
+    'null',
   ],
   _group: 'js_basics',
   children: []

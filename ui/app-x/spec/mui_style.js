@@ -10,24 +10,25 @@ export const mui_style = {
   name: 'mui/style',
   desc: 'MUI Style',
   classes: [
-    {
-      class: 'expression',
-    }
+    'expression',
   ],
   _group: 'mui',
   children: [
     {
       name: '*',
-      desc: 'Styles',
+      desc: '`${node.data.name}`',
       optional: true,
       classes: [
         {
-          class: 'any'
+          class: 'any',
         },
       ],
-      _childNode: {
-        input: 'js/object'
-      }
+      _childNode: [
+        {
+          class: 'any',
+          input: 'input/properties',
+        }
+      ]
     },
   ]
 }

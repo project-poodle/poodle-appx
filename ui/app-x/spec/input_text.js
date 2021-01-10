@@ -13,12 +13,8 @@ export const input_text = {
   name: 'input/text',
   desc: 'Text Input',
   classes: [
-    {
-      class: 'jsx',
-    },
-    {
-      class: 'expression',
-    },
+    'jsx',
+    'expression',
   ],
   _group: 'form_input',
   children: [
@@ -37,9 +33,12 @@ export const input_text = {
           message: 'Input name is required',
         },
       ],
-      _thisNode: {
-        input: 'js/string'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/text',
+        },
+      ],
     },
     {
       name: 'array',
@@ -50,9 +49,12 @@ export const input_text = {
           class: 'boolean'
         },
       ],
-      _thisNode: {
-        input: 'js/boolean'
-      },
+      _thisNode: [
+        {
+          class: 'boolean',
+          input: 'input/switch',
+        },
+      ],
     },
     {
       name: 'props',
@@ -69,9 +71,17 @@ export const input_text = {
           ]
         }
       ],
-      _childNode: {
-        input: 'js/object'
-      },
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/properties',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'object',
+        }
+      ]
     },
     {
       name: 'rules',
@@ -88,9 +98,17 @@ export const input_text = {
           ]
         }
       ],
-      _childNode: {
-        input: 'js/rule'
-      }
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/rules',
+        },
+      ],
+      _childNode: [
+        {
+          class: 'object',
+        }
+      ]
     },
   ]
 }

@@ -143,7 +143,15 @@ const YamlEditor = props => {
       const lookupNode = tree_lookup(resultTree, selectedKey)
       if (!!lookupNode) {
         const js_context = { topLevel: false }
-        const parsed = generate_tree_node(js_context, lookupNode.parentKey, null, loaded)
+        const parsed = generate_tree_node(
+          js_context,
+          {
+            ref: null,
+            parentKey: lookupNode.parentKey,
+            parentChildSpec: null,
+          },
+          loaded
+        )
 
         if (treeNode?.data?._type === '/') {
 
