@@ -73,7 +73,6 @@ export const react_html = {
         {
           class: 'object',
           input: 'input/properties',
-          generate: 'generate(data)',
           parse: 'parse(node)',
         }
       ]
@@ -82,35 +81,16 @@ export const react_html = {
       name: 'children',
       desc: 'Child Elements',
       optional: true,
+      array: true,
       classes:
       [
         {
-          class: 'array',
-          classes: [
-            {
-              name: '.+',
-              class: 'jsx',
-            },
-            {
-              name: '.+',
-              class: 'primitive',
-            },
-            {
-              name: '.+',
-              class: 'expression',
-            }
-          ]
-        }
+          class: 'jsx',
+        },
       ],
       _childNode: [
         {
-          class: 'array',
-          array: true,
-          generate: ' \
-            thisData.children.map( \
-              child => generate(child) \
-            ) \
-          ',
+          class: 'jsx',
           parse: ' \
             thisNode.children \
               .filter(child => !child.data._ref) \

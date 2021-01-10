@@ -58,6 +58,18 @@ const lookup_data_type = (data) => {
   return data._type
 }
 
+// enrich_primitive_data
+const enrich_primitive_data = (data) => {
+  if (isPrimitive(data)) {
+    return {
+      _type: lookup_data_type(data),
+      data: data
+    }
+  } else {
+    return data
+  }
+}
+
 // check if data type matches the match spec
 const type_matches_spec = (type, matchSpec) => {
   // if no class in matchSpec
@@ -101,6 +113,7 @@ export {
   isPrimitive,
   parse_var_full_path,
   lookup_data_type,
+  // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
 }

@@ -100,26 +100,21 @@ export const classes = {
       'js/statement',
     ]
   },
-  // block,
-  'block': {
-    array_types: [
-      'js/statement',
-      'js/variable',
-      'react/state',
-      'react/context',
-      'react/effect',
-      'js/switch',
-      'js/map',
-      'appx/api',
-    ]
-  },
   // jsx
   'jsx': {
+    classes: [
+      'primitive',
+    ],
     types: [
       'react/element',
       'react/html',
       'react/form',
       'input/text',
+      'js/expression',
+      'js/map',
+      'js/switch',
+      'js/reduce',
+      'js/filter',
     ]
   },
   // any
@@ -130,7 +125,6 @@ export const classes = {
       'object',
       'expression',
       'statement',
-      'block',
     ]
   }
 }

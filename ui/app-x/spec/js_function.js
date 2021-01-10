@@ -21,14 +21,10 @@ export const js_function = {
       name: 'params',
       desc: 'Parameters',
       optional: true,
+      array: true,
       classes: [
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'string'
-            }
-          ]
+          class: 'string'
         },
       ],
       rules: [
@@ -40,12 +36,9 @@ export const js_function = {
       ],
       _thisNode: [
         {
-          class: 'array',
-          array: true,
+          class: 'string',
           input: 'js/string',
-          generate: 'data.map(item => ({ \
-            value: item \
-          }))',
+          generate: 'data.map(item => ({ value: item }))',
           parse: 'nodeData.map(item => item.value)',
         }
       ],
@@ -53,29 +46,16 @@ export const js_function = {
     {
       name: 'body',
       desc: 'Body',
+      optional: true,
+      array: true,
       classes: [
         {
-          class: 'string'
+          class: 'statement',
         },
-        {
-          class: 'block',
-        },
-      ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        }
       ],
       _childNode: [
         {
-          class: 'block',
-          array: true,
-          generate: ' \
-            thisData.children.map( \
-              child => generate(child) \
-            ) \
-          ',
+          class: 'statement',
           parse: ' \
             thisNode.children \
               .filter(child => !child.data._ref) \
@@ -84,6 +64,22 @@ export const js_function = {
         }
       ],
     },
+    {
+      name: 'code',
+      desc: 'Code',
+      optional: true,
+      classes: [
+        {
+          class: 'string',
+        }
+      ],
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement',
+        }
+      ]
+    }
   ]
 }
 

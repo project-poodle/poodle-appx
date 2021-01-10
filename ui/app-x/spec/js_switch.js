@@ -23,60 +23,63 @@ export const js_switch = {
       name: 'children',
       desc: 'Conditional',
       optional: true,
+      array: true,
       classes: [
         {
-          class: 'array',
-          classes: [
+          class: 'object',
+          shape: [
             {
-              class: 'object',
-              shape: [
+              name: 'condition',
+              desc: 'Condition',
+              classes: [
                 {
-                  name: 'condition',
-                  desc: 'Condition',
-                  classes: [
-                    {
-                      class: 'expression'
-                    }
-                  ],
-                  rules: [
-                    {
-                      kind: 'required',
-                      required: true,
-                      message: 'Condition is required'
-                    },
-                  ],
+                  class: 'expression'
+                }
+              ],
+              rules: [
+                {
+                  kind: 'required',
+                  required: true,
+                  message: 'Condition is required'
+                },
+              ],
+            },
+            {
+              name: 'result',
+              desc: 'Result',
+              classes: [
+                {
+                  class: 'expression'
                 },
                 {
-                  name: 'result',
-                  desc: 'Result',
-                  classes: [
-                    {
-                      class: 'expression'
-                    },
-                    {
-                      class: 'statement'
-                    },
-                  ],
+                  class: 'statement'
                 },
-              ]
-            }
-          ],
-        },
+              ],
+            },
+          ]
+        }
       ],
       _childNode: [
         {
-          class: 'array',
-          array: true,
+          class: 'object',
           generate: ' \
-            thisData.children.map( \
-              child => (() => { \
-                const node = generate(child.result); \
-                node.data._isDefault = false; \
-                node.data._condition = child.condition; \
-                return node \
-              })() \
-            ) \
+            (() => { \
+              const node = generate(data.result); \
+              node.data._isDefault = false; \
+              node.data._condition = data.condition; \
+              return node \
+            })() \
           ',
+          // generate: ' \
+          //   thisData.children.map( \
+          //     child => (() => { \
+          //      const node = generate(child.result); \
+          //      node.data._isDefault = false; \
+          //      node.data._condition = child.condition; \
+          //      return node \
+          //    })() \
+          //  ) \
+          // ',
           parse: ' \
             thisNode.children \
               .filter(childNode => !childNode.data._isDefault) \
@@ -135,10 +138,7 @@ export const js_switch = {
       ],
       _childNode: [
         {
-          class: 'expression',
-          otherClasses: [
-            'statement'
-          ],
+          class: 'any',
           generate: ' \
             (() => { \
               const node = generate(data); \

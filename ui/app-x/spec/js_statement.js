@@ -33,29 +33,16 @@ export const js_statement = {
     {
       name: 'body',
       desc: 'Body',
+      optional: true,
+      array: true,
       classes: [
         {
-          class: 'string',
+          class: 'statement',
         },
-        {
-          class: 'block',
-        },
-      ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        }
       ],
       _childNode: [
         {
-          class: 'block',
-          array: true,
-          generate: ' \
-            thisData.children.map( \
-              child => generate(child) \
-            ) \
-          ',
+          class: 'statement',
           parse: ' \
             thisNode.children \
               .filter(child => !child.data._ref) \
@@ -63,13 +50,23 @@ export const js_statement = {
           ',
         }
       ],
-      _customs: [
-        {
-          name: '_hasChildren',
-          default: false
-        },
-      ],
     },
+    {
+      name: 'code',
+      desc: 'Code',
+      optional: true,
+      classes: [
+        {
+          class: 'string',
+        }
+      ],
+      _thisNode: [
+        {
+          class: 'string',
+          input: 'input/statement',
+        }
+      ]
+    }
   ]
 }
 

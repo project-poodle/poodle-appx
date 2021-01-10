@@ -20,62 +20,50 @@ export const react_effect = {
     {
       name: 'body',
       desc: 'Body',
+      optional: true,
+      array: true,
       classes: [
         {
-          class: 'string'
+          class: 'statement',
         },
+      ],
+      _childNode: [
         {
-          class: 'block',
-        },
+          class: 'statement',
+        }
+      ],
+    },
+    {
+      name: 'code',
+      desc: 'Code',
+      optional: true,
+      classes: [
+        {
+          class: 'string',
+        }
       ],
       _thisNode: [
         {
           class: 'string',
           input: 'input/statement',
         }
-      ],
-      _childNode: [
-        {
-          class: 'block',
-          array: true,
-          generate: ' \
-            thisData.children.map( \
-              child => generate(child) \
-            ) \
-          ',
-          parse: ' \
-            thisNode.children \
-              .filter(child => !child.data._ref) \
-              .map(child => parse(child)) \
-          ',
-        }
-      ],
+      ]
     },
     {
       name: 'states',
       desc: 'States',
       optional: true,
+      array: true,
       classes: [
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'expression',
-              includes: [
-                'js/expression',
-              ]
-            }
-          ]
+          class: 'string',
         },
       ],
       _thisNode: [
         {
-          class: 'array',
-          array: true,
+          class: 'string',
           input: 'js/expression',
-          generate: 'data.map(item => ({ \
-            value: item \
-          }))',
+          generate: 'data.map(item => ({ value: item }))',
           parse: 'nodeData.map(item => item.value)',
         }
       ],

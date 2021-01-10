@@ -1276,7 +1276,7 @@ function parse_tree_node(tree_context, treeNode) {
         }
       })
       // log
-      console.log(`result`, result)
+      console.log(`parse_tree_node`, result)
       // return
       return {
         ref: null,
@@ -1333,10 +1333,10 @@ function parse_tree_node(tree_context, treeNode) {
           // check if data matches spec
           const data_type = lookup_data_type(nodeData)
           if (!type_matches_spec(data_type, thisNodeSpec)) {
-            console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+            // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
             return
           } else {
-            console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
+            // console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
             found = true
           }
           // parse data
@@ -1385,8 +1385,10 @@ function parse_tree_node(tree_context, treeNode) {
           }
           // check if data matches spec
           if (!type_matches_spec(node.data._type, childNodeSpec)) {
+            console.log(`parse.childNodeSpec NO MATCH : [${JSON.stringify(nodeData)}] [${node.data._type}] not matching [${JSON.stringify(childNodeSpec)}]`)
             return
           } else {
+            console.log(`parse.childNodeSpec MATCHES : [${JSON.stringify(nodeData)}] [${node.data._type}] matching [${JSON.stringify(childNodeSpec)}]`)
             found = true
           }
           // parse child node
@@ -1445,7 +1447,7 @@ function parse_tree_node(tree_context, treeNode) {
         if (!!childNode) {
           // process child node if exists
           data = _process_child(childNode)
-        } else if (!!childSpec._childNode && !!childSpec._childNode.array) {
+        } else if (!!childSpec._childNode && !!childSpec.array) {
           // console.log(`childNode`, thisNode, _ref)
           data = _process_child(thisNode)
         }

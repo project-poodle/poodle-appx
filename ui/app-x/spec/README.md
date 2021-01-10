@@ -71,7 +71,8 @@
            ]
            ;
 
-    _jsx_: _react/element_
+    _jsx_: _primitive_
+         | _react/element_
          | _react/html_
          | _react/form_
          | _input/text_
@@ -230,7 +231,7 @@
             ...
           })?
           (children: [
-            _jsx_ | _primitive_ | _expression_,
+            _jsx_ | _expression_,
             ...
           ])?
         }
@@ -245,7 +246,7 @@
             ...
           })?
           (children: [
-            _jsx_ | _primitive_ | _expression_,
+            _jsx_ | _expression_,
             ...
           ])?
         }
@@ -295,7 +296,7 @@
             ...
           })?
           (children: [
-            _jsx_ | _primitive_ | _expression_,
+            _jsx_ | _expression_,
             ...
           ])?
         }

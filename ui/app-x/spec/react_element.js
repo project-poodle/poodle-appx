@@ -84,7 +84,6 @@ export const react_element = {
         {
           class: 'object',
           input: 'input/properties',
-          generate: 'generate(data)',
           parse: 'parse(node)',
         }
       ]
@@ -93,37 +92,16 @@ export const react_element = {
       name: 'children',
       desc: 'Child Elements',
       optional: true,
+      array: true,
       classes:
       [
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'jsx',
-            },
-            {
-              class: 'primitive',
-            },
-            {
-              class: 'expression',
-            }
-          ]
-        }
+          class: 'jsx',
+        },
       ],
       _childNode: [
         {
-          class: 'array',
-          array: true,
-          generate: ' \
-            thisData.children.map( \
-              child => generate(child) \
-            ) \
-          ',
-          parse: ' \
-            thisNode.children \
-              .filter(child => !child.data._ref) \
-              .map(child => parse(child)) \
-          ',
+          class: 'jsx',
         }
       ],
     },

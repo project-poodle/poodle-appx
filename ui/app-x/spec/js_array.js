@@ -17,23 +17,18 @@ export const js_array = {
       name: 'children',
       desc: 'Array Items',
       optional: true,
+      array: true,
       classes: [
         {
-          class: 'array',
-          classes: [
-            {
-              class: 'any',
-            }
-          ]
+          class: 'any',
         },
       ],
       _childNode: [
         {
-          class: 'array',
-          array: true,
-          generate: ' \
-            thisData.children.map(child => generate(child)) \
-          ',
+          class: 'any',
+          // generate: ' \
+          //   thisData.children.map(child => generate(child)) \
+          // ',
           parse: ' \
             thisNode.children.map(child => parse(child)) \
           ',
