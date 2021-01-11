@@ -352,7 +352,7 @@ const SyntaxAddDialog = (props) => {
                       }
                     })
                     .filter(name => !!name)
-                    return !!found || `Reference name for ${parentSpec.type} must be [ ${valid_names.join(", ")} ]`,
+                    return !!found || `Reference name for ${parentSpec.type} must be [ ${valid_names.join(', ')} ]`
                   }
                 },
               }}
@@ -426,16 +426,35 @@ const SyntaxAddDialog = (props) => {
               }
             />
             {
-              nodeSpec.children?.map(childSpec => {
+              nodeSpec?.children?.map(childSpec => {
+
                 childSpec._thisNode?.map(childThisSpec => {
                   return (
                     <Controller
                       name={childSpec.name}
                       control={control}
                       defaultValue=''
-                      rules={{
-                        required: "String value is required",
-                      }}
+                      rules={(() => {
+                        let count = 0
+                        const result = {}
+                        if (!!childSpec.rules) {
+                          childSpec.rules.map(rule => {
+                            if (rule.kind === 'required') {
+                              result['required'] = rule.message
+                            } else if (rule.kind === 'pattern') {
+                              result['pattern'] = {
+                                value: rule.pattern,
+                                message: rule.message,
+                              }
+                            } else if (rule.kind === 'validate') {
+                              result[`validate_${count}`] = (value) => (
+                                !!eval(rule.validate) || rule.message
+                              )
+                            }
+                          })
+                        }
+                        return result
+                      })()}
                       render={props =>
                         (
                           <FormControl className={styles.formControl}>
@@ -459,6 +478,7 @@ const SyntaxAddDialog = (props) => {
             }
 
                   {
+                    /*
                     (nodeType === 'js/number')
                     &&
                     (
@@ -491,8 +511,10 @@ const SyntaxAddDialog = (props) => {
                         }
                       />
                     )
+                    */
                   }
                   {
+                    /*
                     (nodeType === 'js/boolean')
                     &&
                     (
@@ -515,8 +537,10 @@ const SyntaxAddDialog = (props) => {
                         }
                       />
                     )
+                    */
                   }
                   {
+                    /*
                     (nodeType === 'js/expression')
                     &&
                     (
@@ -555,11 +579,10 @@ const SyntaxAddDialog = (props) => {
                         }
                       />
                     )
+                    */
                   }
-                </Box>
-              )
-            }
             {
+              /*
               (!!nodeType && nodeType == 'js/array')
               &&
               (
@@ -603,8 +626,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/object')
               &&
               (
@@ -648,8 +673,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/import')
               &&
               (
@@ -721,8 +748,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/statement')
               &&
               (
@@ -801,8 +830,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/function')
               &&
               (
@@ -897,8 +928,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/switch')
               &&
               (
@@ -942,8 +975,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/map')
               &&
               (
@@ -987,8 +1022,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/reduce')
               &&
               (
@@ -1100,8 +1137,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'js/filter')
               &&
               (
@@ -1178,8 +1217,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (
                 !!nodeType
                 &&
@@ -1296,8 +1337,10 @@ const SyntaxAddDialog = (props) => {
                   }
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'react/state')
               &&
               (
@@ -1427,8 +1470,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'react/context')
               &&
               (
@@ -1500,8 +1545,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'react/effect')
               &&
               (
@@ -1603,8 +1650,10 @@ const SyntaxAddDialog = (props) => {
                     />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'react/form')
               &&
               (
@@ -1742,8 +1791,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'input/text')
               &&
               (
@@ -1836,8 +1887,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'mui/style')
               &&
               (
@@ -1881,8 +1934,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'appx/api')
               &&
               (
@@ -2160,8 +2215,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (!!nodeType && nodeType == 'appx/route')
               &&
               (
@@ -2205,8 +2262,10 @@ const SyntaxAddDialog = (props) => {
                   />
                 </Box>
               )
+              */
             }
             {
+              /*
               (
                 !!props.addNodeParent?.children
                 && props.addNodeParent?.children.filter(child => child.data._ref === null).length > 0
@@ -2262,6 +2321,7 @@ const SyntaxAddDialog = (props) => {
                   }
                 />
               )
+              */
             }
           </DialogContent>
           <DialogActions>

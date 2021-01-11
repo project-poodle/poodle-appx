@@ -63,7 +63,7 @@ const types = [
   appx_route,
   // map
 ].map(item => ({
-  key: item.name,
+  key: item.type,
   value: item
 })).reduce(
   (accumulator, item) => { accumulator[item.key] = item.value; return accumulator; },

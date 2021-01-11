@@ -9,7 +9,8 @@ export const classes = {
     ],
     types: [
       'js/string',
-    ]
+    ],
+    // icon: 'app-x/icon.Text',
   },
   // number
   'number': {
@@ -18,7 +19,8 @@ export const classes = {
     ],
     types: [
       'js/number',
-    ]
+    ],
+    // icon: '@ant-design/icons.NumberOutlined',
   },
   // boolean
   'boolean': {
@@ -27,7 +29,8 @@ export const classes = {
     ],
     types: [
       'js/boolean',
-    ]
+    ],
+    // icon: '@ant-design/icons.PoweroffOutlined',
   },
   // null
   'null': {
@@ -36,7 +39,8 @@ export const classes = {
     ],
     types: [
       'js/null',
-    ]
+    ],
+    // icon: '@ant-design/icons.MinusCircleOutlined',
   },
   // primitive
   'primitive': {
@@ -45,7 +49,8 @@ export const classes = {
       'number',
       'boolean',
       'null',
-    ]
+    ],
+    // icon: '@ant-design/icons.MoreOutlined',
   },
   // array
   'array': {
@@ -54,7 +59,8 @@ export const classes = {
     ],
     types: [
       'js/array',
-    ]
+    ],
+    // icon: 'app-x/icon.Bracket',
   },
   // object
   'object': {
@@ -63,7 +69,8 @@ export const classes = {
     ],
     types: [
       'js/object',
-    ]
+    ],
+    // icon: 'app-x/icon.CurlyBracket',
   },
   // expression
   'expression': {
@@ -92,7 +99,8 @@ export const classes = {
       'react/context',
       'mui/style',
       'appx/route',
-    ]
+    ],
+    // icon: '@ant-design/icons.PercentageOutlined'
   },
   // statement
   'statement': {
@@ -103,7 +111,8 @@ export const classes = {
       'js/switch',
       'js/map',
       'appx/api',
-    ]
+    ],
+    // icon: 'app-x/icon.Code'
   },
   // jsx
   'jsx': {
@@ -120,7 +129,8 @@ export const classes = {
       'js/switch',
       'js/reduce',
       'js/filter',
-    ]
+    ],
+    // icon: 'app-x/icon.React'
   },
   // any
   'any': {
@@ -130,7 +140,8 @@ export const classes = {
       'object',
       'expression',
       'statement',
-    ]
+    ],
+    // icon: '@ant-design/icons.MenuOutlined'
   }
 }
 

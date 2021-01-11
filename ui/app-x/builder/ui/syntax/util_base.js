@@ -1,3 +1,56 @@
+import React from 'react'
+import {
+  Icon,
+  FileOutlined,
+  FileTextOutlined,
+  SwitcherOutlined,
+  QuestionCircleOutlined,
+  QuestionOutlined,
+  FieldStringOutlined,
+  NumberOutlined,
+  FullscreenExitOutlined,
+  FilterOutlined,
+  OrderedListOutlined,
+  UnorderedListOutlined,
+  PercentageOutlined,
+  PoweroffOutlined,
+  MinusCircleOutlined,
+  FormatPainterOutlined,
+  DoubleRightOutlined,
+  MenuOutlined,
+  MoreOutlined,
+  BranchesOutlined,
+  CompressOutlined,
+  // AppstoreAddOutlined,
+  MinusOutlined,
+  StopOutlined,
+  DashOutlined,
+  HomeOutlined,
+} from '@ant-design/icons'
+import { v4 as uuidv4 } from 'uuid'
+
+import ReactIcon from 'app-x/icon/React'
+import Html from 'app-x/icon/Html'
+import Import from 'app-x/icon/Import'
+import Text from 'app-x/icon/Text'
+import Css from 'app-x/icon/Css'
+import Bracket from 'app-x/icon/Bracket'
+import CurlyBracket from 'app-x/icon/CurlyBracket'
+import Calculator from 'app-x/icon/Calculator'
+import Function from 'app-x/icon/Function'
+import Code from 'app-x/icon/Code'
+import Branch from 'app-x/icon/Branch'
+import Route from 'app-x/icon/Route'
+import Effect from 'app-x/icon/Effect'
+import State from 'app-x/icon/State'
+import Form from 'app-x/icon/Form'
+import Context from 'app-x/icon/Context'
+import InputText from 'app-x/icon/InputText'
+import Filter from 'app-x/icon/Filter'
+import API from 'app-x/icon/API'
+import Style from 'app-x/icon/Style'
+import Pointer from 'app-x/icon/Pointer'
+
 const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
 
@@ -50,6 +103,41 @@ function parse_var_full_path(var_full_path) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+const lookup_icon_for_class = (cls) => {
+  if (cls === 'string') {
+    return <Text />
+  } else if (cls === 'number') {
+    return <NumberOutlined />
+  } else if (cls === 'boolean') {
+    return <PoweroffOutlined />
+  } else if (cls === 'null') {
+    return <MinusCircleOutlined />
+  } else if (cls === 'primitive') {
+    return <MoreOutlined />
+  } else if (cls === 'array') {
+    return <Bracket />
+  } else if (cls === 'object') {
+    return <CurlyBracket />
+  } else if (cls === 'expression') {
+    return <PercentageOutlined />
+  } else if (cls === 'statement') {
+    return <Code />
+  } else if (cls === 'jsx') {
+    return <ReactIcon />
+  } else if (cls === 'any') {
+    return <MenuOutlined />
+  } else {
+    return <QuestionOutlined />
+  }
+  /*
+  const spec = globalThis.appx?.SPEC?.classes[cls]
+  if (!spec || !spec.icon) {
+    return <QuestionOutlined />
+  }
+  const path = parse_var_full_path(spec.icon)
+  */
+}
 
 const groups = {
   // js basic
@@ -654,6 +742,7 @@ export {
   lookup_accepted_types_for_node,
   lookup_accepted_classnames_for_node,
   lookup_first_accepted_childSpec,
+  lookup_icon_for_class,
   // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
