@@ -28,12 +28,10 @@ export const appx_route = {
           message: 'Router path is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
   ]
 }

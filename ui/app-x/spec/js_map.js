@@ -24,18 +24,13 @@ export const js_map = {
           class: 'expression'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'expression',
-          input: 'input/expression',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
+      _childNode: {
+        class: 'expression',
+      },
     },
     {
       name: 'result',
@@ -48,22 +43,13 @@ export const js_map = {
           class: 'statement'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'expression',
-          input: 'input/expression',
-        },
-        {
-          class: 'statement',
-          input: 'input/statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
+      _childNode: {
+        class: 'any',
+      },
     },
   ]
 }

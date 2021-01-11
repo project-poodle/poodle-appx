@@ -37,32 +37,30 @@ export const react_element = {
           message: 'Element name is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          suggestions: [
-            {
-              __class: 'js/call',
-              name: {
-                __class: 'js/import',
-                name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
-              }
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        suggestions: [
+          {
+            __class: 'js/call',
+            name: {
+              __class: 'js/import',
+              name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
             }
-          ],
-          examples: [
-            '@material-ui/core.Box',
-            '@material-ui/core.Grid',
-            '@material-ui/core.TextField',
-            '@material-ui/icons.AddCircleOutline',
-            '@material-ui/icons.RemoveCircleOutline',
-            'antd.Layout.Header',
-            'antd.Layout.Footer',
-            'antd.Layout.Sider',
-            'antd.Layout.Content',
-          ],
-        },
-      ],
+          }
+        ],
+        examples: [
+          '@material-ui/core.Box',
+          '@material-ui/core.Grid',
+          '@material-ui/core.TextField',
+          '@material-ui/icons.AddCircleOutline',
+          '@material-ui/icons.RemoveCircleOutline',
+          'antd.Layout.Header',
+          'antd.Layout.Footer',
+          'antd.Layout.Sider',
+          'antd.Layout.Content',
+        ],
+      },
     },
     {
       name: 'props',
@@ -79,12 +77,10 @@ export const react_element = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/properties',
+      },
     },
     {
       name: 'children',
@@ -97,11 +93,9 @@ export const react_element = {
           class: 'jsx',
         },
       ],
-      _childNode: [
-        {
-          class: 'jsx',
-        }
-      ],
+      _childNode: {
+        class: 'jsx',
+      },
     },
   ]
 }

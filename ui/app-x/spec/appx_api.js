@@ -35,12 +35,10 @@ export const appx_api = {
           message: 'Namespace is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
     {
       name: 'app_name',
@@ -57,12 +55,10 @@ export const appx_api = {
           message: 'App name is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode:{
+        class: 'string',
+        input: 'input/text',
+      },
     },
     {
       name: 'method',
@@ -79,20 +75,18 @@ export const appx_api = {
           message: 'Method is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          options: [
-            "get",
-            "post",
-            "put",
-            "delete",
-            "head",
-            "patch",
-          ]
-        }
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        options: [
+          "get",
+          "post",
+          "put",
+          "delete",
+          "head",
+          "patch",
+        ]
+      }
     },
     {
       name: 'endpoint',
@@ -109,12 +103,10 @@ export const appx_api = {
           message: 'Endpoint is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
     {
       name: 'data',
@@ -128,17 +120,13 @@ export const appx_api = {
           class: 'expression'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'expression',
-        }
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
+      _childNode: {
+        class: 'expression',
+      },
     },
     {
       name: 'init',
@@ -152,17 +140,13 @@ export const appx_api = {
           class: 'statement',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement'
-        }
-      ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement'
+      },
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'result',
@@ -176,17 +160,13 @@ export const appx_api = {
           class: 'statement',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement'
-        }
-      ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement'
+      },
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'error',
@@ -200,17 +180,13 @@ export const appx_api = {
           class: 'statement',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement'
-        }
-      ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement'
+      },
+      _childNode: {
+        class: 'statement',
+      },
     },
   ]
 }

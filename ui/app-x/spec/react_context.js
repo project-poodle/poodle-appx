@@ -29,24 +29,22 @@ export const react_context = {
           message: 'Context name is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          suggestions: [
-            {
-              __class: 'js/call',
-              name: {
-                __class: 'js/import',
-                name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
-              }
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        suggestions: [
+          {
+            __class: 'js/call',
+            name: {
+              __class: 'js/import',
+              name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
             }
-          ],
-          examples: [
-            'app-x/builder/ui/NavProvider.Context',
-          ],
-        },
-      ],
+          }
+        ],
+        examples: [
+          'app-x/builder/ui/NavProvider.Context',
+        ],
+      },
     },
   ]
 }

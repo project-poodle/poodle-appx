@@ -21,12 +21,10 @@ export const js_object = {
           class: 'any',
         },
       ],
-      _childNode: [
-        {
-          class: 'any',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'any',
+        input: 'input/properties',
+      },
     },
   ]
 }

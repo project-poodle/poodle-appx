@@ -21,12 +21,10 @@ export const js_string = {
           class: 'string'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
   ]
 }

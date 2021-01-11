@@ -22,18 +22,13 @@ export const js_filter = {
           class: 'expression'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'expression',
-          input: 'input/expression',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
+      _childNode: {
+        class: 'expression',
+      },
     },
     {
       name: 'filter',
@@ -43,12 +38,10 @@ export const js_filter = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
     },
   ]
 }

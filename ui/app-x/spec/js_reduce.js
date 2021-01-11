@@ -23,18 +23,13 @@ export const js_reduce = {
           class: 'expression'
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'expression',
-          input: 'input/expression',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
+      _childNode: {
+        class: 'expression',
+      },
     },
     {
       name: 'reducer',
@@ -44,12 +39,10 @@ export const js_reduce = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
     },
     {
       name: 'init',
@@ -60,12 +53,10 @@ export const js_reduce = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
     },
   ]
 }

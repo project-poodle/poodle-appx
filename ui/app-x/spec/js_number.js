@@ -21,12 +21,10 @@ export const js_number = {
           class: 'number'
         },
       ],
-      _thisNode: [
-        {
-          class: 'number',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'number',
+        input: 'input/text',
+      },
     },
   ]
 }

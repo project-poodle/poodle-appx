@@ -22,12 +22,10 @@ export const mui_style = {
           class: 'any',
         },
       ],
-      _childNode: [
-        {
-          class: 'any',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'any',
+        input: 'input/properties',
+      },
     },
   ]
 }

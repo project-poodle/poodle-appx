@@ -58,58 +58,56 @@ export const js_switch = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'any',
-          generate: ' \
-            (() => { \
-              const node = generate(data.result); \
-              node.data._isDefault = false; \
-              node.data._condition = data.condition; \
-              return node \
-            })() \
-          ',
-          parse: ' \
-            (() => ({ \
-              condition: node.data._condition, \
-              result: parse(node) \
-            }))() \
-          ',
-          customs: [
-            {
-              name: '_ref',
-              hidden: true,
-              default: null,
-            },
-            {
-              name: '_isDefault',
-              desc: 'Is Default',
-              input: 'input/switch',
-              default: false,
-            },
-            {
-              name: '_condition',
-              desc: 'Condition',
-              condition: '!form.watch("_isDefault")',
-              input: 'input/expression',
-              default: '',
-            },
-          ],
-          effects: [
-            {
-              body: ' \
-              form.setValue("_ref", \
-                !!form.getValues("_isDefault") \
-                  ? "default" \
-                  : null); \
-              ',
-              states: [
-                'form.watch("_isDefault")'
-              ]
-            }
-          ]
-        }
-      ]
+      _childNode: {
+        class: 'any',
+        generate: ' \
+          (() => { \
+            const node = generate(data.result); \
+            node.data._isDefault = false; \
+            node.data._condition = data.condition; \
+            return node \
+          })() \
+        ',
+        parse: ' \
+          (() => ({ \
+            condition: node.data._condition, \
+            result: parse(node) \
+          }))() \
+        ',
+        customs: [
+          {
+            name: '_ref',
+            hidden: true,
+            default: null,
+          },
+          {
+            name: '_isDefault',
+            desc: 'Is Default',
+            input: 'input/switch',
+            default: false,
+          },
+          {
+            name: '_condition',
+            desc: 'Condition',
+            condition: '!form.watch("_isDefault")',
+            input: 'input/expression',
+            default: '',
+          },
+        ],
+        effects: [
+          {
+            body: ' \
+            form.setValue("_ref", \
+              !!form.getValues("_isDefault") \
+                ? "default" \
+                : null); \
+            ',
+            states: [
+              'form.watch("_isDefault")'
+            ]
+          }
+        ]
+      },
     },
     {
       name: 'default',
@@ -123,53 +121,51 @@ export const js_switch = {
           class: 'statement'
         },
       ],
-      _childNode: [
-        {
-          class: 'any',
-          generate: ' \
-            (() => { \
-              const node = generate(data); \
-              node.data._isDefault = true; \
-              node.data._condition = ""; \
-              return node \
-            })() \
-          ',
-          parse: 'parse(node)',
-          customs: [
-            {
-              name: '_ref',
-              hidden: true,
-              default: 'default'
-            },
-            {
-              name: '_isDefault',
-              desc: 'Is Default',
-              input: 'input/switch',
-              default: true
-            },
-            {
-              name: '_condition',
-              desc: 'Condition',
-              condition: '!form.watch("_isDefault")',
-              input: 'input/expression',
-              default: ''
-            },
-          ],
-          effects: [
-            {
-              body: ' \
-                form.setValue("_ref", \
-                  !!form.getValues("_isDefault") \
-                    ? "default" \
-                    : null); \
-              ',
-              states: [
-                'form.watch("_isDefault")'
-              ]
-            }
-          ]
-        },
-      ],
+      _childNode: {
+        class: 'any',
+        generate: ' \
+          (() => { \
+            const node = generate(data); \
+            node.data._isDefault = true; \
+            node.data._condition = ""; \
+            return node \
+          })() \
+        ',
+        parse: 'parse(node)',
+        customs: [
+          {
+            name: '_ref',
+            hidden: true,
+            default: 'default'
+          },
+          {
+            name: '_isDefault',
+            desc: 'Is Default',
+            input: 'input/switch',
+            default: true
+          },
+          {
+            name: '_condition',
+            desc: 'Condition',
+            condition: '!form.watch("_isDefault")',
+            input: 'input/expression',
+            default: ''
+          },
+        ],
+        effects: [
+          {
+            body: ' \
+              form.setValue("_ref", \
+                !!form.getValues("_isDefault") \
+                  ? "default" \
+                  : null); \
+            ',
+            states: [
+              'form.watch("_isDefault")'
+            ]
+          }
+        ]
+      },
     },
   ],
 }

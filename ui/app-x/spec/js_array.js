@@ -22,11 +22,9 @@ export const js_array = {
           class: 'any',
         },
       ],
-      _childNode: [
-        {
-          class: 'any',
-        }
-      ]
+      _childNode: {
+        class: 'any',
+      },
     },
   ]
 }

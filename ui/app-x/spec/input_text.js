@@ -32,12 +32,10 @@ export const input_text = {
           message: 'Input name is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
     {
       name: 'array',
@@ -48,12 +46,10 @@ export const input_text = {
           class: 'boolean'
         },
       ],
-      _thisNode: [
-        {
-          class: 'boolean',
-          input: 'input/switch',
-        },
-      ],
+      _thisNode: {
+        class: 'boolean',
+        input: 'input/switch',
+      },
     },
     {
       name: 'props',
@@ -70,12 +66,10 @@ export const input_text = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/properties',
+      },
     },
     {
       name: 'rules',
@@ -92,12 +86,10 @@ export const input_text = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/rules',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/rules',
+      },
     },
   ]
 }

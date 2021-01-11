@@ -28,30 +28,28 @@ export const js_import = {
           message: 'Import name is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          suggestions: [
-            {
-              __class: 'js/call',
-              name: {
-                __class: 'js/import',
-                name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
-              }
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        suggestions: [
+          {
+            __class: 'js/call',
+            name: {
+              __class: 'js/import',
+              name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
             }
-          ],
-          examples: [
-            'react',
-            'react-dom',
-            'react.useState',
-            'app-x/router.A',
-            'app-x/router.navigate',
-            '@material-ui/icons.AddCircleOutline',
-            '@material-ui/icons.RemoveCircleOutline',
-          ],
-        },
-      ],
+          }
+        ],
+        examples: [
+          'react',
+          'react-dom',
+          'react.useState',
+          'app-x/router.A',
+          'app-x/router.navigate',
+          '@material-ui/icons.AddCircleOutline',
+          '@material-ui/icons.RemoveCircleOutline',
+        ],
+      },
     },
   ]
 }

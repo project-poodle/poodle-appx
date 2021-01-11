@@ -68,12 +68,10 @@ export const react_html = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/properties',
+      },
     },
     {
       name: 'children',
@@ -86,11 +84,9 @@ export const react_html = {
           class: 'jsx',
         },
       ],
-      _childNode: [
-        {
-          class: 'jsx',
-        }
-      ]
+      _childNode: {
+        class: 'jsx',
+      },
     },
   ]
 }

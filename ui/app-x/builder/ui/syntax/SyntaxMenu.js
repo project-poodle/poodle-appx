@@ -115,44 +115,44 @@ const SyntaxMenu = (props) => {
 
   // create menu items
   function create_menu_items(spec) {
-    return spec
-      ._childNode
-      ?.map(childSpec => {
-        // console.log(`childSpec.class`, childSpec.class)
-        const valid_types = lookup_types_by_class(childSpec.class)
-        // console.log(`valid_types`, valid_types)
-        const groups = lookup_groups()
-        return groups.map(group => {
-          return lookup_types_by_group(group)
-            .map(group_type => {
-              if (valid_types.includes(group_type)) {
-                // console.log(`group_type [${group}] ${group_type}`)
-                return (
-                  <MenuItem
-                    dense={true}
-                    className={styles.menuItem}
-                    key={group_type}
-                    onClick={
-                      () => props.addMenuClicked({
-                        nodeRef: spec.name,
-                        nodeKey: parentNode.key,
-                        nodeType: group_type,
-                      })
-                    }
-                    >
-                    <ListItemIcon>
-                      { lookup_icon_for_type(group_type) }
-                    </ListItemIcon>
-                    <ListItemText primary={`Add ${group_type}`} />
-                  </MenuItem>
-                )
-              }
-            })
-            .filter(item => !!item)
-            .concat(`divider/${group}`)
-            // remove first divider item
-            .filter((item, index, array) => !((index === 0) && (typeof item === 'string') && (item.startsWith('divider'))))
-        })
+      if (!spec._childNode?.class) {
+        return
+      }
+      const childNodeSpec = spec._childNode
+      // console.log(`childNodeSpec.class`, childNodeSpec.class)
+      const valid_types = lookup_types_by_class(childNodeSpec.class)
+      // console.log(`valid_types`, valid_types)
+      const groups = lookup_groups()
+      return groups.map(group => {
+        return lookup_types_by_group(group)
+          .map(group_type => {
+            if (valid_types.includes(group_type)) {
+              // console.log(`group_type [${group}] ${group_type}`)
+              return (
+                <MenuItem
+                  dense={true}
+                  className={styles.menuItem}
+                  key={group_type}
+                  onClick={
+                    () => props.addMenuClicked({
+                      nodeRef: spec.name,
+                      nodeKey: parentNode.key,
+                      nodeType: group_type,
+                    })
+                  }
+                  >
+                  <ListItemIcon>
+                    { lookup_icon_for_type(group_type) }
+                  </ListItemIcon>
+                  <ListItemText primary={`Add ${group_type}`} />
+                </MenuItem>
+              )
+            }
+          })
+          .filter(item => !!item)
+          .concat(`divider/${group}`)
+          // remove first divider item
+          .filter((item, index, array) => !((index === 0) && (typeof item === 'string') && (item.startsWith('divider'))))
       })
       .flat(2)
       // remove last divider item

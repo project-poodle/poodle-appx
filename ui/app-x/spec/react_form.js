@@ -40,12 +40,10 @@ export const react_form = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+      },
     },
     {
       name: 'onSubmit',
@@ -59,17 +57,13 @@ export const react_form = {
           class: 'statement',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement',
+      },
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'onError',
@@ -83,17 +77,13 @@ export const react_form = {
           class: 'statement',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        },
-      ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement',
+      },
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'props',
@@ -110,12 +100,10 @@ export const react_form = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/properties',
+      },
     },
     {
       name: 'formProps',
@@ -132,12 +120,10 @@ export const react_form = {
           ]
         }
       ],
-      _childNode: [
-        {
-          class: 'object',
-          input: 'input/properties',
-        }
-      ]
+      _childNode: {
+        class: 'object',
+        input: 'input/properties',
+      },
     },
     {
       name: 'children',
@@ -150,11 +136,9 @@ export const react_form = {
           class: 'jsx',
         },
       ],
-      _childNode: [
-        {
-          class: 'jsx',
-        }
-      ]
+      _childNode: {
+        class: 'jsx',
+      },
     },
   ]
 }

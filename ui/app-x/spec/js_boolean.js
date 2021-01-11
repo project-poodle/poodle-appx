@@ -21,12 +21,10 @@ export const js_boolean = {
           class: 'boolean'
         },
       ],
-      _thisNode: [
-        {
-          class: 'boolean',
-          input: 'input/switch',
-        },
-      ],
+      _thisNode: {
+        class: 'boolean',
+        input: 'input/switch',
+      },
     },
   ]
 }

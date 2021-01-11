@@ -26,11 +26,9 @@ export const react_effect = {
           class: 'statement',
         },
       ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ],
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'code',
@@ -41,12 +39,10 @@ export const react_effect = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement',
+      },
     },
     {
       name: 'states',
@@ -58,14 +54,12 @@ export const react_effect = {
           class: 'string',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-          generate: 'data.map(item => ({ value: item }))',
-          parse: 'nodeData.map(item => item.value)',
-        }
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+        generate: 'data.map(item => ({ value: item }))',
+        parse: 'nodeData.map(item => item.value)',
+      },
     },
   ]
 }

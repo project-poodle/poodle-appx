@@ -590,119 +590,109 @@ function generate_tree_node(js_context, conf, input) {
     // function to process _thisNode spec
     function _process_this(_ref, data) {
       // look for thisNodeSpec that matches data
-      let found = false
-      let resultNode = undefined
-      childSpec._thisNode.map(thisNodeSpec => {
-        // return if found
-        if (found) {
-          return
-        }
-        // get class spec
-        const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
-        if (!classSpec) {
-          throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
-        }
-        // check if data matches spec
-        const data_type = lookup_type_by_data(data)
-        if (!type_matches_spec(data_type, thisNodeSpec)) {
-          // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
-          return
-        } else {
-          // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisNodeSpec)}]`)
-          found = true
-        }
-        // add to current node
-        if (!!thisNodeSpec.generate) {
-          resultNode = eval(thisNodeSpec.generate)
-        } else if (!!childSpec.array) {
-          throw new Error(`ERROR: thisNodeSpec [childSpec.array] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
-        } else if (thisNodeSpec.class === 'string') {
-          if (isPrimitive(data)) {
-            resultNode = data
-          } else if (data._type === 'js/expression') {
-            resultNode = data.data
-          } else if (data._type === 'js/import') {
-            resultNode = data.name
-          } else if (data._type === 'js/statement') {
-            if (isPrimitive(data.body)) {
-              resultNode = data.body
-            } else {
-              resultNode = undefined
-            }
+      if (!childSpec?._thisNode?.class) {
+        return undefined
+      }
+      // thisNodeSpec
+      const thisNodeSpec = childSpec._thisNode
+      // get class spec
+      const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
+      if (!classSpec) {
+        throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
+      }
+      // check if data matches spec
+      const data_type = lookup_type_by_data(data)
+      if (!type_matches_spec(data_type, thisNodeSpec)) {
+        // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+        return undefined
+      } else {
+        // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisNodeSpec)}]`)
+      }
+      // add to current node
+      if (!!thisNodeSpec.generate) {
+        return eval(thisNodeSpec.generate)
+      } else if (!!childSpec.array) {
+        throw new Error(`ERROR: thisNodeSpec [childSpec.array] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+      } else if (thisNodeSpec.class === 'string') {
+        if (isPrimitive(data)) {
+          return String(data)
+        } else if (data._type === 'js/expression') {
+          return data.data
+        } else if (data._type === 'js/import') {
+          return data.name
+        } else if (data._type === 'js/statement') {
+          if (isPrimitive(data.body)) {
+            return data.body
           } else {
-            throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+            return undefined
           }
-        } else if (thisNodeSpec.class === 'number') {
-          resultNode = isPrimitive(data) ? data : data.data
-        } else if (thisNodeSpec.class === 'boolean') {
-          resultNode = isPrimitive(data) ? data : data.data
-        } else if (thisNodeSpec.class === 'null') {
-          // found = true
         } else {
           throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
         }
-      })
-      // return
-      return resultNode
+      } else if (thisNodeSpec.class === 'number') {
+        return isPrimitive(data) ? Number(data) : Number(data.data)
+      } else if (thisNodeSpec.class === 'boolean') {
+        return isPrimitive(data) ? Boolean(data) : Boolean(data.data)
+      } else if (thisNodeSpec.class === 'null') {
+        return null
+      } else {
+        throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+      }
     }
 
     // function to process _childNode spec
     function _process_child(_ref, data, array) {
       // look for checkNodeSpec that matches data
-      let found = false
+      if (!childSpec?._childNode?.class) {
+        return undefined
+      }
+      // get class spec
+      const childNodeSpec = childSpec._childNode
+      const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
+      if (!classSpec) {
+        throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
+      }
+      // check if data matches spec
+      const data_type = lookup_type_by_data(data)
+      if (!type_matches_spec(data_type, childNodeSpec)) {
+        // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
+        return undefined
+      } else {
+        // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childNodeSpec)}]`)
+      }
+      // generate function
+      const generate = (data) => {
+        return generate_tree_node(
+          js_context,
+          {
+            ref: _ref,
+            array: !!childSpec.array,
+            parentKey: thisNode.key,
+            parentChildSpec: childSpec,
+          },
+          data
+        )
+      }
+      // check generate definition
       let resultNode = undefined
-      childSpec._childNode.map(childNodeSpec => {
-        // return if found
-        if (found) {
-          return
-        }
-        // get class spec
-        const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
-        if (!classSpec) {
-          throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
-        }
-        // check if data matches spec
-        const data_type = lookup_type_by_data(data)
-        if (!type_matches_spec(data_type, childNodeSpec)) {
-          // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
-          return
-        } else {
-          // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childNodeSpec)}]`)
-          found = true
-        }
-        // generate function
-        const generate = (data) => {
-          return generate_tree_node(
-            js_context,
-            {
-              ref: _ref,
-              array: !!childSpec.array,
-              parentKey: thisNode.key,
-              parentChildSpec: childNodeSpec,
-            },
-            data
-          )
-        }
-        // check generate definition
-        if (!!childNodeSpec.generate) {
-          // generate child node
-          resultNode = eval(childNodeSpec.generate)
-          // console.log(`resultNode [eval]`, resultNode)
-        } else {
-          resultNode = generate_tree_node(
-            js_context,
-            {
-              ref: _ref,
-              array: !!childSpec.array,
-              parentKey: thisNode.key,
-              parentChildSpec: childNodeSpec,
-            },
-            data
-          )
-        }
-        // set _array flag
-        resultNode.data._array = !!childSpec.array
-      })
+      if (!!childNodeSpec.generate) {
+        // generate child node
+        resultNode = eval(childNodeSpec.generate)
+        // console.log(`resultNode [eval]`, resultNode)
+      } else {
+        resultNode = generate_tree_node(
+          js_context,
+          {
+            ref: _ref,
+            array: !!childSpec.array,
+            parentKey: thisNode.key,
+            parentChildSpec: childSpec,
+          },
+          data
+        )
+      }
+      // set _array flag
+      resultNode.data._array = !!childSpec.array
       // return
       return resultNode
     }

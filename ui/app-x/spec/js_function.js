@@ -33,14 +33,12 @@ export const js_function = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          generate: 'data.map(item => ({ value: item }))',
-          parse: 'nodeData.map(item => item.value)',
-        }
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        generate: 'data.map(item => ({ value: item }))',
+        parse: 'nodeData.map(item => item.value)',
+      },
     },
     {
       name: 'body',
@@ -52,11 +50,9 @@ export const js_function = {
           class: 'statement',
         },
       ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ],
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'code',
@@ -67,12 +63,10 @@ export const js_function = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement',
+      }
     }
   ]
 }

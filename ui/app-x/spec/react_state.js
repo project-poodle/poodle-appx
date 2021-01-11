@@ -52,20 +52,18 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          examples: [
-            'open',
-            'show',
-            'loaded',
-            'sideNavOpen',
-            'previewEnabled',
-            'peerConnected',
-          ],
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        examples: [
+          'open',
+          'show',
+          'loaded',
+          'sideNavOpen',
+          'previewEnabled',
+          'peerConnected',
+        ],
+      },
     },
     {
       name: 'setter',
@@ -87,20 +85,18 @@ export const react_state = {
           message: 'Must be a valid variable name',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/text',
-          examples: [
-            'setOpen',
-            'setShow',
-            'setLoaded',
-            'setSideNavOpen',
-            'setPreviewEnabled',
-            'setPeerConnected',
-          ],
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/text',
+        examples: [
+          'setOpen',
+          'setShow',
+          'setLoaded',
+          'setSideNavOpen',
+          'setPreviewEnabled',
+          'setPeerConnected',
+        ],
+      },
     },
     {
       name: 'init',
@@ -111,24 +107,22 @@ export const react_state = {
           class: 'string'
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-          examples: [
-            null,
-            true,
-            false,
-            'START',
-            [],
-            {},
-            {
-              initialized: false,
-              data: [],
-            },
-          ],
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+        examples: [
+          null,
+          true,
+          false,
+          'START',
+          [],
+          {},
+          {
+            initialized: false,
+            data: [],
+          },
+        ],
+      },
     },
   ]
 }

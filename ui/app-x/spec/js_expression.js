@@ -28,12 +28,10 @@ export const js_expression = {
           message: 'Expression is required',
         },
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/expression',
-        },
-      ],
+      _thisNode: {
+        class: 'string',
+        input: 'input/expression',
+      },
     },
   ]
 }

@@ -360,22 +360,18 @@ const lookup_accepted_types_for_node = (node) => {
   // compute accepted types
   let accepted_types = []
   spec.children?.map(childSpec => {
-    if (!childSpec._childNode) {
+    if (!childSpec._childNode?.class) {
       return
     }
-    childSpec._childNode.map(childNodeSpec => {
-      if (!childNodeSpec.class) {
-        return
-      }
-      let types = lookup_types_by_class(childNodeSpec.class)
-      if (!!childNodeSpec.includes) {
-        types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
-      }
-      if (!!childNodeSpec.excludes) {
-        types = types.filter(type => !childNodeSpec.excludes.includes(type))
-      }
-      accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
-    })
+    const childNodeSpec = childSpec._childNode
+    let types = lookup_types_by_class(childNodeSpec.class)
+    if (!!childNodeSpec.includes) {
+      types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
+    }
+    if (!!childNodeSpec.excludes) {
+      types = types.filter(type => !childNodeSpec.excludes.includes(type))
+    }
+    accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
   })
   return accepted_types
 }
@@ -406,26 +402,22 @@ const lookup_first_accepted_childSpec = (node, type) => {
     if (!!accepted_childSpec) {
       return // if already found
     }
-    if (!childSpec._childNode) {
+    if (!childSpec._childNode?.class) {
       return
     }
-    childSpec._childNode.map(childNodeSpec => {
-      if (!childNodeSpec.class) {
-        return
-      }
-      let types = lookup_types_by_class(childNodeSpec.class)
-      if (!!childNodeSpec.includes) {
-        types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
-      }
-      if (!!childNodeSpec.excludes) {
-        types = types.filter(type => !childNodeSpec.excludes.includes(type))
-      }
-      accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
-      // check if matches
-      if (accpted_types.includes(type)) {
-        accepted_childSpec = childSpec
-      }
-    })
+    const childNodeSpec = childSpec._childNode
+    let types = lookup_types_by_class(childNodeSpec.class)
+    if (!!childNodeSpec.includes) {
+      types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
+    }
+    if (!!childNodeSpec.excludes) {
+      types = types.filter(type => !childNodeSpec.excludes.includes(type))
+    }
+    accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
+    // check if matches
+    if (accpted_types.includes(type)) {
+      accepted_childSpec = childSpec
+    }
   })
   // return
   return accepted_childSpec

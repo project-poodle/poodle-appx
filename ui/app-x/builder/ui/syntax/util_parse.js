@@ -154,54 +154,47 @@ function parse_tree_node(tree_context, treeNode) {
   // process children (not including '*')
   spec.children.map((childSpec) => {
 
+    // proces this node
     function _process_this(_ref, node) {
       // node data
       const nodeData = node.data[_ref]
       // update data if _thisNode is defined
-      if (!!childSpec._thisNode) {
-        // look for thisNodeSpec that matches data
-        let found = false
-        let child = undefined
-        childSpec._thisNode.map(thisNodeSpec => {
-          // return if found
-          if (found) {
-            return
-          }
-          // get class spec
-          const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
-          if (!classSpec) {
-            throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
-          }
-          // check if data matches spec
-          const data_type = lookup_type_by_data(nodeData)
-          if (!type_matches_spec(data_type, thisNodeSpec)) {
-            // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
-            return
-          } else {
-            // console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
-            found = true
-          }
-          // parse data
-          if (!!thisNodeSpec.parse) {
-            child = eval(thisNodeSpec.parse)
-          } else if (!!thisNodeSpec.array) {
-            throw new Error(`ERROR: thisNodeSpec [array] missing parse method [${JSON.stringify(thisNodeSpec)}]`)
-          } else if (thisNodeSpec.class === 'string') {
-            child = String(node.data[_ref])
-          } else if (thisNodeSpec.class === 'number') {
-            child = Number(node.data[_ref])
-          } else if (thisNodeSpec.class === 'boolean') {
-            child = Boolean(node.data[_ref])
-          } else if (thisNodeSpec.class === 'null') {
-            child = null
-          } else {
-            throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
-          }
-        })
-        return child
+      if (!childSpec?._thisNode?.class) {
+        return undefined
+      }
+      const thisNodeSpec = childSpec._thisNode
+      // get class spec
+      const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
+      if (!classSpec) {
+        throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
+      }
+      // check if data matches spec
+      const data_type = lookup_type_by_data(nodeData)
+      if (!type_matches_spec(data_type, thisNodeSpec)) {
+        // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+        return undefined
+      } else {
+        // console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
+      }
+      // parse data
+      if (!!thisNodeSpec.parse) {
+        return eval(thisNodeSpec.parse)
+      } else if (!!thisNodeSpec.array) {
+        throw new Error(`ERROR: thisNodeSpec [array] missing parse method [${JSON.stringify(thisNodeSpec)}]`)
+      } else if (thisNodeSpec.class === 'string') {
+        return String(node.data[_ref])
+      } else if (thisNodeSpec.class === 'number') {
+        return Number(node.data[_ref])
+      } else if (thisNodeSpec.class === 'boolean') {
+        return Boolean(node.data[_ref])
+      } else if (thisNodeSpec.class === 'null') {
+        return null
+      } else {
+        throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
       }
     }
 
+    // process child node
     function _process_child(node) {
       // node data
       const nodeData = node.data
@@ -211,52 +204,30 @@ function parse_tree_node(tree_context, treeNode) {
       }
 
       // update data if _childNode is defined
-      if (!!childSpec._childNode) {
-        // look for checkNodeSpec that matches data
-        let found = false
-        let child = undefined
-        childSpec._childNode.map(childNodeSpec => {
-          // return if found
-          if (found) {
-            return
-          }
-          // get class spec
-          const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
-          if (!classSpec) {
-            throw new Error(`ERROR: childNodeSpec not found [childNodeSpec.class]`)
-          }
-          // check if data matches spec
-          if (!type_matches_spec(node.data._type, childNodeSpec)) {
-            // console.log(`parse.childNodeSpec NO MATCH : [${node.data._type}] [${JSON.stringify(nodeData)}] not matching [${JSON.stringify(childNodeSpec)}]`)
-            return
-          } else {
-            // console.log(`parse.childNodeSpec MATCHES : [${node.data._type}] [${JSON.stringify(nodeData)}] matching [${JSON.stringify(childNodeSpec)}]`)
-            found = true
-          }
-          // parse child node
-          // if (!!childNodeSpec.array) {
-          //   // console.log(`childSpec._childNode [array]`, childSpec._childNode)
-          //   // check parse definition
-          //   if (!!childNodeSpec.parse) {
-          //     // console.log(childSpec._childNode.parse)
-          //     child = eval(childNodeSpec.parse)
-          //     // console.log(`children`, children)
-          //   } else {
-          //     throw new Error(`ERROR: childNodeSpec [array] missing parse method [${JSON.stringify(childNodeSpec)}]`)
-          //   }
-          // } else {
-          // check parse definition
-          if (!!childNodeSpec.parse) {
-            // parse child node
-            // console.log(`childNodeSpec.parse`, childNodeSpec.parse, node)
-            child = eval(childNodeSpec.parse)
-            // console.log(`childNodeSpec.parse`, node, child)
-          } else {
-            child = parse_tree_node(child_context, node)
-          }
-          // }
-        })
-        return child
+      if (!childSpec?._childNode?.class) {
+        return undefined
+      }
+      // look for checkNodeSpec that matches data
+      const childNodeSpec = childSpec._childNode
+      // get class spec
+      const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
+      if (!classSpec) {
+        throw new Error(`ERROR: childNodeSpec not found [childNodeSpec.class]`)
+      }
+      // check if data matches spec
+      if (!type_matches_spec(node.data._type, childNodeSpec)) {
+        // console.log(`parse.childNodeSpec NO MATCH : [${node.data._type}] [${JSON.stringify(nodeData)}] not matching [${JSON.stringify(childNodeSpec)}]`)
+        return undefined
+      } else {
+        // console.log(`parse.childNodeSpec MATCHES : [${node.data._type}] [${JSON.stringify(nodeData)}] matching [${JSON.stringify(childNodeSpec)}]`)
+      }
+      if (!!childNodeSpec.parse) {
+        // parse child node
+        // console.log(`childNodeSpec.parse`, childNodeSpec.parse, node)
+        return eval(childNodeSpec.parse)
+        // console.log(`childNodeSpec.parse`, node, child)
+      } else {
+        return parse_tree_node(child_context, node)
       }
     }
 

@@ -23,11 +23,9 @@ export const js_statement = {
           class: 'statement',
         },
       ],
-      _childNode: [
-        {
-          class: 'statement',
-        }
-      ],
+      _childNode: {
+        class: 'statement',
+      },
     },
     {
       name: 'code',
@@ -38,12 +36,10 @@ export const js_statement = {
           class: 'string',
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/statement',
-        }
-      ]
+      _thisNode: {
+        class: 'string',
+        input: 'input/statement',
+      },
     }
   ]
 }
