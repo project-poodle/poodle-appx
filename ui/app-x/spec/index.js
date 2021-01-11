@@ -70,7 +70,7 @@ const types = [
   {}
 )
 
-// defint unique
+// define unique
 Object.defineProperty(Array.prototype, 'unique', {
   enumerable: false,
   configurable: false,

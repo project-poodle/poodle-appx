@@ -118,7 +118,7 @@ function parse_tree_node(tree_context, treeNode) {
         }
       })
       // log
-      console.log(`parse_tree_node`, result)
+      // console.log(`parse_tree_node`, result)
       // return
       return {
         ref: null,

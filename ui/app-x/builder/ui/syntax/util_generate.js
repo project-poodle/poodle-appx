@@ -3,28 +3,16 @@ import {
   Icon,
   FileOutlined,
   FileTextOutlined,
-  // ContainerOutlined,
-  // CodepenOutlined,
   SwitcherOutlined,
   QuestionCircleOutlined,
   QuestionOutlined,
   FieldStringOutlined,
   NumberOutlined,
-  // SmallDashOutlined,
-  // SwapOutlined,
   FullscreenExitOutlined,
   FilterOutlined,
   OrderedListOutlined,
   UnorderedListOutlined,
-  // MenuOutlined,
-  // ApartmentOutlined,
   PercentageOutlined,
-  // ImportOutlined,
-  // FunctionOutlined,
-  // FontSizeOutlined,
-  // DatabaseOutlined,
-  // UngroupOutlined,
-  // SisternodeOutlined,
   PoweroffOutlined,
   MinusCircleOutlined,
   FormatPainterOutlined,
@@ -37,14 +25,9 @@ import {
   DashOutlined,
   HomeOutlined,
 } from '@ant-design/icons'
-//import {
-  // FunctionOutlined as FunctionOutlinedIcon,
-  // AllOutOutlined,
-//} from '@material-ui/icons'
 import { v4 as uuidv4 } from 'uuid'
 
 import ReactIcon from 'app-x/icon/React'
-// import Database from 'app-x/icon/Database'
 import Html from 'app-x/icon/Html'
 import Import from 'app-x/icon/Import'
 import Text from 'app-x/icon/Text'
@@ -72,7 +55,6 @@ import {
   isPrimitive,
   parse_var_full_path,
   lookup_type_by_data,
-  // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
 } from 'app-x/builder/ui/syntax/util_base'
@@ -402,559 +384,6 @@ function lookup_title_for_input(ref, input, array=false) {
   }
 }
 
-// valid child _types
-function lookup_valid_child_types(type) {
-  if (!type || type === '/') {
-    return {
-      'ref': {
-        names: null,
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          'react/state',
-          'react/context',
-          'react/effect',
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          'js/statement',
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          null,
-          'mui/style',
-          'appx/api',
-          'appx/route',
-        ]
-      }
-    }
-  } else if (type === 'js/string') {
-    return null         // leaf
-  } else if (type === 'js/number') {
-    return null         // leaf
-  } else if (type === 'js/boolean') {
-    return null         // leaf
-  } else if (type === 'js/null') {
-    return null         // leaf
-  } else if (type === 'js/object') {
-    return {
-      'ref': {
-        names: null,
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          'react/state',
-          'react/context',
-          // 'react/effect',  // effect code not allowed
-          // null,
-          // 'react/form',    // react/form not allowed
-          // 'input/text',    // input/text not allowed
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui/style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'js/array') {
-    return {
-      '_': {
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          'react/state',
-          'react/context',
-          // 'react/effect',  // effect code not allowed
-          // null,
-          // 'react/form',    // react/form not allowed
-          // 'input/text',    // input/text not allowed
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'js/import') {
-    return null         // leaf
-  } else if (type === 'js/expression') {
-    return null         // leaf
-  } else if (type === 'js/function') {
-    return null         // leaf
-  } else if (type === 'js/statement') {
-    return null         // leaf
-  } else if (type === 'js/switch') {
-    return {
-      ref: {
-        names: [
-          'default'
-        ],
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      },
-      '_': {
-        attrs: [
-          'condition'
-        ],
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'js/map') {
-    return {
-      ref: {
-        names: [
-          'data',
-          'result',
-        ],
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'js/reduce') {
-    return {
-      ref: {
-        names: [
-          'data',
-        ],
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'js/filter') {
-    return {
-      ref: {
-        names: [
-          'data',
-        ],
-        _types: [
-          'js/string',
-          'js/number',
-          'js/boolean',
-          'js/null',
-          null,
-          'js/object',
-          'js/array',
-          null,
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // null,
-          // 'mui/style',     // mui style not allowed
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',    // appx/route not allowed
-        ]
-      }
-    }
-  } else if (type === 'react/element') {
-    return {
-      ref: {
-        names: [
-          'props',
-        ],
-        _types: [
-          'js/object',
-        ]
-      },
-      '_': {
-        _types: [
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/string',
-          // 'js/number',
-          // 'js/boolean',
-          // 'js/null',
-          // null,
-          // 'js/object',
-          // 'js/array',
-          // null,
-          // 'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // 'mui/style',
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',
-        ]
-      }
-    }
-  } else if (type === 'react/html') {
-    return {
-      ref: {
-        names: [
-          'props',
-        ],
-        _types: [
-          'js/object',
-        ]
-      },
-      '_': {
-        _types: [
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          'react/form',
-          'input/text',
-          null,
-          'js/string',
-          // 'js/number',
-          // 'js/boolean',
-          // 'js/null',
-          // null,
-          // 'js/object',
-          // 'js/array',
-          // null,
-          // 'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // 'mui/style',
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',
-        ]
-      }
-    }
-  } else if (type === 'react/form') {
-    return {
-      ref: {
-        names: [
-          'props',
-          'formProps',
-        ],
-        _types: [
-          'js/object',
-        ]
-      },
-      '_': {
-        _types: [
-          'react/element',
-          'react/html',
-          // 'react/state',   // state code not allowed
-          // 'react/context', // context code not allowed
-          // 'react/effect',  // effect code not allowed
-          null,
-          // 'react/form',    // nested form not allowed
-          'input/text',
-          null,
-          'js/string',
-          // 'js/number',
-          // 'js/boolean',
-          // 'js/null',
-          // null,
-          // 'js/object',
-          // 'js/array',
-          // null,
-          // 'js/import',
-          'js/expression',
-          'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // 'mui/style',
-          // 'appx/api'       // appx/api not allowed
-          // 'appx/route',
-        ]
-      }
-    }
-  } else if (type === 'react/state') {
-    return null         // leaf
-  } else if (type === 'react/context') {
-    return null         // leaf
-  } else if (type === 'react/effect') {
-    return null         // leaf
-  } else if (type === 'input/text') {
-    return {
-      ref: {
-        names: [
-          'props',
-          'rules',
-        ],
-        _types: [
-          'js/object',
-        ]
-      }
-    }
-  } else if (type === 'mui/style') {
-    return {
-      ref: {
-        names: null,
-        _types: [
-          // 'js/string',
-          // 'js/number',
-          // 'js/boolean',
-          // 'js/null',
-          'js/object',
-          // 'js/array',
-          // null,
-          // 'js/import',
-          'js/expression',
-          // 'js/function',
-          // 'js/statement',  // code block not allowed
-          null,
-          'js/switch',
-          'js/map',
-          'js/reduce',
-          'js/filter',
-          // 'react/element',
-          // 'react/html',
-          // 'react/state',
-          // 'react/context',
-          // 'react/effect',
-          // null,
-          // 'react/form',
-          // 'input/text',
-          // 'mui/style',
-          // 'appx/api',
-          // 'appx/route',
-        ]
-      }
-    }
-  } else if (type === 'appx/api') {
-    return null         // leaf
-  } else if (type === 'appx/route') {
-    return null         // leaf
-  } else {
-    return null         // leaf
-  }
-}
-
-function lookup_classname_by_type(type) {
-  const classname =
-    (!type || type === '/')
-    ? 'appx-type-root'
-    : 'appx-type-' + type.replace(/[^a-zA-Z0-9]/g, '-')
-  // console.log(classname)
-  return classname
-}
-
-// lookup type by classname
-function lookup_type_by_classname(className) {
-  // handle root
-  if (className.includes('appx-type-root')) {
-    return '/'
-  }
-  // search others
-  let found = null
-  lookup_valid_child_types('/').ref._types.forEach(type => {
-    if (!type || found) {
-      return
-    }
-    if (className.includes(lookup_classname_by_type(type))) {
-      found = type
-      return
-    }
-  })
-  return found
-}
-
 // reorder children
 const reorder_children = (parentNode) => {
 
@@ -1241,70 +670,38 @@ function generate_tree_node(js_context, conf, input) {
           // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childNodeSpec)}]`)
           found = true
         }
-        /*
-        // create child node
-        if (!!childSpec.array) {
-          // generate function
-          const generate = (data) => {
-            return generate_tree_node(
-              js_context,
-              {
-                ref: null,
-                parentKey: thisNode.key,
-                parentChildSpec: childNodeSpec,
-              },
-              data
-            )
-          }
-          // check generate definition
-          if (!!childNodeSpec.generate) {
-            // console.log(childSpec._childNode.generate)
-            const children = eval(childNodeSpec.generate)
-            console.log(`children`, children)
-            if (!Array.isArray(children)) {
-              throw new Error(`ERROR: childNodeSpec [array] generate method return non-array type [${JSON.stringify(childNodeSpec)}]`)
-            }
-            // children.map(childNode => thisNode.children.push(childNode))
-            resultNode = children
-          } else {
-            throw new Error(`ERROR: childNodeSpec [array] missing generate method [${JSON.stringify(childNodeSpec)}]`)
-          }
-
+        // generate function
+        const generate = (data) => {
+          return generate_tree_node(
+            js_context,
+            {
+              ref: _ref,
+              array: !!childSpec.array,
+              parentKey: thisNode.key,
+              parentChildSpec: childNodeSpec,
+            },
+            data
+          )
+        }
+        // check generate definition
+        if (!!childNodeSpec.generate) {
+          // generate child node
+          resultNode = eval(childNodeSpec.generate)
+          // console.log(`resultNode [eval]`, resultNode)
         } else {
-        */
-          // generate function
-          const generate = (data) => {
-            return generate_tree_node(
-              js_context,
-              {
-                ref: _ref,
-                array: !!childSpec.array,
-                parentKey: thisNode.key,
-                parentChildSpec: childNodeSpec,
-              },
-              data
-            )
-          }
-          // check generate definition
-          if (!!childNodeSpec.generate) {
-            // generate child node
-            resultNode = eval(childNodeSpec.generate)
-            // console.log(`resultNode [eval]`, resultNode)
-          } else {
-            resultNode = generate_tree_node(
-              js_context,
-              {
-                ref: _ref,
-                array: !!childSpec.array,
-                parentKey: thisNode.key,
-                parentChildSpec: childNodeSpec,
-              },
-              data
-            )
-          }
-          // set _array flag
-          resultNode.data._array = !!childSpec.array
-        // }
+          resultNode = generate_tree_node(
+            js_context,
+            {
+              ref: _ref,
+              array: !!childSpec.array,
+              parentKey: thisNode.key,
+              parentChildSpec: childNodeSpec,
+            },
+            data
+          )
+        }
+        // set _array flag
+        resultNode.data._array = !!childSpec.array
       })
       // return
       return resultNode
@@ -1404,9 +801,6 @@ export {
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,
-  lookup_valid_child_types,
-  lookup_classname_by_type,
-  lookup_type_by_classname,
   reorder_children,
   isPrimitive,
 }

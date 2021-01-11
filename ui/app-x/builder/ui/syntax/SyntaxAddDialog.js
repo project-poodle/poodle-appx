@@ -83,43 +83,6 @@ const SyntaxAddDialog = (props) => {
     },
   }))()
 
-  const {
-    treeData,
-    selectedKey,
-  } = useContext(SyntaxProvider.Context)
-
-  // states and effects
-  const [ parentNode,       setParentNode     ] = useState(null)
-  const [ nodeType,         setNodeType       ] = useState(props.addNodeType)
-  const [ isSwitchDefault,  setSwitchDefault  ] = useState(props.isSwitchDefault)
-
-  // parentNode
-  useEffect(() => {
-    // lookup node
-    const lookupNode = tree_lookup(treeData, selectedKey)
-    setParentNode(lookupNode)
-    // console.log(lookupNode)
-  }, [selectedKey])
-
-  // nodeType
-  useEffect(() => {
-    setNodeType(props.addNodeType)
-  }, [props.addNodeType])
-
-  // isSwitchDefault
-  useEffect(() => {
-    setSwitchDefault(props.isSwitchDefault)
-  }, [props.isSwitchDefault])
-
-  // onSubmit
-  const onSubmit = data => {
-    console.log('data', data)
-    props.setOpen(false)
-    if (props.callback) {
-      props.callback(props.addNodeRef, props.nodeParent, data)
-    }
-  }
-
   // react hook form
   const hookForm = useForm()
   const {
@@ -138,8 +101,202 @@ const SyntaxAddDialog = (props) => {
     formState,
   } = hookForm
 
+  // context
+  const {
+    // tree data
+    treeData,
+    expandedKeys,
+    setExpandedKeys,
+    selectedKey,
+    setSelectedKey,
+    // test data
+    // testData,
+    // dirty flags
+    syntaxDirty,
+    setSyntaxDirty,
+    // testDirty,
+    // setTestDirty,
+    // history and actions
+    // makeFreshAction,
+    makeDesignAction,
+    // makeTestAction,
+    updateDesignAction,
+    // updateTestAction,
+  } = useContext(SyntaxProvider.Context)
+
+  // states and effects
+  const [ parentSpec,   setParentSpec   ] = useState(null)
+  const [ nodeSpec,     setNodeSpec     ] = useState(null)
+  const [ nodeType,     setNodeType     ] = useState(props.addNodeType)
+
+  // parentSpec
+  useEffect(() => {
+    if (!props.addParentNode?.data?._type) {
+      setParentSpec(null)
+    } else {
+      const spec = globalThis.appx.SPEC.types[props.addParentNode.data._type]
+      if (!spec) {
+        setParentSpec(null)
+      } else {
+        setParentSpec(spec)
+      }
+    }
+  }, [props.addParentNode])
+
+  // nodeType
+  useEffect(() => {
+    setNodeType(props.addNodeType)
+  }, [props.addNodeType])
+
+  // nodeSpec
+  useEffect(() => {
+    if (!nodeType) {
+      setNodeSpec(null)
+    } else {
+      const spec = globalThis.appx.SPEC.types[nodeType]
+      if (!spec) {
+        setNodeSpec(null)
+      } else {
+        setNodeSpec(spec)
+      }
+    }
+  }, [nodeType])
+
+  // onSubmit
+  const onSubmit = data => {
+    try {
+      console.log('data', data)
+      addCallback(props.addNodeRef, props.addNodeParent, data)
+      props.setOpen(false)
+    } catch (err) {
+      console.log(err)
+      notification.error({
+        message: `Failed to Add [ ${nodeType} ]`,
+        description: String(err),
+        placement: 'bottomLeft',
+      })
+    }
+  }
+
   // console.log(nodeType)
   // console.log(props)
+
+  // add callback
+  const addCallback = (nodeRef, nodeParent, nodeData) => {
+    // console.log(nodeRef, nodeParent, nodeData)
+
+    // ready to add node
+    const resultTree = _.cloneDeep(treeData)
+    const tmpParent = tree_lookup(resultTree, nodeParent.key)
+    const lookupParent = (tmpParent.data.type === '/') ? null : tmpParent
+    // parent key
+    let parentKey = null
+    if (!!lookupParent) {
+      parentKey = lookupParent.key
+    }
+    // ref
+    const ref =
+      (nodeData.type === 'react/state')
+      ? !!nodeData._customRef        // special handle of 'react/state'
+        ? nodeData._ref
+        : `...${nodeData.name}`
+      : !!nodeRef ? nodeRef : (nodeData._ref ? nodeData._ref : null)
+    // console.log(parentKey, ref, nodeData)
+    const parse_context = {}
+    var parsed = null
+    // handle js/switch specially
+    if (lookupParent?.data?._type === 'js/switch') {
+      if (nodeData.default) {
+        parsed = generate_tree_node(
+          parse_context,
+          {
+            ref: 'default',
+            parentKey: parentKey,
+            parentChildSpec: null,
+          },
+          nodeData
+        )
+      } else {
+        parsed = generate_tree_node(
+          parse_context,
+          {
+            ref: null,
+            parentKey: parentKey,
+            parentChildSpec: null,
+          },
+          nodeData
+        )
+        parsed.data.condition = nodeData.condition
+      }
+    } else {
+      // parse nodeData
+      parsed = generate_tree_node(
+        parse_context,
+        {
+          ref: ref,
+          parentKey: parentKey,
+          parentChildSpec: null,
+        },
+        nodeData
+      )
+    }
+    // console.log(nodeRef, nodeParent, parsed)
+    // insert to proper location
+    if (lookupParent) {
+      if (!!ref) {
+        lookupParent.children.unshift(parsed)
+      } else {
+        if ('_pos' in nodeData) {
+          let count = 0
+          let found = false
+          lookupParent.children.map((child, index) => {
+            if (found) {
+              return
+            }
+            if (!child.data._ref) {
+              count = count+1
+            }
+            // check if we'd insert before first component with no _ref
+            if (nodeData._pos === 0 && count !== 0) {
+              found = true
+              lookupParent.children.splice(index, 0, parsed)
+              return
+            }
+            if (count >= nodeData._pos) {
+              found = true
+              lookupParent.children.splice(index+1, 0, parsed)
+              return
+            }
+          })
+        } else {
+          // no _pos, simply add to the end
+          lookupParent.children.push(parsed)
+        }
+      }
+      reorder_children(lookupParent)
+    } else {
+      // add to the root as first component
+      resultTree.splice(1, 0, parsed)
+    }
+    // console.log(parse_tree_node({topLevel: true}, resultTree))
+    // process expanded keys
+    const newExpandedKeys = _.cloneDeep(expandedKeys)
+    parse_context.expandedKeys.map(key => {
+      if (!newExpandedKeys.includes(key)) {
+        newExpandedKeys.push(key)
+      }
+    })
+    if (!!lookupParent && !newExpandedKeys.includes(lookupParent.key)) {
+      newExpandedKeys.push(lookupParent.key)
+    }
+    // take action
+    makeDesignAction(
+      `Add [${parsed?.title}]`,
+      resultTree,
+      newExpandedKeys,
+      selectedKey,
+    )
+  }
 
   return (
     <Dialog
@@ -171,277 +328,136 @@ const SyntaxAddDialog = (props) => {
           <DialogContent
             className={styles.dialogContent}
             >
-            {
-              (
-                !!props.addNodeRefRequired
-                && !props.addNodeRef
-              )
-              &&
-              (
-                <Controller
-                  name="_ref"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Reference name is required",
-                    pattern: {
-                      value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
-                      message: 'Reference name must be a valid variable name',
-                    },
-                    validate: {
-                      checkDuplicate: value =>
-                        lookup_child_by_ref(parentNode, value) === null
-                        || 'Reference name is duplicate with an existing child',
-                      checkSwitchChild: value =>
-                        parentNode?.data?._type !== 'js/switch'
-                        || value === 'default'
-                        || 'Reference name for js/switch must be [default]',
-                      checkMapChild: value =>
-                        parentNode?.data?._type !== 'js/map'
-                        || value === 'data'
-                        || value === 'result'
-                        || 'Reference name for js/map must be [data] or [result]',
-                      checkReduceChild: value =>
-                        parentNode?.data?._type !== 'js/reduce'
-                        || value === 'data'
-                        || 'Reference name for js/reduce must be [data]',
-                      checkFilterChild: value =>
-                        parentNode?.data?._type !== 'js/filter'
-                        || value === 'data'
-                        || 'Reference name for js/filter must be [data]',
-                      checkReactElementChild: value =>
-                        parentNode?.data?._type !== 'react/element'
-                        || value === 'props'
-                        || 'Reference name for react/element must be [props]',
-                      checkReactHtmlChild: value =>
-                        parentNode?.data?._type !== 'react/html'
-                        || value === 'props'
-                        || 'Reference name for react/html must b3 [props]',
-                    },
-                  }}
-                  render={props =>
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Reference"
-                        onChange={props.onChange}
-                        value={props.value}
-                        size="small"
-                        error={!!errors._ref}
-                        size="small"
-                        helperText={errors._ref?.message}
-                        />
-                    </FormControl>
+            <Controller
+              name="_ref"
+              control={control}
+              defaultValue={props.addNodeRef}
+              rules={{
+                required: "Reference name is required",
+                validate: {
+                  checkDuplicate: value =>
+                    lookup_child_by_ref(props.addNodeParent, value) === null
+                    || 'Reference name is duplicate with an existing child',
+                  checkValidName: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === value) {
+                        return true
+                      }
+                    })
+                    const valid_names = parentSpec.children?.map(childSpec => {
+                      if (childSpec.name !== '*') {
+                        return childSpec.name
+                      }
+                    })
+                    .filter(name => !!name)
+                    return !!found || `Reference name for ${parentSpec.type} must be [ ${valid_names.join(", ")} ]`,
                   }
-                  />
-              )
-            }
-            {
-              !!props.nodeParent
-              && !!props.nodeParent.data
-              && !!props.nodeParent.data._type
-              && props.nodeParent.data._type === 'js/switch'
-              &&
-              (
-                <Controller
-                  name="default"
-                  type="boolean"
-                  control={control}
-                  defaultValue={isSwitchDefault}
-                  rules={{
-                    validate: {
-                      checkDuplicate: value =>
-                        !value
-                        || lookup_child_by_ref(props.nodeParent, 'default') === null
-                        || 'Default condition already exists'
-                    },
-                  }}
-                  render={props =>
-                    (
-                      <FormControl
-                        className={styles.formControl}
-                        error={!!errors.default}
-                        >
-                        <FormHelperText>Is Default</FormHelperText>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              name={props.name}
-                              checked={props.value}
-                              onChange={e => {
-                                props.onChange(e.target.checked)
-                                setSwitchDefault(e.target.checked)
-                              }}
-                            />
-                          }
-                          label=""
-                          />
-                          {
-                            !!errors.default
-                            &&
-                            <FormHelperText>{errors.default?.message}</FormHelperText>
-                          }
-                      </FormControl>
-                    )
-                  }
-                />
-              )
-            }
-            {
-              !!props.nodeParent
-              && !!props.nodeParent.data
-              && !!props.nodeParent.data._type
-              && props.nodeParent.data._type === 'js/switch'
-              && !isSwitchDefault
-              &&
-              (
-                <Controller
-                  name="_condition"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Condition is required",
-                    validate: {
-                      conditionSyntax: value => {
-                        try {
-                          parseExpression(String(value))
-                          return true
-                        } catch (err) {
-                          return String(err)
+                },
+              }}
+              render={props =>
+                <FormControl className={styles.formControl}>
+                  <TextField
+                    label="Reference"
+                    onChange={props.onChange}
+                    value={props.value}
+                    size="small"
+                    error={!!errors._ref}
+                    size="small"
+                    helperText={errors._ref?.message}
+                    />
+                </FormControl>
+              }
+            />
+            <Controller
+              name="_type"
+              control={control}
+              defaultValue={nodeType}
+              rules={{
+                required: "Type is required",
+              }}
+              render={props =>
+                (
+                  <FormControl className={styles.formControl}>
+                    <TextField
+                      label="Type"
+                      select={true}
+                      name="_type"
+                      value={props.value}
+                      size="small"
+                      onChange={
+                        e => {
+                          setNodeType(e.target.value)
+                          props.onChange(e)
                         }
                       }
-                    },
-                  }}
-                  render={props =>
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Condition"
-                        onChange={props.onChange}
-                        value={props.value}
-                        size="small"
-                        error={!!errors._condition}
-                        size="small"
-                        helperText={errors._condition?.message}
-                        />
-                    </FormControl>
-                  }
-                  />
-              )
-            }
-            {
-              (
-                !!nodeType
-                &&
-                (
-                  nodeType == 'js/string'
-                    || nodeType == 'js/number'
-                    || nodeType == 'js/boolean'
-                    || nodeType == 'js/null'
-                    || nodeType == 'js/expression'
+                      error={!!errors._type}
+                      helperText={errors._type?.message}
+                      >
+                      {
+                        lookup_groups().map(group => {
+                          lookup_types_for_group(group)
+                            .map(type => {
+                              return (
+                                <MenuItem value={type}>
+                                  <ListItemIcon>
+                                    { lookup_icon_for_type(type) }
+                                  </ListItemIcon>
+                                  <Typography variant="inherit" noWrap={true}>
+                                    {type}
+                                  </Typography>
+                                </MenuItem>
+                              )
+                            })
+                            .concat(`divider/${group}`)
+                        })
+                        .flat(2)
+                        // remove last divider item
+                        .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
+                        .map(item => {
+                          // console.log(`item`, item)
+                          return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item
+                        })
+                      }
+                    </TextField>
+                  </FormControl>
                 )
-              )
-              &&
-              (
-                <Box>
-                  <Controller
-                    name="_type"
-                    control={control}
-                    defaultValue={nodeType}
-                    rules={{
-                      required: "Type is required",
-                    }}
-                    render={props =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label="Type"
-                            select={true}
-                            name={props.name}
-                            value={props.value}
-                            size="small"
-                            onChange={
-                              e => {
-                                setNodeType(e.target.value)
-                                props.onChange(e)
-                              }
-                            }
-                            error={!!errors._type}
-                            helperText={errors._type?.message}
-                            >
-                            <MenuItem value="js/string">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/string') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/string
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/number">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/number') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/number
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/boolean">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/boolean') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/boolean
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/null">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/null') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/null
-                              </Typography>
-                            </MenuItem>
-                            <MenuItem value="js/expression">
-                              <ListItemIcon>
-                                { lookup_icon_for_type('js/expression') }
-                              </ListItemIcon>
-                              <Typography variant="inherit" noWrap={true}>
-                                js/expression
-                              </Typography>
-                            </MenuItem>
-                          </TextField>
-                        </FormControl>
-                      )
-                    }
-                  />
-                  {
-                    (nodeType === 'js/string')
-                    &&
-                    (
-                      <Controller
-                        name="data"
-                        control={control}
-                        defaultValue=''
-                        rules={{
-                          required: "String value is required",
-                        }}
-                        render={props =>
-                          (
-                            <FormControl className={styles.formControl}>
-                              <TextField
-                                label="String"
-                                multiline={false}
-                                name={props.name}
-                                value={props.value}
-                                size="small"
-                                onChange={props.onChange}
-                                error={!!errors.data}
-                                helperText={errors.data?.message}
-                                />
-                            </FormControl>
-                          )
-                        }
-                      />
-                    )
-                  }
+              }
+            />
+            {
+              nodeSpec.children?.map(childSpec => {
+                childSpec._thisNode?.map(childThisSpec => {
+                  return (
+                    <Controller
+                      name={childSpec.name}
+                      control={control}
+                      defaultValue=''
+                      rules={{
+                        required: "String value is required",
+                      }}
+                      render={props =>
+                        (
+                          <FormControl className={styles.formControl}>
+                            <TextField
+                              label={childSpec.desc}
+                              name={childSpec.name}
+                              value={props.value}
+                              size="small"
+                              onChange={props.onChange}
+                              error={!!_.get(errors, childSpec.name)}
+                              helperText={_.get(errors, childSpec.name)?.message}
+                              />
+                          </FormControl>
+                        )
+                      }
+                    />
+                  )
+                })
+              })
+              .flat(2)
+            }
+
                   {
                     (nodeType === 'js/number')
                     &&
@@ -2192,8 +2208,8 @@ const SyntaxAddDialog = (props) => {
             }
             {
               (
-                !!parentNode?.children
-                && parentNode?.children.filter(child => child.data._ref === null).length > 0
+                !!props.addNodeParent?.children
+                && props.addNodeParent?.children.filter(child => child.data._ref === null).length > 0
               )
               &&
               (
@@ -2226,7 +2242,7 @@ const SyntaxAddDialog = (props) => {
                             </Typography>
                           </MenuItem>
                           {
-                            parentNode.children.filter(child => child.data?._ref === null).map((child, index) => (
+                            props.addNodeParent.children.filter(child => child.data?._ref === null).map((child, index) => (
                               <MenuItem
                                 key={`${index+1}`}
                                 value={index+1}

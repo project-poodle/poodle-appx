@@ -47,7 +47,6 @@ import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import {
   lookup_icon_for_type,
-  lookup_valid_child_types
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
@@ -74,7 +73,7 @@ const SyntaxMenu = (props) => {
   // styles
   const styles = makeStyles((theme) => ({
     menuItem: {
-      minWidth: 200,
+      minWidth: 216,
     },
     nestedMenuItem: {
       padding: 0,
@@ -114,8 +113,7 @@ const SyntaxMenu = (props) => {
     }
   }, [selectedKey])
 
-  // const valid_child_types = lookup_valid_child_types(props.selectedNode?.data._type)
-
+  // create menu items
   function create_menu_items(spec) {
     return spec
       ._childNode
@@ -225,7 +223,7 @@ const SyntaxMenu = (props) => {
                 })
                 .concat('divider/specProps')
                 // remove last divider item
-                .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
+                .filter((item, index, array) => !((index === 0) && (typeof item === 'string') && (item.startsWith('divider'))))
                 .map(item => {
                   // console.log(`item`, item)
                   return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item

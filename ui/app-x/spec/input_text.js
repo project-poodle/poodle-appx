@@ -10,7 +10,7 @@ import {
 // rules:                    # input rules           (:object<:any>)
 export const input_text = {
 
-  name: 'input/text',
+  type: 'input/text',
   desc: 'Text Input',
   classes: [
     'jsx',
@@ -70,15 +70,10 @@ export const input_text = {
           ]
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/properties',
-        },
-      ],
       _childNode: [
         {
           class: 'object',
+          input: 'input/properties',
         }
       ]
     },
@@ -97,15 +92,10 @@ export const input_text = {
           ]
         }
       ],
-      _thisNode: [
-        {
-          class: 'string',
-          input: 'input/rules',
-        },
-      ],
       _childNode: [
         {
           class: 'object',
+          input: 'input/rules',
         }
       ]
     },

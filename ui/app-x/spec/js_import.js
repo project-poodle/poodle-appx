@@ -7,7 +7,7 @@ import {
 // name:                     # import name           (:string|:expression) - autosuggest import
 export const js_import = {
 
-  name: 'js/import',
+  type: 'js/import',
   desc: 'Import',
   classes: [
     'expression',

@@ -14,7 +14,7 @@ import {
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_element = {
 
-  name: 'react/element',
+  type: 'react/element',
   desc: 'React Element',
   classes: [
     'jsx',

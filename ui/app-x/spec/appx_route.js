@@ -7,7 +7,7 @@ import {
 // name:                     # route folder name     (:string|:expression) - default to '/'
 export const appx_route = {
 
-  name: 'appx/route',
+  type: 'appx/route',
   desc: 'Routes',
   classes: [
     'expression',

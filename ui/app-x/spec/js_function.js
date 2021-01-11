@@ -10,7 +10,7 @@ import {
 // body:                     # code body             (:string|:array<:statement>)
 export const js_function = {
 
-  name: 'js/function',
+  type: 'js/function',
   desc: 'Function',
   classes: [
     'expression',
@@ -36,7 +36,7 @@ export const js_function = {
       _thisNode: [
         {
           class: 'string',
-          input: 'js/string',
+          input: 'input/text',
           generate: 'data.map(item => ({ value: item }))',
           parse: 'nodeData.map(item => item.value)',
         }

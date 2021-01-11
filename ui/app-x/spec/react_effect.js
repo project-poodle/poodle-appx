@@ -10,7 +10,7 @@ import {
 //   - s2
 export const react_effect = {
 
-  name: 'react/effect',
+  type: 'react/effect',
   desc: 'React Effect',
   classes: [
     'statement',
@@ -61,7 +61,7 @@ export const react_effect = {
       _thisNode: [
         {
           class: 'string',
-          input: 'js/expression',
+          input: 'input/expression',
           generate: 'data.map(item => ({ value: item }))',
           parse: 'nodeData.map(item => item.value)',
         }

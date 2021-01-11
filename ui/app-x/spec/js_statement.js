@@ -7,7 +7,7 @@ import {
 // body:                     # code block            (:string|:array<:statement>)
 export const js_statement = {
 
-  name: 'js/statement',
+  type: 'js/statement',
   desc: 'Statement',
   classes: [
     'statement',

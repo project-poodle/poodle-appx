@@ -44,8 +44,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { useForm, Controller } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 
-import spec from 'app-x/spec'
-console.log(spec)
+// import spec from 'app-x/spec'
+// console.log(spec)
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import Asterisk from 'app-x/icon/Asterisk'
@@ -57,9 +57,6 @@ import {
   generate_tree_node,
   lookup_icon_for_type,
   lookup_title_for_input,
-  lookup_valid_child_types,
-  lookup_classname_by_type,
-  lookup_type_by_classname,
   reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
@@ -68,6 +65,13 @@ import {
   tree_lookup,
   lookup_child_by_ref
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  // lookup_type_by_classname,
+  lookup_classname_by_type,
+  lookup_accepted_types_for_node,
+  lookup_accepted_classnames_for_node,
+  lookup_first_accepted_childSpec,
+} from 'app-x/builder/ui/syntax/util_base'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import SyntaxAddDialog from 'app-x/builder/ui/syntax/SyntaxAddDialog'
@@ -270,11 +274,9 @@ const SyntaxTree = (props) => {
 
   // load data via api
   useEffect(() => {
-
     // console.log(navDeployment)
     // console.log(navSelected)
     // console.log(navComponent)
-
     if
     (
       !!navDeployment
@@ -541,8 +543,7 @@ const SyntaxTree = (props) => {
 
   // update syntaxTreeCursor
   useEffect(() => {
-    // console.log('updateCursor', syntaxTreeCursor)
-    // console.log(designTreeRef)
+    // console.log('updateCursor', syntaxTreeCursor, designTreeRef)
     // html node
     const node = ReactDOM.findDOMNode(designTreeRef.current)
     if (!node) {
@@ -555,32 +556,26 @@ const SyntaxTree = (props) => {
     }
     // iterate tree node list
     treeNodeList.forEach(treeNode => {
-      const parentType = lookup_type_by_classname(treeNode.className)
-      // console.log(treeNode)
-      // console.log(parentType)
-      if (parentType) {
-        const valid_child_types = lookup_valid_child_types(parentType)
-        // console.log(valid_child_types)
-        const draggableList = treeNode.querySelectorAll('[draggable]')
-        if (!selectedTool) {
-          draggableList.forEach(draggable => {
-            // console.log('canDrop', draggable)
-            draggable.style.cursor = 'pointer'
-          })
-        } else if (valid_child_types?.ref?._types.includes(selectedTool)
-            || valid_child_types?._?._types.includes(selectedTool)) {
-          // if selected tool is one of the valid child _types
-          draggableList.forEach(draggable => {
-            // console.log('canDrop', draggable)
-            draggable.style.cursor = syntaxTreeCursor
-          })
-        } else {
-          // if selected tool is not one of the valid child _types
-          draggableList.forEach(draggable => {
-            // console.log('noDrop', draggable)
-            draggable.style.cursor = 'not-allowed'
-          })
-        }
+      // lookup classname by type
+      const tool_classname = lookup_classname_by_type(selectedTool)
+      const draggableList = treeNode.querySelectorAll('[draggable]')
+      if (!selectedTool) {
+        draggableList.forEach(draggable => {
+          // console.log('canDrop', draggable)
+          draggable.style.cursor = 'pointer'
+        })
+      } else if (treeNode.className.includes(tool_classname)) {
+        // if selected tool is one of the valid accepted _types
+        draggableList.forEach(draggable => {
+          // console.log('canDrop', draggable)
+          draggable.style.cursor = syntaxTreeCursor
+        })
+      } else {
+        // if selected tool is not one of the valid accepted _types
+        draggableList.forEach(draggable => {
+          // console.log('noDrop', draggable)
+          draggable.style.cursor = 'not-allowed'
+        })
       }
     })
   }, [syntaxTreeCursor, expandTimer])
@@ -592,12 +587,10 @@ const SyntaxTree = (props) => {
   const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
   // add dialog state
-  const [ nodeParent,         setNodeParent         ] = useState(null)
+  const [ addNodeParent,      setAddNodeParent      ] = useState(null)
   const [ addNodeRef,         setAddNodeRef         ] = useState(null)
-  const [ addNodeRefRequired, setAddNodeRefRequired ] = useState(false)
   const [ addNodeType,        setAddNodeType        ] = useState('')
   const [ addDialogOpen,      setAddDialogOpen      ] = useState(false)
-  const [ isSwitchDefault,    setSwitchDefault      ] = useState(false)
 
   // add menu clicked
   const addMenuClicked = (info => {
@@ -608,130 +601,12 @@ const SyntaxTree = (props) => {
     if (!!parentNode) {
       // add dialog
       // console.log(info)
-      setNodeParent(parentNode)
+      setAddNodeParent(parentNode)
       setAddNodeRef(info.nodeRef)
-      setAddNodeRefRequired(info.nodeRefRequired)
       setAddNodeType(info.nodeType)
-      setSwitchDefault(!!info.isSwitchDefault)
       setAddDialogOpen(true)
     }
   })
-
-  // add callback
-  const addCallback = (nodeRef, nodeParent, nodeData) => {
-    // console.log(nodeRef, nodeParent, nodeData)
-    // ready to add node
-    const resultTree = _.cloneDeep(treeData)
-    const tmpParent = tree_lookup(resultTree, nodeParent.key)
-    const lookupParent = (tmpParent.data.type === '/') ? null : tmpParent
-    // parent key
-    let parentKey = null
-    if (!!lookupParent) {
-      parentKey = lookupParent.key
-    }
-    // ref
-    const ref =
-      (nodeData.type === 'react/state')
-      ? !!nodeData._customRef        // special handle of 'react/state'
-        ? nodeData._ref
-        : `...${nodeData.name}`
-      : !!nodeRef ? nodeRef : (nodeData._ref ? nodeData._ref : null)
-    // console.log(parentKey, ref, nodeData)
-    const parse_context = {}
-    var parsed = null
-    // handle js/switch specially
-    if (lookupParent?.data?._type === 'js/switch') {
-      if (nodeData.default) {
-        parsed = generate_tree_node(
-          parse_context,
-          {
-            ref: 'default',
-            parentKey: parentKey,
-            parentChildSpec: null,
-          },
-          nodeData
-        )
-      } else {
-        parsed = generate_tree_node(
-          parse_context,
-          {
-            ref: null,
-            parentKey: parentKey,
-            parentChildSpec: null,
-          },
-          nodeData
-        )
-        parsed.data.condition = nodeData.condition
-      }
-    } else {
-      // parse nodeData
-      parsed = generate_tree_node(
-        parse_context,
-        {
-          ref: ref,
-          parentKey: parentKey,
-          parentChildSpec: null,
-        },
-        nodeData
-      )
-    }
-    // console.log(nodeRef, nodeParent, parsed)
-    // insert to proper location
-    if (lookupParent) {
-      if (!!ref) {
-        lookupParent.children.unshift(parsed)
-      } else {
-        if ('_pos' in nodeData) {
-          let count = 0
-          let found = false
-          lookupParent.children.map((child, index) => {
-            if (found) {
-              return
-            }
-            if (!child.data._ref) {
-              count = count+1
-            }
-            // check if we'd insert before first component with no _ref
-            if (nodeData._pos === 0 && count !== 0) {
-              found = true
-              lookupParent.children.splice(index, 0, parsed)
-              return
-            }
-            if (count >= nodeData._pos) {
-              found = true
-              lookupParent.children.splice(index+1, 0, parsed)
-              return
-            }
-          })
-        } else {
-          // no _pos, simply add to the end
-          lookupParent.children.push(parsed)
-        }
-      }
-      reorder_children(lookupParent)
-    } else {
-      // add to the root as first component
-      resultTree.splice(1, 0, parsed)
-    }
-    // console.log(parse_tree_node({topLevel: true}, resultTree))
-    // process expanded keys
-    const newExpandedKeys = _.cloneDeep(expandedKeys)
-    parse_context.expandedKeys.map(key => {
-      if (!newExpandedKeys.includes(key)) {
-        newExpandedKeys.push(key)
-      }
-    })
-    if (!!lookupParent && !newExpandedKeys.includes(lookupParent.key)) {
-      newExpandedKeys.push(lookupParent.key)
-    }
-    // take action
-    makeDesignAction(
-      `Add [${parsed?.title}]`,
-      resultTree,
-      newExpandedKeys,
-      selectedKey,
-    )
-  }
 
   // delete dialog state
   const [ deleteNode,             setDeleteNode           ] = useState(null)
@@ -749,36 +624,6 @@ const SyntaxTree = (props) => {
       setDeleteDialogOpen(true)
     }
   })
-
-  // delete callback
-  const deleteCallback = (lookupNode) => {
-    // actual delete only if confirmed
-    let resultTree = _.cloneDeep(treeData)
-    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-    if (!!lookupParent && lookupParent.key !== '/') {
-      // console.log(lookupParent)
-      lookupParent.children = lookupParent.children.filter(child => {
-        return child.key !== lookupNode.key
-      })
-    } else {
-      // console.log('here')
-      // this is one of the root node
-      resultTree =
-        resultTree.filter(child => {
-          return child.key !== lookupNode.key
-        })
-    }
-    if (selectedKey === lookupNode?.key) {
-      setSelectedKey(null)
-    }
-    // take action
-    makeDesignAction(
-      `Delete [${lookupNode?.title}]`,
-      resultTree,
-      expandedKeys,
-      null,
-    )
-  }
 
   // move
   const [ moveDialogOpen,       setMoveDialogOpen     ] = useState(false)
@@ -807,21 +652,15 @@ const SyntaxTree = (props) => {
           // add dialog
           // console.log('here2', selectedTool, parentNode)
           setNodeParent(parentNode)
-          const valid_child_types = lookup_valid_child_types(parentNode.data.type)
-          if (valid_child_types?._?._types.includes(selectedTool)) {
-            setAddNodeRef(null)
-            setAddNodeRefRequired(false)
+          const childSpec = lookup_first_accepted_childSpec(parentNode, selectedTool)
+          if (!!childSpec) {
+            // open add dialog
+            setAddNodeParent(parentNode)
+            setAddNodeRef(childSpec.name)
             setAddNodeType(selectedTool)
-            setSwitchDefault(false)
-            setAddDialogOpen(true)
-          } else if (valid_child_types?.ref?._types.includes(selectedTool)) {
-            setAddNodeRef(null)
-            setAddNodeRefRequired(true)
-            setAddNodeType(selectedTool)
-            setSwitchDefault(false)
             setAddDialogOpen(true)
           }
-          // not found, just ignore
+          // if not found, just ignore
         }
         // setSelectedTool(null) // handled by effect
       }
@@ -1084,7 +923,7 @@ const SyntaxTree = (props) => {
               icon={data.icon}
               isLeaf={data.isLeaf}
               data={data.data}
-              className={`appx-tree-node ${lookup_classname_by_type(data.data?._type)}`}
+              className={`appx-tree-node ${lookup_accepted_classnames_for_node(data).join(' ')}`}
               children={data.children?.map(child => {
                   return ConvertTreeNode(child)
               })}
@@ -1401,18 +1240,14 @@ const SyntaxTree = (props) => {
             key="addDialog"
             open={addDialogOpen}
             setOpen={setAddDialogOpen}
-            callback={addCallback}
-            nodeParent={nodeParent}
+            addNodeParent={addNodeParent}
             addNodeRef={addNodeRef}
-            addNodeRefRequired={addNodeRefRequired}
             addNodeType={addNodeType}
-            isSwitchDefault={isSwitchDefault}
             />
           <SyntaxDeleteDialog
             key="deleteDialog"
             open={deleteDialogOpen}
             setOpen={setDeleteDialogOpen}
-            callback={deleteCallback}
             node={deleteNode}
             />
           <SyntaxMoveDialog
@@ -1426,7 +1261,6 @@ const SyntaxTree = (props) => {
             />
           <SyntaxMenu
             key="syntaxMenu"
-            selectedNode={selectedNode}
             contextAnchorEl={contextAnchorEl}
             setContextAnchorEl={setContextAnchorEl}
             addMenuClicked={addMenuClicked}

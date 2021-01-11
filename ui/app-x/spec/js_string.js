@@ -7,7 +7,7 @@ import {
 // data:                     # string data
 export const js_string = {
 
-  name: 'js/string',
+  type: 'js/string',
   desc: 'String',
   classes: [
     'string',

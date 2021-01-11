@@ -9,7 +9,7 @@ import {
 // init:                     # init value            (:expression)
 export const react_state = {
 
-  name: 'react/state',
+  type: 'react/state',
   desc: 'React State',
   classes: [
     'expression',

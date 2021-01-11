@@ -7,7 +7,7 @@ import {
 // data:                     # number data
 export const js_number = {
 
-  name: 'js/number',
+  type: 'js/number',
   desc: 'Number',
   classes: [
     'number',

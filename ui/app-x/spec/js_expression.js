@@ -7,7 +7,7 @@ import {
 // data:                     # expression
 export const js_expression = {
 
-  name: 'js/expression',
+  type: 'js/expression',
   desc: 'Expression',
   classes: [
     'expression',

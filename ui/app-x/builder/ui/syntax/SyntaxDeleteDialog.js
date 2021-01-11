@@ -24,8 +24,18 @@ import {
 import {
   DeleteOutlined,
 } from '@ant-design/icons'
+import {
+  notification
+} from 'antd'
 
 import ReactIcon from 'app-x/icon/React'
+import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
+import {
+  parse_tree_node,
+  tree_traverse,
+  tree_lookup,
+  lookup_child_by_ref
+} from 'app-x/builder/ui/syntax/util_parse'
 
 const SyntaxDeleteDialog = (props) => {
 
@@ -45,6 +55,59 @@ const SyntaxDeleteDialog = (props) => {
       padding: theme.spacing(2, 0),
     },
   }))()
+
+  // context
+  const {
+    // tree data
+    treeData,
+    expandedKeys,
+    setExpandedKeys,
+    selectedKey,
+    setSelectedKey,
+    // test data
+    // testData,
+    // dirty flags
+    syntaxDirty,
+    setSyntaxDirty,
+    // testDirty,
+    // setTestDirty,
+    // history and actions
+    // makeFreshAction,
+    makeDesignAction,
+    // makeTestAction,
+    updateDesignAction,
+    // updateTestAction,
+  } = useContext(SyntaxProvider.Context)
+
+  // delete callback
+  const deleteCallback = (lookupNode) => {
+    // actual delete only if confirmed
+    let resultTree = _.cloneDeep(treeData)
+    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
+    if (!!lookupParent && lookupParent.key !== '/') {
+      // console.log(lookupParent)
+      lookupParent.children = lookupParent.children.filter(child => {
+        return child.key !== lookupNode.key
+      })
+    } else {
+      // console.log('here')
+      // this is one of the root node
+      resultTree =
+        resultTree.filter(child => {
+          return child.key !== lookupNode.key
+        })
+    }
+    if (selectedKey === lookupNode?.key) {
+      setSelectedKey(null)
+    }
+    // take action
+    makeDesignAction(
+      `Delete [${lookupNode?.title}]`,
+      resultTree,
+      expandedKeys,
+      null,
+    )
+  }
 
   return (
     <Dialog
@@ -72,7 +135,7 @@ const SyntaxDeleteDialog = (props) => {
         >
         <Box>
           <DialogContentText id="alert-dialog-description">
-            Are you sure to delete [{props.node?.title}]?
+            Are you sure to delete [ {props.node?.title} ] ?
           </DialogContentText>
         </Box>
       </DialogContent>
@@ -90,9 +153,16 @@ const SyntaxDeleteDialog = (props) => {
           variant="contained"
           onClick={
             e => {
-              props.setOpen(false)
-              if (props.callback) {
-                props.callback(props.node)
+              try {
+                deleteCallback(props.node)
+                props.setOpen(false)
+              } catch (err) {
+                console.log(err)
+                notification.error({
+                  message: `Failed to Delete [ ${props.node?.type} ]`,
+                  description: String(err),
+                  placement: 'bottomLeft',
+                })
               }
             }
           }

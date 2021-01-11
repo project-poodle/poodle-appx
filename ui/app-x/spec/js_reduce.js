@@ -9,7 +9,7 @@ import {
 // init:                     # init data             (:expression)
 export const js_reduce = {
 
-  name: 'js/reduce',
+  type: 'js/reduce',
   desc: 'Reduce',
   classes: [
     'expression',

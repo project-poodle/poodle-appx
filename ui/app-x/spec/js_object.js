@@ -6,7 +6,7 @@ import {
 // type: js/object                                   (~object|~expression)
 export const js_object = {
 
-  name: 'js/object',
+  type: 'js/object',
   desc: 'Object',
   classes: [
     'object',

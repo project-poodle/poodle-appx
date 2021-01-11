@@ -8,7 +8,7 @@ import {
 // filter:                   # filter expression     (:expression)
 export const js_filter = {
 
-  name: 'js/filter',
+  type: 'js/filter',
   desc: 'Filter',
   classes: [
     'expression',

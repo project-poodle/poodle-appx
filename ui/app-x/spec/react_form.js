@@ -12,7 +12,7 @@ import {
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_form = {
 
-  name: 'react/form',
+  type: 'react/form',
   desc: 'React Form',
   classes: [
     'jsx',

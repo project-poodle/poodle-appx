@@ -8,7 +8,7 @@ import {
 // result:                   # map result            (:expression|:statement)
 export const js_map = {
 
-  name: 'js/map',
+  type: 'js/map',
   desc: 'Map',
   classes: [
     'expression',

@@ -7,7 +7,7 @@ import {
 // ...:                      # styles in json        (:object<:any>)
 export const mui_style = {
 
-  name: 'mui/style',
+  type: 'mui/style',
   desc: 'MUI Style',
   classes: [
     'expression',

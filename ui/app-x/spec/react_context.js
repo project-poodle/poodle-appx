@@ -7,7 +7,7 @@ import {
 // name:                     # context name          (:string) - autosuggest import
 export const react_context = {
 
-  name: 'react/context',
+  type: 'react/context',
   desc: 'React Context',
   classes: [
     'expression',

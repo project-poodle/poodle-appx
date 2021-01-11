@@ -6,7 +6,7 @@ import {
 // type: js/null             # null                  (~null|~primitive|~expression)
 export const js_null = {
 
-  name: 'js/null',
+  type: 'js/null',
   desc: 'Null',
   classes: [
     'null',

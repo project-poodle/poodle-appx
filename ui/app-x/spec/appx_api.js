@@ -14,7 +14,7 @@ import {
 // error:                    # error code            (:string|:array<:statement>)
 export const appx_api = {
 
-  name: 'appx/api',
+  type: 'appx/api',
   desc: 'API',
   classes: [
     'statement',

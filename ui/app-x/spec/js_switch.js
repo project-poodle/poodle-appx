@@ -10,7 +10,7 @@ import {
 // default:                  # default data          (:expression|:statement)
 export const js_switch = {
 
-  name: 'js/switch',
+  type: 'js/switch',
   desc: 'Switch',
   classes: [
     'expression',
@@ -84,14 +84,14 @@ export const js_switch = {
             {
               name: '_isDefault',
               desc: 'Is Default',
-              input: 'js/boolean',
+              input: 'input/switch',
               default: false,
             },
             {
               name: '_condition',
               desc: 'Condition',
               condition: '!form.watch("_isDefault")',
-              input: 'js/expression',
+              input: 'input/expression',
               default: '',
             },
           ],
@@ -144,14 +144,14 @@ export const js_switch = {
             {
               name: '_isDefault',
               desc: 'Is Default',
-              input: 'js/boolean',
+              input: 'input/switch',
               default: true
             },
             {
               name: '_condition',
               desc: 'Condition',
               condition: '!form.watch("_isDefault")',
-              input: 'js/expression',
+              input: 'input/expression',
               default: ''
             },
           ],

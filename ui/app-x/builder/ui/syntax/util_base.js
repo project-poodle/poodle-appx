@@ -2,9 +2,35 @@ const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
+// define unique
+Object.defineProperty(Array.prototype, 'unique', {
+  enumerable: false,
+  configurable: false,
+  writable: false,
+  value: function() {
+    var a = this.concat()
+    for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+        if(a[i] === a[j]) {
+          a.splice(j--, 1)
+        }
+      }
+    }
+    return a
+  }
+})
+*/
+
+////////////////////////////////////////////////////////////////////////////////
 // primitive test
 function isPrimitive(test) {
     return (test !== Object(test))
+}
+
+// unique test
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
 }
 
 // parse variable full path
@@ -169,8 +195,6 @@ function lookup_changeable_types(type) {
   }
 }
 
-
-
 // lookup data type
 const lookup_type_by_data = (data) => {
   // get data type
@@ -202,6 +226,121 @@ const lookup_type_by_data = (data) => {
   }
 
   return data._type
+}
+
+// lookup classname by type
+function lookup_classname_by_type(type) {
+  const classname =
+    (!type || type === '/')
+    ? 'appx-type-root'
+    : 'appx-type-' + type.replace(/[^a-zA-Z0-9]/g, '-')
+  // console.log(classname)
+  return classname
+}
+
+// lookup type by classname
+function lookup_type_by_classname(className) {
+  // handle root
+  if (className.includes('appx-type-root')) {
+    return '/'
+  }
+  // search others
+  let found = null
+  Object.keys(globalThis.appx.SPEC.types).map(type => {
+    if (!!found) {
+      return
+    }
+    if (className === lookup_classname_by_type(type)) {
+      found = type
+    }
+  })
+  // return found type
+  return found
+}
+
+// check if a tree accepts child
+const lookup_accepted_types_for_node = (node) => {
+  // check node type
+  if (!node?.data?._type) {
+    return []
+  }
+  // lookup spec
+  const spec = globalThis.appx.SPEC.types[node.data._type]
+  if (!spec) {
+    return []
+  }
+  // compute accepted types
+  let accepted_types = []
+  spec.children?.map(childSpec => {
+    if (!childSpec._childNode) {
+      return
+    }
+    childSpec._childNode.map(childNodeSpec => {
+      if (!childNodeSpec.class) {
+        return
+      }
+      let types = lookup_types_by_class(childNodeSpec.class)
+      if (!!childNodeSpec.includes) {
+        types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
+      }
+      if (!!childNodeSpec.excludes) {
+        types = types.filter(type => !childNodeSpec.excludes.includes(type))
+      }
+      accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
+    })
+  })
+  return accepted_types
+}
+
+// check if a tree accepts child
+const lookup_accepted_classnames_for_node = (node) => {
+  const accepted_types =
+    node.key === '/'
+    ? Object.keys(globalThis.appx.SPEC.types)
+    : lookup_accepted_types_for_node(node)
+  return accepted_types.map(type => lookup_classname_by_type(type))
+}
+
+// lookup accepted childSpec for node
+const lookup_first_accepted_childSpec = (node, type) => {
+  // check node type
+  if (!node?.data?._type) {
+    return null
+  }
+  // lookup spec
+  const spec = globalThis.appx.SPEC.types[node.data._type]
+  if (!spec) {
+    return null
+  }
+  // compute accepted types
+  let accepted_childSpec = null
+  spec.children?.map(childSpec => {
+    if (!!accepted_childSpec) {
+      return // if already found
+    }
+    if (!childSpec._childNode) {
+      return
+    }
+    childSpec._childNode.map(childNodeSpec => {
+      if (!childNodeSpec.class) {
+        return
+      }
+      let types = lookup_types_by_class(childNodeSpec.class)
+      if (!!childNodeSpec.includes) {
+        types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
+      }
+      if (!!childNodeSpec.excludes) {
+        types = types.filter(type => !childNodeSpec.excludes.includes(type))
+      }
+      accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
+      // check if matches
+      if (accpted_types.includes(type)) {
+        accepted_childSpec = childSpec
+      }
+    })
+  })
+  // return
+  return accepted_childSpec
 }
 
 // enrich_primitive_data
@@ -510,6 +649,11 @@ export {
   lookup_group_by_type,
   lookup_changeable_types,
   lookup_type_by_data,
+  lookup_type_by_classname,
+  lookup_classname_by_type,
+  lookup_accepted_types_for_node,
+  lookup_accepted_classnames_for_node,
+  lookup_first_accepted_childSpec,
   // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,

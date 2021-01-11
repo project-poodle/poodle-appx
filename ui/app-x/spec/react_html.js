@@ -9,7 +9,7 @@ import {
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_html = {
 
-  name: 'react/html',
+  type: 'react/html',
   desc: 'HTML Tag',
   classes: [
     'jsx',
@@ -33,7 +33,7 @@ export const react_html = {
         },
       ],
       _thisNode: {
-        input: 'js/string'
+        input: 'input/text'
       },
       _suggestions: [
         {

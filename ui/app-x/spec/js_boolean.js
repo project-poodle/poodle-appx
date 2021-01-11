@@ -7,7 +7,7 @@ import {
 // data:                     # boolean data
 export const js_boolean = {
 
-  name: 'js/boolean',
+  type: 'js/boolean',
   desc: 'Boolean',
   classes: [
     'boolean',

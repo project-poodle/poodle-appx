@@ -6,7 +6,7 @@ import {
 // type: js/array                                    (~array|~expression)
 export const js_array = {
 
-  name: 'js/array',
+  type: 'js/array',
   desc: 'Array',
   classes: [
     'array',
