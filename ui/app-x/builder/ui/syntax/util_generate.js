@@ -54,7 +54,7 @@ import {
   VARIABLE_SEPARATOR,
   isPrimitive,
   parse_var_full_path,
-  lookup_type_by_data,
+  lookup_type_for_data,
   type_matches_spec,
   data_matches_spec,
 } from 'app-x/builder/ui/syntax/util_base'
@@ -601,7 +601,7 @@ function generate_tree_node(js_context, conf, input) {
         throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
       }
       // check if data matches spec
-      const data_type = lookup_type_by_data(data)
+      const data_type = lookup_type_for_data(data)
       if (!type_matches_spec(data_type, thisNodeSpec)) {
         // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
         return undefined
@@ -653,7 +653,7 @@ function generate_tree_node(js_context, conf, input) {
         throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
       }
       // check if data matches spec
-      const data_type = lookup_type_by_data(data)
+      const data_type = lookup_type_for_data(data)
       if (!type_matches_spec(data_type, childNodeSpec)) {
         // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
         return undefined

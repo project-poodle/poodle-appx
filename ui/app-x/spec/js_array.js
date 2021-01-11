@@ -19,11 +19,11 @@ export const js_array = {
       array: true,
       classes: [
         {
-          class: 'any',
+          class: 'expression',
         },
       ],
       _childNode: {
-        class: 'any',
+        class: 'expression',
       },
     },
   ]

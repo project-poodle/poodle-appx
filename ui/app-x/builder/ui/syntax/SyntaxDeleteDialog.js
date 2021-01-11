@@ -34,7 +34,6 @@ import {
   parse_tree_node,
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 
 const SyntaxDeleteDialog = (props) => {

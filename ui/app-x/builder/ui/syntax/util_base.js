@@ -158,7 +158,7 @@ const groups = {
     'react/html',
     'react/state',
     'react/context',
-    'react/effects',
+    'react/effect',
   ],
   // form / inputs
   form_input: [
@@ -204,27 +204,27 @@ function lookup_types() {
 }
 
 // return types by class
-function lookup_types_by_class(cls) {
+function lookup_types_for_class(cls) {
   return globalThis.appx?.SPEC?.classes[cls]?.types || []
   // const result = globalThis.appx?.SPEC?.classes[cls]?.types || []
-  // console.log(`lookup_types_by_class`, lookup_classes(), cls, result)
+  // console.log(`lookup_types_for_class`, lookup_classes(), cls, result)
   // return result
 }
 
 // return classes by type
-function lookup_classes_by_type(type) {
+function lookup_classes_for_type(type) {
   return Object.keys(globalThis.appx?.SPEC?.classes)
     .filter(cls => globalThis.appx?.SPEC?.classes[cls]?.types.includes(type))
     || []
 }
 
 // return types by group
-function lookup_types_by_group(group) {
+function lookup_types_for_group(group) {
   return groups[group] || []
 }
 
 // return group by type
-function lookup_group_by_type(type) {
+function lookup_group_for_type(type) {
   return groups.find(group => group.includes(type)) || null
 }
 
@@ -284,7 +284,7 @@ function lookup_changeable_types(type) {
 }
 
 // lookup data type
-const lookup_type_by_data = (data) => {
+const lookup_type_for_data = (data) => {
   // get data type
   let dataType = ''
   if (isPrimitive(data)) {
@@ -317,7 +317,7 @@ const lookup_type_by_data = (data) => {
 }
 
 // lookup classname by type
-function lookup_classname_by_type(type) {
+function lookup_classname_for_type(type) {
   const classname =
     (!type || type === '/')
     ? 'appx-type-root'
@@ -327,7 +327,7 @@ function lookup_classname_by_type(type) {
 }
 
 // lookup type by classname
-function lookup_type_by_classname(className) {
+function lookup_type_for_classname(className) {
   // handle root
   if (className.includes('appx-type-root')) {
     return '/'
@@ -338,7 +338,7 @@ function lookup_type_by_classname(className) {
     if (!!found) {
       return
     }
-    if (className === lookup_classname_by_type(type)) {
+    if (className === lookup_classname_for_type(type)) {
       found = type
     }
   })
@@ -364,7 +364,7 @@ const lookup_accepted_types_for_node = (node) => {
       return
     }
     const childNodeSpec = childSpec._childNode
-    let types = lookup_types_by_class(childNodeSpec.class)
+    let types = lookup_types_for_class(childNodeSpec.class)
     if (!!childNodeSpec.includes) {
       types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
     }
@@ -382,7 +382,7 @@ const lookup_accepted_classnames_for_node = (node) => {
     node.key === '/'
     ? Object.keys(globalThis.appx.SPEC.types)
     : lookup_accepted_types_for_node(node)
-  return accepted_types.map(type => lookup_classname_by_type(type))
+  return accepted_types.map(type => lookup_classname_for_type(type))
 }
 
 // lookup accepted childSpec for node
@@ -406,16 +406,15 @@ const lookup_first_accepted_childSpec = (node, type) => {
       return
     }
     const childNodeSpec = childSpec._childNode
-    let types = lookup_types_by_class(childNodeSpec.class)
+    let types = lookup_types_for_class(childNodeSpec.class)
     if (!!childNodeSpec.includes) {
       types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
     }
     if (!!childNodeSpec.excludes) {
       types = types.filter(type => !childNodeSpec.excludes.includes(type))
     }
-    accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
     // check if matches
-    if (accpted_types.includes(type)) {
+    if (types.includes(type)) {
       accepted_childSpec = childSpec
     }
   })
@@ -427,7 +426,7 @@ const lookup_first_accepted_childSpec = (node, type) => {
 const enrich_primitive_data = (data) => {
   if (isPrimitive(data)) {
     return {
-      _type: lookup_type_by_data(data),
+      _type: lookup_type_for_data(data),
       data: data
     }
   } else {
@@ -468,7 +467,7 @@ const type_matches_spec = (type, matchSpec) => {
 
 // check if data type matches the match spec
 const data_matches_spec = (data, matchSpec) => {
-  const data_type = lookup_type_by_data(data)
+  const data_type = lookup_type_for_data(data)
   return type_matches_spec(data_type, matchSpec)
 }
 
@@ -723,14 +722,14 @@ export {
   lookup_classes,
   lookup_groups,
   lookup_types,
-  lookup_types_by_class,
-  lookup_classes_by_type,
-  lookup_types_by_group,
-  lookup_group_by_type,
+  lookup_types_for_class,
+  lookup_classes_for_type,
+  lookup_types_for_group,
+  lookup_group_for_type,
   lookup_changeable_types,
-  lookup_type_by_data,
-  lookup_type_by_classname,
-  lookup_classname_by_type,
+  lookup_type_for_data,
+  lookup_type_for_classname,
+  lookup_classname_for_type,
   lookup_accepted_types_for_node,
   lookup_accepted_classnames_for_node,
   lookup_first_accepted_childSpec,

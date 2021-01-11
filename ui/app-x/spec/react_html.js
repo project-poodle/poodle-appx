@@ -5,7 +5,7 @@ import {
 
 // type: react/html                                  (~jsx|~expression)
 // name:                     # html tag name         (:string) - autosuggest non-restrictive
-// props:                    # properties            (:object<:any>)
+// props:                    # properties            (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_html = {
 
@@ -33,7 +33,8 @@ export const react_html = {
         },
       ],
       _thisNode: {
-        input: 'input/text'
+        class: 'string',
+        input: 'input/text',
       },
       _suggestions: [
         {
@@ -63,7 +64,7 @@ export const react_html = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression'
             }
           ]
         }

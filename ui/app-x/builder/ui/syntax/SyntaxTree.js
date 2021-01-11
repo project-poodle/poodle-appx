@@ -63,11 +63,11 @@ import {
   parse_tree_node,
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref
+  lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
-  // lookup_type_by_classname,
-  lookup_classname_by_type,
+  // lookup_type_for_classname,
+  lookup_classname_for_type,
   lookup_accepted_types_for_node,
   lookup_accepted_classnames_for_node,
   lookup_first_accepted_childSpec,
@@ -557,7 +557,7 @@ const SyntaxTree = (props) => {
     // iterate tree node list
     treeNodeList.forEach(treeNode => {
       // lookup classname by type
-      const tool_classname = lookup_classname_by_type(selectedTool)
+      const tool_classname = lookup_classname_for_type(selectedTool)
       const draggableList = treeNode.querySelectorAll('[draggable]')
       if (!selectedTool) {
         draggableList.forEach(draggable => {
@@ -651,7 +651,7 @@ const SyntaxTree = (props) => {
         if (!!parentNode) {
           // add dialog
           // console.log('here2', selectedTool, parentNode)
-          setNodeParent(parentNode)
+          setAddNodeParent(parentNode)
           const childSpec = lookup_first_accepted_childSpec(parentNode, selectedTool)
           if (!!childSpec) {
             // open add dialog

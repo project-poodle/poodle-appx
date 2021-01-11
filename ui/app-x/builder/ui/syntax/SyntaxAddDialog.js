@@ -54,9 +54,25 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref
+  lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
+  lookup_classes,
+  lookup_groups,
+  lookup_types,
+  lookup_types_for_class,
+  lookup_classes_for_type,
+  lookup_types_for_group,
+  lookup_group_for_type,
+  lookup_changeable_types,
+  lookup_type_for_data,
+  lookup_type_for_classname,
+  lookup_classname_for_type,
+  lookup_accepted_types_for_node,
+  lookup_accepted_classnames_for_node,
+  lookup_first_accepted_childSpec,
+  lookup_icon_for_class,
+  type_matches_spec,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
@@ -128,25 +144,32 @@ const SyntaxAddDialog = (props) => {
   const [ parentSpec,   setParentSpec   ] = useState(null)
   const [ nodeSpec,     setNodeSpec     ] = useState(null)
   const [ nodeType,     setNodeType     ] = useState(props.addNodeType)
+  const [ nodeRef,      setNodeRef      ] = useState(props.addNodeRef)
 
   // parentSpec
   useEffect(() => {
-    if (!props.addParentNode?.data?._type) {
+    if (!props.addNodeParent?.data?._type) {
       setParentSpec(null)
     } else {
-      const spec = globalThis.appx.SPEC.types[props.addParentNode.data._type]
+      const spec = globalThis.appx.SPEC.types[props.addNodeParent.data._type]
+      console.log(`parentSpec`, spec)
       if (!spec) {
         setParentSpec(null)
       } else {
         setParentSpec(spec)
       }
     }
-  }, [props.addParentNode])
+  }, [props.addNodeParent])
 
   // nodeType
   useEffect(() => {
     setNodeType(props.addNodeType)
   }, [props.addNodeType])
+
+  // nodeRef
+  useEffect(() => {
+    setNodeRef(props.addNodeRef)
+  }, [props.addNodeRef])
 
   // nodeSpec
   useEffect(() => {
@@ -154,6 +177,7 @@ const SyntaxAddDialog = (props) => {
       setNodeSpec(null)
     } else {
       const spec = globalThis.appx.SPEC.types[nodeType]
+      console.log(`nodeSpec`, spec)
       if (!spec) {
         setNodeSpec(null)
       } else {
@@ -321,7 +345,11 @@ const SyntaxAddDialog = (props) => {
                 { lookup_icon_for_type(nodeType) }
               </IconButton>
               <Typography id="alert-dialog-title" variant="h6">
-                {!!props.addNodeRef ? '[ ' + props.addNodeRef + ' ] - ' + nodeType : nodeType}
+                {
+                  !!nodeRef
+                  ? `${nodeRef} - [ ${nodeType.replace('/', ' / ')} ]`
+                  : `[ ${nodeType.replace('/', ' / ')} ]`
+                }
               </Typography>
             </ListItem>
           </DialogTitle>
@@ -336,32 +364,58 @@ const SyntaxAddDialog = (props) => {
                 required: "Reference name is required",
                 validate: {
                   checkDuplicate: value =>
-                    lookup_child_by_ref(props.addNodeParent, value) === null
-                    || 'Reference name is duplicate with an existing child',
+                    !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
+                    || lookup_child_for_ref(props.addNodeParent, value) === null
+                    || `Reference name [ ${value} ] is duplicate with an existing child`,
                   checkValidName: value => {
                     const found = parentSpec.children?.find(childSpec => {
-                      if (childSpec.name === '*') {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
                         return true
                       } else if (childSpec.name === value) {
                         return true
                       }
                     })
                     const valid_names = parentSpec.children?.map(childSpec => {
-                      if (childSpec.name !== '*') {
+                      if (!!childSpec._childNode && childSpec.name !== '*') {
                         return childSpec.name
                       }
                     })
                     .filter(name => !!name)
-                    return !!found || `Reference name for ${parentSpec.type} must be [ ${valid_names.join(', ')} ]`
+                    return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
+                  },
+                  checkTypeCompatibility: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === value) {
+                        return true
+                      }
+                    })
+                    if (!!found) {
+                      return type_matches_spec(getValues('_type'), found._childNode)
+                        || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
+                    }
                   }
                 },
               }}
               render={props =>
                 <FormControl className={styles.formControl}>
-                  <TextField
+                  <AutoComplete
                     label="Reference"
-                    onChange={props.onChange}
+                    name="_ref"
+                    required={true}
+                    onChange={value => {
+                      props.onChange(value)
+                      setNodeRef(value)
+                      trigger('_ref')
+                      trigger('_type')
+                    }}
                     value={props.value}
+                    options={parentSpec.children?.filter(spec => !!spec._childNode?.class).map(child => child.name).filter(name => name !== '*')}
                     size="small"
                     error={!!errors._ref}
                     size="small"
@@ -376,6 +430,23 @@ const SyntaxAddDialog = (props) => {
               defaultValue={nodeType}
               rules={{
                 required: "Type is required",
+                validate: {
+                  checkTypeCompatibility: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === getValues('_ref')) {
+                        return true
+                      }
+                    })
+                    if (!!found) {
+                      return type_matches_spec(value, found._childNode)
+                        || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
+                    }
+                  }
+                }
               }}
               render={props =>
                 (
@@ -385,11 +456,14 @@ const SyntaxAddDialog = (props) => {
                       select={true}
                       name="_type"
                       value={props.value}
+                      required={true}
                       size="small"
                       onChange={
                         e => {
                           setNodeType(e.target.value)
                           props.onChange(e)
+                          trigger('_ref')
+                          trigger('_type')
                         }
                       }
                       error={!!errors._type}
@@ -397,15 +471,15 @@ const SyntaxAddDialog = (props) => {
                       >
                       {
                         lookup_groups().map(group => {
-                          lookup_types_for_group(group)
+                          return lookup_types_for_group(group)
                             .map(type => {
                               return (
-                                <MenuItem value={type}>
+                                <MenuItem value={type} key={type}>
                                   <ListItemIcon>
                                     { lookup_icon_for_type(type) }
                                   </ListItemIcon>
                                   <Typography variant="inherit" noWrap={true}>
-                                    {type}
+                                    {type.replace('/', ' / ')}
                                   </Typography>
                                 </MenuItem>
                               )
@@ -427,52 +501,54 @@ const SyntaxAddDialog = (props) => {
             />
             {
               nodeSpec?.children?.map(childSpec => {
-
-                childSpec._thisNode?.map(childThisSpec => {
-                  return (
-                    <Controller
-                      name={childSpec.name}
-                      control={control}
-                      defaultValue=''
-                      rules={(() => {
-                        let count = 0
-                        const result = {}
-                        if (!!childSpec.rules) {
-                          childSpec.rules.map(rule => {
-                            if (rule.kind === 'required') {
-                              result['required'] = rule.message
-                            } else if (rule.kind === 'pattern') {
-                              result['pattern'] = {
-                                value: rule.pattern,
-                                message: rule.message,
-                              }
-                            } else if (rule.kind === 'validate') {
-                              result[`validate_${count}`] = (value) => (
-                                !!eval(rule.validate) || rule.message
-                              )
+                if (!childSpec._thisNode?.class) {
+                  return
+                }
+                const childThisSpec = childSpec._thisNode
+                return (
+                  <Controller
+                    name={childSpec.name}
+                    control={control}
+                    key={childSpec.name}
+                    defaultValue=''
+                    rules={(() => {
+                      let count = 0
+                      const result = {}
+                      if (!!childSpec.rules) {
+                        childSpec.rules.map(rule => {
+                          if (rule.kind === 'required') {
+                            result['required'] = rule.message
+                          } else if (rule.kind === 'pattern') {
+                            result['pattern'] = {
+                              value: rule.pattern,
+                              message: rule.message,
                             }
-                          })
-                        }
-                        return result
-                      })()}
-                      render={props =>
-                        (
-                          <FormControl className={styles.formControl}>
-                            <TextField
-                              label={childSpec.desc}
-                              name={childSpec.name}
-                              value={props.value}
-                              size="small"
-                              onChange={props.onChange}
-                              error={!!_.get(errors, childSpec.name)}
-                              helperText={_.get(errors, childSpec.name)?.message}
-                              />
-                          </FormControl>
-                        )
+                          } else if (rule.kind === 'validate') {
+                            result[`validate_${count}`] = (value) => (
+                              !!eval(rule.validate) || rule.message
+                            )
+                          }
+                        })
                       }
-                    />
-                  )
-                })
+                      return result
+                    })()}
+                    render={props =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label={childSpec.desc}
+                            name={childSpec.name}
+                            value={props.value}
+                            size="small"
+                            onChange={props.onChange}
+                            error={!!_.get(errors, childSpec.name)}
+                            helperText={_.get(errors, childSpec.name)?.message}
+                            />
+                        </FormControl>
+                      )
+                    }
+                  />
+                )
               })
               .flat(2)
             }

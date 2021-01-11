@@ -10,7 +10,7 @@ import {
 
 // class: react/element                               (~jsx|~expression)
 // name:                     # element name          (:string) - autosuggest import
-// props:                    # properties            (:object<:any>)
+// props:                    # properties            (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_element = {
 
@@ -72,7 +72,7 @@ export const react_element = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression'
             }
           ]
         }

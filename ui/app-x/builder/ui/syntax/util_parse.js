@@ -1,6 +1,6 @@
 import {
   isPrimitive,
-  lookup_type_by_data,
+  lookup_type_for_data,
   type_matches_spec,
   data_matches_spec,
 } from 'app-x/builder/ui/syntax/util_base'
@@ -9,7 +9,7 @@ import {
 // utilities
 
 // lookup child by ref
-function lookup_child_by_ref(treeNode, ref) {
+function lookup_child_for_ref(treeNode, ref) {
   // lookup child by ref
   const found = treeNode.children.filter(child => {
     return (child.data?._ref === ref)
@@ -24,7 +24,7 @@ function lookup_child_by_ref(treeNode, ref) {
 }
 
 // lookup child array by ref
-function lookup_child_array_by_ref(treeNode, ref) {
+function lookup_child_array_for_ref(treeNode, ref) {
   // lookup child by ref
   const found = treeNode.children
     .filter(child => !!child.data._array)
@@ -41,7 +41,7 @@ function lookup_child_array_by_ref(treeNode, ref) {
 }
 
 // remove child by ref
-function remove_child_by_ref(treeNode, ref) {
+function remove_child_for_ref(treeNode, ref) {
   // lookup child by ref
   treeNode.children = treeNode.children?.filter(child => {
     return (child.data._ref !== ref)
@@ -159,9 +159,16 @@ function parse_tree_node(tree_context, treeNode) {
       // node data
       const nodeData = node.data[_ref]
       // update data if _thisNode is defined
-      if (!childSpec?._thisNode?.class) {
+      if (!childSpec?._thisNode) {
         return undefined
       }
+      // sanity check
+      if (!childSpec._thisNode.class) {
+        throw new Error(`ERROR: childSpec._thisNode missing [class] [${JSON.stringify(childSpec._thisNode)}]`)
+      } else if (!childSpec._thisNode.input) {
+        throw new Error(`ERROR: childSpec._thisNode missing [input] [${JSON.stringify(childSpec._thisNode)}]`)
+      }
+      // get a sane thisNodeSpec
       const thisNodeSpec = childSpec._thisNode
       // get class spec
       const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
@@ -169,7 +176,7 @@ function parse_tree_node(tree_context, treeNode) {
         throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
       }
       // check if data matches spec
-      const data_type = lookup_type_by_data(nodeData)
+      const data_type = lookup_type_for_data(nodeData)
       if (!type_matches_spec(data_type, thisNodeSpec)) {
         // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
         return undefined
@@ -259,7 +266,7 @@ function parse_tree_node(tree_context, treeNode) {
         data = _process_this(_ref, thisNode)
         // get childNode
         if (!!childSpec.array) {
-          const childNodeArray = lookup_child_array_by_ref(thisNode, _ref)
+          const childNodeArray = lookup_child_array_for_ref(thisNode, _ref)
           // console.log(`childNodeArray`, childNodeArray)
           childNodeArray.map(childNode => {
             if (!data) {
@@ -269,7 +276,7 @@ function parse_tree_node(tree_context, treeNode) {
             data.push(_process_child(childNode))
           })
         } else {
-          const childNode = lookup_child_by_ref(thisNode, _ref)
+          const childNode = lookup_child_for_ref(thisNode, _ref)
           if (!!childNode) {
             // process child node if exists
             data = _process_child(childNode)
@@ -319,6 +326,6 @@ export {
   tree_traverse,
   tree_lookup,
   parse_tree_node,
-  lookup_child_by_ref,
-  remove_child_by_ref,
+  lookup_child_for_ref,
+  remove_child_for_ref,
 }

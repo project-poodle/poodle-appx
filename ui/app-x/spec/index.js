@@ -6,6 +6,7 @@ import react_element from 'app-x/spec/react_element.js'
 import react_html from 'app-x/spec/react_html.js'
 import react_state from 'app-x/spec/react_state.js'
 import react_context from 'app-x/spec/react_context.js'
+import react_effect from 'app-x/spec/react_effect.js'
 // forms and inputs
 import react_form from 'app-x/spec/react_form.js'
 import input_text from 'app-x/spec/input_text.js'
@@ -37,6 +38,7 @@ const types = [
   react_html,
   react_state,
   react_context,
+  react_effect,
   // form and inputs
   react_form,
   input_text,

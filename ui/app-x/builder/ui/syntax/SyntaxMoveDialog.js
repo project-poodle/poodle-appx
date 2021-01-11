@@ -47,7 +47,7 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref
+  lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 
 // add dialog
@@ -156,7 +156,7 @@ const SyntaxMoveDialog = (props) => {
                     },
                     validate: {
                       checkDuplicate: value =>
-                        lookup_child_by_ref(props.moveDropParent, value) === null
+                        lookup_child_for_ref(props.moveDropParent, value) === null
                         || 'Reference name is duplicate with an existing child',
                       checkSwitchChild: value =>
                         props.moveDropParent?.data?._type !== 'js/switch'
@@ -212,7 +212,7 @@ const SyntaxMoveDialog = (props) => {
                     validate: {
                       checkDuplicate: value =>
                         !value
-                        || lookup_child_by_ref(props.moveDropParent, 'default') === null
+                        || lookup_child_for_ref(props.moveDropParent, 'default') === null
                         || 'Default condition already exists'
                     },
                   }}

@@ -42,8 +42,12 @@ const AutoComplete = (props) => {
   } = useFormContext()
 
   useEffect(() => {
-    setOptions(props.options.map(n => ({value: n})))
-    // console.log(props.options)
+    if (!!props.options) {
+      setOptions(props.options.map(n => ({value: n})))
+      // console.log(props.options)
+    } else {
+      setOptions([])
+    }
   }, [props.options])
 
   return (
@@ -75,6 +79,7 @@ const AutoComplete = (props) => {
         label={props.label}
         name={props.name}
         value={props.value}
+        required={props.required}
         size={props.size}
         onChange={e => {
           props.onChange(e.target.value)

@@ -7,8 +7,8 @@ import {
 // name:                     # name of the form      (:string)             - unique in a file
 // onSubmit:                 # function for submit   (:string|:array<:statement>)
 // onError:                  # function for error    (:string|:array<:statement>)
-// props:                    # props for 'form' tag  (:object<:any>)
-// formProps:                # props for hook form   (:object<:any>)
+// props:                    # props for 'form' tag  (:object<:expression>)
+// formProps:                # props for hook form   (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_form = {
 
@@ -95,7 +95,7 @@ export const react_form = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression',
             }
           ]
         }
@@ -115,7 +115,7 @@ export const react_form = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression',
             }
           ]
         }

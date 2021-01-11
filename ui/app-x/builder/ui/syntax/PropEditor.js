@@ -45,8 +45,8 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref,
-  remove_child_by_ref,
+  lookup_child_for_ref,
+  remove_child_for_ref,
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   valid_api_methods,
@@ -353,7 +353,7 @@ const PropEditor = (props) => {
     const children =
       treeNode.data._type === 'js/object'
       ? treeNode.children
-      : lookup_child_by_ref(treeNode, refKey)?.children
+      : lookup_child_for_ref(treeNode, refKey)?.children
     // keep a list of props and other names
     const props = []
     const others = []
@@ -401,7 +401,7 @@ const PropEditor = (props) => {
   function _process_childParent_props(childParent, properties) {
     // console.log(`properties`, properties)
     properties.map(child => {
-      const childNode = lookup_child_by_ref(childParent, child.name)
+      const childNode = lookup_child_for_ref(childParent, child.name)
       if (!!childNode)
       {
         // found child node, reuse existing key
@@ -531,7 +531,7 @@ const PropEditor = (props) => {
     // add props child if exist
     if (lookupNode.data._type !== 'js/object')
     {
-      const propChild = lookup_child_by_ref(lookupNode, refKey)
+      const propChild = lookup_child_for_ref(lookupNode, refKey)
       if (!propChild) {
         // add props if not exist
         lookupNode.children.push(
@@ -551,7 +551,7 @@ const PropEditor = (props) => {
     const childParent =
       lookupNode.data._type === 'js/object'
       ? lookupNode
-      : lookup_child_by_ref(lookupNode, refKey)
+      : lookup_child_for_ref(lookupNode, refKey)
     // add child properties as proper childNode (replace existing or add new)
     const properties = _.get(getValues(), `__${refKey}`) || []
     // process childParent props
@@ -561,7 +561,7 @@ const PropEditor = (props) => {
     if (lookupNode.data._type !== 'js/object')
     {
       if (!childParent.children.length) {
-        remove_child_by_ref(lookupNode, refKey)
+        remove_child_for_ref(lookupNode, refKey)
       }
     }
     // reorder children

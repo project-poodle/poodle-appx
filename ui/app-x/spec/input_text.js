@@ -6,8 +6,8 @@ import {
 // type: input/text                                  (~jsx|~expression)
 // name:                     # name of input         (:string)
 // array:                    # whether array         (:boolean)
-// props:                    # properties            (:object<:any>)
-// rules:                    # input rules           (:object<:any>)
+// props:                    # properties            (:object<:expression>)
+// rules:                    # input rules           (:object<:expression>)
 export const input_text = {
 
   type: 'input/text',
@@ -61,7 +61,7 @@ export const input_text = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression',
             }
           ]
         }
@@ -81,7 +81,7 @@ export const input_text = {
           classes: [
             {
               name: '.+',
-              class: 'any'
+              class: 'expression',
             }
           ]
         }

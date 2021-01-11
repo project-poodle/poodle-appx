@@ -18,11 +18,11 @@ export const js_object = {
       optional: true,
       classes: [
         {
-          class: 'any',
+          class: 'expression',
         },
       ],
       _childNode: {
-        class: 'any',
+        class: 'expression',
         input: 'input/properties',
       },
     },

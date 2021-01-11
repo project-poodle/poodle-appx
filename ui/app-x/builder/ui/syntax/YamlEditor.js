@@ -36,7 +36,6 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref,
   parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 // context provider

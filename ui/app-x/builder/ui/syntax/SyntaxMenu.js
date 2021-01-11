@@ -51,18 +51,18 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_by_ref
+  lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   lookup_classes,
   lookup_groups,
   lookup_types,
-  lookup_types_by_class,
-  lookup_classes_by_type,
-  lookup_types_by_group,
-  lookup_group_by_type,
+  lookup_types_for_class,
+  lookup_classes_for_type,
+  lookup_types_for_group,
+  lookup_group_for_type,
   lookup_changeable_types,
-  lookup_type_by_data,
+  lookup_type_for_data,
 } from 'app-x/builder/ui/syntax/util_base'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
@@ -73,7 +73,7 @@ const SyntaxMenu = (props) => {
   // styles
   const styles = makeStyles((theme) => ({
     menuItem: {
-      minWidth: 216,
+      minWidth: 224,
     },
     nestedMenuItem: {
       padding: 0,
@@ -120,11 +120,11 @@ const SyntaxMenu = (props) => {
       }
       const childNodeSpec = spec._childNode
       // console.log(`childNodeSpec.class`, childNodeSpec.class)
-      const valid_types = lookup_types_by_class(childNodeSpec.class)
+      const valid_types = lookup_types_for_class(childNodeSpec.class)
       // console.log(`valid_types`, valid_types)
       const groups = lookup_groups()
       return groups.map(group => {
-        return lookup_types_by_group(group)
+        return lookup_types_for_group(group)
           .map(group_type => {
             if (valid_types.includes(group_type)) {
               // console.log(`group_type [${group}] ${group_type}`)
@@ -144,7 +144,7 @@ const SyntaxMenu = (props) => {
                   <ListItemIcon>
                     { lookup_icon_for_type(group_type) }
                   </ListItemIcon>
-                  <ListItemText primary={`Add ${group_type}`} />
+                  <ListItemText primary={`Add : ${group_type.replace('/', ' / ')}`} />
                 </MenuItem>
               )
             }
@@ -192,7 +192,7 @@ const SyntaxMenu = (props) => {
                 .children
                 ?.filter(spec => spec.name !== '*' && !spec.array && !!spec._childNode)
                 .map(spec => {
-                  const exists = lookup_child_by_ref(parentNode, spec.name)
+                  const exists = lookup_child_for_ref(parentNode, spec.name)
                   if (exists) {
                     return null
                   }
