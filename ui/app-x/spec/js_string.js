@@ -12,7 +12,6 @@ export const js_string = {
   classes: [
     'string',
   ],
-  _group: 'js_basics',
   children: [
     {
       name: 'data',

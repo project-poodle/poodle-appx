@@ -15,7 +15,6 @@ export const js_function = {
   classes: [
     'expression',
   ],
-  _group: 'js_advanced',
   children: [
     {
       name: 'params',

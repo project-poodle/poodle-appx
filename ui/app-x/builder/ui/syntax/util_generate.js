@@ -71,7 +71,7 @@ import {
   VARIABLE_SEPARATOR,
   isPrimitive,
   parse_var_full_path,
-  lookup_data_type,
+  lookup_type_by_data,
   // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
@@ -79,61 +79,6 @@ import {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-
-// lookup interchange types
-function lookup_type_groups(type) {
-  if
-  (
-    type === 'js/string'
-    || type === 'js/number'
-    || type === 'js/boolean'
-    || type === 'js/null'
-    || type === 'js/expression'
-    || type === 'js/import'
-  )
-  {
-    return [
-      'js/string',
-      'js/number',
-      'js/boolean',
-      'js/null',
-      'js/expression',
-      'js/import',
-    ]
-  }
-  else if
-  (
-    type === 'react/element'
-    || type === 'react/html'
-    || type === 'react/form'
-  )
-  {
-    return [
-      'react/element',
-      'react/html',
-      'react/form',
-    ]
-  }
-  else if
-  (
-    type === 'input/text'
-    || type === 'input/select'
-    || type === 'input/switch'
-  )
-  {
-    return [
-      'input/text',
-      'input/select',
-      'input/switch',
-    ]
-  }
-  else
-  {
-    return [
-      type
-    ]
-  }
-}
 
 // lookup icon by type
 function lookup_icon_for_type(type) {
@@ -1013,13 +958,13 @@ function lookup_type_by_classname(className) {
 // reorder children
 const reorder_children = (parentNode) => {
 
-  console.log(`reorder_children - enter`, parentNode.children)
+  // console.log(`reorder_children - enter`, parentNode.children)
 
   const spec = globalThis.appx.SPEC.types[parentNode.data._type]
   if (!spec) {
     throw new Error(`ERROR: unable to find spec for [${parentNode.data._type}]`)
   }
-  console.log(`spec`, spec)
+  // console.log(`spec`, spec)
 
   const children = []
   spec.children.forEach(childSpec => {
@@ -1048,7 +993,7 @@ const reorder_children = (parentNode) => {
 
   // update children
   parentNode.children = children
-  console.log(`reorder_children - exit`, parentNode.children)
+  // console.log(`reorder_children - exit`, parentNode.children)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1229,7 +1174,7 @@ function generate_tree_node(js_context, conf, input) {
           throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
         }
         // check if data matches spec
-        const data_type = lookup_data_type(data)
+        const data_type = lookup_type_by_data(data)
         if (!type_matches_spec(data_type, thisNodeSpec)) {
           // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
           return
@@ -1288,7 +1233,7 @@ function generate_tree_node(js_context, conf, input) {
           throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
         }
         // check if data matches spec
-        const data_type = lookup_data_type(data)
+        const data_type = lookup_type_by_data(data)
         if (!type_matches_spec(data_type, childNodeSpec)) {
           // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
           return
@@ -1456,7 +1401,6 @@ function generate_tree_node(js_context, conf, input) {
 
 export {
   generate_tree_node,
-  lookup_type_groups,
   lookup_icon_for_type,
   lookup_icon_for_input,
   lookup_title_for_input,

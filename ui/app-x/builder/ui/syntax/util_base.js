@@ -25,8 +25,154 @@ function parse_var_full_path(var_full_path) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+const groups = {
+  // js basic
+  js_basic: [
+    'js/string',
+    'js/number',
+    'js/boolean',
+    'js/null',
+  ],
+  // js structure
+  js_structure: [
+    'js/object',
+    'js/array',
+  ],
+  // react
+  react: [
+    'react/element',
+    'react/html',
+    'react/state',
+    'react/context',
+    'react/effects',
+  ],
+  // form / inputs
+  form_input: [
+    'react/form',
+    'input/text',
+  ],
+  // js advanced
+  js_advanced: [
+    'js/import',
+    'js/expression',
+    'js/statement',
+    'js/function',
+  ],
+  // js controls
+  js_control: [
+    'js/switch',
+    'js/map',
+    'js/reduce',
+    'js/filter',
+  ],
+  // mui
+  // appx
+  appx: [
+    'mui/style',
+    'appx/api',
+    'appx/route',
+  ],
+}
+
+// return all classes
+function lookup_classes() {
+  return Object.keys(globalThis.appx.SPEC.classes)
+}
+
+// return all groups
+function lookup_groups() {
+  return Object.keys(groups)
+}
+
+// return all types
+function lookup_types() {
+  return Object.keys(globalThis.appx.SPEC.types)
+}
+
+// return types by class
+function lookup_types_by_class(cls) {
+  return globalThis.appx?.SPEC?.classes[cls]?.types || []
+  // const result = globalThis.appx?.SPEC?.classes[cls]?.types || []
+  // console.log(`lookup_types_by_class`, lookup_classes(), cls, result)
+  // return result
+}
+
+// return classes by type
+function lookup_classes_by_type(type) {
+  return Object.keys(globalThis.appx?.SPEC?.classes)
+    .filter(cls => globalThis.appx?.SPEC?.classes[cls]?.types.includes(type))
+    || []
+}
+
+// return types by group
+function lookup_types_by_group(group) {
+  return groups[group] || []
+}
+
+// return group by type
+function lookup_group_by_type(type) {
+  return groups.find(group => group.includes(type)) || null
+}
+
+// lookup changeable types
+function lookup_changeable_types(type) {
+  if
+  (
+    type === 'js/string'
+    || type === 'js/number'
+    || type === 'js/boolean'
+    || type === 'js/null'
+    || type === 'js/expression'
+    || type === 'js/import'
+  )
+  {
+    return [
+      'js/string',
+      'js/number',
+      'js/boolean',
+      'js/null',
+      'js/expression',
+      'js/import',
+    ]
+  }
+  else if
+  (
+    type === 'react/element'
+    || type === 'react/html'
+    || type === 'react/form'
+  )
+  {
+    return [
+      'react/element',
+      'react/html',
+      'react/form',
+    ]
+  }
+  else if
+  (
+    type === 'input/text'
+    || type === 'input/select'
+    || type === 'input/switch'
+  )
+  {
+    return [
+      'input/text',
+      'input/select',
+      'input/switch',
+    ]
+  }
+  else
+  {
+    return [
+      type
+    ]
+  }
+}
+
+
+
 // lookup data type
-const lookup_data_type = (data) => {
+const lookup_type_by_data = (data) => {
   // get data type
   let dataType = ''
   if (isPrimitive(data)) {
@@ -62,7 +208,7 @@ const lookup_data_type = (data) => {
 const enrich_primitive_data = (data) => {
   if (isPrimitive(data)) {
     return {
-      _type: lookup_data_type(data),
+      _type: lookup_type_by_data(data),
       data: data
     }
   } else {
@@ -103,7 +249,7 @@ const type_matches_spec = (type, matchSpec) => {
 
 // check if data type matches the match spec
 const data_matches_spec = (data, matchSpec) => {
-  const data_type = lookup_data_type(data)
+  const data_type = lookup_type_by_data(data)
   return type_matches_spec(data_type, matchSpec)
 }
 
@@ -354,10 +500,20 @@ export {
   VARIABLE_SEPARATOR,
   isPrimitive,
   parse_var_full_path,
-  lookup_data_type,
+  // lookup
+  lookup_classes,
+  lookup_groups,
+  lookup_types,
+  lookup_types_by_class,
+  lookup_classes_by_type,
+  lookup_types_by_group,
+  lookup_group_by_type,
+  lookup_changeable_types,
+  lookup_type_by_data,
   // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
+  // valid auto complete
   valid_api_methods,
   valid_import_names,
   valid_html_tags,

@@ -15,7 +15,6 @@ export const react_state = {
     'expression',
     'statement',
   ],
-  _group: 'react_concepts',
   _customs: [
     {
       name: '_ref',

@@ -1,6 +1,6 @@
 import {
   isPrimitive,
-  lookup_data_type,
+  lookup_type_by_data,
   type_matches_spec,
   data_matches_spec,
 } from 'app-x/builder/ui/syntax/util_base'
@@ -173,7 +173,7 @@ function parse_tree_node(tree_context, treeNode) {
             throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
           }
           // check if data matches spec
-          const data_type = lookup_data_type(nodeData)
+          const data_type = lookup_type_by_data(nodeData)
           if (!type_matches_spec(data_type, thisNodeSpec)) {
             // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
             return

@@ -98,6 +98,11 @@ export const classes = {
   'statement': {
     types: [
       'js/statement',
+      'react/state',
+      'react/context',
+      'js/switch',
+      'js/map',
+      'appx/api',
     ]
   },
   // jsx

@@ -11,7 +11,6 @@ export const js_object = {
   classes: [
     'object',
   ],
-  _group: 'js_basics',
   children: [
     {
       name: '*',

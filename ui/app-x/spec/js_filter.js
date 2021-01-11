@@ -13,7 +13,6 @@ export const js_filter = {
   classes: [
     'expression',
   ],
-  _group: 'js_controls',
   children: [
     {
       name: 'data',

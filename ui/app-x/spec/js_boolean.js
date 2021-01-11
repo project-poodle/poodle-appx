@@ -12,7 +12,6 @@ export const js_boolean = {
   classes: [
     'boolean',
   ],
-  _group: 'js_basics',
   children: [
     {
       name: 'data',

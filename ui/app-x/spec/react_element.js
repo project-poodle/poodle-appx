@@ -20,7 +20,6 @@ export const react_element = {
     'jsx',
     'expression',
   ],
-  _group: 'react_concepts',
   _expand: true,
   children: [
     {

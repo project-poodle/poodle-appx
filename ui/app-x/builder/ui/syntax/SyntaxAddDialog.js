@@ -50,7 +50,6 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   lookup_icon_for_type,
   lookup_title_for_input,
-  lookup_type_groups,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,

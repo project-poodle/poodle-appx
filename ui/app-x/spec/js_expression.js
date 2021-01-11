@@ -12,7 +12,6 @@ export const js_expression = {
   classes: [
     'expression',
   ],
-  _group: 'js_advanced',
   children: [
     {
       name: 'data',

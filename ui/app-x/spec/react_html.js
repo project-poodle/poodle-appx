@@ -15,7 +15,6 @@ export const react_html = {
     'jsx',
     'expression',
   ],
-  _group: 'react_concepts',
   _expand: true,
   children: [
     {

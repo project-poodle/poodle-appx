@@ -12,7 +12,6 @@ export const appx_route = {
   classes: [
     'expression',
   ],
-  _group: 'appx',
   children: [
     {
       name: 'name',

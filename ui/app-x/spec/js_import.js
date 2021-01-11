@@ -12,7 +12,6 @@ export const js_import = {
   classes: [
     'expression',
   ],
-  _group: 'js_advanced',
   children: [
     {
       name: 'name',

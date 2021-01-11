@@ -16,7 +16,6 @@ export const js_switch = {
     'expression',
     'statement',
   ],
-  _group: 'js_controls',
   _expand: true,
   children: [
     {

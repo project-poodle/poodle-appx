@@ -19,7 +19,6 @@ export const appx_api = {
   classes: [
     'statement',
   ],
-  _group: 'appx',
   children: [
     {
       name: 'namespace',

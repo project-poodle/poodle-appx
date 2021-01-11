@@ -14,7 +14,6 @@ export const js_map = {
     'expression',
     'statement',
   ],
-  _group: 'js_controls',
   _expand: true,
   children: [
     {

@@ -14,7 +14,6 @@ export const js_reduce = {
   classes: [
     'expression',
   ],
-  _group: 'js_controls',
   children: [
     {
       name: 'data',

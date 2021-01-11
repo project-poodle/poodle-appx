@@ -11,7 +11,6 @@ export const js_null = {
   classes: [
     'null',
   ],
-  _group: 'js_basics',
   children: []
 }
 

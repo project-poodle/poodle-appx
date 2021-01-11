@@ -15,7 +15,6 @@ export const react_effect = {
   classes: [
     'statement',
   ],
-  _group: 'react_concepts',
   children: [
     {
       name: 'body',

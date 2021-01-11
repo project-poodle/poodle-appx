@@ -11,7 +11,6 @@ export const js_array = {
   classes: [
     'array',
   ],
-  _group: 'js_basics',
   children: [
     {
       name: 'children',

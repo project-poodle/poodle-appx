@@ -18,7 +18,6 @@ export const react_form = {
     'jsx',
     'expression',
   ],
-  _group: 'form_input',
   _expand: true,
   children: [
     {

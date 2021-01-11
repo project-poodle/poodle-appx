@@ -16,7 +16,6 @@ export const input_text = {
     'jsx',
     'expression',
   ],
-  _group: 'form_input',
   children: [
     {
       name: 'name',

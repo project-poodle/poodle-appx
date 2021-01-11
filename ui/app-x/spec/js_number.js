@@ -12,7 +12,6 @@ export const js_number = {
   classes: [
     'number',
   ],
-  _group: 'js_basics',
   children: [
     {
       name: 'data',

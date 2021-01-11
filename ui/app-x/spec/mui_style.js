@@ -12,7 +12,6 @@ export const mui_style = {
   classes: [
     'expression',
   ],
-  _group: 'mui',
   children: [
     {
       name: '*',

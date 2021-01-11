@@ -12,7 +12,6 @@ export const js_statement = {
   classes: [
     'statement',
   ],
-  _group: 'js_advanced',
   children: [
     {
       name: 'body',

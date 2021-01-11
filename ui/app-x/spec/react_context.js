@@ -13,7 +13,6 @@ export const react_context = {
     'expression',
     'statement',
   ],
-  _group: 'react_concepts',
   children: [
     {
       name: 'name',
