@@ -17,6 +17,7 @@ export const js_filter = {
     {
       name: 'data',
       desc: 'Data',
+      optional: true,
       classes: [
         {
           class: 'expression'

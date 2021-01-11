@@ -30,13 +30,6 @@ export const react_element = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Element name is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',

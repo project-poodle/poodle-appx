@@ -22,13 +22,6 @@ export const react_context = {
           class: 'expression'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Context name is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',

@@ -21,13 +21,6 @@ export const js_import = {
           class: 'string',
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Import name is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',

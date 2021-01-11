@@ -25,13 +25,6 @@ export const input_text = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Input name is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',

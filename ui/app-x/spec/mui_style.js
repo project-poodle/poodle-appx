@@ -19,11 +19,11 @@ export const mui_style = {
       optional: true,
       classes: [
         {
-          class: 'expression',
+          class: 'object',
         },
       ],
       _childNode: {
-        class: 'expression',
+        class: 'object',
         input: 'input/properties',
       },
     },

@@ -349,7 +349,7 @@ function lookup_type_for_classname(className) {
 // check if a tree accepts child
 const lookup_accepted_types_for_node = (node) => {
   // check node type
-  console.log(node)
+  // console.log(node)
   if (!node || !node.key || node.key === '/') {
     return Object.keys(globalThis.appx.SPEC.types)
   } else if (!node?.data?._type) {

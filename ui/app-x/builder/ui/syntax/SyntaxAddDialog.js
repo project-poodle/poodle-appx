@@ -32,6 +32,9 @@ import {
 import {
   PlusOutlined,
 } from '@ant-design/icons'
+import {
+  notification,
+} from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import {
   useForm,
@@ -50,6 +53,8 @@ import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   lookup_icon_for_type,
   lookup_title_for_input,
+  generate_tree_node,
+  reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
@@ -190,12 +195,12 @@ const SyntaxAddDialog = (props) => {
   const onSubmit = data => {
     try {
       console.log('data', data)
-      addCallback(props.addNodeRef, props.addNodeParent, data)
+      addCallback(props.addNodeParent, data)
       props.setOpen(false)
     } catch (err) {
       console.log(err)
       notification.error({
-        message: `Failed to Add [ ${nodeType} ]`,
+        message: `Failed to Add [ ${nodeType.replace('/', ' / ')} ]`,
         description: String(err),
         placement: 'bottomLeft',
       })
@@ -206,8 +211,8 @@ const SyntaxAddDialog = (props) => {
   // console.log(props)
 
   // add callback
-  const addCallback = (nodeRef, nodeParent, nodeData) => {
-    // console.log(nodeRef, nodeParent, nodeData)
+  const addCallback = (nodeParent, nodeData) => {
+    // console.log(nodeParent, nodeData)
 
     // ready to add node
     const resultTree = _.cloneDeep(treeData)
@@ -224,7 +229,7 @@ const SyntaxAddDialog = (props) => {
       ? !!nodeData._customRef        // special handle of 'react/state'
         ? nodeData._ref
         : `...${nodeData.name}`
-      : !!nodeRef ? nodeRef : (nodeData._ref ? nodeData._ref : null)
+      : (nodeData._ref ? nodeData._ref : null)
     // console.log(parentKey, ref, nodeData)
     const parse_context = {}
     var parsed = null
@@ -519,7 +524,12 @@ const SyntaxAddDialog = (props) => {
                     defaultValue=''
                     rules={(() => {
                       let count = 0
-                      const result = {}
+                      const result = { validate: {} }
+                      // check optional flag
+                      if (!childSpec.optional && childSpec._thisNode?.input !== 'input/switch') {
+                        result['required'] = `${childSpec.desc} is required`
+                      }
+                      // check rules
                       if (!!childSpec.rules) {
                         childSpec.rules.map(rule => {
                           if (rule.kind === 'required') {
@@ -530,28 +540,101 @@ const SyntaxAddDialog = (props) => {
                               message: rule.message,
                             }
                           } else if (rule.kind === 'validate') {
-                            result[`validate_${count}`] = (value) => (
+                            result.validate[`validate_${count++}`] = (value) => (
                               !!eval(rule.validate) || rule.message
                             )
                           }
                         })
                       }
+                      // check _thisNode.rules
+                      if (!!childSpec._thisNode?.rules) {
+                        childSpec._thisNode.rules.map(rule => {
+                          if (rule.kind === 'required') {
+                            result['required'] = rule.message
+                          } else if (rule.kind === 'pattern') {
+                            result['pattern'] = {
+                              value: rule.pattern,
+                              message: rule.message,
+                            }
+                          } else if (rule.kind === 'validate') {
+                            result.validate[`validate_${count++}`] = (value) => (
+                              !!eval(rule.validate) || rule.message
+                            )
+                          }
+                        })
+                      }
+                      // additional rules by input type
+                      console.log(`childSpec._thisNode.input`, childSpec._thisNode.input)
+                      if (childSpec._thisNode.input === 'input/number') {
+                        result.validate[`validate_${count++}`] = (value) => {
+                          return !isNaN(Number(value)) || "Must be a number"
+                        }
+                      } else if (childSpec._thisNode.input === 'input/expression') {
+                        result.validate[`validate_${count++}`] = (value) => {
+                          try {
+                            parseExpression(String(value))
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      } else if (childSpec._thisNode.input === 'input/statement') {
+                        result.validate[`validate_${count++}`] = (value) => {
+                          try {
+                            parse(value, {
+                              allowReturnOutsideFunction: true, // allow return in the block statement
+                            })
+                            return true
+                          } catch (err) {
+                            return String(err)
+                          }
+                        }
+                      }
+                      // return all rules
                       return result
                     })()}
                     render={innerProps =>
-                      (
-                        <FormControl className={styles.formControl}>
-                          <TextField
-                            label={childSpec.desc}
-                            name={childSpec.name}
-                            value={innerProps.value}
-                            size="small"
-                            onChange={innerProps.onChange}
-                            error={!!_.get(errors, childSpec.name)}
-                            helperText={_.get(errors, childSpec.name)?.message}
-                            />
-                        </FormControl>
-                      )
+                      {
+                        if (childSpec._thisNode.input === 'input/switch') {
+                          return (
+                            <FormControl
+                              className={styles.formControl}
+                              error={!!_.get(errors, childSpec.name)}
+                              >
+                              <FormHelperText>{childSpec.desc}</FormHelperText>
+                              <Switch
+                                name={childSpec.name}
+                                checked={innerProps.value}
+                                onChange={e => innerProps.onChange(e.target.checked)}
+                              />
+                              {
+                                !!_.get(errors, childSpec.name)
+                                &&
+                                <FormHelperText>{_.get(errors, childSpec.name)?.message}</FormHelperText>
+                              }
+                            </FormControl>
+                          )
+                        } else {
+                          return (
+                            <FormControl className={styles.formControl}>
+                              <TextField
+                                label={childSpec.desc}
+                                name={childSpec.name}
+                                value={innerProps.value}
+                                required={!childSpec.optional}
+                                multiline={
+                                  childSpec._thisNode.input === 'input/expression'
+                                  || childSpec._thisNode.input === 'input/statement'
+                                }
+                                size="small"
+                                onChange={innerProps.onChange}
+                                error={!!_.get(errors, childSpec.name)}
+                                helperText={_.get(errors, childSpec.name)?.message}
+                                />
+                            </FormControl>
+                          )
+                        }
+                      }
                     }
                   />
                 )

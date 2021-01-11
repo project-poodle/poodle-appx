@@ -28,13 +28,6 @@ export const appx_api = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Namespace is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',
@@ -48,13 +41,6 @@ export const appx_api = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'App name is required',
-        },
-      ],
       _thisNode:{
         class: 'string',
         input: 'input/text',
@@ -66,13 +52,6 @@ export const appx_api = {
       classes: [
         {
           class: 'string'
-        },
-      ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Method is required',
         },
       ],
       _thisNode: {
@@ -94,13 +73,6 @@ export const appx_api = {
       classes: [
         {
           class: 'string'
-        },
-      ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Endpoint is required',
         },
       ],
       _thisNode: {

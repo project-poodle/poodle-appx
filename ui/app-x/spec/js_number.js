@@ -23,7 +23,7 @@ export const js_number = {
       ],
       _thisNode: {
         class: 'number',
-        input: 'input/text',
+        input: 'input/number',
       },
     },
   ]

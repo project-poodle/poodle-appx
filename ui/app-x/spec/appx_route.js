@@ -21,13 +21,6 @@ export const appx_route = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Router path is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',

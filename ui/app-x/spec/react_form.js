@@ -30,11 +30,6 @@ export const react_form = {
       ],
       rules: [
         {
-          kind: 'required',
-          required: true,
-          message: 'Form name is required',
-        },
-        {
           kind: 'pattern',
           pattern: REGEX_VAR,
           message: 'Must be a valid variable name',

@@ -21,13 +21,6 @@ export const js_expression = {
           class: 'string',
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Expression is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/expression',

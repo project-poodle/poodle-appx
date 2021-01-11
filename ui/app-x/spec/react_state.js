@@ -43,11 +43,7 @@ export const react_state = {
       ],
       rules: [
         {
-          kind: 'required',
-          required: true,
-          message: 'Name is required',
-        },
-        {
+          kind: 'pattern',
           pattern: REGEX_VAR,
           message: 'Must be a valid variable name',
         },
@@ -74,11 +70,6 @@ export const react_state = {
         }
       ],
       rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'Setter is required',
-        },
         {
           kind: 'pattern',
           pattern: REGEX_VAR,

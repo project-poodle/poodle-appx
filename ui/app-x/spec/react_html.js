@@ -25,13 +25,6 @@ export const react_html = {
           class: 'string'
         },
       ],
-      rules: [
-        {
-          kind: 'required',
-          required: true,
-          message: 'HTML tag is required',
-        },
-      ],
       _thisNode: {
         class: 'string',
         input: 'input/text',
