@@ -359,7 +359,7 @@ const SyntaxAddDialog = (props) => {
             <Controller
               name="_ref"
               control={control}
-              defaultValue={props.addNodeRef}
+              defaultValue={props?.addNodeRef === '*' ? '' : props?.addNodeRef}
               rules={{
                 required: "Reference name is required",
                 validate: {
@@ -402,19 +402,19 @@ const SyntaxAddDialog = (props) => {
                   }
                 },
               }}
-              render={props =>
+              render={innerProps =>
                 <FormControl className={styles.formControl}>
                   <AutoComplete
                     label="Reference"
                     name="_ref"
                     required={true}
                     onChange={value => {
-                      props.onChange(value)
+                      innerProps.onChange(value)
                       setNodeRef(value)
                       trigger('_ref')
                       trigger('_type')
                     }}
-                    value={props.value}
+                    value={innerProps.value}
                     options={parentSpec.children?.filter(spec => !!spec._childNode?.class).map(child => child.name).filter(name => name !== '*')}
                     size="small"
                     error={!!errors._ref}
@@ -448,20 +448,20 @@ const SyntaxAddDialog = (props) => {
                   }
                 }
               }}
-              render={props =>
+              render={innerProps =>
                 (
                   <FormControl className={styles.formControl}>
                     <TextField
                       label="Type"
                       select={true}
                       name="_type"
-                      value={props.value}
+                      value={innerProps.value}
                       required={true}
                       size="small"
                       onChange={
                         e => {
                           setNodeType(e.target.value)
-                          props.onChange(e)
+                          innerProps.onChange(e)
                           trigger('_ref')
                           trigger('_type')
                         }
@@ -471,19 +471,25 @@ const SyntaxAddDialog = (props) => {
                       >
                       {
                         lookup_groups().map(group => {
+                          const supported_types = lookup_accepted_types_for_node(props.addNodeParent)
                           return lookup_types_for_group(group)
                             .map(type => {
-                              return (
-                                <MenuItem value={type} key={type}>
-                                  <ListItemIcon>
-                                    { lookup_icon_for_type(type) }
-                                  </ListItemIcon>
-                                  <Typography variant="inherit" noWrap={true}>
-                                    {type.replace('/', ' / ')}
-                                  </Typography>
-                                </MenuItem>
-                              )
+                              if (!supported_types.includes(type)) {
+                                return
+                              } else {
+                                return (
+                                  <MenuItem value={type} key={type}>
+                                    <ListItemIcon>
+                                      { lookup_icon_for_type(type) }
+                                    </ListItemIcon>
+                                    <Typography variant="inherit" noWrap={true}>
+                                      {type.replace('/', ' / ')}
+                                    </Typography>
+                                  </MenuItem>
+                                )
+                              }
                             })
+                            .filter(item => !!item)
                             .concat(`divider/${group}`)
                         })
                         .flat(2)
@@ -532,15 +538,15 @@ const SyntaxAddDialog = (props) => {
                       }
                       return result
                     })()}
-                    render={props =>
+                    render={innerProps =>
                       (
                         <FormControl className={styles.formControl}>
                           <TextField
                             label={childSpec.desc}
                             name={childSpec.name}
-                            value={props.value}
+                            value={innerProps.value}
                             size="small"
-                            onChange={props.onChange}
+                            onChange={innerProps.onChange}
                             error={!!_.get(errors, childSpec.name)}
                             helperText={_.get(errors, childSpec.name)?.message}
                             />

@@ -651,7 +651,6 @@ const SyntaxTree = (props) => {
         if (!!parentNode) {
           // add dialog
           // console.log('here2', selectedTool, parentNode)
-          setAddNodeParent(parentNode)
           const childSpec = lookup_first_accepted_childSpec(parentNode, selectedTool)
           if (!!childSpec) {
             // open add dialog
