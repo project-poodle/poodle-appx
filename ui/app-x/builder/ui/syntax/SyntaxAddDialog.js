@@ -427,7 +427,7 @@ const SyntaxAddDialog = (props) => {
                         disabled={!!disabled[customField.name]}
                         childSpec={customField}
                         thisNodeSpec={customField}
-                        defaultValue={customField.defaultValue ? eval(customField.defaultValue) : ''}
+                        defaultValue={!!customField.defaultValue ? eval(customField.defaultValue) : ''}
                       />
                     )
                   }
@@ -453,7 +453,7 @@ const SyntaxAddDialog = (props) => {
                         disabled={!!disabled[customField.name]}
                         childSpec={customField}
                         thisNodeSpec={customField}
-                        defaultValue={customField.defaultValue ? eval(customField.defaultValue) : ''}
+                        defaultValue={!!customField.defaultValue ? eval(customField.defaultValue) : ''}
                       />
                     )
                   }
@@ -640,6 +640,7 @@ const SyntaxAddDialog = (props) => {
                       key={childSpec.name}
                       name={childSpec.name}
                       disabled={!!disabled[childSpec.name]}
+                      defaultValue=''
                       childSpec={childSpec}
                       thisNodeSpec={childSpec._thisNode}
                     />

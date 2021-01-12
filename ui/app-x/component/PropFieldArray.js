@@ -466,7 +466,7 @@ PropFieldArray.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   defaultValue: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.string.isRequired,
+    _type: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.any.isRequired,
   })),

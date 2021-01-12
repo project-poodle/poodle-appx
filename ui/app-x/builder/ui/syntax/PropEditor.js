@@ -199,7 +199,7 @@ const PropEditor = (props) => {
       if (lookupNode) {
         setNodeType(lookupNode.data._type)
       }
-      console.log(`lookupNode`, lookupNode)
+      // console.log(`lookupNode`, lookupNode)
     }
     else
     {

@@ -318,7 +318,11 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   thisNodeSpec: PropTypes.object.isRequired,
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ])
 }
 
 export default InputField
