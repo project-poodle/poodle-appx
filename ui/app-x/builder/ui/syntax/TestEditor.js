@@ -43,7 +43,6 @@ import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 // utilities
 import {
-  isPrimitive,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,

@@ -57,9 +57,13 @@ import InputFieldArray from 'app-x/component/InputFieldArray'
 import ControlledEditor from 'app-x/component/ControlledEditor'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
-  lookup_icon_for_type,
-  lookup_title_for_input,
   generate_tree_node,
+  new_tree_node,
+  lookup_icon_for_type,
+  lookup_icon_for_node,
+  lookup_icon_for_input,
+  lookup_title_for_node,
+  lookup_title_for_input,
   reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
@@ -283,7 +287,7 @@ const SyntaxAddDialog = (props) => {
   const onSubmit = data => {
     try {
       console.log('Add submit data', data)
-      addCallback(props.addNodeParent, data)
+      addCallback(data)
       props.setOpen(false)
     } catch (err) {
       console.log(err)
@@ -300,96 +304,70 @@ const SyntaxAddDialog = (props) => {
 
   //////////////////////////////////////////////////////////////////////////////
   // add callback
-  const addCallback = (nodeParent, nodeData) => {
-    // console.log(nodeParent, nodeData)
+  const addCallback = (nodeData) => {
+    // console.log(nodeData)
 
     // ready to add node
     const resultTree = _.cloneDeep(treeData)
-    const tmpParent = tree_lookup(resultTree, nodeParent.key)
-    const lookupParent = (tmpParent.data.type === '/') ? null : tmpParent
-    // parent key
-    let parentKey = null
-    if (!!lookupParent) {
-      parentKey = lookupParent.key
-    }
-    // ref
-    const ref =
-      (nodeData.type === 'react/state')
-      ? !!nodeData._customRef        // special handle of 'react/state'
-        ? nodeData._ref
-        : `...${nodeData.name}`
-      : (nodeData._ref ? nodeData._ref : null)
-    // console.log(parentKey, ref, nodeData)
-    // convert node data
-    nodeSpec.children?.map(childSpec => {
-      if (!!childSpec._thisNode && !!childSpec.array) {
-        nodeData[childSpec.name] = nodeData[childSpec.name]?.map(item => item.value) || []
-      }
-    })
-    console.log(`nodeData`, nodeData)
-    // parse nodeData
-    const parse_context = {}
-    const parsed = generate_tree_node(
-      parse_context,
+    // lookup parent
+    const tmpParent = tree_lookup(resultTree, props.addNodeParent.key)
+    const lookupParent = (tmpParent.key === '/') ? null : tmpParent
+    let parentKey = lookupParent?.key || null
+    // console.log(`nodeData`, nodeData)
+    // create new node
+    const is_array = !!parentSpec.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
+    const new_node = new_tree_node(
+      lookup_title_for_input(nodeData._ref, nodeData, is_array),
+      lookup_icon_for_input(nodeData),
       {
-        ref: ref,
-        parentKey: parentKey,
+        ...nodeData,
+        _array: is_array,
       },
-      nodeData
+      !nodeSpec.children?.find(item => !!item._childNode),  // isLeaf
+      parentKey
     )
-    console.log(`parsed`, parsed)
-    // console.log(nodeRef, nodeParent, parsed)
+    // console.log(nodeRef, nodeParent, new_node)
     // insert to proper location
     if (lookupParent) {
-      if (!!ref) {
-        lookupParent.children.unshift(parsed)
+      if ('_pos' in nodeData) {
+        let count = 0
+        let found = false
+        lookupParent.children.map((child, index) => {
+          if (found) {
+            return
+          }
+          if (child.data._ref === nodeData._ref) {
+            count = count+1
+          }
+          // check if we'd insert before first component with no _ref
+          if (nodeData._pos === 0 && count !== 0) {
+            found = true
+            lookupParent.children.splice(index, 0, new_node)
+            return
+          }
+          if (count >= nodeData._pos) {
+            found = true
+            lookupParent.children.splice(index+1, 0, new_node)
+            return
+          }
+        })
       } else {
-        if ('_pos' in nodeData) {
-          let count = 0
-          let found = false
-          lookupParent.children.map((child, index) => {
-            if (found) {
-              return
-            }
-            if (!child.data._ref) {
-              count = count+1
-            }
-            // check if we'd insert before first component with no _ref
-            if (nodeData._pos === 0 && count !== 0) {
-              found = true
-              lookupParent.children.splice(index, 0, parsed)
-              return
-            }
-            if (count >= nodeData._pos) {
-              found = true
-              lookupParent.children.splice(index+1, 0, parsed)
-              return
-            }
-          })
-        } else {
-          // no _pos, simply add to the end
-          lookupParent.children.push(parsed)
-        }
+        // no _pos, simply add to the end
+        lookupParent.children.push(new_node)
       }
       reorder_children(lookupParent)
     } else {
       // add to the root as first component
-      resultTree.splice(1, 0, parsed)
+      resultTree.splice(1, 0, new_node)
     }
-    // console.log(parse_tree_node({topLevel: true}, resultTree))
     // process expanded keys
     const newExpandedKeys = _.cloneDeep(expandedKeys)
-    parse_context.expandedKeys.map(key => {
-      if (!newExpandedKeys.includes(key)) {
-        newExpandedKeys.push(key)
-      }
-    })
     if (!!lookupParent && !newExpandedKeys.includes(lookupParent.key)) {
       newExpandedKeys.push(lookupParent.key)
     }
     // take action
     makeDesignAction(
-      `Add [${parsed?.title}]`,
+      `Add [${new_node?.title}]`,
       resultTree,
       newExpandedKeys,
       selectedKey,

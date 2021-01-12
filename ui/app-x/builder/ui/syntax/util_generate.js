@@ -67,6 +67,11 @@ function lookup_icon_for_type(type) {
   return lookup_icon_for_input({_type: type, data: ''})
 }
 
+// lookup icon by node
+function lookup_icon_for_node(node) {
+  return lookup_icon_for_input({_type: node.data?._type, ...node?.data})
+}
+
 // lookup icon for input (input._type)
 function lookup_icon_for_input(input) {
 
@@ -212,6 +217,11 @@ function lookup_icon_for_input(input) {
 
     return <QuestionOutlined />
   }
+}
+
+// lookup title for node
+function lookup_title_for_node(node) {
+  return lookup_title_for_input(node.data?._ref, node.data, node.data?._array)
 }
 
 // lookup title for input (input._type / input.name / input.data ...)
@@ -447,7 +457,8 @@ function new_root_node() {
     icon: lookup_icon_for_type('/'),
     data: {
       _ref: null,
-      _type: '/'
+      _type: '/',
+      _array: false,
     },
     isLeaf: true,
     parentKey: null,
@@ -569,6 +580,7 @@ function generate_tree_node(js_context, conf, input) {
     {
       _ref: conf?.ref || null,
       _type: input._type,
+      _array: !!conf?.array,
       // empty data
     },
     !spec.children?.find(item => !!item._childNode),  // isLeaf
@@ -803,9 +815,11 @@ function generate_tree_node(js_context, conf, input) {
 
 export {
   generate_tree_node,
+  new_tree_node,
   lookup_icon_for_type,
+  lookup_icon_for_node,
   lookup_icon_for_input,
+  lookup_title_for_node,
   lookup_title_for_input,
   reorder_children,
-  isPrimitive,
 }

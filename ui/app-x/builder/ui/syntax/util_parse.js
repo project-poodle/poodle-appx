@@ -340,5 +340,6 @@ export {
   tree_lookup,
   parse_tree_node,
   lookup_child_for_ref,
+  lookup_child_array_for_ref,
   remove_child_for_ref,
 }
