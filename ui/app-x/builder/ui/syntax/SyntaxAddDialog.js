@@ -18,15 +18,18 @@ import {
   DialogActions,
   Typography,
   FormControl,
+  Input,
   InputLabel,
   FormGroup,
   FormControlLabel,
   FormHelperText,
   TextField,
   Switch,
-  makeStyles
+  makeStyles,
 } from '@material-ui/core'
 import {
+  AddCircleOutline,
+  RemoveCircleOutline,
   DeleteOutlineOutlined,
 } from '@material-ui/icons'
 import {
@@ -48,7 +51,10 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
 import AutoComplete from 'app-x/component/AutoComplete'
-import TextFieldArray from 'app-x/component/TextFieldArray'
+// import TextFieldArray from 'app-x/component/TextFieldArray'
+import InputField from 'app-x/component/InputField'
+import InputFieldArray from 'app-x/component/InputFieldArray'
+import ControlledEditor from 'app-x/component/ControlledEditor'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
   lookup_icon_for_type,
@@ -101,6 +107,26 @@ const SyntaxAddDialog = (props) => {
       width: '100%',
       // margin: theme.spacing(1),
       padding: theme.spacing(2, 0),
+    },
+    arrayItem: {
+      width: '100%',
+      // margin: theme.spacing(1),
+      padding: theme.spacing(0, 0),
+    },
+    labelControl: {
+      width: '100%',
+      // margin: theme.spacing(1),
+      padding: theme.spacing(2, 0, 0),
+    },
+    editor: {
+      width: '100%',
+      height: theme.spacing(8),
+      padding: theme.spacing(0, 0, 0),
+    },
+    dummyTextField: {
+      width: '100%',
+      // margin: theme.spacing(1),
+      padding: theme.spacing(0, 0),
     },
   }))()
 
@@ -513,132 +539,20 @@ const SyntaxAddDialog = (props) => {
             {
               nodeSpec?.children?.map(childSpec => {
                 if (!childSpec._thisNode?.class) {
-                  return
+                  return undefined
                 }
-                const childThisSpec = childSpec._thisNode
-                return (
-                  <Controller
-                    name={childSpec.name}
-                    control={control}
-                    key={childSpec.name}
-                    defaultValue=''
-                    rules={(() => {
-                      let count = 0
-                      const result = { validate: {} }
-                      // check optional flag
-                      if (!childSpec.optional && childSpec._thisNode?.input !== 'input/switch') {
-                        result['required'] = `${childSpec.desc} is required`
-                      }
-                      // check rules
-                      if (!!childSpec.rules) {
-                        childSpec.rules.map(rule => {
-                          if (rule.kind === 'required') {
-                            result['required'] = rule.message
-                          } else if (rule.kind === 'pattern') {
-                            result['pattern'] = {
-                              value: rule.pattern,
-                              message: rule.message,
-                            }
-                          } else if (rule.kind === 'validate') {
-                            result.validate[`validate_${count++}`] = (value) => (
-                              !!eval(rule.validate) || rule.message
-                            )
-                          }
-                        })
-                      }
-                      // check _thisNode.rules
-                      if (!!childSpec._thisNode?.rules) {
-                        childSpec._thisNode.rules.map(rule => {
-                          if (rule.kind === 'required') {
-                            result['required'] = rule.message
-                          } else if (rule.kind === 'pattern') {
-                            result['pattern'] = {
-                              value: rule.pattern,
-                              message: rule.message,
-                            }
-                          } else if (rule.kind === 'validate') {
-                            result.validate[`validate_${count++}`] = (value) => (
-                              !!eval(rule.validate) || rule.message
-                            )
-                          }
-                        })
-                      }
-                      // additional rules by input type
-                      console.log(`childSpec._thisNode.input`, childSpec._thisNode.input)
-                      if (childSpec._thisNode.input === 'input/number') {
-                        result.validate[`validate_${count++}`] = (value) => {
-                          return !isNaN(Number(value)) || "Must be a number"
-                        }
-                      } else if (childSpec._thisNode.input === 'input/expression') {
-                        result.validate[`validate_${count++}`] = (value) => {
-                          try {
-                            parseExpression(String(value))
-                            return true
-                          } catch (err) {
-                            return String(err)
-                          }
-                        }
-                      } else if (childSpec._thisNode.input === 'input/statement') {
-                        result.validate[`validate_${count++}`] = (value) => {
-                          try {
-                            parse(value, {
-                              allowReturnOutsideFunction: true, // allow return in the block statement
-                            })
-                            return true
-                          } catch (err) {
-                            return String(err)
-                          }
-                        }
-                      }
-                      // return all rules
-                      return result
-                    })()}
-                    render={innerProps =>
-                      {
-                        if (childSpec._thisNode.input === 'input/switch') {
-                          return (
-                            <FormControl
-                              className={styles.formControl}
-                              error={!!_.get(errors, childSpec.name)}
-                              >
-                              <FormHelperText>{childSpec.desc}</FormHelperText>
-                              <Switch
-                                name={childSpec.name}
-                                checked={innerProps.value}
-                                onChange={e => innerProps.onChange(e.target.checked)}
-                              />
-                              {
-                                !!_.get(errors, childSpec.name)
-                                &&
-                                <FormHelperText>{_.get(errors, childSpec.name)?.message}</FormHelperText>
-                              }
-                            </FormControl>
-                          )
-                        } else {
-                          return (
-                            <FormControl className={styles.formControl}>
-                              <TextField
-                                label={childSpec.desc}
-                                name={childSpec.name}
-                                value={innerProps.value}
-                                required={!childSpec.optional}
-                                multiline={
-                                  childSpec._thisNode.input === 'input/expression'
-                                  || childSpec._thisNode.input === 'input/statement'
-                                }
-                                size="small"
-                                onChange={innerProps.onChange}
-                                error={!!_.get(errors, childSpec.name)}
-                                helperText={_.get(errors, childSpec.name)?.message}
-                                />
-                            </FormControl>
-                          )
-                        }
-                      }
-                    }
-                  />
-                )
+                // const childThisSpec = childSpec._thisNode
+                if (!!childSpec.array) {
+                  return (
+                    <InputFieldArray name={childSpec.name} childSpec={childSpec}/>
+                  )
+                } else {
+                  return (
+                    <InputField name={childSpec.name} childSpec={childSpec} />
+                  )
+                }
               })
+              .filter(child => !!child)
               .flat(2)
             }
 

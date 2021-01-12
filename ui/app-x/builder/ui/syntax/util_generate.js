@@ -758,7 +758,7 @@ function generate_tree_node(js_context, conf, input) {
               if (!!childNode) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode [array]`, childNode)
-              } else {
+              } else if (!childSpec.optional) {
                 throw new Error(`ERROR: unable to process child data [array] [${_ref}] [${JSON.stringify(d)}]`)
               }
             })

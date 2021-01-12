@@ -7,7 +7,7 @@ import {
 // params:                                           (:array<:string>)
 //   - p1
 //   - p2
-// body:                     # code body             (:string|:array<:statement>)
+// body:                     # code block            (:array<:string>|:array<:statement>)
 export const js_function = {
 
   type: 'js/function',
@@ -47,27 +47,20 @@ export const js_function = {
       array: true,
       classes: [
         {
+          class: 'string',
+        },
+        {
           class: 'statement',
         },
-      ],
-      _childNode: {
-        class: 'statement',
-      },
-    },
-    {
-      name: 'code',
-      desc: 'Code',
-      optional: true,
-      classes: [
-        {
-          class: 'string',
-        }
       ],
       _thisNode: {
         class: 'string',
         input: 'input/statement',
-      }
-    }
+      },
+      _childNode: {
+        class: 'statement',
+      },
+    },
   ]
 }
 

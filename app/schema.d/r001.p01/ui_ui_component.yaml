@@ -602,8 +602,9 @@ ui_component:
               width: 100%
           snippet:
             _type: js/statement
-            code: |
-              // console.log($r('react-grid-layout.default'))
+            body:
+              - |
+                // console.log($r('react-grid-layout.default'))
           element:
             _type: react/element
             name: "@material-ui/core.Container"

@@ -40,7 +40,7 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 // context provider
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
-import ControlledEditor from 'app-x/builder/ui/syntax/ControlledEditor'
+import ControlledEditor from 'app-x/component/ControlledEditor'
 import Asterisk from 'app-x/icon/Asterisk'
 
 // console.log(monaco)
@@ -222,9 +222,16 @@ const YamlEditor = props => {
             wrappingIndent: 'deepIndent',
             scrollBeyondLastLine: false,
             wrappingStrategy: 'advanced',
+            lineNumbersMinChars: 0,
+            glyphMargin: true,
+            // lineDecorationsWidth: 4,
             minimap: {
               enabled: false
-            }
+            },
+            // layoutInfo: {
+            //  glyphMarginWidth: 2,
+            //  glyphMarginLeft: 2,
+            //},
           }}
           value={yamlContent}
           onChange={handleEditorChange}

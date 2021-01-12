@@ -153,11 +153,15 @@
           ])?
           (body:
             [
+              (_string_)?
+              ...
+            ]
+              |
+            [
               (_statement_)?
               ...
             ]
           )?
-          (code: _string_)?
         }
         ;
 
@@ -166,11 +170,15 @@
           _type: "js/statement",
           (body:
             [
+              (_string_)?
+              ...
+            ]
+              |
+            [
               (_statement_)?
               ...
             ]
           )?
-          (code: _string_)?
         }
         ;
 
@@ -266,11 +274,15 @@
           _type: "react/effect",
           (body:
             [
+              (_string_)?
+              ...
+            ]
+              |
+            [
               (_statement_)?
               ...
             ]
           )?
-          (code: _string_)?
           (states:
             [
               _string_,

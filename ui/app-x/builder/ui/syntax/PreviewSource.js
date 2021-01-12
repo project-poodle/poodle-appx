@@ -294,6 +294,9 @@ const PreviewSource = (props) => {
           wrappingIndent: 'deepIndent',
           scrollBeyondLastLine: false,
           wrappingStrategy: 'advanced',
+          lineNumbersMinChars: 0,
+          glyphMargin: true,
+          // lineDecorationsWidth: 4,
           minimap: {
             enabled: true
           }

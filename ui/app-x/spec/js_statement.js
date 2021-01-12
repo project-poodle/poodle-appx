@@ -4,7 +4,7 @@ import {
 } from 'app-x/spec/classes.js'
 
 // type: js/statement                                (~statement)
-// body:                     # code block            (:string|:array<:statement>)
+// body:                     # code block            (:array<:string>|:array<:statement>)
 export const js_statement = {
 
   type: 'js/statement',
@@ -20,27 +20,20 @@ export const js_statement = {
       array: true,
       classes: [
         {
+          class: 'string',
+        },
+        {
           class: 'statement',
         },
-      ],
-      _childNode: {
-        class: 'statement',
-      },
-    },
-    {
-      name: 'code',
-      desc: 'Code',
-      optional: true,
-      classes: [
-        {
-          class: 'string',
-        }
       ],
       _thisNode: {
         class: 'string',
         input: 'input/statement',
       },
-    }
+      _childNode: {
+        class: 'statement',
+      },
+    },
   ]
 }
 
