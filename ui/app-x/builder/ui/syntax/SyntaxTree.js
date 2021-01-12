@@ -701,6 +701,11 @@ const SyntaxTree = (props) => {
 
     // check for root
     if (dragKey === '/') {
+      notification.info({
+        message: `Move not Allowed`,
+        description: `Cannot move root node [ / ]`,
+        placement: 'bottomLeft',
+      })
       return
     }
 
@@ -718,6 +723,10 @@ const SyntaxTree = (props) => {
       }
       dragObj = item
     })
+    // return if drag object not found
+    if (!dragObj) {
+      return
+    }
 
     let dropParentKey
     if (!info.dropToGap) {
@@ -784,14 +793,21 @@ const SyntaxTree = (props) => {
     tree_traverse(resultData, dropParentKey, (item, index, arr) => {
       dropParent = item
     })
-    // set to root if not found
+
+    // return if drop parent node not found
     if (!dropParent) {
-      dropParent = {
-        key: '/',
-        data: {
-          _type: '/'
-        }
-      }
+      dropParent = resultData[0] // use root if dropParent not found
+    }
+
+    // check accepted types
+    const accepted_types = lookup_accepted_types_for_node(dropParent)
+    if (!accepted_types.includes(dragObj.data._type)) {
+      notification.info({
+        message: `Move not Allowed`,
+        description: `Move [ ${dragObj?.data._type.replace('/', ' / ')} ] to [ ${dropParent?.data._type.replace('/', ' / ')} ]} is not allowed`,
+        placement: 'bottomLeft',
+      })
+      return
     }
 
     // callback with move confirmation

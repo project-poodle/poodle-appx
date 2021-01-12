@@ -224,6 +224,10 @@ const SyntaxAddDialog = (props) => {
   //////////////////////////////////////////////////////////////////////////////
   // parentSpec
   useEffect(() => {
+    // reset disabled and hidden flags
+    setDisabled({})
+    setHidden({})
+    // set parent spec
     if (!props.addNodeParent?.data?._type) {
       setParentSpec(null)
     } else {
@@ -249,6 +253,10 @@ const SyntaxAddDialog = (props) => {
 
   // nodeSpec
   useEffect(() => {
+    // reset disabled and hidden flags
+    setDisabled({})
+    setHidden({})
+    // set node spec
     if (!nodeType) {
       setNodeSpec(null)
     } else {

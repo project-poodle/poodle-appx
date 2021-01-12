@@ -224,6 +224,10 @@ const SyntaxMoveDialog = (props) => {
   //////////////////////////////////////////////////////////////////////////////
   // parentSpec
   useEffect(() => {
+    // reset disabled and hidden flags
+    setDisabled({})
+    setHidden({})
+    // set parent spec
     if (!props.moveDropParent?.data?._type) {
       setParentSpec(null)
     } else {
@@ -245,6 +249,10 @@ const SyntaxMoveDialog = (props) => {
 
   // nodeSpec
   useEffect(() => {
+    // reset disabled and hidden flags
+    setDisabled({})
+    setHidden({})
+    // set node spec
     if (!nodeType) {
       setNodeSpec(null)
     } else {
