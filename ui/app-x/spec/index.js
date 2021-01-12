@@ -66,7 +66,7 @@ const types = [
   // map
 ]
 .map(item => {
-  // validity check
+  // validity checks
   if (!item.type) {
     throw new Error(`ERROR: type spec missing [type] [${JSON.stringify(item)}]`)
   }
@@ -78,11 +78,35 @@ const types = [
     let wild_card_count = 0
     let child_array_count = 0
     item.children.map(childSpec => {
+      if (!childSpec.name) {
+        throw new Error(`ERROR: type spec [${item.type}] missing child spec name [${JSON.stringify(childSpec)}]`)
+      }
       if (childSpec.name === '*') {
         wild_card_count++
       }
       if (!!childSpec.array && !!childSpec._childNode) {
         child_array_count++
+      }
+      // check _thisNode
+      if (!!childSpec._thisNode) {
+        if (!childSpec._thisNode.class) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [class]`)
+        }
+        if (!childSpec._thisNode.input) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
+        }
+        if (!Object.keys(classes).includes(childSpec._thisNode.class)) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode invalid class [childSpec._thisNode.class]`)
+        }
+      }
+      // check _childNode
+      if (!!childSpec._childNode) {
+        if (!childSpec._childNode.class) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [class]`)
+        }
+        if (!Object.keys(classes).includes(childSpec._childNode.class)) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode invalid class [childSpec._thisNode.class]`)
+        }
       }
     })
     // check wild_card_count
