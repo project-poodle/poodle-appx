@@ -276,9 +276,9 @@ function input_text(js_context, input) {
   const props = input.props || {}
 
   // basic types - extension not supported
-  // multiline and autocomplete options
+  // multiline and autoSuggest options
   const multiline = !!props.multiline || false
-  const autocomplete = !!props.autocomplete || false
+  const autoSuggest = !!props.autoSuggest || false
   // check valid input types
   const inputType = (() => {
     if (!!props.type && VALID_INPUT_TYPES.includes(props.type.toLowerCase()))
@@ -464,7 +464,7 @@ function input_text(js_context, input) {
   )
 
   // if auto complete
-  if (!!autocomplete) {
+  if (!!autoSuggest) {
 
     // register react.useState & antd.AutoComplete
     reg_js_import(js_context, 'react.useState')
@@ -940,8 +940,8 @@ function input_text(js_context, input) {
                       t.identifier('multiline')
                     ),
                     t.objectProperty(
-                      t.identifier('autocomplete'),
-                      t.identifier('autocomplete')
+                      t.identifier('autoSuggest'),
+                      t.identifier('autoSuggest')
                     ),
                     t.objectProperty(
                       t.identifier('options'),
@@ -1044,9 +1044,9 @@ function input_text_array(js_context, input) {
   const props = input.props || {}
 
   // basic types - extension not supported
-  // multiline and autocomplete options
+  // multiline and autoSuggest options
   const multiline = !!props.multiline || false
-  const autocomplete = !!props.autocomplete || false
+  const autoSuggest = !!props.autoSuggest || false
   // check valid input types
   const inputType = (() => {
     if (!!props.type && VALID_INPUT_TYPES.includes(props.type.toLowerCase()))
@@ -1261,7 +1261,7 @@ function input_text_array(js_context, input) {
   )
 
   // if auto complete
-  if (!!autocomplete) {
+  if (!!autoSuggest) {
 
     // register react.useState & antd.AutoComplete
     reg_js_import(js_context, 'react.useState')
@@ -1629,7 +1629,7 @@ function input_text_array(js_context, input) {
       t.jSXIdentifier('@material-ui/core.Box'),
       [
         t.jSXSpreadAttribute(
-          t.identifier('props')
+          t.identifier('restProps')
         )
       ]
     ),
@@ -2130,8 +2130,8 @@ function input_text_array(js_context, input) {
                       t.identifier('multiline')
                     ),
                     t.objectProperty(
-                      t.identifier('autocomplete'),
-                      t.identifier('autocomplete')
+                      t.identifier('autoSuggest'),
+                      t.identifier('autoSuggest')
                     ),
                     t.objectProperty(
                       t.identifier('options'),

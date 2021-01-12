@@ -28,7 +28,7 @@ import { useForm, FormProvider, Controller } from "react-hook-form"
 import { parse, parseExpression } from "@babel/parser"
 // context provider
 import Asterisk from 'app-x/icon/Asterisk'
-import AutoComplete from 'app-x/component/AutoComplete'
+import AutoSuggest from 'app-x/component/AutoSuggest'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import PropFieldArray from 'app-x/component/PropFieldArray'
 import NavProvider from 'app-x/builder/ui/NavProvider'
@@ -1179,7 +1179,7 @@ const PropEditor = (props) => {
                       render={props =>
                         (
                           <FormControl className={styles.formControl}>
-                            <AutoComplete
+                            <AutoSuggest
                               label="Import Name"
                               name="name"
                               value={props.value}
@@ -1726,7 +1726,7 @@ const PropEditor = (props) => {
                         render={props =>
                           (
                             <FormControl className={styles.formControl}>
-                              <AutoComplete
+                              <AutoSuggest
                                 label="Element Name"
                                 name="name"
                                 value={props.value}
@@ -1755,7 +1755,7 @@ const PropEditor = (props) => {
                         render={props =>
                           (
                             <FormControl className={styles.formControl}>
-                              <AutoComplete
+                              <AutoSuggest
                                 label="HTML Tag"
                                 name="name"
                                 value={props.value}
@@ -1962,7 +1962,7 @@ const PropEditor = (props) => {
                       render={props =>
                         (
                           <FormControl className={styles.formControl}>
-                            <AutoComplete
+                            <AutoSuggest
                               label="Context Name"
                               name="name"
                               value={props.value}

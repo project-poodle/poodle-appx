@@ -41,8 +41,11 @@ import {
 } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 
-import AutoComplete from 'app-x/component/AutoComplete'
+import AutoSuggest from 'app-x/component/AutoSuggest'
 import ControlledEditor from 'app-x/component/ControlledEditor'
+import {
+  auto_suggestions
+} from 'app-x/builder/ui/syntax/util_base'
 
 // input field array
 const InputFieldArray = ((props) => {
@@ -76,6 +79,14 @@ const InputFieldArray = ((props) => {
 
   // destruct props
   const { name, childSpec } = props
+
+  const suggestions = (() => {
+    if (childSpec._thisNode?.suggestions) {
+      return eval(childSpec._thisNode?.suggestions)
+    } else {
+      return []
+    }
+  })()
 
   // console.log(`useFormContext`, useFormContext())
   // useFormContext
@@ -113,7 +124,7 @@ const InputFieldArray = ((props) => {
 
   // return
   return (
-    <Box className={styles.formControl} key={`${name}`}>
+    <Box className={styles.formControl} key={name}>
       <InputLabel
         shrink={true}
         required={!childSpec.optional}
@@ -172,6 +183,13 @@ const InputFieldArray = ((props) => {
                         )
                       }
                     })
+                  }
+                  // auto suggestions rule
+                  if (!!childSpec._thisNode.suggestionsOnly) {
+                    result.validate[`validate_${count++}`] = (value) => (
+                      suggestions.includes(value)
+                      || `${childSpec.desc} must be a valid value`
+                    )
                   }
                   // additional rules by input type
                   // console.log(`childSpec._thisNode.input`, childSpec._thisNode.input)
@@ -275,15 +293,11 @@ const InputFieldArray = ((props) => {
                             </ControlledEditor>
                           </Box>
                           <Input
-                            // rows={0}
                             // className={`${styles.dummyTextField} Mui-focused`}
                             className={`${styles.dummyTextField}`}
                             readOnly={true}
-                            focused={true}
                             // size="small"
-                            // margin="none"
                             inputProps={{style:{height:0}}}
-                            // InputProps={{style:{height:0}}}
                             style={{height:0}}
                             error={!!_.get(errors, itemName)}
                             >
@@ -301,10 +315,11 @@ const InputFieldArray = ((props) => {
                     } else {
                       return (
                         <FormControl className={styles.itemControl}>
-                          <TextField
+                          <AutoSuggest
                             name={itemName}
                             value={innerProps.value}
                             required={!childSpec.optional}
+                            options={suggestions}
                             size="small"
                             onChange={innerProps.onChange}
                             error={!!_.get(errors, itemName)}

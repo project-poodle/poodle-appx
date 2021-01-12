@@ -36,7 +36,7 @@ import {
   Controller
 } from "react-hook-form";
 // context provider
-import AutoComplete from 'app-x/component/AutoComplete'
+import AutoSuggest from 'app-x/component/AutoSuggest'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import PropFieldArray from 'app-x/component/PropFieldArray'
 import NavProvider from 'app-x/builder/ui/NavProvider'
@@ -358,7 +358,7 @@ const TestEditor = (props) => {
                         render={innerProps =>
                           (
                             <FormControl key="formcontrol" className={styles.formControl}>
-                              <AutoComplete
+                              <AutoSuggest
                                 key={item.id}
                                 name={`providers[${index}].name`}
                                 className={styles.formControl}
@@ -370,7 +370,7 @@ const TestEditor = (props) => {
                                   setTestSubmitTimer(new Date())
                                 }}
                                 >
-                              </AutoComplete>
+                              </AutoSuggest>
                             </FormControl>
                           )
                         }

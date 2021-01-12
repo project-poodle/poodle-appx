@@ -28,24 +28,16 @@ export const react_html = {
       _thisNode: {
         class: 'string',
         input: 'input/text',
+        suggestions: 'auto_suggestions.valid_html_tags()',
+        examples: [
+          'div',
+          'span',
+          'form',
+          'input',
+          'body',
+          'html',
+        ],
       },
-      _suggestions: [
-        {
-          __class: 'js/call',
-          name: {
-            __class: 'js/import',
-            name: 'app-x/builder/ui/syntax/util_base.valid_html_tags',
-          }
-        }
-      ],
-      _examples: [
-        'div',
-        'span',
-        'form',
-        'input',
-        'body',
-        'html',
-      ],
     },
     {
       name: 'props',

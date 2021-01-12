@@ -24,15 +24,8 @@ export const js_import = {
       _thisNode: {
         class: 'string',
         input: 'input/text',
-        suggestions: [
-          {
-            __class: 'js/call',
-            name: {
-              __class: 'js/import',
-              name: 'app-x/builder/ui/syntax/util_base.valid_import_names',
-            }
-          }
-        ],
+        suggestions: 'auto_suggestions.valid_import_names()',
+        suggestionsOnly: true,
         examples: [
           'react',
           'react-dom',

@@ -26,7 +26,7 @@ import { parse, parseExpression } from "@babel/parser"
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
-import AutoComplete from 'app-x/component/AutoComplete'
+import AutoSuggest from 'app-x/component/AutoSuggest'
 import {
   lookup_icon_for_type,
 } from 'app-x/builder/ui/syntax/util_generate'
@@ -398,7 +398,7 @@ const PropFieldArray = props => {
                       render={innerProps =>
                         (
                           <FormControl key="data" className={styles.valueControl}>
-                            <AutoComplete
+                            <AutoSuggest
                               key='value'
                               name={`${props.name}[${index}].value`}
                               className={styles.valueControl}
@@ -410,7 +410,7 @@ const PropFieldArray = props => {
                               }
                               callback={props.callback}
                               >
-                            </AutoComplete>
+                            </AutoSuggest>
                           </FormControl>
                         )
                       }

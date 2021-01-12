@@ -714,6 +714,13 @@ function valid_import_names() {
   return _valid_import_names
 }
 
+// all suggestions method
+const auto_suggestions = {
+  valid_api_methods: valid_api_methods,
+  valid_html_tags: valid_html_tags,
+  valid_import_names: valid_import_names,
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // export
 export {
@@ -741,6 +748,7 @@ export {
   type_matches_spec,
   data_matches_spec,
   // valid auto complete
+  auto_suggestions,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,

@@ -7,7 +7,7 @@ import {
   makeStyles,
 } from '@material-ui/core'
 import {
-  AutoComplete as AntAutoComplete
+  AutoComplete
 } from 'antd'
 import {
   useFormContext,
@@ -15,7 +15,7 @@ import {
 } from 'react-hook-form'
 import _ from 'lodash'
 
-const AutoComplete = (props) => {
+const AutoSuggest = (props) => {
   // make styles
   const styles = makeStyles((theme) => ({
     formControl: {
@@ -51,8 +51,8 @@ const AutoComplete = (props) => {
   }, [props.options])
 
   return (
-    <AntAutoComplete
-      key="autocomplete"
+    <AutoComplete
+      key="autoSuggest"
       options={options}
       value={props.value}
       onChange={data => {
@@ -90,11 +90,11 @@ const AutoComplete = (props) => {
         error={!!_.get(errors, props.name)}
         helperText={_.get(errors, props.name)?.message}
       />
-    </AntAutoComplete>
+    </AutoComplete>
   )
 }
 
-AutoComplete.propTypes = {
+AutoSuggest.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   type: PropTypes.string,
@@ -105,4 +105,4 @@ AutoComplete.propTypes = {
   className: PropTypes.string,
 }
 
-export default AutoComplete
+export default AutoSuggest

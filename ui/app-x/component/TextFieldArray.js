@@ -21,7 +21,7 @@ import {
 } from 'react-hook-form'
 import { v4 as uuidv4 } from 'uuid'
 
-import AutoComplete from 'app-x/component/AutoComplete'
+import AutoSuggest from 'app-x/component/AutoSuggest'
 
 // array text field
 const TextFieldArray = props => {
@@ -92,7 +92,7 @@ const TextFieldArray = props => {
                 rules={props.rules}
                 render={innerProps =>
                   <FormControl className={styles.formControl}>
-                    <AutoComplete
+                    <AutoSuggest
                       className={styles.formControl}
                       key="value"
                       name={`${props.name}[${index}].value`}
@@ -103,7 +103,7 @@ const TextFieldArray = props => {
                       options={!!props.options ? props.options : []}
                       callback={props.callback}
                       >
-                    </AutoComplete>
+                    </AutoSuggest>
                   </FormControl>
                 }
                 >

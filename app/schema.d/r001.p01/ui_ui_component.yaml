@@ -677,7 +677,7 @@ ui_component:
                                 name: a
                                 array: false
                                 props:
-                                  autocomplete: true
+                                  autoSuggest: true
                                   options:
                                     _type: js/expression
                                     data: "[{value:'a'},{value:'abc'},{value:'def'}]"
@@ -720,7 +720,7 @@ ui_component:
                                 name: input
                                 array: true
                                 props:
-                                  autocomplete: true
+                                  autoSuggest: true
                                   callback:
                                     _type: js/expression
                                     data: "(data) => {console.log(`callback data: ${data}`)}"
