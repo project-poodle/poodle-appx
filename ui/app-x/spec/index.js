@@ -64,10 +64,50 @@ const types = [
   appx_api,
   appx_route,
   // map
-].map(item => ({
+]
+.map(item => {
+  // validity check
+  if (!item.type) {
+    throw new Error(`ERROR: type spec missing [type] [${JSON.stringify(item)}]`)
+  }
+  // check children
+  if (!!item.children) {
+    if (!Array.isArray(item.children)) {
+      throw new Error(`ERROR: type spec children is not an array [${item.type}]`)
+    }
+    let wild_card_count = 0
+    let child_array_count = 0
+    item.children.map(childSpec => {
+      if (childSpec.name === '*') {
+        wild_card_count++
+      }
+      if (!!childSpec.array && !!childSpec._childNode) {
+        child_array_count++
+      }
+    })
+    // check wild_card_count
+    if (wild_card_count > 1) {
+      throw new Error(`ERROR: type_spec has more than one child with wildcard name [${item.type}]`)
+    }
+    // check array_count
+    if (child_array_count > 1) {
+      throw new Error(`ERROR: type_spec has more than one [array] child node [${item.type}]`)
+    }
+    // check no wild_card_count and child_array_count
+    if (wild_card_count + child_array_count > 1) {
+      throw new Error(`ERROR: type_spec has both wildcard and [array] child node [${item.type}]`)
+    }
+  } else {
+    item.children = []
+  }
+  // we are here if we have passed all validity checks
+  return item
+})
+.map(item => ({
   key: item.type,
   value: item
-})).reduce(
+}))
+.reduce(
   (accumulator, item) => { accumulator[item.key] = item.value; return accumulator; },
   {}
 )
