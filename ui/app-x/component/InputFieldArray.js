@@ -122,6 +122,12 @@ const InputFieldArray = ((props) => {
     }
   )
 
+  // set default values
+  useEffect(() => {
+    console.log(`setValue [${name}]`, props.defaultValue)
+    setValue(name, props.defaultValue)
+  }, [props.defaultValue])
+
   // return
   return (
     <Box className={styles.formControl} key={name}>
@@ -374,6 +380,11 @@ InputFieldArray.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   thisNodeSpec: PropTypes.object.isRequired,
+  defaultValue: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ]))
 }
 
 export default InputFieldArray

@@ -787,31 +787,15 @@ const SyntaxTree = (props) => {
     // set to root if not found
     if (!dropParent) {
       dropParent = {
-        key: null,
+        key: '/',
         data: {
-          type: '/'
+          _type: '/'
         }
       }
     }
 
     // callback with move confirmation
     const thisMoveCallback = (data) => {
-
-      // console.log(dragObj, data)
-      if (dropParent.data.type === 'js/switch') {
-        if (!!data.default) {
-          dragObj.data._ref = 'default'
-          dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
-        } else {
-          dragObj.data._ref = null
-          dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
-          dragObj.data.condition = data.condition
-        }
-      } else {
-        // set ref
-        dragObj.data._ref = data._ref
-        dragObj.title = lookup_title_for_input(dragObj.data._ref, dragObj.data)
-      }
 
       // drag & drop
       dragFunc()
@@ -840,38 +824,13 @@ const SyntaxTree = (props) => {
          _ref: dragObj.data._ref     // keep _ref
       })
 
-    } else if (
-      // check drop parent type
-      dropParent.data.type === '/'
-      || dropParent.data.type === 'js/object'
-      || dropParent.data.type === 'mui/style'
-      || dropParent.data.type === 'js/switch'
-      || dropParent.data.type === 'js/map'
-      || dropParent.data.type === 'js/reduce'
-      || dropParent.data.type === 'js/filter'
-      ||
-      (
-        (
-          dropParent.data.type === 'react/element'
-          || dropParent.data.type === 'react/html'
-        )
-        &&
-        (
-          dragObj.data.type === 'js/object'
-        )
-      )
-    ) {
+    } else {
 
       setMoveDragNode(dragObj)
       setMoveDropParent(dropParent)
       setMoveCallback(() => { return thisMoveCallback})
       setMoveDialogOpen(true)
 
-    } else {
-      // invoke callback directly if no ref needed
-      thisMoveCallback({
-        _ref: dragObj.data._ref      // preserve _ref
-      })
     }
   }
 

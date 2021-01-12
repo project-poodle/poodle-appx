@@ -112,26 +112,6 @@ const SyntaxAddDialog = (props) => {
       // margin: theme.spacing(1),
       padding: theme.spacing(2, 0),
     },
-    arrayItem: {
-      width: '100%',
-      // margin: theme.spacing(1),
-      padding: theme.spacing(0, 0),
-    },
-    labelControl: {
-      width: '100%',
-      // margin: theme.spacing(1),
-      padding: theme.spacing(2, 0, 0),
-    },
-    editor: {
-      width: '100%',
-      height: theme.spacing(8),
-      padding: theme.spacing(0, 0, 0),
-    },
-    dummyTextField: {
-      width: '100%',
-      // margin: theme.spacing(1),
-      padding: theme.spacing(0, 0),
-    },
   }))()
 
   // react hook form
@@ -292,15 +272,12 @@ const SyntaxAddDialog = (props) => {
     } catch (err) {
       console.log(err)
       notification.error({
-        message: `Failed to Add [ ${nodeType.replace('/', ' / ')} ]`,
+        message: `Failed to Add [ ${nodeType?.replace('/', ' / ')} ]`,
         description: String(err),
         placement: 'bottomLeft',
       })
     }
   }
-
-  // console.log(nodeType)
-  // console.log(props)
 
   //////////////////////////////////////////////////////////////////////////////
   // add callback
@@ -400,8 +377,8 @@ const SyntaxAddDialog = (props) => {
               <Typography id="alert-dialog-title" variant="h6">
                 {
                   !!nodeRef
-                  ? `${nodeRef} - [ ${nodeType.replace('/', ' / ')} ]`
-                  : `[ ${nodeType.replace('/', ' / ')} ]`
+                  ? `${nodeRef} - [ ${nodeType?.replace('/', ' / ')} ]`
+                  : `[ ${nodeType?.replace('/', ' / ')} ]`
                 }
               </Typography>
             </ListItem>

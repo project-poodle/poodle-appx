@@ -7,6 +7,7 @@ import {
   IconButton,
   List,
   ListItem,
+  MenuItem,
   ListItemIcon,
   ListItemText,
   Divider,
@@ -17,18 +18,27 @@ import {
   DialogActions,
   Typography,
   FormControl,
+  Input,
   InputLabel,
   FormGroup,
   FormControlLabel,
   FormHelperText,
   TextField,
   Switch,
-  makeStyles
+  makeStyles,
 } from '@material-ui/core'
 import {
-  DeleteOutlined,
+  AddCircleOutline,
+  RemoveCircleOutline,
+  DeleteOutlineOutlined,
+} from '@material-ui/icons'
+import {
   PlusOutlined,
 } from '@ant-design/icons'
+import {
+  notification,
+} from 'antd'
+import { v4 as uuidv4 } from 'uuid'
 import {
   useForm,
   useFormContext,
@@ -36,19 +46,52 @@ import {
   FormProvider,
   Controller,
 } from "react-hook-form";
+import { parse, parseExpression } from "@babel/parser"
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
+import AutoSuggest from 'app-x/component/AutoSuggest'
+// import TextFieldArray from 'app-x/component/TextFieldArray'
+import InputField from 'app-x/component/InputField'
+import InputFieldArray from 'app-x/component/InputFieldArray'
+import ControlledEditor from 'app-x/component/ControlledEditor'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import {
+  generate_tree_node,
+  new_tree_node,
   lookup_icon_for_type,
+  lookup_icon_for_node,
+  lookup_icon_for_input,
+  lookup_title_for_node,
   lookup_title_for_input,
+  reorder_children,
 } from 'app-x/builder/ui/syntax/util_generate'
 import {
   tree_traverse,
   tree_lookup,
   lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  lookup_classes,
+  lookup_groups,
+  lookup_types,
+  lookup_types_for_class,
+  lookup_classes_for_type,
+  lookup_types_for_group,
+  lookup_group_for_type,
+  lookup_changeable_types,
+  lookup_type_for_data,
+  lookup_type_for_classname,
+  lookup_classname_for_type,
+  lookup_accepted_types_for_node,
+  lookup_accepted_classnames_for_node,
+  lookup_first_accepted_childSpec,
+  lookup_icon_for_class,
+  type_matches_spec,
+  valid_api_methods,
+  valid_import_names,
+  valid_html_tags,
+} from 'app-x/builder/ui/syntax/util_base'
 
 // add dialog
 const SyntaxMoveDialog = (props) => {
@@ -71,25 +114,6 @@ const SyntaxMoveDialog = (props) => {
     },
   }))()
 
-  const {
-    treeData,
-    selectedKey,
-  } = useContext(SyntaxProvider.Context)
-
-  // whether switch default
-  const [ isSwitchDefault,    setSwitchDefault    ] = useState(false)
-
-  // onSubmit
-  const onSubmit = data => {
-    // console.log('onSubmit')
-    // console.log(props.moveCallback)
-    if (props.moveCallback) {
-      // console.log(data)
-      props.moveCallback(data)
-      props.setOpen(false)
-    }
-  }
-
   // react hook form
   const hookForm = useForm()
   const {
@@ -108,6 +132,169 @@ const SyntaxMoveDialog = (props) => {
     formState,
   } = hookForm
 
+  // context
+  const {
+    // tree data
+    treeData,
+    expandedKeys,
+    setExpandedKeys,
+    selectedKey,
+    setSelectedKey,
+    // test data
+    // testData,
+    // dirty flags
+    syntaxDirty,
+    setSyntaxDirty,
+    // testDirty,
+    // setTestDirty,
+    // history and actions
+    // makeFreshAction,
+    makeDesignAction,
+    // makeTestAction,
+    updateDesignAction,
+    // updateTestAction,
+  } = useContext(SyntaxProvider.Context)
+
+  // states and effects
+  const [ parentSpec,   setParentSpec   ] = useState(null)
+  const [ nodeSpec,     setNodeSpec     ] = useState(null)
+  const [ nodeType,     setNodeType     ] = useState(null)
+  const [ nodeRef,      setNodeRef      ] = useState(null)
+
+  //////////////////////////////////////////////////////////////////////////////
+  // disabled and hidden states
+  const [ disabled,     setDisabled     ] = useState({})
+  const [ hidden,       setHidden       ] = useState({})
+
+  const form = hookForm
+  const states = {
+    getDisabled: (name) => {
+      return !!disabled[name]
+    },
+    setDisabled: (name, target) => {
+      if (disabled[name] !== target) {
+        const result = _.clone(disabled)
+        result[name] = !!target
+        setDisabled(result)
+      }
+    },
+    getHidden: (name) => {
+      return !!hidden[name]
+    },
+    setHidden: (name, target) => {
+      if (hidden[name] !== target) {
+        const result = _.clone(hidden)
+        result[name] = !!target
+        setHidden(result)
+      }
+    },
+    getRef: () => {
+      return getValues('_ref')
+    },
+    setRef: (refTarget) => {
+      if (getValues("_ref") !== undefined && getValues("_ref") !== refTarget) {
+        // console.log("getValues(_ref)", getValues("_ref"), refTarget)
+        form.setValue("_ref", refTarget)
+      }
+      if (nodeRef !== refTarget) {
+        setNodeRef(refTarget)
+      }
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // run effects when data changes
+  const watchData = watch()
+  useEffect(() => {
+    if (!!parentSpec) {
+      // parentSpec effects
+      const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
+      if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
+        childSpec._childNode.effects.map(effect => eval(effect))
+        // console.log(`watch here`, watchData, new Date())
+      }
+    }
+    // nodeSpec effects
+    if (!!nodeSpec && !!nodeSpec._effects) {
+      nodeSpec._effects.map(effect => eval(effect))
+    }
+  }, [watchData])
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // parentSpec
+  useEffect(() => {
+    if (!props.moveDropParent?.data?._type) {
+      setParentSpec(null)
+    } else {
+      const spec = globalThis.appx.SPEC.types[props.moveDropParent.data._type]
+      // console.log(`parentSpec`, spec)
+      if (!spec) {
+        setParentSpec(null)
+      } else {
+        setParentSpec(spec)
+      }
+    }
+  }, [props.moveDropParent])
+
+  // nodeType
+  useEffect(() => {
+    setNodeType(props.moveDragNode?.data?._type)
+    setNodeRef(props.moveDragNode?.data?._ref)
+  }, [props.moveDragNode])
+
+  // nodeSpec
+  useEffect(() => {
+    if (!nodeType) {
+      setNodeSpec(null)
+    } else {
+      const spec = globalThis.appx.SPEC.types[nodeType]
+      // console.log(`nodeSpec`, spec)
+      if (!spec) {
+        setNodeSpec(null)
+      } else {
+        setNodeSpec(spec)
+      }
+    }
+  }, [nodeType])
+
+  //////////////////////////////////////////////////////////////////////////////
+  // onSubmit
+  const onSubmit = data => {
+    try {
+      console.log('Move submit data', data)
+      moveCallback(data)
+      props.setOpen(false)
+    } catch (err) {
+      console.log(err)
+      notification.error({
+        message: `Failed to Move [ ${nodeType?.replace('/', ' / ')} ]`,
+        description: String(err),
+        placement: 'bottomLeft',
+      })
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // move callback
+  const moveCallback = (nodeData) => {
+    // console.log(`nodeData`, nodeData)
+    // update array flag
+    const is_array = !!parentSpec.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
+    props.moveDragNode.data._array = is_array
+    // update node attributes
+    Object.keys(nodeData).map(key => {
+      props.moveDragNode.data[key] = nodeData[key]
+    })
+    // update title
+    props.moveDragNode.title = lookup_title_for_node(props.moveDragNode)
+    // process expanded keys
+    if (!!props.moveCallback) {
+      props.moveCallback(nodeData)
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
   return (
     <Dialog
       className={styles.dialog}
@@ -121,17 +308,21 @@ const SyntaxMoveDialog = (props) => {
       aria-describedby="alert-dialog-description"
       >
       <FormProvider {...hookForm}>
-        <form onSubmit={() => {return false}}>
+        <form onSubmit={() => {handleSubmit(onSubmit)}}>
           <DialogTitle
             className={styles.dialog}
             disableTypography={true}
             >
             <ListItem style={{padding:0}}>
               <IconButton>
-                { lookup_icon_for_type(props.moveDragNode?.data?._type) }
+                { lookup_icon_for_type(nodeType) }
               </IconButton>
               <Typography id="alert-dialog-title" variant="h6">
-                { lookup_title_for_input(props.moveDragNode?.data?._ref, props.moveDragNode?.data) }
+                {
+                  !!nodeRef
+                  ? `${nodeRef} - [ ${nodeType?.replace('/', ' / ')} ]`
+                  : `[ ${nodeType?.replace('/', ' / ')} ]`
+                }
               </Typography>
             </ListItem>
           </DialogTitle>
@@ -139,150 +330,252 @@ const SyntaxMoveDialog = (props) => {
             className={styles.dialogContent}
             >
             {
-              (
-                props.moveDropParent?.data?._type !== 'js/switch'
-              )
+              !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)
+              && !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?._childNode?.customs
               &&
               (
-                <Controller
-                  name="_ref"
-                  control={control}
-                  defaultValue={props.moveDragNode?.data?._ref}
-                  rules={{
-                    required: "Reference name is required",
-                    pattern: {
-                      value: /^[_a-zA-Z][_a-zA-Z0-9]*$/,
-                      message: 'Reference name must be a valid variable name',
-                    },
-                    validate: {
-                      checkDuplicate: value =>
-                        lookup_child_for_ref(props.moveDropParent, value) === null
-                        || 'Reference name is duplicate with an existing child',
-                      checkSwitchChild: value =>
-                        props.moveDropParent?.data?._type !== 'js/switch'
-                        || value === 'default'
-                        || 'Reference name for js/switch must be [default]',
-                      checkMapChild: value =>
-                        props.moveDropParent?.data?._type !== 'js/map'
-                        || value === 'data'
-                        || value === 'result'
-                        || 'Reference name for js/map must be [data] or [result]',
-                      checkReduceChild: value =>
-                        props.moveDropParent?.data?._type !== 'js/reduce'
-                        || value === 'data'
-                        || 'Reference name for js/reduce must be [data]',
-                      checkFilterChild: value =>
-                        props.moveDropParent?.data?._type !== 'js/filter'
-                        || value === 'data'
-                        || 'Reference name for js/filter must be [data]',
-                      checkReactElementChild: value =>
-                        props.moveDropParent?.data?._type !== 'react/element'
-                        || value === 'props'
-                        || 'Reference name for react/element must be [props]',
-                      checkReactHtmlChild: value =>
-                        props.moveDropParent?.data?._type !== 'react/html'
-                        || value === 'props'
-                        || 'Reference name for react/html must b3 [props]',
-                    },
-                  }}
-                  render={props =>
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Reference"
-                        onChange={props.onChange}
-                        value={props.value}
-                        error={!!errors._ref}
-                        helperText={errors._ref?.message}
-                        />
-                    </FormControl>
-                  }
-                />
-              )
-            }
-            {
-              props.moveDropParent?.data?._type === 'js/switch'
-              &&
-              (
-                <Controller
-                  name="default"
-                  type="boolean"
-                  control={control}
-                  defaultValue={isSwitchDefault}
-                  rules={{
-                    validate: {
-                      checkDuplicate: value =>
-                        !value
-                        || lookup_child_for_ref(props.moveDropParent, 'default') === null
-                        || 'Default condition already exists'
-                    },
-                  }}
-                  render={props =>
-                    (
-                      <FormControl
-                        className={styles.formControl}
-                        error={!!errors.default}
-                        >
-                        <FormHelperText>Is Default</FormHelperText>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              name={props.name}
-                              checked={props.value}
-                              onChange={e => {
-                                props.onChange(e.target.checked)
-                                setSwitchDefault(e.target.checked)
-                              }}
-                            />
-                          }
-                          />
-                          {
-                            !!errors.default
-                            &&
-                            <FormHelperText>{errors.default?.message}</FormHelperText>
-                          }
-                      </FormControl>
+                // add custom fields from parentSpec if mandated by parent
+                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs.map(customField => {
+                  // console.log(`parentSpec - customField`, customField)
+                  if (!!hidden[customField.name]) {
+                    return undefined
+                  } else {
+                    return (
+                      <InputField
+                        key={customField.name}
+                        name={customField.name}
+                        disabled={!!disabled[customField.name]}
+                        childSpec={customField}
+                        thisNodeSpec={customField}
+                        defaultValue={props.moveDragNode?.data[customField.name]}
+                      />
                     )
                   }
-                />
+                })
+                .filter(child => !!child)
+                .flat(2)
               )
             }
             {
-              (
-                props.moveDropParent?.data?._type === 'js/switch'
-                && !isSwitchDefault
-              )
+              !!nodeSpec?._customs
               &&
               (
-                <Controller
-                  name="condition"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Condition is required",
-                    validate: {
-                      conditionSyntax: value => {
-                        try {
-                          parseExpression(String(value))
-                          return true
-                        } catch (err) {
-                          return String(err)
+                // add custom fields from parentSpec if mandated by parent
+                nodeSpec._customs.map(customField => {
+                  // console.log(`nodeSpec - customField`, customField)
+                  if (!!hidden[customField.name]) {
+                    return undefined
+                  } else {
+                    return (
+                      <InputField
+                        key={customField.name}
+                        name={customField.name}
+                        disabled={!!disabled[customField.name]}
+                        childSpec={customField}
+                        thisNodeSpec={customField}
+                        defaultValue={props.moveDragNode?.data[customField.name]}
+                      />
+                    )
+                  }
+                })
+                .filter(child => !!child)
+                .flat(2)
+              )
+            }
+            <Controller
+              name="_ref"
+              control={control}
+              defaultValue={props.moveDragNode?.data._ref}
+              rules={{
+                required: "Reference name is required",
+                validate: {
+                  checkDuplicate: value =>
+                    !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
+                    || lookup_child_for_ref(props.moveDropParent, value) === null
+                    || `Reference name [ ${value} ] is duplicate with an existing child`,
+                  checkValidName: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === value) {
+                        return true
+                      }
+                    })
+                    const valid_names = parentSpec.children?.map(childSpec => {
+                      if (!!childSpec._childNode && childSpec.name !== '*') {
+                        return childSpec.name
+                      }
+                    })
+                    .filter(name => !!name)
+                    return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
+                  },
+                  checkTypeCompatibility: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === value) {
+                        return true
+                      }
+                    })
+                    if (!!found) {
+                      return type_matches_spec(getValues('_type'), found._childNode)
+                        || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
+                    }
+                  }
+                },
+              }}
+              render={innerProps =>
+                <FormControl
+                  className={styles.formControl}
+                  disabled={!!disabled["_ref"]}
+                  >
+                  <AutoSuggest
+                    label="Reference"
+                    name="_ref"
+                    disabled={!!disabled["_ref"]}
+                    required={true}
+                    onChange={value => {
+                      innerProps.onChange(value)
+                      setNodeRef(value)
+                      trigger('_ref')
+                      trigger('_type')
+                    }}
+                    value={innerProps.value}
+                    options={parentSpec.children?.filter(spec => !!spec._childNode?.class).map(child => child.name).filter(name => name !== '*')}
+                    size="small"
+                    error={!!errors._ref}
+                    size="small"
+                    helperText={errors._ref?.message}
+                    />
+                </FormControl>
+              }
+            />
+            <Controller
+              name="_type"
+              control={control}
+              defaultValue={nodeType}
+              rules={{
+                required: "Type is required",
+                validate: {
+                  checkTypeCompatibility: value => {
+                    const found = parentSpec.children?.find(childSpec => {
+                      if (!childSpec._childNode) {
+                        return false
+                      } else if (childSpec.name === '*') {
+                        return true
+                      } else if (childSpec.name === getValues('_ref')) {
+                        return true
+                      }
+                    })
+                    if (!!found) {
+                      return type_matches_spec(value, found._childNode)
+                        || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
+                    }
+                  }
+                }
+              }}
+              render={innerProps =>
+                (
+                  <FormControl className={styles.formControl}>
+                    <TextField
+                      label="Type"
+                      select={true}
+                      name="_type"
+                      value={innerProps.value}
+                      required={true}
+                      disabled={true}
+                      size="small"
+                      onChange={
+                        e => {
+                          setNodeType(e.target.value)
+                          innerProps.onChange(e)
+                          trigger('_ref')
+                          trigger('_type')
                         }
                       }
-                    },
-                  }}
-                  render={props =>
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Condition"
-                        onChange={props.onChange}
-                        value={props.value}
-                        error={!!errors.condition}
-                        helperText={errors.condition?.message}
-                        />
-                    </FormControl>
-                  }
-                />
-              )
+                      error={!!errors._type}
+                      helperText={errors._type?.message}
+                      >
+                      {
+                        lookup_groups().map(group => {
+                          // const supported_types = lookup_accepted_types_for_node(props.moveDropParent)
+                          const supported_types = lookup_types() // use all types
+                          return lookup_types_for_group(group)
+                            .map(type => {
+                              if (!supported_types.includes(type)) {
+                                return
+                              } else {
+                                return (
+                                  <MenuItem value={type} key={type}>
+                                    <ListItemIcon>
+                                      { lookup_icon_for_type(type) }
+                                    </ListItemIcon>
+                                    <Typography variant="inherit" noWrap={true}>
+                                      {type.replace('/', ' / ')}
+                                    </Typography>
+                                  </MenuItem>
+                                )
+                              }
+                            })
+                            .filter(item => !!item)
+                            .concat(`divider/${group}`)
+                        })
+                        .flat(2)
+                        // remove last divider item
+                        .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
+                        .map(item => {
+                          // console.log(`item`, item)
+                          return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item
+                        })
+                      }
+                    </TextField>
+                  </FormControl>
+                )
+              }
+            />
+            {
+              nodeSpec?.children?.map(childSpec => {
+                if (!childSpec._thisNode?.class) {
+                  return undefined
+                }
+                if (!!hidden[childSpec.name]) {
+                  return undefined
+                }
+                // const childThisSpec = childSpec._thisNode
+                if (!!childSpec.array) {
+                  return (
+                    <div style={{ display: 'none' }}>
+                      <InputFieldArray
+                        key={childSpec.name}
+                        name={childSpec.name}
+                        disabled={!!disabled[childSpec.name]}
+                        defaultValue={props.moveDragNode?.data[childSpec.name]}
+                        childSpec={childSpec}
+                        thisNodeSpec={childSpec._thisNode}
+                      />
+                    </div>
+                  )
+                } else {
+                  return (
+                    <div style={{ display: 'none' }}>
+                      <InputField
+                        key={childSpec.name}
+                        name={childSpec.name}
+                        disabled={!!disabled[childSpec.name]}
+                        defaultValue={props.moveDragNode?.data[childSpec.name]}
+                        childSpec={childSpec}
+                        thisNodeSpec={childSpec._thisNode}
+                      />
+                    </div>
+                  )
+                }
+              })
+              .filter(child => !!child)
+              .flat(2)
             }
           </DialogContent>
           <DialogActions>
