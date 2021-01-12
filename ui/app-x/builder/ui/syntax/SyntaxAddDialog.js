@@ -209,7 +209,7 @@ const SyntaxAddDialog = (props) => {
     },
     setRef: (refTarget) => {
       if (getValues("_ref") !== undefined && getValues("_ref") !== refTarget) {
-        console.log("getValues(_ref)", getValues("_ref"), refTarget)
+        // console.log("getValues(_ref)", getValues("_ref"), refTarget)
         form.setValue("_ref", refTarget)
       }
       if (nodeRef !== refTarget) {
@@ -227,7 +227,7 @@ const SyntaxAddDialog = (props) => {
       const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
       if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
         childSpec._childNode.effects.map(effect => eval(effect))
-        console.log(`watch here`, watchData, new Date())
+        // console.log(`watch here`, watchData, new Date())
       }
     }
     // nodeSpec effects
@@ -282,7 +282,7 @@ const SyntaxAddDialog = (props) => {
   // onSubmit
   const onSubmit = data => {
     try {
-      console.log('data', data)
+      console.log('Add submit data', data)
       addCallback(props.addNodeParent, data)
       props.setOpen(false)
     } catch (err) {
