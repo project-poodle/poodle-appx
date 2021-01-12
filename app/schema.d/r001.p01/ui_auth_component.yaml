@@ -90,7 +90,8 @@ ui_component:
           handlers:
               sideNavHandler:
                   _type: js/function
-                  body: |
+                  body:
+                    - |
                       states.mobileNav.setOpen(!states.mobileNav.open)
           element:
               _type: react/element

@@ -36,8 +36,6 @@ export const js_function = {
       _thisNode: {
         class: 'string',
         input: 'input/text',
-        generate: 'data.map(item => ({ value: item }))',
-        parse: 'nodeData.map(item => item.value)',
       },
     },
     {

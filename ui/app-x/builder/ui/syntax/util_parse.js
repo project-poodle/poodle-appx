@@ -155,9 +155,9 @@ function parse_tree_node(tree_context, treeNode) {
   spec.children.map((childSpec) => {
 
     // proces this node
-    function _process_this(_ref, node) {
+    function _process_this(_ref, nodeData) {
       // node data
-      const nodeData = node.data[_ref]
+      // const nodeData = node.data[_ref]
       // update data if _thisNode is defined
       if (!childSpec?._thisNode) {
         return undefined
@@ -189,11 +189,11 @@ function parse_tree_node(tree_context, treeNode) {
       } else if (!!thisNodeSpec.array) {
         throw new Error(`ERROR: thisNodeSpec [array] missing parse method [${JSON.stringify(thisNodeSpec)}]`)
       } else if (thisNodeSpec.class === 'string') {
-        return String(node.data[_ref])
+        return String(nodeData)
       } else if (thisNodeSpec.class === 'number') {
-        return Number(node.data[_ref])
+        return Number(nodeData)
       } else if (thisNodeSpec.class === 'boolean') {
-        return Boolean(node.data[_ref])
+        return Boolean(nodeData)
       } else if (thisNodeSpec.class === 'null') {
         return null
       } else {
@@ -262,20 +262,33 @@ function parse_tree_node(tree_context, treeNode) {
       try {
         // get _ref
         const _ref = childSpec.name
-        // process this
-        data = _process_this(_ref, thisNode)
         // get childNode
         if (!!childSpec.array) {
+          // if this node data
+          if (_ref in thisNode.data && Array.isArray(thisNode.data[_ref])) {
+            data = []
+            thisNode.data[_ref].map(nodeData => {
+              // process this
+              const resultData = _process_this(_ref, nodeData)
+              if (resultData !== undefined) {
+                data.push(resultData)
+              }
+            })
+          }
+          // if child node array exists, override
           const childNodeArray = lookup_child_array_for_ref(thisNode, _ref)
           // console.log(`childNodeArray`, childNodeArray)
-          childNodeArray.map(childNode => {
-            if (!data) {
-              data = [] // lazy initialize
-            }
-            // console.log(`childNode`, childNode)
-            data.push(_process_child(childNode))
-          })
+          if (!!childNodeArray.length) {
+            data = [] // lazy initialize
+            childNodeArray.map(childNode => {
+              // console.log(`childNode`, childNode)
+              data.push(_process_child(childNode))
+            })
+          }
         } else {
+          // process this
+          const nodeData = thisNode.data[_ref]
+          data = _process_this(_ref, nodeData)
           const childNode = lookup_child_for_ref(thisNode, _ref)
           if (!!childNode) {
             // process child node if exists

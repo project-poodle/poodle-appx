@@ -257,44 +257,25 @@ const SyntaxAddDialog = (props) => {
         : `...${nodeData.name}`
       : (nodeData._ref ? nodeData._ref : null)
     // console.log(parentKey, ref, nodeData)
-    const parse_context = {}
-    var parsed = null
-    // handle js/switch specially
-    if (lookupParent?.data?._type === 'js/switch') {
-      if (nodeData.default) {
-        parsed = generate_tree_node(
-          parse_context,
-          {
-            ref: 'default',
-            parentKey: parentKey,
-            parentChildSpec: null,
-          },
-          nodeData
-        )
-      } else {
-        parsed = generate_tree_node(
-          parse_context,
-          {
-            ref: null,
-            parentKey: parentKey,
-            parentChildSpec: null,
-          },
-          nodeData
-        )
-        parsed.data.condition = nodeData.condition
+    // convert node data
+    nodeSpec.children?.map(childSpec => {
+      if (!!childSpec._thisNode && !!childSpec.array) {
+        nodeData[childSpec.name] = nodeData[childSpec.name]?.map(item => item.value) || []
       }
-    } else {
-      // parse nodeData
-      parsed = generate_tree_node(
-        parse_context,
-        {
-          ref: ref,
-          parentKey: parentKey,
-          parentChildSpec: null,
-        },
-        nodeData
-      )
-    }
+    })
+    console.log(`nodeData`, nodeData)
+    // parse nodeData
+    const parse_context = {}
+    const parsed = generate_tree_node(
+      parse_context,
+      {
+        ref: ref,
+        parentKey: parentKey,
+        parentChildSpec: null,
+      },
+      nodeData
+    )
+    console.log(`parsed`, parsed)
     // console.log(nodeRef, nodeParent, parsed)
     // insert to proper location
     if (lookupParent) {

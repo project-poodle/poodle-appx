@@ -50,8 +50,6 @@ export const react_effect = {
       _thisNode: {
         class: 'string',
         input: 'input/expression',
-        generate: 'data.map(item => ({ value: item }))',
-        parse: 'nodeData.map(item => item.value)',
       },
     },
   ]

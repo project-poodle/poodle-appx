@@ -90,7 +90,8 @@ ui_component:
           handlers:
               sideNavHandler:
                   _type: js/function
-                  body: |
+                  body:
+                    - |
                       states.mobileNav.setOpen(!states.mobileNav.open)
           element:
               _type: react/element
@@ -149,7 +150,8 @@ ui_component:
                   _type: js/function
                   params:
                       - event
-                  body: |
+                  body:
+                    - |
                       states.builder.setData({
                           ui_builder_type: 'ui_component',
                           ui_component_name: event.ui_component_name,
@@ -161,7 +163,8 @@ ui_component:
                   _type: js/function
                   params:
                       - event
-                  body: |
+                  body:
+                    - |
                       states.builder.setData({
                           ui_builder_type: 'ui_route',
                           ui_component_name: '',

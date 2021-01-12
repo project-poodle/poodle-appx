@@ -68,7 +68,8 @@ ui_component:
                   zIndex: 0
           effect:
               _type: react/effect
-              body: |+
+              body:
+                - |+
                   // console.log(props)
           element:
               _type: react/element
@@ -168,7 +169,8 @@ ui_component:
                                               name: "@material-ui/icons.MenuBook"
                                           onClick:
                                               _type: js/function
-                                              body: "$r('app-x/router.navigate')('/docs')"
+                                              body:
+                                                - "$r('app-x/router.navigate')('/docs')"
                                           size: large
                                       children:
                                           - "Getting Started"
@@ -209,7 +211,8 @@ ui_component:
                                               name: "@material-ui/icons.Slideshow"
                                           onClick:
                                               _type: js/function
-                                              body: "$r('app-x/router.navigate')('/console')"
+                                              body:
+                                                - "$r('app-x/router.navigate')('/console')"
                                           size: large
                                       children:
                                           - "Live Demo"
@@ -365,7 +368,8 @@ ui_component:
                   _type: js/function
                   params:
                       - event
-                  body: |
+                  body:
+                    - |
                       event.preventDefault()
                       $r('app-x/api.login')(
                           'main',
@@ -505,7 +509,8 @@ ui_component:
                                   _type: js/function
                                   params:
                                       - e
-                                  body: |
+                                  body:
+                                    - |
                                       states.username.setValue(e.target.value)
                                       states.error.setValue('')
                         - _type: react/element
@@ -526,7 +531,8 @@ ui_component:
                                   _type: js/function
                                   params:
                                       - e
-                                  body: |
+                                  body:
+                                    - |
                                       states.password.setValue(e.target.value)
                                       states.error.setValue('')
                         - _type: js/switch
@@ -636,7 +642,8 @@ ui_component:
                   init: []
           effect:
               _type: react/effect
-              body: |
+              body:
+                - |
                   $r('app-x/api.get')(
                       'sys',
                       'appx',

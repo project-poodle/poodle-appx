@@ -358,20 +358,26 @@ function js_statement(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
+  // block statements
   const block_statements = []
+  if (!!input.body) {
+    if (!Array.isArray(input.body)) {
+      throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
+    }
+    // handle body
+    input.body.map(statement => {
+      // parse user code snippet
+      const statements = _js_parse_statements(js_context, statement, {
+        // sourceType: 'module', // do not support module here
+        allowReturnOutsideFunction: true, // allow return in the block statement
+        plugins: [
+          // 'jsx', // do not support jsx here
+        ]
+      })
 
-  if (!!input.code) {
-    // parse user code snippet
-    const statements = _js_parse_statements(js_context, input.code, {
-      // sourceType: 'module', // do not support module here
-      allowReturnOutsideFunction: true, // allow return in the block statement
-      plugins: [
-        // 'jsx', // do not support jsx here
-      ]
-    })
-
-    statements.map(statement => {
-      block_statements.push(statement)
+      statements.map(statement => {
+        block_statements.push(statement)
+      })
     })
   }
 
@@ -408,17 +414,23 @@ function js_function(js_context, input) {
   // process input.body
   const block_statements = []
   if (!!input.body) {
-    // parse user code snippet
-    const statements = _js_parse_statements(js_context, input.body, {
-      // sourceType: 'module', // do not support module here
-      allowReturnOutsideFunction: true, // allow return in the block statement
-      plugins: [
-        // 'jsx', // do not support jsx here
-      ]
-    })
+    if (!Array.isArray(input.body)) {
+      throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
+    }
+    // handle body
+    input.body.map(statement => {
+      // parse user code snippet
+      const statements = _js_parse_statements(js_context, statement, {
+        // sourceType: 'module', // do not support module here
+        allowReturnOutsideFunction: true, // allow return in the block statement
+        plugins: [
+          // 'jsx', // do not support jsx here
+        ]
+      })
 
-    statements.map(statement => {
-      block_statements.push(statement)
+      statements.map(statement => {
+        block_statements.push(statement)
+      })
     })
   }
 
@@ -1583,17 +1595,23 @@ function react_effect(js_context, input) {
   // process input.body
   const block_statements = []
   if (!!input.body) {
-    // parse user code snippet
-    const statements = _js_parse_statements(js_context, input.body, {
-      // sourceType: 'module', // do not support module here
-      // allowReturnOutsideFunction: true, // allow return in the block statement
-      plugins: [
-        'jsx', // support jsx here
-      ]
-    })
+    if (!Array.isArray(input.body)) {
+      throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
+    }
+    // handle body
+    input.body.map(statement => {
+      // parse user code snippet
+      const statements = _js_parse_statements(js_context, statement, {
+        // sourceType: 'module', // do not support module here
+        // allowReturnOutsideFunction: true, // allow return in the block statement
+        plugins: [
+          'jsx', // support jsx here
+        ]
+      })
 
-    statements.map(statement => {
-      block_statements.push(statement)
+      statements.map(statement => {
+        block_statements.push(statement)
+      })
     })
   }
 

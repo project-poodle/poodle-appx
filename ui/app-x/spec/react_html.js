@@ -34,7 +34,7 @@ export const react_html = {
           __class: 'js/call',
           name: {
             __class: 'js/import',
-            name: 'app-x/builder/ui/syntax/util_generate.valid_html_tags',
+            name: 'app-x/builder/ui/syntax/util_base.valid_html_tags',
           }
         }
       ],

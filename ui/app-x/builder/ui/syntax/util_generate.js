@@ -610,9 +610,9 @@ function generate_tree_node(js_context, conf, input) {
       }
       // add to current node
       if (!!thisNodeSpec.generate) {
-        return eval(thisNodeSpec.generate)
-      } else if (!!childSpec.array) {
-        throw new Error(`ERROR: thisNodeSpec [childSpec.array] missing generate method [${JSON.stringify(childSpec._thisNode)}]`)
+        const result = eval(thisNodeSpec.generate)
+        // console.log(`genrate`, data, result)
+        return result
       } else if (thisNodeSpec.class === 'string') {
         if (isPrimitive(data)) {
           return String(data)
@@ -736,12 +736,33 @@ function generate_tree_node(js_context, conf, input) {
           }
         }
 
+        // check undefined
+        if (data === undefined) {
+          if (!childSpec.optional) {
+            throw new Error(`ERROR: input data missing non-optional child [${childSpec.name}] [${JSON.stringify(input)}]`)
+          }
+        }
+
         // we are here for an _ref that exists
         if (!!childSpec._thisNode) {
           // process _thisNode
-          const resultNodeData = _process_this(_ref, data)
-          if (resultNodeData !== undefined) {
-            thisNode.data[_ref] = resultNodeData
+          if (!!childSpec.array) {
+            if (!Array.isArray(data)) {
+              throw new Error(`ERROR: childSpec [array] has non-array data [${JSON.stringify(data)}]`)
+            }
+            // we have verified data is array
+            thisNode.data[_ref] = []
+            data.map(d => {
+              const resultNodeData = _process_this(_ref, d)
+              if (resultNodeData !== undefined) {
+                thisNode.data[_ref].push(resultNodeData)
+              }
+            })
+          } else {
+            const resultNodeData = _process_this(_ref, data)
+            if (resultNodeData !== undefined) {
+              thisNode.data[_ref] = resultNodeData
+            }
           }
         }
 
