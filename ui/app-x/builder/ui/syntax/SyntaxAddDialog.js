@@ -109,7 +109,6 @@ const SyntaxAddDialog = (props) => {
     },
     formControl: {
       width: '100%',
-      // margin: theme.spacing(1),
       padding: theme.spacing(2, 0),
     },
   }))()
