@@ -201,6 +201,7 @@ const SyntaxTree = (props) => {
   const [ syntaxTreeCursor, setSyntaxTreeCursor ] = useState('progress')
   // loading and saving
   const [ loadTrigger,      setLoadTrigger      ] = useState(new Date())  // trigger a load by default
+  const [ loadInProgress,   setLoadInProgress   ] = useState(false)   // loading in progress
   const [ saveTrigger,      setSaveTrigger      ] = useState(0)
 
   // process api data
@@ -248,7 +249,7 @@ const SyntaxTree = (props) => {
       // console.log(`filtered`, filtered)
 
       const js_context = { topLevel: true }
-      const parsedTree = generate_tree_node(
+      const loadedTree = generate_tree_node(
         js_context,
         {
           ref: null,
@@ -256,15 +257,15 @@ const SyntaxTree = (props) => {
         },
         filtered
       )
-      console.log(`parsedTree`, parsedTree)
+      console.log(`loaded treeData`, loadedTree)
 
       const parsedTest = !!spec_data._test
         ? spec_data._test
         : null
 
-      // console.log(`parsed`, parsedTree, parsedTest)
+      // console.log(`parsed`, loadedTree, parsedTest)
       // fresh action
-      makeFreshAction(`init`, parsedTree, parsedTest, js_context.expandedKeys, null, true)
+      makeFreshAction(`init`, loadedTree, parsedTest, js_context.expandedKeys, null, true)
     } catch (err) {
       console.error(err)
       throw err
@@ -284,6 +285,7 @@ const SyntaxTree = (props) => {
       && !!navDeployment.ui_ver
       && !!navDeployment.ui_deployment
       && !!navSelected
+      // && !!loadTrigger
     )
     {
       if (
@@ -291,6 +293,7 @@ const SyntaxTree = (props) => {
         && !!navComponent
         && !!navComponent.ui_component_name
       ) {
+        setLoadInProgress(true)
         const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
         // console.log(url)
         api.get(
@@ -300,7 +303,8 @@ const SyntaxTree = (props) => {
           data => {
             // console.log(data)
             process_api_data(data)
-            setLoadTrigger(0)
+            // setLoadTrigger(0)
+            setLoadInProgress(false)
             setLoadTimer(new Date())
             if (navComponent.ui_component_type === 'react/component') {
               setPreviewInitialized(false)
@@ -313,7 +317,8 @@ const SyntaxTree = (props) => {
               description: error.toString(),
               placement: 'bottomLeft',
             })
-            setLoadTrigger(0)
+            // setLoadTrigger(0)
+            setLoadInProgress(false)
             setLoadTimer(new Date())
             if (navComponent.ui_component_type === 'react/component') {
               setPreviewInitialized(false)
@@ -328,6 +333,7 @@ const SyntaxTree = (props) => {
         && !!navRoute.ui_route_name
       )
       {
+        setLoadInProgress(true)
         const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
         // console.log(url)
         api.get(
@@ -337,7 +343,8 @@ const SyntaxTree = (props) => {
           data => {
             // console.log(data)
             process_api_data(data)
-            setLoadTrigger(0)
+            // setLoadTrigger(0)
+            setLoadInProgress(false)
             setLoadTimer(new Date())
             setPreviewInitialized(false)
           },
@@ -348,7 +355,8 @@ const SyntaxTree = (props) => {
               description: error.toString(),
               placement: 'bottomLeft',
             })
-            setLoadTrigger(0)
+            // setLoadTrigger(0)
+            setLoadInProgress(false)
             setLoadTimer(new Date())
             setPreviewInitialized(false)
           }
@@ -1126,7 +1134,7 @@ const SyntaxTree = (props) => {
                     icon={<Reset />}
                     shape="circle"
                     onClick={e => { setLoadTrigger(new Date()) }}
-                    loading={!!loadTrigger}
+                    loading={!!loadInProgress}
                     >
                   </AntButton>
                 </Tooltip>
