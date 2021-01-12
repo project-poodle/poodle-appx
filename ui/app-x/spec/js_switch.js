@@ -96,6 +96,7 @@ export const js_switch = {
           '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
           '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
           '(() => { states.setDisabled("_ref", true) })()',
+          '(() => { form.trigger("_ref") })()',
         ]
       },
     },
@@ -144,6 +145,7 @@ export const js_switch = {
           '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
           '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
           '(() => { states.setDisabled("_ref", true) })()',
+          '(() => { form.trigger("_ref") })()',
         ]
       },
     },
