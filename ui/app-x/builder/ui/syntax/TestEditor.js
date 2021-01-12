@@ -210,7 +210,7 @@ const TestEditor = (props) => {
               .map((key, childIndex) => {
                 return {
                   // id: `providers[${index}].props[${childIndex}]`,
-                  type: provider.props[key]._type,
+                  _type: provider.props[key]._type,
                   name: key,
                   value: provider.props[key]._type === 'js/import'
                         ? provider.props[key].name

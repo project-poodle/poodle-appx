@@ -89,22 +89,29 @@ const SyntaxDeleteDialog = (props) => {
         return child.key !== lookupNode.key
       })
     } else {
-      // console.log('here')
       // this is one of the root node
       resultTree =
         resultTree.filter(child => {
           return child.key !== lookupNode.key
         })
     }
-    if (selectedKey === lookupNode?.key) {
+    // expandedKeys
+    let newExpandedKeys = _.cloneDeep(expandedKeys)
+    if (newExpandedKeys.includes(lookupNode.key)) {
+      newExpandedKeys.splice(newExpandedKeys.indexOf(lookupNode.key), 1)
+    }
+    // selected key
+    let newSelectedKey = selectedKey
+    if (selectedKey === lookupNode.key) {
       setSelectedKey(null)
+      newSelectedKey = null
     }
     // take action
     makeDesignAction(
       `Delete [${lookupNode?.title}]`,
       resultTree,
-      expandedKeys,
-      null,
+      newExpandedKeys,
+      newSelectedKey,
     )
   }
 
