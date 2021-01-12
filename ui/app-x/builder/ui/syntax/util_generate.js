@@ -427,7 +427,7 @@ const reorder_children = (parentNode) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create new node
-function new_tree_node(title, icon, data, isLeaf, parentKey, parentChildSpec) {
+function new_tree_node(title, icon, data, isLeaf, parentKey) {
   return {
     key: uuidv4(),
     title: title ? title : (data ? (data._ref ? data._ref : '') : ''),
@@ -435,7 +435,6 @@ function new_tree_node(title, icon, data, isLeaf, parentKey, parentChildSpec) {
     data: data ? data : null,
     isLeaf: isLeaf ? true : false,
     parentKey: parentKey,
-    parentChildSpec: parentChildSpec,
     children: isLeaf ? [] : [],
   }
 }
@@ -452,14 +451,13 @@ function new_root_node() {
     },
     isLeaf: true,
     parentKey: null,
-    parentChildSpec: null,
     children: null,
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // process input data and return tree data
-// function parse_js(js_context, { ref, parentKey, parentChildSpec }, input) {
+// function parse_js(js_context, { ref, parentKey }, input) {
 function generate_tree_node(js_context, conf, input) {
 
   // add expandedKeys if not exist
@@ -540,7 +538,6 @@ function generate_tree_node(js_context, conf, input) {
             ref: key,
             array: false,
             parentKey: null,
-            parentChildSpec: null
           },
           input[key]
         )
@@ -576,7 +573,6 @@ function generate_tree_node(js_context, conf, input) {
     },
     !spec.children?.find(item => !!item._childNode),  // isLeaf
     conf?.parentKey || null,
-    conf?.parentChildSpec || null,
   )
 
   // setup default expand
@@ -668,7 +664,6 @@ function generate_tree_node(js_context, conf, input) {
             ref: _ref,
             array: !!childSpec.array,
             parentKey: thisNode.key,
-            parentChildSpec: childSpec,
           },
           data
         )
@@ -686,7 +681,6 @@ function generate_tree_node(js_context, conf, input) {
             ref: _ref,
             array: !!childSpec.array,
             parentKey: thisNode.key,
-            parentChildSpec: childSpec,
           },
           data
         )

@@ -177,6 +177,67 @@ const SyntaxAddDialog = (props) => {
   const [ nodeType,     setNodeType     ] = useState(props.addNodeType)
   const [ nodeRef,      setNodeRef      ] = useState(props.addNodeRef)
 
+  //////////////////////////////////////////////////////////////////////////////
+  // disabled and hidden states
+  const [ disabled,     setDisabled     ] = useState({})
+  const [ hidden,       setHidden       ] = useState({})
+
+  const form = hookForm
+  const states = {
+    getDisabled: (name) => {
+      return !!disabled[name]
+    },
+    setDisabled: (name, target) => {
+      if (disabled[name] !== target) {
+        const result = _.clone(disabled)
+        result[name] = !!target
+        setDisabled(result)
+      }
+    },
+    getHidden: (name) => {
+      return !!hidden[name]
+    },
+    setHidden: (name, target) => {
+      if (hidden[name] !== target) {
+        const result = _.clone(hidden)
+        result[name] = !!target
+        setHidden(result)
+      }
+    },
+    getRef: () => {
+      return getValues('_ref')
+    },
+    setRef: (refTarget) => {
+      if (getValues("_ref") !== undefined && getValues("_ref") !== refTarget) {
+        console.log("getValues(_ref)", getValues("_ref"), refTarget)
+        form.setValue("_ref", refTarget)
+      }
+      if (nodeRef !== refTarget) {
+        setNodeRef(refTarget)
+      }
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // run effects when data changes
+  const watchData = watch()
+  useEffect(() => {
+    if (!!parentSpec) {
+      // parentSpec effects
+      const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
+      if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
+        childSpec._childNode.effects.map(effect => eval(effect))
+        console.log(`watch here`, watchData, new Date())
+      }
+    }
+    // nodeSpec effects
+    if (!!nodeSpec && !!nodeSpec._effects) {
+      nodeSpec._effects.map(effect => eval(effect))
+    }
+  }, [watchData])
+
+
+  //////////////////////////////////////////////////////////////////////////////
   // parentSpec
   useEffect(() => {
     if (!props.addNodeParent?.data?._type) {
@@ -217,6 +278,7 @@ const SyntaxAddDialog = (props) => {
     }
   }, [nodeType])
 
+  //////////////////////////////////////////////////////////////////////////////
   // onSubmit
   const onSubmit = data => {
     try {
@@ -236,6 +298,7 @@ const SyntaxAddDialog = (props) => {
   // console.log(nodeType)
   // console.log(props)
 
+  //////////////////////////////////////////////////////////////////////////////
   // add callback
   const addCallback = (nodeParent, nodeData) => {
     // console.log(nodeParent, nodeData)
@@ -271,7 +334,6 @@ const SyntaxAddDialog = (props) => {
       {
         ref: ref,
         parentKey: parentKey,
-        parentChildSpec: null,
       },
       nodeData
     )
@@ -334,6 +396,7 @@ const SyntaxAddDialog = (props) => {
     )
   }
 
+  //////////////////////////////////////////////////////////////////////////////
   return (
     <Dialog
       className={styles.dialog}
@@ -368,6 +431,59 @@ const SyntaxAddDialog = (props) => {
           <DialogContent
             className={styles.dialogContent}
             >
+            {
+              !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)
+              && !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?._childNode?.customs
+              &&
+              (
+                // add custom fields from parentSpec if mandated by parent
+                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs.map(customField => {
+                  // console.log(`parentSpec - customField`, customField)
+                  if (!!hidden[customField.name]) {
+                    return undefined
+                  } else {
+                    return (
+                      <InputField
+                        key={customField.name}
+                        name={customField.name}
+                        disabled={!!disabled[customField.name]}
+                        childSpec={customField}
+                        thisNodeSpec={customField}
+                        defaultValue={customField.defaultValue ? eval(customField.defaultValue) : ''}
+                      />
+                    )
+                  }
+                })
+                .filter(child => !!child)
+                .flat(2)
+              )
+            }
+            {
+              !!nodeSpec?._customs
+              &&
+              (
+                // add custom fields from parentSpec if mandated by parent
+                nodeSpec._customs.map(customField => {
+                  // console.log(`nodeSpec - customField`, customField)
+                  if (!!hidden[customField.name]) {
+                    return undefined
+                  } else {
+                    return (
+                      <InputField
+                        key={customField.name}
+                        name={customField.name}
+                        disabled={!!disabled[customField.name]}
+                        childSpec={customField}
+                        thisNodeSpec={customField}
+                        defaultValue={customField.defaultValue ? eval(customField.defaultValue) : ''}
+                      />
+                    )
+                  }
+                })
+                .filter(child => !!child)
+                .flat(2)
+              )
+            }
             <Controller
               name="_ref"
               control={control}
@@ -415,10 +531,14 @@ const SyntaxAddDialog = (props) => {
                 },
               }}
               render={innerProps =>
-                <FormControl className={styles.formControl}>
+                <FormControl
+                  className={styles.formControl}
+                  disabled={!!disabled["_ref"]}
+                  >
                   <AutoSuggest
                     label="Reference"
                     name="_ref"
+                    disabled={!!disabled["_ref"]}
                     required={true}
                     onChange={value => {
                       innerProps.onChange(value)
@@ -522,14 +642,29 @@ const SyntaxAddDialog = (props) => {
                 if (!childSpec._thisNode?.class) {
                   return undefined
                 }
+                if (!!hidden[childSpec.name]) {
+                  return undefined
+                }
                 // const childThisSpec = childSpec._thisNode
                 if (!!childSpec.array) {
                   return (
-                    <InputFieldArray key={childSpec.name} name={childSpec.name} childSpec={childSpec}/>
+                    <InputFieldArray
+                      key={childSpec.name}
+                      name={childSpec.name}
+                      disabled={!!disabled[childSpec.name]}
+                      childSpec={childSpec}
+                      thisNodeSpec={childSpec._thisNode}
+                    />
                   )
                 } else {
                   return (
-                    <InputField key={childSpec.name} name={childSpec.name} childSpec={childSpec} />
+                    <InputField
+                      key={childSpec.name}
+                      name={childSpec.name}
+                      disabled={!!disabled[childSpec.name]}
+                      childSpec={childSpec}
+                      thisNodeSpec={childSpec._thisNode}
+                    />
                   )
                 }
               })

@@ -78,11 +78,11 @@ const InputFieldArray = ((props) => {
   }))()
 
   // destruct props
-  const { name, childSpec } = props
+  const { name, childSpec, thisNodeSpec } = props
 
   const suggestions = (() => {
-    if (childSpec._thisNode?.suggestions) {
-      return eval(childSpec._thisNode?.suggestions)
+    if (thisNodeSpec?.suggestions) {
+      return eval(thisNodeSpec?.suggestions)
     } else {
       return []
     }
@@ -147,7 +147,7 @@ const InputFieldArray = ((props) => {
                   let count = 0
                   const result = { validate: {} }
                   // check optional flag
-                  if (!childSpec.optional && childSpec._thisNode?.input !== 'input/switch') {
+                  if (!childSpec.optional && thisNodeSpec?.input !== 'input/switch') {
                     result['required'] = `${childSpec.desc} is required`
                   }
                   // check rules
@@ -168,8 +168,8 @@ const InputFieldArray = ((props) => {
                     })
                   }
                   // check _thisNode.rules
-                  if (!!childSpec._thisNode?.rules) {
-                    childSpec._thisNode.rules.map(rule => {
+                  if (!!thisNodeSpec?.rules) {
+                    thisNodeSpec.rules.map(rule => {
                       if (rule.kind === 'required') {
                         result['required'] = rule.message
                       } else if (rule.kind === 'pattern') {
@@ -185,19 +185,19 @@ const InputFieldArray = ((props) => {
                     })
                   }
                   // auto suggestions rule
-                  if (!!childSpec._thisNode.suggestionsOnly) {
+                  if (!!thisNodeSpec.suggestionsOnly) {
                     result.validate[`validate_${count++}`] = (value) => (
                       suggestions.includes(value)
                       || `${childSpec.desc} must be a valid value`
                     )
                   }
                   // additional rules by input type
-                  // console.log(`childSpec._thisNode.input`, childSpec._thisNode.input)
-                  if (childSpec._thisNode.input === 'input/number') {
+                  // console.log(`thisNodeSpec.input`, thisNodeSpec.input)
+                  if (thisNodeSpec.input === 'input/number') {
                     result.validate[`validate_${count++}`] = (value) => {
                       return !isNaN(Number(value)) || "Must be a number"
                     }
-                  } else if (childSpec._thisNode.input === 'input/expression') {
+                  } else if (thisNodeSpec.input === 'input/expression') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
                         parseExpression(String(value))
@@ -206,7 +206,7 @@ const InputFieldArray = ((props) => {
                         return String(err)
                       }
                     }
-                  } else if (childSpec._thisNode.input === 'input/statement') {
+                  } else if (thisNodeSpec.input === 'input/statement') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
                         parse(value, {
@@ -223,10 +223,11 @@ const InputFieldArray = ((props) => {
                 })()}
                 render={innerProps =>
                   {
-                    if (childSpec._thisNode.input === 'input/switch')
+                    if (thisNodeSpec.input === 'input/switch')
                     {
                       return (
                         <FormControl
+                          name={itemName}
                           className={styles.itemControl}
                           error={!!_.get(errors, name)}
                           >
@@ -247,14 +248,15 @@ const InputFieldArray = ((props) => {
                     }
                     else if
                     (
-                      childSpec._thisNode.input === 'input/expression'
-                      || childSpec._thisNode.input === 'input/statement'
+                      thisNodeSpec.input === 'input/expression'
+                      || thisNodeSpec.input === 'input/statement'
                     ) {
                       return (
                         <Box
                           className={styles.labelControl}
                           >
                         <FormControl
+                          name={itemName}
                           className={styles.itemControl}
                           error={!!_.get(errors, itemName)}
                           >
@@ -263,7 +265,7 @@ const InputFieldArray = ((props) => {
                               className={styles.editor}
                               language="javascript"
                               options={{
-                                readOnly: false,
+                                readOnly: !!props.disabled,
                                 // lineNumbers: 'off',
                                 lineNumbersMinChars: 0,
                                 wordWrap: 'on',
@@ -314,7 +316,10 @@ const InputFieldArray = ((props) => {
                       )
                     } else {
                       return (
-                        <FormControl className={styles.itemControl}>
+                        <FormControl
+                          name={itemName}
+                          className={styles.itemControl}
+                          >
                           <AutoSuggest
                             name={itemName}
                             value={innerProps.value}
@@ -363,5 +368,12 @@ const InputFieldArray = ((props) => {
     </Box>
   )
 })
+
+InputFieldArray.propTypes = {
+  name: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  childSpec: PropTypes.object.isRequired,
+  thisNodeSpec: PropTypes.object.isRequired,
+}
 
 export default InputFieldArray

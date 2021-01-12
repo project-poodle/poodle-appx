@@ -17,25 +17,21 @@ export const react_state = {
   ],
   _customs: [
     {
-      name: '_ref',
-      hidden: true,
-      default: '...'
-    },
+      name: '_customRef',
+      desc: 'Custom Reference',
+      input: 'input/switch',
+      defaultValue: 'form.getValues("_ref")?.startsWith("...")',
+    }
   ],
   _effects: [
-    {
-      body: ' \
-        form.setValue("_ref", "..." + form.getValues("name") \
-      ',
-      states: [
-        'form.watch("name")'
-      ]
-    }
+    '(() => { if (!form.getValues("_customRef")) states.setRef("..." + form.getValues("name")) })()',
+    '(() => { if (!form.getValues("_customRef")) states.setDisabled("_ref", true) })()',
+    '(() => { if (!!form.getValues("_customRef")) states.setDisabled("_ref", false) })()',
   ],
   children: [
     {
       name: 'name',
-      desc: 'State Name',
+      desc: 'Name',
       classes: [
         {
           class: 'string'
@@ -63,7 +59,7 @@ export const react_state = {
     },
     {
       name: 'setter',
-      desc: 'State Setter',
+      desc: 'Setter',
       classes: [
         {
           class: 'string'

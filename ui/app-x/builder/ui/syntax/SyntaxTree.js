@@ -253,7 +253,6 @@ const SyntaxTree = (props) => {
         {
           ref: null,
           parentKey: null,
-          parentChildSpec: null,
         },
         filtered
       )

@@ -55,6 +55,7 @@ const AutoSuggest = (props) => {
       key="autoSuggest"
       options={options}
       value={props.value}
+      disabled={!!props.disabled}
       onChange={data => {
         props.onChange(data)
         if (props.callback) {
@@ -79,6 +80,7 @@ const AutoSuggest = (props) => {
         label={props.label}
         name={props.name}
         value={props.value}
+        disabled={!!props.disabled}
         required={props.required}
         size={props.size}
         onChange={e => {
@@ -98,6 +100,7 @@ AutoSuggest.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   rules: PropTypes.object,
   options: PropTypes.array,
   defaultValues: PropTypes.string,

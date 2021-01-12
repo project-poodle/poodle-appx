@@ -76,36 +76,26 @@ export const js_switch = {
         ',
         customs: [
           {
-            name: '_ref',
-            hidden: true,
-            default: null,
-          },
-          {
             name: '_isDefault',
             desc: 'Is Default',
+            class: 'boolean',
             input: 'input/switch',
-            default: false,
           },
           {
             name: '_condition',
             desc: 'Condition',
-            condition: '!form.watch("_isDefault")',
+            class: 'string',
             input: 'input/expression',
-            default: '',
           },
         ],
         effects: [
-          {
-            body: ' \
-            form.setValue("_ref", \
-              !!form.getValues("_isDefault") \
-                ? "default" \
-                : null); \
-            ',
-            states: [
-              'form.watch("_isDefault")'
-            ]
-          }
+          '(() => { \
+            const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+            states.setRef(refTarget); \
+          })()',
+          '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+          '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+          '(() => { states.setDisabled("_ref", true) })()',
         ]
       },
     },
@@ -134,36 +124,26 @@ export const js_switch = {
         parse: 'parse(node)',
         customs: [
           {
-            name: '_ref',
-            hidden: true,
-            default: 'default'
-          },
-          {
             name: '_isDefault',
             desc: 'Is Default',
+            class: 'boolean',
             input: 'input/switch',
-            default: true
           },
           {
             name: '_condition',
             desc: 'Condition',
-            condition: '!form.watch("_isDefault")',
+            class: 'string',
             input: 'input/expression',
-            default: ''
           },
         ],
         effects: [
-          {
-            body: ' \
-              form.setValue("_ref", \
-                !!form.getValues("_isDefault") \
-                  ? "default" \
-                  : null); \
-            ',
-            states: [
-              'form.watch("_isDefault")'
-            ]
-          }
+          '(() => { \
+            const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+            states.setRef(refTarget); \
+          })()',
+          '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+          '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+          '(() => { states.setDisabled("_ref", true) })()',
         ]
       },
     },

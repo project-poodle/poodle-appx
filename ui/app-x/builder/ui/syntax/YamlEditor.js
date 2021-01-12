@@ -145,7 +145,6 @@ const YamlEditor = props => {
           {
             ref: null,
             parentKey: lookupNode.parentKey,
-            parentChildSpec: null,
           },
           loaded
         )

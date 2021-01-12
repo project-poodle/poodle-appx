@@ -450,7 +450,6 @@ const PropEditor = (props) => {
             {
               ref: child.name,
               parentKey: childParent.key,
-              parentChildSpec: null,
             },
             {
               _type: child._type,
@@ -469,7 +468,6 @@ const PropEditor = (props) => {
             {
               ref: child.name,
               parentKey: childParent.key,
-              parentChildSpec: null,
             },
             {
               _type: 'js/expression',
@@ -488,7 +486,6 @@ const PropEditor = (props) => {
             {
               ref: child.name,
               parentKey: childParent.key,
-              parentChildSpec: null,
             },
             {
               _type: 'js/import',
@@ -540,7 +537,6 @@ const PropEditor = (props) => {
             {
               ref: refKey,
               parentKey: lookupNode.key,
-              parentChildSpec: null
             },
             {}
           )
