@@ -77,10 +77,12 @@ const types = [
     }
     let wild_card_count = 0
     let child_array_count = 0
+    let child_count = 0
     item.children.map(childSpec => {
       if (!childSpec.name) {
         throw new Error(`ERROR: type spec [${item.type}] missing child spec name [${JSON.stringify(childSpec)}]`)
       }
+      child_count++
       if (childSpec.name === '*') {
         wild_card_count++
       }
@@ -120,6 +122,10 @@ const types = [
     // check no wild_card_count and child_array_count
     if (wild_card_count + child_array_count > 1) {
       throw new Error(`ERROR: type_spec has both wildcard and [array] child node [${item.type}]`)
+    }
+    // check no other children if wild_card_count exists
+    if (wild_card_count > 0 && child_count > 1) {
+      throw new Error(`ERROR: type_spec has mixed wildcard and non-wildcard children [${item.type}]`)
     }
   } else {
     item.children = []
