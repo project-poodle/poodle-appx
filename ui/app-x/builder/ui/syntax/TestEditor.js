@@ -27,6 +27,7 @@ import {
 // ant design
 import {
   Tabs,
+  notification,
 } from 'antd'
 const { TabPane } = Tabs;
 import {
@@ -50,6 +51,10 @@ import {
 import {
   tree_lookup,
 } from 'app-x/builder/ui/syntax/util_parse'
+import {
+  new_tree_node,
+  generate_tree_node,
+} from 'app-x/builder/ui/syntax/util_generate'
 
 let pendingTimer = new Date()
 
@@ -181,6 +186,7 @@ const TestEditor = (props) => {
 
   // load test data
   useEffect(() => {
+    // console.log(`loading testData`, testData)
     // check if provider exists
     if (!testData?.providers?.length) {
       setValue('providers', [])
@@ -192,58 +198,21 @@ const TestEditor = (props) => {
       .filter(provider => provider?._type === 'react/element')
       .map((provider, index) => {
         // console.log(`provider`, provider)
+        const propsNode = generate_tree_node({}, {parentKey: null, ref: 'props'}, provider.props)
         // iterate props
-        const props =
-          (
-            !!provider?.props
-            && !!(Object.keys(provider.props).length)
-          )
-          ? Object.keys(provider.props)
-              .filter(key => (
-                provider.props[key]?._type === 'js/string'
-                || provider.props[key]?._type === 'js/number'
-                || provider.props[key]?._type === 'js/boolean'
-                || provider.props[key]?._type === 'js/null'
-                || provider.props[key]?._type === 'js/impression'
-                || provider.props[key]?._type === 'js/import'
-              ))
-              .map((key, childIndex) => {
-                return {
-                  // id: `providers[${index}].props[${childIndex}]`,
-                  _type: provider.props[key]._type,
-                  name: key,
-                  value: provider.props[key]._type === 'js/import'
-                        ? provider.props[key].name
-                        : provider.props[key].data,
-                }
-              })
-          : []
-        // iterate other names
-        const otherNames =
-        (
-          !!provider?.props
-          && !!(Object.keys(provider.props).length)
-        )
-        ? Object.keys(provider.props)
-            .filter(key => (
-              provider.props[key]?._type !== 'js/string'
-              && provider.props[key]?._type !== 'js/number'
-              && provider.props[key]?._type !== 'js/boolean'
-              && provider.props[key]?._type !== 'js/null'
-              && provider.props[key]?._type !== 'js/impression'
-              && provider.props[key]?._type !== 'js/import'
-            ))
-            .map(key => key)
-        : []
+        const { properties, otherNames } = InputProperties.parse(propsNode)
         defaultValues.push({
           // id: `providers[${index}]`,
           name: provider.name,
-          props: props,
-          otherNames: otherNames,
+          props: properties,
+          _otherNames: otherNames,
+          // otherNames: otherNames,
         })
+        // console.log(propsNode)
       }
     )
     // set default value
+    // console.log(`setValue 'providers'`, defaultValues)
     setValue('providers', defaultValues)
     // clear testDirty
     setTestDirty(false)
@@ -260,73 +229,82 @@ const TestEditor = (props) => {
   // submit test data
   function onTestSubmit(data) {
 
-    // console.log(`data`, data)
-    // return
-
-    // convert form data to result test data
-    const resultTestData = {}
-    if (!data?.providers?.length) {
-      return
-    }
-    // we are here if data.providers has data
-    resultTestData.providers = []
-    data.providers.map(provider => {
-      // console.log(`gen provider`, provider)
-      const providerElem = {
-        type: 'react/element',
-        name: provider.name,
-      }
-      // if no properties, add provider and return
-      if (!provider?.props?.length) {
-        resultTestData.providers.push(providerElem)
+    try {
+      // console.log(`onTestSubmit`, data)
+      // convert form data to result test data
+      const resultTestData = {}
+      if (!data?.providers?.length) {
         return
       }
-      // we are here if provider.props has data
-      providerElem.props = {}
-      provider.props.map(child => {
-        if (child._type === 'js/string') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            data: String(child.value)
-          }
-        } else if (child._type === 'js/number') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            data: Number(child.value)
-          }
-        } else if (child._type === 'js/boolean') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            data: Boolean(child.value)
-          }
-        } else if (child._type === 'js/null') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            data: null
-          }
-        } else if (child._type === 'js/expression') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            data: child.value
-          }
-        } else if (child._type === 'js/import') {
-          providerElem.props[child.name] = {
-            type: child._type,
-            name: child.value
-          }
+      // we are here if data.providers has data
+      resultTestData.providers = []
+      data.providers.map(provider => {
+        // console.log(`gen provider`, provider)
+        const providerElem = {
+          _type: 'react/element',
+          name: provider.name,
         }
+        // if no properties, add provider and return
+        if (!provider?.props?.length) {
+          resultTestData.providers.push(providerElem)
+          return
+        }
+        // we are here if provider.props has data
+        providerElem.props = {}
+        provider.props.map(child => {
+          if (child._type === 'js/string') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              data: String(child.value)
+            }
+          } else if (child._type === 'js/number') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              data: Number(child.value)
+            }
+          } else if (child._type === 'js/boolean') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              data: Boolean(child.value)
+            }
+          } else if (child._type === 'js/null') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              data: null
+            }
+          } else if (child._type === 'js/expression') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              data: child.value
+            }
+          } else if (child._type === 'js/import') {
+            providerElem.props[child.name] = {
+              _type: child._type,
+              name: child.value
+            }
+          }
+        })
+        // console.log(`providerElem`, providerElem)
+        resultTestData.providers.push(providerElem)
       })
-      // console.log(`providerElem`, providerElem)
-      resultTestData.providers.push(providerElem)
-    })
-    // console.log(lookupNode)
-    // console.log(`resultTestData`, resultTestData)
-    updateTestAction(
-      `Update [test]`,
-      resultTestData,
-    )
-    // clear test dirty flag
-    setTestDirty(false)
+      // console.log(lookupNode)
+      // console.log(`resultTestData`, resultTestData)
+      updateTestAction(
+        `Update [test]`,
+        resultTestData,
+      )
+      // clear test dirty flag
+      setTestDirty(false)
+
+    } catch (error) {
+      // error handling
+      console.log(`onTestSubmit`, data, error)
+      notification.error({
+        message: `Failed to update test data`,
+        description: String(error),
+        placement: 'bottomLeft',
+      })
+    }
   }
 
   return (
@@ -391,8 +369,7 @@ const TestEditor = (props) => {
                       <InputProperties
                         name={`providers[${index}].props`}
                         label="Properties"
-                        defaultValue={item.props}
-                        otherNames={item.otherNames}
+                        otherNames={getValues(`providers[${index}]._otherNames`) || []}
                         className={styles.formControl}
                         callback={d => {
                           setTestSubmitTimer(new Date())

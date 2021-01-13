@@ -192,6 +192,9 @@ const PropEditor = (props) => {
   const [ disabled,       setDisabled       ] = useState({})
   const [ hidden,         setHidden         ] = useState({})
 
+  // other names
+  const [ nodeOtherNames, setNodeOtherNames ] = useState({})
+
   //////////////////////////////////////////////////////////////////////////////
   // context variables
   const form = hookForm
@@ -248,52 +251,6 @@ const PropEditor = (props) => {
     }
   }, [watchData])
 
-
-  //////////////////////////////////////////////////////////////////////////////
-  // parentSpec
-  useEffect(() => {
-    // reset disabled and hidden flags
-    setDisabled({})
-    setHidden({})
-    // set parent spec
-    if (!parentNode?.data?._type) {
-      setParentSpec(null)
-    } else {
-      const spec = globalThis.appx.SPEC.types[parentNode.data._type]
-      // console.log(`parentSpec`, spec)
-      if (!spec) {
-        setParentSpec(null)
-      } else {
-        setParentSpec(spec)
-      }
-    }
-  }, [parentNode])
-
-  // nodeType
-  useEffect(() => {
-    setNodeType(thisNode?.data?._type)
-    setNodeRef(thisNode?.data?._ref)
-  }, [thisNode])
-
-  // nodeSpec
-  useEffect(() => {
-    // reset disabled and hidden flags
-    setDisabled({})
-    setHidden({})
-    // set node spec
-    if (!nodeType) {
-      setNodeSpec(null)
-    } else {
-      const spec = globalThis.appx.SPEC.types[nodeType]
-      // console.log(`nodeSpec`, spec)
-      if (!spec) {
-        setNodeSpec(null)
-      } else {
-        setNodeSpec(spec)
-      }
-    }
-  }, [nodeType])
-
   //////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     // check validity
@@ -326,15 +283,46 @@ const PropEditor = (props) => {
       setParentNode(_.cloneDeep(lookupParent))
       // console.log(lookupNode)
       // console.log(parentNode)
-      if (lookupNode) {
-        setNodeType(lookupNode.data._type)
-      }
+      setNodeType(lookupNode?.data._type || null)
+      setNodeRef(lookupNode?.data._ref || null)
       // console.log(`lookupNode`, lookupNode)
+      // nodeSpec
+      if (!lookupNode?.data._type) {
+        setNodeSpec(null)
+      } else {
+        const spec = globalThis.appx.SPEC.types[lookupNode?.data._type]
+        // console.log(`nodeSpec`, spec)
+        if (!spec) {
+          setNodeSpec(null)
+        } else {
+          setNodeSpec(spec)
+        }
+      }
+      // parentSpec
+      if (!lookupParent?.data._type) {
+        setParentSpec(null)
+      } else {
+        const spec = globalThis.appx.SPEC.types[lookupParent.data._type]
+        // console.log(`parentSpec`, spec)
+        if (!spec) {
+          setParentSpec(null)
+        } else {
+          setParentSpec(spec)
+        }
+      }
+      // reset disabled and hidden flags
+      setDisabled({})
+      setHidden({})
+      setNodeOtherNames({})
     }
     else
     {
       setThisNode(null)
+      setNodeSpec(null)
+      setNodeType(null)
+      setNodeRef(null)
       setParentNode(null)
+      setParentSpec(null)
     }
   },
   [
@@ -354,6 +342,7 @@ const PropEditor = (props) => {
     if (!!thisNode && !!nodeSpec) {
       setValue('_ref', thisNode.data._ref)
       setValue('_type', thisNode.data._type)
+      // process _thisNode
       nodeSpec.children
         .filter(childSpec => !!childSpec._thisNode)
         .map(childSpec => {
@@ -366,13 +355,49 @@ const PropEditor = (props) => {
             setValue(childSpec.name, thisNode.data[childSpec.name])
           }
         })
-      // customization by nodeSpec
+      // process _childNode
+      nodeSpec.children
+        .filter(childSpec => !!childSpec._childNode)
+        .map(childSpec => {
+          if (childSpec._childNode.input === 'input/properties') {
+            // TODO_childNode
+            if (childSpec.name === '*') {
+              return thisNode?.children
+                .map(childNode => {
+                  const { properties, otherNames } = InputProperties.parse(childNode)
+                  setValue(childNode.data._ref, properties)
+                  const newNodeOtherNames = _.cloneDeep(nodeOtherNames)
+                  newNodeOtherNames[childNode.data._ref] = otherNames
+                  setNodeOtherNames(newNodeOtherNames)
+                })
+            } else {
+              const childNode = lookup_child_for_ref(thisNode, childSpec.name)
+              const { properties, otherNames } = InputProperties.parse(childNode)
+              setValue(childSpec.name, properties || [])
+              const newNodeOtherNames = _.cloneDeep(nodeOtherNames)
+              newNodeOtherNames[childSpec.name] = otherNames
+              setNodeOtherNames(newNodeOtherNames)
+            }
+          }
+        })
+      // process nodeSpec._input
+      if (
+        nodeSpec?._input === 'input/properties'
+        && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
+      ) {
+        const { properties, otherNames } = InputProperties.parse(thisNode)
+        setValue(THIS_NODE_PROPERTIES, properties)
+        const newNodeOtherNames = _.cloneDeep(nodeOtherNames)
+        newNodeOtherNames[THIS_NODE_PROPERTIES] = otherNames
+        setNodeOtherNames(newNodeOtherNames)
+      }
+      // process customization by nodeSpec
       if (!!nodeSpec._customs) {
         nodeSpec._customs.map(custom => {
           setValue(custom.name, thisNode.data[custom.name])
         })
       }
-      // customization by parentSpec
+      // process customization by parentSpec
       if (!!parentSpec) {
         parentSpec.children
           .filter(childSpec => !!childSpec._childNode?.customs)
@@ -391,7 +416,6 @@ const PropEditor = (props) => {
     }
   },
   [
-    history,
     thisNode,
     parentNode,
     nodeSpec,
@@ -787,7 +811,7 @@ const PropEditor = (props) => {
                                       { lookup_icon_for_type(type) }
                                     </ListItemIcon>
                                     <Typography variant="inherit" noWrap={true}>
-                                      {type.replace('/', ' / ')}
+                                      { type?.replace('/', ' / ') }
                                     </Typography>
                                   </MenuItem>
                                 )
@@ -839,7 +863,8 @@ const PropEditor = (props) => {
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
                         thisNodeSpec={childSpec._thisNode}
-                        callback={d => {
+                        ca
+                        llback={d => {
                           setBaseSubmitTimer(new Date())
                         }}
                       />
@@ -850,29 +875,31 @@ const PropEditor = (props) => {
                 .flat(2)
               }
               {
-                (
-                  nodeSpec?._input === 'input/properties'
-                  && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
-                )
-                &&
-                (
-                  <Box
-                    className={styles.properties}
-                    key={THIS_NODE_PROPERTIES}
-                    >
-                    <InputProperties
-                      name={THIS_NODE_PROPERTIES}
+                (() => {
+                  if
+                  (
+                    nodeSpec?._input === 'input/properties'
+                    && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
+                  )
+                  {
+                    return <Box
+                      className={styles.properties}
                       key={THIS_NODE_PROPERTIES}
-                      label={nodeSpec.desc}
-                      thisNode={thisNode}
-                      className={styles.formControl}
-                      callback={d => {
-                        // console.log(`callback`)
-                        setBaseSubmitTimer(new Date())
-                      }}
-                    />
-                  </Box>
-                )
+                      >
+                      <InputProperties
+                        name={THIS_NODE_PROPERTIES}
+                        key={THIS_NODE_PROPERTIES}
+                        label={nodeSpec.desc}
+                        otherNames={nodeOtherNames[THIS_NODE_PROPERTIES] || []}
+                        className={styles.formControl}
+                        callback={d => {
+                          // console.log(`callback`)
+                          setBaseSubmitTimer(new Date())
+                        }}
+                      />
+                    </Box>
+                  }
+                })()
               }
               {
                 nodeSpec?.children
@@ -901,7 +928,7 @@ const PropEditor = (props) => {
                                 name={childNode.data._ref}
                                 key={childNode.data._ref}
                                 label={`[ ${childNode.data._ref} ]`}
-                                thisNode={childNode}
+                                otherNames={nodeOtherNames[childNode.data._ref] || []}
                                 className={styles.formControl}
                                 callback={d => {
                                   // console.log(`callback`)
@@ -913,7 +940,6 @@ const PropEditor = (props) => {
                         })
                     } else {
                       // for specified property
-                      const childNode = lookup_child_for_ref(thisNode, childSpec.name)
                       return (
                         <Box
                           className={styles.properties}
@@ -923,7 +949,7 @@ const PropEditor = (props) => {
                             name={childSpec.name}
                             key={childSpec.name}
                             label={childSpec.desc}
-                            thisNode={childNode}
+                            otherNames={nodeOtherNames[childSpec.name] || []}
                             className={styles.formControl}
                             callback={d => {
                               // console.log(`callback`)

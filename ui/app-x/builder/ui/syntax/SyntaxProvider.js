@@ -98,7 +98,9 @@ const SyntaxProvider = (() => {
       }
 
       // update state from record
+      // console.log(`updateTestAction before`, newTestData)
       setTestData(newTestData)
+      // console.log(`updateTestAction after`, newTestData)
       setUpdateKey('_test')
       setSyntaxDirty(true)
 
@@ -209,7 +211,9 @@ const SyntaxProvider = (() => {
       }
 
       // update state from action
-      setTestData(record.testData)
+      // console.log(`makeTestAction before`, newTestData)
+      setTestData(newTestData)
+      // console.log(`makeTestAction after`, newTestData)
       setUpdateKey('_test')
       setSyntaxDirty(true)
 

@@ -102,66 +102,17 @@ const InputProperties = props => {
   )
 
   // name and thisNode
-  const { name, thisNode } = props
+  const { name, otherNames } = props
 
   // states and effects
-  const [ otherNames,   setOtherNames   ] = useState([])
+  // const [ otherNames,   setOtherNames   ] = useState([])
 
   ////////////////////////////////////////////////////////////////////////////////
   // set properties
-  useEffect(() => {
-    // if thisNode is empty, set empty state
-    if (!props.thisNode) {
-      setValue(name, [])
-      setOtherNames([])
-      return
-    }
-    // get proper children
-    const children = props.thisNode.children
-    // keep a list of props and other names
-    const properties = []
-    const others = []
-    children?.map(child => {
-      if (child.data._type === 'js/null')
-      {
-        properties.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: null,
-        })
-      }
-      else if
-      (
-        child.data._type === 'js/string'
-        || child.data._type === 'js/number'
-        || child.data._type === 'js/boolean'
-        || child.data._type === 'js/expression'
-      )
-      {
-        properties.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: child.data.data,
-        })
-      }
-      else if (child.data._type === 'js/import')
-      {
-        properties.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: child.data.name,
-        })
-      }
-      else
-      {
-        others.push(child.data._ref)
-      }
-    })
-    // console.log(`setProperties`, properties, others)
-    setValue(name, properties)
-    setOtherNames(others)
-    // other names
-  }, [name, thisNode])
+  // useEffect(() => {
+  //  // if thisNode is empty, set empty state
+  //  // other names
+  // }, [name, thisNode])
 
   ////////////////////////////////////////////////////////////////////////////////
   return (
@@ -509,12 +460,12 @@ const InputProperties = props => {
       }
       {
         (
-          !!otherNames?.length
+          !!props.otherNames?.length
         )
         &&
         (
           <FormHelperText className={styles.hiddenPrompt} key="otherNames">
-            Hidden composite properties: [ {`${otherNames.toString()}`} ]
+            Hidden composite properties: [ {`${props.otherNames.toString()}`} ]
           </FormHelperText>
         )
       }
@@ -536,8 +487,72 @@ const InputProperties = props => {
   )
 }
 
+// parse
+function parse_node(thisNode) {
+  // if thisNode is empty, set empty state
+  if (!thisNode) {
+    // setValue(name, [])
+    // setOtherNames([])
+    return {
+      properties: [],
+      otherNames: [],
+    }
+    return
+  }
+  // get proper children
+  const children = thisNode.children
+  // keep a list of props and other names
+  const properties = []
+  const others = []
+  children?.map(child => {
+    if (child.data._type === 'js/null')
+    {
+      properties.push({
+        _type: child.data._type,
+        name: child.data._ref,
+        value: null,
+      })
+    }
+    else if
+    (
+      child.data._type === 'js/string'
+      || child.data._type === 'js/number'
+      || child.data._type === 'js/boolean'
+      || child.data._type === 'js/expression'
+    )
+    {
+      properties.push({
+        _type: child.data._type,
+        name: child.data._ref,
+        value: child.data.data,
+      })
+    }
+    else if (child.data._type === 'js/import')
+    {
+      properties.push({
+        _type: child.data._type,
+        name: child.data._ref,
+        value: child.data.name,
+      })
+    }
+    else
+    {
+      others.push(child.data._ref)
+    }
+  })
+  console.log(`parseProperties`, properties, others)
+  // console.trace()
+  // setValue(name, properties)
+  // setOtherNames(others)
+  return {
+    properties: properties,
+    otherNames: others,
+  }
+  // other names
+}
+
 // process properties
-function process(thisNode, properties) {
+function process_properties(thisNode, properties) {
   // console.log(`properties`, properties)
   properties.map(child => {
     const childNode = lookup_child_for_ref(thisNode, child.name)
@@ -713,14 +728,17 @@ function process(thisNode, properties) {
   reorder_children(thisNode)
 }
 
-// expose process method
-InputProperties.process = process
+// expose parse and process method
+InputProperties.parse = parse_node
+InputProperties.process = process_properties
 
 // propTypes
 InputProperties.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  thisNode: PropTypes.object.isRequired,
+  otherNames: PropTypes.arrayOf(
+    PropTypes.string.isRequired,
+  ).isRequired,
   options: PropTypes.array,                 // for prop name autocomplete
   callback: PropTypes.func,                 // callback function
   className: PropTypes.string,              // display className for element
