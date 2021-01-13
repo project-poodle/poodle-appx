@@ -11,7 +11,7 @@ import {
 // lookup child by ref
 function lookup_child_for_ref(treeNode, ref) {
   // lookup child by ref
-  const found = treeNode.children.filter(child => {
+  const found = treeNode?.children.filter(child => {
     return (child.data?._ref === ref)
   })
   // check if found

@@ -153,6 +153,8 @@ const PropEditor = (props) => {
     setPropYamlDirty,
     // update action
     updateDesignAction,
+    //
+    history,
   } = useContext(SyntaxProvider.Context)
 
   // react hook form
@@ -184,6 +186,7 @@ const PropEditor = (props) => {
   const [ nodeSpec,       setNodeSpec       ] = useState(null)
   const [ nodeType,       setNodeType       ] = useState(null)
   const [ nodeRef,        setNodeRef        ] = useState(null)
+  // const [ nodeChildren,   setNodeChildren   ] = useState([])
 
   // disabled and hidden states
   const [ disabled,       setDisabled       ] = useState({})
@@ -233,7 +236,7 @@ const PropEditor = (props) => {
   useEffect(() => {
     if (!!parentSpec) {
       // parentSpec effects
-      const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
+      const childSpec = parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
       if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
         childSpec._childNode.effects.map(effect => eval(effect))
         // console.log(`watch here`, watchData, new Date())
@@ -381,11 +384,14 @@ const PropEditor = (props) => {
             }
           })
       }
+      // node children
+      // setNodeChildren(thisNode.children)
       // just loaded, set dirty to false
       setPropBaseDirty(false)
     }
   },
   [
+    history,
     thisNode,
     parentNode,
     nodeSpec,
@@ -411,7 +417,7 @@ const PropEditor = (props) => {
   // onSubmit
   const onBaseSubmit = data => {
     try {
-      // console.log('Base submit data', data)
+      console.log('Editor data', data)
       propEditorCallback(data)
     } catch (err) {
       console.log(`Editor`, data, err)
@@ -435,7 +441,7 @@ const PropEditor = (props) => {
 
     // console.log(data)
     lookupNode.data = data
-    lookupNode.data._array = !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === lookupNode.data._ref)?.array
+    lookupNode.data._array = !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === lookupNode.data._ref)?.array
     lookupNode.title = lookup_title_for_node(lookupNode)
     lookupNode.icon = lookup_icon_for_node(lookupNode)
     // console.log(lookupNode)
@@ -446,7 +452,7 @@ const PropEditor = (props) => {
       .map(childSpec => {
         if (childSpec.name === '*') {
           lookupNode.children.map(childNode => {
-            _process_child_props(childNode, childNode.data._ref, !!childSpec.array)
+            _process_child_props(lookupNode, childNode.data._ref, !!childSpec.array)
           })
         } else {
           _process_child_props(lookupNode, childSpec.name, !!childSpec.array)
@@ -475,8 +481,8 @@ const PropEditor = (props) => {
   // process child props
   function _process_child_props(lookupNode, refKey, isArray) {
     // add props child if exist
-    // console.log(`_process_child_props`)
     let childNode = lookup_child_for_ref(lookupNode, refKey)
+    // console.log(`_process_child_props`, refKey, childNode)
     if (!childNode) {
       // add props if not exist
       // console.log(`new_tree_node`)
@@ -499,12 +505,14 @@ const PropEditor = (props) => {
     const properties = _.get(getValues(), refKey) || []
     // console.log(`properties`, properties)
     // process childParent props
+    // console.log(`childNode.children`, childNode.children)
     InputProperties.process(childNode, properties)
+    // console.log(`childNode.children #2`, childNode.children)
     ////////////////////////////////////////
     // if lookupNode is react/element or react/html, remove empty props
-    if (!childNode.children.length) {
-      remove_child_for_ref(lookupNode, refKey)
-    }
+    // if (!childNode.children.length) {
+    //  remove_child_for_ref(lookupNode, refKey)
+    // }
     // console.log(`childNode`, childNode)
     // reorder children
     // reorder_children(childParent)
@@ -649,12 +657,12 @@ const PropEditor = (props) => {
                   required: "Reference name is required",
                   validate: {
                     checkDuplicate: value =>
-                      !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
+                      !!(parentSpec?.children?.find(child => child.name === value)?.array) // no check needed for array
                       || lookup_child_for_ref(parentNode, value) === null
                       || lookup_child_for_ref(parentNode, value).key === thisNode?.key
                       || `Reference name [ ${value} ] is duplicate with an existing child`,
                     checkValidName: value => {
-                      const found = parentSpec.children?.find(childSpec => {
+                      const found = !parentSpec || parentSpec?.children?.find(childSpec => {
                         if (!childSpec._childNode) {
                           return false
                         } else if (childSpec.name === '*') {
@@ -663,7 +671,7 @@ const PropEditor = (props) => {
                           return true
                         }
                       })
-                      const valid_names = parentSpec.children?.map(childSpec => {
+                      const valid_names = parentSpec?.children?.map(childSpec => {
                         if (!!childSpec._childNode && childSpec.name !== '*') {
                           return childSpec.name
                         }
@@ -672,7 +680,7 @@ const PropEditor = (props) => {
                       return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
                     },
                     checkTypeCompatibility: value => {
-                      const found = parentSpec.children?.find(childSpec => {
+                      const found = parentSpec?.children?.find(childSpec => {
                         if (!childSpec._childNode) {
                           return false
                         } else if (childSpec.name === '*') {
@@ -729,7 +737,7 @@ const PropEditor = (props) => {
                   required: "Type is required",
                   validate: {
                     checkTypeCompatibility: value => {
-                      const found = parentSpec.children?.find(childSpec => {
+                      const found = parentSpec?.children?.find(childSpec => {
                         if (!childSpec._childNode) {
                           return false
                         } else if (childSpec.name === '*') {
@@ -879,7 +887,8 @@ const PropEditor = (props) => {
                     }
                     // for wildecard property
                     if (childSpec.name === '*') {
-                      return thisNode.children
+                      // return thisNode.children
+                      return thisNode?.children
                         .map(childNode => {
                           // const childThisSpec = childSpec._thisNode
                           // console.log(`input/properties #2`, childSpec)

@@ -458,7 +458,7 @@ const SyntaxAddDialog = (props) => {
                     || lookup_child_for_ref(props.addNodeParent, value) === null
                     || `Reference name [ ${value} ] is duplicate with an existing child`,
                   checkValidName: value => {
-                    const found = parentSpec.children?.find(childSpec => {
+                    const found = !parentSpec || parentSpec?.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
                       } else if (childSpec.name === '*') {
@@ -467,7 +467,7 @@ const SyntaxAddDialog = (props) => {
                         return true
                       }
                     })
-                    const valid_names = parentSpec.children?.map(childSpec => {
+                    const valid_names = parentSpec?.children?.map(childSpec => {
                       if (!!childSpec._childNode && childSpec.name !== '*') {
                         return childSpec.name
                       }
