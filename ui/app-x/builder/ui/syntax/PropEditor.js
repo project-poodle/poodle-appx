@@ -23,6 +23,7 @@ import {
 // ant design
 import {
   Tabs,
+  notification,
 } from 'antd'
 const { TabPane } = Tabs;
 import { useForm, FormProvider, Controller } from "react-hook-form"
@@ -53,7 +54,8 @@ import {
 import {
   tree_traverse,
   tree_lookup,
-  lookup_child_for_ref
+  lookup_child_for_ref,
+  remove_child_for_ref,
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   lookup_classes,
@@ -77,6 +79,7 @@ import {
   valid_html_tags,
 } from 'app-x/builder/ui/syntax/util_base'
 
+const THIS_NODE_PROPERTIES = "_"
 let pendingTimer = new Date()
 
 const PropEditor = (props) => {
@@ -345,39 +348,38 @@ const PropEditor = (props) => {
 
   // setValue when thisNode change
   useEffect(() => {
-    if (!!thisNode) {
-      setNodeType(thisNode.data._type)
-      Object.keys(thisNode.data).map(k => {
-        if (!!k) {
-          // console.log(`setValue`, k, thisNode.data[k])
-          setValue(k, thisNode.data[k])
-        }
-      })
-      if (thisNode.data._type === 'react/state') {
-        // console.log(`_customRef`, thisNode, !!thisNode.data._ref && !thisNode.data._ref.startsWith('...'))
-        setValue('_customRef',
-          !!thisNode.data._ref
-          && !thisNode.data._ref.startsWith('...'))
+    if (!!thisNode && !!nodeSpec) {
+      setValue('_ref', thisNode.data._ref)
+      setValue('_type', thisNode.data._type)
+      nodeSpec.children
+        .filter(childSpec => !!childSpec._thisNode)
+        .map(childSpec => {
+          if (childSpec.name === '*') {
+            Object.keys(thisNode.data).map(k => {
+              // console.log(`setValue`, k, thisNode.data[k])
+              setValue(k, thisNode.data[k])
+            })
+          } else {
+            setValue(childSpec.name, thisNode.data[childSpec.name])
+          }
+        })
+      // customization by nodeSpec
+      if (!!nodeSpec._customs) {
+        nodeSpec._customs.map(custom => {
+          setValue(custom.name, thisNode.data[custom.name])
+        })
       }
-      // set properties
-      if
-      (
-        thisNode.data._type === 'js/object'
-        || thisNode.data._type === 'react/element'
-        || thisNode.data._type === 'react/html'
-        || thisNode.data._type === 'react/form'
-        || thisNode.data._type === 'input/text'
-      )
-      {
-        _set_form_props(thisNode, 'props')
-      }
-      // set form properties
-      if
-      (
-        thisNode.data._type === 'react/form'
-      )
-      {
-        _set_form_props(thisNode, 'formProps')
+      // customization by parentSpec
+      if (!!parentSpec) {
+        parentSpec.children
+          .filter(childSpec => !!childSpec._childNode?.customs)
+          .map(childSpec => {
+            if (childSpec.name === thisNode.data._ref) {
+              childSpec._childNode.customs.map(custom => {
+                setValue(custom.name, thisNode.data[custom.name])
+              })
+            }
+          })
       }
       // just loaded, set dirty to false
       setPropBaseDirty(false)
@@ -386,6 +388,8 @@ const PropEditor = (props) => {
   [
     thisNode,
     parentNode,
+    nodeSpec,
+    parentSpec,
   ])
 
   // base submit timer
@@ -403,8 +407,25 @@ const PropEditor = (props) => {
     }, 550)
   }, [baseSubmitTimer])
 
-  // submit base tab
-  function onBaseSubmit(data) {
+  //////////////////////////////////////////////////////////////////////////////
+  // onSubmit
+  const onBaseSubmit = data => {
+    try {
+      // console.log('Base submit data', data)
+      propEditorCallback(data)
+    } catch (err) {
+      console.log(`Editor`, data, err)
+      notification.error({
+        message: `Failed to Edit [ ${nodeType?.replace('/', ' / ')} ]`,
+        description: String(err),
+        placement: 'bottomLeft',
+      })
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // move callback
+  function propEditorCallback(data) {
     const resultTree = _.cloneDeep(treeData)
     const lookupNode = tree_lookup(resultTree, selectedKey)
     if (!lookupNode) {
@@ -413,50 +434,31 @@ const PropEditor = (props) => {
     }
 
     // console.log(data)
-    const preservedRef = lookupNode.data._ref
     lookupNode.data = data
-    if (!!data._ref) {
-      lookupNode.data._ref = data._ref
-    } else if (!!preservedRef) { // preserve lookupNode.data._ref is exist
-      lookupNode.data._ref = preservedRef
-    } else {
-      lookupNode.data._ref = null
-    }
-    // check if lookupNode is react/state, and _customRef is false
-    if (lookupNode.data._type === 'react/state') {
-      if (!data._customRef) {
-        lookupNode.data._ref = `...${lookupNode.data.name}`
-      }
-    }
-    // check if parent is js/switch
-    const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-    if (lookupParent?.data?._type === 'js/switch') {
-      if (!!data.default) {
-        lookupNode.data._ref = 'default'
-      } else {
-        lookupNode.data._ref = null
-        lookupNode.data._condition = data._condition
-      }
-    }
-    // update lookup node title and icon
-    lookupNode.title = lookup_title_for_input(lookupNode.data._ref, data)
-    lookupNode.icon = lookup_icon_for_input(data)
+    lookupNode.data._array = !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === lookupNode.data._ref)?.array
+    lookupNode.title = lookup_title_for_node(lookupNode)
+    lookupNode.icon = lookup_icon_for_node(lookupNode)
     // console.log(lookupNode)
     //////////////////////////////////////////////////////////////////////
-    // handle 'props'
-    if (lookupNode.data._type === 'js/object'
-        || lookupNode.data._type === 'react/element'
-        || lookupNode.data._type === 'react/html'
-        || lookupNode.data._type === 'react/form'
-        || lookupNode.data._type === 'input/text')
-    {
-      _process_props(lookupNode, 'props')
+    // handle nodeSpec.children._childNode.input : 'input/properties'
+    nodeSpec.children
+      .filter(childSpec => childSpec._childNode?.input === 'input/properties')
+      .map(childSpec => {
+        if (childSpec.name === '*') {
+          lookupNode.children.map(childNode => {
+            _process_child_props(childNode, childNode.data._ref, !!childSpec.array)
+          })
+        } else {
+          _process_child_props(lookupNode, childSpec.name, !!childSpec.array)
+        }
+      })
+    //////////////////////////////////////////////////////////////////////
+    // handle nodeSpec._input : 'input/properties'
+    if (nodeSpec._input === 'input/properties') {
+      const parentNode = tree_lookup(resultTree, lookupNode.parentKey)
+      _process_this_props(lookupNode, parentNode)
     }
-    // handle 'formProps'
-    if (lookupNode.data._type === 'react/form')
-    {
-      _process_props(lookupNode, 'formProps')
-    }
+    //////////////////////////////////////////////////////////////////////
     // setTreeData(resultTree)
     updateDesignAction(
       `Update [${lookupNode.title}]`,
@@ -470,98 +472,60 @@ const PropEditor = (props) => {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // private utilities
-  // set form props for refKey
-  function _set_form_props(thisNode, refKey) {
-    // get proper children
-    const children =
-      thisNode.data._type === 'js/object'
-      ? thisNode.children
-      : lookup_child_for_ref(thisNode, refKey)?.children
-    // keep a list of props and other names
-    const props = []
-    const others = []
-    children?.map(child => {
-      if (child.data._type === 'js/null')
-      {
-        props.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: null,
-        })
-      }
-      else if
-      (
-        child.data._type === 'js/string'
-        || child.data._type === 'js/number'
-        || child.data._type === 'js/boolean'
-        || child.data._type === 'js/expression'
-      ) {
-        props.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: child.data.data,
-        })
-      }
-      else if (child.data._type === 'js/import')
-      {
-        props.push({
-          _type: child.data._type,
-          name: child.data._ref,
-          value: child.data.name,
-        })
-      }
-      else
-      {
-        others.push(child.data._ref)
-      }
-    })
-    // console.log(`setProperties`, props, others)
-    setValue(`__${refKey}`, props)
-    setValue(`__${refKey}_otherNames`, others)
-  }
-
-  // process props
-  function _process_props(lookupNode, refKey) {
+  // process child props
+  function _process_child_props(lookupNode, refKey, isArray) {
     // add props child if exist
-    if (lookupNode.data._type !== 'js/object')
-    {
-      const propChild = lookup_child_for_ref(lookupNode, refKey)
-      if (!propChild) {
-        // add props if not exist
-        lookupNode.children.push(
-          generate_tree_node(
-            {},
-            {
-              ref: refKey,
-              parentKey: lookupNode.key,
-              array: !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?.array,
-            },
-            {}
-          )
-        )
-      }
+    // console.log(`_process_child_props`)
+    let childNode = lookup_child_for_ref(lookupNode, refKey)
+    if (!childNode) {
+      // add props if not exist
+      // console.log(`new_tree_node`)
+      childNode = new_tree_node(
+        '',
+        null,
+        {
+          _ref: refKey,
+          _type: 'js/object',
+          _array: isArray,
+        },
+        false,
+        lookupNode.key,
+      )
+      childNode.title = lookup_title_for_node(childNode)
+      childNode.icon = lookup_icon_for_node(childNode)
+      lookupNode.children.push(childNode)
     }
-    // lookup childParent node
-    const childParent =
-      lookupNode.data._type === 'js/object'
-      ? lookupNode
-      : lookup_child_for_ref(lookupNode, refKey)
     // add child properties as proper childNode (replace existing or add new)
-    const properties = _.get(getValues(), `__${refKey}`) || []
+    const properties = _.get(getValues(), refKey) || []
+    // console.log(`properties`, properties)
     // process childParent props
-    // _process_childParent_props(childParent, properties)
+    InputProperties.process(childNode, properties)
     ////////////////////////////////////////
     // if lookupNode is react/element or react/html, remove empty props
-    if (lookupNode.data._type !== 'js/object')
-    {
-      if (!childParent.children.length) {
-        remove_child_for_ref(lookupNode, refKey)
-      }
+    if (!childNode.children.length) {
+      remove_child_for_ref(lookupNode, refKey)
     }
+    // console.log(`childNode`, childNode)
     // reorder children
-    reorder_children(childParent)
+    // reorder_children(childParent)
     reorder_children(lookupNode)
+  }
+  ////////////////////////////////////////////////////////////////////////////////
+  // process this props
+  function _process_this_props(lookupNode, parentNode) {
+    // add props child if exist
+    // add child properties as proper childNode (replace existing or add new)
+    console.log(`getValues`, getValues())
+    const properties = _.get(getValues(), THIS_NODE_PROPERTIES) || []
+    console.log(`properties`, properties)
+    // process childParent props
+    InputProperties.process(lookupNode, properties)
+    ////////////////////////////////////////
+    console.log(`lookupNode`, lookupNode)
+    // reorder_children(childParent)
+    if (!!parentNode) {
+      reorder_children(parentNode)
+    }
   }
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -879,27 +843,20 @@ const PropEditor = (props) => {
               }
               {
                 (
-                  !!thisNode
-                  && !!thisNode.data
-                  &&
-                  (
-                    nodeType === 'js/object'
-                    || nodeType === 'react/element'
-                    || nodeType === 'react/html'
-                    || nodeType === 'react/form'
-                    || nodeType === 'input/text'
-                  )
+                  nodeSpec?._input === 'input/properties'
+                  && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
                 )
                 &&
                 (
                   <Box
                     className={styles.properties}
+                    key={THIS_NODE_PROPERTIES}
                     >
                     <InputProperties
-                      name={`__props`}
-                      label="Properties"
-                      defaultValue={[]}
-                      otherNames={watch(`__props_otherNames`)}
+                      name={THIS_NODE_PROPERTIES}
+                      key={THIS_NODE_PROPERTIES}
+                      label={nodeSpec.desc}
+                      thisNode={thisNode}
                       className={styles.formControl}
                       callback={d => {
                         // console.log(`callback`)
@@ -910,32 +867,66 @@ const PropEditor = (props) => {
                 )
               }
               {
-                (
-                  !!thisNode
-                  && !!thisNode.data
-                  &&
-                  (
-                    nodeType === 'react/form'
-                  )
-                )
-                &&
-                (
-                  <Box
-                    className={styles.properties}
-                    >
-                    <InputProperties
-                      name={`__formProps`}
-                      label="Form Properties"
-                      defaultValue={[]}
-                      otherNames={watch(`__formProps_otherNames`)}
-                      className={styles.formControl}
-                      callback={d => {
-                        // console.log(`callback`)
-                        setBaseSubmitTimer(new Date())
-                      }}
-                    />
-                  </Box>
-                )
+                nodeSpec?.children
+                  .filter(childSpec => childSpec._childNode?.input === 'input/properties')
+                  .map(childSpec => {
+                    // console.log(`input/properties`, childSpec)
+                    if (!!hidden[childSpec.name]) {
+                      return undefined
+                    }
+                    if (!thisNode) {
+                      return undefined
+                    }
+                    // for wildecard property
+                    if (childSpec.name === '*') {
+                      return thisNode.children
+                        .map(childNode => {
+                          // const childThisSpec = childSpec._thisNode
+                          // console.log(`input/properties #2`, childSpec)
+                          return (
+                            <Box
+                              className={styles.properties}
+                              key={childNode.data._ref}
+                              >
+                              <InputProperties
+                                name={childNode.data._ref}
+                                key={childNode.data._ref}
+                                label={`[ ${childNode.data._ref} ]`}
+                                thisNode={childNode}
+                                className={styles.formControl}
+                                callback={d => {
+                                  // console.log(`callback`)
+                                  setBaseSubmitTimer(new Date())
+                                }}
+                              />
+                            </Box>
+                          )
+                        })
+                    } else {
+                      // for specified property
+                      const childNode = lookup_child_for_ref(thisNode, childSpec.name)
+                      return (
+                        <Box
+                          className={styles.properties}
+                          key={childSpec.name}
+                          >
+                          <InputProperties
+                            name={childSpec.name}
+                            key={childSpec.name}
+                            label={childSpec.desc}
+                            thisNode={childNode}
+                            className={styles.formControl}
+                            callback={d => {
+                              // console.log(`callback`)
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        </Box>
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
               }
               </Box>
             </TabPane>

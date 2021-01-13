@@ -11,10 +11,11 @@ export const js_object = {
   classes: [
     'object',
   ],
+  _input: 'input/properties',
   children: [
     {
       name: '*',
-      desc: '`${node.data.name}`',
+      desc: 'Properties',
       optional: true,
       classes: [
         {
@@ -23,7 +24,6 @@ export const js_object = {
       ],
       _childNode: {
         class: 'expression',
-        input: 'input/properties',
       },
     },
   ]

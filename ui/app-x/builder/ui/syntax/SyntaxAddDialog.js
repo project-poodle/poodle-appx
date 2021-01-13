@@ -273,11 +273,11 @@ const SyntaxAddDialog = (props) => {
   // onSubmit
   const onSubmit = data => {
     try {
-      console.log('Add submit data', data)
+      // console.log('Add submit data', data)
       addCallback(data)
       props.setOpen(false)
     } catch (err) {
-      console.log(err)
+      console.log(`Add`, data, err)
       notification.error({
         message: `Failed to Add [ ${nodeType?.replace('/', ' / ')} ]`,
         description: String(err),

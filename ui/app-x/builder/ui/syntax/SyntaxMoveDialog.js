@@ -269,11 +269,11 @@ const SyntaxMoveDialog = (props) => {
   // onSubmit
   const onSubmit = data => {
     try {
-      console.log('Move submit data', data)
+      // console.log('Move submit data', data)
       moveCallback(data)
       props.setOpen(false)
     } catch (err) {
-      console.log(err)
+      console.log(`Move`, data, err)
       notification.error({
         message: `Failed to Move [ ${nodeType?.replace('/', ' / ')} ]`,
         description: String(err),

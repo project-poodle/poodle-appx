@@ -78,6 +78,22 @@ const SyntaxDeleteDialog = (props) => {
     // updateTestAction,
   } = useContext(SyntaxProvider.Context)
 
+  // on submit
+  const onSubmit = node => {
+    try {
+      // console.log('Add submit data', data)
+      deleteCallback(node)
+      props.setOpen(false)
+    } catch (err) {
+      console.log(`Delete`, node, err)
+      notification.error({
+        message: `Failed to Delete [ ${node?.data._type.replace('/', ' / ')} ]`,
+        description: String(err),
+        placement: 'bottomLeft',
+      })
+    }
+  }
+
   // delete callback
   const deleteCallback = (lookupNode) => {
     // actual delete only if confirmed
@@ -160,7 +176,7 @@ const SyntaxDeleteDialog = (props) => {
           onClick={
             e => {
               try {
-                deleteCallback(props.node)
+                onSubmit(props.node)
                 props.setOpen(false)
               } catch (err) {
                 console.log(err)
