@@ -31,7 +31,7 @@ import { parse, parseExpression } from "@babel/parser"
 import * as api from 'app-x/api'
 import Asterisk from 'app-x/icon/Asterisk'
 import TextFieldArray from 'app-x/component/TextFieldArray'
-import PropFieldArray from 'app-x/component/PropFieldArray'
+import InputProperties from 'app-x/component/InputProperties'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
@@ -102,7 +102,7 @@ const PropEditor = (props) => {
     },
     base: {
       width: '100%',
-      height: '100%',
+      // height: '100%',
       padding: theme.spacing(0, 2),
     },
     tabs: {
@@ -535,6 +535,7 @@ const PropEditor = (props) => {
             {
               ref: refKey,
               parentKey: lookupNode.key,
+              array: !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?.array,
             },
             {}
           )
@@ -549,7 +550,7 @@ const PropEditor = (props) => {
     // add child properties as proper childNode (replace existing or add new)
     const properties = _.get(getValues(), `__${refKey}`) || []
     // process childParent props
-    _process_childParent_props(childParent, properties)
+    // _process_childParent_props(childParent, properties)
     ////////////////////////////////////////
     // if lookupNode is react/element or react/html, remove empty props
     if (lookupNode.data._type !== 'js/object')
@@ -636,6 +637,9 @@ const PropEditor = (props) => {
                           childSpec={customField}
                           thisNodeSpec={customField}
                           defaultValue={thisNode?.data[customField.name]}
+                          callback={d => {
+                            setBaseSubmitTimer(new Date())
+                          }}
                         />
                       )
                     }
@@ -662,6 +666,9 @@ const PropEditor = (props) => {
                           childSpec={customField}
                           thisNodeSpec={customField}
                           defaultValue={thisNode?.data[customField.name]}
+                          callback={d => {
+                            setBaseSubmitTimer(new Date())
+                          }}
                         />
                       )
                     }
@@ -738,6 +745,7 @@ const PropEditor = (props) => {
                         setNodeRef(value)
                         trigger('_ref')
                         trigger('_type')
+                        setBaseSubmitTimer(new Date())
                       }}
                       value={innerProps.value}
                       options={parentSpec?.children?.filter(spec => !!spec._childNode?.class).map(child => child.name).filter(name => name !== '*')}
@@ -789,6 +797,7 @@ const PropEditor = (props) => {
                             innerProps.onChange(e)
                             trigger('_ref')
                             trigger('_type')
+                            setBaseSubmitTimer(new Date())
                           }
                         }
                         error={!!errors._type}
@@ -844,6 +853,9 @@ const PropEditor = (props) => {
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
                         thisNodeSpec={childSpec._thisNode}
+                        callback={d => {
+                          setBaseSubmitTimer(new Date())
+                        }}
                       />
                     )
                   } else {
@@ -855,6 +867,9 @@ const PropEditor = (props) => {
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
                         thisNodeSpec={childSpec._thisNode}
+                        callback={d => {
+                          setBaseSubmitTimer(new Date())
+                        }}
                       />
                     )
                   }
@@ -880,7 +895,7 @@ const PropEditor = (props) => {
                   <Box
                     className={styles.properties}
                     >
-                    <PropFieldArray
+                    <InputProperties
                       name={`__props`}
                       label="Properties"
                       defaultValue={[]}
@@ -908,7 +923,7 @@ const PropEditor = (props) => {
                   <Box
                     className={styles.properties}
                     >
-                    <PropFieldArray
+                    <InputProperties
                       name={`__formProps`}
                       label="Form Properties"
                       defaultValue={[]}

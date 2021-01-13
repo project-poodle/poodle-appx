@@ -40,6 +40,12 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
     attachChangeEventListener()
 
     editorDidMount(getValue, _editor)
+    _editor.onDidBlurEditorText(() => {
+      if (!!props.onBlur) props.onBlur(_editor)
+    })
+    _editor.onDidFocusEditorText(() => {
+      if (!!props.onFocus) props.onFocus(_editor)
+    })
   }, [attachChangeEventListener, editorDidMount])
 
   return (
@@ -56,6 +62,8 @@ ControlledEditor.propTypes = {
   value: PropTypes.string,
   editorDidMount: PropTypes.func,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 }
 
 ControlledEditor.defaultProps = {

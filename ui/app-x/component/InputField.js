@@ -59,9 +59,17 @@ const InputField = ((props) => {
       width: '100%',
       padding: theme.spacing(2, 0, 0),
     },
-    editor: {
+    label: {
+      padding: theme.spacing(0, 0, 1),
+    },
+    expressionEditor: {
       width: '100%',
-      height: theme.spacing(8),
+      height: theme.spacing(5),
+      padding: theme.spacing(0),
+    },
+    statementEditor: {
+      width: '100%',
+      height: theme.spacing(7),
       padding: theme.spacing(0),
     },
     dummyTextField: {
@@ -98,6 +106,9 @@ const InputField = ((props) => {
       return []
     }
   })()
+
+  // monaco focused state
+  const [ monacoFocused,  setMonacoFocused  ] = useState(false)
 
   // return
   return (
@@ -202,7 +213,12 @@ const InputField = ((props) => {
                   name={name}
                   disabled={!!props.disabled}
                   checked={innerProps.value}
-                  onChange={e => innerProps.onChange(e.target.checked)}
+                  onChange={e => {
+                    innerProps.onChange(e.target.checked)
+                    if (!!props.callback) {
+                      props.callback(e.target.checked)
+                    }
+                  }}
                 />
                 {
                   !!_.get(errors, name)
@@ -225,6 +241,7 @@ const InputField = ((props) => {
                 className={styles.formControl}
                 error={!!_.get(errors, name)}
                 disabled={!!props.disabled}
+                focused={monacoFocused}
                 >
                 <InputLabel
                   shrink={true}
@@ -233,40 +250,46 @@ const InputField = ((props) => {
                   >
                   {childSpec.desc}
                 </InputLabel>
-                <Box className={styles.editor}>
-                  <ControlledEditor
-                    className={styles.editor}
-                    language="javascript"
-                    options={{
-                      readOnly: !!props.disabled,
-                      // lineNumbers: 'off',
-                      lineNumbersMinChars: 0,
-                      wordWrap: 'on',
-                      wrappingIndent: 'deepIndent',
-                      scrollBeyondLastLine: false,
-                      wrappingStrategy: 'advanced',
-                      glyphMargin: false,
-                      folding: false,
-                      // lineDecorationsWidth: 0,
-                      renderLineHighlight: 'none',
-                      // snippetSuggestions: 'none',
-                      minimap: {
-                        enabled: false
-                      },
-                      quickSuggestions: {
-                        "other": false,
-                        "comments": false,
-                        "strings": false
-                      },
-                    }}
-                    onFocus={e => {console.log(`focus`, e)}}
-                    value={innerProps.value}
-                    onChange={(ev, value) => {
-                      innerProps.onChange(value)
-                    }}
-                    >
-                  </ControlledEditor>
-                </Box>
+                <ControlledEditor
+                  className={
+                    thisNodeSpec.input === 'input/expression'
+                    ? styles.expressionEditor
+                    : styles.statementEditor
+                  }
+                  language="javascript"
+                  options={{
+                    readOnly: !!props.disabled,
+                    // lineNumbers: 'off',
+                    lineNumbersMinChars: 0,
+                    wordWrap: 'on',
+                    wrappingIndent: 'deepIndent',
+                    scrollBeyondLastLine: false,
+                    wrappingStrategy: 'advanced',
+                    glyphMargin: false,
+                    folding: false,
+                    // lineDecorationsWidth: 0,
+                    renderLineHighlight: 'none',
+                    // snippetSuggestions: 'none',
+                    minimap: {
+                      enabled: false
+                    },
+                    quickSuggestions: {
+                      "other": false,
+                      "comments": false,
+                      "strings": false
+                    },
+                  }}
+                  onFocus={() => { setMonacoFocused(true) }}
+                  onBlur={() => { setMonacoFocused(false) }}
+                  value={innerProps.value}
+                  onChange={(ev, value) => {
+                    innerProps.onChange(value)
+                    if (!!props.callback) {
+                      props.callback(value)
+                    }
+                  }}
+                  >
+                </ControlledEditor>
                 <Input
                   // className={`${styles.dummyTextField} Mui-focused`}
                   className={`${styles.dummyTextField}`}
@@ -303,6 +326,7 @@ const InputField = ((props) => {
                   onChange={innerProps.onChange}
                   error={!!_.get(errors, name)}
                   helperText={_.get(errors, name)?.message}
+                  callback={props.callback}
                   />
               </FormControl>
             )
@@ -318,6 +342,7 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   thisNodeSpec: PropTypes.object.isRequired,
+  callback: PropTypes.func,
   defaultValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

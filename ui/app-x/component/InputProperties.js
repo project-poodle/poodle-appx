@@ -37,7 +37,7 @@ import {
 } from 'app-x/builder/ui/syntax/util_base'
 
 // array text field
-const PropFieldArray = props => {
+const InputProperties = props => {
   // make styles
   const styles = makeStyles((theme) => ({
     formControl: {
@@ -91,6 +91,102 @@ const PropFieldArray = props => {
       name: props.name,
     }
   )
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // private utilities
+  // set form props for refKey
+  function _set_props(thisNode, refKey) {
+    // get proper children
+    const children =
+      thisNode.data._type === 'js/object'
+      ? thisNode.children
+      : lookup_child_for_ref(thisNode, refKey)?.children
+    // keep a list of props and other names
+    const props = []
+    const others = []
+    children?.map(child => {
+      if (child.data._type === 'js/null')
+      {
+        props.push({
+          _type: child.data._type,
+          name: child.data._ref,
+          value: null,
+        })
+      }
+      else if
+      (
+        child.data._type === 'js/string'
+        || child.data._type === 'js/number'
+        || child.data._type === 'js/boolean'
+        || child.data._type === 'js/expression'
+      ) {
+        props.push({
+          _type: child.data._type,
+          name: child.data._ref,
+          value: child.data.data,
+        })
+      }
+      else if (child.data._type === 'js/import')
+      {
+        props.push({
+          _type: child.data._type,
+          name: child.data._ref,
+          value: child.data.name,
+        })
+      }
+      else
+      {
+        others.push(child.data._ref)
+      }
+    })
+    // console.log(`setProperties`, props, others)
+    setValue(`__${refKey}`, props)
+    setValue(`__${refKey}_otherNames`, others)
+  }
+
+  // process props
+  function _process_props(lookupNode, refKey) {
+    // add props child if exist
+    if (lookupNode.data._type !== 'js/object')
+    {
+      const propChild = lookup_child_for_ref(lookupNode, refKey)
+      if (!propChild) {
+        // add props if not exist
+        lookupNode.children.push(
+          generate_tree_node(
+            {},
+            {
+              ref: refKey,
+              parentKey: lookupNode.key,
+              array: !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?.array,
+            },
+            {}
+          )
+        )
+      }
+    }
+    // lookup childParent node
+    const childParent =
+      lookupNode.data._type === 'js/object'
+      ? lookupNode
+      : lookup_child_for_ref(lookupNode, refKey)
+    // add child properties as proper childNode (replace existing or add new)
+    const properties = _.get(getValues(), `__${refKey}`) || []
+    // process childParent props
+    // _process_childParent_props(childParent, properties)
+    ////////////////////////////////////////
+    // if lookupNode is react/element or react/html, remove empty props
+    if (lookupNode.data._type !== 'js/object')
+    {
+      if (!childParent.children.length) {
+        remove_child_for_ref(lookupNode, refKey)
+      }
+    }
+    // reorder children
+    reorder_children(childParent)
+    reorder_children(lookupNode)
+  }
+  ////////////////////////////////////////////////////////////////////////////////
 
   return (
     <Box className={props.className}>
@@ -462,18 +558,14 @@ const PropFieldArray = props => {
   )
 }
 
-PropFieldArray.propTypes = {
+InputProperties.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
-  defaultValue: PropTypes.arrayOf(PropTypes.shape({
-    _type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.any.isRequired,
-  })),
+  defaultNode: PropTypes.object,
   options: PropTypes.array,                 // for prop name autocomplete
   otherNames: PropTypes.array,              // other prop names for validation
-  callback: PropTypes.func,
+  callback: PropTypes.func,                 // callback function
   className: PropTypes.string,              // display className for element
 }
 
-export default PropFieldArray
+export default InputProperties

@@ -59,16 +59,22 @@ const InputFieldArray = ((props) => {
     itemControl: {
       width: '100%',
       // margin: theme.spacing(1),
-      padding: theme.spacing(0, 0),
-    },
-    labelControl: {
-      width: '100%',
-      // margin: theme.spacing(1),
-      padding: theme.spacing(2, 0, 0),
+      padding: theme.spacing(0, 0, 0),
     },
     editor: {
+      width: '100%'
+    },
+    label: {
+      padding: theme.spacing(0, 0, 0),
+    },
+    expressionEditor: {
       width: '100%',
-      height: theme.spacing(8),
+      height: theme.spacing(5),
+      padding: theme.spacing(0),
+    },
+    statementEditor: {
+      width: '100%',
+      height: theme.spacing(7),
       padding: theme.spacing(0),
     },
     dummyTextField: {
@@ -121,6 +127,9 @@ const InputFieldArray = ((props) => {
       name: name,
     }
   )
+
+  // monaco focused state
+  const [ monacoFocused,  setMonacoFocused  ] = useState({})
 
   // set default values
   useEffect(() => {
@@ -240,7 +249,12 @@ const InputFieldArray = ((props) => {
                           <Switch
                             name={itemName}
                             checked={innerProps.value}
-                            onChange={e => innerProps.onChange(e.target.checked)}
+                            onChange={e => {
+                              innerProps.onChange(e.target.checked)
+                              if (!!props.callback) {
+                                props.callback(e.target.checked)
+                              }
+                            }}
                           />
                           {
                             !!_.get(errors, itemName)
@@ -256,19 +270,22 @@ const InputFieldArray = ((props) => {
                     (
                       thisNodeSpec.input === 'input/expression'
                       || thisNodeSpec.input === 'input/statement'
-                    ) {
+                    )
+                    {
                       return (
-                        <Box
-                          className={styles.labelControl}
-                          >
-                        <FormControl
-                          name={itemName}
-                          className={styles.itemControl}
-                          error={!!_.get(errors, itemName)}
-                          >
-                          <Box className={styles.editor}>
+                        <Box className={styles.editor}>
+                          <FormControl
+                            name={itemName}
+                            focused={!!monacoFocused[itemName]}
+                            className={styles.itemControl}
+                            error={!!_.get(errors, itemName)}
+                            >
                             <ControlledEditor
-                              className={styles.editor}
+                              className={
+                                thisNodeSpec.input === 'input/expression'
+                                ? styles.expressionEditor
+                                : styles.statementEditor
+                              }
                               language="javascript"
                               options={{
                                 readOnly: !!props.disabled,
@@ -292,32 +309,43 @@ const InputFieldArray = ((props) => {
                                   "strings": false
                                 },
                               }}
-                              onFocus={e => {console.log(`focus`, e)}}
                               value={innerProps.value}
+                              onFocus={() => {
+                                const newMonacoFocused = _.cloneDeep(monacoFocused)
+                                newMonacoFocused[itemName] = true
+                                setMonacoFocused(newMonacoFocused)
+                              }}
+                              onBlur={() => {
+                                const newMonacoFocused = _.cloneDeep(monacoFocused)
+                                newMonacoFocused[itemName] = false
+                                setMonacoFocused(newMonacoFocused)
+                              }}
                               onChange={(ev, value) => {
                                 innerProps.onChange(value)
+                                if (!!props.callback) {
+                                  props.callback(value)
+                                }
                               }}
                               >
                             </ControlledEditor>
-                          </Box>
-                          <Input
-                            // className={`${styles.dummyTextField} Mui-focused`}
-                            className={`${styles.dummyTextField}`}
-                            readOnly={true}
-                            // size="small"
-                            inputProps={{style:{height:0}}}
-                            style={{height:0}}
-                            error={!!_.get(errors, itemName)}
-                            >
-                          </Input>
-                          {
-                            !!_.get(errors, itemName)
-                            &&
-                            <FormHelperText>
-                              {_.get(errors, itemName)?.message}
-                            </FormHelperText>
-                          }
-                        </FormControl>
+                            <Input
+                              // className={`${styles.dummyTextField} Mui-focused`}
+                              className={`${styles.dummyTextField}`}
+                              readOnly={true}
+                              // size="small"
+                              inputProps={{style:{height:0}}}
+                              style={{height:0}}
+                              error={!!_.get(errors, itemName)}
+                              >
+                            </Input>
+                            {
+                              !!_.get(errors, itemName)
+                              &&
+                              <FormHelperText>
+                                {_.get(errors, itemName)?.message}
+                              </FormHelperText>
+                            }
+                          </FormControl>
                         </Box>
                       )
                     } else {
@@ -335,6 +363,7 @@ const InputFieldArray = ((props) => {
                             onChange={innerProps.onChange}
                             error={!!_.get(errors, itemName)}
                             helperText={_.get(errors, itemName)?.message}
+                            callback={props.callback}
                             />
                         </FormControl>
                       )
@@ -350,6 +379,9 @@ const InputFieldArray = ((props) => {
                   size="small"
                   onClick={e => {
                     remove(index)
+                    if (!!props.callback) {
+                      props.callback(null, index)
+                    }
                   }}
                   >
                   <RemoveCircleOutline />
@@ -380,6 +412,7 @@ InputFieldArray.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   thisNodeSpec: PropTypes.object.isRequired,
+  callback: PropTypes.func,
   defaultValue: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

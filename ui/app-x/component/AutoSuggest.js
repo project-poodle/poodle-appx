@@ -58,7 +58,7 @@ const AutoSuggest = (props) => {
       disabled={!!props.disabled}
       onChange={data => {
         props.onChange(data)
-        if (props.callback) {
+        if (!!props.callback) {
           props.callback(data)
         }
       }}
@@ -85,9 +85,9 @@ const AutoSuggest = (props) => {
         size={props.size}
         onChange={e => {
           props.onChange(e.target.value)
-        //  if (props.callback) {
-        //    props.callback(e.target.value)
-        //  }
+          if (!!props.callback) {
+            props.callback(e.target.value)
+          }
         }}
         error={!!_.get(errors, props.name)}
         helperText={_.get(errors, props.name)?.message}

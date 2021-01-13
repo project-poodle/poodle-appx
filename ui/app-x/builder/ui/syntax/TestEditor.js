@@ -38,7 +38,7 @@ import {
 // context provider
 import AutoSuggest from 'app-x/component/AutoSuggest'
 import TextFieldArray from 'app-x/component/TextFieldArray'
-import PropFieldArray from 'app-x/component/PropFieldArray'
+import InputProperties from 'app-x/component/InputProperties'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 // utilities
@@ -388,7 +388,7 @@ const TestEditor = (props) => {
                       </IconButton>
                     </Box>
                     <Box key='props' className={styles.props}>
-                      <PropFieldArray
+                      <InputProperties
                         name={`providers[${index}].props`}
                         label="Properties"
                         defaultValue={item.props}
