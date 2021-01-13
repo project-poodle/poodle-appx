@@ -452,10 +452,10 @@ const PropEditor = (props) => {
       .map(childSpec => {
         if (childSpec.name === '*') {
           lookupNode.children.map(childNode => {
-            _process_child_props(lookupNode, childNode.data._ref, !!childSpec.array)
+            _process_child_props(lookupNode, childNode.data._ref, !!childSpec.array, true)
           })
         } else {
-          _process_child_props(lookupNode, childSpec.name, !!childSpec.array)
+          _process_child_props(lookupNode, childSpec.name, !!childSpec.array, false)
         }
       })
     //////////////////////////////////////////////////////////////////////
@@ -479,7 +479,7 @@ const PropEditor = (props) => {
 
   ////////////////////////////////////////////////////////////////////////////////
   // process child props
-  function _process_child_props(lookupNode, refKey, isArray) {
+  function _process_child_props(lookupNode, refKey, isArray, isWildcard) {
     // add props child if exist
     let childNode = lookup_child_for_ref(lookupNode, refKey)
     // console.log(`_process_child_props`, refKey, childNode)
@@ -510,9 +510,9 @@ const PropEditor = (props) => {
     // console.log(`childNode.children #2`, childNode.children)
     ////////////////////////////////////////
     // if lookupNode is react/element or react/html, remove empty props
-    // if (!childNode.children.length) {
-    //  remove_child_for_ref(lookupNode, refKey)
-    // }
+    if (!isWildcard && !childNode.children.length) {
+      remove_child_for_ref(lookupNode, refKey)
+    }
     // console.log(`childNode`, childNode)
     // reorder children
     // reorder_children(childParent)
