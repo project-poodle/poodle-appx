@@ -9,12 +9,14 @@ const t = require("@babel/types")
 const {
     reg_js_variable,
     reg_js_import,
-    react_element,
-    js_process,
     js_resolve_ids,
     isPrimitive,
     capitalize,
+} = require('./util_base')
+const {
+    js_process,
     react_component,
+    react_element,
 } = require('./util_code')
 const db = require('../db/db')
 
@@ -103,7 +105,7 @@ function handle_appx_route(req, res) {
       reg_js_variable(js_context, ui_test_name)
       // process providers
       let test_element = {
-        type: 'react/element',
+        _type: 'react/element',
         name: ui_route_name,
       }
       if (!!req.context.ui_route_spec._test.providers) {

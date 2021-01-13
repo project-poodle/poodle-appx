@@ -58,7 +58,7 @@ function js_primitive(js_context, input) {
       throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  if (js_context.JSX_CONTEXT) {
+  if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       result
     )
@@ -74,7 +74,7 @@ function js_string(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/string] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (js_context.JSX_CONTEXT) {
+  if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.stringLiteral(String(input.data))
     )
@@ -90,7 +90,7 @@ function js_number(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/number] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (js_context.JSX_CONTEXT) {
+  if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.numericLiteral(Number(input.data))
     )
@@ -106,7 +106,7 @@ function js_boolean(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/boolean] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (js_context.JSX_CONTEXT) {
+  if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.booleanLiteral(Boolean(input.data))
     )
@@ -122,7 +122,7 @@ function js_null(js_context, input) {
     throw new Error(`ERROR: input._type is not [js/null] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (js_context.JSX_CONTEXT) {
+  if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.nullLiteral()
     )
@@ -148,7 +148,7 @@ function js_array(js_context, input) {
     throw new Error(`ERROR: input is not array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  return t.arrayExpression(
+  const arrayExpression = t.arrayExpression(
     input.map((row, index) => {
       return js_process
       (
@@ -165,6 +165,14 @@ function js_array(js_context, input) {
       )
     })
   )
+
+  if (!!js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      arrayExpression
+    )
+  } else {
+    return arrayExpression
+  }
 }
 
 // create object ast
@@ -182,7 +190,7 @@ function js_object(js_context, input) {
     throw new Error(`ERROR: input is array [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  return t.objectExpression(
+  const objectExpression = t.objectExpression(
     Object.keys(input).map(key => {
       const value = input[key]
       if (key.startsWith('...')) {
@@ -197,7 +205,8 @@ function js_object(js_context, input) {
               parentPath:
                 !!js_context.parentPath
                 ? js_context.parentPath
-                : null
+                : null,
+              JSX_CONTEXT: false,
             },
             value
           )
@@ -214,7 +223,8 @@ function js_object(js_context, input) {
               parentPath:
                 !!js_context.parentPath
                 ? t.memberExpression(js_context.parentPath, t.identifier(key))
-                : null
+                : null,
+              JSX_CONTEXT: false,
             },
             value
           )
@@ -222,6 +232,14 @@ function js_object(js_context, input) {
       }
     })
   )
+
+  if (!!js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      objectExpression
+    )
+  } else {
+    return objectExpression
+  }
 }
 
 // create import ast
@@ -434,13 +452,21 @@ function js_function(js_context, input) {
     })
   }
 
-  return t.arrowFunctionExpression(
+  const functionExpression = t.arrowFunctionExpression(
     params,
     t.blockStatement(
       block_statements
     ),
     input.async ? true : false
   )
+
+  if (!!js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      functionExpression
+    )
+  } else {
+    return functionExpression
+  }
 }
 
 // create call ast
@@ -454,7 +480,7 @@ function js_call(js_context, input) {
     throw new Error(`ERROR: input.name missing in [js/call] [${JSON.stringify(input)}]`)
   }
 
-  return t.callExpression(
+  const callExpression = t.callExpression(
     t.identifier(input.name),
     input.params ? input.params.map(
       param => js_process
@@ -469,6 +495,14 @@ function js_call(js_context, input) {
         param))
      : []
   )
+
+  if (!!js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      callExpression
+    )
+  } else {
+    return callExpression
+  }
 }
 
 // create switch ast
@@ -1632,7 +1666,6 @@ function react_effect(js_context, input) {
   )
 }
 
-
 // create mui style ast
 function mui_style(js_context, input) {
 
@@ -1700,14 +1733,14 @@ function appx_api(js_context, input) {
   const method = (() => {
     if (input.method.toLowerCase() === 'get') {
       return 'get'
-    } else if (input.method.toLowerCase() === 'head') {
-      return 'head'
     } else if (input.method.toLowerCase() === 'post') {
       return 'post'
     } else if (input.method.toLowerCase() === 'put') {
       return 'put'
     } else if (input.method.toLowerCase() === 'delete') {
       return 'del'
+    } else if (input.method.toLowerCase() === 'head') {
+      return 'head'
     } else if (input.method.toLowerCase() === 'patch') {
       return 'patch'
     } else {
