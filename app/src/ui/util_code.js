@@ -1359,18 +1359,21 @@ function react_element_props(js_context, props) {
         },
         prop
       )
-      if (t.isJSXExpressionContainer(processed)) {
-        syntax = processed
-      } else {
-        syntax = t.jSXExpressionContainer(processed)
-      }
-      //syntax = processed
+      syntax = processed
     }
     // return
-    return t.jSXAttribute(
-      t.jSXIdentifier(prop_key),
-      syntax
-    )
+    if (prop_key.startsWith('...')) {
+      return t.jSXSpreadAttribute(
+        syntax
+      )
+    } else {
+      return t.jSXAttribute(
+        t.jSXIdentifier(prop_key),
+        (t.isJSXExpressionContainer(syntax))
+          ? syntax
+          : t.jSXExpressionContainer(syntax)
+      )
+    }
   })
 
   return results
