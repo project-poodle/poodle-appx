@@ -12,27 +12,37 @@ export const react_effect = {
 
   type: 'react/effect',
   desc: 'React Effect',
-  classes: [
-    'statement',
-  ],
   children: [
     {
       name: 'body',
       desc: 'Body',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string',
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          },
+        ],
         input: 'input/statement',
       },
       _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
         class: 'statement',
       },
     },
@@ -40,13 +50,14 @@ export const react_effect = {
       name: 'states',
       desc: 'States',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
       },
     },

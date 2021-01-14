@@ -10,37 +10,41 @@ export const js_filter = {
 
   type: 'js/filter',
   desc: 'Filter',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'data',
       desc: 'Data',
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/expression',
       },
       _childNode: {
-        class: 'expression',
+        types: 'inherit',
       },
     },
     {
       name: 'filter',
       desc: 'Filter',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string',
-        }
+          kind: 'class',
+          data: 'string'
+        },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
       },
     },

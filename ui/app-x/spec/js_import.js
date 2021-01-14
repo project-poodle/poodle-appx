@@ -9,21 +9,19 @@ export const js_import = {
 
   type: 'js/import',
   desc: 'Import',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'name',
       desc: 'Import Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         suggestions: 'auto_suggestions.valid_import_names()',
         suggestionsOnly: true,

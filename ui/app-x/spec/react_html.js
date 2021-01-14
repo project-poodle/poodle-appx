@@ -11,23 +11,20 @@ export const react_html = {
 
   type: 'react/html',
   desc: 'HTML Tag',
-  classes: [
-    'jsx',
-    'expression',
-  ],
   _expand: true,
   children: [
     {
       name: 'name',
       desc: 'HTML Tag',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         suggestions: 'auto_suggestions.valid_html_tags()',
         examples: [
@@ -43,19 +40,14 @@ export const react_html = {
     {
       name: 'props',
       desc: 'Properties',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression'
-            }
-          ]
-        }
+          kind: 'class',
+          data: 'object'
+        },
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },
@@ -63,14 +55,14 @@ export const react_html = {
       name: 'children',
       desc: 'Child Elements',
       array: true,
-      classes:
-      [
+      types: [
         {
-          class: 'jsx',
+          kind: 'class',
+          data: 'jsx'
         },
       ],
       _childNode: {
-        class: 'jsx',
+        types: 'inherit',
       },
     },
   ]

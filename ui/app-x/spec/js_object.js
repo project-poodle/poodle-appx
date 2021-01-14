@@ -8,21 +8,19 @@ export const js_object = {
 
   type: 'js/object',
   desc: 'Object',
-  classes: [
-    'object',
-  ],
   _input: 'input/properties',
   children: [
     {
       name: '*',
       desc: 'Properties',
-      classes: [
+      types: [
         {
-          class: 'expression',
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _childNode: {
-        class: 'expression',
+        types: 'inherit',
       },
     },
   ]

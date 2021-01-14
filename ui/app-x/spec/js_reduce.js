@@ -11,37 +11,41 @@ export const js_reduce = {
 
   type: 'js/reduce',
   desc: 'Reduce',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'data',
       desc: 'Data',
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/expression',
       },
       _childNode: {
-        class: 'expression',
+        types: 'inherit'
       },
     },
     {
       name: 'reducer',
       desc: 'Reducer',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string',
-        }
+          kind: 'class',
+          data: 'string'
+        },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
       },
     },
@@ -49,13 +53,14 @@ export const js_reduce = {
       name: 'init',
       desc: 'Initial Value',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string',
-        }
+          kind: 'class',
+          data: 'string'
+        },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
       },
     },

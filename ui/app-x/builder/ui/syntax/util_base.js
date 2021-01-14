@@ -437,41 +437,48 @@ const enrich_primitive_data = (data) => {
   }
 }
 
-// check if data type matches the match spec
-const type_matches_spec = (type, matchSpec) => {
-  // if no class in matchSpec
-  if (!matchSpec?.class) {
-    return false
+// check if data matches the match spec
+const type_matches_spec = (data_type, typeSpec) => {
+  // type spec must be an array
+  if (!Array.isArray(typeSpec)) {
+    throw new Error(`ERROR: type spec is not array`)
   }
-  // check classSpec
-  if (!globalThis.appx?.SPEC?.classes[matchSpec.class]) {
-    return false
-  }
-  // get classSpec
-  const classSpec = globalThis.appx.SPEC.classes[matchSpec.class]
-  if (!classSpec.types.includes(type)) {
-    return false
-  }
-  // check includes flag
-  if (!!matchSpec.includes) {
-    if (!matchSpec.includes.includes(type)) {
-      return false
+  // iterate type spec
+  return !!typeSpec.find(spec => {
+    // if no class in matchSpec
+    if (!spec.kind) {
+      throw new Error(`ERROR: type spec missing [kind]`)
     }
-  }
-  // check excludes flag
-  if (!!matchSpec.excludes) {
-    if (matchSpec.excludes.includes(type)) {
-      return false
+    if (!spec.data) {
+      throw new Error(`ERROR: type spec missing [data]`)
     }
-  }
-  // we have passed all checks
-  return true
+    // check kind
+    switch (spec.kind) {
+      case 'class':
+        // check classSpec
+        if (!globalThis.appx?.SPEC?.classes[spec.data]) {
+          return false
+        }
+        // get classSpec
+        const classSpec = globalThis.appx.SPEC.classes[spec.data]
+        // check that classSpec includes data_type
+        return classSpec.types.includes(data_type)
+      case 'type':
+        // check data_type matches
+        return data_type === spec.data
+      case 'shape':
+        // check data_type is 'js/object'
+        return data_type === 'js/object'
+      default:
+        throw new Error(`ERROR: unrecognized type spec kind [${spec.kind}]`)
+    }
+  })
 }
 
-// check if data type matches the match spec
-const data_matches_spec = (data, matchSpec) => {
+// check if node matches the match spec
+const data_matches_spec = (data, typeSpec) => {
   const data_type = lookup_type_for_data(data)
-  return type_matches_spec(data_type, matchSpec)
+  return type_matches_spec(data_type, typeSpec)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

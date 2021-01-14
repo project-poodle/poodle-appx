@@ -16,21 +16,19 @@ export const appx_api = {
 
   type: 'appx/api',
   desc: 'API',
-  classes: [
-    'statement',
-  ],
   children: [
     {
       name: 'namespace',
       desc: 'Namespace',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
@@ -38,13 +36,14 @@ export const appx_api = {
       name: 'app_name',
       desc: 'App Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode:{
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
@@ -52,13 +51,14 @@ export const appx_api = {
       name: 'method',
       desc: 'Method',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         options: [
           "get",
@@ -74,89 +74,141 @@ export const appx_api = {
       name: 'endpoint',
       desc: 'Endpoint',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
     {
       name: 'data',
       desc: 'Data',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/expression',
       },
       _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'expression'
+          },
+        ],
         class: 'expression',
       },
     },
     {
       name: 'init',
       desc: 'Init Code',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement'
       },
       _childNode: {
-        class: 'statement',
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
       },
     },
     {
       name: 'result',
       desc: 'Result Handler',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement'
       },
       _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
         class: 'statement',
       },
     },
     {
       name: 'error',
       desc: 'Error Handler',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement'
       },
       _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
         class: 'statement',
       },
     },

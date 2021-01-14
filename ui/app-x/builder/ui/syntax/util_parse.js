@@ -163,41 +163,37 @@ function parse_tree_node(tree_context, treeNode) {
         return undefined
       }
       // sanity check
-      if (!childSpec._thisNode.class) {
-        throw new Error(`ERROR: childSpec._thisNode missing [class] [${JSON.stringify(childSpec._thisNode)}]`)
+      if (!childSpec._thisNode.types) {
+        throw new Error(`ERROR: childSpec._thisNode missing [types] [${JSON.stringify(childSpec._thisNode)}]`)
       } else if (!childSpec._thisNode.input) {
         throw new Error(`ERROR: childSpec._thisNode missing [input] [${JSON.stringify(childSpec._thisNode)}]`)
       }
       // get a sane thisNodeSpec
       const thisNodeSpec = childSpec._thisNode
-      // get class spec
-      const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
-      if (!classSpec) {
-        throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
-      }
       // check if data matches spec
       const data_type = lookup_type_for_data(nodeData)
-      if (!type_matches_spec(data_type, thisNodeSpec)) {
-        // console.log(`NO MATCH : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+      const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
+      if (!type_matches_spec(data_type, typeSpec)) {
+        console.log(`NO MATCH : node [${_ref}] data [${nodeData}] not matching [${JSON.stringify(typeSpec)}]`)
         return undefined
       } else {
-        // console.log(`MATCHES : node [${JSON.stringify(node)}] [${_ref}] data [${nodeData}] matching [${JSON.stringify(thisNodeSpec)}]`)
+        console.log(`MATCHES : node [${_ref}] data [${nodeData}] matching [${JSON.stringify(typeSpec)}]`)
       }
       // parse data
       if (!!thisNodeSpec.parse) {
-        return eval(thisNodeSpec.parse)
-      } else if (!!thisNodeSpec.array) {
-        throw new Error(`ERROR: thisNodeSpec [array] missing parse method [${JSON.stringify(thisNodeSpec)}]`)
-      } else if (thisNodeSpec.class === 'string') {
+        const result = eval(thisNodeSpec.parse)
+        // console.log(`parse`, nodeData, result)
+        return result
+      } else if (data_type === 'js/string') {
         return String(nodeData)
-      } else if (thisNodeSpec.class === 'number') {
+      } else if (data_type === 'js/number') {
         return Number(nodeData)
-      } else if (thisNodeSpec.class === 'boolean') {
+      } else if (data_type === 'js/boolean') {
         return Boolean(nodeData)
-      } else if (thisNodeSpec.class === 'null') {
+      } else if (data_type === 'js/null') {
         return null
       } else {
-        throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
       }
     }
 
@@ -211,18 +207,14 @@ function parse_tree_node(tree_context, treeNode) {
       }
 
       // update data if _childNode is defined
-      if (!childSpec?._childNode?.class) {
+      if (!childSpec?._childNode) {
         return undefined
       }
       // look for checkNodeSpec that matches data
       const childNodeSpec = childSpec._childNode
-      // get class spec
-      const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
-      if (!classSpec) {
-        throw new Error(`ERROR: childNodeSpec not found [childNodeSpec.class]`)
-      }
       // check if data matches spec
-      if (!type_matches_spec(node.data._type, childNodeSpec)) {
+      const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
+      if (!type_matches_spec(node.data._type, typeSpec)) {
         // console.log(`parse.childNodeSpec NO MATCH : [${node.data._type}] [${JSON.stringify(nodeData)}] not matching [${JSON.stringify(childNodeSpec)}]`)
         return undefined
       } else {

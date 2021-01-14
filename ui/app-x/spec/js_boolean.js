@@ -9,21 +9,19 @@ export const js_boolean = {
 
   type: 'js/boolean',
   desc: 'Boolean',
-  classes: [
-    'boolean',
-  ],
   children: [
     {
       name: 'data',
       desc: 'Boolean',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'boolean'
+          kind: 'class',
+          data: 'boolean'
         },
       ],
       _thisNode: {
-        class: 'boolean',
+        types: 'inherit',
         input: 'input/switch',
       },
     },

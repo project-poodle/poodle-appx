@@ -70,65 +70,77 @@ const types = [
   if (!item.type) {
     throw new Error(`ERROR: type spec missing [type] [${JSON.stringify(item)}]`)
   }
+  // check desc
+  if (!item.desc) {
+    throw new Error(`ERROR: type spec [${item.type}] missing [desc]`)
+  }
   // check children
-  if (!!item.children) {
-    if (!Array.isArray(item.children)) {
-      throw new Error(`ERROR: type spec children is not an array [${item.type}]`)
+  if (!item.children) {
+    throw new Error(`ERROR: type spec [${item.type}] missing [children]`)
+  }
+  // children array check
+  if (!Array.isArray(item.children)) {
+    throw new Error(`ERROR: type spec children is not an array [${item.type}]`)
+  }
+  // iterate children
+  let wild_card_count = 0
+  let child_array_count = 0
+  let child_count = 0
+  item.children.map(childSpec => {
+    if (!childSpec.name) {
+      throw new Error(`ERROR: type spec [${item.type}] child missing name [${JSON.stringify(childSpec)}]`)
     }
-    let wild_card_count = 0
-    let child_array_count = 0
-    let child_count = 0
-    item.children.map(childSpec => {
-      if (!childSpec.name) {
-        throw new Error(`ERROR: type spec [${item.type}] missing child spec name [${JSON.stringify(childSpec)}]`)
-      }
-      child_count++
-      if (childSpec.name === '*') {
-        wild_card_count++
-      }
-      if (!!childSpec.array && !!childSpec._childNode) {
-        child_array_count++
-      }
-      // check _thisNode
-      if (!!childSpec._thisNode) {
-        if (!childSpec._thisNode.class) {
-          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [class]`)
-        }
-        if (!childSpec._thisNode.input) {
-          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
-        }
-        if (!Object.keys(classes).includes(childSpec._thisNode.class)) {
-          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode invalid class [childSpec._thisNode.class]`)
-        }
-      }
-      // check _childNode
-      if (!!childSpec._childNode) {
-        if (!childSpec._childNode.class) {
-          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [class]`)
-        }
-        if (!Object.keys(classes).includes(childSpec._childNode.class)) {
-          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode invalid class [childSpec._thisNode.class]`)
-        }
-      }
-    })
-    // check wild_card_count
-    if (wild_card_count > 1) {
-      throw new Error(`ERROR: type_spec has more than one child with wildcard name [${item.type}]`)
+    // check desc
+    if (!childSpec.desc) {
+      throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] missing [desc]`)
     }
-    // check array_count
-    if (child_array_count > 1) {
-      throw new Error(`ERROR: type_spec has more than one [array] child node [${item.type}]`)
+    // check types
+    if (!childSpec.types) {
+      throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] missing [types]`)
     }
-    // check no wild_card_count and child_array_count
-    if (wild_card_count + child_array_count > 1) {
-      throw new Error(`ERROR: type_spec has both wildcard and [array] child node [${item.type}]`)
+    // check children
+    child_count++
+    if (childSpec.name === '*') {
+      wild_card_count++
     }
-    // check no other children if wild_card_count exists
-    if (wild_card_count > 0 && child_count > 1) {
-      throw new Error(`ERROR: type_spec has mixed wildcard and non-wildcard children [${item.type}]`)
+    if (!!childSpec.array && !!childSpec._childNode) {
+      child_array_count++
     }
-  } else {
-    item.children = []
+    // at least one of _thisNode or _childNode must exist
+    if (!childSpec._thisNode && !childSpec._childNode) {
+      throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] missing [_thisNode] or [_childNode]`)
+    }
+    // check _thisNode
+    if (!!childSpec._thisNode) {
+      if (!childSpec._thisNode.types) {
+        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [types]`)
+      }
+      if (!childSpec._thisNode.input) {
+        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
+      }
+    }
+    // check _childNode
+    if (!!childSpec._childNode) {
+      if (!childSpec._childNode.types) {
+        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [types]`)
+      }
+    }
+  })
+  // check wild_card_count
+  if (wild_card_count > 1) {
+    throw new Error(`ERROR: type_spec has more than one child with wildcard name [${item.type}]`)
+  }
+  // check array_count
+  if (child_array_count > 1) {
+    throw new Error(`ERROR: type_spec has more than one [array] child node [${item.type}]`)
+  }
+  // check no wild_card_count and child_array_count
+  if (wild_card_count + child_array_count > 1) {
+    throw new Error(`ERROR: type_spec has both wildcard and [array] child node [${item.type}]`)
+  }
+  // check no other children if wild_card_count exists
+  if (wild_card_count > 0 && child_count > 1) {
+    throw new Error(`ERROR: type_spec has mixed wildcard and non-wildcard children [${item.type}]`)
   }
   // we are here if we have passed all validity checks
   return item

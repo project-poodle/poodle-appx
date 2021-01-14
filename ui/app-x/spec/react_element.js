@@ -16,23 +16,20 @@ export const react_element = {
 
   type: 'react/element',
   desc: 'React Element',
-  classes: [
-    'jsx',
-    'expression',
-  ],
   _expand: true,
   children: [
     {
       name: 'name',
       desc: 'Element Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         suggestions: 'auto_suggestions.valid_import_names()',
         suggestionsOnly: true,
@@ -52,19 +49,14 @@ export const react_element = {
     {
       name: 'props',
       desc: 'Properties',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression'
-            }
-          ]
-        }
+          kind: 'class',
+          data: 'object'
+        },
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },
@@ -72,14 +64,14 @@ export const react_element = {
       name: 'children',
       desc: 'Child Elements',
       array: true,
-      classes:
-      [
+      types: [
         {
-          class: 'jsx',
+          kind: 'class',
+          data: 'jsx'
         },
       ],
       _childNode: {
-        class: 'jsx',
+        types: 'inherit',
       },
     },
   ]

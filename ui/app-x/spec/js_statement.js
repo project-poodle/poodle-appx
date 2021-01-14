@@ -9,28 +9,32 @@ export const js_statement = {
 
   type: 'js/statement',
   desc: 'Statement',
-  classes: [
-    'statement',
-  ],
   children: [
     {
       name: 'body',
       desc: 'Body',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement',
       },
       _childNode: {
-        class: 'statement',
+        types: 'inherit',
       },
     },
   ]

@@ -9,21 +9,19 @@ export const js_number = {
 
   type: 'js/number',
   desc: 'Number',
-  classes: [
-    'number',
-  ],
   children: [
     {
       name: 'data',
       desc: 'Number',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'number'
+          kind: 'class',
+          data: 'number',
         },
       ],
       _thisNode: {
-        class: 'number',
+        types: 'inherit',
         input: 'input/number',
       },
     },

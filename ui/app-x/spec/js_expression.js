@@ -9,21 +9,19 @@ export const js_expression = {
 
   type: 'js/expression',
   desc: 'Expression',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'data',
       desc: 'Expression',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
       },
     },

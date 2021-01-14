@@ -8,9 +8,6 @@ export const js_null = {
 
   type: 'js/null',
   desc: 'Null',
-  classes: [
-    'null',
-  ],
   children: []
 }
 

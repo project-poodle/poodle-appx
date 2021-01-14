@@ -9,21 +9,19 @@ export const appx_route = {
 
   type: 'appx/route',
   desc: 'Routes',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'name',
       desc: 'Router Path',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
-        },
+          kind: 'class',
+          data: 'string'
+        }
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },

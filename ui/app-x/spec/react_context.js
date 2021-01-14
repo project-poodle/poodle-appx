@@ -9,22 +9,19 @@ export const react_context = {
 
   type: 'react/context',
   desc: 'React Context',
-  classes: [
-    'expression',
-    'statement',
-  ],
   children: [
     {
       name: 'name',
       desc: 'Context Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         suggestions: 'auto_suggestions.valid_import_names()',
         suggestionsOnly: true,

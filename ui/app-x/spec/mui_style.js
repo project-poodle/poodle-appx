@@ -9,20 +9,18 @@ export const mui_style = {
 
   type: 'mui/style',
   desc: 'MUI Style',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: '*',
-      desc: 'Styles',
-      classes: [
+      desc: 'Style',
+      types: [
         {
-          class: 'object',
+          kind: 'class',
+          data: 'object'
         },
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },

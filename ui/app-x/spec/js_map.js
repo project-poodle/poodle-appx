@@ -10,45 +10,54 @@ export const js_map = {
 
   type: 'js/map',
   desc: 'Map',
-  classes: [
-    'expression',
-    'statement',
-  ],
   _expand: true,
   children: [
     {
       name: 'data',
       desc: 'Data',
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/expression',
       },
       _childNode: {
-        class: 'expression',
+        types: 'inherit',
       },
     },
     {
       name: 'result',
       desc: 'Result',
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
         {
-          class: 'statement'
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/expression',
       },
       _childNode: {
-        class: 'any',
+        types: 'inherit',
       },
     },
   ]

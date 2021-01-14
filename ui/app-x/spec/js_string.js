@@ -9,21 +9,19 @@ export const js_string = {
 
   type: 'js/string',
   desc: 'String',
-  classes: [
-    'string',
-  ],
   children: [
     {
       name: 'data',
       desc: 'String',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },

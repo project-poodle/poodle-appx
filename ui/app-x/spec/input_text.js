@@ -12,86 +12,75 @@ export const input_text = {
 
   type: 'input/text',
   desc: 'Text Input',
-  classes: [
-    'jsx',
-    'expression',
-  ],
   children: [
     {
       name: 'name',
       desc: 'Input Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
     {
       name: 'required',
       desc: 'Required',
-      classes: [
+      types: [
         {
-          class: 'boolean'
+          kind: 'class',
+          data: 'boolean'
         },
       ],
       _thisNode: {
-        class: 'boolean',
+        types: 'inherit',
         input: 'input/switch',
       },
     },
     {
       name: 'array',
       desc: 'Is Array',
-      classes: [
+      types: [
         {
-          class: 'boolean'
+          kind: 'class',
+          data: 'boolean'
         },
       ],
       _thisNode: {
-        class: 'boolean',
+        types: 'inherit',
         input: 'input/switch',
       },
     },
     {
       name: 'props',
       desc: 'Properties',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression',
-            }
-          ]
+          kind: 'class',
+          data: 'object'
         }
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },
     {
       name: 'rules',
       desc: 'Rules',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression',
-            }
-          ]
+          kind: 'type',
+          data: 'input/rule'
         }
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/list',
         inputSpec: {
           columns: [

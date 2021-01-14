@@ -12,17 +12,15 @@ export const js_function = {
 
   type: 'js/function',
   desc: 'Function',
-  classes: [
-    'expression',
-  ],
   children: [
     {
       name: 'params',
       desc: 'Parameters',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       rules: [
@@ -33,7 +31,7 @@ export const js_function = {
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
@@ -41,20 +39,32 @@ export const js_function = {
       name: 'body',
       desc: 'Body',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'string',
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement',
       },
       _childNode: {
-        class: 'statement',
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
       },
     },
   ]

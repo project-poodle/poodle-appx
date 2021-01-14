@@ -12,53 +12,45 @@ export const js_switch = {
 
   type: 'js/switch',
   desc: 'Switch',
-  classes: [
-    'expression',
-    'statement',
-  ],
   _expand: true,
   children: [
     {
       name: 'children',
       desc: 'Conditional',
       array: true,
-      classes: [
+      types: [
         {
-          class: 'object',
-          shape: [
-            {
-              name: 'condition',
+          kind: 'shape',
+          data: {
+            condition: {
               desc: 'Condition',
-              classes: [
+              required: true,
+              types: [
                 {
-                  class: 'expression'
+                  kind: 'class',
+                  data: 'expression'
                 }
               ],
-              rules: [
-                {
-                  kind: 'required',
-                  data: true,
-                  message: 'Condition is required'
-                },
-              ],
             },
-            {
-              name: 'result',
+            result: {
               desc: 'Result',
-              classes: [
+              required: true,
+              types: [
                 {
-                  class: 'expression'
+                  kind: 'class',
+                  data: 'expression'
                 },
                 {
-                  class: 'statement'
+                  kind: 'class',
+                  data: 'statement'
                 },
               ],
-            },
-          ]
+            }
+          }
         }
       ],
       _childNode: {
-        class: 'any',
+        types: 'inherit',
         generate: ' \
           (() => { \
             const node = generate(data.result); \
@@ -78,12 +70,14 @@ export const js_switch = {
             name: '_isDefault',
             desc: 'Is Default',
             class: 'boolean',
+            required: true,
             input: 'input/switch',
           },
           {
             name: '_condition',
             desc: 'Condition',
             class: 'string',
+            required: true,
             input: 'input/expression',
           },
         ],
@@ -102,16 +96,18 @@ export const js_switch = {
     {
       name: 'default',
       desc: 'Default',
-      classes: [
+      types: [
         {
-          class: 'expression'
+          kind: 'class',
+          data: 'expression'
         },
         {
-          class: 'statement'
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _childNode: {
-        class: 'any',
+        types: 'inherit',
         generate: ' \
           (() => { \
             const node = generate(data); \

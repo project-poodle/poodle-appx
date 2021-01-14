@@ -14,19 +14,16 @@ export const react_form = {
 
   type: 'react/form',
   desc: 'React Form',
-  classes: [
-    'jsx',
-    'expression',
-  ],
   _expand: true,
   children: [
     {
       name: 'name',
       desc: 'Form Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       rules: [
@@ -37,83 +34,98 @@ export const react_form = {
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
       },
     },
     {
       name: 'onSubmit',
       desc: 'onSubmit',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement',
       },
       _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
         class: 'statement',
       },
     },
     {
       name: 'onError',
       desc: 'onError',
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
         {
-          class: 'statement',
+          kind: 'class',
+          data: 'statement'
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
         input: 'input/statement',
       },
       _childNode: {
-        class: 'statement',
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
       },
     },
     {
       name: 'props',
       desc: 'Properties',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression',
-            }
-          ]
-        }
+          kind: 'class',
+          data: 'object'
+        },
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },
     {
       name: 'formProps',
       desc: 'Form Properties',
-      classes: [
+      types: [
         {
-          class: 'object',
-          classes: [
-            {
-              name: '*',
-              class: 'expression',
-            }
-          ]
-        }
+          kind: 'class',
+          data: 'object'
+        },
       ],
       _childNode: {
-        class: 'object',
+        types: 'inherit',
         input: 'input/properties',
       },
     },
@@ -121,14 +133,14 @@ export const react_form = {
       name: 'children',
       desc: 'Child Elements',
       array: true,
-      classes:
-      [
+      types: [
         {
-          class: 'jsx',
+          kind: 'class',
+          data: 'jsx'
         },
       ],
       _childNode: {
-        class: 'jsx',
+        types: 'inherit',
       },
     },
   ]

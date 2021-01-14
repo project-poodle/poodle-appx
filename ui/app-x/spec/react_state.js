@@ -11,10 +11,6 @@ export const react_state = {
 
   type: 'react/state',
   desc: 'React State',
-  classes: [
-    'expression',
-    'statement',
-  ],
   _customs: [
     {
       name: '_customRef',
@@ -33,9 +29,10 @@ export const react_state = {
       name: 'name',
       desc: 'Name',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
+          kind: 'class',
+          data: 'string'
         },
       ],
       rules: [
@@ -46,7 +43,7 @@ export const react_state = {
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         examples: [
           'open',
@@ -62,10 +59,11 @@ export const react_state = {
       name: 'setter',
       desc: 'Setter',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
-        }
+          kind: 'class',
+          data: 'string'
+        },
       ],
       rules: [
         {
@@ -75,7 +73,7 @@ export const react_state = {
         },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/text',
         examples: [
           'setOpen',
@@ -91,13 +89,14 @@ export const react_state = {
       name: 'init',
       desc: 'Init Value',
       required: true,
-      classes: [
+      types: [
         {
-          class: 'string'
-        }
+          kind: 'class',
+          data: 'string'
+        },
       ],
       _thisNode: {
-        class: 'string',
+        types: 'inherit',
         input: 'input/expression',
         examples: [
           null,

@@ -598,19 +598,15 @@ function generate_tree_node(js_context, conf, input) {
     // function to process _thisNode spec
     function _process_this(_ref, data) {
       // look for thisNodeSpec that matches data
-      if (!childSpec?._thisNode?.class) {
+      if (!childSpec?._thisNode) {
         return undefined
       }
       // thisNodeSpec
       const thisNodeSpec = childSpec._thisNode
-      // get class spec
-      const classSpec = globalThis.appx.SPEC.classes[thisNodeSpec.class]
-      if (!classSpec) {
-        throw new Error(`ERROR: classSpec not found [${thisNodeSpec.class}]`)
-      }
-      // check if data matches spec
+      // check if data matches type spec
       const data_type = lookup_type_for_data(data)
-      if (!type_matches_spec(data_type, thisNodeSpec)) {
+      const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
+      if (!type_matches_spec(data_type, typeSpec)) {
         // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
         return undefined
       } else {
@@ -621,48 +617,31 @@ function generate_tree_node(js_context, conf, input) {
         const result = eval(thisNodeSpec.generate)
         // console.log(`genrate`, data, result)
         return result
-      } else if (thisNodeSpec.class === 'string') {
-        if (isPrimitive(data)) {
-          return String(data)
-        } else if (data._type === 'js/expression') {
-          return data.data
-        } else if (data._type === 'js/import') {
-          return data.name
-        } else if (data._type === 'js/statement') {
-          if (isPrimitive(data.body)) {
-            return data.body
-          } else {
-            return undefined
-          }
-        } else {
-          throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
-        }
-      } else if (thisNodeSpec.class === 'number') {
+      } else if (data_type === 'js/string') {
+        return isPrimitive(data) ? String(data) : String(data.data)
+      } else if (data_type === 'js/number') {
         return isPrimitive(data) ? Number(data) : Number(data.data)
-      } else if (thisNodeSpec.class === 'boolean') {
+      } else if (data_type === 'js/boolean') {
         return isPrimitive(data) ? Boolean(data) : Boolean(data.data)
-      } else if (thisNodeSpec.class === 'null') {
+      } else if (data_type === 'js/null') {
         return null
       } else {
-        throw new Error(`ERROR: thisNodeSpec [${thisNodeSpec.class}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
       }
     }
 
     // function to process _childNode spec
     function _process_child(_ref, data, array) {
       // look for checkNodeSpec that matches data
-      if (!childSpec?._childNode?.class) {
+      if (!childSpec?._childNode) {
         return undefined
       }
       // get class spec
       const childNodeSpec = childSpec._childNode
-      const classSpec = globalThis.appx.SPEC.classes[childNodeSpec.class]
-      if (!classSpec) {
-        throw new Error(`ERROR: classSpec not found [childNodeSpec.class]`)
-      }
       // check if data matches spec
       const data_type = lookup_type_for_data(data)
-      if (!type_matches_spec(data_type, childNodeSpec)) {
+      const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
+      if (!type_matches_spec(data_type, typeSpec)) {
         // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
         return undefined
       } else {

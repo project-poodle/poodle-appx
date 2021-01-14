@@ -744,7 +744,7 @@ const PropEditor = (props) => {
                         setBaseSubmitTimer(new Date())
                       }}
                       value={innerProps.value}
-                      options={parentSpec?.children?.filter(spec => !!spec._childNode?.class).map(child => child.name).filter(name => name !== '*')}
+                      options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
                       size="small"
                       error={!!errors._ref}
                       size="small"
@@ -833,7 +833,7 @@ const PropEditor = (props) => {
               />
               {
                 nodeSpec?.children?.map(childSpec => {
-                  if (!childSpec._thisNode?.class) {
+                  if (!childSpec._thisNode) {
                     return undefined
                   }
                   if (!!hidden[childSpec.name]) {
