@@ -1,6 +1,6 @@
 // this file is the spec of APP-X UI builder language
 
-import classes from 'app-x/spec/classes.js'
+import { REGEX_VAR, classes } from 'app-x/spec/classes.js'
 // react constructs
 import react_element from 'app-x/spec/react_element.js'
 import react_html from 'app-x/spec/react_html.js'
@@ -31,6 +31,73 @@ import js_filter from 'app-x/spec/js_filter.js'
 import mui_style from 'app-x/spec/mui_style.js'
 import appx_api from 'app-x/spec/appx_api.js'
 import appx_route from 'app-x/spec/appx_route.js'
+
+// check type spec
+function check_type_spec(typeSpec) {
+  // basic checks
+  if (typeof typeSpec === 'string') {
+    if (typeSpec === 'inherit') {
+      return true
+    } else {
+      throw new Error(`ERROR: unrecognized type spec [${typeSpec}]`)
+    }
+  } else if (!Array.isArray(typeSpec)) {
+    throw new Error(`ERROR: type spec is not [inherit] or Array [${JSON.stringify(typeSpec)}]`)
+  // } else {
+  //  throw new Error(`ERROR: unrecognized type spec [${JSON.stringify(typeSpec)}]`)
+  }
+  // iterate type spec array
+  typeSpec.map(spec => {
+    if (typeof spec !== 'object' || !spec) {
+      throw new Error(`ERROR: unrecognized type spec [${JSON.stringify(spec)}]`)
+    }
+    if (!spec.kind) {
+      throw new Error(`ERROR: type spec missing [kind] [${JSON.stringify(spec)}]`)
+    }
+    if (!spec.data) {
+      throw new Error(`ERROR: type spec missing [data] [${JSON.stringify(spec)}]`)
+    }
+    // check kind
+    switch (spec.kind) {
+      case 'class':
+        // check class name is valid
+        if (!classes[spec.data]) {
+          throw new Error(`ERROR: unrecognized type spec [class] [${spec.data}]`)
+        }
+        break
+      case 'type':
+        // check spec.data is string
+        if (typeof spec.data !== 'string') {
+          throw new Error(`ERROR: unrecognized type spec [type] [${spec.data}]`)
+        }
+        break
+      case 'shape':
+        // check spec.data is object
+        if (typeof spec.data !== 'object' || !spec.data) {
+          throw new Error(`ERROR: unrecognized type spec [shape] [${spec.data}]`)
+        }
+        // iterate all types in shape data
+        Object.keys(spec.data).map(shapeKey => {
+          if (!shapeKey.match(REGEX_VAR)) {
+            throw new Error(`ERROR: shape key is not a valid name [${shapeKey}]`)
+          }
+          const shapeSpec = spec.data[shapeKey]
+          if (!shapeSpec.desc) {
+            throw new Error(`ERROR: shape spec missing [desc] [${JSON.stringify(shapeSpec)}]`)
+          }
+          if (!shapeSpec.types) {
+            throw new Error(`ERROR: shape spec missing [types] [${JSON.stringify(shapeSpec)}]`)
+          }
+          check_type_spec(shapeSpec.types)
+        })
+        break
+      default:
+        throw new Error(`ERROR: unrecognized type spec [kind] [${spec.kind}]`)
+    }
+  })
+  // we are here if all checks passed
+  return true
+}
 
 const types = [
   // react constructs
@@ -97,6 +164,8 @@ const types = [
     // check types
     if (!childSpec.types) {
       throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] missing [types]`)
+    } else {
+      check_type_spec(childSpec.types)
     }
     // check children
     child_count++
@@ -114,6 +183,8 @@ const types = [
     if (!!childSpec._thisNode) {
       if (!childSpec._thisNode.types) {
         throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [types]`)
+      } else {
+        check_type_spec(childSpec._thisNode.types)
       }
       if (!childSpec._thisNode.input) {
         throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
@@ -123,6 +194,8 @@ const types = [
     if (!!childSpec._childNode) {
       if (!childSpec._childNode.types) {
         throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [types]`)
+      } else {
+        check_type_spec(childSpec._childNode.types)
       }
     }
   })

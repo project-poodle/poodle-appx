@@ -470,7 +470,7 @@ const type_matches_spec = (data_type, typeSpec) => {
         // check data_type is 'js/object'
         return data_type === 'js/object'
       default:
-        throw new Error(`ERROR: unrecognized type spec kind [${spec.kind}]`)
+        throw new Error(`ERROR: unrecognized type spec [kind] [${spec.kind}]`)
     }
   })
 }
