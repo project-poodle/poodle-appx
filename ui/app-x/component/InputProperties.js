@@ -540,7 +540,7 @@ function parse_node(thisNode) {
       others.push(child.data._ref)
     }
   })
-  console.log(`parseProperties`, properties, others)
+  // console.log(`parseProperties`, properties, others)
   // console.trace()
   // setValue(name, properties)
   // setOtherNames(others)
