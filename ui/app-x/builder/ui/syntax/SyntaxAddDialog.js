@@ -72,6 +72,7 @@ import {
   lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
+  REGEX_VAR,
   lookup_classes,
   lookup_groups,
   lookup_types,
@@ -207,15 +208,19 @@ const SyntaxAddDialog = (props) => {
   useEffect(() => {
     if (!!parentSpec) {
       // parentSpec effects
-      const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
-      if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
-        childSpec._childNode.effects.map(effect => eval(effect))
+      const childSpec = parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
+      if (!!childSpec?._childNode?.effects && !!childSpec._childNode.effects.context && !!childSpec._childNode.effects.data) {
+        if (childSpec._childNode.effects.context.includes('add')) {
+          childSpec._childNode.effects.data.map(effect => eval(effect))
+        }
         // console.log(`watch here`, watchData, new Date())
       }
     }
     // nodeSpec effects
-    if (!!nodeSpec && !!nodeSpec._effects) {
-      nodeSpec._effects.map(effect => eval(effect))
+    if (!!nodeSpec?._effects && !!nodeSpec._effects.context && !!nodeSpec._effects.data) {
+      if (nodeSpec._effects.context.includes('add')) {
+        nodeSpec._effects.data.map(effect => eval(effect))
+      }
     }
   }, [watchData])
 
@@ -243,11 +248,13 @@ const SyntaxAddDialog = (props) => {
   // nodeType
   useEffect(() => {
     setNodeType(props.addNodeType)
+    setValue("_type", props.addNodeType)
   }, [props.addNodeType])
 
   // nodeRef
   useEffect(() => {
     setNodeRef(props.addNodeRef)
+    setValue("_ref", props.addNodeRef)
   }, [props.addNodeRef])
 
   // nodeSpec
@@ -299,7 +306,7 @@ const SyntaxAddDialog = (props) => {
     let parentKey = lookupParent?.key || null
     // console.log(`nodeData`, nodeData)
     // create new node
-    const is_array = !!parentSpec.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
+    const is_array = !!parentSpec?.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
     const new_node = new_tree_node(
       lookup_title_for_input(nodeData._ref, nodeData, is_array),
       lookup_icon_for_input(nodeData),
@@ -395,23 +402,25 @@ const SyntaxAddDialog = (props) => {
             >
             {
               !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)
-              && !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?._childNode?.customs
+              && !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?._childNode?.customs
               &&
               (
                 // add custom fields from parentSpec if mandated by parent
-                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs.map(customField => {
+                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs
+                  .filter(custom => custom.context?.includes('add'))
+                  .map(custom => {
                   // console.log(`parentSpec - customField`, customField)
-                  if (!!hidden[customField.name]) {
+                  if (!!hidden[custom.name]) {
                     return undefined
                   } else {
                     return (
                       <InputField
-                        key={customField.name}
-                        name={customField.name}
-                        disabled={!!disabled[customField.name]}
-                        childSpec={customField}
-                        thisNodeSpec={customField}
-                        defaultValue={!!customField.defaultValue ? eval(customField.defaultValue) : ''}
+                        key={custom.name}
+                        name={custom.name}
+                        disabled={!!disabled[custom.name]}
+                        childSpec={custom}
+                        thisNodeSpec={custom}
+                        defaultValue={!!custom.defaultValue ? eval(custom.defaultValue) : ''}
                       />
                     )
                   }
@@ -425,25 +434,27 @@ const SyntaxAddDialog = (props) => {
               &&
               (
                 // add custom fields from parentSpec if mandated by parent
-                nodeSpec._customs.map(customField => {
-                  // console.log(`nodeSpec - customField`, customField)
-                  if (!!hidden[customField.name]) {
-                    return undefined
-                  } else {
-                    return (
-                      <InputField
-                        key={customField.name}
-                        name={customField.name}
-                        disabled={!!disabled[customField.name]}
-                        childSpec={customField}
-                        thisNodeSpec={customField}
-                        defaultValue={!!customField.defaultValue ? eval(customField.defaultValue) : ''}
-                      />
-                    )
-                  }
-                })
-                .filter(child => !!child)
-                .flat(2)
+                nodeSpec._customs
+                  .filter(custom => custom.context?.includes('add'))
+                  .map(custom => {
+                    // console.log(`nodeSpec - customField`, customField)
+                    if (!!hidden[custom.name]) {
+                      return undefined
+                    } else {
+                      return (
+                        <InputField
+                          key={custom.name}
+                          name={custom.name}
+                          disabled={!!disabled[custom.name]}
+                          childSpec={custom}
+                          thisNodeSpec={custom}
+                          defaultValue={!!custom.defaultValue ? eval(custom.defaultValue) : ''}
+                        />
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
               )
             }
             <Controller
@@ -454,10 +465,20 @@ const SyntaxAddDialog = (props) => {
                 required: "Reference name is required",
                 validate: {
                   checkDuplicate: value =>
-                    !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
+                    props.addNodeParent?.key === '/'
+                    || !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
                     || lookup_child_for_ref(props.addNodeParent, value) === null
                     || `Reference name [ ${value} ] is duplicate with an existing child`,
+                  checkRootDuplicate: value =>
+                    props.addNodeParent?.key !== '/'
+                    || !treeData.find(child => child.data._ref === value)
+                    || `Reference name [ ${value} ] is duplicate with an existing child`,
                   checkValidName: value => {
+                    if (props.addNodeParent?.key === '/') {
+                      return value.startsWith('...')
+                        || value.match(REGEX_VAR)
+                        || `Reference name must be a valid variable name`
+                    }
                     const found = !parentSpec || parentSpec?.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -476,6 +497,9 @@ const SyntaxAddDialog = (props) => {
                     return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
                   },
                   checkTypeCompatibility: value => {
+                    if (props.addNodeParent?.key === '/') {
+                      return true
+                    }
                     const found = parentSpec.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -510,7 +534,7 @@ const SyntaxAddDialog = (props) => {
                       trigger('_type')
                     }}
                     value={innerProps.value}
-                    options={parentSpec.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
+                    options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
                     size="small"
                     error={!!errors._ref}
                     size="small"
@@ -527,6 +551,9 @@ const SyntaxAddDialog = (props) => {
                 required: "Type is required",
                 validate: {
                   checkTypeCompatibility: value => {
+                    if (props.addNodeParent?.key === '/') {
+                      return true
+                    }
                     const found = parentSpec.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -567,7 +594,10 @@ const SyntaxAddDialog = (props) => {
                       >
                       {
                         lookup_groups().map(group => {
-                          const supported_types = lookup_accepted_types_for_node(props.addNodeParent)
+                          const supported_types =
+                            props.addNodeParent?.key === '/'
+                            ? lookup_types()
+                            : lookup_accepted_types_for_node(props.addNodeParent)
                           return lookup_types_for_group(group)
                             .map(type => {
                               if (!supported_types.includes(type)) {

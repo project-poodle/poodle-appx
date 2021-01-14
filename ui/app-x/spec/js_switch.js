@@ -20,34 +20,13 @@ export const js_switch = {
       array: true,
       types: [
         {
-          kind: 'shape',
-          data: {
-            condition: {
-              desc: 'Condition',
-              required: true,
-              types: [
-                {
-                  kind: 'class',
-                  data: 'expression'
-                }
-              ],
-            },
-            result: {
-              desc: 'Result',
-              required: true,
-              types: [
-                {
-                  kind: 'class',
-                  data: 'expression'
-                },
-                {
-                  kind: 'class',
-                  data: 'statement'
-                },
-              ],
-            }
-          }
-        }
+          kind: 'class',
+          data: 'expression'
+        },
+        {
+          kind: 'class',
+          data: 'statement'
+        },
       ],
       _childNode: {
         types: 'inherit',
@@ -72,6 +51,7 @@ export const js_switch = {
             class: 'boolean',
             required: true,
             input: 'input/switch',
+            context: [ 'add', 'move', 'editor' ],
           },
           {
             name: '_condition',
@@ -79,18 +59,22 @@ export const js_switch = {
             class: 'string',
             required: true,
             input: 'input/expression',
+            context: [ 'add', 'move', 'editor' ],
           },
         ],
-        effects: [
-          '(() => { \
-            const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
-            states.setRef(refTarget); \
-          })()',
-          '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
-          '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
-          '(() => { states.setDisabled("_ref", true) })()',
-          '(() => { form.trigger("_ref") })()',
-        ]
+        effects: {
+          context: [ 'add', 'move', 'editor' ],
+          data: [
+            '(() => { \
+              const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+              states.setRef(refTarget); \
+            })()',
+            '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+            '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+            '(() => { states.setDisabled("_ref", true) })()',
+            '(() => { form.trigger("_ref") })()',
+          ]
+        }
       },
     },
     {
@@ -123,24 +107,29 @@ export const js_switch = {
             desc: 'Is Default',
             class: 'boolean',
             input: 'input/switch',
+            context: [ 'add', 'move', 'editor' ],
           },
           {
             name: '_condition',
             desc: 'Condition',
             class: 'string',
             input: 'input/expression',
+            context: [ 'add', 'move', 'editor' ],
           },
         ],
-        effects: [
-          '(() => { \
-            const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
-            states.setRef(refTarget); \
-          })()',
-          '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
-          '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
-          '(() => { states.setDisabled("_ref", true) })()',
-          '(() => { form.trigger("_ref") })()',
-        ]
+        effects: {
+          context: [ 'add', 'move', 'editor' ],
+          data: [
+            '(() => { \
+              const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+              states.setRef(refTarget); \
+            })()',
+            '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+            '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+            '(() => { states.setDisabled("_ref", true) })()',
+            '(() => { form.trigger("_ref") })()',
+          ]
+        }
       },
     },
   ],

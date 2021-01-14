@@ -397,6 +397,9 @@ function lookup_title_for_input(ref, input, array=false) {
 // reorder children
 const reorder_children = (parentNode) => {
 
+  if (parentNode.key === '/') {
+    return // ignore root node
+  }
   // console.log(`reorder_children - enter`, parentNode.children)
 
   const spec = globalThis.appx.SPEC.types[parentNode.data._type]
@@ -462,7 +465,7 @@ function new_root_node() {
     },
     isLeaf: true,
     parentKey: null,
-    children: null,
+    children: [],
   }
 }
 

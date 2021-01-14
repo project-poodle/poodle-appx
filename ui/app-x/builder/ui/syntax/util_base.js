@@ -53,6 +53,7 @@ import Pointer from 'app-x/icon/Pointer'
 
 const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
+const REGEX_VAR = /^[_a-zA-Z][_a-zA-Z0-9]*$/
 
 ////////////////////////////////////////////////////////////////////////////////
 /*
@@ -726,6 +727,7 @@ const auto_suggestions = {
 export {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
+  REGEX_VAR,
   isPrimitive,
   parse_var_full_path,
   // lookup

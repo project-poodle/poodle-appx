@@ -112,15 +112,13 @@ const SyntaxMenu = (props) => {
       const type_spec = globalThis.appx.SPEC.types[lookupNode.data._type] || null
       setParentSpec(type_spec)
     }
-  }, [selectedKey])
+  }, [treeData, selectedKey])
 
   // create menu items
-  function create_menu_items(spec) {
-      if (!spec._childNode) {
-        return
-      }
-      const typeSpec = spec._childNode.types === 'inherit' ? spec.types : spec._childNode.types
-      const valid_types = lookup_types_for_spec(typeSpec)
+  function create_menu_items(name, valid_types) {
+      // if (!spec._childNode) {
+      //  return
+      //}
       // console.log(`valid_types`, valid_types)
       const groups = lookup_groups()
       return groups.map(group => {
@@ -135,7 +133,7 @@ const SyntaxMenu = (props) => {
                   key={group_type}
                   onClick={
                     () => props.addMenuClicked({
-                      nodeRef: spec.name,
+                      nodeRef: name,
                       nodeKey: parentNode.key,
                       nodeType: group_type,
                     })
@@ -216,7 +214,10 @@ const SyntaxMenu = (props) => {
                       parentMenuOpen={!!props.contextAnchorEl}
                       >
                       {
-                        create_menu_items(spec)
+                        create_menu_items(
+                          spec.name,
+                          lookup_types_for_spec(spec._childNode.types === 'inherit' ? spec.types : spec._childNode.types)
+                        )
                       }
                     </NestedMenuItem>
                   )
@@ -245,8 +246,28 @@ const SyntaxMenu = (props) => {
                 .children
                 ?.filter(spec => (spec.name === '*' || !!spec.array) && !!spec._childNode)
                 .map(spec => (
-                  create_menu_items(spec)
+                  create_menu_items(
+                    spec.name,
+                    lookup_types_for_spec(spec._childNode.types === 'inherit' ? spec.types : spec._childNode.types)
+                  )
                 ))
+                .flat(2)
+                .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
+                .map(item => {
+                  // console.log(`item`, item)
+                  return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item
+                })
+            }
+          </Box>
+        )
+      }
+      {
+        (parentNode?.key === '/')
+        &&
+        (
+          <Box>
+            {
+                create_menu_items('*', lookup_types())
                 .flat(2)
                 .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
                 .map(item => {
@@ -260,7 +281,6 @@ const SyntaxMenu = (props) => {
       {
         // delete menu
         !!parentNode
-        && !!parentSpec
         &&
         !(
           (parentNode?.key === '/')

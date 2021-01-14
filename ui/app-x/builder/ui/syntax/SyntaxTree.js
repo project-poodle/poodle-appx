@@ -657,14 +657,23 @@ const SyntaxTree = (props) => {
         const parentNode = tree_lookup(treeData, key[0])
         if (!!parentNode) {
           // add dialog
-          // console.log('here2', selectedTool, parentNode)
-          const childSpec = lookup_first_accepted_childSpec(parentNode, selectedTool)
-          if (!!childSpec) {
+          // console.log(`onSelect`, parentNode)
+          if (parentNode.key === '/') {
             // open add dialog
             setAddNodeParent(parentNode)
-            setAddNodeRef(childSpec.name)
+            setAddNodeRef('')
             setAddNodeType(selectedTool)
             setAddDialogOpen(true)
+          } else {
+            // console.log('here2', selectedTool, parentNode)
+            const childSpec = lookup_first_accepted_childSpec(parentNode, selectedTool)
+            if (!!childSpec) {
+              // open add dialog
+              setAddNodeParent(parentNode)
+              setAddNodeRef(childSpec.name)
+              setAddNodeType(selectedTool)
+              setAddDialogOpen(true)
+            }
           }
           // if not found, just ignore
         }
@@ -695,9 +704,15 @@ const SyntaxTree = (props) => {
   // drop
   const onDrop = info => {
     // console.log(info)
-    const dropKey = info.node.props.eventKey
-    const dragKey = info.dragNode.props.eventKey
-    const dropPosition = info.dropPosition
+    // const dropKey = info.node.props.eventKey
+    const dropKey = info.node.key
+    // const dragKey = info.dragNode.props.eventKey
+    const dragKey = info.dragNode.key
+    // const dropPosition = info.dropPosition
+    const dropPos = info.node.pos.split('-')
+    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
+
+    // console.log(`onDrop`, dragKey, dropKey, dropPosition, info.node.pos)
 
     // check for root
     if (dragKey === '/') {
@@ -740,18 +755,19 @@ const SyntaxTree = (props) => {
         dropFunc = () => {
           dragObj.parentKey = item.key
           item.children.unshift(dragObj)
-        }
-        if (!expandedKeys.includes(item.key)) {
-          // console.log([...expandedKeys, item.key])
-          setExpandedKeys(
-            [...expandedKeys, item.key]
-          )
+          if (!expandedKeys.includes(item.key)) {
+            // console.log([...expandedKeys, item.key])
+            setExpandedKeys(
+              [...expandedKeys, item.key]
+            )
+          }
         }
       })
+      /*
     } else if (
       (info.node.props.children || []).length > 0 && // Has children
-      info.node.props.expanded && // Is expanded
-      dropPosition === 1 // On the bottom gap
+       info.node.props.expanded && // Is expanded
+       dropPosition === 1 // On the bottom gap
     ) {
       tree_traverse(resultData, dropKey, item => {
         item.children = item.children || []
@@ -764,6 +780,7 @@ const SyntaxTree = (props) => {
         // in previous version, we use item.children.push(dragObj) to insert the
         // item to the tail of the children
       })
+      */
     } else {
       let ar
       let i
@@ -796,7 +813,15 @@ const SyntaxTree = (props) => {
 
     // return if drop parent node not found
     if (!dropParent) {
-      dropParent = resultData[0] // use root if dropParent not found
+      // use root if dropParent not found
+      dropParent = resultData[0]
+    } else if (!!dropParent.isLeaf) {
+      notification.info({
+        message: `Move not Allowed`,
+        description: `Child not allowed for [ ${dropParent?.data._type.replace('/', ' / ')} ]`,
+        placement: 'bottomLeft',
+      })
+      return
     }
 
     // check accepted types
@@ -835,7 +860,10 @@ const SyntaxTree = (props) => {
 
     // check if drop parent is same as current parent
     // console.log(dragObj.parentKey)
-    if (dropParent.key === dragObj.parentKey) {
+    if (
+      dropParent.key === dragObj.parentKey
+      || (dropParent.key === '/' && dragObj.parentKey === null)
+    ) {
       thisMoveCallback({
          _ref: dragObj.data._ref     // keep _ref
       })

@@ -72,6 +72,7 @@ import {
   lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
+  REGEX_VAR,
   lookup_classes,
   lookup_groups,
   lookup_types,
@@ -207,15 +208,19 @@ const SyntaxMoveDialog = (props) => {
   useEffect(() => {
     if (!!parentSpec) {
       // parentSpec effects
-      const childSpec = parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
-      if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
-        childSpec._childNode.effects.map(effect => eval(effect))
+      const childSpec = parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
+      if (!!childSpec?._childNode?.effects && !!childSpec._childNode.effects.context && !!childSpec._childNode.effects.data) {
+        if (childSpec._childNode.effects.context.includes('move')) {
+          childSpec._childNode.effects.data.map(effect => eval(effect))
+        }
         // console.log(`watch here`, watchData, new Date())
       }
     }
     // nodeSpec effects
-    if (!!nodeSpec && !!nodeSpec._effects) {
-      nodeSpec._effects.map(effect => eval(effect))
+    if (!!nodeSpec?._effects && !!nodeSpec._effects.context && !!nodeSpec._effects.data) {
+      if (nodeSpec._effects.context.includes('move')) {
+        nodeSpec._effects.data.map(effect => eval(effect))
+      }
     }
   }, [watchData])
 
@@ -244,6 +249,8 @@ const SyntaxMoveDialog = (props) => {
   useEffect(() => {
     setNodeType(props.moveDragNode?.data?._type)
     setNodeRef(props.moveDragNode?.data?._ref)
+    setValue("_type", props.moveDragNode?.data?._type)
+    setValue("_ref", props.moveDragNode?.data?._ref)
   }, [props.moveDragNode])
 
   // nodeSpec
@@ -287,7 +294,7 @@ const SyntaxMoveDialog = (props) => {
   const moveCallback = (nodeData) => {
     // console.log(`nodeData`, nodeData)
     // update array flag
-    const is_array = !!parentSpec.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
+    const is_array = !!parentSpec?.children?.find(item => item.name === '*' || item.name === nodeData._ref)?.array
     props.moveDragNode.data._array = is_array
     // update node attributes
     Object.keys(nodeData).map(key => {
@@ -342,25 +349,27 @@ const SyntaxMoveDialog = (props) => {
               &&
               (
                 // add custom fields from parentSpec if mandated by parent
-                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs.map(customField => {
-                  // console.log(`parentSpec - customField`, customField)
-                  if (!!hidden[customField.name]) {
-                    return undefined
-                  } else {
-                    return (
-                      <InputField
-                        key={customField.name}
-                        name={customField.name}
-                        disabled={!!disabled[customField.name]}
-                        childSpec={customField}
-                        thisNodeSpec={customField}
-                        defaultValue={props.moveDragNode?.data[customField.name]}
-                      />
-                    )
-                  }
-                })
-                .filter(child => !!child)
-                .flat(2)
+                parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs
+                  .filter(custom => custom.context?.includes('move'))
+                  .map(custom => {
+                    // console.log(`parentSpec - customField`, customField)
+                    if (!!hidden[custom.name]) {
+                      return undefined
+                    } else {
+                      return (
+                        <InputField
+                          key={custom.name}
+                          name={custom.name}
+                          disabled={!!disabled[custom.name]}
+                          childSpec={custom}
+                          thisNodeSpec={custom}
+                          defaultValue={props.moveDragNode?.data[custom.name]}
+                        />
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
               )
             }
             {
@@ -368,25 +377,27 @@ const SyntaxMoveDialog = (props) => {
               &&
               (
                 // add custom fields from parentSpec if mandated by parent
-                nodeSpec._customs.map(customField => {
-                  // console.log(`nodeSpec - customField`, customField)
-                  if (!!hidden[customField.name]) {
-                    return undefined
-                  } else {
-                    return (
-                      <InputField
-                        key={customField.name}
-                        name={customField.name}
-                        disabled={!!disabled[customField.name]}
-                        childSpec={customField}
-                        thisNodeSpec={customField}
-                        defaultValue={props.moveDragNode?.data[customField.name]}
-                      />
-                    )
-                  }
-                })
-                .filter(child => !!child)
-                .flat(2)
+                nodeSpec._customs
+                  .filter(custom => custom.context?.includes('move'))
+                  .map(custom => {
+                    // console.log(`nodeSpec - customField`, customField)
+                    if (!!hidden[custom.name]) {
+                      return undefined
+                    } else {
+                      return (
+                        <InputField
+                          key={custom.name}
+                          name={custom.name}
+                          disabled={!!disabled[custom.name]}
+                          childSpec={custom}
+                          thisNodeSpec={custom}
+                          defaultValue={props.moveDragNode?.data[custom.name]}
+                        />
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
               )
             }
             <Controller
@@ -397,10 +408,20 @@ const SyntaxMoveDialog = (props) => {
                 required: "Reference name is required",
                 validate: {
                   checkDuplicate: value =>
-                    !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
+                    props.moveDropParent?.key === '/'
+                    || !!(parentSpec.children?.find(child => child.name === value)?.array) // no check needed for array
                     || lookup_child_for_ref(props.moveDropParent, value) === null
                     || `Reference name [ ${value} ] is duplicate with an existing child`,
+                  checkRootDuplicate: value =>
+                    props.moveDropParent?.key !== '/'
+                    || !treeData.find(child => child.data._ref === value)
+                    || `Reference name [ ${value} ] is duplicate with an existing child`,
                   checkValidName: value => {
+                    if (props.moveDropParent?.key === '/') {
+                      return value.startsWith('...')
+                        || value.match(REGEX_VAR)
+                        || `Reference name must be a valid variable name`
+                    }
                     const found = !parentSpec || parentSpec?.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -419,6 +440,9 @@ const SyntaxMoveDialog = (props) => {
                     return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
                   },
                   checkTypeCompatibility: value => {
+                    if (props.moveDropParent?.key === '/') {
+                      return true
+                    }
                     const found = parentSpec.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -429,7 +453,8 @@ const SyntaxMoveDialog = (props) => {
                       }
                     })
                     if (!!found) {
-                      return type_matches_spec(getValues('_type'), found._childNode)
+                      const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                      return type_matches_spec(getValues('_type'), typeSpec)
                         || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
                     }
                   }
@@ -452,7 +477,7 @@ const SyntaxMoveDialog = (props) => {
                       trigger('_type')
                     }}
                     value={innerProps.value}
-                    options={parentSpec.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
+                    options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
                     size="small"
                     error={!!errors._ref}
                     size="small"
@@ -469,6 +494,9 @@ const SyntaxMoveDialog = (props) => {
                 required: "Type is required",
                 validate: {
                   checkTypeCompatibility: value => {
+                    if (props.moveDropParent?.key === '/') {
+                      return true
+                    }
                     const found = parentSpec.children?.find(childSpec => {
                       if (!childSpec._childNode) {
                         return false
@@ -479,7 +507,8 @@ const SyntaxMoveDialog = (props) => {
                       }
                     })
                     if (!!found) {
-                      return type_matches_spec(value, found._childNode)
+                      const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                      return type_matches_spec(value, typeSpec)
                         || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
                     }
                   }

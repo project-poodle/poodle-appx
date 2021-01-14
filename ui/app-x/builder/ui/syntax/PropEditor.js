@@ -58,6 +58,7 @@ import {
   remove_child_for_ref,
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
+  REGEX_VAR,
   lookup_classes,
   lookup_groups,
   lookup_types,
@@ -240,14 +241,18 @@ const PropEditor = (props) => {
     if (!!parentSpec) {
       // parentSpec effects
       const childSpec = parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
-      if (!!childSpec && !!childSpec._childNode && !!childSpec._childNode.effects) {
-        childSpec._childNode.effects.map(effect => eval(effect))
+      if (!!childSpec?._childNode?.effects && !!childSpec._childNode.effects.context && !!childSpec._childNode.effects.data) {
+        if (childSpec._childNode.effects.context.includes('editor')) {
+          childSpec._childNode.effects.data.map(effect => eval(effect))
+        }
         // console.log(`watch here`, watchData, new Date())
       }
     }
     // nodeSpec effects
-    if (!!nodeSpec && !!nodeSpec._effects) {
-      nodeSpec._effects.map(effect => eval(effect))
+    if (!!nodeSpec?._effects && !!nodeSpec._effects.context && !!nodeSpec._effects.data) {
+      if (nodeSpec._effects.context.includes('editor')) {
+        nodeSpec._effects.data.map(effect => eval(effect))
+      }
     }
   }, [watchData])
 
@@ -393,9 +398,11 @@ const PropEditor = (props) => {
       }
       // process customization by nodeSpec
       if (!!nodeSpec._customs) {
-        nodeSpec._customs.map(custom => {
-          setValue(custom.name, thisNode.data[custom.name])
-        })
+        nodeSpec._customs
+          .filter(custom => custom.context?.includes('editor'))
+          .map(custom => {
+            setValue(custom.name, thisNode.data[custom.name])
+          })
       }
       // process customization by parentSpec
       if (!!parentSpec) {
@@ -403,9 +410,11 @@ const PropEditor = (props) => {
           .filter(childSpec => !!childSpec._childNode?.customs)
           .map(childSpec => {
             if (childSpec.name === thisNode.data._ref) {
-              childSpec._childNode.customs.map(custom => {
-                setValue(custom.name, thisNode.data[custom.name])
-              })
+              childSpec._childNode.customs
+                .filter(custom => custom.context?.includes('editor'))
+                .map(custom => {
+                  setValue(custom.name, thisNode.data[custom.name])
+                })
             }
           })
       }
@@ -582,7 +591,7 @@ const PropEditor = (props) => {
         )
       }
       {
-        (thisNode)
+        (!!thisNode)
         &&
         (
           <Tabs
@@ -613,228 +622,263 @@ const PropEditor = (props) => {
               key="basic"
               className={styles.basicTab}
               >
+              {
+                (thisNode?.key === '/')
+                &&
+                (
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    className={styles.root}
+                    >
+                    <Typography variant="body2">
+                      Root element has no attribute, use YAML for advanced editing
+                    </Typography>
+                  </Box>
+                )
+              }
               <Box className={styles.base}>
               {
-                !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)
+                (thisNode?.key !== '/')
+                && !!parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)
                 && !!parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)?._childNode?.customs
                 &&
                 (
                   // add custom fields from parentSpec if mandated by parent
-                  parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs.map(customField => {
-                    // console.log(`parentSpec - customField`, customField)
-                    if (!!hidden[customField.name]) {
-                      return undefined
-                    } else {
-                      return (
-                        <InputField
-                          key={customField.name}
-                          name={customField.name}
-                          disabled={!!disabled[customField.name]}
-                          childSpec={customField}
-                          thisNodeSpec={customField}
-                          defaultValue={thisNode?.data[customField.name]}
-                          callback={d => {
-                            setBaseSubmitTimer(new Date())
-                          }}
-                        />
-                      )
-                    }
-                  })
-                  .filter(child => !!child)
-                  .flat(2)
+                  parentSpec.children.find(childSpec => childSpec.name === '*' || childSpec.name === nodeRef)._childNode.customs
+                    .filter(custom => custom.context?.includes('editor'))
+                    .map(custom => {
+                      // console.log(`parentSpec - customField`, customField)
+                      if (!!hidden[custom.name]) {
+                        return undefined
+                      } else {
+                        return (
+                          <InputField
+                            key={custom.name}
+                            name={custom.name}
+                            disabled={!!disabled[custom.name]}
+                            childSpec={custom}
+                            thisNodeSpec={custom}
+                            defaultValue={thisNode?.data[custom.name]}
+                            callback={d => {
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        )
+                      }
+                    })
+                    .filter(child => !!child)
+                    .flat(2)
                 )
               }
               {
-                !!nodeSpec?._customs
+                (thisNode?.key !== '/')
+                && (!!nodeSpec?._customs)
                 &&
                 (
                   // add custom fields from parentSpec if mandated by parent
-                  nodeSpec._customs.map(customField => {
-                    // console.log(`nodeSpec - customField`, customField)
-                    if (!!hidden[customField.name]) {
-                      return undefined
-                    } else {
-                      return (
-                        <InputField
-                          key={customField.name}
-                          name={customField.name}
-                          disabled={!!disabled[customField.name]}
-                          childSpec={customField}
-                          thisNodeSpec={customField}
-                          defaultValue={thisNode?.data[customField.name]}
-                          callback={d => {
-                            setBaseSubmitTimer(new Date())
-                          }}
-                        />
-                      )
-                    }
-                  })
-                  .filter(child => !!child)
-                  .flat(2)
+                  nodeSpec._customs
+                    .filter(custom => custom.context?.includes('editor'))
+                    .map(custom => {
+                      // console.log(`nodeSpec - custom`, custom)
+                      if (!!hidden[customField.name]) {
+                        return undefined
+                      } else {
+                        return (
+                          <InputField
+                            key={custom.name}
+                            name={custom.name}
+                            disabled={!!disabled[custom.name]}
+                            childSpec={custom}
+                            thisNodeSpec={custom}
+                            defaultValue={thisNode?.data[custom.name]}
+                            callback={d => {
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        )
+                      }
+                    })
+                    .filter(child => !!child)
+                    .flat(2)
                 )
               }
-              <Controller
-                name="_ref"
-                control={control}
-                defaultValue={thisNode?.data._ref}
-                rules={{
-                  required: "Reference name is required",
-                  validate: {
-                    checkDuplicate: value =>
-                      !!(parentSpec?.children?.find(child => child.name === value)?.array) // no check needed for array
-                      || lookup_child_for_ref(parentNode, value) === null
-                      || lookup_child_for_ref(parentNode, value).key === thisNode?.key
-                      || `Reference name [ ${value} ] is duplicate with an existing child`,
-                    checkValidName: value => {
-                      const found = !parentSpec || parentSpec?.children?.find(childSpec => {
-                        if (!childSpec._childNode) {
-                          return false
-                        } else if (childSpec.name === '*') {
-                          return true
-                        } else if (childSpec.name === value) {
-                          return true
+              {
+                (thisNode?.key !== '/')
+                &&
+                (
+                  <Controller
+                    name="_ref"
+                    control={control}
+                    defaultValue={thisNode?.data._ref}
+                    rules={{
+                      required: "Reference name is required",
+                      validate: {
+                        checkDuplicate: value =>
+                          !!(parentSpec?.children?.find(child => child.name === value)?.array) // no check needed for array
+                          || lookup_child_for_ref(parentNode, value) === null
+                          || lookup_child_for_ref(parentNode, value).key === thisNode?.key
+                          || `Reference name [ ${value} ] is duplicate with an existing child`,
+                        checkValidName: value => {
+                          const found = !parentSpec || parentSpec?.children?.find(childSpec => {
+                            if (!childSpec._childNode) {
+                              return false
+                            } else if (childSpec.name === '*') {
+                              return true
+                            } else if (childSpec.name === value) {
+                              return true
+                            }
+                          })
+                          const valid_names = parentSpec?.children?.map(childSpec => {
+                            if (!!childSpec._childNode && childSpec.name !== '*') {
+                              return childSpec.name
+                            }
+                          })
+                          .filter(name => !!name)
+                          return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
+                        },
+                        checkTypeCompatibility: value => {
+                          const found = parentSpec?.children?.find(childSpec => {
+                            if (!childSpec._childNode) {
+                              return false
+                            } else if (childSpec.name === '*') {
+                              return true
+                            } else if (childSpec.name === value) {
+                              return true
+                            }
+                          })
+                          if (!!found) {
+                            const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                            return type_matches_spec(getValues('_type'), typeSpec)
+                              || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
+                          }
                         }
-                      })
-                      const valid_names = parentSpec?.children?.map(childSpec => {
-                        if (!!childSpec._childNode && childSpec.name !== '*') {
-                          return childSpec.name
+                      },
+                    }}
+                    render={innerProps =>
+                      <FormControl
+                        className={styles.formControl}
+                        disabled={
+                          !parentSpec?.children.find(childSpec => childSpec.name === '*')
+                          || !!disabled["_ref"]
                         }
-                      })
-                      .filter(name => !!name)
-                      return !!found || `Reference name must be a valid name [ ${valid_names.join(', ')} ]`
-                    },
-                    checkTypeCompatibility: value => {
-                      const found = parentSpec?.children?.find(childSpec => {
-                        if (!childSpec._childNode) {
-                          return false
-                        } else if (childSpec.name === '*') {
-                          return true
-                        } else if (childSpec.name === value) {
-                          return true
-                        }
-                      })
-                      if (!!found) {
-                        const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
-                        return type_matches_spec(getValues('_type'), typeSpec)
-                          || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
-                      }
-                    }
-                  },
-                }}
-                render={innerProps =>
-                  <FormControl
-                    className={styles.formControl}
-                    disabled={
-                      !parentSpec?.children.find(childSpec => childSpec.name === '*')
-                      || !!disabled["_ref"]
-                    }
-                    >
-                    <AutoSuggest
-                      label="Reference"
-                      name="_ref"
-                      disabled={
-                        !parentSpec?.children.find(childSpec => childSpec.name === '*')
-                        || !!disabled["_ref"]
-                      }
-                      required={true}
-                      onChange={value => {
-                        innerProps.onChange(value)
-                        setNodeRef(value)
-                        trigger('_ref')
-                        trigger('_type')
-                        setBaseSubmitTimer(new Date())
-                      }}
-                      value={innerProps.value}
-                      options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
-                      size="small"
-                      error={!!errors._ref}
-                      size="small"
-                      helperText={errors._ref?.message}
-                      />
-                  </FormControl>
-                }
-              />
-              <Controller
-                name="_type"
-                control={control}
-                defaultValue={nodeType}
-                rules={{
-                  required: "Type is required",
-                  validate: {
-                    checkTypeCompatibility: value => {
-                      const found = parentSpec?.children?.find(childSpec => {
-                        if (!childSpec._childNode) {
-                          return false
-                        } else if (childSpec.name === '*') {
-                          return true
-                        } else if (childSpec.name === getValues('_ref')) {
-                          return true
-                        }
-                      })
-                      if (!!found) {
-                        const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
-                        return type_matches_spec(value, typeSpec)
-                          || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
-                      }
-                    }
-                  }
-                }}
-                render={innerProps =>
-                  (
-                    <FormControl className={styles.formControl}>
-                      <TextField
-                        label="Type"
-                        select={true}
-                        name="_type"
-                        value={innerProps.value}
-                        required={true}
-                        size="small"
-                        onChange={
-                          e => {
-                            setNodeType(e.target.value)
-                            innerProps.onChange(e)
+                        >
+                        <AutoSuggest
+                          label="Reference"
+                          name="_ref"
+                          disabled={
+                            !parentSpec?.children.find(childSpec => childSpec.name === '*')
+                            || !!disabled["_ref"]
+                          }
+                          required={true}
+                          onChange={value => {
+                            innerProps.onChange(value)
+                            setNodeRef(value)
                             trigger('_ref')
                             trigger('_type')
                             setBaseSubmitTimer(new Date())
+                          }}
+                          value={innerProps.value}
+                          options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
+                          size="small"
+                          error={!!errors._ref}
+                          size="small"
+                          helperText={errors._ref?.message}
+                          />
+                      </FormControl>
+                    }
+                  />
+                )
+              }
+              {
+                (thisNode?.key !== '/')
+                &&
+                (
+                  <Controller
+                    name="_type"
+                    control={control}
+                    defaultValue={nodeType}
+                    rules={{
+                      required: "Type is required",
+                      validate: {
+                        checkTypeCompatibility: value => {
+                          const found = parentSpec?.children?.find(childSpec => {
+                            if (!childSpec._childNode) {
+                              return false
+                            } else if (childSpec.name === '*') {
+                              return true
+                            } else if (childSpec.name === getValues('_ref')) {
+                              return true
+                            }
+                          })
+                          if (!!found) {
+                            const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                            return type_matches_spec(value, typeSpec)
+                              || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
                           }
                         }
-                        error={!!errors._type}
-                        helperText={errors._type?.message}
-                        >
-                        {
-                          (() => {
-                            // const supported_types = lookup_accepted_types_for_node(parentNode)
-                            const supported_types = lookup_changeable_types(nodeType) // use changeable types
-                            return supported_types
-                              .map(type => {
-                                return (
-                                  <MenuItem value={type} key={type}>
-                                    <ListItemIcon>
-                                      { lookup_icon_for_type(type) }
-                                    </ListItemIcon>
-                                    <Typography variant="inherit" noWrap={true}>
-                                      { type?.replace('/', ' / ') }
-                                    </Typography>
-                                  </MenuItem>
-                                )
-                              })
-                              .filter(item => !!item)
-                              .flat(2)
-                              // remove last divider item
-                              // .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
-                              // .map(item => {
-                              //   // console.log(`item`, item)
-                              //   return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item
-                              // })
-                          })()
-                        }
-                      </TextField>
-                    </FormControl>
-                  )
-                }
-              />
+                      }
+                    }}
+                    render={innerProps =>
+                      (
+                        <FormControl className={styles.formControl}>
+                          <TextField
+                            label="Type"
+                            select={true}
+                            name="_type"
+                            value={innerProps.value}
+                            required={true}
+                            size="small"
+                            onChange={
+                              e => {
+                                setNodeType(e.target.value)
+                                innerProps.onChange(e)
+                                trigger('_ref')
+                                trigger('_type')
+                                setBaseSubmitTimer(new Date())
+                              }
+                            }
+                            error={!!errors._type}
+                            helperText={errors._type?.message}
+                            >
+                            {
+                              (() => {
+                                // const supported_types = lookup_accepted_types_for_node(parentNode)
+                                const supported_types = lookup_changeable_types(nodeType) // use changeable types
+                                return supported_types
+                                  .map(type => {
+                                    return (
+                                      <MenuItem value={type} key={type}>
+                                        <ListItemIcon>
+                                          { lookup_icon_for_type(type) }
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap={true}>
+                                          { type?.replace('/', ' / ') }
+                                        </Typography>
+                                      </MenuItem>
+                                    )
+                                  })
+                                  .filter(item => !!item)
+                                  .flat(2)
+                                  // remove last divider item
+                                  // .filter((item, index, array) => !((index === array.length - 1) && (typeof item === 'string') && (item.startsWith('divider'))))
+                                  // .map(item => {
+                                  //   // console.log(`item`, item)
+                                  //   return (typeof item === 'string' && item.startsWith('divider')) ? <Divider key={item} /> : item
+                                  // })
+                              })()
+                            }
+                          </TextField>
+                        </FormControl>
+                      )
+                    }
+                  />
+                )
+              }
               {
-                nodeSpec?.children?.map(childSpec => {
+                (thisNode?.key !== '/')
+                && nodeSpec?.children?.map(childSpec => {
                   if (!childSpec._thisNode) {
                     return undefined
                   }
@@ -877,7 +921,8 @@ const PropEditor = (props) => {
                 .flat(2)
               }
               {
-                (() => {
+                (thisNode?.key !== '/')
+                && (() => {
                   if
                   (
                     nodeSpec?._input === 'input/properties'
@@ -904,7 +949,8 @@ const PropEditor = (props) => {
                 })()
               }
               {
-                nodeSpec?.children
+                (thisNode?.key !== '/')
+                && nodeSpec?.children
                   .filter(childSpec => childSpec._childNode?.input === 'input/properties')
                   .map(childSpec => {
                     // console.log(`input/properties`, childSpec)
