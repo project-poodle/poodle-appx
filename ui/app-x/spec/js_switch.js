@@ -38,7 +38,7 @@ export const js_switch = {
               rules: [
                 {
                   kind: 'required',
-                  required: true,
+                  data: true,
                   message: 'Condition is required'
                 },
               ],

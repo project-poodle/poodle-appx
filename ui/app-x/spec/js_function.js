@@ -29,7 +29,7 @@ export const js_function = {
       rules: [
         {
           kind: 'pattern',
-          pattern: REGEX_VAR,
+          data: REGEX_VAR,
           message: 'Must be a valid variable name',
         },
       ],

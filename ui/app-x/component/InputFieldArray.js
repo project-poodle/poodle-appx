@@ -172,12 +172,12 @@ const InputFieldArray = ((props) => {
                         result['required'] = rule.message
                       } else if (rule.kind === 'pattern') {
                         result['pattern'] = {
-                          value: rule.pattern,
+                          value: rule.data,
                           message: rule.message,
                         }
                       } else if (rule.kind === 'validate') {
                         result.validate[`validate_${count++}`] = (value) => (
-                          !!eval(rule.validate) || rule.message
+                          !!eval(rule.data) || rule.message
                         )
                       }
                     })
@@ -189,12 +189,12 @@ const InputFieldArray = ((props) => {
                         result['required'] = rule.message
                       } else if (rule.kind === 'pattern') {
                         result['pattern'] = {
-                          value: rule.pattern,
+                          value: rule.data,
                           message: rule.message,
                         }
                       } else if (rule.kind === 'validate') {
                         result.validate[`validate_${count++}`] = (value) => (
-                          !!eval(rule.validate) || rule.message
+                          !!eval(rule.data) || rule.message
                         )
                       }
                     })

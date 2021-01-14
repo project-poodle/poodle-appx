@@ -31,6 +31,20 @@ export const input_text = {
       },
     },
     {
+      name: 'required',
+      desc: 'Required',
+      optional: true,
+      classes: [
+        {
+          class: 'boolean'
+        },
+      ],
+      _thisNode: {
+        class: 'boolean',
+        input: 'input/switch',
+      },
+    },
+    {
       name: 'array',
       desc: 'Is Array',
       optional: true,
@@ -53,7 +67,7 @@ export const input_text = {
           class: 'object',
           classes: [
             {
-              name: '.+',
+              name: '*',
               class: 'expression',
             }
           ]
@@ -81,7 +95,34 @@ export const input_text = {
       ],
       _childNode: {
         class: 'object',
-        input: 'input/rules',
+        input: 'input/list',
+        inputSpec: {
+          columns: [
+            {
+              name: 'kind',
+              desc: 'Kind',
+              input: 'input/select',
+              options: [
+                {
+                  value: 'pattern',
+                },
+                {
+                  value: 'validate',
+                }
+              ]
+            },
+            {
+              name: 'data',
+              desc: 'Data',
+              input: 'input/text'
+            },
+            {
+              name: 'message',
+              desc: 'Message',
+              input: 'input/text',
+            }
+          ]
+        }
       },
     },
   ]
