@@ -20,6 +20,7 @@ export const react_html = {
     {
       name: 'name',
       desc: 'HTML Tag',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -42,7 +43,6 @@ export const react_html = {
     {
       name: 'props',
       desc: 'Properties',
-      optional: true,
       classes: [
         {
           class: 'object',
@@ -62,7 +62,6 @@ export const react_html = {
     {
       name: 'children',
       desc: 'Child Elements',
-      optional: true,
       array: true,
       classes:
       [

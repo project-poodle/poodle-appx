@@ -16,6 +16,7 @@ export const js_boolean = {
     {
       name: 'data',
       desc: 'Boolean',
+      required: true,
       classes: [
         {
           class: 'boolean'

@@ -19,7 +19,6 @@ export const js_map = {
     {
       name: 'data',
       desc: 'Data',
-      optional: true,
       classes: [
         {
           class: 'expression'
@@ -36,7 +35,6 @@ export const js_map = {
     {
       name: 'result',
       desc: 'Result',
-      optional: true,
       classes: [
         {
           class: 'expression'

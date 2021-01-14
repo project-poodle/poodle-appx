@@ -16,7 +16,6 @@ export const js_object = {
     {
       name: '*',
       desc: 'Properties',
-      optional: true,
       classes: [
         {
           class: 'expression',

@@ -19,7 +19,6 @@ export const react_effect = {
     {
       name: 'body',
       desc: 'Body',
-      optional: true,
       array: true,
       classes: [
         {
@@ -40,7 +39,6 @@ export const react_effect = {
     {
       name: 'states',
       desc: 'States',
-      optional: true,
       array: true,
       classes: [
         {

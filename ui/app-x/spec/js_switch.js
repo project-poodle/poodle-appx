@@ -21,7 +21,6 @@ export const js_switch = {
     {
       name: 'children',
       desc: 'Conditional',
-      optional: true,
       array: true,
       classes: [
         {
@@ -103,7 +102,6 @@ export const js_switch = {
     {
       name: 'default',
       desc: 'Default',
-      optional: true,
       classes: [
         {
           class: 'expression'

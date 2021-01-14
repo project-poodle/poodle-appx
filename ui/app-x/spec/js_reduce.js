@@ -18,7 +18,6 @@ export const js_reduce = {
     {
       name: 'data',
       desc: 'Data',
-      optional: true,
       classes: [
         {
           class: 'expression'
@@ -35,6 +34,7 @@ export const js_reduce = {
     {
       name: 'reducer',
       desc: 'Reducer',
+      required: true,
       classes: [
         {
           class: 'string',
@@ -48,6 +48,7 @@ export const js_reduce = {
     {
       name: 'init',
       desc: 'Initial Value',
+      required: true,
       classes: [
         {
           class: 'string',

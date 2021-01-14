@@ -303,8 +303,8 @@ function parse_tree_node(tree_context, treeNode) {
 
       // check if data exist
       if (data === undefined) {
-        if (!!childSpec.optional) {
-          // ignore optional node
+        if (!!!childSpec.required) {
+          // ignore not required node
         } else {
           throw new Error(`ERROR: [${thisNode.data?._type}] missing [${_ref}] [${JSON.stringify(thisNode.data)}]`)
         }

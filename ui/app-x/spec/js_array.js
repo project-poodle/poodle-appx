@@ -15,7 +15,6 @@ export const js_array = {
     {
       name: 'children',
       desc: 'Array Items',
-      optional: true,
       array: true,
       classes: [
         {

@@ -19,7 +19,6 @@ export const js_function = {
     {
       name: 'params',
       desc: 'Parameters',
-      optional: true,
       array: true,
       classes: [
         {
@@ -41,7 +40,6 @@ export const js_function = {
     {
       name: 'body',
       desc: 'Body',
-      optional: true,
       array: true,
       classes: [
         {

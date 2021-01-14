@@ -16,6 +16,7 @@ export const js_import = {
     {
       name: 'name',
       desc: 'Import Name',
+      required: true,
       classes: [
         {
           class: 'string',

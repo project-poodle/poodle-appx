@@ -17,7 +17,6 @@ export const js_filter = {
     {
       name: 'data',
       desc: 'Data',
-      optional: true,
       classes: [
         {
           class: 'expression'
@@ -34,6 +33,7 @@ export const js_filter = {
     {
       name: 'filter',
       desc: 'Filter',
+      required: true,
       classes: [
         {
           class: 'string',

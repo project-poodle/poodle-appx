@@ -16,6 +16,7 @@ export const js_expression = {
     {
       name: 'data',
       desc: 'Expression',
+      required: true,
       classes: [
         {
           class: 'string',

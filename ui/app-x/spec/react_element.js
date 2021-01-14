@@ -25,6 +25,7 @@ export const react_element = {
     {
       name: 'name',
       desc: 'Element Name',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -51,7 +52,6 @@ export const react_element = {
     {
       name: 'props',
       desc: 'Properties',
-      optional: true,
       classes: [
         {
           class: 'object',
@@ -71,7 +71,6 @@ export const react_element = {
     {
       name: 'children',
       desc: 'Child Elements',
-      optional: true,
       array: true,
       classes:
       [

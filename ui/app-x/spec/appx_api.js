@@ -23,6 +23,7 @@ export const appx_api = {
     {
       name: 'namespace',
       desc: 'Namespace',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -36,6 +37,7 @@ export const appx_api = {
     {
       name: 'app_name',
       desc: 'App Name',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -49,6 +51,7 @@ export const appx_api = {
     {
       name: 'method',
       desc: 'Method',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -70,6 +73,7 @@ export const appx_api = {
     {
       name: 'endpoint',
       desc: 'Endpoint',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -83,7 +87,6 @@ export const appx_api = {
     {
       name: 'data',
       desc: 'Data',
-      optional: true,
       classes: [
         {
           class: 'string'
@@ -103,7 +106,6 @@ export const appx_api = {
     {
       name: 'init',
       desc: 'Init Code',
-      optional: true,
       classes: [
         {
           class: 'string'
@@ -123,7 +125,6 @@ export const appx_api = {
     {
       name: 'result',
       desc: 'Result Handler',
-      optional: true,
       classes: [
         {
           class: 'string'
@@ -143,7 +144,6 @@ export const appx_api = {
     {
       name: 'error',
       desc: 'Error Handler',
-      optional: true,
       classes: [
         {
           class: 'string'

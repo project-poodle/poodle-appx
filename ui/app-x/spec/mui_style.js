@@ -16,7 +16,6 @@ export const mui_style = {
     {
       name: '*',
       desc: 'Styles',
-      optional: true,
       classes: [
         {
           class: 'object',

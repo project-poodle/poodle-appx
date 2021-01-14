@@ -16,6 +16,7 @@ export const js_string = {
     {
       name: 'data',
       desc: 'String',
+      required: true,
       classes: [
         {
           class: 'string'

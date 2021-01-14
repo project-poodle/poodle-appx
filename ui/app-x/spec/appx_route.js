@@ -16,6 +16,7 @@ export const appx_route = {
     {
       name: 'name',
       desc: 'Router Path',
+      required: true,
       classes: [
         {
           class: 'string'

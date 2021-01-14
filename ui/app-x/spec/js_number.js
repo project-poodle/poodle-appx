@@ -16,6 +16,7 @@ export const js_number = {
     {
       name: 'data',
       desc: 'Number',
+      required: true,
       classes: [
         {
           class: 'number'

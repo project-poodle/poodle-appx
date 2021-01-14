@@ -735,7 +735,7 @@ function generate_tree_node(js_context, conf, input) {
 
         // check if exist
         if (! (_ref in input)) {
-          if (!!childSpec.optional) {
+          if (!childSpec.required) {
             return // continue
           } else {
             throw new Error(`ERROR: [${input._type}] missing [${childSpec.name}] [${JSON.stringify(input)}]`)
@@ -744,8 +744,8 @@ function generate_tree_node(js_context, conf, input) {
 
         // check undefined
         if (data === undefined) {
-          if (!childSpec.optional) {
-            throw new Error(`ERROR: input data missing non-optional child [${childSpec.name}] [${JSON.stringify(input)}]`)
+          if (!!childSpec.required) {
+            throw new Error(`ERROR: input data missing for required child [${childSpec.name}] [${JSON.stringify(input)}]`)
           }
         }
 
@@ -785,7 +785,7 @@ function generate_tree_node(js_context, conf, input) {
               if (!!childNode) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode [array]`, childNode)
-              } else if (!childSpec.optional) {
+              } else if (!!childSpec.required) {
                 throw new Error(`ERROR: unable to process child data [array] [${_ref}] [${JSON.stringify(d)}]`)
               }
             })
@@ -794,7 +794,7 @@ function generate_tree_node(js_context, conf, input) {
             if (!!childNode) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode`, childNode)
-            } else if (!childSpec.optional) {
+            } else if (!!childSpec.required) {
               throw new Error(`ERROR: unable to process child data [${_ref}] [${JSON.stringify(data)}]`)
             }
           }

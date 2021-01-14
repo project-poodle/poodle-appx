@@ -32,6 +32,7 @@ export const react_state = {
     {
       name: 'name',
       desc: 'Name',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -60,6 +61,7 @@ export const react_state = {
     {
       name: 'setter',
       desc: 'Setter',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -88,7 +90,7 @@ export const react_state = {
     {
       name: 'init',
       desc: 'Init Value',
-      optional: true,
+      required: true,
       classes: [
         {
           class: 'string'

@@ -120,8 +120,8 @@ const InputField = ((props) => {
       rules={(() => {
         let count = 0
         const result = { validate: {} }
-        // check optional flag
-        if (!childSpec.optional && thisNodeSpec?.input !== 'input/switch') {
+        // check required flag
+        if (!!childSpec.required && thisNodeSpec?.input !== 'input/switch') {
           result['required'] = `${childSpec.desc} is required`
         }
         // check rules
@@ -206,7 +206,7 @@ const InputField = ((props) => {
                 disabled={!!props.disabled}
                 >
                 <FormHelperText
-                  required={!childSpec.optional}>
+                  required={!!childSpec.required}>
                   {childSpec.desc}
                 </FormHelperText>
                 <Switch
@@ -245,7 +245,7 @@ const InputField = ((props) => {
                 >
                 <InputLabel
                   shrink={true}
-                  required={!childSpec.optional}
+                  required={!!childSpec.required}
                   className={styles.label}
                   >
                   {childSpec.desc}
@@ -320,7 +320,7 @@ const InputField = ((props) => {
                   name={name}
                   value={innerProps.value}
                   disabled={!!props.disabled}
-                  required={!childSpec.optional}
+                  required={!!childSpec.required}
                   options={suggestions}
                   size="small"
                   onChange={innerProps.onChange}

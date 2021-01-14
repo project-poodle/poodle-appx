@@ -17,6 +17,7 @@ export const react_context = {
     {
       name: 'name',
       desc: 'Context Name',
+      required: true,
       classes: [
         {
           class: 'expression'

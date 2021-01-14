@@ -16,7 +16,6 @@ export const js_statement = {
     {
       name: 'body',
       desc: 'Body',
-      optional: true,
       array: true,
       classes: [
         {

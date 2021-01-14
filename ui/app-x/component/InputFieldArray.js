@@ -142,7 +142,7 @@ const InputFieldArray = ((props) => {
     <Box className={styles.formControl} key={name}>
       <InputLabel
         shrink={true}
-        required={!childSpec.optional}
+        required={!!childSpec.required}
         className={styles.label}
         >
         {childSpec.desc}
@@ -161,8 +161,8 @@ const InputFieldArray = ((props) => {
                 rules={(() => {
                   let count = 0
                   const result = { validate: {} }
-                  // check optional flag
-                  if (!childSpec.optional && thisNodeSpec?.input !== 'input/switch') {
+                  // check required flag
+                  if (!!childSpec.required && thisNodeSpec?.input !== 'input/switch') {
                     result['required'] = `${childSpec.desc} is required`
                   }
                   // check rules
@@ -357,7 +357,7 @@ const InputFieldArray = ((props) => {
                           <AutoSuggest
                             name={itemName}
                             value={innerProps.value}
-                            required={!childSpec.optional}
+                            required={!!childSpec.required}
                             options={suggestions}
                             size="small"
                             onChange={innerProps.onChange}

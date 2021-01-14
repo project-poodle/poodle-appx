@@ -23,6 +23,7 @@ export const react_form = {
     {
       name: 'name',
       desc: 'Form Name',
+      required: true,
       classes: [
         {
           class: 'string'
@@ -43,7 +44,6 @@ export const react_form = {
     {
       name: 'onSubmit',
       desc: 'onSubmit',
-      optional: true,
       classes: [
         {
           class: 'string'
@@ -63,7 +63,6 @@ export const react_form = {
     {
       name: 'onError',
       desc: 'onError',
-      optional: true,
       classes: [
         {
           class: 'string'
@@ -83,7 +82,6 @@ export const react_form = {
     {
       name: 'props',
       desc: 'Properties',
-      optional: true,
       classes: [
         {
           class: 'object',
@@ -103,7 +101,6 @@ export const react_form = {
     {
       name: 'formProps',
       desc: 'Form Properties',
-      optional: true,
       classes: [
         {
           class: 'object',
@@ -123,7 +120,6 @@ export const react_form = {
     {
       name: 'children',
       desc: 'Child Elements',
-      optional: true,
       array: true,
       classes:
       [
