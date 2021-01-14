@@ -712,7 +712,7 @@ const SyntaxTree = (props) => {
     const dropPos = info.node.pos.split('-')
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
 
-    // console.log(`onDrop`, dragKey, dropKey, dropPosition, info.node.pos)
+    console.log(`onDrop`, dragKey, dropKey, dropPosition, info.node.pos)
 
     // check for root
     if (dragKey === '/') {
@@ -721,6 +721,11 @@ const SyntaxTree = (props) => {
         description: `Cannot move root node [ / ]`,
         placement: 'bottomLeft',
       })
+      return
+    }
+
+    // drop before root node is not allowed
+    if (dropKey === '/' && dropPosition === -1) {
       return
     }
 
