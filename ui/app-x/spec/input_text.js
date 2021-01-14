@@ -87,7 +87,7 @@ export const input_text = {
           class: 'object',
           classes: [
             {
-              name: '.+',
+              name: '*',
               class: 'expression',
             }
           ]
@@ -101,6 +101,7 @@ export const input_text = {
             {
               name: 'kind',
               desc: 'Kind',
+              required: true,
               input: 'input/select',
               options: [
                 {
@@ -114,11 +115,13 @@ export const input_text = {
             {
               name: 'data',
               desc: 'Data',
+              required: true,
               input: 'input/text'
             },
             {
               name: 'message',
               desc: 'Message',
+              required: true,
               input: 'input/text',
             }
           ]

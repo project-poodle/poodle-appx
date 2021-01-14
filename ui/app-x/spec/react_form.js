@@ -89,7 +89,7 @@ export const react_form = {
           class: 'object',
           classes: [
             {
-              name: '.+',
+              name: '*',
               class: 'expression',
             }
           ]
@@ -109,7 +109,7 @@ export const react_form = {
           class: 'object',
           classes: [
             {
-              name: '.+',
+              name: '*',
               class: 'expression',
             }
           ]

@@ -48,7 +48,7 @@ export const react_html = {
           class: 'object',
           classes: [
             {
-              name: '.+',
+              name: '*',
               class: 'expression'
             }
           ]
