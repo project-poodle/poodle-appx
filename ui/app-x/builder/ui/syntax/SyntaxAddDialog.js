@@ -473,6 +473,10 @@ const SyntaxAddDialog = (props) => {
                     props.addNodeParent?.key !== '/'
                     || !treeData.find(child => child.data._ref === value)
                     || `Reference name [ ${value} ] is duplicate with an existing child`,
+                  checkRootProps: value =>
+                    props.addNodeParent?.key !== '/'
+                    || value !== 'props'
+                    || `Reference name cannot be [ props ] at root level`,
                   checkValidName: value => {
                     if (props.addNodeParent?.key === '/') {
                       return value.startsWith('...')

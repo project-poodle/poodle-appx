@@ -416,6 +416,10 @@ const SyntaxMoveDialog = (props) => {
                     props.moveDropParent?.key !== '/'
                     || !treeData.find(child => child.data._ref === value)
                     || `Reference name [ ${value} ] is duplicate with an existing child`,
+                  checkRootProps: value =>
+                    props.moveDropParent?.key !== '/'
+                    || value !== 'props'
+                    || `Reference name cannot be [ props ] at root level`,
                   checkValidName: value => {
                     if (props.moveDropParent?.key === '/') {
                       return value.startsWith('...')
