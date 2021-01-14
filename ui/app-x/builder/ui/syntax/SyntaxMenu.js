@@ -63,6 +63,7 @@ import {
   lookup_group_for_type,
   lookup_changeable_types,
   lookup_type_for_data,
+  lookup_types_for_spec,
 } from 'app-x/builder/ui/syntax/util_base'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
@@ -115,12 +116,11 @@ const SyntaxMenu = (props) => {
 
   // create menu items
   function create_menu_items(spec) {
-      if (!spec._childNode?.class) {
+      if (!spec._childNode) {
         return
       }
-      const childNodeSpec = spec._childNode
-      // console.log(`childNodeSpec.class`, childNodeSpec.class)
-      const valid_types = lookup_types_for_class(childNodeSpec.class)
+      const typeSpec = spec._childNode.types === 'inherit' ? spec.types : spec._childNode.types
+      const valid_types = lookup_types_for_spec(typeSpec)
       // console.log(`valid_types`, valid_types)
       const groups = lookup_groups()
       return groups.map(group => {

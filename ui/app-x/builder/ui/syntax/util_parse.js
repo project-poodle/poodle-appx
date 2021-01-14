@@ -174,10 +174,10 @@ function parse_tree_node(tree_context, treeNode) {
       const data_type = lookup_type_for_data(nodeData)
       const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
       if (!type_matches_spec(data_type, typeSpec)) {
-        console.log(`NO MATCH : node [${_ref}] data [${nodeData}] not matching [${JSON.stringify(typeSpec)}]`)
+        // console.log(`NO MATCH : node [${_ref}] data [${nodeData}] not matching [${JSON.stringify(typeSpec)}]`)
         return undefined
       } else {
-        console.log(`MATCHES : node [${_ref}] data [${nodeData}] matching [${JSON.stringify(typeSpec)}]`)
+        // console.log(`MATCHES : node [${_ref}] data [${nodeData}] matching [${JSON.stringify(typeSpec)}]`)
       }
       // parse data
       if (!!thisNodeSpec.parse) {

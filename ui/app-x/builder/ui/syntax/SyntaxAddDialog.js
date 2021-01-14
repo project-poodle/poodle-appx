@@ -486,7 +486,8 @@ const SyntaxAddDialog = (props) => {
                       }
                     })
                     if (!!found) {
-                      return type_matches_spec(getValues('_type'), found._childNode)
+                      const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                      return type_matches_spec(getValues('_type'), typeSpec)
                         || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
                     }
                   }
@@ -536,7 +537,8 @@ const SyntaxAddDialog = (props) => {
                       }
                     })
                     if (!!found) {
-                      return type_matches_spec(value, found._childNode)
+                      const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
+                      return type_matches_spec(value, typeSpec)
                         || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
                     }
                   }

@@ -362,18 +362,12 @@ const lookup_accepted_types_for_node = (node) => {
   }
   // compute accepted types
   let accepted_types = []
-  spec.children?.map(childSpec => {
-    if (!childSpec._childNode?.class) {
+  spec.children.map(childSpec => {
+    if (!childSpec._childNode) {
       return
     }
-    const childNodeSpec = childSpec._childNode
-    let types = lookup_types_for_class(childNodeSpec.class)
-    if (!!childNodeSpec.includes) {
-      types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
-    }
-    if (!!childNodeSpec.excludes) {
-      types = types.filter(type => !childNodeSpec.excludes.includes(type))
-    }
+    const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
+    const types = lookup_types_for_spec(typeSpec)
     accepted_types = accepted_types.concat(types).sort().filter(onlyUnique)
   })
   return accepted_types
@@ -401,21 +395,15 @@ const lookup_first_accepted_childSpec = (node, type) => {
   }
   // compute accepted types
   let accepted_childSpec = null
-  spec.children?.map(childSpec => {
+  spec.children.map(childSpec => {
     if (!!accepted_childSpec) {
       return // if already found
     }
-    if (!childSpec._childNode?.class) {
+    if (!childSpec._childNode) {
       return
     }
-    const childNodeSpec = childSpec._childNode
-    let types = lookup_types_for_class(childNodeSpec.class)
-    if (!!childNodeSpec.includes) {
-      types = types.concat(childNodeSpec.includes).sort().filter(onlyUnique)
-    }
-    if (!!childNodeSpec.excludes) {
-      types = types.filter(type => !childNodeSpec.excludes.includes(type))
-    }
+    const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
+    const types = lookup_types_for_spec(typeSpec)
     // check if matches
     if (types.includes(type)) {
       accepted_childSpec = childSpec
@@ -435,6 +423,11 @@ const enrich_primitive_data = (data) => {
   } else {
     return data
   }
+}
+
+// lookup types for spec
+const lookup_types_for_spec = (typeSpec) => {
+  return Object.keys(globalThis.appx.SPEC.types).filter(type => type_matches_spec(type, typeSpec))
 }
 
 // check if data matches the match spec
@@ -754,6 +747,7 @@ export {
   // enrich_primitive_data,
   type_matches_spec,
   data_matches_spec,
+  lookup_types_for_spec,
   // valid auto complete
   auto_suggestions,
   valid_api_methods,
