@@ -50,16 +50,20 @@ export const js_switch = {
             desc: 'Is Default',
             class: 'boolean',
             required: true,
-            input: 'input/switch',
             context: [ 'add', 'move', 'editor' ],
+            input: {
+              kind: 'input/switch'
+            },
           },
           {
             name: '_condition',
             desc: 'Condition',
             class: 'string',
             required: true,
-            input: 'input/expression',
             context: [ 'add', 'move', 'editor' ],
+            input: {
+              kind: 'input/expression',
+            },
           },
         ],
         effects: {
@@ -106,15 +110,19 @@ export const js_switch = {
             name: '_isDefault',
             desc: 'Is Default',
             class: 'boolean',
-            input: 'input/switch',
             context: [ 'add', 'move', 'editor' ],
+            input: {
+              kind: 'input/switch',
+            },
           },
           {
             name: '_condition',
             desc: 'Condition',
             class: 'string',
-            input: 'input/expression',
             context: [ 'add', 'move', 'editor' ],
+            input: {
+              kind: 'input/expression',
+            },
           },
         ],
         effects: {

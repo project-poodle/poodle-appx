@@ -22,7 +22,9 @@ export const js_boolean = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/switch',
+        input: {
+          kind: 'input/switch'
+        }
       },
     },
   ]

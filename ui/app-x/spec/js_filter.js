@@ -27,7 +27,9 @@ export const js_filter = {
             data: 'string'
           },
         ],
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression'
+        }
       },
       _childNode: {
         types: 'inherit',
@@ -45,7 +47,9 @@ export const js_filter = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression'
+        }
       },
     },
   ]

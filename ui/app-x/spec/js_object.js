@@ -8,7 +8,9 @@ export const js_object = {
 
   type: 'js/object',
   desc: 'Object',
-  _input: 'input/properties',
+  _input: {
+    kind: 'input/properties',
+  },
   children: [
     {
       name: '*',

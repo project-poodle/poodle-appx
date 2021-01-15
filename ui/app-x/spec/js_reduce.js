@@ -28,7 +28,9 @@ export const js_reduce = {
             data: 'string'
           },
         ],
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression'
+        },
       },
       _childNode: {
         types: 'inherit'
@@ -46,7 +48,9 @@ export const js_reduce = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression'
+        },
       },
     },
     {
@@ -61,7 +65,9 @@ export const js_reduce = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression'
+        },
       },
     },
   ]

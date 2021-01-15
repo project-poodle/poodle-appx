@@ -34,7 +34,9 @@ export const react_effect = {
             data: 'string',
           },
         ],
-        input: 'input/statement',
+        input: {
+          kind: 'input/statement'
+        },
       },
       _childNode: {
         types: [
@@ -58,7 +60,9 @@ export const react_effect = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        },
       },
     },
   ]

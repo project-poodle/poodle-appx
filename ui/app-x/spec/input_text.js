@@ -25,7 +25,9 @@ export const input_text = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
       },
     },
     {
@@ -39,7 +41,9 @@ export const input_text = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/switch',
+        input: {
+          kind: 'input/switch'
+        },
       },
     },
     {
@@ -53,7 +57,9 @@ export const input_text = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/switch',
+        input: {
+          kind: 'input/switch'
+        },
       },
     },
     {
@@ -67,7 +73,9 @@ export const input_text = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties',
+        },
       },
     },
     {
@@ -81,37 +89,43 @@ export const input_text = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/list',
-        inputSpec: {
+        input: {
+          kind: 'input/list',
           columns: [
             {
               name: 'kind',
               desc: 'Kind',
               required: true,
-              input: 'input/select',
-              options: [
-                {
-                  value: 'pattern',
-                },
-                {
-                  value: 'validate',
-                }
-              ]
+              input: {
+                kind: 'input/select',
+                options: [
+                  {
+                    value: 'pattern',
+                  },
+                  {
+                    value: 'validate',
+                  }
+                ]
+              },
             },
             {
               name: 'data',
               desc: 'Data',
               required: true,
-              input: 'input/text'
+              input: {
+                kind: 'input/text'
+              }
             },
             {
               name: 'message',
               desc: 'Message',
               required: true,
-              input: 'input/text',
+              input: {
+                kind: 'input/text'
+              }
             }
           ]
-        }
+        },
       },
     },
   ]

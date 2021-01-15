@@ -362,9 +362,9 @@ const PropEditor = (props) => {
         })
       // process _childNode
       nodeSpec.children
-        .filter(childSpec => !!childSpec._childNode)
+        .filter(childSpec => !!childSpec._childNode?.input)
         .map(childSpec => {
-          if (childSpec._childNode.input === 'input/properties') {
+          if (childSpec._childNode.input.kind === 'input/properties') {
             // TODO_childNode
             if (childSpec.name === '*') {
               return thisNode?.children
@@ -387,7 +387,7 @@ const PropEditor = (props) => {
         })
       // process nodeSpec._input
       if (
-        nodeSpec?._input === 'input/properties'
+        nodeSpec?._input?.kind === 'input/properties'
         && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
       ) {
         const { properties, otherNames } = InputProperties.parse(thisNode)
@@ -481,7 +481,7 @@ const PropEditor = (props) => {
     //////////////////////////////////////////////////////////////////////
     // handle nodeSpec.children._childNode.input : 'input/properties'
     nodeSpec.children
-      .filter(childSpec => childSpec._childNode?.input === 'input/properties')
+      .filter(childSpec => childSpec._childNode?.input?.kind === 'input/properties')
       .map(childSpec => {
         if (childSpec.name === '*') {
           lookupNode.children.map(childNode => {
@@ -493,7 +493,7 @@ const PropEditor = (props) => {
       })
     //////////////////////////////////////////////////////////////////////
     // handle nodeSpec._input : 'input/properties'
-    if (nodeSpec._input === 'input/properties') {
+    if (nodeSpec._input?.kind === 'input/properties') {
       const parentNode = tree_lookup(resultTree, lookupNode.parentKey)
       _process_this_props(lookupNode, parentNode)
     }
@@ -659,7 +659,7 @@ const PropEditor = (props) => {
                             name={custom.name}
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
-                            thisNodeSpec={custom}
+                            inputSpec={custom.input}
                             defaultValue={thisNode?.data[custom.name]}
                             callback={d => {
                               setBaseSubmitTimer(new Date())
@@ -691,7 +691,7 @@ const PropEditor = (props) => {
                             name={custom.name}
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
-                            thisNodeSpec={custom}
+                            inputSpec={custom.input}
                             defaultValue={thisNode?.data[custom.name]}
                             callback={d => {
                               setBaseSubmitTimer(new Date())
@@ -894,7 +894,7 @@ const PropEditor = (props) => {
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
-                        thisNodeSpec={childSpec._thisNode}
+                        inputSpec={childSpec._thisNode?.input}
                         callback={d => {
                           setBaseSubmitTimer(new Date())
                         }}
@@ -908,9 +908,8 @@ const PropEditor = (props) => {
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
-                        thisNodeSpec={childSpec._thisNode}
-                        ca
-                        llback={d => {
+                        inputSpec={childSpec._thisNode?.input}
+                        callback={d => {
                           setBaseSubmitTimer(new Date())
                         }}
                       />
@@ -925,7 +924,7 @@ const PropEditor = (props) => {
                 && (() => {
                   if
                   (
-                    nodeSpec?._input === 'input/properties'
+                    nodeSpec?._input?.kind === 'input/properties'
                     && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
                   )
                   {
@@ -951,7 +950,7 @@ const PropEditor = (props) => {
               {
                 (thisNode?.key !== '/')
                 && nodeSpec?.children
-                  .filter(childSpec => childSpec._childNode?.input === 'input/properties')
+                  .filter(childSpec => childSpec._childNode?.input?.kind === 'input/properties')
                   .map(childSpec => {
                     // console.log(`input/properties`, childSpec)
                     if (!!hidden[childSpec.name]) {

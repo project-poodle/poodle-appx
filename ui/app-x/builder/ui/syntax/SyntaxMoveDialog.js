@@ -362,7 +362,7 @@ const SyntaxMoveDialog = (props) => {
                           name={custom.name}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
-                          thisNodeSpec={custom}
+                          inputSpec={custom.input}
                           defaultValue={props.moveDragNode?.data[custom.name]}
                         />
                       )
@@ -390,7 +390,7 @@ const SyntaxMoveDialog = (props) => {
                           name={custom.name}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
-                          thisNodeSpec={custom}
+                          inputSpec={custom.input}
                           defaultValue={props.moveDragNode?.data[custom.name]}
                         />
                       )
@@ -595,7 +595,7 @@ const SyntaxMoveDialog = (props) => {
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
                         childSpec={childSpec}
-                        thisNodeSpec={childSpec._thisNode}
+                        inputSpec={childSpec._thisNode.input}
                       />
                     </div>
                   )
@@ -608,7 +608,7 @@ const SyntaxMoveDialog = (props) => {
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
                         childSpec={childSpec}
-                        thisNodeSpec={childSpec._thisNode}
+                        inputSpec={childSpec._thisNode.input}
                       />
                     </div>
                   )

@@ -31,7 +31,9 @@ export const js_statement = {
             data: 'string'
           },
         ],
-        input: 'input/statement',
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: 'inherit',

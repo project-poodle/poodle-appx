@@ -22,9 +22,11 @@ export const react_context = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
-        suggestions: 'auto_suggestions.valid_import_names()',
-        suggestionsOnly: true,
+        input: {
+          kind: 'input/text',
+          suggestions: 'auto_suggestions.valid_import_names()',
+          suggestionsOnly: true,
+        },
         examples: [
           'app-x/builder/ui/NavProvider.Context',
         ],

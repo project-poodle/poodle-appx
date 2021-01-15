@@ -22,7 +22,9 @@ export const js_import = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
         suggestions: 'auto_suggestions.valid_import_names()',
         suggestionsOnly: true,
         examples: [

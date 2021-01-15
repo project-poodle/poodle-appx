@@ -22,7 +22,9 @@ export const appx_route = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
       },
     },
   ]

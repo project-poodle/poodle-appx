@@ -35,7 +35,9 @@ export const react_form = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text',
+        },
       },
     },
     {
@@ -58,7 +60,9 @@ export const react_form = {
             data: 'string'
           },
         ],
-        input: 'input/statement',
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: [
@@ -67,7 +71,6 @@ export const react_form = {
             data: 'statement'
           },
         ],
-        class: 'statement',
       },
     },
     {
@@ -90,7 +93,9 @@ export const react_form = {
             data: 'string'
           },
         ],
-        input: 'input/statement',
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: [
@@ -112,7 +117,9 @@ export const react_form = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties'
+        },
       },
     },
     {
@@ -126,7 +133,9 @@ export const react_form = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties'
+        },
       },
     },
     {

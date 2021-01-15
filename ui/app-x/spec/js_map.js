@@ -28,7 +28,9 @@ export const js_map = {
             data: 'string'
           },
         ],
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        }
       },
       _childNode: {
         types: 'inherit',
@@ -54,7 +56,9 @@ export const js_map = {
             data: 'string'
           },
         ],
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        }
       },
       _childNode: {
         types: 'inherit',

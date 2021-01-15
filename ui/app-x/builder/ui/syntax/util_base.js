@@ -636,12 +636,13 @@ function load_valid_import_data() {
         const modules = libs[lib_key].modules
         if (modules && modules.length) {
           // iterate modules
-          modules.map(module_name => {
+          modules.filter(module_name => !module_name.startsWith('@babel')).map(module_name => {
             // console.log(module_name)
             const module_content = path_module['default'][module_name]
-            if (typeof module_content === 'object' && module_content) {
+            if (typeof module_content === 'object' && !!module_content) {
               // console.log(module_content)
               Object.keys(module_content).map(variable_name => {
+                /*
                 if (variable_name === 'default') {
                   // add default
                   _valid_import_data[module_name] = {
@@ -650,11 +651,27 @@ function load_valid_import_data() {
                     variable: variable_name,
                   }
                 }
+                */
                 const title = module_name + VARIABLE_SEPARATOR + variable_name
                 _valid_import_data[title] = {
                   title: title,
                   module: module_name,
                   variable: variable_name,
+                }
+                // add children
+                const variable = module_content[variable_name]
+                if (!!variable) {
+                  Object.keys(variable)
+                    .filter(subVar => !subVar.startsWith('$'))
+                    .map(subVar => {
+                      const subvar_title = module_name + VARIABLE_SEPARATOR + variable_name + VARIABLE_SEPARATOR + subVar
+                      _valid_import_data[subvar_title] = {
+                        title: subvar_title,
+                        module: module_name,
+                        variable: variable_name,
+                        subVar: subVar,
+                      }
+                    })
                 }
               })
             }

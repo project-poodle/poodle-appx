@@ -32,7 +32,9 @@ export const js_function = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        }
       },
     },
     {
@@ -56,7 +58,9 @@ export const js_function = {
             data: 'string'
           },
         ],
-        input: 'input/statement',
+        input: {
+          kind: 'input/statement',
+        }
       },
       _childNode: {
         types: [

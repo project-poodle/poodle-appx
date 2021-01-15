@@ -22,7 +22,9 @@ export const js_expression = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        }
       },
     },
   ]

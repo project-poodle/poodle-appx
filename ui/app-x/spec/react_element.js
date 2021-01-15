@@ -30,9 +30,11 @@ export const react_element = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
-        suggestions: 'auto_suggestions.valid_import_names()',
-        suggestionsOnly: true,
+        input: {
+          kind: 'input/text',
+          suggestions: 'auto_suggestions.valid_import_names()',
+          suggestionsOnly: true,
+        },
         examples: [
           '@material-ui/core.Box',
           '@material-ui/core.Grid',
@@ -57,7 +59,9 @@ export const react_element = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties',
+        },
       },
     },
     {

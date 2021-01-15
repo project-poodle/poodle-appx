@@ -29,7 +29,9 @@ export const appx_api = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
       },
     },
     {
@@ -44,7 +46,9 @@ export const appx_api = {
       ],
       _thisNode:{
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
       },
     },
     {
@@ -59,7 +63,9 @@ export const appx_api = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
         options: [
           "get",
           "post",
@@ -82,7 +88,9 @@ export const appx_api = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text'
+        },
       },
     },
     {
@@ -105,7 +113,9 @@ export const appx_api = {
             data: 'string'
           },
         ],
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        },
       },
       _childNode: {
         types: [
@@ -137,7 +147,9 @@ export const appx_api = {
             data: 'string'
           },
         ],
-        input: 'input/statement'
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: [
@@ -168,7 +180,9 @@ export const appx_api = {
             data: 'string'
           },
         ],
-        input: 'input/statement'
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: [
@@ -200,7 +214,9 @@ export const appx_api = {
             data: 'string'
           },
         ],
-        input: 'input/statement'
+        input: {
+          kind: 'input/statement',
+        },
       },
       _childNode: {
         types: [

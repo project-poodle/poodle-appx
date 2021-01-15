@@ -21,7 +21,9 @@ export const mui_style = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties',
+        },
       },
     },
   ]

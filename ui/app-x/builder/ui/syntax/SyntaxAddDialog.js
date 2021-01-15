@@ -419,7 +419,7 @@ const SyntaxAddDialog = (props) => {
                         name={custom.name}
                         disabled={!!disabled[custom.name]}
                         childSpec={custom}
-                        thisNodeSpec={custom}
+                        inputSpec={custom.input}
                         defaultValue={!!custom.defaultValue ? eval(custom.defaultValue) : ''}
                       />
                     )
@@ -447,7 +447,7 @@ const SyntaxAddDialog = (props) => {
                           name={custom.name}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
-                          thisNodeSpec={custom}
+                          inputSpec={custom.input}
                           defaultValue={!!custom.defaultValue ? eval(custom.defaultValue) : ''}
                         />
                       )
@@ -651,7 +651,7 @@ const SyntaxAddDialog = (props) => {
                       name={childSpec.name}
                       disabled={!!disabled[childSpec.name]}
                       childSpec={childSpec}
-                      thisNodeSpec={childSpec._thisNode}
+                      inputSpec={childSpec._thisNode.input}
                     />
                   )
                 } else {
@@ -662,7 +662,7 @@ const SyntaxAddDialog = (props) => {
                       disabled={!!disabled[childSpec.name]}
                       defaultValue=''
                       childSpec={childSpec}
-                      thisNodeSpec={childSpec._thisNode}
+                      inputSpec={childSpec._thisNode.input}
                     />
                   )
                 }

@@ -15,8 +15,10 @@ export const react_state = {
     {
       name: '_customRef',
       desc: 'Custom Reference',
-      input: 'input/switch',
       context: [ "add", "move" ],
+      input: {
+        kind: 'input/switch',
+      },
     }
   ],
   _effects: {
@@ -47,7 +49,9 @@ export const react_state = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text',
+        },
         examples: [
           'open',
           'show',
@@ -77,7 +81,9 @@ export const react_state = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text',
+        },
         examples: [
           'setOpen',
           'setShow',
@@ -100,7 +106,9 @@ export const react_state = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/expression',
+        input: {
+          kind: 'input/expression',
+        },
         examples: [
           null,
           true,

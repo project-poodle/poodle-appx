@@ -188,6 +188,8 @@ const types = [
       }
       if (!childSpec._thisNode.input) {
         throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
+      } else if (!childSpec._thisNode.input.kind) {
+        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input.kind]`)
       }
     }
     // check _childNode
@@ -196,6 +198,11 @@ const types = [
         throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [types]`)
       } else {
         check_type_spec(childSpec._childNode.types)
+      }
+      if (!!childSpec._childNode.input) {
+        if (!childSpec._childNode.input.kind) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _childNode missing [input.kind]`)
+        }
       }
     }
   })

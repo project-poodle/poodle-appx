@@ -22,7 +22,9 @@ export const js_number = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/number',
+        input: {
+          kind: 'input/number',
+        }
       },
     },
   ]

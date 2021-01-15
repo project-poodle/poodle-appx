@@ -84,11 +84,11 @@ const InputFieldArray = ((props) => {
   }))()
 
   // destruct props
-  const { name, childSpec, thisNodeSpec } = props
+  const { name, childSpec, inputSpec } = props
 
   const suggestions = (() => {
-    if (thisNodeSpec?.suggestions) {
-      return eval(thisNodeSpec?.suggestions)
+    if (inputSpec?.suggestions) {
+      return eval(inputSpec?.suggestions)
     } else {
       return []
     }
@@ -162,7 +162,7 @@ const InputFieldArray = ((props) => {
                   let count = 0
                   const result = { validate: {} }
                   // check required flag
-                  if (!!childSpec.required && thisNodeSpec?.input !== 'input/switch') {
+                  if (!!childSpec.required && inputSpec?.kind !== 'input/switch') {
                     result['required'] = `${childSpec.desc} is required`
                   }
                   // check rules
@@ -183,8 +183,8 @@ const InputFieldArray = ((props) => {
                     })
                   }
                   // check _thisNode.rules
-                  if (!!thisNodeSpec?.rules) {
-                    thisNodeSpec.rules.map(rule => {
+                  if (!!inputSpec?.rules) {
+                    inputSpec.rules.map(rule => {
                       if (rule.kind === 'required') {
                         result['required'] = rule.message
                       } else if (rule.kind === 'pattern') {
@@ -200,19 +200,19 @@ const InputFieldArray = ((props) => {
                     })
                   }
                   // auto suggestions rule
-                  if (!!thisNodeSpec.suggestionsOnly) {
+                  if (!!inputSpec.suggestionsOnly) {
                     result.validate[`validate_${count++}`] = (value) => (
                       suggestions.includes(value)
                       || `${childSpec.desc} must be a valid value`
                     )
                   }
                   // additional rules by input type
-                  // console.log(`thisNodeSpec.input`, thisNodeSpec.input)
-                  if (thisNodeSpec.input === 'input/number') {
+                  // console.log(`inputSpec.kind`, inputSpec.kind)
+                  if (inputSpec.kind === 'input/number') {
                     result.validate[`validate_${count++}`] = (value) => {
                       return !isNaN(Number(value)) || "Must be a number"
                     }
-                  } else if (thisNodeSpec.input === 'input/expression') {
+                  } else if (inputSpec.kind === 'input/expression') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
                         parseExpression(String(value))
@@ -221,7 +221,7 @@ const InputFieldArray = ((props) => {
                         return String(err)
                       }
                     }
-                  } else if (thisNodeSpec.input === 'input/statement') {
+                  } else if (inputSpec.kind === 'input/statement') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
                         parse(value, {
@@ -238,7 +238,7 @@ const InputFieldArray = ((props) => {
                 })()}
                 render={innerProps =>
                   {
-                    if (thisNodeSpec.input === 'input/switch')
+                    if (inputSpec.kind === 'input/switch')
                     {
                       return (
                         <FormControl
@@ -268,8 +268,8 @@ const InputFieldArray = ((props) => {
                     }
                     else if
                     (
-                      thisNodeSpec.input === 'input/expression'
-                      || thisNodeSpec.input === 'input/statement'
+                      inputSpec.kind === 'input/expression'
+                      || inputSpec.kind === 'input/statement'
                     )
                     {
                       return (
@@ -282,7 +282,7 @@ const InputFieldArray = ((props) => {
                             >
                             <ControlledEditor
                               className={
-                                thisNodeSpec.input === 'input/expression'
+                                inputSpec.kind === 'input/expression'
                                 ? styles.expressionEditor
                                 : styles.statementEditor
                               }
@@ -411,7 +411,7 @@ InputFieldArray.propTypes = {
   name: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
-  thisNodeSpec: PropTypes.object.isRequired,
+  inputSpec: PropTypes.object.isRequired,
   callback: PropTypes.func,
   defaultValue: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,

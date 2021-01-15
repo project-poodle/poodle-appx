@@ -22,7 +22,9 @@ export const js_string = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
+        input: {
+          kind: 'input/text',
+        },
       },
     },
   ]

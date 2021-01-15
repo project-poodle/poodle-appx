@@ -25,8 +25,10 @@ export const react_html = {
       ],
       _thisNode: {
         types: 'inherit',
-        input: 'input/text',
-        suggestions: 'auto_suggestions.valid_html_tags()',
+        input: {
+          kind: 'input/text',
+          suggestions: 'auto_suggestions.valid_html_tags()',
+        },
         examples: [
           'div',
           'span',
@@ -48,7 +50,9 @@ export const react_html = {
       ],
       _childNode: {
         types: 'inherit',
-        input: 'input/properties',
+        input: {
+          kind: 'input/properties'
+        },
       },
     },
     {
