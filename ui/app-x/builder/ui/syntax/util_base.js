@@ -618,6 +618,65 @@ function valid_html_tags() {
 const _valid_import_data = {}
 const _valid_import_names = []
 
+function lookup_prop_types(name, callback) {
+  if (!globalThis.appx?.IMPORT_MAPS) {
+    throw new Error(`ERROR: appx.IMPORT_MAPS not set`)
+  }
+  if (!name) {
+    return []
+  }
+  // lookup prop types
+  console.log(`lookup_prop_types: ${name}`)
+  const parsed = parse_var_full_path(name)
+  const full_paths = [...parsed.full_paths]
+
+  let found = null
+  let lib_path = null
+  const libs = globalThis.appx?.IMPORT_MAPS.libs
+  if (!!libs) {
+    Object.keys(libs).map(lib_key => {
+      if (!!found) {
+        return
+      }
+      found = libs[lib_key].modules.find(module_name => name.startsWith(module_name))
+      lib_path = libs[lib_key].path
+    })
+  }
+
+  if (!!found) {
+    import(lib_path).then(path_module => {
+      const module_content = path_module['default'][found]
+      const found_paths = found.split(PATH_SEPARATOR)
+      while (found_paths.length) {
+        found_paths.shift()
+        full_paths.shift()
+      }
+      let react_element = module_content
+      while (full_paths.length) {
+        react_element = react_element[full_paths[0]]
+        full_paths.shift()
+      }
+      // callback
+      if (!!react_element && !!react_element.propTypes) {
+        console.log(`propTypes`, react_element.propTypes)
+        if (typeof react_element.propTypes.classes === 'function') {
+          console.log(`classes`, react_element.propTypes.classes())
+        }
+        if (typeof react_element.propTypes.innerRef === 'function') {
+          console.log(`innerRef`, react_element.propTypes.innerRef())
+        }
+        if (callback) {
+          callback(Object.keys(react_element.propTypes))
+        }
+      } else {
+        if (!!callback) {
+          callback([])
+        }
+      }
+    })
+  }
+}
+
 // load valid import names
 function load_valid_import_data() {
 
@@ -772,4 +831,5 @@ export {
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
+  lookup_prop_types,
 }

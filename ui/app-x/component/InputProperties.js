@@ -212,26 +212,17 @@ const InputProperties = props => {
                 }}
                 render={innerProps =>
                   <FormControl className={styles.nameControl}>
-                    <TextField
-                      name={innerProps.name}
-                      value={innerProps.value}
+                    <AutoSuggest
+                      key='name'
+                      name={`${props.name}[${index}].name`}
+                      // className={styles.nameControl}
                       size="small"
-                      onChange={e => {
-                        innerProps.onChange(e.target.value)
-                        if (props.callback) {
-                          // console.log(`callback`, e.target.value, innerProps.name)
-                          props.callback(e.target.value, innerProps.name)
-                        }
-                      }}
-                      error={
-                        !!_.get(errors, props.name)
-                        && !!_.get(errors, props.name)[index]?.name
-                      }
-                      helperText={
-                        !!_.get(errors, props.name)
-                        && _.get(errors, props.name)[index]?.name?.message
-                      }
-                    />
+                      value={innerProps.value}
+                      onChange={innerProps.onChange}
+                      options={props.options || []}
+                      callback={props.callback}
+                      >
+                    </AutoSuggest>
                   </FormControl>
                 }
               />

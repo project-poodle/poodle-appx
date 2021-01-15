@@ -75,6 +75,7 @@ import {
   lookup_first_accepted_childSpec,
   lookup_icon_for_class,
   type_matches_spec,
+  lookup_prop_types,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
@@ -181,20 +182,21 @@ const PropEditor = (props) => {
 
   //////////////////////////////////////////////////////////////////////////////
   // states
-  const [ parentNode,     setParentNode     ] = useState(null)
-  const [ parentSpec,     setParentSpec     ] = useState(null)
-  const [ thisNode,       setThisNode       ] = useState(null)
-  const [ nodeSpec,       setNodeSpec       ] = useState(null)
-  const [ nodeType,       setNodeType       ] = useState(null)
-  const [ nodeRef,        setNodeRef        ] = useState(null)
+  const [ parentNode,       setParentNode       ] = useState(null)
+  const [ parentSpec,       setParentSpec       ] = useState(null)
+  const [ thisNode,         setThisNode         ] = useState(null)
+  const [ nodeSpec,         setNodeSpec         ] = useState(null)
+  const [ nodeType,         setNodeType         ] = useState(null)
+  const [ nodeRef,          setNodeRef          ] = useState(null)
   // const [ nodeChildren,   setNodeChildren   ] = useState([])
 
   // disabled and hidden states
-  const [ disabled,       setDisabled       ] = useState({})
-  const [ hidden,         setHidden         ] = useState({})
+  const [ disabled,         setDisabled         ] = useState({})
+  const [ hidden,           setHidden           ] = useState({})
 
   // other names
-  const [ nodeOtherNames, setNodeOtherNames ] = useState({})
+  const [ propNameOptions,  setPropNameOptions  ] = useState({})
+  const [ nodeOtherNames,   setNodeOtherNames   ] = useState({})
 
   //////////////////////////////////////////////////////////////////////////////
   // context variables
@@ -255,6 +257,20 @@ const PropEditor = (props) => {
       }
     }
   }, [watchData])
+
+  // watch for react/element and update props name based on propTypes
+  // const watchType = watch('_type')
+  useEffect(() => {
+    if (nodeType === 'react/element') {
+      // console.log(`here`)
+      lookup_prop_types(thisNode?.data.name, options => {
+        // console.log(`callback`, options)
+        const newPropNameOptions = _.cloneDeep(propNameOptions)
+        newPropNameOptions.props = options // .map(value => {value: value})
+        setPropNameOptions(newPropNameOptions)
+      })
+    }
+  }, [nodeType, thisNode])
 
   //////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
@@ -936,6 +952,7 @@ const PropEditor = (props) => {
                         name={THIS_NODE_PROPERTIES}
                         key={THIS_NODE_PROPERTIES}
                         label={nodeSpec.desc}
+                        options={propNameOptions[THIS_NODE_PROPERTIES] || []}
                         otherNames={nodeOtherNames[THIS_NODE_PROPERTIES] || []}
                         className={styles.formControl}
                         callback={d => {
@@ -975,6 +992,7 @@ const PropEditor = (props) => {
                                 name={childNode.data._ref}
                                 key={childNode.data._ref}
                                 label={`[ ${childNode.data._ref} ]`}
+                                options={propNameOptions[childNode.data._ref] || []}
                                 otherNames={nodeOtherNames[childNode.data._ref] || []}
                                 className={styles.formControl}
                                 callback={d => {
@@ -996,6 +1014,7 @@ const PropEditor = (props) => {
                             name={childSpec.name}
                             key={childSpec.name}
                             label={childSpec.desc}
+                            options={propNameOptions[childSpec.name] || []}
                             otherNames={nodeOtherNames[childSpec.name] || []}
                             className={styles.formControl}
                             callback={d => {
