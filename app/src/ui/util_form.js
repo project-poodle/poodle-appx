@@ -78,22 +78,56 @@ function react_form(js_context, input) {
   // register form
   reg_react_form(js_context, input.name, qualifiedName, formProps)
   // console.log(`js_context.reactForm`, js_context.reactForm)
+  // register variables
+  REACT_FORM_METHODS.map(method => {
+    reg_js_variable(js_context, `${qualifiedName}.${method}`)
+  })
 
   //////////////////////////////////////////////////////////////////////
   // start processing after reg_react_form
   const onSubmitStatements = (() => {
     if (!!input.onSubmit) {
-      return _js_parse_statements(js_context, input.onSubmit)
+      if (isPrimitive(input.onSubmit)) {
+        return t.blockStatement(
+          _js_parse_statements(js_context, input.onSubmit)
+        )
+      } else {
+        return js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          input.onSubmit
+        )
+      }
     } else {
-      return []
+      return t.blockStatement([])
     }
   })()
 
   const onErrorStatements = (() => {
     if (!!input.onError) {
-      return _js_parse_statements(js_context, input.onError)
+      if (isPrimitive(input.onError)) {
+        return t.blockStatement(
+          _js_parse_statements(js_context, input.onError)
+        )
+      } else {
+        return js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          input.onError
+        )
+      }
     } else {
-      return []
+      return t.blockStatement([])
     }
   })()
 
@@ -146,11 +180,6 @@ function react_form(js_context, input) {
     }
   })()
 
-  // register variables
-  REACT_FORM_METHODS.map(method => {
-    reg_js_variable(js_context, `${qualifiedName}.${method}`)
-  })
-
   // result element
   const resultElement = t.jSXElement(
     t.jSXOpeningElement(
@@ -188,17 +217,13 @@ function react_form(js_context, input) {
                       [
                         t.identifier('data')
                       ],
-                      t.blockStatement(
-                        onSubmitStatements,
-                      )
+                      onSubmitStatements,
                     ),
                     t.arrowFunctionExpression(
                       [
                         t.identifier('error')
                       ],
-                      t.blockStatement(
-                        onErrorStatements,
-                      )
+                      onErrorStatements,
                     )
                   ]
                 )
@@ -239,13 +264,11 @@ function input_text(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // process form context and reg_react_form before processing others
-
   // check for js_context.reactForm exist
   if (!(js_context.reactForm)) {
     // console.log(`reg_js_import`, `react-hook-form.useFormContext`)
     reg_js_import(js_context, `react-hook-form.useFormContext`)
   }
-
   // qualified name
   const qualifiedName = !!(js_context.reactForm)
     ? `react-hook-form.useForm.${js_context.reactForm}`
@@ -255,7 +278,6 @@ function input_text(js_context, input) {
   if (!js_context.reactForm) {
     reg_react_form(js_context, '', qualifiedName, null)
   }
-
   // register variables, no import needed
   REACT_FORM_METHODS.map(method => {
     reg_js_variable(js_context, `${qualifiedName}.${method}`)
@@ -272,7 +294,6 @@ function input_text(js_context, input) {
       throw new Error(`ERROR: [input/text] input.name is not string [${JSON.stringify(input.name)}]`)
     }
   })()
-
 
   // process main props
   const props = input.props || {}
@@ -397,8 +418,9 @@ function input_text(js_context, input) {
     <$JSX $NAME='react-hook-form.Controller'
       key={name}
       name={name}
+      required={${required}}
       constrol={$L('${qualifiedName}.control')}
-      defaultValue={${props.defaultValue}}
+      defaultValue={${props.defaultValue} || ''}
       rules={rules}
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.FormControl'
@@ -481,13 +503,11 @@ function input_text_array(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // process form context and reg_react_form before processing others
-
   // check for js_context.reactForm exist
   if (!(js_context.reactForm)) {
     // console.log(`reg_js_import`, `react-hook-form.useFormContext`)
     reg_js_import(js_context, `react-hook-form.useFormContext`)
   }
-
   // qualified name
   const qualifiedName = !!(js_context.reactForm)
     ? `react-hook-form.useForm.${js_context.reactForm}`
@@ -497,21 +517,17 @@ function input_text_array(js_context, input) {
   if (!js_context.reactForm) {
     reg_react_form(js_context, '', qualifiedName, null)
   }
-
   // register import
-  // reg_js_import(js_context, 'lodash.default')
-  // reg_js_import(js_context, '@material-ui/core.TextField')
   // register variables, no import needed
   REACT_FORM_METHODS.map(method => {
     reg_js_variable(js_context, `${qualifiedName}.${method}`)
   })
-
   // import useFieldArray
-  reg_js_import(js_context, 'react-hook-form.useFieldArray')
+  // reg_js_import(js_context, 'react-hook-form.useFieldArray')
   // register field array variables
-  REACT_FORM_ARRAY_METHODS.map(method => {
-    reg_js_variable(js_context, `${qualifiedName}.useFieldArray.${input.name}.${method}`)
-  })
+  // REACT_FORM_ARRAY_METHODS.map(method => {
+  //   reg_js_variable(js_context, `${qualifiedName}.useFieldArray.${input.name}.${method}`)
+  // })
 
   //////////////////////////////////////////////////////////////////////
   // start processing after reg_react_form
@@ -663,7 +679,8 @@ function input_text_array(js_context, input) {
         )
       }
       {
-        $L('${qualifiedName}.useFieldArray.${input.name}.fields')
+        // $L('${qualifiedName}.useFieldArray.${input.name}.fields')
+        fields
           .map((item, index) => {
             return (
               <$JSX $NAME='@material-ui/core.Box'
@@ -675,6 +692,7 @@ function input_text_array(js_context, input) {
                   key={item.id}
                   name={\`\${name}[\${index}].value\`}
                   constrol={$L('${qualifiedName}.control')}
+                  required={${required}}
                   defaultValue={item.value}
                   rules={rules}
                   render={innerProps => (
@@ -692,18 +710,24 @@ function input_text_array(js_context, input) {
                   !props.readOnly
                   &&
                   (
-                    <$JSX $NAME='@material-ui/core.IconButton'
-                      key="remove"
-                      aria-label="Remove"
-                      size={props.size}
-                      onClick={e => {
-                        $L('${qualifiedName}.useFieldArray.${input.name}.remove')(index)
-                        if (!!props.callback) {
-                          props.callback(index, \`\${name}[\${index}]\`)
-                        }
-                      }}
+                    <$JSX $NAME='@material-ui/core.Box'
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
                       >
-                      <$JSX $NAME='@material-ui/icons.RemoveCircleOutline' />
+                      <$JSX $NAME='@material-ui/core.IconButton'
+                        key="remove"
+                        aria-label="Remove"
+                        size={props.size}
+                        onClick={e => {
+                          remove(index)
+                          if (!!props.callback) {
+                            props.callback(index, \`\${name}[\${index}]\`)
+                          }
+                        }}
+                        >
+                        <$JSX $NAME='@material-ui/icons.RemoveCircleOutline' />
+                      </$JSX>
                     </$JSX>
                   )
                 }
@@ -720,10 +744,9 @@ function input_text_array(js_context, input) {
             aria-label="Add"
             size={props.size}
             onClick={e => {
-              $L('${qualifiedName}.useFieldArray.${input.name}.append')({
+              append({
                 value: '',
               })
-              console.log('add', $L('${qualifiedName}.getValues')())
               // if (!!props.callback) {
               //   props.callback('', name, 'add')
               // }
@@ -767,7 +790,9 @@ function input_text_array(js_context, input) {
           ...restProps
         } = props
         // set value
-        $L('${qualifiedName}.setValue')(name, props.defaultValue || [])
+        $I('react.useEffect')(() => {
+          $L('${qualifiedName}.setValue')(name, props.defaultValue || [])
+        }, [])
         // return
         return (
           ${controlElement}
