@@ -1,3 +1,21 @@
+const jsx =
+  <$JSX $NAME='@material-ui/core.TextField'
+    {...$params.restProps}
+    name={`${$params.name}[index].value`}
+    type={$params.type}
+    multiline={$params.multiline}
+    value={innerProps.value}
+    onChange={e => {
+      innerProps.onChange(e.target.value)
+      if (!!props.callback) {
+        props.callback(e.target.value)
+      }
+    }}
+    error={!!$r(lodash.default).get($params.qualifedName, `${$params.name}[index].value`)}
+    helperText={$r(lodash.default).get($params.qualifedName, `${$params.name}[index].value`)?.message}
+    >
+  </$JSX>
+
 const member1 = b[1]
 const member2 = d?.e
 

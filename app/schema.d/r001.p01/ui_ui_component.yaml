@@ -607,7 +607,7 @@ ui_component:
             _type: js/statement
             body:
               - |
-                // console.log($r('react-grid-layout.default'))
+                // console.log($I('react-grid-layout.default'))
           element:
             _type: react/element
             name: "@material-ui/core.Container"
@@ -678,7 +678,7 @@ ui_component:
                                 array: false
                                 props:
                                   autoSuggest: true
-                                  options:
+                                  suggestions:
                                     _type: js/expression
                                     data: "[{value:'a'},{value:'abc'},{value:'def'}]"
                               - a
@@ -730,7 +730,7 @@ ui_component:
                                   defaultValue: "[{value:'a'},{value:'b'}]"
                                   label: auto complete label
                                   multiline: false
-                                  options:
+                                  suggestions:
                                     _type: js/expression
                                     data: "[{value:\"abc\"},{value:\"def\"},{value:'k'},{value:'cat'}]"
                       - b

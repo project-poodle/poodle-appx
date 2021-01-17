@@ -7,7 +7,11 @@ const VARIABLE_SEPARATOR = '.'
 
 const SPECIAL_CHARACTER = /[^_a-zA-Z0-9]/g
 const JSX_CONTEXT = 'JSX_CONTEXT'
-const REQUIRE_FUNCTION = '$r'
+
+const TOKEN_IMPORT = '$I'
+const TOKEN_LOCAL = '$L'
+const TOKEN_JSX = '$JSX'
+const TOKEN_NAME = '$NAME'
 
 const REACT_FORM_METHODS = [
   'register',
@@ -81,30 +85,88 @@ function _js_parse_snippet(js_context, parsed) {
   // console.log(parsed)
 
   traverse(parsed, {
-    // resolve call expressins with REQUIRE_FUNCTION require syntax
-    //   $r('app-x/router|navigate')
+    // resolve call expressins with TOKEN_IMPORT require syntax
+    //   $I('app-x/router|navigate')
     CallExpression(path) {
-      // log callee
-      //console.log(path.node.callee)
-      //console.log(path.node.arguments)
-      // check if matches REQUIRE_FUNCTION require syntax
+      // check if matches TOKEN_IMPORT syntax
       if (t.isIdentifier(path.node.callee)
-          && path.node.callee.name === REQUIRE_FUNCTION
+          && path.node.callee.name === TOKEN_IMPORT
           && path.node.arguments.length > 0
           && t.isStringLiteral(path.node.arguments[0])) {
-        // register and import REQUIRE_FUNCTION require syntax
+        // register and import TOKEN_IMPORT require syntax
         const name = path.node.arguments[0].value
         reg_js_import(js_context, name)
         path.replaceWith(t.identifier(name))
       }
+      // check if matches TOKEN_LOCAL syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name === TOKEN_LOCAL
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // register and import TOKEN_IMPORT require syntax
+        const name = path.node.arguments[0].value
+        reg_js_variable(js_context, name)
+        path.replaceWith(t.identifier(name))
+      }
     },
-    // register all variable declarators with 'snippet' prefix
+    // register all variable declarators with local prefix
     VariableDeclarator(path) {
       if (t.isIdentifier(path.node.id)) {
         // register variable defined by local snippet
-        const nodeName = path.node.id.name
-        reg_js_import(js_context, nodeName)
+        const scope = js_context.SCOPE || `$local`
+        const nodeName = `${scope}.${path.node.id.name}`
+        reg_js_variable(js_context, nodeName)
         path.node.id.name = nodeName
+      }
+    },
+    JSXElement(path) {
+      if
+      (
+        t.isJSXOpeningElement(path.node.openingElement)
+        && t.isJSXIdentifier(path.node.openingElement.name)
+        && path.node.openingElement.name.name === TOKEN_JSX
+      )
+      {
+        const name_attr = path.node.openingElement.attributes.find(attr => (
+          t.isJSXAttribute(attr)
+          && t.isJSXIdentifier(attr.name)
+          && attr.name.name === TOKEN_NAME
+        ))
+        // check that $NAME attr exists
+        if (!name_attr) {
+          throw new Error(`ERROR: [${TOKEN_JSX}] missing [${TOKEN_NAME}]`)
+        }
+        // check that value is string literals
+        if (!t.isStringLiteral(name_attr.value)) {
+          throw new Error(`ERROR: [${TOKEN_JSX}] [${TOKEN_NAME}] is not a string literal`)
+        }
+        // import
+        const import_name = name_attr.value.value
+        reg_js_import(js_context, import_name)
+        // create replacement
+        const replacement = t.jSXElement(
+          t.jSXOpeningElement(
+            t.jSXIdentifier(
+              import_name,
+            ),
+            path.node.openingElement.attributes.filter(attr => (
+              !(
+                t.isJSXAttribute(attr)
+                && t.isJSXIdentifier(attr.name)
+                && attr.name.name === TOKEN_NAME
+              )
+            ))
+          ),
+          t.jSXClosingElement(
+            t.jSXIdentifier(
+              import_name,
+            ),
+          ),
+          path.node.children
+        )
+        // console.log(replacement)
+        // replace
+        path.replaceWith(replacement)
       }
     }
   })
@@ -132,28 +194,34 @@ function _js_parse_statements(js_context, data, options) {
   }
 }
 
-// parse expression with support of '$r' syntax
-function _js_parse_expression(js_context, data) {
+// parse expression with support of '$I' syntax
+function _js_parse_expression(js_context, data, options) {
 
   try {
     // console.log(`_js_parse_expression`, data)
-    const parsed = parseExpression(data)
+    const parsed = parseExpression(data, options)
+
+    const program = t.file(
+      t.program(
+        [
+          t.returnStatement(
+            parsed
+          )
+        ]
+      )
+    )
 
     // parse user code snippet
     _js_parse_snippet(
       js_context,
-      t.file(
-        t.program(
-          [
-            t.returnStatement(
-              parsed
-            )
-          ]
-        )
-      )
+      program
     )
 
-    return parsed
+    // return statement
+    // console.log(program.program.body[0])
+
+    // return parsed expression
+    return program.program.body[0].argument
 
   } catch (err) {
 
@@ -444,7 +512,10 @@ module.exports = {
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
   JSX_CONTEXT,
-  REQUIRE_FUNCTION,
+  TOKEN_IMPORT,
+  TOKEN_LOCAL,
+  TOKEN_JSX,
+  TOKEN_NAME,
   REACT_FORM_METHODS,
   REACT_FORM_ARRAY_METHODS,
   VALID_INPUT_TYPES,
@@ -456,6 +527,7 @@ module.exports = {
   reg_react_form,
   js_resolve_ids,
   // _js_parse_snippet,
+  // _js_parse_template,
   _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,

@@ -241,6 +241,7 @@ const InputProperties = props => {
                           <FormControl key="boolean" className={styles.valueControl}>
                             <Switch
                               name={innerProps.name}
+                              size="small"
                               checked={innerProps.value}
                               onChange={e => {
                                 innerProps.onChange(e.target.checked)

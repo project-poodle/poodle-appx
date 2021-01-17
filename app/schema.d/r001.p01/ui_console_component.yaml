@@ -170,7 +170,7 @@ ui_component:
                                           onClick:
                                               _type: js/function
                                               body:
-                                                - "$r('app-x/router.navigate')('/docs')"
+                                                - "$I('app-x/router.navigate')('/docs')"
                                           size: large
                                       children:
                                           - "Getting Started"
@@ -212,7 +212,7 @@ ui_component:
                                           onClick:
                                               _type: js/function
                                               body:
-                                                - "$r('app-x/router.navigate')('/console')"
+                                                - "$I('app-x/router.navigate')('/console')"
                                           size: large
                                       children:
                                           - "Live Demo"
@@ -371,7 +371,7 @@ ui_component:
                   body:
                     - |
                       event.preventDefault()
-                      $r('app-x/api.login')(
+                      $I('app-x/api.login')(
                           'main',
                           states.username.value,
                           states.password.value,
@@ -381,14 +381,14 @@ ui_component:
                                   Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
                                       if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
                                           // console.log(namespace, app_name)
-                                          $r('app-x/api.me')(
+                                          $I('app-x/api.me')(
                                               namespace,
                                               app_name
                                           )
                                       }
                                   })
                               })
-                              $r('app-x/router.navigate')(props.consoleUrl)
+                              $I('app-x/router.navigate')(props.consoleUrl)
                           },
                           err => {
                               // TODO
@@ -644,7 +644,7 @@ ui_component:
               _type: react/effect
               body:
                 - |
-                  $r('app-x/api.get')(
+                  $I('app-x/api.get')(
                       'sys',
                       'appx',
                       '/ui/ui_deployment',

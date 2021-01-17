@@ -8,7 +8,7 @@ const {
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
   JSX_CONTEXT,
-  REQUIRE_FUNCTION,
+  // REQUIRE_FUNCTION,
   REACT_FORM_METHODS,
   REACT_FORM_ARRAY_METHODS,
   VALID_INPUT_TYPES,
@@ -358,13 +358,21 @@ function js_expression(js_context, input) {
     data = String(input.data)
   }
 
-  const parsed = _js_parse_expression(js_context, data)
-
   if (js_context.JSX_CONTEXT) {
+    const parsed = _js_parse_expression(js_context, data, {
+      plugins: [
+        'jsx', // support jsx here
+      ]
+    })
     return t.jSXExpressionContainer(
       parsed
     )
   } else {
+    const parsed = _js_parse_expression(js_context, data, {
+      plugins: [
+        // 'jsx', // do not support jsx here
+      ]
+    })
     return parsed
   }
 }

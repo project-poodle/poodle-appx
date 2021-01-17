@@ -1,11 +1,15 @@
 const { parse, parseExpression } = require('@babel/parser')
+const generate = require('@babel/generator').default
 const t = require("@babel/types")
 const {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
   JSX_CONTEXT,
-  REQUIRE_FUNCTION,
+  TOKEN_IMPORT,
+  TOKEN_LOCAL,
+  TOKEN_JSX,
+  TOKEN_NAME,
   REACT_FORM_METHODS,
   REACT_FORM_ARRAY_METHODS,
   VALID_INPUT_TYPES,
@@ -463,7 +467,7 @@ function input_text(js_context, input) {
     []
   )
 
-  // if auto complete
+  // if auto suggest
   if (!!autoSuggest) {
 
     // register react.useState & antd.AutoComplete
@@ -1009,6 +1013,7 @@ function input_text_array(js_context, input) {
     // console.log(`reg_js_import`, `react-hook-form.useFormContext`)
     reg_js_import(js_context, `react-hook-form.useFormContext`)
   }
+
   // qualified name
   const qualifiedName = !!(js_context.reactForm)
     ? `react-hook-form.useForm.${js_context.reactForm}`
@@ -1019,24 +1024,30 @@ function input_text_array(js_context, input) {
     reg_react_form(js_context, '', qualifiedName, null)
   }
 
+  // register import
+  // reg_js_import(js_context, 'lodash.default')
+  // reg_js_import(js_context, '@material-ui/core.TextField')
+  // register variables, no import needed
+  REACT_FORM_METHODS.map(method => {
+    reg_js_variable(js_context, `${qualifiedName}.${method}`)
+  })
+
+  // import useFieldArray
+  reg_js_import(js_context, 'react-hook-form.useFieldArray')
+  // register field array variables
+  REACT_FORM_ARRAY_METHODS.map(method => {
+    reg_js_variable(js_context, `${qualifiedName}.useFieldArray.${input.name}.${method}`)
+  })
+
   //////////////////////////////////////////////////////////////////////
   // start processing after reg_react_form
 
   // process name
-  const name = (() => {
+  const nameExpression = (() => {
     if (isPrimitive(input.name)) {
       return t.stringLiteral(String(input.name))
     } else {
-      return js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.name
-      )
+      throw new Error(`ERROR: [input/text] input.name is not string [${JSON.stringify(input.name)}]`)
     }
   })()
 
@@ -1045,6 +1056,7 @@ function input_text_array(js_context, input) {
 
   // basic types - extension not supported
   // multiline and autoSuggest options
+  const required = !!input.required
   const multiline = !!props.multiline || false
   const autoSuggest = !!props.autoSuggest || false
   // check valid input types
@@ -1059,990 +1071,6 @@ function input_text_array(js_context, input) {
     }
   })()
 
-  // register import
-  reg_js_import(js_context, 'lodash.default')
-  reg_js_import(js_context, '@material-ui/core.TextField')
-  // register variables, no import needed
-  REACT_FORM_METHODS.map(method => {
-    reg_js_variable(js_context, `${qualifiedName}.${method}`)
-  })
-
-  // inner element
-  let innerElement = t.jSXElement(
-    t.jSXOpeningElement(
-      t.jSXIdentifier('@material-ui/core.TextField'),
-      [
-        // {...restProps} - the styles goes here
-        t.jSXSpreadAttribute(
-          t.identifier('restProps')
-        ),
-        // name={input.name}
-        t.jSXAttribute(
-          t.jSXIdentifier('name'),
-          t.jSXExpressionContainer(
-            name,
-          )
-        ),
-        // type={props.type}
-        t.jSXAttribute(
-          t.jSXIdentifier('type'),
-          t.stringLiteral(inputType)
-        ),
-        // multiline={multiline}
-        t.jSXAttribute(
-          t.jSXIdentifier('multiline'),
-          t.jSXExpressionContainer(
-            t.booleanLiteral(multiline)
-          )
-        ),
-        // value={innerProps.value}
-        t.jSXAttribute(
-          t.jSXIdentifier('value'),
-          t.jSXExpressionContainer(
-            t.memberExpression(
-              t.identifier('innerProps'),
-              t.identifier('value')
-            )
-          )
-        ),
-        // onChange={e => {...}}
-        t.jSXAttribute(
-          t.jSXIdentifier('onChange'),
-          t.jSXExpressionContainer(
-            t.arrowFunctionExpression(
-              [
-                t.identifier('e')
-              ],
-              t.blockStatement(
-                [
-                  // innerProps.onChange(e.target.value)
-                  t.expressionStatement(
-                    t.callExpression(
-                      t.memberExpression(
-                        t.identifier('innerProps'),
-                        t.identifier('onChange')
-                      ),
-                      [
-                        t.memberExpression(
-                          t.memberExpression(
-                            t.identifier('e'),
-                            t.identifier('target')
-                          ),
-                          t.identifier('value')
-                        )
-                      ]
-                    )
-                  ),
-                  // if (props.callback) {
-                  //   props.callback(data)
-                  // }
-                  t.ifStatement(
-                    t.unaryExpression(
-                      '!',
-                      t.unaryExpression(
-                        '!',
-                        t.memberExpression(
-                          t.identifier('props'),
-                          t.identifier('callback')
-                        )
-                      )
-                    ),
-                    t.expressionStatement(
-                      t.callExpression(
-                        t.memberExpression(
-                          t.identifier('props'),
-                          t.identifier('callback')
-                        ),
-                        [
-                          t.memberExpression(
-                            t.memberExpression(
-                              t.identifier('e'),
-                              t.identifier('target')
-                            ),
-                            t.identifier('value')
-                          )
-                        ]
-                      )
-                    )
-                  )
-                ]
-              )
-            )
-          )
-        ),
-        t.jSXAttribute(
-          t.jSXIdentifier('error'),
-          t.jSXExpressionContainer(
-            // !!lodash.get(errors, props.name)
-            t.unaryExpression(
-              '!',
-              t.unaryExpression(
-                '!',
-                t.callExpression(
-                  t.memberExpression(
-                    t.identifier('lodash.default'),
-                    t.identifier('get')
-                  ),
-                  [
-                    t.identifier(`${qualifiedName}.errors`),
-                    // `name[${index}].value`
-                    t.templateLiteral(
-                      [
-                        t.templateElement({
-                          raw: '',
-                          cooked: '',
-                        }),
-                        t.templateElement({
-                          raw: '[',
-                          cooked: '[',
-                        }),
-                        t.templateElement({
-                          raw: '].value',
-                          cooked: '].value',
-                        }),
-                      ],
-                      [
-                        name,
-                        t.identifier('index')
-                      ]
-                    )
-                  ]
-                )
-              )
-            )
-          )
-        ),
-        t.jSXAttribute(
-          t.jSXIdentifier('helperText'),
-          t.jSXExpressionContainer(
-            // lodash.get(errors, props.name)?.message
-            t.optionalMemberExpression(
-              t.callExpression(
-                t.memberExpression(
-                  t.identifier('lodash.default'),
-                  t.identifier('get')
-                ),
-                [
-                  t.identifier(`${qualifiedName}.errors`),
-                  t.templateLiteral(
-                    [
-                      t.templateElement({
-                        raw: '',
-                        cooked: '',
-                      }),
-                      t.templateElement({
-                        raw: '[',
-                        cooked: '[',
-                      }),
-                      t.templateElement({
-                        raw: '].value',
-                        cooked: '].value',
-                      }),
-                    ],
-                    [
-                      name,
-                      t.identifier('index')
-                    ]
-                  )
-                ]
-              ),
-              t.identifier('message'),
-              computed=false,
-              optional=true,
-            )
-          )
-        )
-      ]
-    ),
-    t.jSXClosingElement(
-      t.jSXIdentifier('@material-ui/core.TextField')
-    ),
-    []
-  )
-
-  // if auto complete
-  if (!!autoSuggest) {
-
-    // register react.useState & antd.AutoComplete
-    reg_js_import(js_context, 'react.useState')
-    reg_js_import(js_context, 'antd.AutoComplete')
-
-    // update innerElement with AutoComplete
-    // return (() => {...})()
-    innerElement = t.callExpression(
-      t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          [
-            // const [ __searchOptions, __setSearchOptions ] = React.useState(props.options)
-            t.variableDeclaration(
-              'const',
-              [
-                t.variableDeclarator(
-                  t.arrayPattern(
-                    [
-                      t.identifier('__searchOptions'),
-                      t.identifier('__setSearchOptions'),
-                    ]
-                  ),
-                  t.callExpression(
-                    t.identifier('react.useState'),
-                    [
-                      t.logicalExpression(
-                        '||',
-                        t.memberExpression(
-                          t.identifier('props'),
-                          t.identifier('options')
-                        ),
-                        t.arrayExpression()
-                      )
-                    ]
-                  )
-                )
-              ]
-            ),
-            // return <AutoComplete>...</AutoComplete>
-            t.returnStatement(
-              t.jSXElement(
-                t.jSXOpeningElement(
-                  t.jSXIdentifier('antd.AutoComplete'),
-                  [
-                    // options={states.options}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('options'),
-                      t.jSXExpressionContainer(
-                        t.identifier('__searchOptions')
-                      )
-                    ),
-                    // valud={innerProps.value}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('value'),
-                      t.jSXExpressionContainer(
-                        t.memberExpression(
-                          t.identifier('innerProps'),
-                          t.identifier('value')
-                        )
-                      )
-                    ),
-                    // onChange={data => {...}}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('onChange'),
-                      t.jSXExpressionContainer(
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('data')
-                          ],
-                          t.blockStatement(
-                            [
-                              // innerProps.onChange(data)
-                              t.expressionStatement(
-                                t.callExpression(
-                                  t.memberExpression(
-                                    t.identifier('innerProps'),
-                                    t.identifier('onChange')
-                                  ),
-                                  [
-                                    t.identifier('data')
-                                  ]
-                                )
-                              ),
-                              // if (props.callback) {
-                              //   props.callback(data)
-                              // }
-                              t.ifStatement(
-                                t.unaryExpression(
-                                  '!',
-                                  t.unaryExpression(
-                                    '!',
-                                    t.memberExpression(
-                                      t.identifier('props'),
-                                      t.identifier('callback')
-                                    )
-                                  )
-                                ),
-                                t.expressionStatement(
-                                  t.callExpression(
-                                    t.memberExpression(
-                                      t.identifier('props'),
-                                      t.identifier('callback')
-                                    ),
-                                    [
-                                      t.identifier('data')
-                                    ]
-                                  )
-                                )
-                              )
-                            ]
-                          )
-                        )
-                      )
-                    ),
-                    // onSearch={s => {...}}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('onSearch'),
-                      t.jSXExpressionContainer(
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('s')
-                          ],
-                          t.blockStatement(
-                            [
-                              // const s_list = s.toUpperCase().split(' ').filter(s => !!s)
-                              t.variableDeclaration(
-                                'const',
-                                [
-                                  t.variableDeclarator(
-                                    t.identifier('s_list'),
-                                    t.callExpression(
-                                      t.memberExpression(
-                                        t.callExpression(
-                                          t.memberExpression(
-                                            t.callExpression(
-                                              t.memberExpression(
-                                                t.identifier('s'),
-                                                t.identifier('toUpperCase')
-                                              ),
-                                              []
-                                            ),
-                                            t.identifier('split')
-                                          ),
-                                          [
-                                            t.stringLiteral(' ')
-                                          ]
-                                        ),
-                                        t.identifier('filter')
-                                      ),
-                                      [
-                                        t.arrowFunctionExpression(
-                                          [
-                                            t.identifier('s'),
-                                          ],
-                                          t.unaryExpression(
-                                            '!',
-                                            t.unaryExpression(
-                                              '!',
-                                              t.identifier('s')
-                                            )
-                                          )
-                                        )
-                                      ]
-                                    )
-                                  )
-                                ]
-                              ),
-                              // const found_options = props.options.filter(name => {
-                              //  const name_upper = name.toUpperCase()
-                              //  return s_list.reduce(
-                              //    (accumulator, item) => !!accumulator && name_upper.includes(item.value),
-                              //    true)
-                              // })
-                              t.variableDeclaration(
-                                'const',
-                                [
-                                  t.variableDeclarator(
-                                    t.identifier('found_options'),
-                                    t.callExpression(
-                                      t.memberExpression(
-                                        t.logicalExpression(
-                                          '||',
-                                          t.memberExpression(
-                                            t.identifier('props'),
-                                            t.identifier('options')
-                                          ),
-                                          t.arrayExpression()
-                                        ),
-                                        t.identifier('filter')
-                                      ),
-                                      [
-                                        t.arrowFunctionExpression(
-                                          [
-                                            t.identifier('option')
-                                          ],
-                                          t.blockStatement(
-                                            [
-                                              t.variableDeclaration(
-                                                'const',
-                                                [
-                                                  t.variableDeclarator(
-                                                    t.identifier('upper'),
-                                                    t.callExpression(
-                                                      t.optionalMemberExpression(
-                                                        t.optionalMemberExpression(
-                                                          t.identifier('option'),
-                                                          t.identifier('value'),
-                                                          computed=false,
-                                                          optional=true,
-                                                        ),
-                                                        t.identifier('toUpperCase'),
-                                                        computed=false,
-                                                        optional=true,
-                                                      ),
-                                                      []
-                                                    )
-                                                  )
-                                                ]
-                                              ),
-                                              /*
-                                              t.expressionStatement(
-                                                t.callExpression(
-                                                  t.memberExpression(
-                                                    t.identifier('console'),
-                                                    t.identifier('log')
-                                                  ),
-                                                  [
-                                                    t.identifier('upper')
-                                                  ]
-                                                )
-                                              ),
-                                              */
-                                              t.returnStatement(
-                                                t.callExpression(
-                                                  t.memberExpression(
-                                                    t.identifier('s_list'),
-                                                    t.identifier('reduce')
-                                                  ),
-                                                  [
-                                                    t.arrowFunctionExpression(
-                                                      [
-                                                        t.identifier('accumulator'),
-                                                        t.identifier('item')
-                                                      ],
-                                                      t.logicalExpression(
-                                                        '&&',
-                                                        t.unaryExpression(
-                                                          '!',
-                                                          t.unaryExpression(
-                                                            '!',
-                                                            t.identifier('accumulator')
-                                                          )
-                                                        ),
-                                                        t.callExpression(
-                                                          t.memberExpression(
-                                                            t.identifier('upper'),
-                                                            t.identifier('includes')
-                                                          ),
-                                                          [
-                                                            t.identifier('item')
-                                                          ]
-                                                        )
-                                                      )
-                                                    ),
-                                                    t.booleanLiteral(true)
-                                                  ]
-                                                )
-                                              )
-                                            ]
-                                          )
-                                        )
-                                      ]
-                                    )
-                                  )
-                                ]
-                              ),
-                              // setOptions(found_options)
-                              t.expressionStatement(
-                                t.callExpression(
-                                  t.identifier('__setSearchOptions'),
-                                  [
-                                    t.identifier('found_options')
-                                  ]
-                                )
-                              )
-                            ]
-                          )
-                        )
-                      )
-                    )
-                  ]
-                ),
-                t.jSXClosingElement(
-                  t.jSXIdentifier('antd.AutoComplete')
-                ),
-                [
-                  innerElement  // add TextField as inner element
-                ]
-              )
-            )
-          ]
-        )
-      ),
-      []
-    )
-  }
-
-  // console.log(innerElement)
-
-  // import useFieldArray
-  reg_js_import(js_context, 'react-hook-form.useFieldArray')
-  // register field array variables
-  REACT_FORM_ARRAY_METHODS.map(method => {
-    reg_js_variable(js_context, `${qualifiedName}.useFieldArray.${input.name}.${method}`)
-  })
-
-  // const {...} = useFieldArray(control, name)
-  const fieldArrayVariables = t.variableDeclaration(
-    'const',
-    [
-      t.variableDeclarator(
-        t.objectPattern(
-          REACT_FORM_ARRAY_METHODS.map(method => (
-            t.objectProperty(
-              t.identifier(method),
-              // `qualilfiedName.useFieldArray.${input.name}.method`
-              t.identifier(`${qualifiedName}.useFieldArray.${input.name}.${method}`)
-            )
-          ))
-        ),
-        // useFormContext()
-        t.callExpression(
-          t.identifier('react-hook-form.useFieldArray'),
-          [
-            t.objectExpression(
-              [
-                t.objectProperty(
-                  t.identifier('control'),
-                  t.identifier(`${qualifiedName}.control`)
-                ),
-                t.objectProperty(
-                  t.identifier('name'),
-                  t.stringLiteral(input.name)
-                )
-              ]
-            )
-          ]
-        )
-      )
-    ]
-  )
-
-  // register imported components
-  reg_js_import(js_context, '@material-ui/core.Box')
-  reg_js_import(js_context, 'react-hook-form.Controller')
-  reg_js_import(js_context, '@material-ui/core.FormControl')
-  reg_js_import(js_context, '@material-ui/core.FormHelperText')
-  reg_js_import(js_context, '@material-ui/core.IconButton')
-  reg_js_import(js_context, '@material-ui/icons.AddCircleOutline')
-  reg_js_import(js_context, '@material-ui/icons.RemoveCircleOutline')
-
-  const controlElement = t.jSXElement(
-    t.jSXOpeningElement(
-      t.jSXIdentifier('@material-ui/core.Box'),
-      [
-        t.jSXSpreadAttribute(
-          t.identifier('restProps')
-        )
-      ]
-    ),
-    t.jSXClosingElement(
-      t.jSXIdentifier('@material-ui/core.Box')
-    ),
-    [
-      // {
-      //    (!!props.label)
-      //    &&
-      //    (
-      //      <FormHelperText key="label">{props.label}</FormHelperText>
-      //    )
-      // }
-      t.jSXExpressionContainer(
-        t.logicalExpression(
-          '&&',
-          t.unaryExpression(
-            '!',
-            t.unaryExpression(
-              '!',
-              t.memberExpression(
-                t.identifier('props'),
-                t.identifier('label')
-              )
-            )
-          ),
-          t.jSXElement(
-            t.jSXOpeningElement(
-              t.jSXIdentifier('@material-ui/core.FormHelperText'),
-              [
-                t.jSXAttribute(
-                  t.jSXIdentifier('key'),
-                  t.stringLiteral('label')
-                )
-              ]
-            ),
-            t.jSXClosingElement(
-              t.jSXIdentifier('@material-ui/core.FormHelperText')
-            ),
-            [
-              t.jSXExpressionContainer(
-                t.memberExpression(
-                  t.identifier('props'),
-                  t.identifier('label')
-                )
-              )
-            ]
-          )
-        )
-      ),
-      // {
-      //    fields.map((item, index) => {
-      //      return (
-      //        <Box key={item.id} style={width:"100%"}>
-      //          <Controller>
-      //            ...
-      //          </Controller>
-      //        </Box>
-      //      )
-      //    })
-      // }
-      t.jSXExpressionContainer(
-        t.callExpression(
-          t.memberExpression(
-            t.identifier(`${qualifiedName}.useFieldArray.${input.name}.fields`),
-            t.identifier('map')
-          ),
-          [
-            t.arrowFunctionExpression(
-              [
-                t.identifier('item'),
-                t.identifier('index')
-              ],
-              t.jSXElement(
-                t.jSXOpeningElement(
-                  t.jSXIdentifier('@material-ui/core.Box'),
-                  [
-                    // key={item.id}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('key'),
-                      t.jSXExpressionContainer(
-                        t.memberExpression(
-                          t.identifier('item'),
-                          t.identifier('id')
-                        )
-                      )
-                    ),
-                    // display="flex"
-                    t.jSXAttribute(
-                      t.jSXIdentifier('display'),
-                      t.stringLiteral('flex')
-                    ),
-                    // style={width: '100%'}
-                    t.jSXAttribute(
-                      t.jSXIdentifier('style'),
-                      t.jSXExpressionContainer(
-                        t.objectExpression(
-                          [
-                            t.objectProperty(
-                              t.identifier('width'),
-                              t.stringLiteral('100%')
-                            )
-                          ]
-                        )
-                      )
-                    )
-                  ]
-                ),
-                t.jSXClosingElement(
-                  t.jSXIdentifier('@material-ui/core.Box')
-                ),
-                [
-                  // <Controller>...</Controller>
-                  t.jSXElement(
-                    t.jSXOpeningElement(
-                      t.jSXIdentifier('react-hook-form.Controller'),
-                      [
-                        // key={item.id}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('key'),
-                          t.jSXExpressionContainer(
-                            t.memberExpression(
-                              t.identifier('item'),
-                              t.identifier('id')
-                            )
-                          )
-                        ),
-                        // name={"input.name[${index}].value"}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('name'),
-                          t.jSXExpressionContainer(
-                            // `name[${index}].value`
-                            t.templateLiteral(
-                              [
-                                t.templateElement({
-                                  raw: '',
-                                  cooked: '',
-                                }),
-                                t.templateElement({
-                                  raw: '[',
-                                  cooked: '[',
-                                }),
-                                t.templateElement({
-                                  raw: '].value',
-                                  cooked: '].value',
-                                }),
-                              ],
-                              [
-                                name,
-                                t.identifier('index')
-                              ]
-                            )
-                          )
-                        ),
-                        // control={qualifiedName.control}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('control'),
-                          t.jSXExpressionContainer(
-                            t.identifier(`${qualifiedName}.control`)
-                          )
-                        ),
-                        // defaultValue={props.defaultValue}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('defaultValue'),
-                          t.jSXExpressionContainer(
-                            t.optionalMemberExpression(
-                              t.identifier('item'),
-                              t.identifier('value'),
-                              computed=false,
-                              optional=true,
-                            )
-                          )
-                        ),
-                        // rules={props.rules}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('rules'),
-                          t.jSXExpressionContainer(
-                            t.identifier('rules')
-                          )
-                        ),
-                        // render={<Element>...</Element>}
-                        t.jSXAttribute(
-                          t.jSXIdentifier('render'),
-                          t.jSXExpressionContainer(
-                            t.arrowFunctionExpression(
-                              [
-                                t.identifier('innerProps')
-                              ],
-                              t.jSXElement(
-                                t.jSXOpeningElement(
-                                  t.jSXIdentifier('@material-ui/core.FormControl'),
-                                  [
-                                    // style={width: '100%'}
-                                    t.jSXAttribute(
-                                      t.jSXIdentifier('style'),
-                                      t.jSXExpressionContainer(
-                                        t.objectExpression(
-                                          [
-                                            t.objectProperty(
-                                              t.identifier('width'),
-                                              t.stringLiteral('100%')
-                                            )
-                                          ]
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
-                                t.jSXClosingElement(
-                                  t.jSXIdentifier('@material-ui/core.FormControl')
-                                ),
-                                [
-                                  t.jSXExpressionContainer(
-                                    innerElement  // innerElement here
-                                  )
-                                ]
-                              )
-                            )
-                          )
-                        )
-                      ]
-                    ),
-                    t.jSXClosingElement(
-                      t.jSXIdentifier('react-hook-form.Controller'),
-                    ),
-                    []
-                  ),
-                  // <IconButton
-                  //   key="remove"
-                  //   aria-label="Remove"
-                  //   size={props.size}
-                  //   onClick={e => {
-                  //     remove(index)
-                  //     if (!!props.callback) {
-                  //       props.callback()
-                  //     }
-                  //   }}
-                  //   >
-                  //   <RemoveCircleOutline />
-                  // </IconButton>
-                  t.jSXElement(
-                    t.jSXOpeningElement(
-                      t.jSXIdentifier('@material-ui/core.IconButton'),
-                      [
-                        t.jSXAttribute(
-                          t.jSXIdentifier('key'),
-                          t.stringLiteral('remove')
-                        ),
-                        t.jSXAttribute(
-                          t.jSXIdentifier('aria-label'),
-                          t.stringLiteral('Remove')
-                        ),
-                        t.jSXAttribute(
-                          t.jSXIdentifier('size'),
-                          t.jSXExpressionContainer(
-                            t.memberExpression(
-                              t.identifier('props'),
-                              t.identifier('size')
-                            )
-                          )
-                        ),
-                        t.jSXAttribute(
-                          t.jSXIdentifier('onClick'),
-                          t.jSXExpressionContainer(
-                            t.arrowFunctionExpression(
-                              [
-                                t.identifier('e')
-                              ],
-                              t.blockStatement(
-                                [
-                                  t.expressionStatement(
-                                    t.callExpression(
-                                      t.identifier(`${qualifiedName}.useFieldArray.${input.name}.remove`),
-                                      [
-                                        t.identifier('index')
-                                      ]
-                                    )
-                                  ),
-                                  t.ifStatement(
-                                    t.unaryExpression(
-                                      '!',
-                                      t.unaryExpression(
-                                        '!',
-                                        t.memberExpression(
-                                          t.identifier('props'),
-                                          t.identifier('callback')
-                                        )
-                                      )
-                                    ),
-                                    t.expressionStatement(
-                                      t.callExpression(
-                                        t.memberExpression(
-                                          t.identifier('props'),
-                                          t.identifier('callback')
-                                        ),
-                                        []
-                                      )
-                                    )
-                                  )
-                                ]
-                              )
-                            )
-                          )
-                        )
-                      ]
-                    ),
-                    t.jSXClosingElement(
-                      t.jSXIdentifier('@material-ui/core.IconButton')
-                    ),
-                    [
-                      t.jSXElement(
-                        t.jSXOpeningElement(
-                          t.jSXIdentifier('@material-ui/icons.RemoveCircleOutline'),
-                          []
-                        ),
-                        t.jSXClosingElement(
-                          t.jSXIdentifier('@material-ui/icons.RemoveCircleOutline')
-                        ),
-                        []
-                      )
-                    ]
-                  )
-                ]
-              )
-            )
-          ]
-        )
-      ),
-      // <IconButton
-      //   key="add"
-      //   aria-label="Add"
-      //   size={props.size}
-      //   onClick={e => {
-      //     append({
-      //       value: '',
-      //     })
-      //   }}
-      //   >
-      //   <AddCircleOutline />
-      // </IconButton>
-      t.jSXElement(
-        t.jSXOpeningElement(
-          t.jSXIdentifier('@material-ui/core.IconButton'),
-          [
-            t.jSXAttribute(
-              t.jSXIdentifier('key'),
-              t.stringLiteral('add')
-            ),
-            t.jSXAttribute(
-              t.jSXIdentifier('aria-label'),
-              t.stringLiteral('Add')
-            ),
-            t.jSXAttribute(
-              t.jSXIdentifier('size'),
-              t.jSXExpressionContainer(
-                t.memberExpression(
-                  t.identifier('props'),
-                  t.identifier('size')
-                )
-              )
-            ),
-            t.jSXAttribute(
-              t.jSXIdentifier('onClick'),
-              t.jSXExpressionContainer(
-                t.arrowFunctionExpression(
-                  [
-                    t.identifier('e')
-                  ],
-                  t.blockStatement(
-                    [
-                      t.expressionStatement(
-                        t.callExpression(
-                          t.identifier(`${qualifiedName}.useFieldArray.${input.name}.append`),
-                          [
-                            t.objectExpression(
-                              [
-                                t.objectProperty(
-                                  t.identifier('value'),
-                                  t.stringLiteral('')
-                                )
-                              ]
-                            )
-                          ]
-                        )
-                      )
-                    ]
-                  )
-                )
-              )
-            )
-          ]
-        ),
-        t.jSXClosingElement(
-          t.jSXIdentifier('@material-ui/core.IconButton'),
-        ),
-        [
-          t.jSXElement(
-            t.jSXOpeningElement(
-              t.jSXIdentifier('@material-ui/icons.AddCircleOutline'),
-              []
-            ),
-            t.jSXClosingElement(
-              t.jSXIdentifier('@material-ui/icons.AddCircleOutline')
-            ),
-            []
-          )
-        ]
-      )
-    ]
-  )
-
-  //////////////////////////////////////////////////////////////////////
   // compute props
   const propsExpression = (() => {
     if (!!input.props) {
@@ -2081,93 +1109,215 @@ function input_text_array(js_context, input) {
     }
   })()
 
-  // set values
-  const setValueExpression = (() => {
-    return t.callExpression(
-      t.identifier(`${qualifiedName}.setValue`),
-      [
-        name,
-        t.memberExpression(
-          t.identifier('props'),
-          t.identifier('defaultValue')
-        )
-      ]
-    )
-  })()
+  //////////////////////////////////////////////////////////////////////
+  // start processing
 
-  // return ((props, rules) => <Controller>...</Controller>)()
+  // innerElement
+  let innerElement = `
+    <$JSX $NAME='@material-ui/core.TextField'
+      // {...restProps}
+      name={\`\${name}[\${index}].value\`}
+      // name={\`\${name}\`}
+      type="${inputType}"
+      required={${required}}
+      multiline={!!props.multiline}
+      value={innerProps.value}
+      onChange={e => {
+        innerProps.onChange(e.target.value)
+        if (!!props.callback) {
+          props.callback(e.target.value)
+        }
+      }}
+      error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), \`\${name}[\${index}].value\`)}
+      helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), \`\${name}[\${index}].value\`)?.message}
+      >
+    </$JSX>
+  `
+
+  //////////////////////////////////////////////////////////////////////
+  // if autoSuggest
+  if (!!input.props.autoSuggest) {
+    innerElement = `
+      (() => {
+        const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.suggestions)
+        return (
+          <$JSX $NAME='antd.AutoComplete'
+            options={_searchSuggestions}
+            name={\`\${name}[\${index}].value\`}
+            value={innerProps.value}
+            onChange={data => {
+              innerProps.onChange(data)
+              if (!!props.callback) {
+                props.callback(data)
+              }
+            }}
+            onSearch={s => {
+              const s_list = s.toUpperCase().split(' ').filter(s => !!s)
+              const matches = props.suggestions
+                .filter(option => {
+                  const upper = option?.value.toUpperCase()
+                  return s_list.reduce((accumulator, item) => {
+                    return !!accumulator && upper.includes(item)
+                  }, true)
+                })
+              _setSearchSuggestions(matches)
+            }}
+            >
+            {
+              ${innerElement}
+            }
+          </$JSX>
+        )
+      })()
+    `
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // control element
+  const controlElement = `
+    <$JSX $NAME='@material-ui/core.Box'
+      {...restProps}
+      >
+      {
+        !!props?.label
+        &&
+        (
+          <$JSX $NAME='@material-ui/core.InputLabel'
+            key="label"
+            shrink={true}
+            required={${required}}
+          >
+            { props.label }
+          </$JSX>
+        )
+      }
+      {
+        $L('${qualifiedName}.useFieldArray.${input.name}.fields')
+          .map((item, index) => {
+            return (
+              <$JSX $NAME='@material-ui/core.Box'
+                key={item.id}
+                display="flex"
+                style={{width:'100%'}}
+              >
+                <$JSX $NAME='react-hook-form.Controller'
+                  key={item.id}
+                  name={\`\${name}[\${index}].value\`}
+                  constrol={$L('${qualifiedName}.control')}
+                  defaultValue={item.value}
+                  rules={rules}
+                  render={innerProps => (
+                    <$JSX $NAME='@material-ui/core.FormControl'
+                      style={{width:'100%'}}
+                      >
+                      {
+                        ${innerElement}
+                      }
+                    </$JSX>
+                  )}
+                >
+                </$JSX>
+                {
+                  !props.readOnly
+                  &&
+                  (
+                    <$JSX $NAME='@material-ui/core.IconButton'
+                      key="remove"
+                      aria-label="Remove"
+                      size={props.size}
+                      onClick={e => {
+                        $L('${qualifiedName}.useFieldArray.${input.name}.remove')(index)
+                        if (!!props.callback) {
+                          props.callback(index, \`\${name}[\${index}]\`)
+                        }
+                      }}
+                      >
+                      <$JSX $NAME='@material-ui/icons.RemoveCircleOutline' />
+                    </$JSX>
+                  )
+                }
+              </$JSX>
+            )
+          })
+      }
+      {
+        !props.readOnly
+        &&
+        (
+          <$JSX $NAME='@material-ui/core.IconButton'
+            key="add"
+            aria-label="Add"
+            size={props.size}
+            onClick={e => {
+              $L('${qualifiedName}.useFieldArray.${input.name}.append')({
+                value: '',
+              })
+              console.log('add', $L('${qualifiedName}.getValues')())
+              // if (!!props.callback) {
+              //   props.callback('', name, 'add')
+              // }
+            }}
+            >
+            <$JSX $NAME='@material-ui/icons.AddCircleOutline' />
+          </$JSX>
+        )
+      }
+    </$JSX>
+  `
+
+  //////////////////////////////////////////////////////////////////////
   const result = t.callExpression(
-    t.arrowFunctionExpression(
-      [
-        t.identifier('props'),
-        t.identifier('rules')
-      ],
-      t.blockStatement(
-        [
-          // const {...} = useFieldArray()
-          fieldArrayVariables,
-          // const {...} = props
-          t.variableDeclaration(
-            'const',
-            [
-              t.variableDeclarator(
-                t.objectPattern(
-                  [
-                    t.objectProperty(
-                      t.identifier('type'),
-                      t.identifier('type')
-                    ),
-                    t.objectProperty(
-                      t.identifier('label'),
-                      t.identifier('label')
-                    ),
-                    t.objectProperty(
-                      t.identifier('defaultValue'),
-                      t.identifier('defaultValue')
-                    ),
-                    t.objectProperty(
-                      t.identifier('multiline'),
-                      t.identifier('multiline')
-                    ),
-                    t.objectProperty(
-                      t.identifier('autoSuggest'),
-                      t.identifier('autoSuggest')
-                    ),
-                    t.objectProperty(
-                      t.identifier('options'),
-                      t.identifier('options')
-                    ),
-                    t.objectProperty(
-                      t.identifier('callback'),
-                      t.identifier('callback')
-                    ),
-                    t.restElement(
-                      t.identifier('restProps')
-                    )
-                  ]
-                ),
-                t.identifier('props')
-              )
-            ]
-          ),
-          // setValue(input.name, props.defaultValue)
-          t.expressionStatement(
-            setValueExpression
-          ),
-          //  return <Controller>...</Controller>
-          t.returnStatement(
-            controlElement
-          )
+    _js_parse_expression(
+      js_context,
+      `
+      (name, props, rules) => {
+        // setup field arrays
+        const {
+          fields,
+          append,
+          prepend,
+          insert,
+          swap,
+          move,
+          remove,
+        } = $I('react-hook-form.useFieldArray') ({
+          control: $L('${qualifiedName}.control'),
+          name: name,
+        })
+        // destruct props
+        const {
+          type,
+          label,
+          defaultValue,
+          multiline,
+          autoSuggest,
+          options,
+          callback,
+          ...restProps
+        } = props
+        // set value
+        $L('${qualifiedName}.setValue')(name, props.defaultValue || [])
+        // return
+        return (
+          ${controlElement}
+        )
+      }
+      `,
+      {
+        plugins: [
+          'jsx', // support jsx here
         ]
-      )
+      }
     ),
     [
+      nameExpression,
       propsExpression,
       rulesExpression,
     ]
   )
 
-  // check for JSX_CONTEXT
+  //////////////////////////////////////////////////////////////////////
+  // check for JSX_CONTEXT and return
   if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       result
