@@ -122,7 +122,7 @@ const InputField = ((props) => {
         const result = { validate: {} }
         // check required flag
         if (!!childSpec.required && inputSpec?.kind !== 'input/switch') {
-          result['required'] = `${childSpec.desc} is required`
+          result['required'] = `${childSpec.desc || childSpec.title || childSpec.name} is required`
         }
         // check rules
         if (!!childSpec.rules) {
@@ -162,7 +162,7 @@ const InputField = ((props) => {
         if (!!inputSpec.suggestionsOnly) {
           result.validate[`validate_${count++}`] = (value) => (
             suggestions.includes(value)
-            || `${childSpec.desc} must be a valid value`
+            || `${childSpec.desc || childSpec.title || childSpec.name} must be a valid value`
           )
         }
         // additional rules by input type
@@ -205,10 +205,16 @@ const InputField = ((props) => {
                 error={!!_.get(errors, name)}
                 disabled={!!props.disabled}
                 >
-                <FormHelperText
-                  required={!!childSpec.required}>
-                  {childSpec.desc}
-                </FormHelperText>
+                {
+                  !!childSpec.desc
+                  &&
+                  (
+                    <FormHelperText
+                      required={!!childSpec.required}>
+                      {childSpec.desc}
+                    </FormHelperText>
+                  )
+                }
                 <Switch
                   name={name}
                   disabled={!!props.disabled}
@@ -243,13 +249,19 @@ const InputField = ((props) => {
                 disabled={!!props.disabled}
                 focused={monacoFocused}
                 >
-                <InputLabel
-                  shrink={true}
-                  required={!!childSpec.required}
-                  className={styles.label}
-                  >
-                  {childSpec.desc}
-                </InputLabel>
+                {
+                  !!childSpec.desc
+                  &&
+                  (
+                    <InputLabel
+                      shrink={true}
+                      required={!!childSpec.required}
+                      className={styles.label}
+                      >
+                      {childSpec.desc}
+                    </InputLabel>
+                  )
+                }
                 <ControlledEditor
                   className={
                     inputSpec.kind === 'input/expression'
@@ -316,7 +328,7 @@ const InputField = ((props) => {
                 className={styles.formControl}
                 >
                 <AutoSuggest
-                  label={childSpec.desc}
+                  label={childSpec.desc || null}
                   name={name}
                   value={innerProps.value}
                   disabled={!!props.disabled}

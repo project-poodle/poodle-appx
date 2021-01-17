@@ -17,7 +17,7 @@ export const input_text = {
     columns: [
       {
         name: 'kind',
-        desc: 'Kind',
+        title: 'Kind',
         required: true,
         input: {
           kind: 'input/select',
@@ -28,12 +28,13 @@ export const input_text = {
             {
               value: 'validate',
             }
-          ]
+          ],
+          default: 'validate',
         },
       },
       {
         name: 'data',
-        desc: 'Data',
+        title: 'Data',
         required: true,
         input: {
           kind: 'input/text'
@@ -41,7 +42,7 @@ export const input_text = {
       },
       {
         name: 'message',
-        desc: 'Message',
+        title: 'Message',
         required: true,
         input: {
           kind: 'input/text',

@@ -119,318 +119,26 @@ const InputList = props => {
           const propType = watch(`${props.name}[${index}]._type`)
           return (
             <Box key={item.id} display="flex" className={styles.formControl}>
-              <Controller
-                key='type'
-                name={`${props.name}[${index}]._type`}
-                control={control}
-                defaultValue={item?._type || 'js/string'}
-                rules={{
-                  required: "Property type is required",
-                }}
-                callback={props.callback}
-                render={innerProps =>
-                  <FormControl className={styles.typeControl}>
-                    <TextField
-                      select={true}
-                      name={innerProps.name}
-                      value={innerProps.value}
-                      size="small"
-                      onChange={e => {
-                        innerProps.onChange(e.target.value)
-                        if (props.callback) {
-                          props.callback(e.target.value, innerProps.name)
-                        }
-                      }}
-                      error={
-                        !!_.get(errors, props.name)
-                        && !!_.get(errors, props.name)[index]?._type
-                      }
-                      helperText={
-                        !!_.get(errors, props.name)
-                        && _.get(errors, props.name)[index]?._type?.message
-                      }
-                      >
-                      {
-                        [
-                          'js/string',
-                          'js/number',
-                          'js/boolean',
-                          'js/null',
-                          'js/expression',
-                          'js/import'
-                        ].map(type => (
-                          <MenuItem key={type} value={type}>
-                            { lookup_icon_for_type(type) }
-                          </MenuItem>
-                        ))
-                      }
-                    </TextField>
-                  </FormControl>
-                }
-              />
-              <Controller
-                key='name'
-                name={`${props.name}[${index}].name`}
-                type={'text'}
-                control={control}
-                defaultValue={item?.name}
-                rules={{
-                  required: "Property name is required",
-                  pattern: {
-                    value: /^[_a-zA-Z][_a-zA-Z0-9\-]*$/,
-                    message: "Property name must be valid variable name",
-                  },
-                  validate: {
-                    noDuplicateWithOthers: value => {
-                      return
-                        !otherNames
-                        || !otherNames.includes(value)
-                        || "Property name duplicate with one of existing properties"
-                    },
-                    noDuplicateWithSelf: value => {
-                      let found = false
-                      _.get(getValues(), props.name)?.map((child, i) => {
-                        // console.log(`child`, child, i)
-                        if (child.name === value && index !== i) {
-                          found = true
-                        }
-                      })
-                      return !found
-                        || "Another property has same name"
-                    }
-                  }
-                }}
-                render={innerProps =>
-                  <FormControl className={styles.nameControl}>
-                    <TextField
-                      name={innerProps.name}
-                      value={innerProps.value}
-                      size="small"
-                      onChange={e => {
-                        innerProps.onChange(e.target.value)
-                        if (props.callback) {
-                          // console.log(`callback`, e.target.value, innerProps.name)
-                          props.callback(e.target.value, innerProps.name)
-                        }
-                      }}
-                      error={
-                        !!_.get(errors, props.name)
-                        && !!_.get(errors, props.name)[index]?.name
-                      }
-                      helperText={
-                        !!_.get(errors, props.name)
-                        && _.get(errors, props.name)[index]?.name?.message
-                      }
-                    />
-                  </FormControl>
-                }
-              />
-              <Box className={styles.formControl}>
-                {
-                  (propType === 'js/boolean')
-                  &&
-                  (
-                    <Controller
-                      key='value'
-                      name={`${props.name}[${index}].value`}
-                      control={control}
-                      defaultValue={item?.value}
-                      render={innerProps =>
-                        (
-                          <FormControl key="boolean" className={styles.valueControl}>
-                            <Switch
-                              name={innerProps.name}
-                              checked={innerProps.value}
-                              onChange={e => {
-                                innerProps.onChange(e.target.checked)
-                                if (props.callback) {
-                                  props.callback(e.target.checked, innerProps.name)
-                                }
-                              }}
-                            />
-                          </FormControl>
-                        )
-                      }
-                    />
-                  )
-                }
-                {
-                  (propType === 'js/string')
-                  &&
-                  (
-                    <Controller
-                      key='value'
-                      name={`${props.name}[${index}].value`}
-                      control={control}
-                      defaultValue={item?.value}
-                      rules={{
-                        required: "Property value is required"
-                      }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
-                    />
-                  )
-                }
-                {
-                  (propType === 'js/number')
-                  &&
-                  (
-                    <Controller
-                      key='value'
-                      name={`${props.name}[${index}].value`}
-                      control={control}
-                      defaultValue={item?.value}
-                      rules={{
-                        required: "Number is required",
-                        validate: {
-                          checkNumber: value => !isNaN(Number(value)) || "Must be a number",
-                        }
-                      }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
-                    />
-                  )
-                }
-                {
-                  (propType === 'js/expression')
-                  &&
-                  (
-                    <Controller
-                      key='value'
-                      name={`${props.name}[${index}].value`}
-                      control={control}
-                      defaultValue={item?.value}
-                      rules={{
-                        required: "Expression is required",
-                        validate: {
-                          expressionSyntax: value => {
-                            try {
-                              parseExpression(String(value))
-                              return true
-                            } catch (err) {
-                              return String(err)
-                            }
-                          }
-                        }
-                      }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
-                    />
-                  )
-                }
-                {
-                  (propType === 'js/import')
-                  &&
-                  (
-                    <Controller
-                      key='value'
-                      name={`${props.name}[${index}].value`}
-                      control={control}
-                      defaultValue={item?.value}
-                      rules={{
-                        required: "Import name is required",
-                        validate: {
-                          valid_name: value => (
-                            valid_import_names().includes(value)
-                            || "Must use a valid name"
-                          )
-                        }
-                      }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <AutoSuggest
-                              key='value'
-                              name={`${props.name}[${index}].value`}
-                              className={styles.valueControl}
-                              size="small"
-                              value={innerProps.value}
-                              onChange={innerProps.onChange}
-                              options={
-                                valid_import_names()
-                              }
-                              callback={props.callback}
-                              >
-                            </AutoSuggest>
-                          </FormControl>
-                        )
-                      }
-                    />
-                  )
-                }
-              </Box>
+              {
+                spec.kind === 'inupt/list'
+                && Array.isArray(spec.columns)
+                &&
+                (
+                  spec.columns.map(column => {
+                    fieldName = `${name}[$index].${column.name}`
+                    return (
+                      <InputField
+                        key={fieldName}
+                        name={fieldName}
+                        // disabled={!!disabled[custom.name]}
+                        childSpec={column}
+                        inputSpec={column.input}
+                        defaultValue={item[column.name]}
+                      />
+                    )
+                  })
+                )
+              }
               <IconButton
                 key="remove"
                 aria-label="Remove"
@@ -448,27 +156,22 @@ const InputList = props => {
           )
         })
       }
-      {
-        (
-          !!props.otherNames?.length
-        )
-        &&
-        (
-          <FormHelperText className={styles.hiddenPrompt} key="otherNames">
-            Hidden composite properties: [ {`${props.otherNames.toString()}`} ]
-          </FormHelperText>
-        )
-      }
       <IconButton
         key="add"
         aria-label="Add"
         size="small"
         onClick={e => {
-          append({
-            type: 'js/string',
-            name: '',
-            value: '',
-          })
+          const new_row = {}
+          if (spec.kind === 'input/list' && Array.isArray(spec.columns)) {
+            spec.columns.map(column => {
+              if (!!spec.default) {
+                new_row[column.name] = eval(spec.default)
+              } else {
+                new_row[column.name] = ''
+              }
+            })
+          }
+          append(new_row)
         }}
         >
         <AddCircleOutline />
