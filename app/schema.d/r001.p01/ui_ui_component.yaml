@@ -556,7 +556,7 @@ ui_component:
       ui_component_spec:
         layouts:
           lg:
-            - h: 8
+            - h: 10
               i: a
               w: 4
               x: 0
@@ -572,7 +572,7 @@ ui_component:
               x: 4
               y: 0
           md:
-            - h: 8
+            - h: 10
               i: a
               w: 4
               x: 0
@@ -605,7 +605,7 @@ ui_component:
               data: theme.palette.background.paper
             margin:
               _type: js/expression
-              data: theme.spacing(1,0)
+              data: theme.spacing(2,0)
             padding:
               _type: js/expression
               data: theme.spacing(2,2)
@@ -719,7 +719,7 @@ ui_component:
                                 suggestions:
                                   _type: js/expression
                                   data: '[{value:"a"},{value:"b"}]'
-                            - a
+                    - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
