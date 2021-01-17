@@ -170,6 +170,7 @@ const groups = {
   form_input: [
     'react/form',
     'input/text',
+    'input/switch',
   ],
   // js advanced
   js_advanced: [

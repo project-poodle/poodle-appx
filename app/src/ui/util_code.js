@@ -26,6 +26,7 @@ const {
 const {
   react_form,
   input_text,
+  input_switch,
 } = require('./util_form')
 
 

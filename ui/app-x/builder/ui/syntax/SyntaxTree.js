@@ -67,6 +67,9 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   // lookup_type_for_classname,
+  lookup_types,
+  lookup_groups,
+  lookup_types_for_group,
   lookup_classname_for_type,
   lookup_accepted_types_for_node,
   lookup_accepted_classnames_for_node,
@@ -964,31 +967,10 @@ const SyntaxTree = (props) => {
         {
           [
             'pointer',
-            'js/string',
-            'js/number',
-            'js/boolean',
-            'js/null',
-            'js/object',
-            'js/array',
-            'react/element',
-            'react/html',
-            'react/state',
-            'react/context',
-            'react/effect',
-            'react/form',
-            'input/text',
-            'js/import',
-            'js/expression',
-            'js/function',
-            'js/statement',
-            'js/switch',
-            'js/map',
-            'js/reduce',
-            'js/filter',
-            'mui/style',
-            'appx/api',
-            'appx/route',
-          ].map(type => {
+          ]
+          .concat(lookup_groups().map(group => lookup_types_for_group(group)))
+          .flat()
+          .map(type => {
             return (
               <Tooltip
                 key={type}

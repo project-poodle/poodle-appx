@@ -10,6 +10,7 @@ import react_effect from 'app-x/spec/react_effect.js'
 // forms and inputs
 import react_form from 'app-x/spec/react_form.js'
 import input_text from 'app-x/spec/input_text.js'
+import input_switch from 'app-x/spec/input_switch.js'
 // javascript classes
 import js_null from 'app-x/spec/js_null.js'
 import js_string from 'app-x/spec/js_string.js'
@@ -109,6 +110,7 @@ const types = [
   // form and inputs
   react_form,
   input_text,
+  input_switch,
   // javascript classes,
   js_null,
   js_string,

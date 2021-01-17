@@ -124,6 +124,7 @@ export const classes = {
       'react/html',
       'react/form',
       'input/text',
+      'input/switch',
       'js/expression',
       'js/map',
       'js/switch',
