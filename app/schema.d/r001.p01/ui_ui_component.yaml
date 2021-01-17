@@ -727,7 +727,10 @@ ui_component:
                                   className:
                                     _type: js/expression
                                     data: styles.formControl
-                                  defaultValue: "[{value:'a'},{value:'b'}]"
+                                  size: small
+                                  defaultValue:
+                                    _type: js/expression
+                                    data: "[{value:'a'},{value:'b'}]"
                                   label: auto complete label
                                   multiline: false
                                   suggestions:

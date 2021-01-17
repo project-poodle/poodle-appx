@@ -48,7 +48,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
-    "reflect-prop-types": "^0.1.18",
+    "reflect-prop-types": "^0.1.19",
     "url": "^0.11.0",
     "uuid": "^8.3.1",
     "yaml": "^1.10.0"

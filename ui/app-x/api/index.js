@@ -283,7 +283,7 @@ const login = (realm, username, password, callback, handler) => {
         message: err.toString(),
         data: err.response,
       }
-      if ('response' in err && 'data' in err.response) {
+      if (!!err.response?.data) {
         res = { ...res, ...err.response.data }
       }
       if (handler) {
@@ -340,7 +340,7 @@ const logout = (realm, callback, handler) => {
         message: err.toString(),
         data: err.response,
       }
-      if ('response' in err && 'data' in err.response) {
+      if (!!err.response?.data) {
         res = { ...res, ...err.response.data }
       }
       if (handler) {
@@ -382,7 +382,7 @@ const lookupRealm = (namespace, app_name, callback, handler) => {
         message: err.toString(),
         data: err.response,
       }
-      if ('response' in err && 'data' in err.response) {
+      if (!!err.response?.data) {
         res = { ...res, ...err.response.data }
       }
       if (handler) {
@@ -462,7 +462,7 @@ const me = (namespace, app_name, callback, handler) => {
             message: err.toString(),
             data: err.response,
           }
-          if ('response' in err && 'data' in err.response) {
+          if (!!err.response?.data) {
             res = { ...res, ...err.response.data }
           }
           if (handler) {
@@ -477,7 +477,7 @@ const me = (namespace, app_name, callback, handler) => {
         message: err.toString(),
         data: err.response,
       }
-      if ('response' in err && 'data' in err.response) {
+      if (!!err.response?.data) {
         res = { ...res, ...err.response.data }
       }
       if (handler) {
@@ -574,7 +574,7 @@ const request = (namespace, app_name, conf, callback, handler) => {
             message: err.toString(),
             data: err.response,
           }
-          if ('response' in err && 'data' in err.response) {
+          if (!!err.response?.data) {
             res = { ...res, ...err.response.data }
           }
           if (!!handler) {
