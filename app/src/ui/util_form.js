@@ -447,26 +447,30 @@ function input_text(js_context, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.FormControl'
-          style={{width:'100%'}}
+        <$JSX $NAME='@material-ui/core.Box'
+          style={{width: '100%'}}
           {...restProps}
           >
-          {
-            !!props?.label
-            &&
-            (
-              <$JSX $NAME='@material-ui/core.InputLabel'
-                key="label"
-                shrink={true}
-                required={${required}}
-              >
-                { props.label }
-              </$JSX>
-            )
-          }
-          <$JSX $NAME='@material-ui/core.Box'
-            // style={{width: '100%', paddingTop: '16px'}}
+          <$JSX $NAME='@material-ui/core.FormControl'
+            style={{width:'100%'}}
             >
+            {
+              !!props?.label
+              &&
+              (
+                <$JSX $NAME='@material-ui/core.Box'
+                  style={{width: '100%', paddingBottom: '16px'}}
+                  >
+                  <$JSX $NAME='@material-ui/core.InputLabel'
+                    key="label"
+                    shrink={true}
+                    required={${required}}
+                  >
+                    { props.label }
+                  </$JSX>
+                </$JSX>
+              )
+            }
             {
               ${innerElement}
             }
@@ -1010,26 +1014,30 @@ function input_switch(js_context, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.FormControl'
-          style={{width:'100%'}}
+        <$JSX $NAME='@material-ui/core.Box'
+          style={{width: '100%'}}
           {...restProps}
           >
-          {
-            !!props?.label
-            &&
-            (
-              <$JSX $NAME='@material-ui/core.InputLabel'
-                key="label"
-                shrink={true}
-                required={${required}}
-              >
-                { props.label }
-              </$JSX>
-            )
-          }
-          <$JSX $NAME='@material-ui/core.Box'
-            // style={{width: '100%', paddingTop: '16px'}}
+          <$JSX $NAME='@material-ui/core.FormControl'
+            style={{width:'100%'}}
             >
+            {
+              !!props?.label
+              &&
+              (
+                <$JSX $NAME='@material-ui/core.Box'
+                  style={{width: '100%', paddingBottom: '16px'}}
+                  >
+                  <$JSX $NAME='@material-ui/core.InputLabel'
+                    key="label"
+                    shrink={true}
+                    required={${required}}
+                  >
+                    { props.label }
+                  </$JSX>
+                </$JSX>
+              )
+            }
             {
               ${innerElement}
             }
@@ -1250,26 +1258,30 @@ function input_select(js_context, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.FormControl'
-          style={{width:'100%'}}
+        <$JSX $NAME='@material-ui/core.Box'
+          style={{width: '100%'}}
           {...restProps}
           >
-          {
-            !!props?.label
-            &&
-            (
-              <$JSX $NAME='@material-ui/core.InputLabel'
-                key="label"
-                shrink={true}
-                required={${required}}
-              >
-                { props.label }
-              </$JSX>
-            )
-          }
-          <$JSX $NAME='@material-ui/core.Box'
-            // style={{width: '100%', paddingTop: '16px'}}
+          <$JSX $NAME='@material-ui/core.FormControl'
+            style={{width:'100%'}}
             >
+            {
+              !!props?.label
+              &&
+              (
+                <$JSX $NAME='@material-ui/core.Box'
+                  style={{width: '100%', paddingBottom: '16px'}}
+                  >
+                  <$JSX $NAME='@material-ui/core.InputLabel'
+                    key="label"
+                    shrink={true}
+                    required={${required}}
+                    >
+                    { props.label }
+                  </$JSX>
+                </$JSX>
+              )
+            }
             {
               ${innerElement}
             }
