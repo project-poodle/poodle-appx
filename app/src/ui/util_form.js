@@ -382,7 +382,7 @@ function input_text(js_context, input) {
       name={name}
       type="${inputType}"
       required={${required}}
-      label={props.label || null}
+      // style={{width:'100%'}}
       multiline={!!props.multiline}
       value={innerProps.value}
       onChange={e => {
@@ -406,6 +406,7 @@ function input_text(js_context, input) {
         return (
           <$JSX $NAME='antd.AutoComplete'
             name={name}
+            style={{width:'100%'}}
             options={_searchSuggestions}
             value={innerProps.value}
             onChange={data => {
@@ -450,8 +451,25 @@ function input_text(js_context, input) {
           style={{width:'100%'}}
           >
           {
-            ${innerElement}
+            !!props?.label
+            &&
+            (
+              <$JSX $NAME='@material-ui/core.InputLabel'
+                key="label"
+                shrink={true}
+                required={${required}}
+              >
+                { props.label }
+              </$JSX>
+            )
           }
+          <$JSX $NAME='@material-ui/core.Box'
+            style={{width: '100%', paddingTop: '16px'}}
+            >
+            {
+              ${innerElement}
+            }
+          </$JSX>
         </$JSX>
       )}
     >
