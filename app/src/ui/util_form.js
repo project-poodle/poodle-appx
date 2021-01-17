@@ -381,6 +381,7 @@ function input_text(js_context, input) {
       // {...restProps}
       name={name}
       type="${inputType}"
+      size={props.size}
       required={${required}}
       style={{width:'100%'}}
       multiline={!!props.multiline}
@@ -651,6 +652,7 @@ function input_text_array(js_context, input) {
       name={\`\${name}[\${index}].value\`}
       type="${inputType}"
       required={${required}}
+      size={props.size}
       style={{width:'100%'}}
       multiline={!!props.multiline}
       value={innerProps.value}
@@ -1217,6 +1219,7 @@ function input_select(js_context, input) {
       name={name}
       select={true}
       required={${required}}
+      size={props.size}
       style={{width:'100%'}}
       value={innerProps.value}
       onChange={e => {
