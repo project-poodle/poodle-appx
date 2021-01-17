@@ -45,6 +45,7 @@ import Form from 'app-x/icon/Form'
 import Context from 'app-x/icon/Context'
 import InputText from 'app-x/icon/InputText'
 import InputSwitch from 'app-x/icon/InputSwitch'
+import InputSelect from 'app-x/icon/InputSelect'
 import Filter from 'app-x/icon/Filter'
 import API from 'app-x/icon/API'
 import Style from 'app-x/icon/Style'
@@ -197,6 +198,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'input/switch') {
 
     return <InputSwitch />
+
+  } else if (input._type === 'input/select') {
+
+    return <InputSelect />
 
   } else if (input._type === 'mui/style') {
 
@@ -382,6 +387,10 @@ function lookup_title_for_input(ref, input, array=false) {
     return prefix + `Input [${input.name}]`
 
   } else if (input._type === 'input/switch') {
+
+    return prefix + `Input [${input.name}]`
+
+  } else if (input._type === 'input/select') {
 
     return prefix + `Input [${input.name}]`
 

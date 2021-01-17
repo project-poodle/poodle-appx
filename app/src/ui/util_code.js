@@ -27,6 +27,7 @@ const {
   react_form,
   input_text,
   input_switch,
+  input_select,
 } = require('./util_form')
 
 
@@ -2105,9 +2106,9 @@ function js_process(js_context, input) {
 
     return input_switch(js_context, input)
 
-  } else if (input._type === 'input/custom') {
+  } else if (input._type === 'input/select') {
 
-    return input_custom(js_context, input)
+    return input_select(js_context, input)
 
   } else if (input._type === 'appx/api') {
 

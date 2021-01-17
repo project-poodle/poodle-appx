@@ -171,6 +171,7 @@ const groups = {
     'react/form',
     'input/text',
     'input/switch',
+    'input/select',
   ],
   // js advanced
   js_advanced: [

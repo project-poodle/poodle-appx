@@ -11,6 +11,7 @@ import react_effect from 'app-x/spec/react_effect.js'
 import react_form from 'app-x/spec/react_form.js'
 import input_text from 'app-x/spec/input_text.js'
 import input_switch from 'app-x/spec/input_switch.js'
+import input_select from 'app-x/spec/input_select.js'
 // javascript classes
 import js_null from 'app-x/spec/js_null.js'
 import js_string from 'app-x/spec/js_string.js'
@@ -111,6 +112,7 @@ const types = [
   react_form,
   input_text,
   input_switch,
+  input_select,
   // javascript classes,
   js_null,
   js_string,

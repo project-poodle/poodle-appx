@@ -382,7 +382,7 @@ function input_text(js_context, input) {
       name={name}
       type="${inputType}"
       required={${required}}
-      // style={{width:'100%'}}
+      style={{width:'100%'}}
       multiline={!!props.multiline}
       value={innerProps.value}
       onChange={e => {
@@ -399,7 +399,7 @@ function input_text(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // if autoSuggest
-  if (!!input.props.autoSuggest) {
+  if (!!props.autoSuggest) {
     innerElement = `
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.suggestions)
@@ -449,6 +449,7 @@ function input_text(js_context, input) {
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.FormControl'
           style={{width:'100%'}}
+          {...restProps}
           >
           {
             !!props?.label
@@ -464,7 +465,7 @@ function input_text(js_context, input) {
             )
           }
           <$JSX $NAME='@material-ui/core.Box'
-            style={{width: '100%', paddingTop: '16px'}}
+            // style={{width: '100%', paddingTop: '16px'}}
             >
             {
               ${innerElement}
@@ -644,9 +645,9 @@ function input_text_array(js_context, input) {
     <$JSX $NAME='@material-ui/core.TextField'
       // {...restProps}
       name={\`\${name}[\${index}].value\`}
-      // name={\`\${name}\`}
       type="${inputType}"
       required={${required}}
+      style={{width:'100%'}}
       multiline={!!props.multiline}
       value={innerProps.value}
       onChange={e => {
@@ -663,7 +664,7 @@ function input_text_array(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // if autoSuggest
-  if (!!input.props.autoSuggest) {
+  if (!!props.autoSuggest) {
     innerElement = `
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.suggestions)
@@ -1011,6 +1012,7 @@ function input_switch(js_context, input) {
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.FormControl'
           style={{width:'100%'}}
+          {...restProps}
           >
           {
             !!props?.label
@@ -1026,7 +1028,247 @@ function input_switch(js_context, input) {
             )
           }
           <$JSX $NAME='@material-ui/core.Box'
-            style={{width: '100%', paddingTop: '16px'}}
+            // style={{width: '100%', paddingTop: '16px'}}
+            >
+            {
+              ${innerElement}
+            }
+          </$JSX>
+        </$JSX>
+      )}
+    >
+    </$JSX>
+  `
+
+  //////////////////////////////////////////////////////////////////////
+  const result = t.callExpression(
+    _js_parse_expression(
+      js_context,
+      `
+      (name, props, rules) => {
+        // destruct props
+        const {
+          type,
+          label,
+          defaultValue,
+          multiline,
+          autoSuggest,
+          options,
+          callback,
+          ...restProps
+        } = props
+        // return
+        return (
+          ${controlElement}
+        )
+      }
+      `,
+      {
+        plugins: [
+          'jsx', // support jsx here
+        ]
+      }
+    ),
+    [
+      nameExpression,
+      propsExpression,
+      rulesExpression,
+    ]
+  )
+
+  //////////////////////////////////////////////////////////////////////
+  // check for JSX_CONTEXT and return
+  if (js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      result
+    )
+  } else {
+    return result
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// create input/select ast
+function input_select(js_context, input) {
+
+  // require here to avoid circular require reference
+  const { js_process } = require('./util_code')
+
+  if (!('_type' in input) || input._type !== 'input/select') {
+    throw new Error(`ERROR: input._type is not [input/select] [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (!input.name) {
+    throw new Error(`ERROR: input.name not set in [input/select] [${JSON.stringify(input)}]`)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // process form context and reg_react_form before processing others
+  // check for js_context.reactForm exist
+  if (!(js_context.reactForm)) {
+    // console.log(`reg_js_import`, `react-hook-form.useFormContext`)
+    reg_js_import(js_context, `react-hook-form.useFormContext`)
+  }
+  // qualified name
+  const qualifiedName = !!(js_context.reactForm)
+    ? `react-hook-form.useForm.${js_context.reactForm}`
+    : `react-hook-form.useFormContext`
+  // console.log(`js_context.reactForm`, js_context.reactForm, qualifiedName)
+  // if js_context.reactForm is not already set, register empty string
+  if (!js_context.reactForm) {
+    reg_react_form(js_context, '', qualifiedName, null)
+  }
+  // register variables, no import needed
+  REACT_FORM_METHODS.map(method => {
+    reg_js_variable(js_context, `${qualifiedName}.${method}`)
+  })
+
+  //////////////////////////////////////////////////////////////////////
+  // start processing after reg_react_form
+  // process name
+  const nameExpression = (() => {
+    if (isPrimitive(input.name)) {
+      return t.stringLiteral(String(input.name))
+    } else {
+      throw new Error(`ERROR: [input/text] input.name is not string [${JSON.stringify(input.name)}]`)
+    }
+  })()
+
+  // process main props
+  const props = input.props || {}
+  // basic types - extension not supported
+  // multiline and autoSuggest options
+  const required = !!input.required
+
+  // default value
+  const defaultValueExpression = (() => {
+    if (!!props.defaultValue) {
+      if (isPrimitive(props.defaultValue)) {
+        return t.stringLiteral(String(props.defaultValue))
+      } else {
+        return js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          props.defaultValue
+        )
+      }
+    } else {
+      return t.stringLiteral('')
+    }
+  })()
+  js_context.parsed['props.defaultValue'] = defaultValueExpression
+
+  // compute props
+  const propsExpression = (() => {
+    if (!!input.props) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        input.props
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  // compute rules
+  const rulesExpression = (() => {
+    if (!!input.rules) {
+      return js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentRef: null,
+          parentPath: null,
+          JSX_CONTEXT: false,
+        },
+        input.rules
+      )
+    } else {
+      // return {}
+      return t.objectExpression([])
+    }
+  })()
+
+  //////////////////////////////////////////////////////////////////////
+  // TextField
+  let innerElement = `
+    <$JSX $NAME='@material-ui/core.TextField'
+      // {...restProps}
+      name={name}
+      select={true}
+      required={${required}}
+      style={{width:'100%'}}
+      value={innerProps.value}
+      onChange={e => {
+        innerProps.onChange(e.target.value)
+        if (!!props.callback) {
+          props.callback(e.target.value)
+        }
+      }}
+      error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
+      helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message}
+      >
+      {
+        !!props.options
+        &&
+        (
+          props.options.map(option => {
+            return (
+              <$JSX $NAME='@material-ui/core.MenuItem'
+                key={option.value}
+                value={option.value}
+                >
+                { option.value }
+              </$JSX>
+            )
+          })
+        )
+      }
+    </$JSX>
+  `
+
+  //////////////////////////////////////////////////////////////////////
+  // control element
+  const controlElement = `
+    <$JSX $NAME='react-hook-form.Controller'
+      key={name}
+      name={name}
+      required={${required}}
+      constrol={$L('${qualifiedName}.control')}
+      defaultValue={$P('props.defaultValue')}
+      rules={rules}
+      render={innerProps => (
+        <$JSX $NAME='@material-ui/core.FormControl'
+          style={{width:'100%'}}
+          {...restProps}
+          >
+          {
+            !!props?.label
+            &&
+            (
+              <$JSX $NAME='@material-ui/core.InputLabel'
+                key="label"
+                shrink={true}
+                required={${required}}
+              >
+                { props.label }
+              </$JSX>
+            )
+          }
+          <$JSX $NAME='@material-ui/core.Box'
+            // style={{width: '100%', paddingTop: '16px'}}
             >
             {
               ${innerElement}
@@ -1091,4 +1333,5 @@ module.exports = {
   react_form: react_form,
   input_text: input_text,
   input_switch: input_switch,
+  input_select: input_select,
 }
