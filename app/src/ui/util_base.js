@@ -12,6 +12,7 @@ const TOKEN_IMPORT = '$I'
 const TOKEN_LOCAL = '$L'
 const TOKEN_JSX = '$JSX'
 const TOKEN_NAME = '$NAME'
+const TOKEN_PARSED = '$P'
 
 const REACT_FORM_METHODS = [
   'register',
@@ -93,7 +94,7 @@ function _js_parse_snippet(js_context, parsed) {
           && path.node.callee.name === TOKEN_IMPORT
           && path.node.arguments.length > 0
           && t.isStringLiteral(path.node.arguments[0])) {
-        // register and import TOKEN_IMPORT require syntax
+        // register and import TOKEN_IMPORT syntax
         const name = path.node.arguments[0].value
         reg_js_import(js_context, name)
         path.replaceWith(t.identifier(name))
@@ -103,10 +104,20 @@ function _js_parse_snippet(js_context, parsed) {
           && path.node.callee.name === TOKEN_LOCAL
           && path.node.arguments.length > 0
           && t.isStringLiteral(path.node.arguments[0])) {
-        // register and import TOKEN_IMPORT require syntax
+        // register variable for TOKEN_LOCAL syntax
         const name = path.node.arguments[0].value
         reg_js_variable(js_context, name)
         path.replaceWith(t.identifier(name))
+      }
+      // check if matches TOKEN_PARSED syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name === TOKEN_PARSED
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // replace with parsed syntax
+        const name = path.node.arguments[0].value
+        // console.log(`$P`, name, js_context.parsed[name])
+        path.replaceWith(js_context.parsed[name])
       }
     },
     // register all variable declarators with local prefix

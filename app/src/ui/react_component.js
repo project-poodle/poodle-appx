@@ -81,6 +81,7 @@ function handle_react_component(req, res) {
         imports: {},
         states: {},
         forms: {},
+        parsed: {},
         appx: req.context
     }
 

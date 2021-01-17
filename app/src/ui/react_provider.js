@@ -63,6 +63,7 @@ function handle_react_provider(req, res) {
         imports: {},
         states: {},
         forms: {},
+        parsed: {},
         appx: req.context
     }
 

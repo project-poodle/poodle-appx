@@ -80,6 +80,7 @@ function handle_appx_route(req, res) {
         imports: {},
         states: {},
         forms: {},
+        parsed: {},
         appx: req.context
     }
 

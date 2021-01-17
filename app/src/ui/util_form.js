@@ -313,6 +313,29 @@ function input_text(js_context, input) {
     }
   })()
 
+  // default value
+  const defaultValueExpression = (() => {
+    if (!!props.defaultValue) {
+      if (isPrimitive(props.defaultValue)) {
+        return t.stringLiteral(String(props.defaultValue))
+      } else {
+        return js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          props.defaultValue
+        )
+      }
+    } else {
+      return t.stringLiteral('')
+    }
+  })()
+  js_context.parsed['props.defaultValue'] = defaultValueExpression
+
   // compute props
   const propsExpression = (() => {
     if (!!input.props) {
@@ -359,6 +382,7 @@ function input_text(js_context, input) {
       name={name}
       type="${inputType}"
       required={${required}}
+      label={props.label || null}
       multiline={!!props.multiline}
       value={innerProps.value}
       onChange={e => {
@@ -419,7 +443,7 @@ function input_text(js_context, input) {
       name={name}
       required={${required}}
       constrol={$L('${qualifiedName}.control')}
-      defaultValue={${props.defaultValue} || ''}
+      defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.FormControl'
