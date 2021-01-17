@@ -285,7 +285,6 @@ function input_text(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // start processing after reg_react_form
-
   // process name
   const nameExpression = (() => {
     if (isPrimitive(input.name)) {
@@ -531,7 +530,6 @@ function input_text_array(js_context, input) {
 
   //////////////////////////////////////////////////////////////////////
   // start processing after reg_react_form
-
   // process name
   const nameExpression = (() => {
     if (isPrimitive(input.name)) {
