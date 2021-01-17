@@ -209,21 +209,23 @@ const SyntaxAddDialog = (props) => {
     if (!!parentSpec) {
       // parentSpec effects
       const childSpec = parentSpec?.children.find(childSpec => childSpec.name === '*' || childSpec.name == nodeRef)
-      if (!!childSpec?._childNode?.effects && !!childSpec._childNode.effects.context && !!childSpec._childNode.effects.data) {
-        if (childSpec._childNode.effects.context.includes('add')) {
-          childSpec._childNode.effects.data.map(effect => eval(effect))
-        }
-        // console.log(`watch here`, watchData, new Date())
+      if (!!childSpec?._childNode?.effects && Array.isArray(childSpec._childNode.effects)) {
+        childSpec._childNode.effects
+          .filter(effect => !!effect.context && effect.context.includes('add') && Array.isArray(effect.data))
+          .map(effect => {
+            effect.data.map(data => eval(data))
+          })
       }
     }
     // nodeSpec effects
-    if (!!nodeSpec?._effects && !!nodeSpec._effects.context && !!nodeSpec._effects.data) {
-      if (nodeSpec._effects.context.includes('add')) {
-        nodeSpec._effects.data.map(effect => eval(effect))
-      }
+    if (!!nodeSpec?._effects && Array.isArray(nodeSpec._effects)) {
+      nodeSpec._effects
+        .filter(effect => !!effect.context && effect.context.includes('add') && Array.isArray(effect.data))
+        .map(effect => {
+          effect.data.map(data => eval(data))
+        })
     }
   }, [watchData])
-
 
   //////////////////////////////////////////////////////////////////////////////
   // parentSpec

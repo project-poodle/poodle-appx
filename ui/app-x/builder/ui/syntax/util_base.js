@@ -55,6 +55,11 @@ const PATH_SEPARATOR = '/'
 const VARIABLE_SEPARATOR = '.'
 const REGEX_VAR = /^[_a-zA-Z][_a-zA-Z0-9]*$/
 
+const MODULES_EXCLUDE_SECONDARY = [
+  '@material-ui/icons',
+  '@ant-design/icons',
+]
+
 ////////////////////////////////////////////////////////////////////////////////
 /*
 // define unique
@@ -626,7 +631,7 @@ function lookup_prop_types(name, callback) {
     return []
   }
   // lookup prop types
-  console.log(`lookup_prop_types: ${name}`)
+  // console.log(`lookup_prop_types: ${name}`)
   const parsed = parse_var_full_path(name)
   const full_paths = [...parsed.full_paths]
 
@@ -658,15 +663,17 @@ function lookup_prop_types(name, callback) {
       }
       // callback
       if (!!react_element && !!react_element.propTypes) {
-        console.log(`propTypes`, react_element.propTypes)
-        if (typeof react_element.propTypes.classes === 'function') {
-          console.log(`classes`, react_element.propTypes.classes())
-        }
-        if (typeof react_element.propTypes.innerRef === 'function') {
-          console.log(`innerRef`, react_element.propTypes.innerRef())
-        }
-        if (callback) {
-          callback(Object.keys(react_element.propTypes))
+        // special handling for @material-ui/ styled components
+        if (found.startsWith('@material-ui/') && !!react_element.Naked?.propTypes) {
+          // console.log('@material-ui/', `propTypes`, found, react_element, react_element.propTypes)
+          if (!!callback) {
+            callback(Object.keys(react_element.Naked.propTypes))
+          }
+        } else {
+          // console.log(`propTypes`, react_element, react_element.propTypes)
+          if (!!callback) {
+            callback(Object.keys(react_element.propTypes))
+          }
         }
       } else {
         if (!!callback) {
@@ -674,6 +681,10 @@ function lookup_prop_types(name, callback) {
         }
       }
     })
+  } else {
+    if (!!callback) {
+      callback([])
+    }
   }
 }
 
@@ -717,20 +728,22 @@ function load_valid_import_data() {
                   module: module_name,
                   variable: variable_name,
                 }
-                // add children
-                const variable = module_content[variable_name]
-                if (!!variable) {
-                  Object.keys(variable)
-                    .filter(subVar => !subVar.startsWith('$'))
-                    .map(subVar => {
-                      const subvar_title = module_name + VARIABLE_SEPARATOR + variable_name + VARIABLE_SEPARATOR + subVar
-                      _valid_import_data[subvar_title] = {
-                        title: subvar_title,
-                        module: module_name,
-                        variable: variable_name,
-                        subVar: subVar,
-                      }
-                    })
+                // add children if not in exluded list
+                if (!MODULES_EXCLUDE_SECONDARY.includes(module_name)) {
+                  const variable = module_content[variable_name]
+                  if (!!variable) {
+                    Object.keys(variable)
+                      .filter(subVar => !subVar.startsWith('$'))
+                      .map(subVar => {
+                        const subvar_title = module_name + VARIABLE_SEPARATOR + variable_name + VARIABLE_SEPARATOR + subVar
+                        _valid_import_data[subvar_title] = {
+                          title: subvar_title,
+                          module: module_name,
+                          variable: variable_name,
+                          subVar: subVar,
+                        }
+                      })
+                  }
                 }
               })
             }
@@ -753,6 +766,7 @@ function load_valid_import_data() {
         // console.log(path_module)
         const module_name = path
         Object.keys(path_module).map(variable_name => {
+          /*
           if (variable_name === 'default') {
             // add default
             _valid_import_data[module_name] = {
@@ -761,6 +775,7 @@ function load_valid_import_data() {
               variable: variable_name,
             }
           }
+          */
           const title = module_name + VARIABLE_SEPARATOR + variable_name
           _valid_import_data[title] = {
             title: title,

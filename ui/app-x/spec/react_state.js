@@ -21,14 +21,23 @@ export const react_state = {
       },
     }
   ],
-  _effects: {
-    context: [ "add", "move" ],
-    data: [
-      '(() => { if (!form.getValues("_customRef")) states.setRef("..." + form.getValues("name")) })()',
-      '(() => { if (!form.getValues("_customRef")) states.setDisabled("_ref", true) })()',
-      '(() => { if (!!form.getValues("_customRef")) states.setDisabled("_ref", false) })()',
-    ]
-  },
+  _effects: [
+    {
+      context: [ "add", "move" ],
+      data: [
+        '(() => { if (!form.getValues("_customRef")) states.setRef("..." + form.getValues("name")) })()',
+        '(() => { if (!form.getValues("_customRef")) states.setDisabled("_ref", true) })()',
+        '(() => { if (!!form.getValues("_customRef")) states.setDisabled("_ref", false) })()',
+      ]
+    },
+    {
+      context: [ "editor" ],
+      data: [
+        '(() => { states.setDisabled("_ref", true) })()',
+        '(() => { if (form.getValues("_ref").startsWith("...")) states.setRef("..." + form.getValues("name")) })()',
+      ]
+    }
+  ],
   children: [
     {
       name: 'name',

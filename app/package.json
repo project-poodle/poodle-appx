@@ -7,6 +7,10 @@
     "start": "node ./app.js -c ./conf.d/mysql_appx.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/project-poodle/poodle-appx.git"
+  },
   "dependencies": {
     "@babel/generator": "^7.12.5",
     "@babel/parser": "^7.12.7",

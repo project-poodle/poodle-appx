@@ -5,6 +5,7 @@ import * as react from 'react'
 import * as reactDom from 'react-dom'
 import * as reactDomServer from 'react-dom/server'
 import * as propTypes from 'prop-types'
+import * as reflectivePropTypes from 'reflect-prop-types'
 // redux
 import * as reactRedux from 'react-redux'
 import * as redux from 'redux'
@@ -21,7 +22,8 @@ import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
 // editor
-import * as monacoEditor from '@monaco-editor/react'
+// import * as monacoEditor from 'monaco-editor'
+import * as monacoEditorReact from '@monaco-editor/react'
 // utilities
 import * as yaml from 'yaml'
 import * as jsYaml from 'js-yaml'
@@ -38,7 +40,8 @@ export default {
   "react-dom": reactDom,
   "react-dom/server": reactDomServer,
   "prop-types": propTypes,     // override original propTypes?
-  //"reflectPropTypes": reflectPropTypes,
+  // "original-prop-types": reflectivePropTypes._original,     // override original propTypes?
+  "reflect-prop-types": reflectivePropTypes,
   // redux
   "react-redux": reactRedux,
   "redux": redux,
@@ -53,7 +56,8 @@ export default {
   // react utilities
   "react-helmet": reactHelmet,
   // "react-feather": reactFeather,
-  "@monaco-editor/react": monacoEditor,
+  // "monaco-editor": monacoEditor,
+  "@monaco-editor/react": monacoEditorReact,
   // utilities
   "yaml": yaml,
   "js-yaml": jsYaml,

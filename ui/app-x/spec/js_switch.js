@@ -66,19 +66,21 @@ export const js_switch = {
             },
           },
         ],
-        effects: {
-          context: [ 'add', 'move', 'editor' ],
-          data: [
-            '(() => { \
-              const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
-              states.setRef(refTarget); \
-            })()',
-            '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
-            '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
-            '(() => { states.setDisabled("_ref", true) })()',
-            '(() => { form.trigger("_ref") })()',
-          ]
-        }
+        effects: [
+          {
+            context: [ 'add', 'move', 'editor' ],
+            data: [
+              '(() => { \
+                const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+                states.setRef(refTarget); \
+              })()',
+              '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+              '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+              '(() => { states.setDisabled("_ref", true) })()',
+              '(() => { form.trigger("_ref") })()',
+            ]
+          }
+        ]
       },
     },
     {
@@ -125,19 +127,21 @@ export const js_switch = {
             },
           },
         ],
-        effects: {
-          context: [ 'add', 'move', 'editor' ],
-          data: [
-            '(() => { \
-              const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
-              states.setRef(refTarget); \
-            })()',
-            '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
-            '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
-            '(() => { states.setDisabled("_ref", true) })()',
-            '(() => { form.trigger("_ref") })()',
-          ]
-        }
+        effects: [
+          {
+            context: [ 'add', 'move', 'editor' ],
+            data: [
+              '(() => { \
+                const refTarget = !!form.getValues("_isDefault") ? "default" : "children"; \
+                states.setRef(refTarget); \
+              })()',
+              '(() => { if (!!form.getValues("_isDefault")) states.setHidden("_condition", true) })()',
+              '(() => { if (!form.getValues("_isDefault")) states.setHidden("_condition", false) })()',
+              '(() => { states.setDisabled("_ref", true) })()',
+              '(() => { form.trigger("_ref") })()',
+            ]
+          }
+        ]
       },
     },
   ],

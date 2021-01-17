@@ -20,6 +20,11 @@ const plugins = [
     // namedExports: { 'react': ['createElement', 'Component' ] },  // Default: undefined
     // ignore: [ 'conditional-runtime-dependency' ]
   }),
+  // replace({
+  //   include: 'node_modules/**',  // Default: undefined
+  //   exclude: 'node_modules/reflect-prop-types/**',  // Default: undefined
+  //   'prop-types': 'reflect-prop-types',
+  // }),
   nodeResolve({
     // mainFields: ['module', 'main'], // Default: ['module', 'main']
     browser: true,  // Default: false
@@ -33,12 +38,11 @@ const plugins = [
   }),
   nodeGlobals(),
   nodeBuiltins(),
-  //replace({
+  // replace({
   //  //exclude: 'package.json',
   //  include: 'node_modules/**',  // Default: undefined
-  //  'process.env.NODE_ENV': JSON.stringify('development'),
-  //  'process.env.BABEL_TYPES_8_BREAKING': null
-  //}),
+  //  'reflectPropTypes': 'PropTypes',
+  // }),
   //css(),
   postcss({
     plugins: []
