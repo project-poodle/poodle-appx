@@ -25,8 +25,8 @@ export const js_import = {
         input: {
           kind: 'input/text'
         },
-        suggestions: 'auto_suggestions.valid_import_names()',
-        suggestionsOnly: true,
+        options: 'validation.valid_import_names()',
+        optionsOnly: true,
         examples: [
           'react',
           'react-dom',

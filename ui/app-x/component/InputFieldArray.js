@@ -44,7 +44,7 @@ import { parse, parseExpression } from "@babel/parser"
 import AutoSuggest from 'app-x/component/AutoSuggest'
 import ControlledEditor from 'app-x/component/ControlledEditor'
 import {
-  auto_suggestions
+  validation,
 } from 'app-x/builder/ui/syntax/util_base'
 
 // input field array
@@ -86,9 +86,9 @@ const InputFieldArray = ((props) => {
   // destruct props
   const { name, childSpec, inputSpec } = props
 
-  const suggestions = (() => {
-    if (inputSpec?.suggestions) {
-      return eval(inputSpec?.suggestions)
+  const options = (() => {
+    if (inputSpec?.options) {
+      return eval(inputSpec?.options)
     } else {
       return []
     }
@@ -183,9 +183,13 @@ const InputFieldArray = ((props) => {
                           message: rule.message,
                         }
                       } else if (rule.kind === 'validate') {
-                        result.validate[`validate_${count++}`] = (value) => (
-                          !!eval(rule.data) || rule.message
-                        )
+                        result.validate[`validate_${count++}`] = (value) => {
+                          try {
+                            return !!eval(rule.data) || rule.message
+                          } catch (e) {
+                            return String(e)
+                          }
+                        }
                       }
                     })
                   }
@@ -200,26 +204,32 @@ const InputFieldArray = ((props) => {
                           message: rule.message,
                         }
                       } else if (rule.kind === 'validate') {
-                        result.validate[`validate_${count++}`] = (value) => (
-                          !!eval(rule.data) || rule.message
-                        )
+                        result.validate[`validate_${count++}`] = (value) => {
+                          try {
+                            return !!eval(rule.data) || rule.message
+                          } catch (e) {
+                            return String(e)
+                          }
+                        }
                       }
                     })
                   }
-                  // auto suggestions rule
-                  if (!!inputSpec.suggestionsOnly) {
+                  // auto options rule
+                  if (!!inputSpec.optionsOnly) {
                     result.validate[`validate_${count++}`] = (value) => (
-                      suggestions.includes(value)
+                      options.includes(value)
                       || `${childSpec.desc} must be a valid value`
                     )
                   }
                   // additional rules by input type
                   // console.log(`inputSpec.kind`, inputSpec.kind)
-                  if (inputSpec.kind === 'input/number') {
+                  if (inputSpec.variant === 'input/number') {
                     result.validate[`validate_${count++}`] = (value) => {
                       return !isNaN(Number(value)) || "Must be a number"
                     }
-                  } else if (inputSpec.kind === 'input/expression') {
+                  }
+                  // expression and statement
+                  if (inputSpec.kind === 'input/expression') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
                         parseExpression(String(value))
@@ -250,11 +260,14 @@ const InputFieldArray = ((props) => {
                       return (
                         <FormControl
                           name={itemName}
+                          size={props.size}
+                          margin={props.margin}
                           className={styles.itemControl}
                           error={!!_.get(errors, name)}
                           >
                           <Switch
                             name={itemName}
+                            size={props.size}
                             checked={innerProps.value}
                             onChange={e => {
                               innerProps.onChange(e.target.checked)
@@ -283,6 +296,8 @@ const InputFieldArray = ((props) => {
                         <Box className={styles.editor}>
                           <FormControl
                             name={itemName}
+                            size={props.size}
+                            margin={props.margin}
                             focused={!!monacoFocused[itemName]}
                             className={styles.itemControl}
                             error={!!_.get(errors, itemName)}
@@ -359,14 +374,17 @@ const InputFieldArray = ((props) => {
                       return (
                         <FormControl
                           name={itemName}
+                          size={props.size}
+                          margin={props.margin}
                           className={styles.itemControl}
+                          error={!!_.get(errors, name)}
                           >
                           <AutoSuggest
                             name={itemName}
                             value={innerProps.value}
                             required={!!childSpec.required}
-                            options={suggestions}
-                            size="small"
+                            options={options}
+                            size={props.size}
                             onChange={innerProps.onChange}
                             error={!!_.get(errors, itemName)}
                             helperText={_.get(errors, itemName)?.message}

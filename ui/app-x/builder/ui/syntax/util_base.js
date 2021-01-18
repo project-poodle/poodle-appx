@@ -809,8 +809,8 @@ function valid_import_names() {
   return _valid_import_names
 }
 
-// all suggestions method
-const auto_suggestions = {
+// all validation methods
+const validation = {
   valid_api_methods: valid_api_methods,
   valid_html_tags: valid_html_tags,
   valid_import_names: valid_import_names,
@@ -845,7 +845,7 @@ export {
   data_matches_spec,
   lookup_types_for_spec,
   // valid auto complete
-  auto_suggestions,
+  validation,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,

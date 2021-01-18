@@ -641,7 +641,7 @@ const SyntaxAddDialog = (props) => {
             />
             {
               nodeSpec?.children?.map(childSpec => {
-                if (!childSpec._thisNode) {
+                if (!childSpec._thisNode?.input) {
                   return undefined
                 }
                 if (!!hidden[childSpec.name]) {

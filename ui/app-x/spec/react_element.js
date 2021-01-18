@@ -32,8 +32,8 @@ export const react_element = {
         types: 'inherit',
         input: {
           kind: 'input/text',
-          suggestions: 'auto_suggestions.valid_import_names()',
-          suggestionsOnly: true,
+          options: 'validation.valid_import_names()',
+          optionsOnly: true,
         },
         examples: [
           '@material-ui/core.Box',

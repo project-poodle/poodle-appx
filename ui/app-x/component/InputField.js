@@ -44,7 +44,7 @@ import { parse, parseExpression } from "@babel/parser"
 import AutoSuggest from 'app-x/component/AutoSuggest'
 import ControlledEditor from 'app-x/component/ControlledEditor'
 import {
-  auto_suggestions
+  validation
 } from 'app-x/builder/ui/syntax/util_base'
 
 // input field array
@@ -70,7 +70,7 @@ const InputField = ((props) => {
     expressionEditor: {
       width: '100%',
       height: theme.spacing(5),
-      padding: theme.spacing(0),
+      padding: theme.spacing(0, 0, 0),
     },
     statementEditor: {
       width: '100%',
@@ -85,6 +85,7 @@ const InputField = ((props) => {
 
   // console.log(`useFormContext`, useFormContext())
   // useFormContext
+  const form = useFormContext() // this variable is used for field validation
   const {
     register,
     unregister,
@@ -99,14 +100,15 @@ const InputField = ((props) => {
     trigger,
     control,
     formState,
-  } = useFormContext()
+  } = form
 
   // destruct props
   const { name, childSpec, inputSpec, defaultValue } = props
 
-  const suggestions = (() => {
-    if (inputSpec?.suggestions) {
-      return eval(inputSpec?.suggestions)
+  // options
+  const options = (() => {
+    if (inputSpec?.options) {
+      return eval(inputSpec?.options)
     } else {
       return []
     }
@@ -140,9 +142,13 @@ const InputField = ((props) => {
                 message: rule.message,
               }
             } else if (rule.kind === 'validate') {
-              result.validate[`validate_${count++}`] = (value) => (
-                !!eval(rule.data) || rule.message
-              )
+              result.validate[`validate_${count++}`] = (value) => {
+                try {
+                  return !!eval(rule.data) || rule.message
+                } catch (e) {
+                  return String(e)
+                }
+              }
             }
           })
         }
@@ -157,26 +163,32 @@ const InputField = ((props) => {
                 message: rule.message,
               }
             } else if (rule.kind === 'validate') {
-              result.validate[`validate_${count++}`] = (value) => (
-                !!eval(rule.data) || rule.message
-              )
+              result.validate[`validate_${count++}`] = (value) => {
+                try {
+                  return !!eval(rule.data) || rule.message
+                } catch (e) {
+                  return String(e)
+                }
+              }
             }
           })
         }
-        // auto suggestions rule
-        if (!!inputSpec.suggestionsOnly) {
+        // auto options rule
+        if (!!inputSpec.optionsOnly) {
           result.validate[`validate_${count++}`] = (value) => (
-            suggestions.includes(value)
+            !!options.find(option => typeof option === 'string' ? option === value : option.value === value)
             || `${childSpec.desc || childSpec.title || childSpec.name} must be a valid value`
           )
         }
         // additional rules by input type
         // console.log(`inputSpec.kind`, inputSpec.kind)
-        if (inputSpec.kind === 'input/number') {
+        if (inputSpec.variant === 'number') {
           result.validate[`validate_${count++}`] = (value) => {
             return !isNaN(Number(value)) || "Must be a number"
           }
-        } else if (inputSpec.kind === 'input/expression') {
+        }
+        // expression and statement
+        if (inputSpec.kind === 'input/expression') {
           result.validate[`validate_${count++}`] = (value) => {
             try {
               parseExpression(String(value))
@@ -209,6 +221,8 @@ const InputField = ((props) => {
                 >
                 <FormControl
                   name={name}
+                  size={props.size}
+                  margin={props.margin}
                   className={styles.formControl}
                   error={!!_.get(errors, name)}
                   disabled={!!props.disabled}
@@ -229,6 +243,7 @@ const InputField = ((props) => {
                   }
                   <Switch
                     name={name}
+                    size={props.size}
                     disabled={!!props.disabled}
                     checked={innerProps.value}
                     onChange={e => {
@@ -257,6 +272,8 @@ const InputField = ((props) => {
                 >
                 <FormControl
                   name={name}
+                  size={props.size}
+                  margin={props.margin}
                   className={styles.formControl}
                   error={!!_.get(errors, name)}
                   disabled={!!props.disabled}
@@ -334,6 +351,79 @@ const InputField = ((props) => {
                 </FormControl>
               </Box>
             )
+          } else if
+          (
+            inputSpec.kind === 'input/select'
+          ) {
+            console.log('input/select', inputSpec)
+            return (
+              <Box
+                className={props.className}
+                >
+                <FormControl
+                  name={name}
+                  size={props.size}
+                  margin={props.margin}
+                  className={styles.formControl}
+                  error={!!_.get(errors, name)}
+                  disabled={!!props.disabled}
+                  focused={monacoFocused}
+                  >
+                  {
+                    !!childSpec.desc
+                    &&
+                    (
+                      <Box className={styles.label}>
+                        <InputLabel
+                          shrink={true}
+                          required={!!childSpec.required}
+                          >
+                          {childSpec.desc}
+                        </InputLabel>
+                      </Box>
+                    )
+                  }
+                  <TextField
+                    name={name}
+                    label={null}
+                    select={true}
+                    value={innerProps.value}
+                    disabled={!!props.disabled}
+                    required={!!childSpec.required}
+                    size={props.size}
+                    onChange={e => {
+                      innerProps.onChange(e.target.value)
+                      if (!!props.callback) {
+                        props.callback(e.target.value)
+                      }
+                    }}
+                    >
+                    {
+                      !!options
+                      && !!options.length
+                      &&
+                      (
+                        options.map(option => {
+                          return (
+                            <MenuItem
+                              key={option.value}
+                              value={option.value}
+                              >
+                              { option.value }
+                            </MenuItem>
+                          )
+                        })
+                      )
+                    }
+                  </TextField>
+                  {
+                    !!_.get(errors, name)
+                    &&
+                    <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
+                  }
+                </FormControl>
+              </Box>
+            )
           } else {
             return (
               <Box
@@ -341,7 +431,10 @@ const InputField = ((props) => {
                 >
                 <FormControl
                   name={name}
+                  size={props.size}
+                  margin={props.margin}
                   className={styles.formControl}
+                  error={!!_.get(errors, name)}
                   disabled={!!props.disabled}
                   className={styles.formControl}
                   >
@@ -365,18 +458,14 @@ const InputField = ((props) => {
                     value={innerProps.value}
                     disabled={!!props.disabled}
                     required={!!childSpec.required}
-                    options={suggestions}
-                    size="small"
+                    options={options}
+                    size={props.size}
+                    margin={props.margin}
                     onChange={innerProps.onChange}
                     // error={!!_.get(errors, name)}
                     // helperText={_.get(errors, name)?.message}
                     callback={props.callback}
                   />
-                  {
-                    !!_.get(errors, name)
-                    &&
-                    <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
-                  }
                 </FormControl>
               </Box>
             )

@@ -656,7 +656,8 @@ function generate_tree_node(js_context, conf, input) {
       } else if (data_type === 'js/null') {
         return null
       } else {
-        throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        // throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        return data
       }
     }
 

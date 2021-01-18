@@ -192,10 +192,11 @@ const types = [
       } else {
         check_type_spec(childSpec._thisNode.types)
       }
-      if (!childSpec._thisNode.input) {
-        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
-      } else if (!childSpec._thisNode.input.kind) {
-        throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input.kind]`)
+      if (!!childSpec._thisNode.input) {
+      //   throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input]`)
+        if (!childSpec._thisNode.input.kind) {
+          throw new Error(`ERROR: type spec [${item.type}] [${childSpec.name}] _thisNode missing [input.kind]`)
+        }
       }
     }
     // check _childNode

@@ -193,7 +193,8 @@ function parse_tree_node(tree_context, treeNode) {
       } else if (data_type === 'js/null') {
         return null
       } else {
-        throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        // throw new Error(`ERROR: non-primitive type [${data_type}] missing generate method [${JSON.stringify(thisNodeSpec)}]`)
+        return nodeData
       }
     }
 

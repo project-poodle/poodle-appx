@@ -27,7 +27,7 @@ export const input_text = {
               value: 'validate',
             }
           ],
-          default: 'validate',
+          optionsOnly: true,
         },
       },
       {
@@ -37,7 +37,27 @@ export const input_text = {
         required: true,
         input: {
           kind: 'input/text'
-        }
+        },
+        rules: [
+          {
+            kind: 'validate',
+            data: '(() => { parseExpression(value); return true })()',
+            message: 'Must be a valid expression',
+          },
+          {
+            kind: 'validate',
+            data: '(() => { \
+              const kindName = name.replace(/.data$/, ".kind"); \
+              const kind = form.getValues(kindName); \
+              if (kind === "pattern") { \
+                return (eval(value) instanceof RegExp) \
+              } else { \
+                return true \
+              } \
+            })()',
+            message: 'Must be a valid RegExp expression',
+          }
+        ]
       },
       {
         name: 'message',
@@ -47,13 +67,20 @@ export const input_text = {
         input: {
           kind: 'input/text',
         },
+        rules: [
+          {
+            kind: 'validate',
+            data: '(() => { parseExpression(value); return true })()',
+            message: 'Must be a valid expression',
+          }
+        ]
       }
     ]
   },
   children: [
     {
       name: 'children',
-      desc: 'Rule',
+      desc: 'Rules',
       array: true,
       types: [
         {
@@ -92,7 +119,7 @@ export const input_text = {
           }
         },
       ],
-      _childNode: {
+      _thisNode: {
         types: 'inherit',
       },
     },

@@ -170,7 +170,7 @@ ui_component:
                                           onClick:
                                               _type: js/function
                                               body:
-                                                - "$I('app-x/router.navigate')('/docs')"
+                                                - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/docs')"
                                           size: large
                                       children:
                                           - "Getting Started"
@@ -212,7 +212,7 @@ ui_component:
                                           onClick:
                                               _type: js/function
                                               body:
-                                                - "$I('app-x/router.navigate')('/console')"
+                                                - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')"
                                           size: large
                                       children:
                                           - "Live Demo"
@@ -388,7 +388,7 @@ ui_component:
                                       }
                                   })
                               })
-                              $I('app-x/router.navigate')(props.consoleUrl)
+                              $I('app-x/router.hnavigate')('sys', 'console', 'base', props.consoleUrl)
                           },
                           err => {
                               // TODO
@@ -431,55 +431,55 @@ ui_component:
                         className:
                             _type: js/expression
                             data: styles.grid
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.Grid'
-                          props:
-                              item: true
-                              xs: 12
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.Button'
-                                props:
-                                    color: primary
-                                    className:
-                                        _type: js/expression
-                                        data: styles.facebook
-                                    fullWidth: true
-                                    startIcon:
-                                        _type: react/element
-                                        name: 'app-x/icon/Facebook'
-                                    onClick:
-                                        _type: js/expression
-                                        data: handlers.handleSubmit
-                                    size: large
-                                    variant: contained
-                                children:
-                                    - Login with Facebook
-                        - _type: react/element
-                          name: '@material-ui/core.Grid'
-                          props:
-                              item: true
-                              xs: 12
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.Button'
-                                props:
-                                    color: primary
-                                    className:
-                                        _type: js/expression
-                                        data: styles.google
-                                    fullWidth: true
-                                    startIcon:
-                                        _type: react/element
-                                        name: 'app-x/icon/Google'
-                                    onClick:
-                                        _type: js/expression
-                                        data: handlers.handleSubmit
-                                    size: large
-                                    variant: contained
-                                children:
-                                    - Login with Google
+#                     children:
+#                         - _type: react/element
+#                           name: '@material-ui/core.Grid'
+#                           props:
+#                               item: true
+#                               xs: 12
+#                           children:
+#                               - _type: react/element
+#                                 name: '@material-ui/core.Button'
+#                                 props:
+#                                     color: primary
+#                                     className:
+#                                         _type: js/expression
+#                                         data: styles.facebook
+#                                     fullWidth: true
+#                                     startIcon:
+#                                         _type: react/element
+#                                         name: 'app-x/icon/Facebook'
+#                                     onClick:
+#                                         _type: js/expression
+#                                         data: handlers.handleSubmit
+#                                     size: large
+#                                     variant: contained
+#                                 children:
+#                                     - Login with Facebook
+#                         - _type: react/element
+#                           name: '@material-ui/core.Grid'
+#                           props:
+#                               item: true
+#                               xs: 12
+#                           children:
+#                               - _type: react/element
+#                                 name: '@material-ui/core.Button'
+#                                 props:
+#                                     color: primary
+#                                     className:
+#                                         _type: js/expression
+#                                         data: styles.google
+#                                     fullWidth: true
+#                                     startIcon:
+#                                         _type: react/element
+#                                         name: 'app-x/icon/Google'
+#                                     onClick:
+#                                         _type: js/expression
+#                                         data: handlers.handleSubmit
+#                                     size: large
+#                                     variant: contained
+#                                 children:
+#                                     - Login with Google
                   - _type: react/html
                     name: 'form'
                     props:

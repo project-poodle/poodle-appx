@@ -23,7 +23,8 @@ export const js_number = {
       _thisNode: {
         types: 'inherit',
         input: {
-          kind: 'input/number',
+          kind: 'input/text',
+          variant: 'number',
         }
       },
     },

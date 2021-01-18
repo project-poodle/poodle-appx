@@ -24,8 +24,8 @@ export const react_context = {
         types: 'inherit',
         input: {
           kind: 'input/text',
-          suggestions: 'auto_suggestions.valid_import_names()',
-          suggestionsOnly: true,
+          options: 'validation.valid_import_names()',
+          optionsOnly: true,
         },
         examples: [
           'app-x/builder/ui/NavProvider.Context',

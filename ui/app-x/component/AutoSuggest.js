@@ -83,6 +83,7 @@ const AutoSuggest = (props) => {
         disabled={!!props.disabled}
         required={props.required}
         size={props.size}
+        margin={props.margin}
         onChange={e => {
           props.onChange(e.target.value)
           if (!!props.callback) {

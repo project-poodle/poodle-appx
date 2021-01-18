@@ -134,7 +134,7 @@ const InputList = props => {
             &&
             (
               spec.columns.map(column => {
-                console.log(`column`, column)
+                // console.log(`column`, column)
                 return (
                   <Col span={column.span || 4} key={column.name}>
                     <Box display="flex" justifyContent="center">
@@ -167,7 +167,7 @@ const InputList = props => {
                 &&
                 (
                   spec.columns.map(column => {
-                    const fieldName = `${name}[$index].${column.name}`
+                    const fieldName = `${name}[${index}].${column.name}`
                     return (
                       <Col span={column.span || 4} key={column.name}>
                         <InputField
@@ -175,6 +175,7 @@ const InputList = props => {
                           name={fieldName}
                           className={styles.formControl}
                           size="small"
+                          margin="none"
                           // disabled={!!disabled[custom.name]}
                           childSpec={column}
                           inputSpec={column.input}
@@ -211,6 +212,7 @@ const InputList = props => {
         aria-label="Add"
         size="small"
         onClick={e => {
+          // console.log(`getValues`, getValues(), getValues(props.name))
           const new_row = {}
           if (spec.kind === 'input/list' && Array.isArray(spec.columns)) {
             spec.columns.map(column => {
@@ -221,6 +223,7 @@ const InputList = props => {
               }
             })
           }
+          // console.log(`append`, new_row)
           append(new_row)
         }}
         >
@@ -237,7 +240,7 @@ function parse_node(thisNode) {
     // setValue(name, [])
     // setOtherNames([])
     return {
-      properties: [],
+      list: [],
       otherNames: [],
     }
     return
@@ -245,12 +248,12 @@ function parse_node(thisNode) {
   // get proper children
   const children = thisNode.children
   // keep a list of props and other names
-  const properties = []
+  const list = []
   const others = []
   children?.map(child => {
     if (child.data._type === 'js/null')
     {
-      properties.push({
+      list.push({
         _type: child.data._type,
         name: child.data._ref,
         value: null,
@@ -264,7 +267,7 @@ function parse_node(thisNode) {
       || child.data._type === 'js/expression'
     )
     {
-      properties.push({
+      list.push({
         _type: child.data._type,
         name: child.data._ref,
         value: child.data.data,
@@ -272,7 +275,7 @@ function parse_node(thisNode) {
     }
     else if (child.data._type === 'js/import')
     {
-      properties.push({
+      list.push({
         _type: child.data._type,
         name: child.data._ref,
         value: child.data.name,
@@ -283,21 +286,21 @@ function parse_node(thisNode) {
       others.push(child.data._ref)
     }
   })
-  console.log(`parseProperties`, properties, others)
+  console.log(`parseProperties`, list, others)
   // console.trace()
-  // setValue(name, properties)
+  // setValue(name, list)
   // setOtherNames(others)
   return {
-    properties: properties,
+    list: list,
     otherNames: others,
   }
   // other names
 }
 
-// process properties
-function process_properties(thisNode, properties) {
-  // console.log(`properties`, properties)
-  properties.map(child => {
+// process list
+function process_list(thisNode, list) {
+  // console.log(`list`, list)
+  list.map(child => {
     const childNode = lookup_child_for_ref(thisNode, child.name)
     if (!!childNode)
     {
@@ -457,7 +460,7 @@ function process_properties(thisNode, properties) {
         || childNode.data._type === 'js/expression'
         || childNode.data._type === 'js/import')
     {
-      const found = properties.find(prop => prop.name === childNode.data._ref)
+      const found = list.find(prop => prop.name === childNode.data._ref)
       return found
     }
     else
@@ -473,7 +476,7 @@ function process_properties(thisNode, properties) {
 
 // expose parse and process method
 InputList.parse = parse_node
-InputList.process = process_properties
+InputList.process = process_list
 
 // propTypes
 InputList.propTypes = {

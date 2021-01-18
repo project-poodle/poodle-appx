@@ -27,7 +27,7 @@ export const react_html = {
         types: 'inherit',
         input: {
           kind: 'input/text',
-          suggestions: 'auto_suggestions.valid_html_tags()',
+          options: 'validation.valid_html_tags()',
         },
         examples: [
           'div',
