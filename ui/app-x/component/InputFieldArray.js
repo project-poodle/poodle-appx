@@ -67,15 +67,20 @@ const InputFieldArray = ((props) => {
     label: {
       padding: theme.spacing(0, 0, 0),
     },
-    expressionEditor: {
+    expressionSingleLine: {
       width: '100%',
-      height: theme.spacing(5),
-      padding: theme.spacing(0),
+      height: theme.spacing(3),
+      padding: theme.spacing(0, 0),
     },
-    statementEditor: {
+    expressionMultiLine: {
       width: '100%',
       height: theme.spacing(7),
-      padding: theme.spacing(0),
+      padding: theme.spacing(0, 0),
+    },
+    expressionBlock: {
+      width: '100%',
+      height: theme.spacing(12),
+      padding: theme.spacing(0, 0),
     },
     dummyTextField: {
       width: '100%',
@@ -304,9 +309,11 @@ const InputFieldArray = ((props) => {
                             >
                             <ControlledEditor
                               className={
-                                inputSpec.kind === 'input/expression'
-                                ? styles.expressionEditor
-                                : styles.statementEditor
+                                (getValues(name)?.split(/\r\n|\r|\n/).length > 3)
+                                ? styles.expressionBlock
+                                : (getValues(name)?.split(/\r\n|\r|\n/).length > 1)
+                                  ? styles.expressionMultiLine
+                                  : styles.expressionSingleLine
                               }
                               language="javascript"
                               options={{
