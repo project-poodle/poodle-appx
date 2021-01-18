@@ -9,6 +9,7 @@ import {
   FormHelperText,
   Typography,
   MenuItem,
+  InputLabel,
   ListItemIcon,
   Switch,
   makeStyles,
@@ -22,11 +23,16 @@ import {
   useFieldArray,
   Controller,
 } from 'react-hook-form'
+import {
+  Row,
+  Col
+} from 'antd'
 import { parse, parseExpression } from "@babel/parser"
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 import AutoSuggest from 'app-x/component/AutoSuggest'
+import InputField from 'app-x/component/InputField'
 import {
   new_tree_node,
   lookup_title_for_input,
@@ -44,6 +50,7 @@ import {
   valid_import_names,
   valid_html_tags,
 } from 'app-x/builder/ui/syntax/util_base'
+
 
 // array text field
 const InputList = props => {
@@ -104,6 +111,10 @@ const InputList = props => {
   // name and spec
   const { name, label, spec } = props
 
+  // console.log(`props`, name, label, spec, spec.kind, Array.isArray(spec.columns),
+  //   (spec.kind === 'input/list') && (Array.isArray(spec.columns))
+  // )
+
   //////////////////////////////////////////////////////////////////////////////
   return (
     <Box className={props.className}>
@@ -115,44 +126,83 @@ const InputList = props => {
         )
       }
       {
+        <Row key="title" className={styles.formControl} justify="center" align="middle" gutter={8}>
+          {
+            (spec.kind === 'input/list')
+            && (Array.isArray(spec.columns))
+            && (!!fields && !!fields.length)
+            &&
+            (
+              spec.columns.map(column => {
+                console.log(`column`, column)
+                return (
+                  <Col span={column.span || 4} key={column.name}>
+                    <Box display="flex" justifyContent="center">
+                      <InputLabel
+                        shrink={true}
+                        required={!!column.required}
+                        >
+                        { column.title || column.name || '' }
+                      </InputLabel>
+                    </Box>
+                  </Col>
+                )
+              })
+              .concat(
+                <Col span={2} key='_action'>
+                </Col>
+              )
+            )
+          }
+        </Row>
+      }
+      {
         fields.map((item, index) => {
           const propType = watch(`${props.name}[${index}]._type`)
           return (
-            <Box key={item.id} display="flex" className={styles.formControl}>
+            <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>
               {
-                spec.kind === 'inupt/list'
+                spec.kind === 'input/list'
                 && Array.isArray(spec.columns)
                 &&
                 (
                   spec.columns.map(column => {
-                    fieldName = `${name}[$index].${column.name}`
+                    const fieldName = `${name}[$index].${column.name}`
                     return (
-                      <InputField
-                        key={fieldName}
-                        name={fieldName}
-                        // disabled={!!disabled[custom.name]}
-                        childSpec={column}
-                        inputSpec={column.input}
-                        defaultValue={item[column.name]}
-                      />
+                      <Col span={column.span || 4} key={column.name}>
+                        <InputField
+                          key={fieldName}
+                          name={fieldName}
+                          className={styles.formControl}
+                          size="small"
+                          // disabled={!!disabled[custom.name]}
+                          childSpec={column}
+                          inputSpec={column.input}
+                          defaultValue={item[column.name]}
+                        />
+                      </Col>
                     )
                   })
                 )
               }
-              <IconButton
-                key="remove"
-                aria-label="Remove"
-                size="small"
-                onClick={e => {
-                  remove(index)
-                  if (!!props.callback) {
-                    props.callback(e)
-                  }
-                }}
-                >
-                <RemoveCircleOutline />
-              </IconButton>
-            </Box>
+              <Col span={2}>
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <IconButton
+                    key="remove"
+                    aria-label="Remove"
+                    size="small"
+                    onClick={e => {
+                      remove(index)
+                      if (!!props.callback) {
+                        props.callback(e)
+                      }
+                    }}
+                    >
+                    <RemoveCircleOutline />
+                  </IconButton>
+                </Box>
+              </Col>
+            </Row>
           )
         })
       }

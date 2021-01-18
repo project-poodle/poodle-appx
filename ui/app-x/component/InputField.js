@@ -53,14 +53,19 @@ const InputField = ((props) => {
   const styles = makeStyles((theme) => ({
     formControl: {
       width: '100%',
-      padding: theme.spacing(2, 0),
+      padding: theme.spacing(0, 0),
     },
-    labelControl: {
-      width: '100%',
-      padding: theme.spacing(2, 0, 0),
-    },
+    // labelControl: {
+    //  width: '100%',
+    //  padding: theme.spacing(2, 0, 0),
+    //},
+    // textLabel: {
+    //   width: '100%',
+    //   padding: theme.spacing(0, 0, 2),
+    // },
     label: {
-      padding: theme.spacing(0, 0, 1),
+      width: '100%',
+      padding: theme.spacing(0, 0, 2),
     },
     expressionEditor: {
       width: '100%',
@@ -199,39 +204,47 @@ const InputField = ((props) => {
         {
           if (inputSpec.kind === 'input/switch') {
             return (
-              <FormControl
-                name={name}
-                className={styles.formControl}
-                error={!!_.get(errors, name)}
-                disabled={!!props.disabled}
+              <Box
+                className={props.className}
                 >
-                {
-                  !!childSpec.desc
-                  &&
-                  (
-                    <FormHelperText
-                      required={!!childSpec.required}>
-                      {childSpec.desc}
-                    </FormHelperText>
-                  )
-                }
-                <Switch
+                <FormControl
                   name={name}
+                  className={styles.formControl}
+                  error={!!_.get(errors, name)}
                   disabled={!!props.disabled}
-                  checked={innerProps.value}
-                  onChange={e => {
-                    innerProps.onChange(e.target.checked)
-                    if (!!props.callback) {
-                      props.callback(e.target.checked)
-                    }
-                  }}
-                />
-                {
-                  !!_.get(errors, name)
-                  &&
-                  <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
-                }
-              </FormControl>
+                  >
+                  {
+                    !!childSpec.desc
+                    &&
+                    (
+                      <Box className={styles.label}>
+                        <InputLabel
+                          shrink={true}
+                          required={!!childSpec.required}
+                          >
+                          {childSpec.desc}
+                        </InputLabel>
+                      </Box>
+                    )
+                  }
+                  <Switch
+                    name={name}
+                    disabled={!!props.disabled}
+                    checked={innerProps.value}
+                    onChange={e => {
+                      innerProps.onChange(e.target.checked)
+                      if (!!props.callback) {
+                        props.callback(e.target.checked)
+                      }
+                    }}
+                  />
+                  {
+                    !!_.get(errors, name)
+                    &&
+                    <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
+                  }
+                </FormControl>
+              </Box>
             )
           } else if
           (
@@ -240,107 +253,132 @@ const InputField = ((props) => {
           ) {
             return (
               <Box
-                className={styles.labelControl}
+                className={props.className}
                 >
-              <FormControl
-                name={name}
-                className={styles.formControl}
-                error={!!_.get(errors, name)}
-                disabled={!!props.disabled}
-                focused={monacoFocused}
-                >
-                {
-                  !!childSpec.desc
-                  &&
-                  (
-                    <InputLabel
-                      shrink={true}
-                      required={!!childSpec.required}
-                      className={styles.label}
-                      >
-                      {childSpec.desc}
-                    </InputLabel>
-                  )
-                }
-                <ControlledEditor
-                  className={
-                    inputSpec.kind === 'input/expression'
-                    ? styles.expressionEditor
-                    : styles.statementEditor
-                  }
-                  language="javascript"
-                  options={{
-                    readOnly: !!props.disabled,
-                    // lineNumbers: 'off',
-                    lineNumbersMinChars: 0,
-                    wordWrap: 'on',
-                    wrappingIndent: 'deepIndent',
-                    scrollBeyondLastLine: false,
-                    wrappingStrategy: 'advanced',
-                    glyphMargin: false,
-                    folding: false,
-                    // lineDecorationsWidth: 0,
-                    renderLineHighlight: 'none',
-                    // snippetSuggestions: 'none',
-                    minimap: {
-                      enabled: false
-                    },
-                    quickSuggestions: {
-                      "other": false,
-                      "comments": false,
-                      "strings": false
-                    },
-                  }}
-                  onFocus={() => { setMonacoFocused(true) }}
-                  onBlur={() => { setMonacoFocused(false) }}
-                  value={innerProps.value}
-                  onChange={(ev, value) => {
-                    innerProps.onChange(value)
-                    if (!!props.callback) {
-                      props.callback(value)
-                    }
-                  }}
-                  >
-                </ControlledEditor>
-                <Input
-                  // className={`${styles.dummyTextField} Mui-focused`}
-                  className={`${styles.dummyTextField}`}
-                  readOnly={true}
-                  // size="small"
-                  inputProps={{style:{height:0}}}
-                  style={{height:0}}
+                <FormControl
+                  name={name}
+                  className={styles.formControl}
                   error={!!_.get(errors, name)}
+                  disabled={!!props.disabled}
+                  focused={monacoFocused}
                   >
-                </Input>
-                {
-                  !!_.get(errors, name)
-                  &&
-                  <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
-                }
-              </FormControl>
+                  {
+                    !!childSpec.desc
+                    &&
+                    (
+                      <Box className={styles.label}>
+                        <InputLabel
+                          shrink={true}
+                          required={!!childSpec.required}
+                          >
+                          {childSpec.desc}
+                        </InputLabel>
+                      </Box>
+                    )
+                  }
+                  <ControlledEditor
+                    className={
+                      inputSpec.kind === 'input/expression'
+                      ? styles.expressionEditor
+                      : styles.statementEditor
+                    }
+                    language="javascript"
+                    options={{
+                      readOnly: !!props.disabled,
+                      // lineNumbers: 'off',
+                      lineNumbersMinChars: 0,
+                      wordWrap: 'on',
+                      wrappingIndent: 'deepIndent',
+                      scrollBeyondLastLine: false,
+                      wrappingStrategy: 'advanced',
+                      glyphMargin: false,
+                      folding: false,
+                      // lineDecorationsWidth: 0,
+                      renderLineHighlight: 'none',
+                      // snippetSuggestions: 'none',
+                      minimap: {
+                        enabled: false
+                      },
+                      quickSuggestions: {
+                        "other": false,
+                        "comments": false,
+                        "strings": false
+                      },
+                    }}
+                    onFocus={() => { setMonacoFocused(true) }}
+                    onBlur={() => { setMonacoFocused(false) }}
+                    value={innerProps.value}
+                    onChange={(ev, value) => {
+                      innerProps.onChange(value)
+                      if (!!props.callback) {
+                        props.callback(value)
+                      }
+                    }}
+                    >
+                  </ControlledEditor>
+                  <Input
+                    // className={`${styles.dummyTextField} Mui-focused`}
+                    className={`${styles.dummyTextField}`}
+                    readOnly={true}
+                    // size="small"
+                    inputProps={{style:{height:0}}}
+                    style={{height:0}}
+                    error={!!_.get(errors, name)}
+                    >
+                  </Input>
+                  {
+                    !!_.get(errors, name)
+                    &&
+                    <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
+                  }
+                </FormControl>
               </Box>
             )
           } else {
             return (
-              <FormControl
-                name={name}
-                disabled={!!props.disabled}
-                className={styles.formControl}
+              <Box
+                className={props.className}
                 >
-                <AutoSuggest
-                  label={childSpec.desc || null}
+                <FormControl
                   name={name}
-                  value={innerProps.value}
+                  className={styles.formControl}
                   disabled={!!props.disabled}
-                  required={!!childSpec.required}
-                  options={suggestions}
-                  size="small"
-                  onChange={innerProps.onChange}
-                  error={!!_.get(errors, name)}
-                  helperText={_.get(errors, name)?.message}
-                  callback={props.callback}
+                  className={styles.formControl}
+                  >
+                  {
+                    !!childSpec.desc
+                    &&
+                    (
+                      <Box className={styles.label}>
+                        <InputLabel
+                          shrink={true}
+                          required={!!childSpec.required}
+                          >
+                          {childSpec.desc}
+                        </InputLabel>
+                      </Box>
+                    )
+                  }
+                  <AutoSuggest
+                    label={null}
+                    name={name}
+                    value={innerProps.value}
+                    disabled={!!props.disabled}
+                    required={!!childSpec.required}
+                    options={suggestions}
+                    size="small"
+                    onChange={innerProps.onChange}
+                    // error={!!_.get(errors, name)}
+                    // helperText={_.get(errors, name)?.message}
+                    callback={props.callback}
                   />
-              </FormControl>
+                  {
+                    !!_.get(errors, name)
+                    &&
+                    <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
+                  }
+                </FormControl>
+              </Box>
             )
           }
         }
@@ -354,6 +392,7 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   inputSpec: PropTypes.object.isRequired,
+  className: PropTypes.string,
   callback: PropTypes.func,
   defaultValue: PropTypes.oneOfType([
     PropTypes.string,

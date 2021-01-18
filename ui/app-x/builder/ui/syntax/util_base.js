@@ -172,6 +172,7 @@ const groups = {
     'input/text',
     'input/switch',
     'input/select',
+    'input/rule',
   ],
   // js advanced
   js_advanced: [

@@ -33,6 +33,7 @@ import * as api from 'app-x/api'
 import Asterisk from 'app-x/icon/Asterisk'
 import TextFieldArray from 'app-x/component/TextFieldArray'
 import InputProperties from 'app-x/component/InputProperties'
+import InputList from 'app-x/component/InputList'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
@@ -399,6 +400,7 @@ const PropEditor = (props) => {
       nodeSpec.children
         .filter(childSpec => !!childSpec._childNode?.input)
         .map(childSpec => {
+          // process input/properties
           if (childSpec._childNode.input.kind === 'input/properties') {
             // TODO_childNode
             if (childSpec.name === '*') {
@@ -420,7 +422,7 @@ const PropEditor = (props) => {
             }
           }
         })
-      // process nodeSpec._input
+      // process nodeSpec._input?.kind === 'input/properties'
       if (
         nodeSpec?._input?.kind === 'input/properties'
         && !!nodeSpec.children?.find(childSpec => childSpec.name === '*')
@@ -430,6 +432,13 @@ const PropEditor = (props) => {
         const newNodeOtherNames = _.cloneDeep(nodeOtherNames)
         newNodeOtherNames[THIS_NODE_PROPERTIES] = otherNames
         setNodeOtherNames(newNodeOtherNames)
+      }
+      // process nodeSpec._input?.kind === 'input/rules'
+      if (
+        nodeSpec?._input?.kind === 'input/list'
+      ) {
+        const { rules } = InputList.parse(thisNode)
+        setValue(THIS_NODE_PROPERTIES, rules)
       }
       // process customization by nodeSpec
       if (!!nodeSpec._customs) {
@@ -802,6 +811,7 @@ const PropEditor = (props) => {
                         <AutoSuggest
                           label="Reference"
                           name="_ref"
+                          // className={styles.formControl}
                           disabled={
                             !parentSpec?.children.find(childSpec => childSpec.name === '*')
                             || !!disabled["_ref"]
@@ -857,10 +867,13 @@ const PropEditor = (props) => {
                     }}
                     render={innerProps =>
                       (
-                        <FormControl className={styles.formControl}>
+                        <FormControl
+                          className={styles.formControl}
+                          >
                           <TextField
                             label="Type"
                             select={true}
+                            // className={styles.formControl}
                             name="_type"
                             value={innerProps.value}
                             required={true}
@@ -926,6 +939,7 @@ const PropEditor = (props) => {
                       <InputFieldArray
                         key={childSpec.name}
                         name={childSpec.name}
+                        className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
@@ -940,6 +954,7 @@ const PropEditor = (props) => {
                       <InputField
                         key={childSpec.name}
                         name={childSpec.name}
+                        className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}
                         childSpec={childSpec}
@@ -973,6 +988,33 @@ const PropEditor = (props) => {
                         label={nodeSpec.desc}
                         options={propNameOptions[THIS_NODE_PROPERTIES] || []}
                         otherNames={nodeOtherNames[THIS_NODE_PROPERTIES] || []}
+                        className={styles.formControl}
+                        callback={d => {
+                          // console.log(`callback`)
+                          setBaseSubmitTimer(new Date())
+                        }}
+                      />
+                    </Box>
+                  }
+                })()
+              }
+              {
+                (thisNode?.key !== '/')
+                && (() => {
+                  if
+                  (
+                    nodeSpec?._input?.kind === 'input/list'
+                  )
+                  {
+                    return <Box
+                      className={styles.properties}
+                      key={THIS_NODE_PROPERTIES}
+                      >
+                      <InputList
+                        name={THIS_NODE_PROPERTIES}
+                        key={THIS_NODE_PROPERTIES}
+                        label={nodeSpec.desc}
+                        spec={nodeSpec._input}
                         className={styles.formControl}
                         callback={d => {
                           // console.log(`callback`)

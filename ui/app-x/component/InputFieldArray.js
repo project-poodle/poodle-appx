@@ -139,14 +139,21 @@ const InputFieldArray = ((props) => {
 
   // return
   return (
-    <Box className={styles.formControl} key={name}>
-      <InputLabel
-        shrink={true}
-        required={!!childSpec.required}
-        className={styles.label}
-        >
-        {childSpec.desc}
-      </InputLabel>
+    <Box className={props.className} key={name}>
+      {
+        !!childSpec.desc
+        &&
+        (
+          <Box className={styles.label}>
+            <InputLabel
+              shrink={true}
+              required={!!childSpec.required}
+              >
+              {childSpec.desc}
+            </InputLabel>
+          </Box>
+        )
+      }
       {
         fields.map((item, index) => {
           const itemName = `${name}[${index}].value`
@@ -412,6 +419,7 @@ InputFieldArray.propTypes = {
   disabled: PropTypes.bool,
   childSpec: PropTypes.object.isRequired,
   inputSpec: PropTypes.object.isRequired,
+  className: PropTypes.string,
   callback: PropTypes.func,
   defaultValue: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,

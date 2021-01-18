@@ -362,6 +362,7 @@ const SyntaxMoveDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
                           inputSpec={custom.input}
@@ -390,6 +391,7 @@ const SyntaxMoveDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
                           inputSpec={custom.input}
@@ -594,6 +596,7 @@ const SyntaxMoveDialog = (props) => {
                       <InputFieldArray
                         key={childSpec.name}
                         name={childSpec.name}
+                        className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
                         childSpec={childSpec}
@@ -607,6 +610,7 @@ const SyntaxMoveDialog = (props) => {
                       <InputField
                         key={childSpec.name}
                         name={childSpec.name}
+                        className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
                         childSpec={childSpec}

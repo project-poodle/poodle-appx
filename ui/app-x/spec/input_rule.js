@@ -3,11 +3,8 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: input/text                                  (~jsx|~expression)
-// name:                     # name of input         (:string)
-// array:                    # whether array         (:boolean)
-// props:                    # properties            (:object<:expression>)
-// rules:                    # input rules           (:object<:expression>)
+// type: input/rule                                  (~jsx|~expression)
+// children:                 # children              (:object:string>)
 export const input_text = {
 
   type: 'input/rule',
@@ -18,6 +15,7 @@ export const input_text = {
       {
         name: 'kind',
         title: 'Kind',
+        span: 4,
         required: true,
         input: {
           kind: 'input/select',
@@ -35,6 +33,7 @@ export const input_text = {
       {
         name: 'data',
         title: 'Data',
+        span: 8,
         required: true,
         input: {
           kind: 'input/text'
@@ -43,6 +42,7 @@ export const input_text = {
       {
         name: 'message',
         title: 'Message',
+        span: 10,
         required: true,
         input: {
           kind: 'input/text',
@@ -65,7 +65,7 @@ export const input_text = {
               types: [
                 {
                   kind: 'class',
-                  type: 'string'
+                  data: 'string'
                 }
               ]
             },
@@ -75,7 +75,7 @@ export const input_text = {
               types: [
                 {
                   kind: 'class',
-                  type: 'string'
+                  data: 'string'
                 }
               ]
             },
@@ -85,7 +85,7 @@ export const input_text = {
               types: [
                 {
                   kind: 'class',
-                  type: 'string'
+                  data: 'string'
                 }
               ]
             },

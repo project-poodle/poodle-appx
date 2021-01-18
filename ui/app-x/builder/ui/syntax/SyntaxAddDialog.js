@@ -419,6 +419,7 @@ const SyntaxAddDialog = (props) => {
                       <InputField
                         key={custom.name}
                         name={custom.name}
+                        className={styles.formControl}
                         disabled={!!disabled[custom.name]}
                         childSpec={custom}
                         inputSpec={custom.input}
@@ -447,6 +448,7 @@ const SyntaxAddDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
                           inputSpec={custom.input}
@@ -651,6 +653,7 @@ const SyntaxAddDialog = (props) => {
                     <InputFieldArray
                       key={childSpec.name}
                       name={childSpec.name}
+                      className={styles.formControl}
                       disabled={!!disabled[childSpec.name]}
                       childSpec={childSpec}
                       inputSpec={childSpec._thisNode.input}
@@ -661,6 +664,7 @@ const SyntaxAddDialog = (props) => {
                     <InputField
                       key={childSpec.name}
                       name={childSpec.name}
+                      className={styles.formControl}
                       disabled={!!disabled[childSpec.name]}
                       defaultValue=''
                       childSpec={childSpec}
