@@ -36,7 +36,12 @@ export const js_statement = {
         },
       },
       _childNode: {
-        types: 'inherit',
+        types: [
+          {
+            kind: 'class',
+            data: 'statement'
+          },
+        ],
       },
     },
   ]

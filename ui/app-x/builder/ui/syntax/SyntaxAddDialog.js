@@ -526,29 +526,43 @@ const SyntaxAddDialog = (props) => {
                 },
               }}
               render={innerProps =>
-                <FormControl
+                <Box
                   className={styles.formControl}
-                  disabled={!!disabled["_ref"]}
                   >
-                  <AutoSuggest
-                    label="Reference"
-                    name="_ref"
+                  <FormControl
                     disabled={!!disabled["_ref"]}
-                    required={true}
-                    onChange={value => {
-                      innerProps.onChange(value)
-                      setNodeRef(value)
-                      trigger('_ref')
-                      trigger('_type')
-                    }}
-                    value={innerProps.value}
-                    options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
-                    size="small"
-                    error={!!errors._ref}
-                    size="small"
-                    helperText={errors._ref?.message}
-                    />
-                </FormControl>
+                    style={{width:'100%'}}
+                    >
+                    <AutoSuggest
+                      label="Reference"
+                      name="_ref"
+                      disabled={!!disabled["_ref"]}
+                      required={true}
+                      onChange={value => {
+                        innerProps.onChange(value)
+                        setNodeRef(value)
+                        trigger('_ref')
+                        trigger('_type')
+                      }}
+                      value={innerProps.value}
+                      options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
+                      size="small"
+                      error={!!errors._ref}
+                      size="small"
+                      helperText={errors._ref?.message}
+                      />
+                  </FormControl>
+                  {
+                    !!nodeRef
+                    && !!props.addNodeParent?.data[nodeRef]
+                    &&
+                    (
+                      <FormHelperText>
+                        { `This will override parent [ ${nodeRef} ]` }
+                      </FormHelperText>
+                    )
+                  }
+                </Box>
               }
             />
             <Controller

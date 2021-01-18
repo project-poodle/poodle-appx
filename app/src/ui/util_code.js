@@ -395,18 +395,41 @@ function js_statement(js_context, input) {
     }
     // handle body
     input.body.map(statement => {
-      // parse user code snippet
-      const statements = _js_parse_statements(js_context, statement, {
-        // sourceType: 'module', // do not support module here
-        allowReturnOutsideFunction: true, // allow return in the block statement
-        plugins: [
-          // 'jsx', // do not support jsx here
-        ]
-      })
-
-      statements.map(statement => {
-        block_statements.push(statement)
-      })
+      if (typeof statement === 'string') {
+        // parse user code snippet
+        const statements = _js_parse_statements(js_context, statement, {
+          // sourceType: 'module', // do not support module here
+          allowReturnOutsideFunction: true, // allow return in the block statement
+          plugins: [
+            // 'jsx', // do not support jsx here
+          ]
+        })
+        // add to block statements
+        statements.map(sub_statement => {
+          block_statements.push(sub_statement)
+        })
+      } else {
+        // process child statements
+        const child_statement = js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          statement
+        )
+        // console.log(`statement`, statement, child_statement)
+        // add to block statements
+        if (t.isBlockStatement(child_statement)) {
+          child_statement.body.map(sub_statement => {
+            block_statements.push(sub_statement)
+          })
+        } else {
+          block_statements.push(child_statement)
+        }
+      }
     })
   }
 
@@ -440,7 +463,7 @@ function js_function(js_context, input) {
       )
     : []
 
-  // process input.body
+  // block statements
   const block_statements = []
   if (!!input.body) {
     if (!Array.isArray(input.body)) {
@@ -448,18 +471,41 @@ function js_function(js_context, input) {
     }
     // handle body
     input.body.map(statement => {
-      // parse user code snippet
-      const statements = _js_parse_statements(js_context, statement, {
-        // sourceType: 'module', // do not support module here
-        allowReturnOutsideFunction: true, // allow return in the block statement
-        plugins: [
-          // 'jsx', // do not support jsx here
-        ]
-      })
-
-      statements.map(statement => {
-        block_statements.push(statement)
-      })
+      if (typeof statement === 'string') {
+        // parse user code snippet
+        const statements = _js_parse_statements(js_context, statement, {
+          // sourceType: 'module', // do not support module here
+          allowReturnOutsideFunction: true, // allow return in the block statement
+          plugins: [
+            // 'jsx', // do not support jsx here
+          ]
+        })
+        // add to block statements
+        statements.map(sub_statement => {
+          block_statements.push(sub_statement)
+        })
+      } else {
+        // process child statements
+        const child_statement = js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          statement
+        )
+        // console.log(`statement`, statement, child_statement)
+        // add to block statements
+        if (t.isBlockStatement(child_statement)) {
+          child_statement.body.map(sub_statement => {
+            block_statements.push(sub_statement)
+          })
+        } else {
+          block_statements.push(child_statement)
+        }
+      }
     })
   }
 
@@ -1640,7 +1686,7 @@ function react_effect(js_context, input) {
   // register react useEffect
   reg_js_import(js_context, 'react.useEffect')
 
-  // process input.body
+  // block statements
   const block_statements = []
   if (!!input.body) {
     if (!Array.isArray(input.body)) {
@@ -1648,32 +1694,57 @@ function react_effect(js_context, input) {
     }
     // handle body
     input.body.map(statement => {
-      // parse user code snippet
-      const statements = _js_parse_statements(js_context, statement, {
-        // sourceType: 'module', // do not support module here
-        // allowReturnOutsideFunction: true, // allow return in the block statement
-        plugins: [
-          'jsx', // support jsx here
-        ]
-      })
-
-      statements.map(statement => {
-        block_statements.push(statement)
-      })
+      if (typeof statement === 'string') {
+        // parse user code snippet
+        const statements = _js_parse_statements(js_context, statement, {
+          // sourceType: 'module', // do not support module here
+          allowReturnOutsideFunction: true, // allow return in the block statement
+          plugins: [
+            // 'jsx', // do not support jsx here
+          ]
+        })
+        // add to block statements
+        statements.map(sub_statement => {
+          block_statements.push(sub_statement)
+        })
+      } else {
+        // process child statements
+        const child_statement = js_process(
+          {
+            ...js_context,
+            topLevel: false,
+            parentRef: null,
+            parentPath: null,
+            JSX_CONTEXT: false,
+          },
+          statement
+        )
+        // console.log(`statement`, statement, child_statement)
+        // add to block statements
+        if (t.isBlockStatement(child_statement)) {
+          child_statement.body.map(sub_statement => {
+            block_statements.push(sub_statement)
+          })
+        } else {
+          block_statements.push(child_statement)
+        }
+      }
     })
   }
 
-  return t.callExpression(
-    t.identifier('react.useEffect'),
-    [
-      t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          block_statements,
-        )
-      ),
-      statesExpression,
-    ]
+  return t.expressionStatemen(
+    t.callExpression(
+      t.identifier('react.useEffect'),
+      [
+        t.arrowFunctionExpression(
+          [],
+          t.blockStatement(
+            block_statements,
+          )
+        ),
+        statesExpression,
+      ]
+    )
   )
 }
 
@@ -1863,48 +1934,50 @@ function appx_api(js_context, input) {
   reg_js_import(js_context, 'app-x/api')
 
   // call api
-  return t.callExpression(
-    t.arrowFunctionExpression(
-      [],
-      t.blockStatement(
-        [
-          ...prep_statements,
-          t.expressionStatement(
-            t.callExpression(
-              t.memberExpression(
-                t.identifier('app-x/api'),
-                t.identifier(method),
-              ),
-              [
-                t.stringLiteral(input.namespace),
-                t.stringLiteral(input.app_name),
-                t.stringLiteral(input.endpoint),
-                (method === 'post' || method === 'put' || method === 'patch')
-                ? data
-                : undefined,
-                t.arrowFunctionExpression(
-                  [
-                    t.identifier('result')
-                  ],
-                  t.blockStatement(
-                    result_statements
-                  )
+  return t.expressionStatement(
+    t.callExpression(
+      t.arrowFunctionExpression(
+        [],
+        t.blockStatement(
+          [
+            ...prep_statements,
+            t.expressionStatement(
+              t.callExpression(
+                t.memberExpression(
+                  t.identifier('app-x/api'),
+                  t.identifier(method),
                 ),
-                t.arrowFunctionExpression(
-                  [
-                    t.identifier('error')
-                  ],
-                  t.blockStatement(
-                    error_statements
-                  )
-                ),
-              ].filter(item => typeof item !== 'undefined')
+                [
+                  t.stringLiteral(input.namespace),
+                  t.stringLiteral(input.app_name),
+                  t.stringLiteral(input.endpoint),
+                  (method === 'post' || method === 'put' || method === 'patch')
+                  ? data
+                  : undefined,
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('result')
+                    ],
+                    t.blockStatement(
+                      result_statements
+                    )
+                  ),
+                  t.arrowFunctionExpression(
+                    [
+                      t.identifier('error')
+                    ],
+                    t.blockStatement(
+                      error_statements
+                    )
+                  ),
+                ].filter(item => typeof item !== 'undefined')
+              )
             )
-          )
-        ]
-      )
-    ),
-    []
+          ]
+        )
+      ),
+      []
+    )
   )
 }
 

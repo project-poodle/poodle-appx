@@ -108,6 +108,7 @@ export const classes = {
       'js/statement',
       'react/state',
       'react/context',
+      'react/effect',
       'js/switch',
       'js/map',
       'appx/api',

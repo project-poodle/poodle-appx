@@ -355,7 +355,7 @@ const InputField = ((props) => {
           (
             inputSpec.kind === 'input/select'
           ) {
-            console.log('input/select', inputSpec)
+            // console.log('input/select', inputSpec)
             return (
               <Box
                 className={props.className}
@@ -406,10 +406,10 @@ const InputField = ((props) => {
                         options.map(option => {
                           return (
                             <MenuItem
-                              key={option.value}
-                              value={option.value}
+                              key={option}
+                              value={option}
                               >
-                              { option.value }
+                              { option }
                             </MenuItem>
                           )
                         })

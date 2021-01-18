@@ -1020,6 +1020,19 @@ const PropEditor = (props) => {
                   if (!!hidden[childSpec.name]) {
                     return undefined
                   }
+                  // check if this is configured by child node
+                  const childNode = lookup_child_for_ref(thisNode, childSpec.name)
+                  if (!!childNode) {
+                    return (
+                      <Box
+                        className={styles.formControl}
+                        >
+                        <FormHelperText>
+                          { `${childSpec.desc || childSpec.name} is overriden by child node` }
+                        </FormHelperText>
+                      </Box>
+                    )
+                  }
                   // const childThisSpec = childSpec._thisNode
                   if (!!childSpec.array) {
                     return (

@@ -637,7 +637,7 @@ function generate_tree_node(js_context, conf, input) {
       const data_type = lookup_type_for_data(data)
       const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
       if (!type_matches_spec(data_type, typeSpec)) {
-        console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+        // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
         return undefined
       } else {
         // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisNodeSpec)}]`)
@@ -663,7 +663,7 @@ function generate_tree_node(js_context, conf, input) {
     }
 
     // function to process _childNode spec
-    function _process_child(_ref, data, array) {
+    function _process_child(_ref, data) {
       // look for checkNodeSpec that matches data
       if (!childSpec?._childNode) {
         return undefined
@@ -772,7 +772,7 @@ function generate_tree_node(js_context, conf, input) {
             data.map(d => {
               const resultNodeData = _process_this(_ref, d)
               if (resultNodeData !== undefined) {
-                thisNode.data[_ref].push(resultNodeData)
+                thisNode.data[_ref].push({value: resultNodeData})
               }
             })
           } else {

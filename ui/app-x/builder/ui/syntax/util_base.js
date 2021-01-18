@@ -814,9 +814,43 @@ function valid_import_names() {
   return _valid_import_names
 }
 
+function valid_namespaces() {
+  return Object.keys(globalThis.appx.API_MAPS).sort().filter(onlyUnique)
+}
+
+function valid_app_names() {
+  const app_names = []
+  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+    Object.keys(globalThis.appx.API_MAPS[namespace])
+      .map(app_name => {
+        app_names.push(app_name)
+      })
+  })
+  return app_names.sort().filter(onlyUnique)
+}
+
+function valid_app_deployments() {
+  const app_deployments = []
+  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+    Object.keys(globalThis.appx.API_MAPS[namespace])
+      .map(app_name => {
+        app_deployments.push(deployment.app_deployments)
+      })
+  })
+  return app_deployments.sort().filter(onlyUnique)
+}
+
+function valid_api_endpoints() {
+  return []
+}
+
 // all validation methods
 const validation = {
+  valid_namespaces: valid_namespaces,
+  valid_app_names: valid_app_names,
+  valid_app_deployments: valid_app_deployments,
   valid_api_methods: valid_api_methods,
+  valid_api_endpoints: valid_api_endpoints,
   valid_html_tags: valid_html_tags,
   valid_import_names: valid_import_names,
 }

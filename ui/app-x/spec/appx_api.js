@@ -16,6 +16,15 @@ export const appx_api = {
 
   type: 'appx/api',
   desc: 'API',
+  _effects: [
+    {
+      context: [ "add", "move", "editor" ],
+      data: [
+        '(() => { if (["post", "put", "patch"].includes(form.getValues("method"))) states.setHidden("data", false) })()',
+        '(() => { if (!(["post", "put", "patch"].includes(form.getValues("method")))) states.setHidden("data", true) })()',
+      ]
+    },
+  ],
   children: [
     {
       name: 'namespace',
@@ -30,7 +39,9 @@ export const appx_api = {
       _thisNode: {
         types: 'inherit',
         input: {
-          kind: 'input/text'
+          kind: 'input/text',
+          options: 'validation.valid_namespaces()',
+          optionsOnly: true,
         },
       },
     },
@@ -47,7 +58,9 @@ export const appx_api = {
       _thisNode:{
         types: 'inherit',
         input: {
-          kind: 'input/text'
+          kind: 'input/text',
+          options: 'validation.valid_app_names()',
+          optionsOnly: true,
         },
       },
     },
@@ -64,16 +77,10 @@ export const appx_api = {
       _thisNode: {
         types: 'inherit',
         input: {
-          kind: 'input/text'
+          kind: 'input/select',
+          options: 'validation.valid_api_methods()',
+          optionsOnly: true,
         },
-        options: [
-          "get",
-          "post",
-          "put",
-          "delete",
-          "head",
-          "patch",
-        ]
       }
     },
     {
@@ -89,7 +96,9 @@ export const appx_api = {
       _thisNode: {
         types: 'inherit',
         input: {
-          kind: 'input/text'
+          kind: 'input/text',
+          options: 'validation.valid_api_endpoints()',
+          optionsOnly: false,
         },
       },
     },

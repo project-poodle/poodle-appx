@@ -258,11 +258,14 @@ function parse_tree_node(tree_context, treeNode) {
         // get childNode
         if (!!childSpec.array) {
           // if this node data
+          // if (thisNode.data._type === 'js/function') {
+          //   console.log(`process array`, thisNode.data, _ref)
+          // }
           if (_ref in thisNode.data && Array.isArray(thisNode.data[_ref])) {
             data = []
             thisNode.data[_ref].map(nodeData => {
               // process this
-              const resultData = _process_this(_ref, nodeData)
+              const resultData = _process_this(_ref, nodeData.value)
               if (resultData !== undefined) {
                 data.push(resultData)
               }
