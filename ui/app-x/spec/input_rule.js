@@ -79,7 +79,7 @@ export const input_text = {
   },
   children: [
     {
-      name: 'children',
+      name: 'data',
       desc: 'Rules',
       array: true,
       types: [
@@ -120,7 +120,12 @@ export const input_text = {
         },
       ],
       _thisNode: {
-        types: 'inherit',
+        types: [
+          {
+            kind: 'class',
+            data: 'object'
+          },
+        ]
       },
     },
   ]

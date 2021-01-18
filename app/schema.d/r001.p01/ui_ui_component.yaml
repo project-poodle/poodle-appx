@@ -692,7 +692,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                                 label: A Label
-                                suggestions:
+                                options:
                                   _type: js/expression
                                   data: "[{value:'a'},{value:'abc'},{value:'def'}]"
                             - _type: input/select
@@ -716,9 +716,18 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                                 label: "Text #2"
-                                suggestions:
+                                options:
                                   _type: js/expression
                                   data: '[{value:"a"},{value:"b"}]'
+                              rules:
+                                _type: input/rule
+                                data:
+                                  - kind: pattern
+                                    data: "/^text \\\\d+$/"
+                                    message: "\\`Must be a valid [text #number]\\`"
+                                  - kind: validate
+                                    data: value.endsWith('0') || value.endsWith('5')
+                                    message: "\\`Must end with 0 or 5\\`"
                     - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
@@ -772,7 +781,7 @@ ui_component:
                                 label: Text Label
                                 multiline: false
                                 size: small
-                                suggestions:
+                                options:
                                   _type: js/expression
                                   data: "[{value:\"abc\"},{value:\"def\"},{value:'k'},{value:'cat'}]"
                             - _type: input/switch

@@ -165,8 +165,8 @@ function parse_tree_node(tree_context, treeNode) {
       // sanity check
       if (!childSpec._thisNode.types) {
         throw new Error(`ERROR: childSpec._thisNode missing [types] [${JSON.stringify(childSpec._thisNode)}]`)
-      } else if (!childSpec._thisNode.input) {
-        throw new Error(`ERROR: childSpec._thisNode missing [input] [${JSON.stringify(childSpec._thisNode)}]`)
+      // } else if (!childSpec._thisNode.input) {
+      //   throw new Error(`ERROR: childSpec._thisNode missing [input] [${JSON.stringify(childSpec._thisNode)}]`)
       }
       // get a sane thisNodeSpec
       const thisNodeSpec = childSpec._thisNode

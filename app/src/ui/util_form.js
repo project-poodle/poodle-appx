@@ -999,8 +999,8 @@ function input_switch(js_context, input) {
           props.callback(e.target.checked)
         }
       }}
-      error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
-      helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message}
+      // error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
+      // helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message}
       >
     </$JSX>
   `
@@ -1343,10 +1343,140 @@ function input_select(js_context, input) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// process input/rule ast
+function input_rule(js_context, input) {
+
+  if (!('_type' in input) || input._type !== 'input/rule') {
+    throw new Error(`ERROR: input._type is not [input/rule] [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  // if empty, return empty rule
+  if (!input.data || !Array.isArray(input.data)) {
+    return t.objectExpression([])
+  }
+
+  const rules = {
+    validate: {}
+  }
+
+  let validate_count = 0
+  input.data.map(rule => {
+    // validity check
+    if (!rule.kind) {
+      throw new Error(`ERROR: [input/rule] missing [kind] [${JSON.stringify(rule)}]`)
+    }
+    if (!rule.data) {
+      throw new Error(`ERROR: [input/rule] missing [data] [${JSON.stringify(rule)}]`)
+    }
+    if (!rule.message) {
+      throw new Error(`ERROR: [input/rule] missing [message] [${JSON.stringify(rule)}]`)
+    }
+    // pattern
+    if (rule.kind === 'pattern') {
+      const regexSyntax = eval(rule.data)
+      if (! (regexSyntax instanceof RegExp)) {
+        throw new Error(`ERROR: [input/rule] pattern [data] is not valid regex expression [${JSON.stringify(rule.data)}]`)
+      }
+      rules.pattern = t.objectExpression(
+        [
+          t.objectProperty(
+            t.identifier('value'),
+            t.regExpLiteral(regexSyntax.source, regexSyntax.flags)
+          ),
+          t.objectProperty(
+            t.identifier('message'),
+            t.callExpression(
+              t.identifier('eval'),
+              [
+                t.stringLiteral(rule.message)
+              ]
+            )
+          )
+        ]
+      )
+    } else if (rule.kind === 'validate') {
+      rules.validate[String(`validate_${validate_count++}`)] = t.arrowFunctionExpression(
+        [
+          t.identifier('value'),
+        ],
+        t.blockStatement(
+          [
+            t.tryStatement(
+              t.blockStatement(
+                [
+                  t.ifStatement(
+                    t.callExpression(
+                      t.identifier('eval'),
+                      [
+                        t.stringLiteral(rule.data)
+                      ]
+                    ),
+                    t.returnStatement(
+                      t.booleanLiteral(true)
+                    ),
+                    t.returnStatement(
+                      t.callExpression(
+                        t.identifier('eval'),
+                        [
+                          t.stringLiteral(rule.message)
+                        ]
+                      )
+                    )
+                  )
+                ]
+              ),
+              t.catchClause(
+                t.identifier('error'),
+                t.blockStatement(
+                  [
+                    t.returnStatement(
+                      t.callExpression(
+                        t.identifier('String'),
+                        [
+                          t.identifier('error')
+                        ]
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+          ]
+        )
+      )
+    }
+  })
+
+  return t.objectExpression(
+    Object.keys(rules).map(key => {
+      if (key !== 'validate') {
+        return t.objectProperty(
+          t.stringLiteral(key),
+          rules[key]
+        )
+      } else {
+        return t.objectProperty(
+          t.stringLiteral(key),
+          t.objectExpression(
+            Object.keys(rules[key]).map(validate_key => {
+              return t.objectProperty(
+                t.stringLiteral(validate_key),
+                rules[key][validate_key]
+              )
+            })
+          )
+        )
+      }
+    })
+  )
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // export
 module.exports = {
   react_form: react_form,
   input_text: input_text,
   input_switch: input_switch,
   input_select: input_select,
+  input_rule: input_rule,
 }

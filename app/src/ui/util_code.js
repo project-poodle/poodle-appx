@@ -28,6 +28,7 @@ const {
   input_text,
   input_switch,
   input_select,
+  input_rule,
 } = require('./util_form')
 
 
@@ -2109,6 +2110,10 @@ function js_process(js_context, input) {
   } else if (input._type === 'input/select') {
 
     return input_select(js_context, input)
+
+  } else if (input._type === 'input/rule') {
+
+    return input_rule(js_context, input)
 
   } else if (input._type === 'appx/api') {
 
