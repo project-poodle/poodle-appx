@@ -59,6 +59,10 @@ const InputList = props => {
     formControl: {
       width: '100%',
     },
+    title: {
+      width: '100%',
+      padding: theme.spacing(1, 0, 0),
+    },
     typeControl: {
       width: theme.spacing(12),
       padding: theme.spacing(0, 1),
@@ -126,7 +130,7 @@ const InputList = props => {
         )
       }
       {
-        <Row key="title" className={styles.formControl} justify="center" align="middle" gutter={8}>
+        <Row key="title" className={styles.title} justify="center" align="middle" gutter={8}>
           {
             (spec.kind === 'input/list')
             && (Array.isArray(spec.columns))
@@ -180,6 +184,7 @@ const InputList = props => {
                           childSpec={column}
                           inputSpec={column.input}
                           defaultValue={item[column.name]}
+                          callback={props.callback}
                         />
                       </Col>
                     )
@@ -232,251 +237,6 @@ const InputList = props => {
     </Box>
   )
 }
-
-// parse
-function parse_node(thisNode) {
-  // if thisNode is empty, set empty state
-  if (!thisNode) {
-    // setValue(name, [])
-    // setOtherNames([])
-    return {
-      list: [],
-      otherNames: [],
-    }
-    return
-  }
-  // get proper children
-  const children = thisNode.children
-  // keep a list of props and other names
-  const list = []
-  const others = []
-  children?.map(child => {
-    if (child.data._type === 'js/null')
-    {
-      list.push({
-        _type: child.data._type,
-        name: child.data._ref,
-        value: null,
-      })
-    }
-    else if
-    (
-      child.data._type === 'js/string'
-      || child.data._type === 'js/number'
-      || child.data._type === 'js/boolean'
-      || child.data._type === 'js/expression'
-    )
-    {
-      list.push({
-        _type: child.data._type,
-        name: child.data._ref,
-        value: child.data.data,
-      })
-    }
-    else if (child.data._type === 'js/import')
-    {
-      list.push({
-        _type: child.data._type,
-        name: child.data._ref,
-        value: child.data.name,
-      })
-    }
-    else
-    {
-      others.push(child.data._ref)
-    }
-  })
-  console.log(`parseProperties`, list, others)
-  // console.trace()
-  // setValue(name, list)
-  // setOtherNames(others)
-  return {
-    list: list,
-    otherNames: others,
-  }
-  // other names
-}
-
-// process list
-function process_list(thisNode, list) {
-  // console.log(`list`, list)
-  list.map(child => {
-    const childNode = lookup_child_for_ref(thisNode, child.name)
-    if (!!childNode)
-    {
-      // found child node, reuse existing key
-      if (child._type === 'js/null')
-      {
-        childNode.data._ref = child.name
-        childNode.data._type = child._type
-        childNode.data.data = null
-      }
-      else if (child._type === 'js/string'
-              || child._type === 'js/expression')
-      {
-        childNode.data._ref = child.name
-        childNode.data._type = child._type
-        childNode.data.data = child.value
-      }
-      else if (child._type === 'js/number')
-      {
-        childNode.data._ref = child.name
-        childNode.data._type = child._type
-        childNode.data.data = Number(child.value)
-      }
-      else if (child._type === 'js/boolean')
-      {
-        childNode.data._ref = child.name
-        childNode.data._type = child._type
-        childNode.data.data = Boolean(child.value)
-      }
-      else if (child._type === 'js/import')
-      {
-        childNode.data._ref = child.name
-        childNode.data._type = child._type
-        childNode.data.name = child.value
-      }
-      else
-      {
-        throw new Error(`ERROR: unrecognized child type [${child._type}]`)
-      }
-      // update title and icon
-      childNode.title = lookup_title_for_input(child.name, childNode.data)
-      childNode.icon = lookup_icon_for_input(childNode.data)
-    }
-    else
-    {
-      // console.log(`new_tree_node`)
-      // no child node, create new child node
-      if
-      (
-        child._type === 'js/null'
-      )
-      {
-        const newChildNode = new_tree_node(
-          '',
-          null,
-          {
-            _ref: child.name,
-            _type: child._type,
-            data: null
-          },
-          true,
-          thisNode.key
-        )
-        // update child title and icon
-        newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-        newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-        // add to this node
-        thisNode.children.push(newChildNode)
-      }
-      else if (child._type === 'js/string'
-              || child._type === 'js/expression')
-      {
-        const newChildNode = new_tree_node(
-          '',
-          null,
-          {
-            _ref: child.name,
-            _type: child._type,
-            data: String(child.value)
-          },
-          true,
-          thisNode.key
-        )
-        // update child title and icon
-        newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-        newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-        // add to this node
-        thisNode.children.push(newChildNode)
-      }
-      else if (child._type === 'js/number')
-      {
-        const newChildNode = new_tree_node(
-          '',
-          null,
-          {
-            _ref: child.name,
-            _type: child._type,
-            data: Number(child.value)
-          },
-          true,
-          thisNode.key
-        )
-        // update child title and icon
-        newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-        newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-        // add to this node
-        thisNode.children.push(newChildNode)
-      }
-      else if (child._type === 'js/boolean')
-      {
-        const newChildNode = new_tree_node(
-          '',
-          null,
-          {
-            _ref: child.name,
-            _type: child._type,
-            data: Boolean(child.value)
-          },
-          true,
-          thisNode.key
-        )
-        // update child title and icon
-        newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-        newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-        // add to this node
-        thisNode.children.push(newChildNode)
-      }
-      else if (child._type === 'js/import')
-      {
-        const newChildNode = new_tree_node(
-          '',
-          null,
-          {
-            _ref: child.name,
-            _type: child._type,
-            name: child._type !== 'js/null' ? child.value : null
-          },
-          true,
-          thisNode.key
-        )
-        // update child title and icon
-        newChildNode.title = lookup_title_for_input(child.name, newChildNode.data)
-        newChildNode.icon = lookup_icon_for_input(newChildNode.data)
-        // add to this node
-        thisNode.children.push(newChildNode)
-      }
-    }
-  })
-  // console.log(`thisNode.children`, thisNode.children)
-  ////////////////////////////////////////
-  // remove any primitive child
-  thisNode.children = thisNode.children.filter(childNode => {
-    if (childNode.data._type === 'js/null'
-        || childNode.data._type === 'js/string'
-        || childNode.data._type === 'js/number'
-        || childNode.data._type === 'js/boolean'
-        || childNode.data._type === 'js/expression'
-        || childNode.data._type === 'js/import')
-    {
-      const found = list.find(prop => prop.name === childNode.data._ref)
-      return found
-    }
-    else
-    {
-      return true
-    }
-  })
-  // console.log(`thisNode.children #2`, thisNode.children)
-  ////////////////////////////////////////
-  // reorder children
-  reorder_children(thisNode)
-}
-
-// expose parse and process method
-InputList.parse = parse_node
-InputList.process = process_list
 
 // propTypes
 InputList.propTypes = {

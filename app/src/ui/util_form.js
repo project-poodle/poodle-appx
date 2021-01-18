@@ -403,7 +403,7 @@ function input_text(js_context, input) {
   if (!!props.autoSuggest) {
     innerElement = `
       (() => {
-        const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.suggestions)
+        const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
           <$JSX $NAME='antd.AutoComplete'
             name={name}
@@ -418,7 +418,7 @@ function input_text(js_context, input) {
             }}
             onSearch={s => {
               const s_list = s.toUpperCase().split(' ').filter(s => !!s)
-              const matches = props.suggestions
+              const matches = props.options
                 .filter(option => {
                   const upper = option?.value.toUpperCase()
                   return s_list.reduce((accumulator, item) => {
@@ -454,6 +454,7 @@ function input_text(js_context, input) {
           >
           <$JSX $NAME='@material-ui/core.FormControl'
             style={{width:'100%'}}
+            error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
             {
               !!props?.label
@@ -673,7 +674,7 @@ function input_text_array(js_context, input) {
   if (!!props.autoSuggest) {
     innerElement = `
       (() => {
-        const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.suggestions)
+        const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
           <$JSX $NAME='antd.AutoComplete'
             options={_searchSuggestions}
@@ -687,7 +688,7 @@ function input_text_array(js_context, input) {
             }}
             onSearch={s => {
               const s_list = s.toUpperCase().split(' ').filter(s => !!s)
-              const matches = props.suggestions
+              const matches = props.options
                 .filter(option => {
                   const upper = option?.value.toUpperCase()
                   return s_list.reduce((accumulator, item) => {
@@ -745,6 +746,7 @@ function input_text_array(js_context, input) {
                   render={innerProps => (
                     <$JSX $NAME='@material-ui/core.FormControl'
                       style={{width:'100%'}}
+                      error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
                       >
                       {
                         ${innerElement}
@@ -1022,6 +1024,7 @@ function input_switch(js_context, input) {
           >
           <$JSX $NAME='@material-ui/core.FormControl'
             style={{width:'100%'}}
+            error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
             {
               !!props?.label
@@ -1042,6 +1045,15 @@ function input_switch(js_context, input) {
             }
             {
               ${innerElement}
+            }
+            {
+              !!$I('lodash.default').get($L('${qualifiedName}.errors'), name)
+              &&
+              <$JSX $NAME='@material-ui/core.FormHelperText'>
+                {
+                  $I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message
+                }
+              </$JSX>
             }
           </$JSX>
         </$JSX>
@@ -1267,6 +1279,7 @@ function input_select(js_context, input) {
           >
           <$JSX $NAME='@material-ui/core.FormControl'
             style={{width:'100%'}}
+            error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
             {
               !!props?.label

@@ -44,7 +44,7 @@ const AutoSuggest = (props) => {
   useEffect(() => {
     if (!!props.options) {
       setOptions(props.options.map(n => ({value: n})))
-      // console.log(props.options)
+      // console.log(`props.options`, props.options)
     } else {
       setOptions([])
     }

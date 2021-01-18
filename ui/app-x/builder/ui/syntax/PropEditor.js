@@ -63,6 +63,7 @@ import {
   lookup_classes,
   lookup_groups,
   lookup_types,
+  lookup_spec_for_type,
   lookup_types_for_class,
   lookup_classes_for_type,
   lookup_types_for_group,
@@ -395,6 +396,14 @@ const PropEditor = (props) => {
           } else {
             setValue(childSpec.name, thisNode.data[childSpec.name])
           }
+          // process childSpec._thisNode.input.kind : input/list
+          if (childSpec._thisNode.input?.kind === 'input/list') {
+            if (childSpec.name === '*') {
+              throw new Error(`ERROR: cannot process [input/list] for [*]`)
+            } else {
+              setValue(childSpec.name, thisNode.data[childSpec.name] || [])
+            }
+          }
         })
       // process _childNode
       nodeSpec.children
@@ -421,6 +430,25 @@ const PropEditor = (props) => {
               setNodeOtherNames(newNodeOtherNames)
             }
           }
+          // process childSpec._childNode.input.kind : input/list
+          if (childSpec._childNode.input.kind === 'input/list') {
+            if (childSpec.name === '*') {
+              throw new Error(`ERROR: cannot process [input/list] for [*]`)
+            } else {
+              const childNode = lookup_child_for_ref(thisNode, childSpec.name)
+              if (!!childNode) {
+                const childTypeSpec = lookup_spec_for_type(childNode.data._type)
+                const fieldName = childSpec._childNode.input.field
+                if (!fieldName) {
+                  throw new Error(`ERROR: child node [input/list] missing [field] [${JSON.stringify(childSpec._childNode.input)}]`)
+                }
+                const listData = childNode.data[fieldName] || []
+                setValue(childSpec.name, listData)
+              } else {
+                setValue(childSpec.name, [])
+              }
+            }
+          }
         })
       // process nodeSpec._input?.kind === 'input/properties'
       if (
@@ -435,9 +463,11 @@ const PropEditor = (props) => {
       }
       // process nodeSpec._input?.kind === 'input/rules'
       if (
-        nodeSpec?._input?.kind === 'input/list'
+         nodeSpec?._input?.kind === 'input/list'
       ) {
-        const { rules } = InputList.parse(thisNode)
+        const fieldName = nodeSpec.children.find(childSpec => !!childSpec.array)?.name
+        const rules = thisNode.data[fieldName] || []
+        // console.log(`input/list`, THIS_NODE_PROPERTIES, rules)
         setValue(THIS_NODE_PROPERTIES, rules)
       }
       // process customization by nodeSpec
@@ -542,6 +572,63 @@ const PropEditor = (props) => {
       _process_this_props(lookupNode, parentNode)
     }
     //////////////////////////////////////////////////////////////////////
+    // handle nodeSpec.children._thisNode.input : 'input/list'
+    nodeSpec.children
+      .filter(childSpec => childSpec._thisNode?.input?.kind === 'input/list')
+      .map(childSpec => {
+        if (childSpec.name === '*') {
+          throw new Error(`ERROR: [input/list] do not support [*]`)
+        } else {
+          thisNode.data[childSpec.name] = _.get(getValues(), childSpec.name) || []
+        }
+      })
+    //////////////////////////////////////////////////////////////////////
+    // handle nodeSpec.children._childNode.input : 'input/list'
+    nodeSpec.children
+      .filter(childSpec => childSpec._childNode?.input?.kind === 'input/list')
+      .map(childSpec => {
+        if (childSpec.name === '*') {
+          throw new Error(`ERROR: [input/list] do not support [*]`)
+        } else if (!childSpec._childNode?.input?.type) {
+          throw new Error(`ERROR: child node [input/list] missing [type] [${JSON.stringify(childSpec._childNode.input)}]`)
+        } else if (!childSpec._childNode?.input?.field) {
+          throw new Error(`ERROR: child node [input/list] missing [field] [${JSON.stringify(childSpec._childNode.input)}]`)
+        } else {
+          // add props child if exist
+          let childNode = lookup_child_for_ref(lookupNode, childSpec.name)
+          // console.log(`_process_child_props`, refKey, childNode)
+          if (!childNode) {
+            const childTypeSpec = lookup_spec_for_type(childSpec._childNode.input.type)
+            if (!childTypeSpec) {
+              throw new Error(`ERROR: cannot find child type [${childSpec._childNode.input.type}] [${JSON.stringify(childSpec._childNode.input)}]`)
+            }
+            // add child node if not exist
+            childNode = new_tree_node(
+              '',
+              null,
+              {
+                _ref: childSpec.name,
+                _type: childSpec._childNode.input.type,
+                _array: !!childSpec.array,
+              },
+              !childTypeSpec.children?.find(childSpec => !!childSpec._childNode),
+              lookupNode.key,
+            )
+            childNode.title = lookup_title_for_node(childNode)
+            childNode.icon = lookup_icon_for_node(childNode)
+            lookupNode.children.push(childNode)
+          }
+          childNode.data[childSpec._childNode.input.field] = _.get(getValues(), childSpec.name) || []
+          reorder_children(lookupNode)
+        }
+      })
+    //////////////////////////////////////////////////////////////////////
+    // handle nodeSpec._input : 'input/list'
+    if (nodeSpec._input?.kind === 'input/list') {
+      const fieldName = nodeSpec.children.find(childSpec => !!childSpec.array)?.name
+      lookupNode.data[fieldName] = _.get(getValues(), THIS_NODE_PROPERTIES) || []
+    }
+    //////////////////////////////////////////////////////////////////////
     // setTreeData(resultTree)
     updateDesignAction(
       `Update [${lookupNode.title}]`,
@@ -600,9 +687,9 @@ const PropEditor = (props) => {
   function _process_this_props(lookupNode, parentNode) {
     // add props child if exist
     // add child properties as proper childNode (replace existing or add new)
-    console.log(`getValues`, getValues())
+    // console.log(`getValues`, getValues())
     const properties = _.get(getValues(), THIS_NODE_PROPERTIES) || []
-    console.log(`properties`, properties)
+    // console.log(`properties`, properties)
     // process childParent props
     InputProperties.process(lookupNode, properties)
     ////////////////////////////////////////
@@ -1077,6 +1164,86 @@ const PropEditor = (props) => {
                             label={childSpec.desc}
                             options={propNameOptions[childSpec.name] || []}
                             otherNames={nodeOtherNames[childSpec.name] || []}
+                            className={styles.formControl}
+                            callback={d => {
+                              // console.log(`callback`)
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        </Box>
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
+              }
+              {
+                (thisNode?.key !== '/')
+                && nodeSpec?.children
+                  .filter(childSpec => childSpec._thisNode?.input?.kind === 'input/list')
+                  .map(childSpec => {
+                    // console.log(`input/properties`, childSpec)
+                    if (!!hidden[childSpec.name]) {
+                      return undefined
+                    }
+                    if (!thisNode) {
+                      return undefined
+                    }
+                    // for wildecard property
+                    if (childSpec.name === '*') {
+                      throw new Error(`ERROR: [input/list] do not support [*]`)
+                    } else {
+                      // for specified property
+                      return (
+                        <Box
+                          className={styles.properties}
+                          key={childSpec.name}
+                          >
+                          <InputList
+                            name={childSpec.name}
+                            key={childSpec.name}
+                            label={childSpec.desc}
+                            spec={childSpec._thisNode.input}
+                            className={styles.formControl}
+                            callback={d => {
+                              // console.log(`callback`)
+                              setBaseSubmitTimer(new Date())
+                            }}
+                          />
+                        </Box>
+                      )
+                    }
+                  })
+                  .filter(child => !!child)
+                  .flat(2)
+              }
+              {
+                (thisNode?.key !== '/')
+                && nodeSpec?.children
+                  .filter(childSpec => childSpec._childNode?.input?.kind === 'input/list')
+                  .map(childSpec => {
+                    // console.log(`input/properties`, childSpec)
+                    if (!!hidden[childSpec.name]) {
+                      return undefined
+                    }
+                    if (!thisNode) {
+                      return undefined
+                    }
+                    // for wildecard property
+                    if (childSpec.name === '*') {
+                      throw new Error(`ERROR: [input/list] do not support [*]`)
+                    } else {
+                      // for specified property
+                      return (
+                        <Box
+                          className={styles.properties}
+                          key={childSpec.name}
+                          >
+                          <InputList
+                            name={childSpec.name}
+                            key={childSpec.name}
+                            label={childSpec.desc}
+                            spec={childSpec._childNode.input}
                             className={styles.formControl}
                             callback={d => {
                               // console.log(`callback`)

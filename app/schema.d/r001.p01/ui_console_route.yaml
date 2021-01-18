@@ -75,6 +75,10 @@ ui_route:
                           rootUrl: '/console'
                           baseUrl: '/console'
                           authUrl: '/login'
+                          authDeployment:
+                              namespace: sys
+                              ui_name: console
+                              ui_deployment: base
               children:
                   - _type: react/element
                     name: self/page/Console

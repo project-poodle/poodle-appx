@@ -212,6 +212,11 @@ function lookup_types() {
   return Object.keys(globalThis.appx.SPEC.types)
 }
 
+// return spec for type
+function lookup_spec_for_type(type) {
+  return globalThis.appx.SPEC.types[type]
+}
+
 // return types by class
 function lookup_types_for_class(cls) {
   return globalThis.appx?.SPEC?.classes[cls]?.types || []
@@ -828,6 +833,7 @@ export {
   lookup_classes,
   lookup_groups,
   lookup_types,
+  lookup_spec_for_type,
   lookup_types_for_class,
   lookup_classes_for_type,
   lookup_types_for_group,

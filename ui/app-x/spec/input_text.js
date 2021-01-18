@@ -7,7 +7,7 @@ import {
 // name:                     # name of input         (:string)
 // array:                    # whether array         (:boolean)
 // props:                    # properties            (:object<:expression>)
-// rules:                    # input rules           (:object<:expression>)
+// rules:                    # input rules           (:input/rule)
 export const input_text = {
 
   type: 'input/text',
@@ -85,16 +85,19 @@ export const input_text = {
         {
           kind: 'type',
           data: 'input/rule'
-        }
+        },
       ],
       _childNode: {
         types: 'inherit',
         input: {
           kind: 'input/list',
+          type: 'input/rule',
+          field: 'data',
           columns: [
             {
               name: 'kind',
               title: 'Kind',
+              span: 4,
               required: true,
               input: {
                 kind: 'input/select',
@@ -105,24 +108,54 @@ export const input_text = {
                   {
                     value: 'validate',
                   }
-                ]
+                ],
+                optionsOnly: true,
               },
             },
             {
               name: 'data',
               title: 'Data',
+              span: 8,
               required: true,
               input: {
                 kind: 'input/text'
-              }
+              },
+              rules: [
+                {
+                  kind: 'validate',
+                  data: '(() => { parseExpression(value); return true })()',
+                  message: 'Must be a valid expression',
+                },
+                {
+                  kind: 'validate',
+                  data: '(() => { \
+                    const kindName = name.replace(/.data$/, ".kind"); \
+                    const kind = form.getValues(kindName); \
+                    if (kind === "pattern") { \
+                      return (eval(value) instanceof RegExp) \
+                    } else { \
+                      return true \
+                    } \
+                  })()',
+                  message: 'Must be a valid RegExp expression',
+                }
+              ]
             },
             {
               name: 'message',
               title: 'Message',
+              span: 10,
               required: true,
               input: {
-                kind: 'input/text'
-              }
+                kind: 'input/text',
+              },
+              rules: [
+                {
+                  kind: 'validate',
+                  data: '(() => { parseExpression(value); return true })()',
+                  message: 'Must be a valid expression',
+                }
+              ]
             }
           ]
         },
