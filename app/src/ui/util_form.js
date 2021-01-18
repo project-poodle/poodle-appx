@@ -6,6 +6,7 @@ const {
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
   JSX_CONTEXT,
+  INPUT_REQUIRED,
   TOKEN_IMPORT,
   TOKEN_LOCAL,
   TOKEN_JSX,
@@ -356,6 +357,7 @@ function input_text(js_context, input) {
   })()
 
   // compute rules
+  const required_desc = !!input.props.label && isPrimitive(input.props.label) ? String(input.props.label) : input.name
   const rulesExpression = (() => {
     if (!!input.rules) {
       return js_process(
@@ -365,14 +367,25 @@ function input_text(js_context, input) {
           parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         input.rules
+      )
+    } else if (!!input.required) {
+      return t.objectExpression(
+        [
+          t.objectProperty(
+            t.stringLiteral('required'),
+            t.stringLiteral(`${required_desc} is required`)
+          )
+        ]
       )
     } else {
       // return {}
       return t.objectExpression([])
     }
   })()
+
 
   //////////////////////////////////////////////////////////////////////
   // TextField
@@ -627,6 +640,7 @@ function input_text_array(js_context, input) {
   })()
 
   // compute rules
+  const required_desc = !!input.props.label && isPrimitive(input.props.label) ? String(input.props.label) : input.name
   const rulesExpression = (() => {
     if (!!input.rules) {
       return js_process(
@@ -636,8 +650,18 @@ function input_text_array(js_context, input) {
           parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         input.rules
+      )
+    } else if (!!input.required) {
+      return t.objectExpression(
+        [
+          t.objectProperty(
+            t.stringLiteral('required'),
+            t.stringLiteral(`${required_desc} is required`)
+          )
+        ]
       )
     } else {
       // return {}
@@ -968,6 +992,7 @@ function input_switch(js_context, input) {
   })()
 
   // compute rules
+  const required_desc = !!input.props.label && isPrimitive(input.props.label) ? String(input.props.label) : input.name
   const rulesExpression = (() => {
     if (!!input.rules) {
       return js_process(
@@ -977,14 +1002,25 @@ function input_switch(js_context, input) {
           parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         input.rules
+      )
+    } else if (!!input.required) {
+      return t.objectExpression(
+        [
+          t.objectProperty(
+            t.stringLiteral('required'),
+            t.stringLiteral(`${required_desc} is required`)
+          )
+        ]
       )
     } else {
       // return {}
       return t.objectExpression([])
     }
   })()
+
 
   //////////////////////////////////////////////////////////////////////
   // TextField
@@ -1205,6 +1241,7 @@ function input_select(js_context, input) {
   })()
 
   // compute rules
+  const required_desc = !!input.props.label && isPrimitive(input.props.label) ? String(input.props.label) : input.name
   const rulesExpression = (() => {
     if (!!input.rules) {
       return js_process(
@@ -1214,14 +1251,25 @@ function input_select(js_context, input) {
           parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         input.rules
+      )
+    } else if (!!input.required) {
+      return t.objectExpression(
+        [
+          t.objectProperty(
+            t.stringLiteral('required'),
+            t.stringLiteral(`${required_desc} is required`)
+          )
+        ]
       )
     } else {
       // return {}
       return t.objectExpression([])
     }
   })()
+
 
   //////////////////////////////////////////////////////////////////////
   // TextField
@@ -1370,6 +1418,11 @@ function input_rule(js_context, input) {
 
   const rules = {
     validate: {}
+  }
+
+  // process required flags
+  if (!!js_context[INPUT_REQUIRED]) {
+    rules.required = t.stringLiteral(`${js_context[INPUT_REQUIRED]} is required`)
   }
 
   let validate_count = 0
