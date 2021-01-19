@@ -30,7 +30,7 @@ function handle_preview(req, res) {
         type: req_type,
         output: req_output,
         data: req_data
-    } = !!req.body.urlencoded ? JSON.parse(req.body.urlencoded) : req.body
+    } = !!req.body.urlencoded ? req.body.urlencoded : req.body
 
     // console.log(req_type, req_output, req_data)
 
