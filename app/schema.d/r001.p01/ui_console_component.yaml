@@ -142,8 +142,6 @@ ui_component:
                             spacing: 1
                         children:
                             - _type: react/element
-                              name: "@material-ui/core.CssBaseline"
-                            - _type: react/element
                               name: "@material-ui/core.Grid"
                               props:
                                   item: true
