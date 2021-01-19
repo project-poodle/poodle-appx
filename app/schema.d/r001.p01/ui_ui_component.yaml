@@ -100,7 +100,7 @@ ui_component:
                   _type: react/state
                   name: navOpen
                   setter: setNavOpen
-                  init: false
+                  init: "false"
           handlers:
               sideNavHandler:
                   _type: js/function
