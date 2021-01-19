@@ -1732,7 +1732,7 @@ function react_effect(js_context, input) {
     })
   }
 
-  return t.expressionStatemen(
+  return t.expressionStatement(
     t.callExpression(
       t.identifier('react.useEffect'),
       [
