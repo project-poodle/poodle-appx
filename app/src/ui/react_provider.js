@@ -13,7 +13,6 @@ const {
 const {
     reg_js_variable,
     reg_js_import,
-    react_element,
     js_process,
     js_resolve_ids,
 } = require('./util_code')
@@ -103,6 +102,7 @@ function handle_react_provider(req, res) {
                   parentRef: key,
                   parentPath: t.identifier(key),
                 },
+                null,
                 input[key]
               )
             )
@@ -118,6 +118,7 @@ function handle_react_provider(req, res) {
         // adds each of the block statement
         block_statements.push(...(js_process(
           js_context,
+          null,
           input[key]).body
         ))
 
@@ -140,6 +141,7 @@ function handle_react_provider(req, res) {
                     parentRef: key,
                     parentPath: t.identifier(key),
                   },
+                  null,
                   input[key]
                 )
               )
@@ -168,6 +170,7 @@ function handle_react_provider(req, res) {
                     parentRef: key,
                     parentPath: t.identifier(key),
                   },
+                  null,
                   input[key]
                 )
               )
@@ -196,6 +199,7 @@ function handle_react_provider(req, res) {
                 js_process
                 (
                   js_context,
+                  null,
                   value
                 )
               )
@@ -248,7 +252,6 @@ function handle_react_provider(req, res) {
                                   [
                                     // insert block_statements from earlier
                                     ...block_statements,
-                                    // react_element(js_context, req.context.ui_component_spec.element)
                                     t.returnStatement(
                                       t.jSXElement(
                                         t.jSXOpeningElement(

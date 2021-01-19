@@ -29,7 +29,7 @@ const {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create react/form ast
-function react_form(js_context, input) {
+function react_form(js_context, ref, input) {
 
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
@@ -58,6 +58,7 @@ function react_form(js_context, input) {
                   parentPath: null,
                   JSX_CONTEXT: false,
                 },
+                null,
                 input.formProps[key]
               )
             )
@@ -101,6 +102,7 @@ function react_form(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: false,
           },
+          null,
           input.onSubmit
         )
       }
@@ -124,6 +126,7 @@ function react_form(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: false,
           },
+          null,
           input.onError
         )
       }
@@ -148,6 +151,7 @@ function react_form(js_context, input) {
                   parentPath: null,
                   JSX_CONTEXT: false,
                 },
+                null,
                 input.props[key]
               )
             )
@@ -172,6 +176,7 @@ function react_form(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: true,
           },
+          null,
           child
         )
       ))
@@ -246,7 +251,7 @@ function react_form(js_context, input) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create input/text ast
-function input_text(js_context, input) {
+function input_text(js_context, ref, input) {
 
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
@@ -260,7 +265,7 @@ function input_text(js_context, input) {
   }
 
   if (!!input.array) {
-    return input_text_array(js_context, input)
+    return input_text_array(js_context, ref, input)
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -328,6 +333,7 @@ function input_text(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: false,
           },
+          null,
           props.defaultValue
         )
       }
@@ -348,6 +354,7 @@ function input_text(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
+        null,
         input.props
       )
     } else {
@@ -369,6 +376,7 @@ function input_text(js_context, input) {
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
+        null,
         input.rules
       )
     } else if (!!input.required) {
@@ -545,7 +553,7 @@ function input_text(js_context, input) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create input/text [array] ast
-function input_text_array(js_context, input) {
+function input_text_array(js_context, ref, input) {
 
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
@@ -631,6 +639,7 @@ function input_text_array(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
+        null,
         input.props
       )
     } else {
@@ -652,6 +661,7 @@ function input_text_array(js_context, input) {
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
+        null,
         input.rules
       )
     } else if (!!input.required) {
@@ -898,7 +908,7 @@ function input_text_array(js_context, input) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create input/switch ast
-function input_switch(js_context, input) {
+function input_switch(js_context, ref, input) {
 
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
@@ -963,6 +973,7 @@ function input_switch(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: false,
           },
+          null,
           props.defaultValue
         )
       }
@@ -983,6 +994,7 @@ function input_switch(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
+        null,
         input.props
       )
     } else {
@@ -1004,6 +1016,7 @@ function input_switch(js_context, input) {
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
+        null,
         input.rules
       )
     } else if (!!input.required) {
@@ -1147,7 +1160,7 @@ function input_switch(js_context, input) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create input/select ast
-function input_select(js_context, input) {
+function input_select(js_context, ref, input) {
 
   // require here to avoid circular require reference
   const { js_process } = require('./util_code')
@@ -1212,6 +1225,7 @@ function input_select(js_context, input) {
             parentPath: null,
             JSX_CONTEXT: false,
           },
+          null,
           props.defaultValue
         )
       }
@@ -1232,6 +1246,7 @@ function input_select(js_context, input) {
           parentPath: null,
           JSX_CONTEXT: false,
         },
+        null,
         input.props
       )
     } else {
@@ -1253,6 +1268,7 @@ function input_select(js_context, input) {
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
+        null,
         input.rules
       )
     } else if (!!input.required) {
@@ -1405,7 +1421,7 @@ function input_select(js_context, input) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // process input/rule ast
-function input_rule(js_context, input) {
+function input_rule(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'input/rule') {
     throw new Error(`ERROR: input._type is not [input/rule] [${input._type}] [${JSON.stringify(input)}]`)

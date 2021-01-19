@@ -8,6 +8,7 @@ const {
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
   JSX_CONTEXT,
+  STATEMENT_CONTEXT,
   // REQUIRE_FUNCTION,
   REACT_FORM_METHODS,
   REACT_FORM_ARRAY_METHODS,
@@ -34,7 +35,7 @@ const {
 
 ////////////////////////////////////////////////////////////////////////////////
 // create primitive js ast
-function js_primitive(js_context, input) {
+function js_primitive(js_context, ref, input) {
 
   let result = null
   switch (typeof input) {
@@ -61,7 +62,17 @@ function js_primitive(js_context, input) {
       throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          result
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       result
     )
@@ -71,13 +82,23 @@ function js_primitive(js_context, input) {
 }
 
 // create string ast
-function js_string(js_context, input) {
+function js_string(js_context, ref, input) {
   // check input._type
   if (!('_type' in input) || input._type !== 'js/string') {
     throw new Error(`ERROR: input._type is not [js/string] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          t.stringLiteral(String(input.data))
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.stringLiteral(String(input.data))
     )
@@ -87,13 +108,23 @@ function js_string(js_context, input) {
 }
 
 // create numeric ast
-function js_number(js_context, input) {
+function js_number(js_context, ref, input) {
   // check input._type
   if (!('_type' in input) || input._type !== 'js/number') {
     throw new Error(`ERROR: input._type is not [js/number] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          t.numericLiteral(Number(input.data))
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.numericLiteral(Number(input.data))
     )
@@ -103,13 +134,23 @@ function js_number(js_context, input) {
 }
 
 // create boolean ast
-function js_boolean(js_context, input) {
+function js_boolean(js_context, ref, input) {
   // check input._type
   if (!('_type' in input) || input._type !== 'js/boolean') {
     throw new Error(`ERROR: input._type is not [js/boolean] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          t.booleanLiteral(Boolean(input.data))
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.booleanLiteral(Boolean(input.data))
     )
@@ -119,13 +160,23 @@ function js_boolean(js_context, input) {
 }
 
 // create null ast
-function js_null(js_context, input) {
+function js_null(js_context, ref, input) {
   // check input._type
   if (!('_type' in input) || input._type !== 'js/null') {
     throw new Error(`ERROR: input._type is not [js/null] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          t.nullLiteral()
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       t.nullLiteral()
     )
@@ -137,7 +188,7 @@ function js_null(js_context, input) {
 // create array js ast
 // js_array is true - will return result as an array of data
 // js_array is false - will return arrayExpression
-function js_array(js_context, input) {
+function js_array(js_context, ref, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
@@ -158,18 +209,30 @@ function js_array(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath:
             !!js_context.parentPath
             ? t.memberExpression(js_context.parentPath, t.numericLiteral(index), true)
-            : null
+            : null,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         row
       )
     })
   )
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          arrayExpression
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       arrayExpression
     )
@@ -179,7 +242,7 @@ function js_array(js_context, input) {
 }
 
 // create object ast
-function js_object(js_context, input) {
+function js_object(js_context, ref, input) {
 
   if (isPrimitive(input)) {
     throw new Error(`ERROR: input is primitive [${JSON.stringify(input)}]`)
@@ -204,13 +267,14 @@ function js_object(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: key,
               parentPath:
                 !!js_context.parentPath
                 ? js_context.parentPath
                 : null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: false,
             },
+            null,
             value
           )
         )
@@ -222,13 +286,14 @@ function js_object(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: key,
               parentPath:
                 !!js_context.parentPath
                 ? t.memberExpression(js_context.parentPath, t.identifier(key))
                 : null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: false,
             },
+            key,
             value
           )
         )
@@ -236,7 +301,17 @@ function js_object(js_context, input) {
     })
   )
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          objectExpression
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       objectExpression
     )
@@ -246,7 +321,7 @@ function js_object(js_context, input) {
 }
 
 // create import ast
-function js_import(js_context, input) {
+function js_import(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/import') {
     throw new Error(`ERROR: input._type is not [js/import] [${input._type}] [${JSON.stringify(input)}]`)
@@ -259,11 +334,27 @@ function js_import(js_context, input) {
   reg_js_import(js_context, input.name, use_default=false)
 
   // return imported name as result
-  return t.identifier(input.name)
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          t.identifier(input.name)
+        )
+      ]
+    )
+  } else if (!!js_context.JSX_CONTEXT) {
+    return t.jSXExpressionContainer(
+      t.identifier(input.name)
+    )
+  } else {
+    return t.identifier(input.name)
+  }
 }
 
 // create export ast
-function js_export(js_context, input) {
+function js_export(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/export') {
     throw new Error(`ERROR: input._type is not [js/export] [${input._type}] [${JSON.stringify(input)}]`)
@@ -279,7 +370,6 @@ function js_export(js_context, input) {
       t.identifier(input.name)
     )
   } else {
-
     return t.exportSpecifier(
       t.identifier(input.name),
       t.identifier(input.name)
@@ -288,7 +378,7 @@ function js_export(js_context, input) {
 }
 
 // create variable declaration ast
-function js_variable(js_context, input) {
+function js_variable(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/variable') {
     throw new Error(`ERROR: input._type is not [js/variable] [${input._type}] [${JSON.stringify(input)}]`)
@@ -313,9 +403,11 @@ function js_variable(js_context, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentRef: null,
                 parentPath: null,
+                JSX_CONTEXT: false,
+                STATEMENT_CONTEXT: false,
               },
+              ref,
               {
                 _type: 'js/expression',
                 data: String(input.expression)
@@ -326,9 +418,11 @@ function js_variable(js_context, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentRef: null,
                 parentPath: null,
+                JSX_CONTEXT: false,
+                STATEMENT_CONTEXT: false,
               },
+              ref,
               input.expression
             )
       )
@@ -337,7 +431,7 @@ function js_variable(js_context, input) {
 }
 
 // create expression ast
-function js_expression(js_context, input) {
+function js_expression(js_context, ref, input) {
 
   let data = ''
   if (typeof input === 'string' && input.trim().startsWith('`') && input.trim().endsWith('`')) {
@@ -361,27 +455,36 @@ function js_expression(js_context, input) {
     data = String(input.data)
   }
 
-  if (js_context.JSX_CONTEXT) {
-    const parsed = _js_parse_expression(js_context, data, {
-      plugins: [
-        'jsx', // support jsx here
+  const parsed = _js_parse_expression(js_context, data, {
+    plugins:
+      js_context.JSX_CONTEXT
+      ? [
+          'jsx', // support jsx here
+        ]
+      : []
+  })
+
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          parsed
+        )
       ]
-    })
+    )
+  } else if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       parsed
     )
   } else {
-    const parsed = _js_parse_expression(js_context, data, {
-      plugins: [
-        // 'jsx', // do not support jsx here
-      ]
-    })
     return parsed
   }
 }
 
 // create block ast (allow return outside of function)
-function js_statement(js_context, input) {
+function js_statement(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/statement') {
     throw new Error(`ERROR: input._type is not [js/statement] [${input._type}] [${JSON.stringify(input)}]`)
@@ -394,52 +497,57 @@ function js_statement(js_context, input) {
       throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
     }
     // handle body
-    input.body.map(statement => {
+    input.body.map((statement, index) => {
       if (typeof statement === 'string') {
         // parse user code snippet
-        const statements = _js_parse_statements(js_context, statement, {
+        const parsed_statement = _js_parse_statements(js_context, statement, {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
             // 'jsx', // do not support jsx here
           ]
         })
-        // add to block statements
-        statements.map(sub_statement => {
-          block_statements.push(sub_statement)
-        })
+        // console.log(`statement`, statement, child_statement)
+        if (!!parsed_statement.length) {
+          t.addComment(parsed_statement[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(parsed_statement[parsed_statement.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...parsed_statement)
+        }
       } else {
         // process child statements
         const child_statement = js_process(
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: true,
           },
+          null,
           statement
         )
         // console.log(`statement`, statement, child_statement)
-        // add to block statements
-        if (t.isBlockStatement(child_statement)) {
-          child_statement.body.map(sub_statement => {
-            block_statements.push(sub_statement)
-          })
+        if (t.isBlockStatement(child_statement) && !!child_statement.body.length) {
+          t.addComment(child_statement.body[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement.body[child_statement.body.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...child_statement.body)
         } else {
+          t.addComment(child_statement, 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement, 'trailing', ` ${ref || 'body'}[${index}] `, true)
           block_statements.push(child_statement)
         }
       }
     })
   }
 
+  // console.log(`block_statements`, block_statements
   return t.blockStatement(
     block_statements
   )
 }
 
 // create array function ast
-function js_function(js_context, input) {
+function js_function(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/function') {
     throw new Error(`ERROR: input._type is not [js/function] [${input._type}] [${JSON.stringify(input)}]`)
@@ -470,39 +578,43 @@ function js_function(js_context, input) {
       throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
     }
     // handle body
-    input.body.map(statement => {
+    input.body.map((statement, index) => {
       if (typeof statement === 'string') {
         // parse user code snippet
-        const statements = _js_parse_statements(js_context, statement, {
+        const parsed_statement = _js_parse_statements(js_context, statement, {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
             // 'jsx', // do not support jsx here
           ]
         })
-        // add to block statements
-        statements.map(sub_statement => {
-          block_statements.push(sub_statement)
-        })
+        // console.log(`statement`, statement, child_statement)
+        if (!!parsed_statement.length) {
+          t.addComment(parsed_statement[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(parsed_statement[parsed_statement.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...parsed_statement)
+        }
       } else {
         // process child statements
         const child_statement = js_process(
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: true,
           },
+          null,
           statement
         )
         // console.log(`statement`, statement, child_statement)
-        // add to block statements
-        if (t.isBlockStatement(child_statement)) {
-          child_statement.body.map(sub_statement => {
-            block_statements.push(sub_statement)
-          })
+        if (t.isBlockStatement(child_statement) && !!child_statement.body.length) {
+          t.addComment(child_statement.body[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement.body[child_statement.body.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...child_statement.body)
         } else {
+          t.addComment(child_statement, 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement, 'trailing', ` ${ref || 'body'}[${index}] `, true)
           block_statements.push(child_statement)
         }
       }
@@ -517,7 +629,17 @@ function js_function(js_context, input) {
     input.async ? true : false
   )
 
-  if (!!js_context.JSX_CONTEXT) {
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          functionExpression
+        )
+      ]
+    )
+  } else if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       functionExpression
     )
@@ -527,7 +649,7 @@ function js_function(js_context, input) {
 }
 
 // create call ast
-function js_call(js_context, input) {
+function js_call(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/function') {
     throw new Error(`ERROR: input._type is not [js/call] [${input._type}] [${JSON.stringify(input)}]`)
@@ -545,47 +667,64 @@ function js_call(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         param))
      : []
   )
 
-  if (!!js_context.JSX_CONTEXT) {
-    return t.jSXExpressionContainer(
+  // check statement context
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
       callExpression
     )
   } else {
-    return callExpression
+    if (!!js_context.JSX_CONTEXT) {
+      return t.jSXExpressionContainer(
+        callExpression
+      )
+    } else {
+      return callExpression
+    }
   }
 }
 
 // create switch ast
-function js_switch(js_context, input) {
+function js_switch(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/switch') {
     throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // create default return statement
-  let ifElseStatements = t.returnStatement(
-    t.nullLiteral()
-  )
-  if ('default' in input) {
-    ifElseStatements = t.returnStatement(
-      js_process(
-        {
-          ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
-          JSX_CONTEXT: false,
-        },
-        input.default
+  let ifElseStatements =
+    !!js_context.STATEMENT_CONTEXT
+    ? t.blockStatement([])
+    : t.returnStatement(
+        t.nullLiteral()
       )
+  if ('default' in input) {
+    const processed = js_process(
+      {
+        ...js_context,
+        topLevel: false,
+        parentPath: null,
+        JSX_CONTEXT: false
+        // STATEMENT_CONTEXT: preserve
+      },
+      null,
+      input.default
     )
+    // update if else statements
+    ifElseStatements =
+      !!js_context.STATEMENT_CONTEXT
+      ? processed
+      : t.returnStatement(
+          processed
+        )
   }
 
   // input.children is optional
@@ -609,63 +748,75 @@ function js_switch(js_context, input) {
       if (! ('result' in child)) {
         throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
       }
+      // process statement body
+      const processed = js_process(
+        {
+          ...js_context,
+          topLevel: false,
+          parentPath: null,
+          JSX_CONTEXT: false
+          // STATEMENT_CONTEXT: preserve
+        },
+        null,
+        child.result
+      )
       // stack if/else statement
       ifElseStatements = t.ifStatement(
         js_process(
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
           },
+          null,
           {
             _type: 'js/expression',
             data: String(child.condition),
           }
         ),
-        t.returnStatement(
-          js_process(
-            {
-              ...js_context,
-              topLevel: false,
-              parentRef: null,
-              parentPath: null,
-            },
-            child.result
-          )
-        ),
+        !!js_context.STATEMENT_CONTEXT
+          ? processed
+          : t.returnStatement(
+              processed
+            ),
         ifElseStatements
       )
     })
   }
 
-  // generate call expression
-  const callExpression = t.callExpression(
-    t.functionExpression(
-      null,
-      [],
-      t.blockStatement(
-        [
-          ifElseStatements
-        ]
-      )
-    ),
-    []
-  )
-
-  // return with context
-  if (js_context.JSX_CONTEXT) {
-    return t.jSXExpressionContainer(
-      callExpression
-    )
+  // check statement context
+  if (js_context.STATEMENT_CONTEXT) {
+    // if statement context
+    return ifElseStatements
   } else {
-    return callExpression
+    // generate call expression
+    const callExpression = t.callExpression(
+      t.functionExpression(
+        null,
+        [],
+        t.blockStatement(
+          [
+            ifElseStatements
+          ]
+        )
+      ),
+      []
+    )
+    // return with jsx context
+    if (js_context.JSX_CONTEXT) {
+      return t.jSXExpressionContainer(
+        callExpression
+      )
+    } else {
+      return callExpression
+    }
   }
 }
 
 // create js map ast
-function js_map(js_context, input) {
+function js_map(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/map') {
     throw new Error(`ERROR: input._type is not [js/map] [${input._type}] [${JSON.stringify(input)}]`)
@@ -679,28 +830,39 @@ function js_map(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         input.data
       )
     : t.arrayExpression([])   // return empty array if not
 
   // process mapper expression
-  const resultExpression =
+  const processed =
     !!input.result
-    ? js_process              // process result if exists
+    ? js_process // process result if exists
       (
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
+          JSX_CONTEXT: false
+          // STATEMENT_CONTEXT: preserve
         },
+        null,
         input.result
       )
-    : t.nullLiteral()         // return null if not
+    : !!js_context.STATEMENT_CONTEXT
+      ? t.blockStatement([])
+      : t.nullLiteral()
+
+  // result
+  const resultStatement =
+    !!js_context.STATEMENT_CONTEXT
+    ? processed
+    : t.returnStatement(processed)
 
   // process call expression
   const callExpression = t.callExpression(
@@ -757,10 +919,8 @@ function js_map(js_context, input) {
                       ],
                       t.blockStatement(
                         [
-                          // return ...mapper
-                          t.returnStatement(
-                            resultExpression
-                          )
+                          // result statement
+                          resultStatement
                         ]
                       )
                     )
@@ -816,10 +976,8 @@ function js_map(js_context, input) {
                                     )
                                   ]
                                 ),
-                                // return ...mapper
-                                t.returnStatement(
-                                  resultExpression
-                                )
+                                // result statement
+                                resultStatement
                               ]
                             )
                           )
@@ -863,7 +1021,11 @@ function js_map(js_context, input) {
   )
 
   // return with context
-  if (js_context.JSX_CONTEXT) {
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
+      callExpression
+    )
+  } else if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -873,7 +1035,7 @@ function js_map(js_context, input) {
 }
 
 // create js reduce ast
-function js_reduce(js_context, input) {
+function js_reduce(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/reduce') {
     throw new Error(`ERROR: input._type is not [js/reduce] [${input._type}] [${JSON.stringify(input)}]`)
@@ -891,10 +1053,11 @@ function js_reduce(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         input.data
       )
     : t.arrayExpression([])       // return empty array if not
@@ -907,10 +1070,11 @@ function js_reduce(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         {
           _type: 'js/expression',
           data: String(input.reducer)
@@ -930,10 +1094,11 @@ function js_reduce(js_context, input) {
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
           },
+          null,
           {
             _type: 'js/expression',
             data: String(input.init)
@@ -944,10 +1109,11 @@ function js_reduce(js_context, input) {
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
           },
+          null,
           input.init,
         )
     : t.nullLiteral()                 // return null if not exists
@@ -1115,7 +1281,11 @@ function js_reduce(js_context, input) {
   )
 
   // return with context
-  if (js_context.JSX_CONTEXT) {
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
+      callExpression
+    )
+  } else if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -1125,7 +1295,7 @@ function js_reduce(js_context, input) {
 }
 
 // create js reduce ast
-function js_filter(js_context, input) {
+function js_filter(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'js/filter') {
     throw new Error(`ERROR: input._type is not [js/filter] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1143,10 +1313,11 @@ function js_filter(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         input.data
       )
     : t.arrayExpression([])       // return empty array if not
@@ -1159,10 +1330,11 @@ function js_filter(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         {
           _type: 'js/expression',
           data: String(input.filter),
@@ -1331,7 +1503,11 @@ function js_filter(js_context, input) {
   )
 
   // return with context
-  if (js_context.JSX_CONTEXT) {
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
+      callExpression
+    )
+  } else if (js_context.JSX_CONTEXT) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -1341,7 +1517,7 @@ function js_filter(js_context, input) {
 }
 
 // create jsx element ast
-function react_element(js_context, input) {
+function react_element(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'react/element') {
     throw new Error(`ERROR: input._type is not [react/element] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1368,7 +1544,12 @@ function react_element(js_context, input) {
     t.jSXOpeningElement(
       t.jSXIdentifier(input.name),
       'props' in input ? react_element_props(
-        { ...js_context, JSX_CONTEXT: true },
+        {
+          ...js_context,
+          parentPath: null,
+          JSX_CONTEXT: true,
+          STATEMENT_CONTEXT: false,
+        },
         input.props
       ) : []
     ),
@@ -1376,7 +1557,12 @@ function react_element(js_context, input) {
       t.jSXIdentifier(input.name),
     ),
     react_element_children(
-      { ...js_context, JSX_CONTEXT: true },
+      {
+        ...js_context,
+        parentPath: null,
+        JSX_CONTEXT: true,
+        STATEMENT_CONTEXT: false,
+      },
       input.children
     )
   )
@@ -1386,7 +1572,7 @@ function react_element(js_context, input) {
 }
 
 // create jsx html element ast
-function react_html(js_context, input) {
+function react_html(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'react/html') {
     throw new Error(`ERROR: input._type is not [react/html] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1401,7 +1587,12 @@ function react_html(js_context, input) {
     t.jSXOpeningElement(
       t.jSXIdentifier(input.name),
       'props' in input ? react_element_props(
-        { ...js_context, JSX_CONTEXT: true },
+        {
+          ...js_context,
+          parentPath: null,
+          JSX_CONTEXT: true,
+          STATEMENT_CONTEXT: false,
+        },
         input.props
       ) : []
     ),
@@ -1409,7 +1600,12 @@ function react_html(js_context, input) {
       t.jSXIdentifier(input.name),
     ),
     react_element_children(
-      { ...js_context, JSX_CONTEXT: true },
+      {
+        ...js_context,
+        parentPath: null,
+        JSX_CONTEXT: true,
+        STATEMENT_CONTEXT: false,
+      },
       input.children
     )
   )
@@ -1444,10 +1640,11 @@ function react_element_props(js_context, props) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: prop_key,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         prop
       )
       syntax = processed
@@ -1494,10 +1691,11 @@ function react_element_children(js_context, children) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: true,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         row
       )
     }
@@ -1505,7 +1703,7 @@ function react_element_children(js_context, children) {
 }
 
 // create react state ast
-function react_state(js_context, input) {
+function react_state(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'react/state') {
     throw new Error(`ERROR: input._type is not [react/state] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1519,6 +1717,8 @@ function react_state(js_context, input) {
     throw new Error(`ERROR: input.setter missing in [react/state] [${JSON.stringify(input)}]`)
   }
 
+  // console.trace()
+
   const initExpression =
     !!input.init
     ? !!isPrimitive(input.init)
@@ -1527,10 +1727,11 @@ function react_state(js_context, input) {
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
           },
+          null,
           {
             _type: 'js/expression',
             data: String(input.init)
@@ -1541,10 +1742,11 @@ function react_state(js_context, input) {
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
           },
+          null,
           input.init,
         )
     : t.nullLiteral()                 // return null if not exists
@@ -1559,69 +1761,90 @@ function react_state(js_context, input) {
     setter: input.setter,
   })
 
-  // if topLevel
-  if (!!js_context.topLevel
-      && !!js_context.parentRef
-      && js_context.parentRef.startsWith('...')) {
+  // useState
+  const statesExpression = t.callExpression(
+    t.identifier('react.useState'),
+    [
+      initExpression,
+    ]
+  )
 
-    // return useState(initExpression)
-    return t.callExpression(
-      t.identifier('react.useState'),
-      [
-        initExpression,
-      ]
-    )
-
-  } else {  // else
-    // return a nested expression if not top level
-    return t.callExpression(
-      t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          [
-            t.variableDeclaration(
-              'const',
+  const callExpression = t.callExpression(
+    t.arrowFunctionExpression(
+      [],
+      t.blockStatement(
+        [
+          t.variableDeclaration(
+            'const',
+            [
+              t.variableDeclarator(
+                t.arrayPattern(
+                  [
+                    t.identifier(input.name),
+                    t.identifier(input.setter)
+                  ]
+                ),
+                statesExpression
+              )
+            ]
+          ),
+          t.returnStatement(
+            t.objectExpression(
               [
-                t.variableDeclarator(
-                  t.arrayPattern(
-                    [
-                      t.identifier(input.name),
-                      t.identifier(input.setter)
-                    ]
-                  ),
-                  t.callExpression(
-                    t.identifier('react.useState'),
-                    [
-                      initExpression,
-                    ]
-                  )
+                t.objectProperty(
+                  t.stringLiteral(input.name),
+                  t.identifier(input.name)
+                ),
+                t.objectProperty(
+                  t.stringLiteral(input.setter),
+                  t.identifier(input.setter)
                 )
               ]
-            ),
-            t.returnStatement(
-              t.objectExpression(
-                [
-                  t.objectProperty(
-                    t.stringLiteral(input.name),
-                    t.identifier(input.name)
-                  ),
-                  t.objectProperty(
-                    t.stringLiteral(input.setter),
-                    t.identifier(input.setter)
-                  )
-                ]
-              )
             )
-          ]
-        )
-      ),
-      []
-    )
+          )
+        ]
+      )
+    ),
+    []
+  )
+
+  // if STATEMENT_CONTEXT
+  if (!!js_context.STATEMENT_CONTEXT) {
+    // console.log(`here`)
+    if (ref.startsWith('...')) {
+      return t.variableDeclaration(
+        'const',
+        [
+          t.variableDeclarator(
+            t.arrayPattern(
+              [
+                t.identifier(input.name),
+                t.identifier(input.setter)
+              ]
+            ),
+            statesExpression
+          )
+        ]
+      )
+    } else {
+      return t.variableDeclaration(
+        'const',
+        [
+          t.variableDeclarator(
+            t.identifier(ref),
+            callExpression
+          )
+        ]
+      )
+    }
+  } else {  // else
+    // return a nested expression if not statement context
+    return callExpression
   }
 }
 
 // create react context ast
-function react_context(js_context, input) {
+function react_context(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'react/context') {
     throw new Error(`ERROR: input._type is not [react/context] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1637,17 +1860,31 @@ function react_context(js_context, input) {
   // register context name
   reg_js_import(js_context, input.name, use_default=false)
 
-  // return all context variables
-  return t.callExpression(
+  const callExpression = t.callExpression(
     t.identifier('react.useContext'),
     [
       t.identifier(input.name)
     ]
   )
+
+  // if STATEMENT_CONTEXT
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          callExpression
+        )
+      ]
+    )
+  } else {
+    return callExpression
+  }
 }
 
 // create react effect block ast (do not allow return outside of function)
-function react_effect(js_context, input) {
+function react_effect(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'react/effect') {
     throw new Error(`ERROR: input._type is not [react/effect] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1666,10 +1903,11 @@ function react_effect(js_context, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentRef: null,
                 parentPath: null,
                 JSX_CONTEXT: false,
+                STATEMENT_CONTEXT: false,
               },
+              null,
               {
                 _type: 'js/expression',
                 data:
@@ -1693,63 +1931,75 @@ function react_effect(js_context, input) {
       throw new Error(`ERROR: input.body is not [array] [${input._type}] [${JSON.stringify(input)}]`)
     }
     // handle body
-    input.body.map(statement => {
+    input.body.map((statement, index) => {
       if (typeof statement === 'string') {
         // parse user code snippet
-        const statements = _js_parse_statements(js_context, statement, {
+        const parsed_statement = _js_parse_statements(js_context, statement, {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
             // 'jsx', // do not support jsx here
           ]
         })
-        // add to block statements
-        statements.map(sub_statement => {
-          block_statements.push(sub_statement)
-        })
+        // console.log(`statement`, statement, child_statement)
+        if (!!parsed_statement.length) {
+          t.addComment(parsed_statement[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(parsed_statement[parsed_statement.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...parsed_statement)
+        }
       } else {
         // process child statements
         const child_statement = js_process(
           {
             ...js_context,
             topLevel: false,
-            parentRef: null,
             parentPath: null,
             JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: true,
           },
+          null,
           statement
         )
         // console.log(`statement`, statement, child_statement)
-        // add to block statements
-        if (t.isBlockStatement(child_statement)) {
-          child_statement.body.map(sub_statement => {
-            block_statements.push(sub_statement)
-          })
+        if (t.isBlockStatement(child_statement) && !!child_statement.body.length) {
+          t.addComment(child_statement.body[0], 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement.body[child_statement.body.length - 1], 'trailing', ` ${ref || 'body'}[${index}] `, true)
+          block_statements.push(...child_statement.body)
         } else {
+          t.addComment(child_statement, 'leading', ` ${ref || 'body'}[${index}] `, true)
+          t.addComment(child_statement, 'trailing', ` ${ref || 'body'}[${index}] `, true)
           block_statements.push(child_statement)
         }
       }
     })
   }
 
-  return t.expressionStatement(
-    t.callExpression(
-      t.identifier('react.useEffect'),
-      [
-        t.arrowFunctionExpression(
-          [],
-          t.blockStatement(
-            block_statements,
-          )
-        ),
-        statesExpression,
-      ]
-    )
+  // call expression
+  const callExpression = t.callExpression(
+    t.identifier('react.useEffect'),
+    [
+      t.arrowFunctionExpression(
+        [],
+        t.blockStatement(
+          block_statements
+        )
+      ),
+      statesExpression,
+    ]
   )
+
+  // return with context
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
+      callExpression
+    )
+  } else {
+    return callExpression
+  }
 }
 
 // create mui style ast
-function mui_style(js_context, input) {
+function mui_style(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'mui/style') {
     throw new Error(`ERROR: input._type is not [mui/style] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1763,7 +2013,7 @@ function mui_style(js_context, input) {
   delete styles._type
 
   // return function call
-  return t.callExpression(
+  const callExpression = t.callExpression(
     t.callExpression(
       t.identifier('@material-ui/core.makeStyles'),
       [
@@ -1775,10 +2025,11 @@ function mui_style(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: null,
               parentPath: null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: false,
             },
+            null,
             styles
           )
         )
@@ -1786,10 +2037,25 @@ function mui_style(js_context, input) {
     ),
     []
   )
+
+  // check statement context
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          callExpression,
+        )
+      ]
+    )
+  } else {
+    return callExpression
+  }
 }
 
 // create appx api ast
-function appx_api(js_context, input) {
+function appx_api(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'appx/api') {
     throw new Error(`ERROR: input._type is not [appx/api] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1839,10 +2105,11 @@ function appx_api(js_context, input) {
         {
           ...js_context,
           topLevel: false,
-          parentRef: null,
           parentPath: null,
           JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
         },
+        null,
         input.prep
       )
     }
@@ -1862,10 +2129,11 @@ function appx_api(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: null,
               parentPath: null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: true,
             },
+            null,
             input.prep
           )
         ]
@@ -1889,10 +2157,11 @@ function appx_api(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: null,
               parentPath: null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: true,
             },
+            null,
             input.result
           )
         ]
@@ -1917,10 +2186,11 @@ function appx_api(js_context, input) {
             {
               ...js_context,
               topLevel: false,
-              parentRef: null,
               parentPath: null,
               JSX_CONTEXT: false,
+              STATEMENT_CONTEXT: true,
             },
+            null,
             input.result
           )
         ]
@@ -1933,56 +2203,62 @@ function appx_api(js_context, input) {
   // register react.useContext
   reg_js_import(js_context, 'app-x/api')
 
-  // call api
-  return t.expressionStatement(
-    t.callExpression(
-      t.arrowFunctionExpression(
-        [],
-        t.blockStatement(
-          [
-            ...prep_statements,
-            t.expressionStatement(
-              t.callExpression(
-                t.memberExpression(
-                  t.identifier('app-x/api'),
-                  t.identifier(method),
-                ),
+  const arrowFunction = t.arrowFunctionExpression(
+    [],
+    t.blockStatement(
+      [
+        ...prep_statements,
+        t.expressionStatement(
+          t.callExpression(
+            t.memberExpression(
+              t.identifier('app-x/api'),
+              t.identifier(method),
+            ),
+            [
+              t.stringLiteral(input.namespace),
+              t.stringLiteral(input.app_name),
+              t.stringLiteral(input.endpoint),
+              (method === 'post' || method === 'put' || method === 'patch')
+              ? data
+              : undefined,
+              t.arrowFunctionExpression(
                 [
-                  t.stringLiteral(input.namespace),
-                  t.stringLiteral(input.app_name),
-                  t.stringLiteral(input.endpoint),
-                  (method === 'post' || method === 'put' || method === 'patch')
-                  ? data
-                  : undefined,
-                  t.arrowFunctionExpression(
-                    [
-                      t.identifier('result')
-                    ],
-                    t.blockStatement(
-                      result_statements
-                    )
-                  ),
-                  t.arrowFunctionExpression(
-                    [
-                      t.identifier('error')
-                    ],
-                    t.blockStatement(
-                      error_statements
-                    )
-                  ),
-                ].filter(item => typeof item !== 'undefined')
-              )
-            )
-          ]
+                  t.identifier('result')
+                ],
+                t.blockStatement(
+                  result_statements
+                )
+              ),
+              t.arrowFunctionExpression(
+                [
+                  t.identifier('error')
+                ],
+                t.blockStatement(
+                  error_statements
+                )
+              ),
+            ].filter(item => typeof item !== 'undefined')
+          )
         )
-      ),
-      []
+      ]
     )
   )
+
+  // call api
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.expressionStatement(
+      t.callExpression(
+        arrowFunction,
+        []
+      )
+    )
+  } else {
+    return arrowFunction
+  }
 }
 
 // create appx route ast
-function appx_route(js_context, input) {
+function appx_route(js_context, ref, input) {
 
   if (!('_type' in input) || input._type !== 'appx/route') {
     throw new Error(`ERROR: input._type is not [appx/route] [${input._type}] [${JSON.stringify(input)}]`)
@@ -2022,8 +2298,7 @@ function appx_route(js_context, input) {
               ]
   )
 
-  // console.log(route_results)
-  return t.objectExpression(
+  const objectExpression = t.objectExpression(
     route_results.map(route => {
       return t.objectProperty(
         t.stringLiteral(route.ui_route_name),
@@ -2037,7 +2312,6 @@ function appx_route(js_context, input) {
                     {
                       ...js_context,
                       topLevel: true,
-                      parentRef: null,
                       parentPath: null,
                     },
                     route.ui_route_spec,
@@ -2051,84 +2325,99 @@ function appx_route(js_context, input) {
       )
     })
   )
+
+  // console.log(route_results)
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          objectExpression
+        )
+      ]
+    )
+  } else {
+    return objectExpression
+  }
 }
 
 // process input
-function js_process(js_context, input) {
+function js_process(js_context, ref, input) {
 
   if (isPrimitive(input)) {
-    return js_primitive(js_context, input)
+    return js_primitive(js_context, ref, input)
   }
 
   if (Array.isArray(input)) {
-    return js_array(js_context, input)
+    return js_array(js_context, ref, input)
   }
 
   if (! ('_type' in input)) {
     // no '_type' is treated as json object
-    return js_object(js_context, input)
+    return js_object(js_context, ref, input)
   }
 
   // '_type' is presented in the json object
   if (input._type === 'js/string') {
 
-    return js_string(js_context, input)
+    return js_string(js_context, ref, input)
 
   } else if (input._type === 'js/number') {
 
-    return js_number(js_context, input)
+    return js_number(js_context, ref, input)
 
   } else if (input._type === 'js/boolean') {
 
-    return js_boolean(js_context, input)
+    return js_boolean(js_context, ref, input)
 
   } else if (input._type === 'js/null') {
 
-    return js_null(js_context, input)
+    return js_null(js_context, ref, nput)
 
   } else if (input._type === 'js/import') {
 
-    return js_import(js_context, input)
+    return js_import(js_context, ref, input)
 
   } else if (input._type === 'js/export') {
 
-    return js_export(js_context, input)
+    return js_export(js_context, ref, input)
 
   } else if (input._type === 'js/variable') {
 
-    return js_variable(js_context, input)
+    return js_variable(js_context, ref, input)
 
   } else if (input._type === 'js/expression') {
 
-    return js_expression(js_context, input)
+    return js_expression(js_context, ref, input)
 
   } else if (input._type === 'js/statement') {
 
-    return js_statement(js_context, input)
+    return js_statement(js_context, ref, input)
 
   } else if (input._type === 'js/function') {
 
-    return js_function(js_context, input)
+    return js_function(js_context, ref, input)
 
   } else if (input._type === 'js/call') {
 
-    return js_call(js_context, input)
+    return js_call(js_context, ref, input)
 
   } else if (input._type === 'js/switch') {
 
-    return js_switch(js_context, input)
+    return js_switch(js_context, ref, input)
 
   } else if (input._type === 'js/map') {
 
-    return js_map(js_context, input)
+    return js_map(js_context, ref, input)
 
   } else if (input._type === 'js/reduce') {
 
-    return js_reduce(js_context, input)
+    return js_reduce(js_context, ref, input)
 
   } else if (input._type === 'js/filter') {
 
-    return js_filter(js_context, input)
+    return js_filter(js_context, ref, input)
 
   } else if (input._type === 'js/transform') {
 
@@ -2142,59 +2431,59 @@ function js_process(js_context, input) {
 
   } else if (input._type === 'react/element') {
 
-    return react_element(js_context, input)
+    return react_element(js_context, ref, input)
 
   } else if (input._type === 'react/html') {
 
-    return react_html(js_context, input)
+    return react_html(js_context, ref, input)
 
   } else if (input._type === 'react/state') {
 
-    return react_state(js_context, input)
+    return react_state(js_context, ref, input)
 
   } else if (input._type === 'react/context') {
 
-    return react_context(js_context, input)
+    return react_context(js_context, ref, input)
 
   } else if (input._type === 'react/effect') {
 
-    return react_effect(js_context, input)
+    return react_effect(js_context, ref, input)
 
   } else if (input._type === 'react/form') {
 
-    return react_form(js_context, input)
+    return react_form(js_context, ref, input)
 
   } else if (input._type === 'mui/style') {
 
-    return mui_style(js_context, input)
+    return mui_style(js_context, ref, input)
 
   } else if (input._type === 'input/text') {
 
-    return input_text(js_context, input)
+    return input_text(js_context, ref, input)
 
   } else if (input._type === 'input/select') {
 
-    return input_select(js_context, input)
+    return input_select(js_context, ref, input)
 
   } else if (input._type === 'input/switch') {
 
-    return input_switch(js_context, input)
+    return input_switch(js_context, ref, input)
 
   } else if (input._type === 'input/select') {
 
-    return input_select(js_context, input)
+    return input_select(js_context, ref, input)
 
   } else if (input._type === 'input/rule') {
 
-    return input_rule(js_context, input)
+    return input_rule(js_context, ref, input)
 
   } else if (input._type === 'appx/api') {
 
-    return appx_api(js_context, input)
+    return appx_api(js_context, ref, input)
 
   } else if (input._type === 'appx/route') {
 
-    return appx_route(js_context, input)
+    return appx_route(js_context, ref, input)
 
   } else {
 
@@ -2205,109 +2494,56 @@ function js_process(js_context, input) {
 // return an react component function
 function react_component(js_context, input) {
 
+  js_context.STATEMENT_CONTEXT = true
+
   const block_statements = []
 
   // check if there are any block statements
   Object.keys(input).map(key => {
     // ignore type / name / props / children
-    if (key === '_type' || key === 'element' || key === 'propTypes' || key === '_test') {
+    if (key === 'element' || key.startsWith('_')) {
       return
     }
 
-    if (isPrimitive(input[key])) {
-      // process input[key] and assign to declared variable
-      const variableDeclaration = t.variableDeclaration(
-        'const',
-        [
-          t.variableDeclarator(
-            t.identifier(key),
-            js_process(
-              {
-                ...js_context,
-                parentRef: key,
-                parentPath: t.identifier(key),
-              },
-              input[key]
-            )
-          )
-        ]
-      )
-      // no comments for primitive types
-      block_statements.push(
-        variableDeclaration
-      )
+    if (key.startsWith('...') && input[key]._type !== 'react/state') {
+      // unrecognized component definition starting with '...'
+      throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
+    }
 
-    } else if (input[key]._type === 'js/statement') {
-      // if input[key] is 'js/statement'
-      // adds each of the block statement
-      block_statements.push(...(js_process(
-        js_context,
-        input[key]).body
-      ))
+    // console.log(`input[${key}]`, input[key])
+    const statement = js_process(
+      {
+        ...js_context,
+        parentPath: null,
+        JSX_CONTEXT: false,
+        STATEMENT_CONTEXT: true
+      },
+      key,
+      input[key]
+    )
 
-    } else if (key.startsWith('...')) {
-      // if input[key] starts with '...'
-      if (input[key]._type === 'react/state') {
-        const variableDeclaration = t.variableDeclaration(
-          'const',
-          [
-            t.variableDeclarator(
-              t.arrayPattern(
-                [
-                  t.identifier(input[key].name),
-                  t.identifier(input[key].setter),
-                ]
-              ),
-              js_process(
-                {
-                  ...js_context,
-                  parentRef: key,
-                  parentPath: t.identifier(key),
-                },
-                input[key]
-              )
-            )
-          ]
-        )
-        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
-        t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
-        block_statements.push(
-          variableDeclaration
-        )
-
-      } else {
-        // unrecognized component definition starting with '...'
-        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
-      }
-
+    if (t.isBlockStatement(statement)) {
+      t.addComment(statement.body[0], 'leading', ` ${key} `, false)
+      t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
+      block_statements.push(...(statement.body))
     } else {
-      // process input[key] and assign to declared variable
-      const variableDeclaration = t.variableDeclaration(
-          'const',
-          [
-            t.variableDeclarator(
-              t.identifier(key),
-              js_process(
-                {
-                  ...js_context,
-                  parentRef: key,
-                  parentPath: t.identifier(key),
-                },
-                input[key]
-              )
-            )
-          ]
-        )
-      //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
-      t.addComment(variableDeclaration, 'trailing', ' ' + key, true)
-      block_statements.push(
-        variableDeclaration
-      )
+      t.addComment(statement, 'leading', ` ${key} `, false)
+      t.addComment(statement, 'trailing', ` ${key} `, false)
+      block_statements.push(statement)
     }
   })
 
   // process elements, this will register such as 'forms'
-  const result_element = react_element(js_context, input.element)
+  const result_element = react_element(
+    {
+      ...js_context,
+      parentPath: null,
+      JSX_CONTEXT: false,
+      STATEMENT_CONTEXT: false
+    },
+    null,
+    input.element
+  )
 
   // console.log(`react_component - js_context.forms`, JSON.stringify(js_context.forms, null, 4))
 
@@ -2338,8 +2574,8 @@ function react_component(js_context, input) {
             )
           ]
         )
-        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
-        t.addComment(formDeclaration, 'trailing', ` useFormContext()`, true)
+        t.addComment(formDeclaration, 'leading', ` useFormContext() `, false)
+        t.addComment(formDeclaration, 'trailing', ` useFormContext() `, false)
         // add formDeclaration
         block_statements.unshift(formDeclaration)
       } else {
@@ -2367,8 +2603,8 @@ function react_component(js_context, input) {
             )
           ]
         )
-        //t.addComment(variableDeclaration, 'leading', ' ' + key, true)
-        t.addComment(formDeclaration, 'trailing', ` useForm[${name}]`, true)
+        t.addComment(formDeclaration, 'leading', ` useForm[${name}] `, false)
+        t.addComment(formDeclaration, 'trailing', ` useForm[${name}] `, false)
         // add formDeclaration
         block_statements.unshift(formDeclaration)
       }

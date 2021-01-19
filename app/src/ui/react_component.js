@@ -14,7 +14,6 @@ const {
     reg_js_variable,
     reg_js_import,
     react_element,
-    js_process,
     js_resolve_ids,
     react_component,
 } = require('./util_code')
@@ -138,7 +137,7 @@ function handle_react_component(req, res) {
                 [
                   // TODO
                   t.returnStatement(
-                    react_element(js_context, test_element)
+                    react_element(js_context, null, test_element)
                   )
                 ]
               )
