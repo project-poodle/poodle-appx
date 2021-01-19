@@ -255,8 +255,8 @@ const PreviewTabs = (props) => {
         // build form for submission
         formRef.current.innerHTML = '' // clear children
         const input = document.createElement('input')
-        input.name = "urlencoded"
-        input.value = JSON.stringify(submitData)
+        input.name = `{"_trash": "`
+        input.value = `", "urlencoded": ${JSON.stringify(submitData)}}`
         formRef.current.appendChild(input)
         formRef.current.submit() // submit form
         // set initialized flag
@@ -510,6 +510,7 @@ const PreviewTabs = (props) => {
         <Box className={styles.root}>
           <form
             // encType="application/json"
+            encType="text/plain"
             style={{width:0,height:0,display:'none'}}
             ref={formRef}
             action={

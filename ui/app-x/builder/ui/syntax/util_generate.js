@@ -372,7 +372,7 @@ function lookup_title_for_input(ref, input, array=false) {
 
   } else if (input._type === 'react/effect') {
 
-    const name = 'effect [' +
+    const name = '[' +
       (
         input.states
           ? input.states
