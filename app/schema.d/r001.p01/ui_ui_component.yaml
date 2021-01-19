@@ -169,10 +169,7 @@ ui_component:
                   _type: react/state
                   name: data
                   setter: setData
-                  init:
-                      ui_builder_type: ui_component
-                      ui_component_name: /nav/uiNav
-                      ui_route_name: ''
+                  init: "{ui_builder_type: 'ui_component', ui_component_name: '/nav/uiNav', ui_route_name: '' }"
           handlers:
               handleComponentSelected:
                   _type: js/function
