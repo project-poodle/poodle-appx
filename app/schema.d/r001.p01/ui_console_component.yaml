@@ -60,171 +60,185 @@ ui_component:
       ui_component_name: /page/landing/Home
       ui_component_type: react/component
       ui_component_spec:
-          styles:
-              _type: mui/style
-              grid:
-                  position: fixed
-                  bottom: "10%"
-                  zIndex: 0
-          effect:
-              _type: react/effect
-              body:
-                - |+
-                  // console.log(props)
-          element:
-              _type: react/element
-              name: app-x/page/landing/YouTube_fs
+        styles:
+            _type: mui/style
+            grid:
+                position: fixed
+                bottom: "10%"
+                zIndex: 0
+        effect:
+            _type: react/effect
+            body:
+              - |+
+                // console.log(props)
+        element:
+            _type: react/element
+            name: app-x/page/landing/YouTube_fs
+            props:
+                youtube_playlist:
+                    - vid: 'vzR0dsZeQsY' # natural
+                      start: 6
+                      end: -1
+                    - vid: 'HHBsvKnCkwI' # city
+                      start: 0
+                      end: -1
+                    - vid: 'RQ18TpXxbzU' # flower
+                      start: 6
+                      end: -1
+                    - vid: 'k5obtOZe4ZQ' # people
+                      start: 0
+                      end: 8
+                    - vid: 'k5obtOZe4ZQ' # people
+                      start: 47
+                      end: 338
+                    - vid: 'k5obtOZe4ZQ' # people
+                      start: 375
+                      end: 512
+                    - vid: 'k5obtOZe4ZQ' # people
+                      start: 554
+                      end: 596
+                    - vid: '_f43Gl_6hkc' # ocean waves
+                      start: 0
+                      end: -1
+                    - vid: '-hcXR9aMTxI' # trees
+                      start: 0
+                      end: 135
+                    - vid: 'wnhvanMdx4s' # space
+                      start: 0
+                      end: 103
+                    - vid: 'wnhvanMdx4s' # space
+                      start: 263
+                      end: 336
+                    - vid: 'xRFrjAVH1uQ' # scene
+                      start: 18
+                      end: 400
+                    - vid: 'zRpazyH1WzI' # compilation
+                      start: 0
+                      end: 63
+                    - vid: 'zRpazyH1WzI' # compilation
+                      start: 99
+                      end: 546
+                    - vid: 'zRpazyH1WzI' # compilation
+                      start: 1990
+                      end: 2050
+                    - vid: 'vOxmsqd8f58' # water drop
+                      start: 0
+            children:
+                - _type: react/element
+                  name: "@material-ui/core.Container"
+                  props:
+                      className:
+                          _type: js/expression
+                          data: "styles.grid"
+                  children:
+                      - _type: react/element
+                        name: "@material-ui/core.Grid"
+                        props:
+                            container: true
+                            spacing: 2
+                        children:
+                            - _type: react/element
+                              name: "@material-ui/core.CssBaseline"
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: false
+                                  sm: 1
+                                  md: 1
+                                  lg: 2
+                                  xl: 3
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: 12
+                                  sm: 5
+                                  md: 4
+                                  lg: 3
+                                  xl: 2
+                              children:
+                                  - _type: react/element
+                                    name: "@material-ui/core.Button"
+                                    props:
+                                        variant: contained
+                                        color: primary
+                                        fullWidth: true
+                                        startIcon:
+                                            _type: react/element
+                                            name: "@material-ui/icons.MenuBook"
+                                        onClick:
+                                            _type: js/function
+                                            body:
+                                              - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/docs')"
+                                        size: large
+                                    children:
+                                        - "Getting Started"
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: false
+                                  md: 1
+                                  lg: 1
+                                  xl: 1
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: false
+                                  md: 1
+                                  lg: 1
+                                  xl: 1
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: 12
+                                  sm: 5
+                                  md: 4
+                                  lg: 3
+                                  xl: 2
+                              children:
+                                  - _type: react/element
+                                    name: "@material-ui/core.Button"
+                                    props:
+                                        variant: contained
+                                        color: primary
+                                        fullWidth: true
+                                        startIcon:
+                                            _type: react/element
+                                            name: "@material-ui/icons.Slideshow"
+                                        onClick:
+                                            _type: js/function
+                                            body:
+                                              - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')"
+                                        size: large
+                                    children:
+                                        - "Live Demo"
+                            - _type: react/element
+                              name: "@material-ui/core.Grid"
+                              props:
+                                  item: true
+                                  xs: false
+                                  sm: 1
+                                  md: 1
+                                  lg: 2
+                                  xl: 3
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  youtube_playlist:
-                      - vid: 'vzR0dsZeQsY' # natural
-                        start: 6
-                        end: -1
-                      - vid: 'HHBsvKnCkwI' # city
-                        start: 0
-                        end: -1
-                      - vid: 'RQ18TpXxbzU' # flower
-                        start: 6
-                        end: -1
-                      - vid: 'k5obtOZe4ZQ' # people
-                        start: 0
-                        end: 8
-                      - vid: 'k5obtOZe4ZQ' # people
-                        start: 47
-                        end: 338
-                      - vid: 'k5obtOZe4ZQ' # people
-                        start: 375
-                        end: 512
-                      - vid: 'k5obtOZe4ZQ' # people
-                        start: 554
-                        end: 596
-                      - vid: '_f43Gl_6hkc' # ocean waves
-                        start: 0
-                        end: -1
-                      - vid: '-hcXR9aMTxI' # trees
-                        start: 0
-                        end: 135
-                      - vid: 'wnhvanMdx4s' # space
-                        start: 0
-                        end: 103
-                      - vid: 'wnhvanMdx4s' # space
-                        start: 263
-                        end: 336
-                      - vid: 'xRFrjAVH1uQ' # scene
-                        start: 18
-                        end: 400
-                      - vid: 'zRpazyH1WzI' # compilation
-                        start: 0
-                        end: 63
-                      - vid: 'zRpazyH1WzI' # compilation
-                        start: 99
-                        end: 546
-                      - vid: 'zRpazyH1WzI' # compilation
-                        start: 1990
-                        end: 2050
-                      - vid: 'vOxmsqd8f58' # water drop
-                        start: 0
-              children:
-                  - _type: react/element
-                    name: "@material-ui/core.Container"
-                    props:
-                        className:
-                            _type: js/expression
-                            data: "styles.grid"
-                    children:
-                        - _type: react/element
-                          name: "@material-ui/core.Grid"
-                          props:
-                              container: true
-                              spacing: 2
-                          children:
-                              - _type: react/element
-                                name: "@material-ui/core.CssBaseline"
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: false
-                                    sm: 1
-                                    md: 1
-                                    lg: 2
-                                    xl: 3
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: 12
-                                    sm: 5
-                                    md: 4
-                                    lg: 3
-                                    xl: 2
-                                children:
-                                    - _type: react/element
-                                      name: "@material-ui/core.Button"
-                                      props:
-                                          variant: contained
-                                          color: primary
-                                          fullWidth: true
-                                          startIcon:
-                                              _type: react/element
-                                              name: "@material-ui/icons.MenuBook"
-                                          onClick:
-                                              _type: js/function
-                                              body:
-                                                - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/docs')"
-                                          size: large
-                                      children:
-                                          - "Getting Started"
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: false
-                                    md: 1
-                                    lg: 1
-                                    xl: 1
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: false
-                                    md: 1
-                                    lg: 1
-                                    xl: 1
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: 12
-                                    sm: 5
-                                    md: 4
-                                    lg: 3
-                                    xl: 2
-                                children:
-                                    - _type: react/element
-                                      name: "@material-ui/core.Button"
-                                      props:
-                                          variant: contained
-                                          color: primary
-                                          fullWidth: true
-                                          startIcon:
-                                              _type: react/element
-                                              name: "@material-ui/icons.Slideshow"
-                                          onClick:
-                                              _type: js/function
-                                              body:
-                                                - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')"
-                                          size: large
-                                      children:
-                                          - "Live Demo"
-                              - _type: react/element
-                                name: "@material-ui/core.Grid"
-                                props:
-                                    item: true
-                                    xs: false
-                                    sm: 1
-                                    md: 1
-                                    lg: 2
-                                    xl: 3
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -233,28 +247,42 @@ ui_component:
       ui_component_name: /page/landing/Unsplash_bg
       ui_component_type: react/component
       ui_component_spec:
-          styles:
-              _type: mui/style
-              root:
-                  height: "100%"
-          element:
-              _type: react/element
-              name: app-x/page/landing/Unsplash_bg
+        styles:
+            _type: mui/style
+            root:
+                height: "100%"
+        element:
+            _type: react/element
+            name: app-x/page/landing/Unsplash_bg
+            props:
+                unsplashCollections:
+                    - 542909          # snow ice and winter
+                    - 1922729         # beautiful shots from above
+                    - 852718          # vibrant blackouts (oled)
+                    - 562095          # wilderness artifacts
+                    - 1023843         # tiny people in a big world
+                    - 543765          # metro
+                    - 148982          # mountain majesty
+                    - 349521          # road-to nowhere
+                    - 427860          # view angle
+                    - 353649          # sea me now
+            children:
+                - _type: js/expression
+                  data: props.children
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  unsplashCollections:
-                      - 542909          # snow ice and winter
-                      - 1922729         # beautiful shots from above
-                      - 852718          # vibrant blackouts (oled)
-                      - 562095          # wilderness artifacts
-                      - 1023843         # tiny people in a big world
-                      - 543765          # metro
-                      - 148982          # mountain majesty
-                      - 349521          # road-to nowhere
-                      - 427860          # view angle
-                      - 353649          # sea me now
-              children:
-                  - _type: js/expression
-                    data: props.children
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -263,18 +291,32 @@ ui_component:
       ui_component_name: /page/auth/Login
       ui_component_type: react/component
       ui_component_spec:
-          styles:
-              _type: mui/style
-              root:
-                  height: "100%"
-          element:
-              _type: react/element
-              name: self/page/landing/Unsplash_bg
-              children:
-                  - _type: react/element
-                    name: self/page/auth/SignInForm
-                    props:
-                        consoleUrl: /console
+        styles:
+            _type: mui/style
+            root:
+                height: "100%"
+        element:
+            _type: react/element
+            name: self/page/landing/Unsplash_bg
+            children:
+                - _type: react/element
+                  name: self/page/auth/SignInForm
+                  props:
+                      consoleUrl: /console
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
+              props:
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
 
     ############################################################
@@ -284,153 +326,153 @@ ui_component:
       ui_component_name: /page/auth/SignInForm
       ui_component_type: react/component
       ui_component_spec:
-          propTypes:
-              consoleUrl: PropTypes.string.isRequired
-          styles:
-              _type: mui/style
-              paper:
-                  position: fixed
-                  top: 0
-                  right: 0
-                  width: 432
-                  margin:
-                      _type: js/expression
-                      data: theme.spacing(12, 3)
-                  padding:
-                      _type: js/expression
-                      data: theme.spacing(6, 3)
-                  display: flex
-                  flexDirection: column
-                  alignItems: center
-                  backgroundColor:
-                      _type: js/expression
-                      data: theme.palette.background.paper
-                  color:
-                      _type: js/expression
-                      data: theme.palette.text.main
-              facebook:
-                  backgroundColor: '#4267B2'
-              google:
-                  backgroundColor: '#DB4437'
-              avatar:
+        propTypes:
+            consoleUrl: PropTypes.string.isRequired
+        styles:
+            _type: mui/style
+            paper:
+                position: fixed
+                top: 0
+                right: 0
+                width: 432
                 margin:
                     _type: js/expression
-                    data: theme.spacing(1)
+                    data: theme.spacing(12, 3)
+                padding:
+                    _type: js/expression
+                    data: theme.spacing(6, 3)
+                display: flex
+                flexDirection: column
+                alignItems: center
                 backgroundColor:
                     _type: js/expression
-                    data: theme.palette.secondary.main
-              line:
-                margin:
-                    _type: js/expression
-                    data: theme.spacing(1)
-              error:
-                margin:
-                    _type: js/expression
-                    data: theme.spacing(1)
+                    data: theme.palette.background.paper
                 color:
                     _type: js/expression
-                    data: theme.palette.text.error
-              button:
-                margin:
+                    data: theme.palette.text.main
+            facebook:
+                backgroundColor: '#4267B2'
+            google:
+                backgroundColor: '#DB4437'
+            avatar:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+              backgroundColor:
+                  _type: js/expression
+                  data: theme.palette.secondary.main
+            line:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+            error:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+              color:
+                  _type: js/expression
+                  data: theme.palette.text.error
+            button:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+            form:
+              width: '100%'  # Fix IE 11 issue.
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+            grid:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(2, 0, 2)
+            submit:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(2, 0, 2)
+        states:
+            username:
+                _type: react/state
+                name: value
+                setter: setValue
+                init: ''
+            password:
+                _type: react/state
+                name: value
+                setter: setValue
+                init: ''
+            error:
+                _type: react/state
+                name: value
+                setter: setValue
+                init: ''
+        handlers:
+            handleSubmit:
+                _type: js/function
+                params:
+                    - event
+                body:
+                  - |
+                    event.preventDefault()
+                    $I('app-x/api.login')(
+                        'main',
+                        states.username.value,
+                        states.password.value,
+                        res => {
+                            // console.log(res)
+                            Object.keys(globalThis.appx.API_MAPS).map(namespace => {
+                                Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
+                                    if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
+                                        // console.log(namespace, app_name)
+                                        $I('app-x/api.me')(
+                                            namespace,
+                                            app_name
+                                        )
+                                    }
+                                })
+                            })
+                            $I('app-x/router.hnavigate')('sys', 'console', 'base', props.consoleUrl)
+                        },
+                        err => {
+                            // TODO
+                            // console.log(err)
+                            states.error.setValue(err.message)
+                        }
+                    )
+        element:
+            _type: react/element
+            name: '@material-ui/core.Container'
+            props:
+                className:
                     _type: js/expression
-                    data: theme.spacing(1)
-              form:
-                width: '100%'  # Fix IE 11 issue.
-                margin:
-                    _type: js/expression
-                    data: theme.spacing(1)
-              grid:
-                margin:
-                    _type: js/expression
-                    data: theme.spacing(2, 0, 2)
-              submit:
-                margin:
-                    _type: js/expression
-                    data: theme.spacing(2, 0, 2)
-          states:
-              username:
-                  _type: react/state
-                  name: value
-                  setter: setValue
-                  init: ''
-              password:
-                  _type: react/state
-                  name: value
-                  setter: setValue
-                  init: ''
-              error:
-                  _type: react/state
-                  name: value
-                  setter: setValue
-                  init: ''
-          handlers:
-              handleSubmit:
-                  _type: js/function
-                  params:
-                      - event
-                  body:
-                    - |
-                      event.preventDefault()
-                      $I('app-x/api.login')(
-                          'main',
-                          states.username.value,
-                          states.password.value,
-                          res => {
-                              // console.log(res)
-                              Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-                                  Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
-                                      if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
-                                          // console.log(namespace, app_name)
-                                          $I('app-x/api.me')(
-                                              namespace,
-                                              app_name
-                                          )
-                                      }
-                                  })
-                              })
-                              $I('app-x/router.hnavigate')('sys', 'console', 'base', props.consoleUrl)
-                          },
-                          err => {
-                              // TODO
-                              // console.log(err)
-                              states.error.setValue(err.message)
-                          }
-                      )
-          element:
-              _type: react/element
-              name: '@material-ui/core.Container'
-              props:
-                  className:
-                      _type: js/expression
-                      data: styles.paper
-              children:
-                  - _type: react/element
-                    name: '@material-ui/core.Avatar'
-                    props:
-                        className:
-                            _type: js/expression
-                            data: styles.avatar
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/icons.ViewQuiltRounded'
-                  - _type: react/element
-                    name: '@material-ui/core.Typography'
-                    props:
-                        component: h1
-                        variant: h6
-                        className:
-                            _type: js/expression
-                            data: styles.line
-                    children:
-                        - Sign in to App-X
-                  - _type: react/element
-                    name: '@material-ui/core.Grid'
-                    props:
-                        container: true
-                        spacing: 2
-                        className:
-                            _type: js/expression
-                            data: styles.grid
+                    data: styles.paper
+            children:
+                - _type: react/element
+                  name: '@material-ui/core.Avatar'
+                  props:
+                      className:
+                          _type: js/expression
+                          data: styles.avatar
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/icons.ViewQuiltRounded'
+                - _type: react/element
+                  name: '@material-ui/core.Typography'
+                  props:
+                      component: h1
+                      variant: h6
+                      className:
+                          _type: js/expression
+                          data: styles.line
+                  children:
+                      - Sign in to App-X
+                - _type: react/element
+                  name: '@material-ui/core.Grid'
+                  props:
+                      container: true
+                      spacing: 2
+                      className:
+                          _type: js/expression
+                          data: styles.grid
 #                     children:
 #                         - _type: react/element
 #                           name: '@material-ui/core.Grid'
@@ -480,114 +522,127 @@ ui_component:
 #                                     variant: contained
 #                                 children:
 #                                     - Login with Google
-                  - _type: react/html
-                    name: 'form'
-                    props:
-                        className:
-                            _type: js/expression
-                            data: styles.form
-                        onSubmit:
-                            _type: js/expression
-                            data: handlers.handleSubmit
-                        noValidate: true
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.TextField'
-                          props:
-                              variant: outlined
-                              margin: normal
-                              required: true
-                              fullWidth: true
-                              id: username
-                              label: Login
-                              autoComplete: username
-                              autoFocus: true
-                              value:
-                                  _type: js/expression
-                                  data: states.username.value
-                              onChange:
-                                  _type: js/function
-                                  params:
-                                      - e
-                                  body:
-                                    - |
-                                      states.username.setValue(e.target.value)
-                                      states.error.setValue('')
-                        - _type: react/element
-                          name: '@material-ui/core.TextField'
-                          props:
-                              variant: outlined
-                              margin: normal
-                              required: true
-                              fullWidth: true
-                              id: password
-                              label: Password
-                              type: password
-                              autoComplete: current-password
-                              value:
-                                  _type: js/expression
-                                  data: states.password.value
-                              onChange:
-                                  _type: js/function
-                                  params:
-                                      - e
-                                  body:
-                                    - |
-                                      states.password.setValue(e.target.value)
-                                      states.error.setValue('')
-                        - _type: js/switch
-                          default: null
-                          children:
-                              - condition: states.error.value
-                                result:
-                                    _type: react/element
-                                    name: '@material-ui/core.Grid'
-                                    props:
-                                        item: true
-                                        xs: 12
-                                    children:
-                                        - _type: react/element
-                                          name: '@material-ui/core.Typography'
-                                          props:
-                                              component: h1
-                                              variant: subtitle1
-                                              className:
-                                                  _type: js/expression
-                                                  data: styles.error
-                                          children:
-                                              - _type: js/expression
-                                                data: states.error.value
-                        - _type: react/element
-                          name: '@material-ui/core.Button'
-                          props:
-                              _type: submit
-                              onClick:
-                                  _type: js/expression
-                                  data: handlers.handleSubmit
-                              fullWidth: true
-                              variant: contained
-                              color: primary
-                              size: large
-                              className:
-                                  _type: js/expression
-                                  data: styles.submit
-                          children:
-                              - Sign In
-                        - _type: react/element
-                          name: '@material-ui/core.Box'
-                          props:
-                              mt: 5
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.Typography'
-                                props:
-                                    variant: body2
-                                    color: textSecondary
-                                    align: center
-                                children:
-                                    - 'Copyright © app-x.org '
-                                    - _type: js/expression
-                                      data: new Date().getFullYear()
+                - _type: react/html
+                  name: 'form'
+                  props:
+                      className:
+                          _type: js/expression
+                          data: styles.form
+                      onSubmit:
+                          _type: js/expression
+                          data: handlers.handleSubmit
+                      noValidate: true
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/core.TextField'
+                        props:
+                            variant: outlined
+                            margin: normal
+                            required: true
+                            fullWidth: true
+                            id: username
+                            label: Login
+                            autoComplete: username
+                            autoFocus: true
+                            value:
+                                _type: js/expression
+                                data: states.username.value
+                            onChange:
+                                _type: js/function
+                                params:
+                                    - e
+                                body:
+                                  - |
+                                    states.username.setValue(e.target.value)
+                                    states.error.setValue('')
+                      - _type: react/element
+                        name: '@material-ui/core.TextField'
+                        props:
+                            variant: outlined
+                            margin: normal
+                            required: true
+                            fullWidth: true
+                            id: password
+                            label: Password
+                            type: password
+                            autoComplete: current-password
+                            value:
+                                _type: js/expression
+                                data: states.password.value
+                            onChange:
+                                _type: js/function
+                                params:
+                                    - e
+                                body:
+                                  - |
+                                    states.password.setValue(e.target.value)
+                                    states.error.setValue('')
+                      - _type: js/switch
+                        children:
+                            - condition: states.error.value
+                              result:
+                                  _type: react/element
+                                  name: '@material-ui/core.Grid'
+                                  props:
+                                      item: true
+                                      xs: 12
+                                  children:
+                                      - _type: react/element
+                                        name: '@material-ui/core.Typography'
+                                        props:
+                                            component: h1
+                                            variant: subtitle1
+                                            className:
+                                                _type: js/expression
+                                                data: styles.error
+                                        children:
+                                            - _type: js/expression
+                                              data: states.error.value
+                      - _type: react/element
+                        name: '@material-ui/core.Button'
+                        props:
+                            _type: submit
+                            onClick:
+                                _type: js/expression
+                                data: handlers.handleSubmit
+                            fullWidth: true
+                            variant: contained
+                            color: primary
+                            size: large
+                            className:
+                                _type: js/expression
+                                data: styles.submit
+                        children:
+                            - Sign In
+                      - _type: react/element
+                        name: '@material-ui/core.Box'
+                        props:
+                            mt: 5
+                        children:
+                            - _type: react/element
+                              name: '@material-ui/core.Typography'
+                              props:
+                                  variant: body2
+                                  color: textSecondary
+                                  align: center
+                              children:
+                                  - 'Copyright © app-x.org '
+                                  - _type: js/expression
+                                    data: new Date().getFullYear()
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
+              props:
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -596,172 +651,186 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
-          styles:
-              _type: mui/style
-              container:
-                  # width: 100%
-                  # alignItems: center
-                  # display: flex
-                  # justifyContent: center
-              box:
-                  display: flex
-                  # flexShrink: 1
-                  # flexDirection: row
-                  flexWrap: wrap
-                  justifyContent: space-evenly
-                  padding:
-                      _type: js/expression
-                      data: theme.spacing(4, 2)
-              card:
-                  width: 360
-                  minWidth: 360
-                  maxWidth: 360
-                  zIndex: 0
-                  margin:
-                      _type: js/expression
-                      data: theme.spacing(3, 2)
-                  backgroundColor:
-                      _type: js/expression
-                      data: theme.palette.background.paper
-              cardContent:
-                  margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-              avatar:
-                  backgroundColor:
-                      _type: js/expression
-                      data: theme.palette.secondary.main
-                  margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-          states:
-              ui:
-                  _type: react/state
-                  name: deployments
-                  setter: setDeployments
-                  init: []
-          effect:
-              _type: react/effect
-              body:
-                - |
-                  $I('app-x/api.get')(
-                      'sys',
-                      'appx',
-                      '/ui/ui_deployment',
-                      data => {
-                          states.ui.setDeployments(data)
-                      },
-                      err => {
-                          console.log(err)
-                          // TODO
-                      }
-                  )
-          element:
-              _type: react/element
-              name: self/page/landing/Unsplash_bg
-              children:
-                  - _type: react/element
-                    name: '@material-ui/core.Container'
-                    props:
-                        className:
-                            _type: js/expression
-                            data: styles.container
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.Box'
-                          props:
-                              className:
-                                  _type: js/expression
-                                  data: styles.box
-                          children:
-                              - _type: js/map
-                                data:
-                                    _type: js/filter
-                                    data:
-                                        _type: js/expression
-                                        data: states.ui.deployments
-                                    filter: |
-                                        !(item.namespace == 'sys' && item.ui_name == 'console')
-                                result:
-                                    _type: react/element
-                                    name: '@material-ui/core.Card'
-                                    props:
-                                        draggable: true
-                                        style:
-                                            cursor: move
-                                        key:
-                                            _type: js/expression
-                                            data: item.id
-                                        className:
-                                            _type: js/expression
-                                            data: styles.card
-                                    children:
-                                        - _type: react/element
-                                          name: '@material-ui/core.CardActionArea'
-                                          children:
-                                              - _type: react/element
-                                                name: app-x/router.HLink
-                                                props:
-                                                    namespace:
-                                                        _type: js/expression
-                                                        data: item.namespace
-                                                    ui_name:
-                                                        _type: js/expression
-                                                        data: item.ui_name
-                                                    ui_deployment:
-                                                        _type: js/expression
-                                                        data: item.ui_deployment
-                                                    href: '/'
-                                                children:
-                                                    - _type: react/element
-                                                      name: '@material-ui/core.CardContent'
-                                                      children:
-                                                          - _type: react/element
-                                                            name: '@material-ui/core.Avatar'
-                                                            props:
-                                                                className:
-                                                                    _type: js/expression
-                                                                    data: styles.avatar
-                                                            children:
-                                                                - _type: react/element
-                                                                  name: '@material-ui/icons.ViewQuiltRounded'
-                                                          - _type: react/element
-                                                            name: '@material-ui/core.Typography'
-                                                            props:
-                                                                variant: body2
-                                                                className:
-                                                                    _type: js/expression
-                                                                    data: styles.cardContent
-                                                            children:
-                                                                - _type: js/expression
-                                                                  data: item.namespace
-                                                                - ' / '
-                                                                - _type: js/expression
-                                                                  data: item.ui_name
-                                                                - ' / '
-                                                                - _type: js/expression
-                                                                  data: item.ui_deployment
-                                                          - _type: react/element
-                                                            name: '@material-ui/core.Typography'
-                                                            props:
-                                                                variant: h6
-                                                                className:
-                                                                    _type: js/expression
-                                                                    data: styles.cardContent
-                                                            children:
-                                                                - _type: js/expression
-                                                                  data: item.ui_spec.description
-                                        - _type: react/element
-                                          name: '@material-ui/core.CardActions'
-                                          children:
-                                              - _type: react/element
-                                                name: '@material-ui/core.Button'
-                                                props:
-                                                    size: small
-                                                    color: primary
-                                                    # variant: contained
-                                                    className:
-                                                        _type: js/expression
-                                                        data: styles.cardContent
-                                                children:
-                                                    - Details
+        styles:
+          _type: mui/style
+          container: {}
+              # width: 100%
+              # alignItems: center
+              # display: flex
+              # justifyContent: center
+          box:
+              display: flex
+              # flexShrink: 1
+              # flexDirection: row
+              flexWrap: wrap
+              justifyContent: space-evenly
+              padding:
+                  _type: js/expression
+                  data: theme.spacing(4, 2)
+          card:
+              width: 360
+              minWidth: 360
+              maxWidth: 360
+              zIndex: 0
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(3, 2)
+              backgroundColor:
+                  _type: js/expression
+                  data: theme.palette.background.paper
+          cardContent:
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+          avatar:
+              backgroundColor:
+                  _type: js/expression
+                  data: theme.palette.secondary.main
+              margin:
+                  _type: js/expression
+                  data: theme.spacing(1)
+        states:
+          ui:
+              _type: react/state
+              name: deployments
+              setter: setDeployments
+              init: '[]'
+        effect:
+          _type: react/effect
+          body:
+            - |
+              $I('app-x/api.get')(
+                  'sys',
+                  'appx',
+                  '/ui/ui_deployment',
+                  data => {
+                      states.ui.setDeployments(data)
+                  },
+                  err => {
+                      console.log(err)
+                      // TODO
+                  }
+              )
+        element:
+            _type: react/element
+            name: self/page/landing/Unsplash_bg
+            children:
+                - _type: react/element
+                  name: '@material-ui/core.Container'
+                  props:
+                      className:
+                          _type: js/expression
+                          data: styles.container
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/core.Box'
+                        props:
+                            className:
+                                _type: js/expression
+                                data: styles.box
+                        children:
+                            - _type: js/map
+                              data:
+                                  _type: js/filter
+                                  data:
+                                      _type: js/expression
+                                      data: states.ui.deployments
+                                  filter: |
+                                      !(item.namespace == 'sys' && item.ui_name == 'console')
+                              result:
+                                  _type: react/element
+                                  name: '@material-ui/core.Card'
+                                  props:
+                                      draggable: true
+                                      style:
+                                          cursor: move
+                                      key:
+                                          _type: js/expression
+                                          data: item.id
+                                      className:
+                                          _type: js/expression
+                                          data: styles.card
+                                  children:
+                                      - _type: react/element
+                                        name: '@material-ui/core.CardActionArea'
+                                        children:
+                                            - _type: react/element
+                                              name: app-x/router.HLink
+                                              props:
+                                                  namespace:
+                                                      _type: js/expression
+                                                      data: item.namespace
+                                                  ui_name:
+                                                      _type: js/expression
+                                                      data: item.ui_name
+                                                  ui_deployment:
+                                                      _type: js/expression
+                                                      data: item.ui_deployment
+                                                  href: '/'
+                                              children:
+                                                  - _type: react/element
+                                                    name: '@material-ui/core.CardContent'
+                                                    children:
+                                                        - _type: react/element
+                                                          name: '@material-ui/core.Avatar'
+                                                          props:
+                                                              className:
+                                                                  _type: js/expression
+                                                                  data: styles.avatar
+                                                          children:
+                                                              - _type: react/element
+                                                                name: '@material-ui/icons.ViewQuiltRounded'
+                                                        - _type: react/element
+                                                          name: '@material-ui/core.Typography'
+                                                          props:
+                                                              variant: body2
+                                                              className:
+                                                                  _type: js/expression
+                                                                  data: styles.cardContent
+                                                          children:
+                                                              - _type: js/expression
+                                                                data: item.namespace
+                                                              - ' / '
+                                                              - _type: js/expression
+                                                                data: item.ui_name
+                                                              - ' / '
+                                                              - _type: js/expression
+                                                                data: item.ui_deployment
+                                                        - _type: react/element
+                                                          name: '@material-ui/core.Typography'
+                                                          props:
+                                                              variant: h6
+                                                              className:
+                                                                  _type: js/expression
+                                                                  data: styles.cardContent
+                                                          children:
+                                                              - _type: js/expression
+                                                                data: item.ui_spec.description
+                                      - _type: react/element
+                                        name: '@material-ui/core.CardActions'
+                                        children:
+                                            - _type: react/element
+                                              name: '@material-ui/core.Button'
+                                              props:
+                                                  size: small
+                                                  color: primary
+                                                  # variant: contained
+                                                  className:
+                                                      _type: js/expression
+                                                      data: styles.cardContent
+                                              children:
+                                                  - Details
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
+              props:
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default

@@ -637,10 +637,10 @@ function generate_tree_node(js_context, conf, input) {
       const data_type = lookup_type_for_data(data)
       const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
       if (!type_matches_spec(data_type, typeSpec)) {
-        // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisNodeSpec)}]`)
+        console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(typeSpec)}]`)
         return undefined
       } else {
-        // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisNodeSpec)}]`)
+        // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(typeSpec)}]`)
       }
       // add to current node
       if (!!thisNodeSpec.generate) {
@@ -674,10 +674,10 @@ function generate_tree_node(js_context, conf, input) {
       const data_type = lookup_type_for_data(data)
       const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
       if (!type_matches_spec(data_type, typeSpec)) {
-        // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childNodeSpec)}]`)
+        // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(typeSpec)}]`)
         return undefined
       } else {
-        // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childNodeSpec)}]`)
+        // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(typeSpec)}]`)
       }
       // generate function
       const generate = (data) => {

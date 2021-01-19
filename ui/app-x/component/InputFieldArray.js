@@ -309,9 +309,9 @@ const InputFieldArray = ((props) => {
                             >
                             <ControlledEditor
                               className={
-                                (getValues(name)?.split(/\r\n|\r|\n/).length > 3)
+                                (getValues(itemName)?.split(/\r\n|\r|\n/).length > 3)
                                 ? styles.expressionBlock
-                                : (getValues(name)?.split(/\r\n|\r|\n/).length > 1)
+                                : (getValues(itemName)?.split(/\r\n|\r|\n/).length > 1)
                                   ? styles.expressionMultiLine
                                   : styles.expressionSingleLine
                               }
