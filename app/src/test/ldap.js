@@ -1,4 +1,3 @@
-const deasync = require('deasync');
 const ldap = require('ldapjs');
 
 try {
