@@ -65,6 +65,10 @@ ui_component:
             grid:
                 position: fixed
                 bottom: "10%"
+                width: "100%"
+                padding:
+                  _type: js/expression
+                  data: theme.spacing(2)
                 zIndex: 0
         effect:
             _type: react/effect
@@ -125,7 +129,7 @@ ui_component:
                       start: 0
             children:
                 - _type: react/element
-                  name: "@material-ui/core.Container"
+                  name: "@material-ui/core.Box"
                   props:
                       className:
                           _type: js/expression
