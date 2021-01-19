@@ -16,35 +16,35 @@ ui_component:
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:
-          propTypes:
-              title: PropTypes.string.isRequired
-          styles:
-              _type: mui/style
-              root:
-                  height: "100%"
-          element:
-              _type: react/element
-              name: app-x/app/MUI_theme_redux
-              props:
-                  routes:
-                      _type: appx/route
-                      name: /
-                  redux_store_provider:
-                      _type: js/import
-                      name: app-x/redux/store.default
-                  theme_provider:
-                      _type: js/import
-                      name: app-x/theme.default
-                  not_found_view:
-                      _type: react/element
-                      name: app-x/page/layout/HeaderLayout
-                      props:
-                          header:
-                              _type: react/element
-                              name: self/page/header/Header_user
-                      children:
-                          - _type: react/element
-                            name: app-x/view/error/NotFoundView
+        propTypes:
+            title: PropTypes.string.isRequired
+        styles:
+            _type: mui/style
+            root:
+                height: "100%"
+        element:
+            _type: react/element
+            name: app-x/app/MUI_theme_redux
+            props:
+                routes:
+                    _type: appx/route
+                    name: /
+                redux_store_provider:
+                    _type: js/import
+                    name: app-x/redux/store.default
+                theme_provider:
+                    _type: js/import
+                    name: app-x/theme.default
+                not_found_view:
+                    _type: react/element
+                    name: app-x/page/layout/HeaderLayout
+                    props:
+                        header:
+                            _type: react/element
+                            name: self/page/header/Header_user
+                    children:
+                        - _type: react/element
+                          name: app-x/view/error/NotFoundView
 
     ############################################################
     - namespace: sys
@@ -53,26 +53,40 @@ ui_component:
       ui_component_name: /page/header/Header_user
       ui_component_type: react/component
       ui_component_spec:
-          propTypes:
-              suffix: PropTypes.element
-          element:
-              _type: react/element
-              name: app-x/page/header/Header_user
+        propTypes:
+            suffix: PropTypes.element
+        element:
+            _type: react/element
+            name: app-x/page/header/Header_user
+            props:
+                title: Service Builder
+                titleIcon:
+                    _type: react/element
+                    name: "@material-ui/icons.ViewQuiltRounded"
+                rootUrl: '/console'
+                baseUrl: '/'
+                authUrl: '/login'
+                authDeployment:
+                    namespace: sys
+                    ui_name: console
+                    ui_deployment: base
+                suffix:
+                    _type: js/expression
+                    data: props.suffix
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  title: Service Builder
-                  titleIcon:
-                      _type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                  rootUrl: '/console'
-                  baseUrl: '/'
-                  authUrl: '/login'
-                  authDeployment:
-                      namespace: sys
-                      ui_name: console
-                      ui_deployment: base
-                  suffix:
-                      _type: js/expression
-                      data: props.suffix
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -81,53 +95,67 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
-          states:
-              mobileNav:
-                  _type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-          handlers:
-              sideNavHandler:
-                  _type: js/function
-                  body:
-                    - |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
-          element:
-              _type: react/element
-              name: app-x/page/layout/HeaderLayout
-              props:
-                  header:
-                      _type: react/element
-                      name: self/page/header/Header_user
-                      props:
-                          suffix:
-                              _type: react/element
-                              name: '@material-ui/core.Hidden'
-                              props:
-                                  lgUp: true
-                              children:
-                                  - _type: react/element
-                                    name: '@material-ui/core.IconButton'
-                                    props:
-                                        color: inherit
-                                        onClick:
-                                            _type: js/expression
-                                            data: handlers.sideNavHandler
-                                    children:
-                                        - _type: react/element
-                                          name: '@material-ui/icons.Menu'
-              children:
-                  - _type: react/element
-                    name: self/page/Builder
+        states:
+            mobileNav:
+                _type: react/state
+                name: open
+                setter: setOpen
+                init: false
+        handlers:
+            sideNavHandler:
+                _type: js/function
+                body:
+                  - |
+                    states.mobileNav.setOpen(!states.mobileNav.open)
+        element:
+            _type: react/element
+            name: app-x/page/layout/HeaderLayout
+            props:
+                header:
+                    _type: react/element
+                    name: self/page/header/Header_user
                     props:
-                        isMobileNavOpen:
-                            _type: js/expression
-                            data: states.mobileNav.open
-                        handlers:
-                            sideNavHandler:
-                                _type: js/expression
-                                data: handlers.sideNavHandler
+                        suffix:
+                            _type: react/element
+                            name: '@material-ui/core.Hidden'
+                            props:
+                                lgUp: true
+                            children:
+                                - _type: react/element
+                                  name: '@material-ui/core.IconButton'
+                                  props:
+                                      color: inherit
+                                      onClick:
+                                          _type: js/expression
+                                          data: handlers.sideNavHandler
+                                  children:
+                                      - _type: react/element
+                                        name: '@material-ui/icons.Menu'
+            children:
+                - _type: react/element
+                  name: self/page/Builder
+                  props:
+                      isMobileNavOpen:
+                          _type: js/expression
+                          data: states.mobileNav.open
+                      handlers:
+                          sideNavHandler:
+                              _type: js/expression
+                              data: handlers.sideNavHandler
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
+              props:
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -136,60 +164,74 @@ ui_component:
       ui_component_name: /page/Builder
       ui_component_type: react/component
       ui_component_spec:
-          states:
-              builder:
-                  _type: react/state
-                  name: data
-                  setter: setData
-                  init:
-                      ui_builder_type: ui_component
-                      ui_component_name: /page/Console
-                      ui_route_name: ''
-          handlers:
-              handleComponentSelected:
-                  _type: js/function
-                  params:
-                      - event
-                  body:
-                    - |
-                      states.builder.setData({
-                          ui_builder_type: 'ui_component',
-                          ui_component_name: event.ui_component_name,
-                          ui_route_name: '',
-                      })
-                      console.log(event)
-                      console.log(states.builder.data)
-              handleRouteSelected:
-                  _type: js/function
-                  params:
-                      - event
-                  body:
-                    - |
-                      states.builder.setData({
-                          ui_builder_type: 'ui_route',
-                          ui_component_name: '',
-                          ui_route_name: event.ui_route_name,
-                      })
-          element:
-              _type: react/element
-              name: 'app-x/page/layout/SideNavLayout'
+        states:
+            builder:
+                _type: react/state
+                name: data
+                setter: setData
+                init:
+                    ui_builder_type: ui_component
+                    ui_component_name: /page/Console
+                    ui_route_name: ''
+        handlers:
+            handleComponentSelected:
+                _type: js/function
+                params:
+                    - event
+                body:
+                  - |
+                    states.builder.setData({
+                        ui_builder_type: 'ui_component',
+                        ui_component_name: event.ui_component_name,
+                        ui_route_name: '',
+                    })
+                    console.log(event)
+                    console.log(states.builder.data)
+            handleRouteSelected:
+                _type: js/function
+                params:
+                    - event
+                body:
+                  - |
+                    states.builder.setData({
+                        ui_builder_type: 'ui_route',
+                        ui_component_name: '',
+                        ui_route_name: event.ui_route_name,
+                    })
+        element:
+            _type: react/element
+            name: 'app-x/page/layout/SideNavLayout'
+            props:
+                isMobileNavOpen:
+                    _type: js/expression
+                    data: props.isMobileNavOpen
+                onMobileClose:
+                    _type: js/expression
+                    data: props.handlers.sideNavHandler
+                sideNav:
+                    _type: react/element
+                    name: '@material-ui/core.Box'
+                    props:
+                        height: 100%
+                        display: flex
+                        flexDirection: column
+                    children:
+                        - _type: react/element
+                          name: 'self/nav/appNav'
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  isMobileNavOpen:
-                      _type: js/expression
-                      data: props.isMobileNavOpen
-                  onMobileClose:
-                      _type: js/expression
-                      data: props.handlers.sideNavHandler
-                  sideNav:
-                      _type: react/element
-                      name: '@material-ui/core.Box'
-                      props:
-                          height: 100%
-                          display: flex
-                          flexDirection: column
-                      children:
-                          - _type: react/element
-                            name: 'self/nav/appNav'
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -198,79 +240,93 @@ ui_component:
       ui_component_name: /nav/appNav
       ui_component_type: react/component
       ui_component_spec:
-          styles:
-              _type: mui/style
-              root:
-                  width: 100%
-          element:
-              _type: react/element
-              name: '@material-ui/core.List'
+        styles:
+            _type: mui/style
+            root:
+                width: 100%
+        element:
+            _type: react/element
+            name: '@material-ui/core.List'
+            props:
+                component: nav
+                aria-labelledby: App Builder
+                className:
+                    _type: js/expression
+                    data: styles.root
+                subheader:
+                    _type: react/element
+                    name: '@material-ui/core.ListSubheader'
+                    children:
+                        - App Builder
+            children:
+                - _type: react/element
+                  name: 'app-x/router.A'
+                  props:
+                      href: /app/dashboard
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/core.ListItem'
+                        props:
+                            button: true
+                        children:
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemIcon'
+                              children:
+                                  - _type: react/element
+                                    name: '@material-ui/icons.ViewModule'
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemText'
+                              props:
+                                  primary: Objects
+                - _type: react/element
+                  name: 'app-x/router.A'
+                  props:
+                      href: /app/customers
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/core.ListItem'
+                        props:
+                            button: true
+                        children:
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemIcon'
+                              children:
+                                  - _type: react/element
+                                    name: '@material-ui/icons.Link'
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemText'
+                              props:
+                                  primary: Relations
+                - _type: react/element
+                  name: 'app-x/router.A'
+                  props:
+                      href: /app/products
+                  children:
+                      - _type: react/element
+                        name: '@material-ui/core.ListItem'
+                        props:
+                            button: true
+                        children:
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemIcon'
+                              children:
+                                  - _type: react/element
+                                    name: '@material-ui/icons.VerticalAlignCenter'
+                            - _type: react/element
+                              name: '@material-ui/core.ListItemText'
+                              props:
+                                  primary: APIs
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  component: nav
-                  aria-labelledby: App Builder
-                  className:
-                      _type: js/expression
-                      data: styles.root
-                  subheader:
-                      _type: react/element
-                      name: '@material-ui/core.ListSubheader'
-                      children:
-                          - App Builder
-              children:
-                  - _type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/dashboard
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - _type: react/element
-                                      name: '@material-ui/icons.ViewModule'
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: Objects
-                  - _type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/customers
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - _type: react/element
-                                      name: '@material-ui/icons.Link'
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: Relations
-                  - _type: react/element
-                    name: 'app-x/router.A'
-                    props:
-                        href: /app/products
-                    children:
-                        - _type: react/element
-                          name: '@material-ui/core.ListItem'
-                          props:
-                              button: true
-                          children:
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemIcon'
-                                children:
-                                    - _type: react/element
-                                      name: '@material-ui/icons.VerticalAlignCenter'
-                              - _type: react/element
-                                name: '@material-ui/core.ListItemText'
-                                props:
-                                    primary: APIs
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default

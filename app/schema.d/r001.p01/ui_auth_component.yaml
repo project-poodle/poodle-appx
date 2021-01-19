@@ -16,35 +16,35 @@ ui_component:
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:
-          propTypes:
-              title: PropTypes.string.isRequired
-          styles:
-              _type: mui/style
-              root:
-                  height: "100%"
-          element:
-              _type: react/element
-              name: app-x/app/MUI_theme_redux
-              props:
-                  routes:
-                      _type: appx/route
-                      name: /
-                  redux_store_provider:
-                      _type: js/import
-                      name: app-x/redux/store.default
-                  theme_provider:
-                      _type: js/import
-                      name: app-x/theme.default
-                  not_found_view:
-                      _type: react/element
-                      name: app-x/page/layout/HeaderLayout
-                      props:
-                          header:
-                              _type: react/element
-                              name: self/page/header/Header_user
-                      children:
-                          - _type: react/element
-                            name: app-x/view/error/NotFoundView
+        propTypes:
+            title: PropTypes.string.isRequired
+        styles:
+            _type: mui/style
+            root:
+                height: "100%"
+        element:
+            _type: react/element
+            name: app-x/app/MUI_theme_redux
+            props:
+                routes:
+                    _type: appx/route
+                    name: /
+                redux_store_provider:
+                    _type: js/import
+                    name: app-x/redux/store.default
+                theme_provider:
+                    _type: js/import
+                    name: app-x/theme.default
+                not_found_view:
+                    _type: react/element
+                    name: app-x/page/layout/HeaderLayout
+                    props:
+                        header:
+                            _type: react/element
+                            name: self/page/header/Header_user
+                    children:
+                        - _type: react/element
+                          name: app-x/view/error/NotFoundView
 
     ############################################################
     - namespace: sys
@@ -53,26 +53,40 @@ ui_component:
       ui_component_name: /page/header/Header_user
       ui_component_type: react/component
       ui_component_spec:
-          propTypes:
-              suffix: PropTypes.element
-          element:
-              _type: react/element
-              name: app-x/page/header/Header_user
+        propTypes:
+            suffix: PropTypes.element
+        element:
+            _type: react/element
+            name: app-x/page/header/Header_user
+            props:
+                title: Role Editor
+                titleIcon:
+                    _type: react/element
+                    name: "@material-ui/icons.ViewQuiltRounded"
+                rootUrl: '/console'
+                baseUrl: '/'
+                authUrl: '/login'
+                authDeployment:
+                    namespace: sys
+                    ui_name: console
+                    ui_deployment: base
+                suffix:
+                    _type: js/expression
+                    data: props.suffix
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  title: Role Editor
-                  titleIcon:
-                      _type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                  rootUrl: '/console'
-                  baseUrl: '/'
-                  authUrl: '/login'
-                  authDeployment:
-                      namespace: sys
-                      ui_name: console
-                      ui_deployment: base
-                  suffix:
-                      _type: js/expression
-                      data: props.suffix
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
 
     ############################################################
     - namespace: sys
@@ -81,42 +95,56 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
-          states:
-              mobileNav:
-                  _type: react/state
-                  name: open
-                  setter: setOpen
-                  init: false
-          handlers:
-              sideNavHandler:
-                  _type: js/function
-                  body:
-                    - |
-                      states.mobileNav.setOpen(!states.mobileNav.open)
-          element:
-              _type: react/element
-              name: app-x/page/layout/HeaderLayout
+        states:
+            mobileNav:
+                _type: react/state
+                name: open
+                setter: setOpen
+                init: false
+        handlers:
+            sideNavHandler:
+                _type: js/function
+                body:
+                  - |
+                    states.mobileNav.setOpen(!states.mobileNav.open)
+        element:
+            _type: react/element
+            name: app-x/page/layout/HeaderLayout
+            props:
+                header:
+                    _type: react/element
+                    name: self/page/header/Header_user
+                    props:
+                        suffix:
+                            _type: react/element
+                            name: '@material-ui/core.Hidden'
+                            props:
+                                lgUp: true
+                            children:
+                                - _type: react/element
+                                  name: '@material-ui/core.IconButton'
+                                  props:
+                                      color: inherit
+                                      onClick:
+                                          _type: js/expression
+                                          data: handlers.sideNavHandler
+                                  children:
+                                      - _type: react/element
+                                        name: '@material-ui/icons.Menu'
+            children:
+                - _type: react/element
+                  name: app-x/view/error/NotFoundView
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
               props:
-                  header:
-                      _type: react/element
-                      name: self/page/header/Header_user
-                      props:
-                          suffix:
-                              _type: react/element
-                              name: '@material-ui/core.Hidden'
-                              props:
-                                  lgUp: true
-                              children:
-                                  - _type: react/element
-                                    name: '@material-ui/core.IconButton'
-                                    props:
-                                        color: inherit
-                                        onClick:
-                                            _type: js/expression
-                                            data: handlers.sideNavHandler
-                                    children:
-                                        - _type: react/element
-                                          name: '@material-ui/icons.Menu'
-              children:
-                  - _type: react/element
-                    name: app-x/view/error/NotFoundView
+                store:
+                  _type: js/import
+                  name: app-x/redux/store.default
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider.default
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme.default
