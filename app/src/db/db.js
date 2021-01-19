@@ -1,6 +1,5 @@
 const fs = require('fs');
 const mysql = require('mysql');
-const deasync = require('deasync');
 
 const DEFAULT_POOL_SIZE = 15;
 const DEFAULT_MAX_RETRIES = 9
@@ -171,8 +170,6 @@ module.exports = {
     getPool: getPool,
     // async query method
     query: query,
-    // ync query method
-    // query_sync: deasync(query),
     // query async
     query_async: function(sql, variables) {
         return new Promise((resolve, reject) => {
