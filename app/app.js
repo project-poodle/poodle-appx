@@ -89,7 +89,7 @@ const { auth_dispatcher, authenticator } = require("./src/auth")
 ////app.use(passport.initialize())
 ////app.use(passport.session())
 // auth endpoints
-app.use(mount_options.auth_root, bodyParser.json())
+app.use(mount_options.ui_root, bodyParser.json({type: '*/*', limit: 5 * 1024 * 1024}))
 app.use(mount_options.auth_root,
   (req, res, next) => {
     req.mount_options = mount_options
@@ -101,7 +101,7 @@ app.use(mount_options.auth_root,
 // initialize router --- Note: perform this step only after db_pool is initialized
 const { api_dispatcher } = require('./src/api/api_dispatcher')
 // api endpoints
-app.use(mount_options.api_root, bodyParser.json())
+app.use(mount_options.ui_root, bodyParser.json({type: '*/*', limit: 5 * 1024 * 1024}))
 app.use(mount_options.api_root,
   (req, res, next) => {
     req.mount_options = mount_options
@@ -115,8 +115,9 @@ app.use(mount_options.api_root,
   // initialize ui router --- Note: perform this step only after db_pool is initialized
   const { ui_dispatcher } = require('./src/ui/ui_dispatcher')
   // ui endpoints
-  app.use(mount_options.ui_root, bodyParser.json())
-  app.use(mount_options.ui_root, bodyParser.urlencoded({extended: true}))
+  // app.use(mount_options.ui_root, bodyParser.urlencoded({extended: false}))
+  app.use(mount_options.ui_root, bodyParser.json({type: '*/*', limit: 5 * 1024 * 1024}))
+  // app.use(mount_options.ui_root, bodyParser.urlencoded({extended: true}))
   app.use(mount_options.ui_root,
     (req, res, next) => {
       req.mount_options = mount_options
