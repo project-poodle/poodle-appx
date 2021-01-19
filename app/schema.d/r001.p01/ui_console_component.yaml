@@ -139,7 +139,7 @@ ui_component:
                         name: "@material-ui/core.Grid"
                         props:
                             container: true
-                            spacing: 2
+                            spacing: 1
                         children:
                             - _type: react/element
                               name: "@material-ui/core.CssBaseline"
