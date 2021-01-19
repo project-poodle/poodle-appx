@@ -351,7 +351,8 @@ function lookup_title_for_input(ref, input, array=false) {
   } else if (input._type === 'react/element') {
 
     const parsed = parse_var_full_path(input.name)
-    return prefix + parsed.full_paths.pop()
+    let pop = parsed.full_paths.pop()
+    return prefix + (pop === 'default' ? parsed.full_paths.pop() : pop)
 
   } else if (input._type === 'react/html') {
 
