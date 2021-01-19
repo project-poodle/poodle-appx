@@ -57,16 +57,16 @@ else
 fi
 echo "----------"
 
-echo eval_mysql_appx -f /tmp/$$/appx.sql "$@"
-eval_mysql_appx -f /tmp/$$/appx.sql "$@" > /tmp/$$/appx.sql.out
+echo eval_mysql_appx -p -f /tmp/$$/appx.sql "$@"
+eval_mysql_appx -p -f /tmp/$$/appx.sql "$@" | tee -a /tmp/$$/appx.sql.out
 if [ $? -ne 0 ]; then
-    cat /tmp/$$/appx.sql.out
+    # cat /tmp/$$/appx.sql.out
     echo "----------"
     echo "ERROR: failed to execute schema SQL !"
     rm -fR /tmp/$$
     exit 1
 else
-    cat /tmp/$$/appx.sql.out
+    # cat /tmp/$$/appx.sql.out
     echo "----------"
     echo "INFO: successfully executed schema SQL !"
 fi

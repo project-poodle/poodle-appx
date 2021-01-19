@@ -53,7 +53,7 @@ var getPool = (mysql_conf_file) => {
             }
         })
 
-        console.log(`INFO: [DB POOL] try connecting to ${chosen_host}`)
+        console.log(`INFO: [DB POOL] connecting to ${chosen_host}`)
     }
 
     return db_pool
@@ -174,7 +174,7 @@ module.exports = {
     // ync query method
     // query_sync: deasync(query),
     // query async
-    query_async: async function(sql, variables) {
+    query_async: function(sql, variables) {
         return new Promise((resolve, reject) => {
             query(sql, variables, (error, result) => {
                 if (!!error) {

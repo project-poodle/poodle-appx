@@ -1,9 +1,13 @@
 const fs = require('fs');
 const mysql = require('mysql');
-const deasync = require('deasync');
 const { ArgumentParser } = require('argparse');
 
 const DEFAULT_MAX_RETRIES = 9
+
+// sleep
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const parser = new ArgumentParser({
   description: 'evaluate mysql commands'
@@ -62,13 +66,19 @@ let mysql_conf = JSON.parse(fs.readFileSync(args.conf, 'utf8'))
 ////////////////////////////////////////////////////////////////////////////////
 // db connection
 let conn = null
-// get synchronous method
-let query_async = (sql, params, callback) => {
-    conn.query(sql, params, (error, results, fields) => {
-        callback(error, results, fields)
+// get async synchronous method
+let query_async = function(sql, variables) {
+    return new Promise((resolve, reject) => {
+        conn.query(sql, variables, (error, result) => {
+            if (!!error) {
+                reject(error)
+            } else {
+                // console.error(`RESOLVE !!!`)
+                resolve(result || [])
+            }
+        })
     })
 }
-let query_sync = deasync(query_async)
 
 ////////////////////////////////////////////////////////////////////////////////
 // get a random host
@@ -86,96 +96,110 @@ function get_random_between(min, max) {
     return min + Math.random() * Math.abs(max - min)
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// max retries
-const max_retries = !!args.max_retries ? args.max_retries : DEFAULT_MAX_RETRIES
-for (let i=0; i<max_retries; i++) {
+// async run method
+async function run() {
+    ////////////////////////////////////////////////////////////////////////////////
+    // max retries
+    const max_retries = !!args.max_retries ? args.max_retries : DEFAULT_MAX_RETRIES
+    for (let i=0; i<max_retries; i++) {
 
-    try {
+        try {
 
-        const chosen_host = get_host_or_random(mysql_conf.host)
+            const chosen_host = get_host_or_random(mysql_conf.host)
 
-        conn = mysql.createConnection({
-            host: chosen_host,
-            port: mysql_conf.port,
-            user: mysql_conf.user,
-            password: mysql_conf.pass,
-            typeCast: function(field, next) {
-                if ((field.type == 'BLOB' || field.type == 'JSON') && field.length == 4294967295) {
-                    let value = field.string();
-                    try {
-                        return JSON.parse(value);
-                    } catch (e) {
-                        return value;
+            conn = mysql.createConnection({
+                host: chosen_host,
+                port: mysql_conf.port,
+                user: mysql_conf.user,
+                password: mysql_conf.pass,
+                typeCast: function(field, next) {
+                    if ((field.type == 'BLOB' || field.type == 'JSON') && field.length == 4294967295) {
+                        let value = field.string();
+                        try {
+                            return JSON.parse(value);
+                        } catch (e) {
+                            return value;
+                        }
+                    }
+                    return next();
+                }
+            })
+
+            console.error(`INFO: [DB] connecting to ${chosen_host}...`)
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // execute sql commands
+            for (const command of commands) {
+
+                try {
+
+                    // skip empty command
+                    if (command.trim() == "") {
+                        continue
+                    }
+
+                    // execute query
+                    let results = await query_async(command, [])
+
+                    // print command
+                    if (args.print) {
+                        console.log(`INFO: success! [${command}]`)
+                    }
+
+                    // print result
+                    if (args.result) {
+                        console.log(JSON.stringify(results, null, 4))
+                    }
+
+                } catch (error) {
+
+                    if (error.fatal) {
+                        // connection error, retry
+                        // console.log(error)
+                        throw error
+
+                    } else {
+                        console.error(`ERROR: [${command}]` + (error.length > 255 ? error.substring(0,255) : error));
+                        process.exit(1);
                     }
                 }
-                return next();
             }
-        })
-
-        console.error(`INFO: [DB] try connecting to ${chosen_host}...`)
-
-        ////////////////////////////////////////////////////////////////////////////////
-        // execute sql commands
-        commands.forEach((command) => {
 
             try {
-
-                // skip empty command
-                if (command.trim() == "") {
-                    return
-                }
-
-                // execute query
-                let results = query_sync(command, [])
-
-                // print command
-                if (args.print) {
-                    console.log(`INFO: success! [${command}]`)
-                }
-
-                // print result
-                if (args.result) {
-                    console.log(JSON.stringify(results, null, 4))
-                }
-
+              const end = async function() {
+                // console.log(`end`)
+                conn.end()
+              }
+              end()
             } catch (error) {
+              // ignore
+            }
 
-                if (error.fatal) {
-                    // connection error, retry
-                    // console.log(error)
-                    throw error
+            // success, exit 0
+            process.exit(0)
 
+        } catch (error) {
+
+            console.error(error)
+            if (error.fatal) {
+                // for connection errors
+                const sleep_ms = Math.round(get_random_between(1, 500) + 500 * i)
+                if (i < max_retries - 1) {
+                    console.error(`ERROR: connection error [${i+1}] [${error.toString()}], retry in [${sleep_ms} ms] ...`)
                 } else {
-                    console.error(`ERROR: [${command}]` + (error.length > 255 ? error.substring(0,255) : error));
-                    process.exit(1);
+                    console.error(`ERROR: connection error [${error.toString()}], query terminated.`)
                 }
-            }
-        });
+                await sleep(sleep_ms)
 
-        conn.end();
-
-        // success, exit 0
-        process.exit(0)
-
-    } catch (error) {
-
-        if (error.fatal) {
-            // for connection errors
-            const sleep_ms = Math.round(get_random_between(1, 500) + 500 * i)
-            if (i < max_retries - 1) {
-                console.error(`ERROR: connection error [${i+1}] [${error.toString()}], retry in [${sleep_ms} ms] ...`)
             } else {
-                console.error(`ERROR: connection error [${error.toString()}], query terminated.`)
+                // for all other errors, just quit
+                process.exit(1)
             }
-            deasync.sleep(sleep_ms)
-
-        } else {
-            // for all other errors, just quit
-            process.exit(1)
         }
     }
+
+    // we are here all retries has failed
+    process.exit(1)
 }
 
-// we are here all retries has failed
-process.exit(1)
+run()
