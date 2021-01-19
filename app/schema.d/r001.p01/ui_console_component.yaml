@@ -16,6 +16,13 @@ ui_component:
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:
+        styles:
+          _type: mui/style
+          root:
+            height: 100%
+        routes:
+          _type: appx/route
+          name: /
         not_found_view:
           _type: react/element
           name: app-x/page/layout/HeaderLayout.default
@@ -33,13 +40,6 @@ ui_component:
           children:
             - _type: react/element
               name: app-x/view/error/NotFoundView.default
-        routeResult:
-          _type: appx/route
-          name: /
-        styles:
-          _type: mui/style
-          root:
-            height: 100%
         element:
           _type: react/element
           name: react-redux.Provider
@@ -56,7 +56,7 @@ ui_component:
                   name: app-x/theme.default
               children:
                 - _type: js/expression
-                  data: routeResult || not_found_view
+                  data: routes || not_found_view
 
     ############################################################
     - namespace: sys
