@@ -18,19 +18,19 @@ const LOAD_CACHE_TIMER_TASKS = {}
 var cache_conf = YAML.parse(fs.readFileSync(__dirname + '/cache.yaml', 'utf8'))
 
 // initialize cache
-function init_cache() {
+async function init_cache() {
 
     try {
 
         cache_conf = YAML.parse(fs.readFileSync(__dirname + '/cache.yaml', 'utf8'))
 
-        Object.keys(cache_conf).forEach((name, i) => {
+        for (const name of Object.keys(cache_conf)) {
 
             // load cache without parameters
             if (! (cache_conf[name]['params'])) {
-                load_cache_for(name, null)
+                await load_cache_for(name, null)
             }
-        })
+        }
 
     } catch (e) {
 
@@ -54,7 +54,7 @@ function get_cache_for(name, params) {
     }
 }
 
-function load_cache_for(name, params, repeat=false) {
+async function load_cache_for(name, params, repeat=false) {
 
     // console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - starting ...`)
 
@@ -74,7 +74,7 @@ function load_cache_for(name, params, repeat=false) {
             return
         }
 
-        let input = sql_load(sql_filepath, {params: params})
+        let input = await sql_load(sql_filepath, {params: params})
         //console.log(JSON.stringify(input, null, 4))
 
         if (! ('transform' in cache_conf[name])) {
@@ -107,7 +107,7 @@ function load_cache_for(name, params, repeat=false) {
             console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - triggering ...`)
             // console.log(`INFO: CACHE_VARS[${name}] ${JSON.stringify(CACHE_VARS[name])}`)
 
-            json_trigger(CACHE_VARS, cache_conf[name]['trigger'], {params: params})
+            await json_trigger(CACHE_VARS, cache_conf[name]['trigger'], {params: params})
         }
 
         return result
@@ -144,8 +144,9 @@ function load_cache_for(name, params, repeat=false) {
 }
 
 module.exports = {
+    init_cache: init_cache,
     get_cache_for: get_cache_for,
     load_cache_for: load_cache_for
 }
 
-init_cache()
+// init_cache()

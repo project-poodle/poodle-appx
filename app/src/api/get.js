@@ -12,7 +12,7 @@ let MAX_LIMIT = 200 * 1000
 /**
  * parse_get
  */
-function parse_get(context, req, res) {
+async function parse_get(context, req, res) {
 
     let fatal = false
 
@@ -101,7 +101,7 @@ function parse_get(context, req, res) {
     let join = objPath.get(api_spec, ["syntax", "join"])
     let lookup_tables = [ context.obj_name ]
     if (join) {
-        join.forEach((join_spec, i) => {
+        for (const join_spec of join) {
 
             let join_name = join_spec['obj']
             let join_type = join_spec['type']
@@ -278,7 +278,7 @@ function parse_get(context, req, res) {
                 fatal = true
                 return { fatal: fatal, status: FAILURE, error: msg }
             }
-        })
+        }
     }
 
     // cut short if fatal
@@ -288,7 +288,7 @@ function parse_get(context, req, res) {
 
     // process req.params
     let params = req.params || {}
-    Object.keys(params).forEach((param_key, i) => {
+    for (const param_key of Object.keys(params)) {
 
         if (! (param_key in select_attrs)) {
             let msg = `ERROR: param_key not found [${param_key}] - [${context.api_endpoint}] !`
@@ -304,11 +304,11 @@ function parse_get(context, req, res) {
         }
 
         where_clauses.push(where_clause)
-    })
+    }
 
     // process query string
     let queries = req.query || {}
-    Object.keys(queries).forEach((query_key, i) => {
+    for (const query_key of Object.keys(queries)) {
 
         // cut short if fatal
         if (fatal) {
@@ -318,7 +318,7 @@ function parse_get(context, req, res) {
         if (query_key == '_sort') {
 
             let sortKeys = queries[query_key].split(",")
-            sortKeys.forEach((sortKey, i) => {
+            for (const sortKey of sortKeys) {
 
                 let regex = `^(${REGEX_VAR})(\\.${REGEX_VAR})*(\\((asc|desc)\\))?$`
                 //console.log(sortKey)
@@ -347,7 +347,7 @@ function parse_get(context, req, res) {
                     json_attr: match[2],
                     order: match[4] ? match[4] : 'asc'
                 })
-            });
+            }
 
         } else if (query_key == '_start') {
 
@@ -397,7 +397,7 @@ function parse_get(context, req, res) {
 
             where_clauses.push(where_clause)
         }
-    })
+    }
 
     // return result
     return {
@@ -413,9 +413,9 @@ function parse_get(context, req, res) {
 /**
  * handle_get
  */
-function handle_get(context, req, res) {
+async function handle_get(context, req, res) {
 
-    let parsed = parse_get(context, req, res)
+    let parsed = await parse_get(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -481,7 +481,7 @@ function handle_get(context, req, res) {
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
-    let result = db.query_sync(sql, sql_params)
+    let result = await db.query_async(sql, sql_params)
 
     // send back the result
     res.status(200).json(result)

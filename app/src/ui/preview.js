@@ -21,7 +21,7 @@ const rootDir = path.join(__dirname, '../../../ui/')
 /**
  * handle_preview
  */
-function handle_preview(req, res) {
+async function handle_preview(req, res) {
 
     // console.log(req)
     // console.log(req.body)
@@ -54,7 +54,7 @@ function handle_preview(req, res) {
     // load from cache if not exist
     if (!ui_spec || !ui_deployment_spec) {
 
-        const lookup = get_ui_deployment(req, res)
+        const lookup = await get_ui_deployment(req, res)
         if (req.fatal) {
             return
         }
@@ -78,7 +78,7 @@ function handle_preview(req, res) {
 
         if (ui_component_type == 'react/component') {
           // render source code
-          const result = handle_react_component(req, res)
+          const result = await handle_react_component(req, res)
           res.status(result.status)
               .type(result.type)
               .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -86,7 +86,7 @@ function handle_preview(req, res) {
 
         } else if (ui_component_type == 'react/provider') {
           // render source code
-          const result = handle_react_provider(req, res)
+          const result = await handle_react_provider(req, res)
           res.status(result.status)
               .type(result.type)
               .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -104,7 +104,7 @@ function handle_preview(req, res) {
       } else if (req_output === 'html') {
 
         // render html
-        const result = handle_render(req, res, false)
+        const result = await handle_render(req, res, false)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -124,7 +124,7 @@ function handle_preview(req, res) {
       if (req_output === 'code') {
 
         // render source code
-        const result = handle_appx_route(req, res)
+        const result = await handle_appx_route(req, res)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
@@ -133,7 +133,7 @@ function handle_preview(req, res) {
       } else if (req_output === 'html') {
 
         // render html
-        const result = handle_render(req, res, false)
+        const result = await handle_render(req, res, false)
         res.status(result.status)
             .type(result.type)
             .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))

@@ -5,9 +5,9 @@ const { log_api_status, parse_for_sql, load_object, record_status_audit, SUCCESS
 /**
  * handle_status
  */
-function handle_status(context, req, res) {
+async function handle_status(context, req, res) {
 
-    let parsed = parse_for_sql(context, req, res)
+    let parsed = await parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -69,13 +69,13 @@ function handle_status(context, req, res) {
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
-    let result = db.query_sync(sql, sql_params)
+    let result = await db.query_async(sql, sql_params)
 
     // query curr
-    let curr = load_object(parsed)
+    let curr = await load_object(parsed)
 
     // record status audit
-    record_status_audit(curr.id, curr, req)
+    await record_status_audit(curr.id, curr, req)
 
     // send back the result
     res.status(200).json({status: SUCCESS})

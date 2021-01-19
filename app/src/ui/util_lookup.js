@@ -5,6 +5,13 @@ const db = require('../db/db')
 const cache = require('../cache/cache')
 const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 
+const DEFAULT_BATCH_SIZE = 50
+
+// sleep
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * get_ui_deployment
  */
@@ -42,7 +49,7 @@ function get_ui_deployment(req, res) {
     let ui_spec = objPath.get(ui_deployment, ["ui_spec"])
     if (!ui_spec) {
         let msg = `ERROR: ui_spec not found - [${JSON.stringify(context)}] !`
-        log_elem_status(context, FAILURE, msg)
+        log_comp_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return null
@@ -61,7 +68,7 @@ function get_ui_component(req, res) {
     let cache_ui_component = cache.get_cache_for('ui_component')
     //console.log(JSON.stringify(cache_ui_component, null, 4))
 
-    let elem_prop = [
+    let comp_prop = [
         context.namespace,
         "ui_deployments",
         context.ui_name,
@@ -69,10 +76,10 @@ function get_ui_component(req, res) {
         "ui_components",
         context.ui_component_name
     ]
-    let elem = objPath.get(cache_ui_component, elem_prop)
+    let elem = objPath.get(cache_ui_component, comp_prop)
     if (!elem) {
         let msg = `ERROR: element not found [${context.ui_component_name}] - [${JSON.stringify(context)}] !`
-        log_elem_status(context, FAILURE, msg)
+        log_comp_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return
@@ -81,7 +88,7 @@ function get_ui_component(req, res) {
     let element_spec = objPath.get(elem, ["ui_component_spec"])
     if (!element_spec) {
         let msg = `ERROR: element_spec not found - [${JSON.stringify(context)}] !`
-        log_elem_status(context, FAILURE, msg)
+        log_comp_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return null
@@ -132,93 +139,192 @@ function get_ui_route(req, res) {
 /**
  * log_deployment_status
  */
+const deployment_status_logs = []
 const log_deployment_status = (deployment_context, status, message) => {
-
-    // console.log(message)
-    db.query_sync(`INSERT INTO ui_deployment_status
-                    (
-                        namespace,
-                        ui_name,
-                        ui_deployment,
-                        ui_deployment_status
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?,
-                        JSON_OBJECT('status', ?, 'message', ?)
-                    )
-                    ON DUPLICATE KEY UPDATE
-                        ui_deployment_status=VALUES(ui_deployment_status)`,
-                    [
-                        deployment_context.namespace,
-                        deployment_context.ui_name,
-                        deployment_context.ui_deployment,
-                        status,
-                        message
-                    ])
+    // add to log
+    deployment_status_logs.push({
+      deployment_context: deployment_context,
+      status: status,
+      message: message
+    })
 }
+
+// api status worker
+async function deployment_status_worker() {
+
+    const async_log_batch = async (batch) => {
+        await db.query_async(
+            `INSERT INTO ui_deployment_status
+            (
+                namespace,
+                ui_name,
+                ui_deployment,
+                ui_deployment_status
+            )
+            VALUES ?
+            ON DUPLICATE KEY UPDATE
+                ui_deployment_status=VALUES(ui_deployment_status)`,
+            [
+                batch.map(data => [
+                    data.deployment_context.namespace,
+                    data.deployment_context.ui_name,
+                    data.deployment_context.ui_deployment,
+                    JSON.stringify({
+                      status: data.status,
+                      message: data.message
+                    })
+                ])
+            ]
+        )
+    }
+
+    while (true) {
+        try {
+            if (deployment_status_logs.length <= 0) {
+                await sleep(100)
+            } else {
+                const batch_data = deployment_status_logs.splice(
+                  0,
+                  Math.min(deployment_status_logs.length, DEFAULT_BATCH_SIZE)
+                )
+                await async_log_batch(batch_data)
+                // console.log(`INFO: flush deployment status log [${batch_data.length}]`)
+            }
+        } catch (err) {
+            console.log(`ERROR: failed deployment_status_worker`, err)
+        }
+    }
+}
+
+deployment_status_worker()
 
 /**
- * log_elem_status
+ * log_comp_status
  */
-const log_elem_status = (elem_context, status, message) => {
-
-    // console.log(message)
-    db.query_sync(`INSERT INTO ui_component_status
-                    (
-                        namespace,
-                        ui_name,
-                        ui_deployment,
-                        ui_component_name,
-                        ui_component_status
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?, ?,
-                        JSON_OBJECT('status', ?, 'message', ?)
-                    )
-                    ON DUPLICATE KEY UPDATE
-                        ui_component_status=VALUES(ui_component_status)`,
-                    [
-                        elem_context.namespace,
-                        elem_context.ui_name,
-                        elem_context.ui_deployment,
-                        elem_context.ui_component_name,
-                        status,
-                        message
-                    ])
+const comp_status_logs = []
+const log_comp_status = (comp_context, status, message) => {
+    // add to log
+    comp_status_logs.push({
+      comp_context: comp_context,
+      status: status,
+      message: message
+    })
 }
+
+// elem status worker
+async function comp_status_worker() {
+
+    const async_log_batch = async (batch) => {
+        await db.query_async(
+            `INSERT INTO ui_component_status
+            (
+                namespace,
+                ui_name,
+                ui_deployment,
+                ui_component_name,
+                ui_component_status
+            )
+            VALUES ?
+            ON DUPLICATE KEY UPDATE
+                ui_component_status=VALUES(ui_component_status)`,
+            [
+                batch.map(data => [
+                    data.comp_context.namespace,
+                    data.comp_context.ui_name,
+                    data.comp_context.ui_deployment,
+                    data.comp_context.ui_component_name,
+                    JSON.stringify({
+                      status: data.status,
+                      message: data.message
+                    })
+                ])
+            ]
+        )
+    }
+
+    while (true) {
+        try {
+            if (comp_status_logs.length <= 0) {
+                await sleep(100)
+            } else {
+                const batch_data = comp_status_logs.splice(
+                  0,
+                  Math.min(comp_status_logs.length, DEFAULT_BATCH_SIZE)
+                )
+                await async_log_batch(batch_data)
+                // console.log(`INFO: flush elem status log [${batch_data.length}]`)
+            }
+        } catch (err) {
+            console.log(`ERROR: failed comp_status_worker`, err)
+        }
+    }
+}
+
+comp_status_worker()
 
 /**
  * log_route_status
  */
+const route_status_logs = []
 const log_route_status = (route_context, status, message) => {
-
-    // console.log(message)
-    db.query_sync(`INSERT INTO ui_route_status
-                    (
-                        namespace,
-                        ui_name,
-                        ui_deployment,
-                        ui_route_name,
-                        ui_route_status
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?, ?,
-                        JSON_OBJECT('status', ?, 'message', ?)
-                    )
-                    ON DUPLICATE KEY UPDATE
-                        ui_route_status=VALUES(ui_route_status)`,
-                    [
-                        route_context.namespace,
-                        route_context.ui_name,
-                        route_context.ui_deployment,
-                        route_context.ui_route_name,
-                        status,
-                        message
-                    ])
+    // add to log
+    route_status_logs.push({
+      route_context: route_context,
+      status: status,
+      message: message
+    })
 }
+
+// elem status worker
+async function route_status_worker() {
+
+    const async_log_batch = async (batch) => {
+        await db.query_async(
+            `INSERT INTO ui_route_status
+            (
+                namespace,
+                ui_name,
+                ui_deployment,
+                ui_route_name,
+                ui_route_status
+            )
+            VALUES ?
+            ON DUPLICATE KEY UPDATE
+                ui_route_status=VALUES(ui_route_status)`,
+            [
+                batch.map(data => [
+                    data.route_context.namespace,
+                    data.route_context.ui_name,
+                    data.route_context.ui_deployment,
+                    data.route_context.ui_route_name,
+                    JSON.stringify({
+                      status: data.status,
+                      message: data.message
+                    })
+                ])
+            ]
+        )
+    }
+
+    while (true) {
+        try {
+            if (route_status_logs.length <= 0) {
+                await sleep(100)
+            } else {
+                const batch_data = route_status_logs.splice(
+                  0,
+                  Math.min(route_status_logs.length, DEFAULT_BATCH_SIZE)
+                )
+                await async_log_batch(batch_data)
+                // console.log(`INFO: flush route status log [${batch_data.length}]`)
+            }
+        } catch (err) {
+            console.log(`ERROR: failed route_status_worker`, err)
+        }
+    }
+}
+
+route_status_worker()
 
 // walk folder recursivelly
 const walk_recursive = function(dir, done) {
@@ -249,7 +355,7 @@ module.exports = {
   get_ui_deployment: get_ui_deployment,
   get_ui_component: get_ui_component,
   get_ui_route: get_ui_route,
-  log_elem_status: log_elem_status,
+  log_comp_status: log_comp_status,
   log_route_status: log_route_status,
   log_deployment_status: log_deployment_status,
   walk_recursive: walk_recursive,

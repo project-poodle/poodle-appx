@@ -22,7 +22,7 @@ const db = require('../db/db')
 /**
  * handle_appx_route
  */
-function handle_appx_route(req, res) {
+async function handle_appx_route(req, res) {
 
     // console.log(req.context)
 
@@ -87,7 +87,6 @@ function handle_appx_route(req, res) {
     const ui_route_name = ('self/' + req.context.ui_route_name).replace(/\/+/g, '/')
     reg_js_variable(js_context, ui_route_name, 'const', capitalize(req.context.ui_route_name))
     js_context.self = ui_route_name
-    //console.log(get_js_variable(js_context, ui_route_name))
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')

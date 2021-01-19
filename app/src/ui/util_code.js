@@ -1,8 +1,10 @@
 //const babel = require('@babel/standalone')
 //const generate = require('@babel/generator').default
+const _ = require('lodash')
 const { parse, parseExpression } = require('@babel/parser')
 const t = require("@babel/types")
 const db = require('../db/db')
+const cache = require('../cache/cache')
 const {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
@@ -2270,7 +2272,21 @@ function appx_route(js_context, ref, input) {
 
   const { namespace, ui_name, ui_deployment } = js_context.appx
 
-  let route_results = db.query_sync(`SELECT
+  let cache_props = [
+      namespace,
+      "ui_deployments",
+      ui_name,
+      ui_deployment,
+      "ui_routes",
+  ]
+
+  let cache_ui_route = cache.get_cache_for('ui_route')
+  let route_results = _.get(cache_ui_route, cache_props) || {}
+
+  console.log(`route_results`, route_results)
+
+  /*
+  let route_results = await db.query_async(`SELECT
                   ui_route.namespace,
                   ui_route.ui_name,
                   ui_route.ui_ver,
@@ -2297,11 +2313,12 @@ function appx_route(js_context, ref, input) {
                   ui_deployment,
               ]
   )
+  */
 
   const objectExpression = t.objectExpression(
-    route_results.map(route => {
+    Object.keys(route_results).map(key => {
       return t.objectProperty(
-        t.stringLiteral(route.ui_route_name),
+        t.stringLiteral(route_results[key].ui_route_name),
         t.arrowFunctionExpression(
           [],
           t.blockStatement(
@@ -2314,7 +2331,7 @@ function appx_route(js_context, ref, input) {
                       topLevel: true,
                       parentPath: null,
                     },
-                    route.ui_route_spec,
+                    route_results[key].ui_route_spec,
                   ),
                   []
                 )

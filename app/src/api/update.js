@@ -7,9 +7,9 @@ const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, 
 /**
  * handle_update
  */
-function handle_update(context, req, res) {
+async function handle_update(context, req, res) {
 
-    let parsed = parse_for_sql(context, req, res)
+    let parsed = await parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -78,19 +78,19 @@ function handle_update(context, req, res) {
     })
 
     // query prev
-    let prev = load_object(parsed)
+    let prev = await load_object(parsed)
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
-    let result = db.query_sync(sql, sql_params)
+    let result = await db.query_async(sql, sql_params)
 
     // query curr
-    let curr = load_object(parsed)
+    let curr = await load_object(parsed)
     let obj_changed = !deepEqual(curr, prev)
 
     // record audit
     if (curr != null && obj_changed) {
-        record_spec_audit(curr.id, prev, curr, req)
+        await record_spec_audit(curr.id, prev, curr, req)
     }
 
     // send back the result

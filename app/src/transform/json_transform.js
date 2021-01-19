@@ -315,7 +315,7 @@ function json_transform(target, source, transform, context) {
 /**
  * trigger json with trigger spec
  */
-function json_trigger(data, trigger, context) {
+async function json_trigger(data, trigger, context) {
 
     // console.log(`INFO: json_trigger(${data}, ${JSON.stringify(trigger)}, ${JSON.stringify(context)})`)
 
@@ -326,14 +326,14 @@ function json_trigger(data, trigger, context) {
 
     if (Array.isArray(trigger)) {
 
-        trigger.forEach((trigger_value, i) => {
+        for (const trigger_value of trigger) {
 
-            json_trigger(data, trigger_value, context)
-        });
+            await json_trigger(data, trigger_value, context)
+        }
 
     } else if (typeof trigger === 'object' && trigger !== null) {
 
-        Object.keys(trigger).forEach((trigger_key, i) => {
+        for (const trigger_key of Object.keys(trigger)) {
 
             if (trigger_key == INVOKE_KEY) {
 
@@ -341,10 +341,16 @@ function json_trigger(data, trigger, context) {
 
                 let mod = require(trigger[trigger_key]['module'])
                 let func = mod[trigger[trigger_key]['method']]
+                const isAsync = func.constructor.name === 'AsyncFunction'
                 let params = json_transform(null, data, trigger[trigger_key]['params'], context)
                 // call function
                 try {
-                    func.call(context, ...params)
+                    if (isAsync) {
+                      // console.log(`async function detected`)
+                      await func.call(context, ...params)
+                    } else {
+                      func.call(context, ...params)
+                    }
                     console.log(`INFO: invoked [${trigger[trigger_key]['module']}/${trigger[trigger_key]['method']}] with ${JSON.stringify(params)} !`)
                 } catch (err) {
                     console.log(`INFO: invoke failed ! [${err}] [${trigger[trigger_key]['module']}/${trigger[trigger_key]['method']}] with ${JSON.stringify(params)}`)
@@ -372,7 +378,7 @@ function json_trigger(data, trigger, context) {
 
                 if (typeof map === 'object' && map !== null) {
 
-                    Object.keys(map).forEach((key, i) => {
+                    for (const key of Object.keys(map)) {
 
                         // console.log('source')
                         // console.log(source)
@@ -395,8 +401,8 @@ function json_trigger(data, trigger, context) {
                         }
                         child_data[variable + KEY_SUFFIX] = key
 
-                        json_trigger(child_data, trigger[trigger_key], context)
-                    });
+                        await json_trigger(child_data, trigger[trigger_key], context)
+                    }
 
                 } else if (map) {
 
@@ -417,7 +423,7 @@ function json_trigger(data, trigger, context) {
 
                 if (Array.isArray(arr)) {
 
-                    arr.forEach((value, i) => {
+                    for (const value of arr) {
 
                         let child_data = { ...data }
                         child_data[variable] = {}
@@ -438,8 +444,8 @@ function json_trigger(data, trigger, context) {
                         child_data[variable + KEY_SUFFIX] = i
 
                         // update result
-                        json_trigger(child_data, trigger[trigger_key], context)
-                    });
+                        await json_trigger(child_data, trigger[trigger_key], context)
+                    }
 
                 } else {
 
@@ -448,9 +454,9 @@ function json_trigger(data, trigger, context) {
 
             } else {
 
-                json_trigger(data, trigger[trigger_key], context)
+                await json_trigger(data, trigger[trigger_key], context)
             }
-        });
+        }
 
     } else {
 

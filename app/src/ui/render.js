@@ -19,7 +19,7 @@ const rootDir = path.join(__dirname, '../../../ui/')
 /**
  * handle_render
  */
-function handle_render(req, res, load_from_db=true) {
+async function handle_render(req, res, load_from_db=true) {
 
     let {
       req_type,
@@ -58,7 +58,7 @@ function handle_render(req, res, load_from_db=true) {
 
         if (req_type === 'ui_component') {
             // handle ui_component
-            let elem_result = db.query_sync(`
+            let comp_result = await db.query_async(`
                 SELECT
                     ui.namespace,
                     ui.ui_name,
@@ -96,7 +96,7 @@ function handle_render(req, res, load_from_db=true) {
                 ]
             )
 
-            if (elem_result.length == 0) {
+            if (comp_result.length == 0) {
                 return {
                     status: 422,
                     type: 'application/json',
@@ -110,23 +110,23 @@ function handle_render(req, res, load_from_db=true) {
             // extract result
             req.context = {
               ...req.context,
-              ...elem_result[0],
+              ...comp_result[0],
             }
 
             // update local variables
-            namespace           = elem_result[0].namespace
-            ui_name             = elem_result[0].ui_name
-            ui_ver              = elem_result[0].ui_ver
-            ui_spec             = elem_result[0].ui_spec
-            ui_deployment       = elem_result[0].ui_deployment
-            ui_deployment_spec  = elem_result[0].ui_deployment_spec
-            ui_component_name     = elem_result[0].ui_component_name
-            ui_component_type     = elem_result[0].ui_component_type
-            ui_component_spec     = elem_result[0].ui_component_spec
+            namespace           = comp_result[0].namespace
+            ui_name             = comp_result[0].ui_name
+            ui_ver              = comp_result[0].ui_ver
+            ui_spec             = comp_result[0].ui_spec
+            ui_deployment       = comp_result[0].ui_deployment
+            ui_deployment_spec  = comp_result[0].ui_deployment_spec
+            ui_component_name     = comp_result[0].ui_component_name
+            ui_component_type     = comp_result[0].ui_component_type
+            ui_component_spec     = comp_result[0].ui_component_spec
 
         } else if (req_type === 'ui_route') {
             // handle ui_route
-            let elem_result = db.query_sync(`
+            let comp_result = await db.query_async(`
                 SELECT
                     ui.namespace,
                     ui.ui_name,
@@ -163,7 +163,7 @@ function handle_render(req, res, load_from_db=true) {
                 ]
             )
 
-            if (elem_result.length == 0) {
+            if (comp_result.length == 0) {
                 return {
                     status: 422,
                     type: 'application/json',
@@ -177,18 +177,18 @@ function handle_render(req, res, load_from_db=true) {
             // extract result
             req.context = {
               ...req.context,
-              ...elem_result[0],
+              ...comp_result[0],
             }
 
             // update local variables
-            namespace           = elem_result[0].namespace
-            ui_name             = elem_result[0].ui_name
-            ui_ver              = elem_result[0].ui_ver
-            ui_spec             = elem_result[0].ui_spec
-            ui_deployment       = elem_result[0].ui_deployment
-            ui_deployment_spec  = elem_result[0].ui_deployment_spec
-            ui_route_name       = elem_result[0].ui_route_name
-            ui_route_spec       = elem_result[0].ui_route_spec
+            namespace           = comp_result[0].namespace
+            ui_name             = comp_result[0].ui_name
+            ui_ver              = comp_result[0].ui_ver
+            ui_spec             = comp_result[0].ui_spec
+            ui_deployment       = comp_result[0].ui_deployment
+            ui_deployment_spec  = comp_result[0].ui_deployment_spec
+            ui_route_name       = comp_result[0].ui_route_name
+            ui_route_spec       = comp_result[0].ui_route_spec
 
         } else {
             // unrecognized type
@@ -207,7 +207,7 @@ function handle_render(req, res, load_from_db=true) {
         // load from cache if not exist
         if (!ui_spec || !ui_deployment_spec) {
 
-            const lookup = get_ui_deployment(req, res)
+            const lookup = await get_ui_deployment(req, res)
             if (req.fatal) {
                 return
             }
@@ -303,7 +303,7 @@ function handle_render(req, res, load_from_db=true) {
 
     if (req_type === 'ui_route') {
       // process source code for ui_route
-      const element_js = handle_appx_route(req, res)
+      const element_js = await handle_appx_route(req, res)
       if (element_js.status !== 200) {
           return element_js
       }
@@ -311,7 +311,7 @@ function handle_render(req, res, load_from_db=true) {
 
     } else if (ui_component_type == 'react/component') {
       // process source code [element_js]
-      const element_js = handle_react_component(req, res)
+      const element_js = await handle_react_component(req, res)
       if (element_js.status !== 200) {
           return element_js
       }
@@ -319,7 +319,7 @@ function handle_render(req, res, load_from_db=true) {
 
     } else if (ui_component_type == 'react/provider') {
       // process source code [element_js]
-      const element_js = handle_react_provider(req, res)
+      const element_js = await handle_react_provider(req, res)
       if (element_js.status !== 200) {
           return element_js
       }

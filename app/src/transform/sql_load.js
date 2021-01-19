@@ -13,7 +13,7 @@ try {
 /**
  * load sql data
  */
-function sql_load(filepath, context) {
+async function sql_load(filepath, context) {
 
     // console.log(`INFO: sql_load(${filepath}, ${JSON.stringify(context)})`)
 
@@ -25,14 +25,14 @@ function sql_load(filepath, context) {
     let variables = {}
 
     definition = YAML.parse(fs.readFileSync(filepath, 'utf8'))
-    definition.forEach((def, i) => {
+    for (const def of definition) {
 
         let results = null
         let sql = null
         try {
           //console.log(JSON.stringify(def, null, 4))
           sql = Mustache.render(def.query, context)
-          results = db.query_sync(sql, [])
+          results = await db.query_async(sql, [])
         } catch (err) {
           console.log(`ERROR: Failed to load [${sql}] ${JSON.stringify(def)}`)
           console.log(err)
@@ -65,8 +65,6 @@ function sql_load(filepath, context) {
             });
         }
 
-
-
         if ('arr_def' in def) {
 
             def.arr_def.forEach((arr_def, i) => {
@@ -79,7 +77,7 @@ function sql_load(filepath, context) {
                 objPath.set(variables, arr_def.name, arr)
             });
         }
-    });
+    }
 
     return variables
 }

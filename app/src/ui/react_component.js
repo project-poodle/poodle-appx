@@ -22,7 +22,7 @@ const db = require('../db/db')
 /**
  * handle_react_component
  */
-function handle_react_component(req, res) {
+async function handle_react_component(req, res) {
 
     // const { ui_deployment, ui_component } = req.context
     // console.log(req.context)
@@ -85,10 +85,9 @@ function handle_react_component(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_component_name))
-    js_context.self = ui_elem_name
-    //console.log(get_js_variable(js_context, ui_elem_name))
+    const ui_comp_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
+    reg_js_variable(js_context, ui_comp_name, 'const', capitalize(req.context.ui_component_name))
+    js_context.self = ui_comp_name
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
@@ -102,12 +101,12 @@ function handle_react_component(req, res) {
     const test_statements = []
     if ('_test' in req.context.ui_component_spec) {
       // register variable
-      const ui_test_name = ui_elem_name + '.Test'
+      const ui_test_name = ui_comp_name + '.Test'
       reg_js_variable(js_context, ui_test_name)
       // process providers
       let test_element = {
         _type: 'react/element',
-        name: ui_elem_name,
+        name: ui_comp_name,
       }
       if (!!req.context.ui_component_spec._test.providers) {
         req.context.ui_component_spec._test.providers
@@ -153,7 +152,7 @@ function handle_react_component(req, res) {
         t.assignmentExpression(
           '=',
           t.memberExpression(
-            t.identifier(ui_elem_name),
+            t.identifier(ui_comp_name),
             t.identifier('Test')
           ),
           t.identifier(ui_test_name)
@@ -172,7 +171,7 @@ function handle_react_component(req, res) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier(ui_elem_name),
+                t.identifier(ui_comp_name),
                 component_func,
               )
             ]
@@ -181,7 +180,7 @@ function handle_react_component(req, res) {
           ...test_statements,
           // export
           t.exportDefaultDeclaration(
-            t.identifier(ui_elem_name)
+            t.identifier(ui_comp_name)
           ),
         ],
         [], // program directives

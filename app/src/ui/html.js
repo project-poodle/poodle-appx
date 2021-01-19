@@ -77,7 +77,7 @@ const KEY_VALUE = function() {
 /**
  * handle_html
  */
-function handle_html(req, res) {
+async function handle_html(req, res) {
 
     // const { ui_deployment, ui_component } = req.context
 

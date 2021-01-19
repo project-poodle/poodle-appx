@@ -7,7 +7,7 @@ const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, 
 /**
  * handle_upsert
  */
-function handle_upsert(context, req, res) {
+async function handle_upsert(context, req, res) {
 
     let parsed = parse_for_sql(context, req, res)
 
@@ -70,19 +70,19 @@ function handle_upsert(context, req, res) {
     })
 
     // query prev
-    let prev = load_object(parsed)
+    let prev = await load_object(parsed)
 
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
-    let result = db.query_sync(sql, sql_params)
+    let result = await db.query_async(sql, sql_params)
 
     // query curr
-    let curr = load_object(parsed)
+    let curr = await load_object(parsed)
     let obj_changed = !deepEqual(curr, prev)
 
     // record audit
     if (curr != null && obj_changed) {
-        record_spec_audit(result.insertId, prev, curr, req)
+        await record_spec_audit(result.insertId, prev, curr, req)
     }
 
     // send back the result

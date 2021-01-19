@@ -5,40 +5,81 @@ const cache = require('../cache/cache')
 const SUCCESS = "ok"
 const FAILURE = "error"
 
+const DEFAULT_BATCH_SIZE = 50
 const REGEX_VAR = '[_a-zA-Z][_a-zA-Z0-9]*'
+
+// sleep
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 /**
  * log_api_status
  */
+ const api_status_logs = []
 const log_api_status = (api_context, status, message) => {
-
-    // console.log(message)
-    db.query_sync(`INSERT INTO api_status
-                    (
-                        namespace,
-                        app_name,
-                        app_deployment,
-                        obj_name,
-                        api_method,
-                        api_endpoint,
-                        api_status
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?, ?, ?, ?,
-                        JSON_OBJECT('status', '${status}', 'message', '${message}')
-                    )
-                    ON DUPLICATE KEY UPDATE
-                        api_status=VALUES(api_status)`,
-                    [
-                        api_context.namespace,
-                        api_context.app_name,
-                        api_context.app_deployment,
-                        api_context.obj_name,
-                        api_context.api_method,
-                        api_context.api_endpoint
-                    ])
+    // add to log
+    api_status_logs.push({
+      api_context: api_context,
+      status: status,
+      message: message
+    })
 }
+
+// api status worker
+async function api_status_worker() {
+
+    const async_log_batch = async (batch) => {            // console.log(message)
+        await db.query_async(
+            `INSERT INTO api_status
+            (
+                namespace,
+                app_name,
+                app_deployment,
+                obj_name,
+                api_method,
+                api_endpoint,
+                api_status
+            )
+            VALUES ?
+            ON DUPLICATE KEY UPDATE
+                api_status=VALUES(api_status)`,
+            [
+                batch.map(data => [
+                    data.api_context.namespace,
+                    data.api_context.app_name,
+                    data.api_context.app_deployment,
+                    data.api_context.obj_name,
+                    data.api_context.api_method,
+                    data.api_context.api_endpoint,
+                    JSON.stringify({
+                      status: data.status,
+                      message: data.message
+                    })
+                ])
+            ]
+        )
+    }
+
+    while (true) {
+        try {
+            if (api_status_logs.length <= 0) {
+                await sleep(100)
+            } else {
+                const batch_data = api_status_logs.splice(
+                  0,
+                  Math.min(api_status_logs.length, DEFAULT_BATCH_SIZE)
+                )
+                await async_log_batch(batch_data)
+                // console.log(`INFO: flush api status log [${batch_data.length}]`)
+            }
+        } catch (err) {
+            console.log(`ERROR: failed api_status_worker`, err)
+        }
+    }
+}
+
+api_status_worker()
 
 /**
  * parse_upsert
@@ -128,7 +169,7 @@ function parse_for_sql(context, req, res) {
 
     // process req.params
     let params = req.params || {}
-    Object.keys(params).forEach((param_key, i) => {
+    for (const param_key of Object.keys(params)) {
 
         if (fatal) {
             return
@@ -143,11 +184,11 @@ function parse_for_sql(context, req, res) {
         }
 
         data_attrs[param_key] = `${params[param_key]}`
-    });
+    }
 
     // process req.body
     let body = req.body || {}
-    Object.keys(body).forEach((body_key, i) => {
+    for (const body_key of Object.keys(body)) {
 
         if (fatal) {
             return
@@ -162,7 +203,7 @@ function parse_for_sql(context, req, res) {
         }
 
         data_attrs[body_key] = body[body_key]
-    });
+    }
 
     // return result
     return {
@@ -178,7 +219,7 @@ function parse_for_sql(context, req, res) {
 /**
  * load previous object
  */
-function load_object(parsed) {
+async function load_object(parsed) {
 
     // create prev sql
     let sql_prev = `SELECT \`id\``
@@ -206,7 +247,7 @@ function load_object(parsed) {
         sql_prev_params.push(parsed.data_attrs[key_attr])
     })
 
-    let prev = db.query_sync(sql_prev, sql_prev_params)
+    let prev = await db.query_async(sql_prev, sql_prev_params)
 
     if (prev && prev.length != 0) {
         return prev[0]
@@ -218,7 +259,7 @@ function load_object(parsed) {
 /**
  * record spec audit to database
  */
-function record_spec_audit(id, prev, curr, req) {
+async function record_spec_audit(id, prev, curr, req) {
 
     let spec_audit = {
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
@@ -232,7 +273,7 @@ function record_spec_audit(id, prev, curr, req) {
     let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(spec_audit)]
 
     try {
-        db.query_sync(audit_sql, audit_params)
+        await db.query_async(audit_sql, audit_params)
     } catch (err) {
         console.log(`ERROR: spec audit sql failed ${audit_sql}, ${audit_params}`)
         throw err
@@ -242,7 +283,7 @@ function record_spec_audit(id, prev, curr, req) {
 /**
  * record status audit to database
  */
-function record_status_audit(id, status, req) {
+async function record_status_audit(id, status, req) {
 
     let status_audit = {
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
@@ -255,7 +296,7 @@ function record_status_audit(id, status, req) {
     let audit_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(status_audit)]
 
     try {
-        db.query_sync(audit_sql, audit_params)
+        await db.query_async(audit_sql, audit_params)
     } catch (err) {
         console.log(`ERROR: status audit sql failed ${audit_sql}, ${audit_params}`)
         throw err
@@ -265,7 +306,7 @@ function record_status_audit(id, status, req) {
     let history_params = [req.context.namespace, req.context.app_name, req.context.obj_name, id, JSON.stringify(status_audit)]
 
     try {
-        db.query_sync(history_sql, history_params)
+        await db.query_async(history_sql, history_params)
     } catch (err) {
         console.log(`ERROR: status history sql failed ${history_sql}, ${history_params}`)
         throw err

@@ -29,18 +29,21 @@ namespace:
             - "$invoke":
                   module: "../cache/cache"
                   method: "load_cache_for"
+                  await: true
                   params:
                       - '"app_runtime"'
                       - namespace: "@ns"
             - "$invoke":
                   module: "../cache/cache"
                   method: "load_cache_for"
+                  await: true
                   params:
                       - '"app_deployment"'
                       - namespace: "@ns"
             - "$invoke":
                   module: "../cache/cache"
                   method: "load_cache_for"
+                  await: true
                   params:
                       - '"ui_deployment"'
                       - namespace: "@ns"
@@ -72,6 +75,7 @@ app_deployment:
                         "$invoke":
                             module: "../cache/cache"
                             method: "load_cache_for"
+                            await: true
                             params:
                                 - '"object"'
                                 - namespace: "@ns"
@@ -108,6 +112,7 @@ ui_deployment:
                         - "$invoke":
                               module: "../cache/cache"
                               method: "load_cache_for"
+                              await: true
                               params:
                                   - '"ui_component"'
                                   - namespace: "@ns"
@@ -116,6 +121,7 @@ ui_deployment:
                         - "$invoke":
                               module: "../cache/cache"
                               method: "load_cache_for"
+                              await: true
                               params:
                                   - '"ui_route"'
                                   - namespace: "@ns"

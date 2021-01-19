@@ -80,7 +80,7 @@ function get_api_spec(context, req, res) {
     return api_spec
 }
 
-function handle_req(req, res) {
+async function handle_req(req, res) {
 
     // check api_spec
     let api_spec = get_api_spec(req.context, req, res)
@@ -118,23 +118,23 @@ function handle_req(req, res) {
     // handle request by verb
     switch(api_spec.syntax.verb) {
         case "get":
-            handle_get(req.context, req, res)
+            await handle_get(req.context, req, res)
             return
 
         case "upsert":
-            handle_upsert(req.context, req, res)
+            await handle_upsert(req.context, req, res)
             return
 
         case "update":
-            handle_update(req.context, req, res)
+            await handle_update(req.context, req, res)
             return
 
         case "delete":
-            handle_delete(req.context, req, res)
+            await handle_delete(req.context, req, res)
             return
 
         case "status":
-            handle_status(req.context, req, res)
+            await handle_status(req.context, req, res)
             return
 
         default:
@@ -143,9 +143,9 @@ function handle_req(req, res) {
     }
 }
 
-function load_api_router(namespace, app_name, app_deployment) {
+async function load_api_router(namespace, app_name, app_deployment) {
 
-    let api_results = db.query_sync(`SELECT
+    let api_results = await db.query_async(`SELECT
                     api.namespace,
                     api.app_name,
                     app_deployment.app_deployment,
@@ -187,7 +187,7 @@ function load_api_router(namespace, app_name, app_deployment) {
 
     let router = express.Router()
 
-    api_results.forEach((api_result) => {
+    for (const api_result of api_results) {
 
         let api_context = {
             namespace: api_result.namespace,
@@ -203,44 +203,44 @@ function load_api_router(namespace, app_name, app_deployment) {
 
             case "get":
 
-                router.get(api_result.api_endpoint, (req, res) => {
+                router.get(api_result.api_endpoint, async (req, res) => {
 
                     req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
-                    handle_req(req, res)
+                    await handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
                 break
 
             case "post":
-                router.post(api_result.api_endpoint, (req, res) => {
+                router.post(api_result.api_endpoint, async (req, res) => {
 
                     req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
-                    handle_req(req, res)
+                    await handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
                 break
 
             case "put":
-                router.put(api_result.api_endpoint, (req, res) => {
+                router.put(api_result.api_endpoint, async (req, res) => {
 
                     req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
-                    handle_req(req, res)
+                    await handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
                 break
 
             case "delete":
-                router.delete(api_result.api_endpoint, (req, res) => {
+                router.delete(api_result.api_endpoint, async (req, res) => {
 
                     req.params = decode_params(req.params)
                     req.context = Object.assign({}, api_context, req.context)
-                    handle_req(req, res)
+                    await handle_req(req, res)
                 })
                 log_api_status(api_result, SUCCESS,
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
@@ -250,7 +250,7 @@ function load_api_router(namespace, app_name, app_deployment) {
                 log_api_status(api_result, FAILURE,
                     `unknow api method: ${api_result.api_method} [${JSON.stringify(api_result)}]`)
         }
-    })
+    }
 
     router.use('/', (req, res) => {
         res.status(404).json({status: FAILURE, message: `ERROR: API for [${req.url}] not found !`})

@@ -21,7 +21,7 @@ const db = require('../db/db')
 /**
  * handle_react_provider
  */
-function handle_react_provider(req, res) {
+async function handle_react_provider(req, res) {
 
     // const { ui_deployment, ui_component } = req.context
     // console.log(req.context)
@@ -67,14 +67,14 @@ function handle_react_provider(req, res) {
     }
 
     // ui_elem
-    const ui_elem_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
-    reg_js_variable(js_context, ui_elem_name, 'const', capitalize(req.context.ui_component_name))
-    js_context.self = ui_elem_name
+    const ui_comp_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
+    reg_js_variable(js_context, ui_comp_name, 'const', capitalize(req.context.ui_component_name))
+    js_context.self = ui_comp_name
 
     // register other variables
-    reg_js_variable(js_context, `${ui_elem_name}_Context`)
-    reg_js_variable(js_context, `${ui_elem_name}_Context.Provider`)
-    reg_js_variable(js_context, `${ui_elem_name}_Function`)
+    reg_js_variable(js_context, `${ui_comp_name}_Context`)
+    reg_js_variable(js_context, `${ui_comp_name}_Context.Provider`)
+    reg_js_variable(js_context, `${ui_comp_name}_Function`)
 
     reg_js_import(js_context, 'react', true, 'React')
     //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
@@ -215,12 +215,12 @@ function handle_react_provider(req, res) {
     const ast_tree = t.file(
       t.program(
         [
-          // const elem_name_Context = React.createContext()
+          // const comp_name_Context = React.createContext()
           t.variableDeclaration(
             'const',
             [
               t.variableDeclarator(
-                t.identifier(`${ui_elem_name}_Context`),
+                t.identifier(`${ui_comp_name}_Context`),
                 t.callExpression(
                   t.identifier('react.createContext'),
                   [],
@@ -232,18 +232,18 @@ function handle_react_provider(req, res) {
             'const',
             [
               t.variableDeclarator(
-                t.identifier(ui_elem_name),
+                t.identifier(ui_comp_name),
                 t.callExpression(
                   t.arrowFunctionExpression(
                     [],
                     t.blockStatement(
                       [
-                        // const elem_name_Function = (props) => {}
+                        // const comp_name_Function = (props) => {}
                         t.variableDeclaration(
                           'const',
                           [
                             t.variableDeclarator(
-                              t.identifier(`${ui_elem_name}_Function`),
+                              t.identifier(`${ui_comp_name}_Function`),
                               t.arrowFunctionExpression(
                                 [
                                   t.identifier('props')
@@ -255,7 +255,7 @@ function handle_react_provider(req, res) {
                                     t.returnStatement(
                                       t.jSXElement(
                                         t.jSXOpeningElement(
-                                          t.jSXIdentifier(`${ui_elem_name}_Context.Provider`),
+                                          t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
                                           [
                                             t.jSXAttribute(
                                               t.jSXIdentifier('value'),
@@ -281,7 +281,7 @@ function handle_react_provider(req, res) {
                                           ]
                                         ),
                                         t.jSXClosingElement(
-                                          t.jSXIdentifier(`${ui_elem_name}_Context.Provider`),
+                                          t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
                                         ),
                                         [
                                           t.jSXExpressionContainer(
@@ -299,20 +299,20 @@ function handle_react_provider(req, res) {
                             )
                           ]
                         ),
-                        // elem_name_Function.Context = elem_name_Context
+                        // comp_name_Function.Context = comp_name_Context
                         t.expressionStatement(
                           t.assignmentExpression(
                             '=',
                             t.memberExpression(
-                              t.identifier(`${ui_elem_name}_Function`),
+                              t.identifier(`${ui_comp_name}_Function`),
                               t.identifier('Context')
                             ),
-                            t.identifier(`${ui_elem_name}_Context`)
+                            t.identifier(`${ui_comp_name}_Context`)
                           )
                         ),
-                        // return elem_name_Function
+                        // return comp_name_Function
                         t.returnStatement(
-                          t.identifier(`${ui_elem_name}_Function`)
+                          t.identifier(`${ui_comp_name}_Function`)
                         )
                       ]
                     )
@@ -326,13 +326,13 @@ function handle_react_provider(req, res) {
             null,
             [
               t.exportSpecifier(
-                t.identifier(`${ui_elem_name}_Context`),
+                t.identifier(`${ui_comp_name}_Context`),
                 t.identifier(`Context`)
               )
             ]
           ),
           t.exportDefaultDeclaration(
-            t.identifier(ui_elem_name)
+            t.identifier(ui_comp_name)
           ),
         ],
         [], // program directives

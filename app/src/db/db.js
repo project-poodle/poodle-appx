@@ -172,5 +172,17 @@ module.exports = {
     // async query method
     query: query,
     // ync query method
-    query_sync: deasync(query)
+    query_sync: deasync(query),
+    // query async
+    query_async: async function(sql, variables) {
+        return new Promise((resolve, reject) => {
+            query(sql, variables, (error, result) => {
+                if (!!error) {
+                    reject(error)
+                } else {
+                    resolve(result)
+                }
+            })
+        })
+    }
 }
