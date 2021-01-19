@@ -138,7 +138,7 @@ const authenticator = function (req, res, next) {
                 }
             }
         } catch (err) {
-
+            console.log(err)
             // do not request basic authentication if user specified AppX bearer
             // res.set('WWW-Authenticate', `Basic realm="${realm}"`)
             res.status(401).json({ status: 'error', message: `${err}` })
@@ -201,7 +201,7 @@ const authenticator = function (req, res, next) {
                 return
             }
         } catch (err) {
-
+            console.log(err)
             res.set('WWW-Authenticate', `Basic realm="${realm}"`)
             res.status(401).json({ status: 'error', message: `${err}` })
             return

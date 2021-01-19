@@ -8,6 +8,14 @@ const { findToken, findUserWithPass, loginUserWithPass, logoutUser, lookupRolesP
 // handle login
 function _handle_login(req, res) {
     try {
+        if (!req.body) {
+            res.status(422).json({
+                status: FAILURE,
+                message: `ERROR: missing request body [${JSON.stringify(req.body)}]`
+            })
+            return
+        }
+
         if (! ('realm' in req.body)) {
             res.status(422).json({
                 status: FAILURE,
@@ -36,7 +44,7 @@ function _handle_login(req, res) {
         return
 
     } catch (err) {
-
+        console.log(err)
         res.status(401).json({ status: FAILURE, message: `${err}` })
         return
     }
@@ -132,7 +140,7 @@ function _handle_logout(req, res) {
         return
 
     } catch (err) {
-
+        console.log(err)
         res.status(401).json({ status: FAILURE, message: `${err}` })
         return
     }
@@ -163,7 +171,7 @@ function _handle_realm(req, res) {
         return
 
     } catch (err) {
-
+        console.log(err)
         res.status(401).json({ status: FAILURE, message: `${err}` })
         return
     }

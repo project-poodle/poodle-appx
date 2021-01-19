@@ -58,6 +58,7 @@ let ldap_search_objects = (ldap_search, callback) => {
     p.then(value => {
         callback(null, value)
     }).catch(err => {
+        console.log(err)
         callback(err, null)
     })
 }
@@ -137,6 +138,7 @@ function findLdapUserWithPass(realm, protocol, username, password) {
     try {
         ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl, results[0].dn, password)
     } catch (err) {
+        console.log(err)
         return {
             status: 'error',
             message: `Invalid Username or Password`

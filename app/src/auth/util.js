@@ -213,7 +213,7 @@ function loginUserWithPass(req, res) {
 
     } catch (err) {
 
-        console.log(err.stack)
+        console.log(err)
         res.status(422).json({status: 'error', message: `${err}`})
         return
 
@@ -253,7 +253,7 @@ function logoutUser(req, res) {
 
     } catch (err) {
 
-        console.log(err.stack)
+        console.log(err)
         res.status(422).json({status: 'error', message: `${err}`})
         return
 
