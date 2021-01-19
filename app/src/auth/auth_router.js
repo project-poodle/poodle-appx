@@ -6,7 +6,7 @@ const cache = require('../cache/cache')
 const { findToken, findUserWithPass, loginUserWithPass, logoutUser, lookupRolesPerms } = require('./util')
 
 // handle login
-function _handle_login(req, res) {
+async function _handle_login(req, res) {
     try {
         if (!req.body) {
             res.status(422).json({
@@ -40,7 +40,7 @@ function _handle_login(req, res) {
             return
         }
 
-        loginUserWithPass(req, res)
+        await loginUserWithPass(req, res)
         return
 
     } catch (err) {
@@ -51,7 +51,7 @@ function _handle_login(req, res) {
 }
 
 // handle logout
-function _handle_logout(req, res) {
+async function _handle_logout(req, res) {
     try {
         if (! ('realm' in req.body)) {
             res.status(422).json({
@@ -136,7 +136,7 @@ function _handle_logout(req, res) {
         }
 
         // we are here if login token check successfully
-        logoutUser(req, res)
+        await logoutUser(req, res)
         return
 
     } catch (err) {
@@ -182,16 +182,16 @@ function load_auth_router() {
 
     let router = express.Router()
 
-    router.post('/login', (req, res) => {
-        _handle_login(req, res)
+    router.post('/login', async (req, res) => {
+        await _handle_login(req, res)
     })
 
-    router.post('/logout', (req, res) => {
-        _handle_logout(req, res)
+    router.post('/logout', async (req, res) => {
+        await _handle_logout(req, res)
     })
 
-    router.get('/realm', (req, res) => {
-        _handle_realm(req, res)
+    router.get('/realm', async (req, res) => {
+        await _handle_realm(req, res)
     })
 
     router.use('/', (req, res) => {

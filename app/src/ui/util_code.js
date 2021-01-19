@@ -2283,7 +2283,7 @@ function appx_route(js_context, ref, input) {
   let cache_ui_route = cache.get_cache_for('ui_route')
   let route_results = _.get(cache_ui_route, cache_props) || {}
 
-  console.log(`route_results`, route_results)
+  // console.log(`route_results`, route_results)
 
   /*
   let route_results = await db.query_async(`SELECT

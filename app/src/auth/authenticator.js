@@ -13,7 +13,7 @@ const { findToken, findUserWithPass, loginUserWithPass, logoutUser, lookupRolesP
 
 
 // authenticator will choose between different strategies
-const authenticator = function (req, res, next) {
+const authenticator = async function (req, res, next) {
 
     const realm_by_app = cache.get_cache_for('realm').realm_by_app
     const app_by_realm = cache.get_cache_for('realm').app_by_realm
@@ -55,7 +55,7 @@ const authenticator = function (req, res, next) {
 
       // update realm
       req.body.realm = realm
-      loginUserWithPass(req, res)
+      await loginUserWithPass(req, res)
       return
 
     } else if (action_name == 'realm') {
@@ -90,7 +90,7 @@ const authenticator = function (req, res, next) {
 
         try {
 
-            let token = findToken(realm, auth_token)
+            let token = await findToken(realm, auth_token)
             if (token == null) {
 
                 // do not request basic authentication if user specified AppX bearer
@@ -129,7 +129,7 @@ const authenticator = function (req, res, next) {
                   req.body.token = auth_token
                   req.body.realm = token.realm
                   req.body.username = token.username
-                  logoutUser(req, res)
+                  await logoutUser(req, res)
                   return
 
                 } else {
@@ -155,7 +155,7 @@ const authenticator = function (req, res, next) {
                 return
             }
 
-            let result = findUserWithPass(realm, credentials[0], credentials[1])
+            let result = await findUserWithPass(realm, credentials[0], credentials[1])
             if (result && result.user && result.status == 'ok') {
 
                 req.user = lookupRolesPerms(namespace, app_name,

@@ -4,7 +4,7 @@ const cache = require('../cache/cache')
 const { REGEX_VAR }  = require('../api/util')
 
 
-function findLocalUserWithPass(realm, username, password, table, fields) {
+async function findLocalUserWithPass(realm, username, password, table, fields) {
 
     let sql = `SELECT
                     id,
@@ -20,7 +20,7 @@ function findLocalUserWithPass(realm, username, password, table, fields) {
                     AND deleted=0`
 
     // console.log(sql, [realm, username, password])
-    let result = db.query_sync(sql, [realm, username, password])
+    let result = await db.query_async(sql, [realm, username, password])
 
     if (!result || result.length == 0) {
         return {

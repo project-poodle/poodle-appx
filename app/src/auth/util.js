@@ -7,7 +7,7 @@ const { findLocalUserWithPass } = require('./auth_local')
 const { findLdapUserWithPass } = require('./auth_ldap')
 
 // find token
-function findToken(realm, token) {
+async function findToken(realm, token) {
 
     let sql = `SELECT
                     id,
@@ -22,7 +22,7 @@ function findToken(realm, token) {
                 AND expiration > NOW()
                 AND deleted=0`
 
-    let result = db.query_sync(sql, [realm, token])
+    let result = await db.query_async(sql, [realm, token])
 
     if (!result || result.length == 0) {
         return null
@@ -37,7 +37,7 @@ function findToken(realm, token) {
 }
 
 // find username with password
-function findUserWithPass(realm, username, password) {
+async function findUserWithPass(realm, username, password) {
 
     const realm_modules = cache.get_cache_for('realm').realm_module
 
@@ -98,7 +98,7 @@ function findUserWithPass(realm, username, password) {
                     user_spec: objPath.get(local_db, ['field', 'user_spec'], 'user_spec')
                 }
 
-                let result = findLocalUserWithPass(realm, local_username, password, table, fields)
+                let result = await findLocalUserWithPass(realm, local_username, password, table, fields)
 
                 return {
                     module: sorted_module_name[i],
@@ -133,7 +133,7 @@ function findUserWithPass(realm, username, password) {
 
                 let protocol = realm_module.module_spec.ldap
 
-                let result = findLdapUserWithPass(realm, protocol, ldap_username, password)
+                let result = await findLdapUserWithPass(realm, protocol, ldap_username, password)
 
                 return {
                     module: sorted_module_name[i],
@@ -157,7 +157,7 @@ function findUserWithPass(realm, username, password) {
 
 
 // login username with password
-function loginUserWithPass(req, res) {
+async function loginUserWithPass(req, res) {
 
     try {
         // console.log(req.body)
@@ -178,13 +178,13 @@ function loginUserWithPass(req, res) {
         let username = req.body.username
         let password = req.body.password
 
-        let result = findUserWithPass(realm, username, password)
+        let result = await findUserWithPass(realm, username, password)
         // console.log(result)
 
         if (result && result.user && result.status == 'ok') {
 
             console.log(`INFO: user [${username}] authenticated successfully ! [${result.module}]`)
-            crypto.randomBytes(64, function(err, buffer) {
+            crypto.randomBytes(64, async function(err, buffer) {
 
                 let token = buffer.toString('base64')
                 let token_spec = { module: result.module, ...result.user }
@@ -194,7 +194,7 @@ function loginUserWithPass(req, res) {
                                 VALUES (?, ?, ?, NOW() + INTERVAL 8 HOUR, ?)`
 
                 // console.log(sql, [realm, token, username, JSON.stringify(token_spec)])
-                db.query_sync(sql, [realm, token, username, JSON.stringify(token_spec)])
+                await db.query_async(sql, [realm, token, username, JSON.stringify(token_spec)])
                 res.status(200).json({
                     status: 'ok',
                     realm: realm,
@@ -221,7 +221,7 @@ function loginUserWithPass(req, res) {
 }
 
 // logout user
-function logoutUser(req, res) {
+async function logoutUser(req, res) {
 
     try {
         // console.log(req.body)
@@ -243,7 +243,7 @@ function logoutUser(req, res) {
 
         let sql = `DELETE FROM _realm_token WHERE realm=? AND username=? AND token=?`
 
-        db.query_sync(sql, [realm, username, token])
+        await db.query_async(sql, [realm, username, token])
         res.status(200).json({
             status: 'ok',
             realm: realm,
