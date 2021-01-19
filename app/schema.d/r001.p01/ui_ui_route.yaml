@@ -16,7 +16,7 @@ ui_route:
                     _type: js/import
                     name: app-x/redux/store.default
               - _type: react/element
-                name: app-x/theme/GlobalStyleProvider
+                name: app-x/theme/GlobalStyleProvider.default
                 props:
                   theme:
                     _type: js/import
@@ -29,14 +29,14 @@ ui_route:
       ui_route_spec:
           element:
             _type: react/element
-            name: app-x/page/layout/HeaderLayout
+            name: app-x/page/layout/HeaderLayout.default
             props:
               header:
                 _type: react/element
                 name: self/page/header/Header_user
             children:
               - _type: react/element
-                name: app-x/view/error/NotFoundView
+                name: app-x/view/error/NotFoundView.default
           _test:
             providers:
               - _type: react/element
@@ -46,7 +46,7 @@ ui_route:
                     _type: js/import
                     name: app-x/redux/store.default
               - _type: react/element
-                name: app-x/theme/GlobalStyleProvider
+                name: app-x/theme/GlobalStyleProvider.default
                 props:
                   theme:
                     _type: js/import

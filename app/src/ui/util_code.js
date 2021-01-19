@@ -1569,8 +1569,20 @@ function react_element(js_context, ref, input) {
     )
   )
 
-  // return react element
-  return react_element
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          react_element,
+        )
+      ]
+    )
+  } else {
+    // return react element
+    return react_element
+  }
 }
 
 // create jsx html element ast
@@ -1612,8 +1624,20 @@ function react_html(js_context, ref, input) {
     )
   )
 
-  // return react element
-  return react_element
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          react_element,
+        )
+      ]
+    )
+  } else {
+    // return react element
+    return react_element
+  }
 }
 
 // create jsx element props ast
@@ -2343,6 +2367,14 @@ function appx_route(js_context, ref, input) {
     })
   )
 
+  reg_js_import(js_context, 'app-x/router.useRoutes')
+  const callExpression = t.callExpression(
+    t.identifier('app-x/router.useRoutes'),
+    [
+      objectExpression,
+    ]
+  )
+
   // console.log(route_results)
   if (js_context.STATEMENT_CONTEXT) {
     return t.variableDeclaration(
@@ -2350,12 +2382,12 @@ function appx_route(js_context, ref, input) {
       [
         t.variableDeclarator(
           t.identifier(ref),
-          objectExpression
+          callExpression
         )
       ]
     )
   } else {
-    return objectExpression
+    return callExpression
   }
 }
 
@@ -2511,7 +2543,10 @@ function js_process(js_context, ref, input) {
 // return an react component function
 function react_component(js_context, input) {
 
-  js_context.STATEMENT_CONTEXT = true
+  js_context = {
+    ...js_context,
+    STATEMENT_CONTEXT: true
+  }
 
   const block_statements = []
 
