@@ -19,7 +19,7 @@ const {
   capitalize,
   reg_js_import,
   reg_js_variable,
-  reg_react_state,
+  // reg_react_state,
   reg_react_form,
   js_resolve_ids,
   _js_parse_statements,
@@ -211,10 +211,6 @@ function js_array(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath:
-            !!js_context.parentPath
-            ? t.memberExpression(js_context.parentPath, t.numericLiteral(index), true)
-            : null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -269,10 +265,6 @@ function js_object(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath:
-                !!js_context.parentPath
-                ? js_context.parentPath
-                : null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -288,10 +280,6 @@ function js_object(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath:
-                !!js_context.parentPath
-                ? t.memberExpression(js_context.parentPath, t.identifier(key))
-                : null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -405,7 +393,6 @@ function js_variable(js_context, ref, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentPath: null,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -420,7 +407,6 @@ function js_variable(js_context, ref, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentPath: null,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -521,7 +507,6 @@ function js_statement(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -602,7 +587,6 @@ function js_function(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -669,7 +653,6 @@ function js_call(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -713,7 +696,6 @@ function js_switch(js_context, ref, input) {
       {
         ...js_context,
         topLevel: false,
-        parentPath: null,
         JSX_CONTEXT: false
         // STATEMENT_CONTEXT: preserve
       },
@@ -755,7 +737,6 @@ function js_switch(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false
           // STATEMENT_CONTEXT: preserve
         },
@@ -768,7 +749,6 @@ function js_switch(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -832,7 +812,6 @@ function js_map(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -849,7 +828,6 @@ function js_map(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false
           // STATEMENT_CONTEXT: preserve
         },
@@ -1055,7 +1033,6 @@ function js_reduce(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1072,7 +1049,6 @@ function js_reduce(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1096,7 +1072,6 @@ function js_reduce(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1111,7 +1086,6 @@ function js_reduce(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1315,7 +1289,6 @@ function js_filter(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1332,7 +1305,6 @@ function js_filter(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1548,7 +1520,6 @@ function react_element(js_context, ref, input) {
       'props' in input ? react_element_props(
         {
           ...js_context,
-          parentPath: null,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
@@ -1561,7 +1532,6 @@ function react_element(js_context, ref, input) {
     react_element_children(
       {
         ...js_context,
-        parentPath: null,
         JSX_CONTEXT: true,
         STATEMENT_CONTEXT: false,
       },
@@ -1603,7 +1573,6 @@ function react_html(js_context, ref, input) {
       'props' in input ? react_element_props(
         {
           ...js_context,
-          parentPath: null,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
@@ -1616,7 +1585,6 @@ function react_html(js_context, ref, input) {
     react_element_children(
       {
         ...js_context,
-        parentPath: null,
         JSX_CONTEXT: true,
         STATEMENT_CONTEXT: false,
       },
@@ -1666,7 +1634,6 @@ function react_element_props(js_context, props) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1717,7 +1684,6 @@ function react_element_children(js_context, children) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
@@ -1753,7 +1719,6 @@ function react_state(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1768,7 +1733,6 @@ function react_state(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1780,12 +1744,14 @@ function react_state(js_context, ref, input) {
   // register react.useState
   reg_js_import(js_context, 'react.useState')
 
+  /*
   // register react state
   // console.log(`reg_react_state`)
   reg_react_state(js_context, {
     name: input.name,
     setter: input.setter,
   })
+  */
 
   // useState
   const statesExpression = t.callExpression(
@@ -1929,7 +1895,6 @@ function react_effect(js_context, ref, input) {
               {
                 ...js_context,
                 topLevel: false,
-                parentPath: null,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -1979,7 +1944,6 @@ function react_effect(js_context, ref, input) {
           {
             ...js_context,
             topLevel: false,
-            parentPath: null,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -2051,7 +2015,6 @@ function mui_style(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath: null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -2131,7 +2094,6 @@ function appx_api(js_context, ref, input) {
         {
           ...js_context,
           topLevel: false,
-          parentPath: null,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -2155,7 +2117,6 @@ function appx_api(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath: null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2183,7 +2144,6 @@ function appx_api(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath: null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2212,7 +2172,6 @@ function appx_api(js_context, ref, input) {
             {
               ...js_context,
               topLevel: false,
-              parentPath: null,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2353,7 +2312,8 @@ function appx_route(js_context, ref, input) {
                     {
                       ...js_context,
                       topLevel: true,
-                      parentPath: null,
+                      JSX_CONTEXT: false,
+                      STATEMENT_CONTEXT: false,
                     },
                     route_results[key].ui_route_spec,
                   ),
@@ -2543,6 +2503,10 @@ function js_process(js_context, ref, input) {
 // return an react component function
 function react_component(js_context, input) {
 
+  if (!input.component) {
+    throw new Error(`ERROR: react/component [component] not defined ${JSON.stringify(input)}`)
+  }
+
   js_context = {
     ...js_context,
     STATEMENT_CONTEXT: true
@@ -2553,7 +2517,7 @@ function react_component(js_context, input) {
   // check if there are any block statements
   Object.keys(input).map(key => {
     // ignore type / name / props / children
-    if (key === 'element' || key.startsWith('_')) {
+    if (key === 'component' || key.startsWith('_')) {
       return
     }
 
@@ -2566,7 +2530,6 @@ function react_component(js_context, input) {
     const statement = js_process(
       {
         ...js_context,
-        parentPath: null,
         JSX_CONTEXT: false,
         STATEMENT_CONTEXT: true
       },
@@ -2585,16 +2548,15 @@ function react_component(js_context, input) {
     }
   })
 
-  // process elements, this will register such as 'forms'
-  const result_element = react_element(
+  // process components, this will register such as 'forms'
+  const result_component = react_element(
     {
       ...js_context,
-      parentPath: null,
       JSX_CONTEXT: false,
       STATEMENT_CONTEXT: false
     },
     null,
-    input.element
+    input.component
   )
 
   // console.log(`react_component - js_context.forms`, JSON.stringify(js_context.forms, null, 4))
@@ -2672,11 +2634,197 @@ function react_component(js_context, input) {
       [
         ...block_statements,
         t.returnStatement(
-          result_element,
+          result_component,
         )
       ]
     )
   )
+
+  return result
+}
+
+// return an react component function
+function react_provider(js_context, input, ui_comp_name) {
+
+  if (!input.provider) {
+    throw new Error(`ERROR: react/provider [provider] not defined ${JSON.stringify(input)}`)
+  }
+
+  js_context = {
+    ...js_context,
+    STATEMENT_CONTEXT: true
+  }
+
+  const block_statements = []
+
+  // check if there are any block statements
+  Object.keys(input).map(key => {
+    // ignore type / name / props / children
+    if (key === 'provider' || key.startsWith('_')) {
+      return
+    }
+
+    if (key.startsWith('...') && input[key]._type !== 'react/state') {
+      // unrecognized component definition starting with '...'
+      throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
+    }
+
+    // console.log(`input[${key}]`, input[key])
+    const statement = js_process(
+      {
+        ...js_context,
+        JSX_CONTEXT: false,
+        STATEMENT_CONTEXT: true
+      },
+      key,
+      input[key]
+    )
+
+    if (t.isBlockStatement(statement)) {
+      t.addComment(statement.body[0], 'leading', ` ${key} `, false)
+      t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
+      block_statements.push(...(statement.body))
+    } else {
+      t.addComment(statement, 'leading', ` ${key} `, false)
+      t.addComment(statement, 'trailing', ` ${key} `, false)
+      block_statements.push(statement)
+    }
+  })
+
+  // console.log(`react_provider - js_context.states`, JSON.stringify(js_context.states, null, 4))
+  // provider expression
+  const providerExpression =
+    t.objectExpression
+      (
+        Object
+          .keys(input.provider)
+          .map(key =>
+          {
+            const value = input.provider[key]
+            return t.objectProperty(
+              t.identifier(key),
+              js_process
+              (
+                {
+                  ...js_context,
+                  JSX_CONTEXT: false,
+                  STATEMENT_CONTEXT: false
+                },
+                key,
+                value
+              )
+            )
+          }
+        )
+      )
+
+  // return a list of statement
+  const result = [
+    // const comp_name_Context = React.createContext()
+    t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(`${ui_comp_name}_Context`),
+          t.callExpression(
+            t.identifier('react.createContext'),
+            [],
+          )
+        )
+      ]
+    ),
+    t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ui_comp_name),
+          t.callExpression(
+            t.arrowFunctionExpression(
+              [],
+              t.blockStatement(
+                [
+                  // const comp_name_Function = (props) => {}
+                  t.variableDeclaration(
+                    'const',
+                    [
+                      t.variableDeclarator(
+                        t.identifier(`${ui_comp_name}_Function`),
+                        t.arrowFunctionExpression(
+                          [
+                            t.identifier('props')
+                          ],
+                          t.blockStatement(
+                            [
+                              // insert block_statements from earlier
+                              ...block_statements,
+                              t.returnStatement(
+                                t.jSXElement(
+                                  t.jSXOpeningElement(
+                                    t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
+                                    [
+                                      t.jSXAttribute(
+                                        t.jSXIdentifier('value'),
+                                        t.jSXExpressionContainer(
+                                          providerExpression,
+                                        )
+                                      )
+                                    ]
+                                  ),
+                                  t.jSXClosingElement(
+                                    t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
+                                  ),
+                                  [
+                                    t.jSXExpressionContainer(
+                                      t.memberExpression(
+                                        t.identifier('props'),
+                                        t.identifier('children')
+                                      )
+                                    )
+                                  ]
+                                )
+                              )
+                            ]
+                          )
+                        )
+                      )
+                    ]
+                  ),
+                  // comp_name_Function.Context = comp_name_Context
+                  t.expressionStatement(
+                    t.assignmentExpression(
+                      '=',
+                      t.memberExpression(
+                        t.identifier(`${ui_comp_name}_Function`),
+                        t.identifier('Context')
+                      ),
+                      t.identifier(`${ui_comp_name}_Context`)
+                    )
+                  ),
+                  // return comp_name_Function
+                  t.returnStatement(
+                    t.identifier(`${ui_comp_name}_Function`)
+                  )
+                ]
+              )
+            ),
+            []
+          )
+        )
+      ]
+    ),
+    t.exportNamedDeclaration(
+      null,
+      [
+        t.exportSpecifier(
+          t.identifier(`${ui_comp_name}_Context`),
+          t.identifier(`Context`)
+        )
+      ]
+    ),
+    t.exportDefaultDeclaration(
+      t.identifier(ui_comp_name)
+    ),
+  ]
 
   return result
 }
@@ -2686,10 +2834,10 @@ module.exports = {
   // top methods
   js_process,
   react_component,
+  react_provider,
   // register & resolve
   reg_js_import,
   reg_js_variable,
-  reg_react_state,
   reg_react_form,
   js_resolve_ids,
   // types

@@ -225,8 +225,14 @@ const RouteTree = (props) => {
           const translated = transformTree(data)
           // console.log(translated)
           setTreeData(translated)
+          if (navSelected?.type !== 'ui_route') {
+            setSelectedKey(null)
+          }
         },
         error => {
+          // reset tree
+          setTreeData([])
+          setSelectedKey(null)
           console.log(error)
           // error notification
           notification['error']({
@@ -236,8 +242,18 @@ const RouteTree = (props) => {
           })
         }
       )
+    } else {
+      setTreeData([])
+      setSelectedKey(null)
     }
-  }, [navDeployment, loadTimer])
+  },
+  [
+    navDeployment,
+    // navComponent,
+    navRoute,
+    navSelected,
+    loadTimer
+  ])
 
   // unselect if user chose other nav types
   useEffect(() => {

@@ -46,7 +46,7 @@ ui_component:
           children:
             - _type: react/element
               name: app-x/view/error/NotFoundView.default
-        element:
+        component:
           _type: react/element
           name: react-redux.Provider
           props:
@@ -73,7 +73,7 @@ ui_component:
       ui_component_spec:
         propTypes:
             suffix: PropTypes.element
-        element:
+        component:
             _type: react/element
             name: app-x/page/header/Header_user
             props:
@@ -125,7 +125,7 @@ ui_component:
                 body:
                   - |
                     states.mobileNav.setOpen(!states.mobileNav.open)
-        element:
+        component:
             _type: react/element
             name: app-x/page/layout/HeaderLayout
             props:
@@ -216,7 +216,7 @@ ui_component:
                         ui_component_name: '',
                         ui_route_name: event.ui_route_name,
                     })
-        element:
+        component:
             _type: react/element
             name: 'app-x/page/layout/SideNavLayout'
             props:
@@ -262,7 +262,7 @@ ui_component:
             _type: mui/style
             root:
                 width: 100%
-        element:
+        component:
             _type: react/element
             name: '@material-ui/core.List'
             props:

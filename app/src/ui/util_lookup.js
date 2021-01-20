@@ -78,16 +78,16 @@ function get_ui_component(req, res) {
     ]
     let elem = objPath.get(cache_ui_component, comp_prop)
     if (!elem) {
-        let msg = `ERROR: element not found [${context.ui_component_name}] - [${JSON.stringify(context)}] !`
+        let msg = `ERROR: component not found [${context.ui_component_name}] - [${JSON.stringify(context)}] !`
         log_comp_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true
         return
     }
 
-    let element_spec = objPath.get(elem, ["ui_component_spec"])
-    if (!element_spec) {
-        let msg = `ERROR: element_spec not found - [${JSON.stringify(context)}] !`
+    let component_spec = objPath.get(elem, ["ui_component_spec"])
+    if (!component_spec) {
+        let msg = `ERROR: component_spec not found - [${JSON.stringify(context)}] !`
         log_comp_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         req.fatal = true

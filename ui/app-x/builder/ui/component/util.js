@@ -112,28 +112,28 @@ function default_spec_for_type (type) {
 
     return {
       styles: {
-        type: 'mui/style',
+        _type: 'mui/style',
         root: {
           width: '100%',
           height: '100%',
           position: 'absolute',
         }
       },
-      element: {
-        type: 'react/element',
+      component: {
+        _type: 'react/element',
         name: '@material-ui/core.Box',
         props: {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           className: {
-            type: 'js/expression',
+            _type: 'js/expression',
             data: 'styles.root',
           },
         },
         children: [
           {
-            type: 'react/element',
+            _type: 'react/element',
             name: '@material-ui/core.Typography',
             props: {
               variant: 'h6',
@@ -150,26 +150,32 @@ function default_spec_for_type (type) {
 
     return {
       // state
-      states: {
-        '...open': {
-          type: 'react/state',
-          name: 'open',
-          setter: 'setOpen',
-          init: false
-        }
+      '...open': {
+        _type: 'react/state',
+        name: 'open',
+        setter: 'setOpen',
+        init: "false"
       },
       // function
-      handlers: {
-        toggleOpen: {
-          type: 'js/function',
-          body: 'states.setOpen(!states.open)'
-        }
+      toggle: {
+        _type: 'js/function',
+        body: [
+          'setOpen(!open)'
+        ]
       },
       // provider
       provider: {
-        toggleOpen: {
-          type: 'js/expression',
-          data: 'handlers.toggleOpen'
+        open: {
+          _type: 'js/expression',
+          data: 'open'
+        },
+        setOpen: {
+          _type: 'js/expression',
+          data: 'setOpen'
+        },
+        toggle: {
+          _type: 'js/expression',
+          data: 'toggle'
         }
       }
     }

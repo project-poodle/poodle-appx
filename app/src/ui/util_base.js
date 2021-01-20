@@ -370,13 +370,14 @@ function reg_js_import(js_context, var_full_path, use_default=false, suggested_n
     }
 }
 
+/*
 // register state
 function reg_react_state(js_context, react_state) {
 
   const { name, setter } = react_state
 
   // if parentPath is '[]'
-  // console.log(`parentPath`, js_context.parentPath)
+  console.log(`reg_react_state`, js_context.parentPath, react_state)
   if (!!js_context.parentPath) {
     js_context.states[name] = {
       parentPath: js_context.parentPath,
@@ -387,8 +388,11 @@ function reg_react_state(js_context, react_state) {
       parentPath: js_context.parentPath,
       name: setter
     }
+  } else {
+
   }
 }
+*/
 
 // register form
 function reg_react_form(js_context, name, qualifiedName, formProps) {
@@ -537,7 +541,7 @@ module.exports = {
   capitalize,
   reg_js_import,
   reg_js_variable,
-  reg_react_state,
+  // reg_react_state,
   reg_react_form,
   js_resolve_ids,
   // _js_parse_snippet,

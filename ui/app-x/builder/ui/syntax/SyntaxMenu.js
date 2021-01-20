@@ -296,7 +296,7 @@ const SyntaxMenu = (props) => {
                 navSelected.type === 'ui_route'
               )
             )
-            && parentNode?.data._ref === 'element'
+            && parentNode?.data._ref === 'component'
             &&
             (
               parentNode?.parentKey === '/'

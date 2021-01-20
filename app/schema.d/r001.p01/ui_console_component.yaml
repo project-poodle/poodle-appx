@@ -40,7 +40,7 @@ ui_component:
           children:
             - _type: react/element
               name: app-x/view/error/NotFoundView.default
-        element:
+        component:
           _type: react/element
           name: react-redux.Provider
           props:
@@ -80,7 +80,7 @@ ui_component:
             body:
               - |+
                 // console.log(props)
-        element:
+        component:
             _type: react/element
             name: app-x/page/landing/YouTube_fs
             props:
@@ -258,7 +258,7 @@ ui_component:
             _type: mui/style
             root:
                 height: "100%"
-        element:
+        component:
             _type: react/element
             name: app-x/page/landing/Unsplash_bg
             props:
@@ -302,7 +302,7 @@ ui_component:
             _type: mui/style
             root:
                 height: "100%"
-        element:
+        component:
             _type: react/element
             name: self/page/landing/Unsplash_bg
             children:
@@ -445,7 +445,7 @@ ui_component:
                             states.error.setValue(err.message)
                         }
                     )
-        element:
+        component:
             _type: react/element
             name: '@material-ui/core.Container'
             props:
@@ -718,7 +718,7 @@ ui_component:
                       // TODO
                   }
               )
-        element:
+        component:
             _type: react/element
             name: self/page/landing/Unsplash_bg
             children:

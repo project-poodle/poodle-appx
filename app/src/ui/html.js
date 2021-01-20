@@ -79,94 +79,105 @@ const KEY_VALUE = function() {
  */
 async function handle_html(req, res) {
 
-    // const { ui_deployment, ui_component } = req.context
+    try {
+        // const { ui_deployment, ui_component } = req.context
 
-    // check for importMaps
-    if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
-        return {
-            status: 422,
-            type: 'application/json',
-            data: {
-                status: FAILURE,
-                message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
+        // check for importMaps
+        if (! ('ui_spec' in req.context) || ! ('importMaps' in req.context.ui_spec) ) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
+                }
             }
         }
-    }
 
-    // check for apiMaps
-    if (! ('ui_deployment_spec' in req.context) || ! ('apiMaps' in req.context.ui_deployment_spec) ) {
-        return {
-            status: 422,
-            type: 'application/json',
-            data: {
-                status: FAILURE,
-                message: `ERROR: ui_deployment_spec.apiMaps not defined [${ui_deployment}]`
+        // check for apiMaps
+        if (! ('ui_deployment_spec' in req.context) || ! ('apiMaps' in req.context.ui_deployment_spec) ) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_deployment_spec.apiMaps not defined [${ui_deployment}]`
+                }
             }
         }
-    }
 
-    // check for ui_component_spec
-    if (! ('ui_component_spec' in req.context) ) {
-        return {
-            status: 422,
-            type: 'application/json',
-            data: {
-                status: FAILURE,
-                message: `ERROR: ui_component_spec not defined [${ui_component}]`
+        // check for ui_component_spec
+        if (! ('ui_component_spec' in req.context) ) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_component_spec not defined [${ui_component}]`
+                }
             }
         }
-    }
 
-    // check for ui_component_spec.entry
-    if (! ('entry' in req.context.ui_component_spec) ) {
-        return {
-            status: 422,
-            type: 'application/json',
-            data: {
-                status: FAILURE,
-                message: `ERROR: ui_component_spec.entry not defined [${ui_component}]`
+        // check for ui_component_spec.entry
+        if (! ('entry' in req.context.ui_component_spec) ) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_component_spec.entry not defined [${ui_component}]`
+                }
             }
         }
-    }
 
-    const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
-    const html_content = fs.readFileSync(path.join(rootDir, 'index.html'), "utf8")
+        const initjs_content = fs.readFileSync(path.join(rootDir, 'init.js'), "utf8")
+        const html_content = fs.readFileSync(path.join(rootDir, 'index.html'), "utf8")
 
-    // console.log(req.appx_paths)
+        // console.log(req.appx_paths)
 
-    // context
-    let context = {
-        APPX_ENV: {
-            RENDER_JSON: RENDER_JSON,
-            KEY_VALUE: KEY_VALUE,
-            AUTH_ROOT: req.mount_options.auth_root,
-            API_ROOT: req.mount_options.api_root,
-            UI_ROOT: req.mount_options.ui_root,
-            RELATIVE_URL: url.parse(req.url).pathname,
-            APPX_PATHS: { 'paths': req.appx_paths },
-            IMPORT_MAPS: req.context.ui_spec.importMaps,
-            API_MAPS: req.context.ui_deployment_spec.apiMaps,
-            SPEC: req.appx_spec,
-        },
-        entry: req.context.ui_component_spec.entry,
-        data: req.context.ui_component_spec,
-    }
+        // context
+        let context = {
+            APPX_ENV: {
+                RENDER_JSON: RENDER_JSON,
+                KEY_VALUE: KEY_VALUE,
+                AUTH_ROOT: req.mount_options.auth_root,
+                API_ROOT: req.mount_options.api_root,
+                UI_ROOT: req.mount_options.ui_root,
+                RELATIVE_URL: url.parse(req.url).pathname,
+                APPX_PATHS: { 'paths': req.appx_paths },
+                IMPORT_MAPS: req.context.ui_spec.importMaps,
+                API_MAPS: req.context.ui_deployment_spec.apiMaps,
+                SPEC: req.appx_spec,
+            },
+            entry: req.context.ui_component_spec.entry,
+            data: req.context.ui_component_spec,
+        }
 
-    context.init_js = Mustache.render(initjs_content, context)
-    // console.log(context.init_js)
+        context.init_js = Mustache.render(initjs_content, context)
+        // console.log(context.init_js)
 
-    // render the html_content
-    let rendered = Mustache.render(html_content, context)
+        // render the html_content
+        let rendered = Mustache.render(html_content, context)
 
-    // prettify
-    const prettified = prettier.format(rendered, { semi: false, parser: "html" })
+        // prettify
+        const prettified = prettier.format(rendered, { semi: false, parser: "html" })
 
-    // send back rendered html_content as html
-    // res.status(200).type('html').send(prettified)
-    return {
-        status: 200,
-        type: 'html',
-        data: prettified,
+        // send back rendered html_content as html
+        // res.status(200).type('html').send(prettified)
+        return {
+            status: 200,
+            type: 'html',
+            data: prettified,
+        }
+
+    } catch (err) {
+
+        console.log(err)
+        return {
+            status: 500,
+            type: 'application/json',
+            data: String(err),
+        }
     }
 }
 

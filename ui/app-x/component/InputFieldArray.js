@@ -138,7 +138,7 @@ const InputFieldArray = ((props) => {
 
   // set default values
   useEffect(() => {
-    console.log(`setValue [${name}]`, props.defaultValue)
+    // console.log(`setValue [${name}]`, props.defaultValue)
     setValue(name, props.defaultValue)
   }, [props.defaultValue])
 

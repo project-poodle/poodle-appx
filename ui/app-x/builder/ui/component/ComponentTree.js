@@ -219,8 +219,16 @@ const ComponentTree = (props) => {
           const translated = transformTree(data)
           // console.log(translated)
           setTreeData(translated)
+          if (navSelected?.type !== 'ui_component') {
+            setSelectedKey(null)
+            setContextKey(null)
+          }
         },
         error => {
+          // reset tree
+          setTreeData([])
+          setSelectedKey(null)
+          setContextKey(null)
           console.log(error)
           // error notification
           notification['error']({
@@ -230,8 +238,19 @@ const ComponentTree = (props) => {
           })
         }
       )
+    } else {
+      setTreeData([])
+      setSelectedKey(null)
+      setContextKey(null)
     }
-  }, [navDeployment, loadTimer])
+  },
+  [
+    navDeployment,
+    navComponent,
+    navRoute,
+    navSelected,
+    loadTimer
+  ])
 
   // unselect if user chose other nav types
   useEffect(() => {
@@ -239,7 +258,10 @@ const ComponentTree = (props) => {
       setSelectedKey(null)
       setContextKey(null)
     }
-  }, [ navSelected.type ])
+  },
+  [
+    navSelected
+  ])
 
 
   // right click

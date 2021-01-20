@@ -18,7 +18,6 @@ const {
   capitalize,
   reg_js_import,
   reg_js_variable,
-  reg_react_state,
   reg_react_form,
   js_resolve_ids,
   _js_parse_snippet,

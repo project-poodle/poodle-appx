@@ -4,7 +4,7 @@ ui_route:
       ui_ver: internal
       ui_route_name: /
       ui_route_spec:
-          element:
+          component:
               _type: react/element
               name: self/page/landing/Home
 
@@ -13,7 +13,7 @@ ui_route:
       ui_ver: internal
       ui_route_name: /login
       ui_route_spec:
-          element:
+          component:
               _type: react/element
               name: app-x/page/layout/HeaderLayout.default
               props:
@@ -36,7 +36,7 @@ ui_route:
       ui_ver: internal
       ui_route_name: /404
       ui_route_spec:
-          element:
+          component:
               _type: react/element
               name: app-x/page/layout/HeaderLayout.default
               props:
@@ -59,7 +59,7 @@ ui_route:
       ui_ver: internal
       ui_route_name: /console
       ui_route_spec:
-          element:
+          component:
               _type: react/element
               name: app-x/page/layout/HeaderLayout.default
               props:

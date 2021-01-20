@@ -28,7 +28,7 @@ const EXCLUDED_TYPES = [
 /**
  * handle_elment
  */
-async function handle_element(req, res) {
+async function handle_component(req, res) {
 
     // check ui_deployment
     let ui_deployment = await get_ui_deployment(req, res)
@@ -50,7 +50,7 @@ async function handle_element(req, res) {
     }
     //console.log(req.context)
 
-    // handle request by element type
+    // handle request by component_js type
     if (ui_component.ui_component_type == 'html'
         || ui_component.ui_component_type.startsWith('html/')) {
 
@@ -78,7 +78,7 @@ async function handle_element(req, res) {
 
     } else {
 
-        let msg = `ERROR: unsupported ui element type [${ui_component.ui_component_type}] - [${JSON.stringify(ui_component)}]`
+        let msg = `ERROR: unsupported ui component_js type [${ui_component.ui_component_type}] - [${JSON.stringify(ui_component)}]`
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         return
     }
@@ -108,8 +108,8 @@ async function handle_route(req, res) {
       ui_component_name: '/index'
     }
 
-    // handle root element '/index'
-    await handle_element(req, res)
+    // handle root component_js '/index'
+    await handle_component(req, res)
     return
 }
 
@@ -300,7 +300,7 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
             const route_path = (ELEM_PREFIX + comp_result.ui_component_name).replace(/\/+/g, '/')
             router.get(route_path, async (req, res) => {
                 req.context = {...comp_context, ...req.context}
-                await handle_element(req, res)
+                await handle_component(req, res)
             })
 
         } else {
@@ -312,7 +312,7 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
                 // JAVASCRIPT types, ensure route has .js suffix
                 router.get(js_route_path, async (req, res) => {
                     req.context = {...comp_context, ...req.context}
-                    await handle_element(req, res)
+                    await handle_component(req, res)
                 })
 
             } else {
@@ -328,13 +328,13 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
                     router.get(new_js_route_path, async (req, res) => {
                         req.context = {...comp_context, ...req.context}
                         // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_element(req, res)
+                        await handle_component(req, res)
                     })
                     source_js_route_path = js_route_path + 'index.source'
                     router.get(source_js_route_path, async (req, res) => {
                         req.context = {...comp_context, ...req.context}
                         // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_element(req, res)
+                        await handle_component(req, res)
                     })
                     // generate render page if ui_component_type === 'react/component'
                     if (comp_context.ui_component_type === 'react/component') {
@@ -354,13 +354,13 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
                     router.get(new_js_route_path, async (req, res) => {
                         req.context = {...comp_context, ...req.context}
                         // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_element(req, res)
+                        await handle_component(req, res)
                     })
                     source_js_route_path = js_route_path + '.source'
                     router.get(source_js_route_path, async (req, res) => {
                         req.context = {...comp_context, ...req.context}
                         // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_element(req, res)
+                        await handle_component(req, res)
                     })
                     // generate render page if ui_component_type === 'react/component'
                     if (comp_context.ui_component_type === 'react/component') {
@@ -412,7 +412,7 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
             }
 
             // handle root element '/'
-            await handle_element(req, res)
+            await handle_component(req, res)
         }
     })
 

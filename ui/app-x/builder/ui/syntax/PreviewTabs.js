@@ -233,36 +233,45 @@ const PreviewTabs = (props) => {
         && !!navComponent
         && !!navComponent.ui_component_name
       ) {
-        // widget loading
-        setWidgetLoading(true)
-        // preview loading
-        // setPreviewLoading(true)
-        // preview data
-        const submitData = {
-          type: 'ui_component',
-          output: 'html',
-          data: {
-            namespace: navDeployment.namespace,
-            ui_name: navDeployment.ui_name,
-            ui_ver: navDeployment.ui_ver,
-            ui_deployment: navDeployment.ui_deployment,
-            ui_component_name: navComponent.ui_component_name,
-            ui_component_type: navComponent.ui_component_type,
-            ui_component_spec: spec
-          },
+        try {
+          // widget loading
+          setWidgetLoading(true)
+          // preview loading
+          // setPreviewLoading(true)
+          // preview data
+          const submitData = {
+            type: 'ui_component',
+            output: 'html',
+            data: {
+              namespace: navDeployment.namespace,
+              ui_name: navDeployment.ui_name,
+              ui_ver: navDeployment.ui_ver,
+              ui_deployment: navDeployment.ui_deployment,
+              ui_component_name: navComponent.ui_component_name,
+              ui_component_type: navComponent.ui_component_type,
+              ui_component_spec: spec
+            },
+          }
+          // console.log(submitData)
+          // build form for submission
+          formRef.current.innerHTML = '' // clear children
+          const input = document.createElement('input')
+          input.name = `{"_trash": "`
+          input.value = `", "urlencoded": ${JSON.stringify(submitData)}}`
+          formRef.current.appendChild(input)
+          formRef.current.submit() // submit form
+          // set initialized flag
+          setLiveWidgetUpdating(true)
+          setPreviewInitialized(true)
+          setWidgetLoading(false)
+        } catch (err) {
+          setWidgetLoading(false)
+          notification.error({
+            message: `Failed to load`,
+            description: String(err),
+            placement: 'bottomLeft',
+          })
         }
-        // console.log(submitData)
-        // build form for submission
-        formRef.current.innerHTML = '' // clear children
-        const input = document.createElement('input')
-        input.name = `{"_trash": "`
-        input.value = `", "urlencoded": ${JSON.stringify(submitData)}}`
-        formRef.current.appendChild(input)
-        formRef.current.submit() // submit form
-        // set initialized flag
-        setLiveWidgetUpdating(true)
-        setPreviewInitialized(true)
-        setWidgetLoading(false)
       }
       else if
       (
@@ -271,35 +280,44 @@ const PreviewTabs = (props) => {
         && !!navRoute.ui_route_name
       )
       {
-        // widget loading
-        setWidgetLoading(true)
-        // preview loading
-        // setPreviewLoading(true)
-        // preview data
-        const submitData = {
-          type: 'ui_route',
-          output: 'html',
-          data: {
-            namespace: navDeployment.namespace,
-            ui_name: navDeployment.ui_name,
-            ui_ver: navDeployment.ui_ver,
-            ui_deployment: navDeployment.ui_deployment,
-            ui_route_name: navRoute.ui_route_name,
-            ui_route_spec: spec
-          },
+        try {
+          // widget loading
+          setWidgetLoading(true)
+          // preview loading
+          // setPreviewLoading(true)
+          // preview data
+          const submitData = {
+            type: 'ui_route',
+            output: 'html',
+            data: {
+              namespace: navDeployment.namespace,
+              ui_name: navDeployment.ui_name,
+              ui_ver: navDeployment.ui_ver,
+              ui_deployment: navDeployment.ui_deployment,
+              ui_route_name: navRoute.ui_route_name,
+              ui_route_spec: spec
+            },
+          }
+          // console.log(submitData)
+          // build form for submission
+          formRef.current.innerHTML = '' // clear children
+          const input = document.createElement('input')
+          input.name = `{"_trash": "`
+          input.value = `", "urlencoded": ${JSON.stringify(submitData)}}`
+          formRef.current.appendChild(input)
+          formRef.current.submit() // submit form
+          // set initialized flag
+          setLiveWidgetUpdating(true)
+          setPreviewInitialized(true)
+          setWidgetLoading(false)
+        } catch (err) {
+          setWidgetLoading(false)
+          notification.error({
+            message: `Failed to load`,
+            description: String(err),
+            placement: 'bottomLeft',
+          })
         }
-        // console.log(submitData)
-        // build form for submission
-        formRef.current.innerHTML = '' // clear children
-        const input = document.createElement('input')
-        input.name = "urlencoded"
-        input.value = JSON.stringify(submitData)
-        formRef.current.appendChild(input)
-        formRef.current.submit() // submit form
-        // set initialized flag
-        setLiveWidgetUpdating(true)
-        setPreviewInitialized(true)
-        setWidgetLoading(false)
       }
     }
   },
