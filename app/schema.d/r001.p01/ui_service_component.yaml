@@ -218,10 +218,6 @@ ui_component:
                         open:
                           _type: js/expression
                           data: mobileNav.open
-                        style:
-                          _type: js/expression
-                          data: "{width:300}"
-                        variant: temporary
                       children:
                         - _type: js/expression
                           data: appNav
