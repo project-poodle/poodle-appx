@@ -327,7 +327,7 @@ function reg_js_variable(js_context, var_full_path, kind='const', suggested_name
     }
 }
 
-function reg_js_import(js_context, var_full_path, use_default=false, suggested_name=null) {
+function reg_js_import(js_context, var_full_path, use_default=true, suggested_name=null) {
 
     // if variable is already registered, just return
     if (var_full_path in js_context.imports) {

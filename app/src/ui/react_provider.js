@@ -78,8 +78,8 @@ async function handle_react_provider(req, res) {
         reg_js_variable(js_context, `${ui_comp_name}_Context.Provider`)
         reg_js_variable(js_context, `${ui_comp_name}_Function`)
 
-        reg_js_import(js_context, 'react', true, 'React')
-        //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
+        reg_js_import(js_context, 'react', use_default=true, 'React')
+        //reg_js_import(js_context, 'react-dom', use_default=true, 'ReactDOM')
 
         // console.log(req.context.ui_component_spec)
         // console.log(js_context.states)

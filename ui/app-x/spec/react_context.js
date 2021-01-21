@@ -25,6 +25,7 @@ export const react_context = {
         input: {
           kind: 'input/text',
           options: 'validation.valid_import_names()',
+          optionSelfImportNames: true,
           optionsOnly: true,
         },
         examples: [

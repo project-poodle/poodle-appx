@@ -89,7 +89,7 @@ async function handle_appx_route(req, res) {
         reg_js_variable(js_context, ui_route_name, 'const', capitalize(req.context.ui_route_name))
         js_context.self = ui_route_name
 
-        reg_js_import(js_context, 'react', true, 'React')
+        reg_js_import(js_context, 'react', use_default=true, 'React')
         //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
 
         const input = req.context.ui_route_spec

@@ -43,6 +43,7 @@ import { parse, parseExpression } from "@babel/parser"
 
 import AutoSuggest from 'app-x/component/AutoSuggest'
 import ControlledEditor from 'app-x/component/ControlledEditor'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   validation,
 } from 'app-x/builder/ui/syntax/util_base'
@@ -91,14 +92,6 @@ const InputFieldArray = ((props) => {
   // destruct props
   const { name, childSpec, inputSpec } = props
 
-  const options = (() => {
-    if (inputSpec?.options) {
-      return eval(inputSpec?.options)
-    } else {
-      return []
-    }
-  })()
-
   // console.log(`useFormContext`, useFormContext())
   // useFormContext
   const {
@@ -133,8 +126,29 @@ const InputFieldArray = ((props) => {
     }
   )
 
+  // options
+  const [ options, setOptions ] = useState([])
   // monaco focused state
   const [ monacoFocused,  setMonacoFocused  ] = useState({})
+
+  // self import names
+  const { selfImportNames } = React.useContext(NavProvider.Context)
+  // console.log(`NavProvider.Context [selfImportNames]`, selfImportNames)
+
+  // update options
+  useEffect(() => {
+    if (props.inputSpec?.options) {
+      const result = eval(props.inputSpec?.options)
+      // console.log(`props.inputSpec?.options`, result)
+      if (!!inputSpec.optionSelfImportNames) {
+        setOptions(result.concat(selfImportNames))
+      } else {
+        setOptions(result)
+      }
+    } else {
+      setOptions([])
+    }
+  }, [props.inputSpec])
 
   // set default values
   useEffect(() => {

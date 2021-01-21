@@ -165,6 +165,22 @@ const TestEditor = (props) => {
     }
   )
 
+  // options
+  const [ options, setOptions ] = useState([])
+  // selfImportNames
+  const { selfImportNames } = React.useContext(NavProvider.Context)
+  // console.log(`NavProvider.Context [selfImportNames]`, selfImportNames)
+  // update options
+  useEffect(() => {
+    // console.log(`props.inputSpec?.options`, result)
+    const result = valid_import_names()
+    if (!!selfImportNames) {
+      setOptions(result.concat(selfImportNames))
+    } else {
+      setOptions(result)
+    }
+  }, [navDeployment])
+
   // test submit timer
   const [ testSubmitTimer,    setTestSubmitTimer  ] = useState(0)
   useEffect(() => {
@@ -327,7 +343,7 @@ const TestEditor = (props) => {
                           required: 'Context provider name is required',
                           validate: {
                             valid_name: value => (
-                              valid_import_names().includes(value)
+                              options.includes(value)
                               || "Must use a valid name"
                             )
                           }
@@ -341,7 +357,7 @@ const TestEditor = (props) => {
                                 className={styles.formControl}
                                 value={innerProps.value}
                                 onChange={innerProps.onChange}
-                                options={valid_import_names()}
+                                options={options}
                                 callback={d => {
                                   // console.log(`submit providers[${index}].name`)
                                   setTestSubmitTimer(new Date())

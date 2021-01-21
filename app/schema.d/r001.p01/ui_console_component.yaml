@@ -25,11 +25,11 @@ ui_component:
           name: /
         not_found_view:
           _type: react/element
-          name: app-x/page/layout/HeaderLayout.default
+          name: app-x/page/layout/HeaderLayout
           props:
             header:
               _type: react/element
-              name: app-x/page/header/Header_plain.default
+              name: app-x/page/header/Header_plain
               props:
                   title: App-X
                   titleIcon:
@@ -39,21 +39,21 @@ ui_component:
                   baseUrl: '/'
           children:
             - _type: react/element
-              name: app-x/view/error/NotFoundView.default
+              name: app-x/view/error/NotFoundView
         component:
           _type: react/element
           name: react-redux.Provider
           props:
             store:
               _type: js/import
-              name: app-x/redux/store.default
+              name: app-x/redux/store
           children:
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
               children:
                 - _type: js/expression
                   data: routes || not_found_view
@@ -239,13 +239,13 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -283,13 +283,13 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -317,13 +317,13 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
 
 
     ############################################################
@@ -643,13 +643,13 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -834,10 +834,10 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme

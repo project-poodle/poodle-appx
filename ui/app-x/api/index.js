@@ -687,3 +687,17 @@ export {
   del,
   request,
 }
+
+export default {
+  login,
+  logout,
+  lookupRealm,
+  me,
+  get,
+  head,
+  post,
+  put,
+  patch,
+  del,
+  request,
+}

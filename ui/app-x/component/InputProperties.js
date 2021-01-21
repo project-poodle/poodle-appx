@@ -27,6 +27,7 @@ import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 import AutoSuggest from 'app-x/component/AutoSuggest'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   new_tree_node,
   lookup_title_for_input,
@@ -105,7 +106,21 @@ const InputProperties = props => {
   const { name, otherNames } = props
 
   // states and effects
-  // const [ otherNames,   setOtherNames   ] = useState([])
+  // options
+  const [ options, setOptions ] = useState([])
+  // selfImportNames
+  const { selfImportNames } = React.useContext(NavProvider.Context)
+  // console.log(`NavProvider.Context [selfImportNames]`, selfImportNames)
+  // update options
+  useEffect(() => {
+    // console.log(`props.inputSpec?.options`, result)
+    const result = valid_import_names()
+    if (!!selfImportNames) {
+      setOptions(result.concat(selfImportNames))
+    } else {
+      setOptions(result)
+    }
+  }, [])
 
   ////////////////////////////////////////////////////////////////////////////////
   // set properties
@@ -405,7 +420,7 @@ const InputProperties = props => {
                         required: "Import name is required",
                         validate: {
                           valid_name: value => (
-                            valid_import_names().includes(value)
+                            options.includes(value)
                             || "Must use a valid name"
                           )
                         }
@@ -420,9 +435,7 @@ const InputProperties = props => {
                               size="small"
                               value={innerProps.value}
                               onChange={innerProps.onChange}
-                              options={
-                                valid_import_names()
-                              }
+                              options={options}
                               callback={props.callback}
                               >
                             </AutoSuggest>

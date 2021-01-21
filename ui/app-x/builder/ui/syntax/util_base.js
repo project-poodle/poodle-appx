@@ -60,6 +60,11 @@ const MODULES_EXCLUDE_SECONDARY = [
   '@ant-design/icons',
 ]
 
+import {
+  notification,
+} from 'antd'
+import * as api from 'app-x/api'
+
 ////////////////////////////////////////////////////////////////////////////////
 /*
 // define unique
@@ -772,25 +777,35 @@ function load_valid_import_data() {
       import(PATH_SEPARATOR + path)
       .then(path_module => {
         // console.log(path_module)
-        const module_name = path
-        Object.keys(path_module).map(variable_name => {
-          /*
-          if (variable_name === 'default') {
-            // add default
-            _valid_import_data[module_name] = {
-              title: module_name,
-              module: module_name,
-              variable: variable_name,
-            }
-          }
-          */
-          const title = module_name + VARIABLE_SEPARATOR + variable_name
-          _valid_import_data[title] = {
-            title: title,
+        if (!!path_module.default) {
+          const module_name = path
+          _valid_import_data[module_name] = {
+            title: module_name,
             module: module_name,
-            variable: variable_name,
+            variable: 'default',
           }
-        })
+          Object.keys(path_module.default)
+            .filter(subVar => !subVar.startsWith('$'))
+            .map(variable_name => {
+              const title = module_name + VARIABLE_SEPARATOR + variable_name
+              _valid_import_data[title] = {
+                title: title,
+                module: module_name,
+                variable: variable_name,
+              }
+            })
+        } else {
+          Object.keys(path_module)
+            .filter(subVar => !subVar.startsWith('$'))
+            .map(variable_name => {
+              const title = module_name + VARIABLE_SEPARATOR + variable_name
+              _valid_import_data[title] = {
+                title: title,
+                module: module_name,
+                variable: variable_name,
+              }
+            })
+        }
       })
       .catch(error => {
         console.log(error)

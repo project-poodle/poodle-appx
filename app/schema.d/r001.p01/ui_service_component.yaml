@@ -25,44 +25,73 @@ ui_component:
           name: /
         not_found_view:
           _type: react/element
-          name: app-x/page/layout/HeaderLayout.default
+          name: app-x/page/layout/HeaderLayout
           props:
             header:
               _type: react/element
-              name: app-x/page/header/Header_user.default
+              name: app-x/page/header/Header_user
               props:
-                  appName: appx
-                  title: App-X
-                  titleIcon:
-                      _type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                  rootUrl: '/console'
-                  baseUrl: '/console'
-                  authUrl: '/login'
-                  authDeployment:
-                      namespace: sys
-                      ui_name: console
-                      ui_deployment: base
+                appName: appx
+                title: App-X
+                titleIcon:
+                  _type: react/element
+                  name: "@material-ui/icons.ViewQuiltRounded"
+                rootUrl: /console
+                baseUrl: /console
+                authUrl: /login
+                authDeployment:
+                  namespace: sys
+                  ui_name: console
+                  ui_deployment: base
           children:
             - _type: react/element
-              name: app-x/view/error/NotFoundView.default
+              name: app-x/view/error/NotFoundView
         component:
           _type: react/element
           name: react-redux.Provider
           props:
             store:
               _type: js/import
-              name: app-x/redux/store.default
+              name: app-x/redux/store
           children:
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
               children:
-                - _type: js/expression
-                  data: routes || not_found_view
+                - _type: react/element
+                  name: self/MobileNavProvider
+                  children:
+                    - _type: js/expression
+                      data: routes || not_found_view
+
+    - namespace: sys
+      ui_name: service
+      ui_ver: internal
+      ui_component_name: /MobileNavProvider
+      ui_component_type: react/provider
+      ui_component_spec:
+        ...open:
+          _type: react/state
+          name: open
+          setter: setOpen
+          init: "false"
+        toggle:
+          _type: js/function
+          body:
+            - setOpen(!open)
+        provider:
+          open:
+            _type: js/expression
+            data: open
+          setOpen:
+            _type: js/expression
+            data: setOpen
+          toggle:
+            _type: js/expression
+            data: toggle
 
     ############################################################
     - namespace: sys
@@ -98,13 +127,13 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -113,18 +142,14 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
-        states:
-            mobileNav:
-                _type: react/state
-                name: open
-                setter: setOpen
-                init: false
+        mobileNav:
+            _type: react/context
+            name: self/MobileNavProvider.Context
         handlers:
             sideNavHandler:
                 _type: js/function
                 body:
-                  - |
-                    states.mobileNav.setOpen(!states.mobileNav.open)
+                  - mobileNav.toggle()
         component:
             _type: react/element
             name: app-x/page/layout/HeaderLayout
@@ -144,22 +169,15 @@ ui_component:
                                   props:
                                       color: inherit
                                       onClick:
-                                          _type: js/expression
-                                          data: handlers.sideNavHandler
+                                          _type: js/function
+                                          body:
+                                            - mobileNav.setOpen(!mobileNav.open)
                                   children:
                                       - _type: react/element
                                         name: '@material-ui/icons.Menu'
             children:
                 - _type: react/element
                   name: self/page/Builder
-                  props:
-                      isMobileNavOpen:
-                          _type: js/expression
-                          data: states.mobileNav.open
-                      handlers:
-                          sideNavHandler:
-                              _type: js/expression
-                              data: handlers.sideNavHandler
         _test:
           providers:
             - _type: react/element
@@ -167,13 +185,15 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
+            - _type: react/element
+              name: self/MobileNavProvider
 
     ############################################################
     - namespace: sys
@@ -182,15 +202,15 @@ ui_component:
       ui_component_name: /page/Builder
       ui_component_type: react/component
       ui_component_spec:
+        mobileNav:
+            _type: react/context
+            name: self/MobileNavProvider.Context
         states:
             builder:
                 _type: react/state
                 name: data
                 setter: setData
-                init:
-                    ui_builder_type: ui_component
-                    ui_component_name: /page/Console
-                    ui_route_name: ''
+                init: "{ ui_builder_type: 'ui_component', ui_component_name: '/page/Console', ui_route_name: '' }"
         handlers:
             handleComponentSelected:
                 _type: js/function
@@ -222,10 +242,11 @@ ui_component:
             props:
                 isMobileNavOpen:
                     _type: js/expression
-                    data: props.isMobileNavOpen
+                    data: mobileNav.open
                 onMobileClose:
-                    _type: js/expression
-                    data: props.handlers.sideNavHandler
+                    _type: js/function
+                    body:
+                      - mobileNav.setOpen(false)
                 sideNav:
                     _type: react/element
                     name: '@material-ui/core.Box'
@@ -243,13 +264,15 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
+            - _type: react/element
+              name: self/MobileNavProvider
 
     ############################################################
     - namespace: sys
@@ -341,10 +364,10 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme

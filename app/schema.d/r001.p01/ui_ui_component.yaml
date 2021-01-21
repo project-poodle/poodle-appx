@@ -25,11 +25,11 @@ ui_component:
           name: /
         not_found_view:
           _type: react/element
-          name: app-x/page/layout/HeaderLayout.default
+          name: app-x/page/layout/HeaderLayout
           props:
             header:
               _type: react/element
-              name: app-x/page/header/Header_user.default
+              name: app-x/page/header/Header_user
               props:
                   appName: appx
                   title: App-X
@@ -45,21 +45,21 @@ ui_component:
                       ui_deployment: base
           children:
             - _type: react/element
-              name: app-x/view/error/NotFoundView.default
+              name: app-x/view/error/NotFoundView
         component:
           _type: react/element
           name: react-redux.Provider
           props:
             store:
               _type: js/import
-              name: app-x/redux/store.default
+              name: app-x/redux/store
           children:
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
               children:
                 - _type: js/expression
                   data: routes || not_found_view
@@ -98,13 +98,13 @@ ui_component:
                 props:
                   store:
                     _type: js/import
-                    name: app-x/redux/store.default
+                    name: app-x/redux/store
               - _type: react/element
-                name: "app-x/theme/GlobalStyleProvider.default"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     _type: js/import
-                    name: app-x/theme.default
+                    name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -167,13 +167,13 @@ ui_component:
                 props:
                   store:
                     _type: js/import
-                    name: app-x/redux/store.default
+                    name: app-x/redux/store
               - _type: react/element
-                name: "app-x/theme/GlobalStyleProvider.default"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     _type: js/import
-                    name: app-x/theme.default
+                    name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -267,13 +267,13 @@ ui_component:
                 props:
                   store:
                     _type: js/import
-                    name: app-x/redux/store.default
+                    name: app-x/redux/store
               - _type: react/element
-                name: "app-x/theme/GlobalStyleProvider.default"
+                name: "app-x/theme/GlobalStyleProvider"
                 props:
                   theme:
                     _type: js/import
-                    name: app-x/theme.default
+                    name: app-x/theme
 
     ############################################################
     - namespace: sys
@@ -336,12 +336,12 @@ ui_component:
           handleRouteSelected:
             _type: js/expression
             data: props.handleRouteSelected
-          updateDeployment:
+          handleDeployment:
             _type: js/function
             params:
               - value
             body:
-              - console.log('updateDeployment', value)
+              - console.log('handleDeployment', value)
               - |
                 const found = states.uiDeployments
                     .find(d => `${d.namespace}/${d.ui_name}/${d.ui_deployment}` === value)
@@ -440,7 +440,7 @@ ui_component:
                           props:
                             onChange:
                               _type: js/expression
-                              data: "e => handlers.updateDeployment(e.target.value)"
+                              data: "e => handlers.handleDeployment(e.target.value)"
                             value:
                               _type: js/expression
                               data: "\\`${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_n\
@@ -589,15 +589,15 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
-              name: app-x/theme/GlobalStyleProvider.default
+              name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme
             - _type: react/element
-              name: app-x/builder/ui/NavProvider.default
+              name: app-x/builder/ui/NavProvider
 
 
     ############################################################
@@ -878,10 +878,10 @@ ui_component:
               props:
                 store:
                   _type: js/import
-                  name: app-x/redux/store.default
+                  name: app-x/redux/store
             - _type: react/element
               name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme.default
+                  name: app-x/theme

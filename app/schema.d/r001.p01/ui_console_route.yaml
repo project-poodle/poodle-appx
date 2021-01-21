@@ -15,11 +15,11 @@ ui_route:
       ui_route_spec:
           component:
               _type: react/element
-              name: app-x/page/layout/HeaderLayout.default
+              name: app-x/page/layout/HeaderLayout
               props:
                   header:
                       _type: react/element
-                      name: app-x/page/header/Header_plain.default
+                      name: app-x/page/header/Header_plain
                       props:
                           title: App-X
                           titleIcon:
@@ -38,11 +38,11 @@ ui_route:
       ui_route_spec:
           component:
               _type: react/element
-              name: app-x/page/layout/HeaderLayout.default
+              name: app-x/page/layout/HeaderLayout
               props:
                   header:
                       _type: react/element
-                      name: app-x/page/header/Header_plain.default
+                      name: app-x/page/header/Header_plain
                       props:
                           title: App-X
                           titleIcon:
@@ -52,7 +52,7 @@ ui_route:
                           baseUrl: '/'
               children:
                   - _type: react/element
-                    name: app-x/view/error/NotFoundView.default
+                    name: app-x/view/error/NotFoundView
 
     - namespace: sys
       ui_name: console
@@ -61,11 +61,11 @@ ui_route:
       ui_route_spec:
           component:
               _type: react/element
-              name: app-x/page/layout/HeaderLayout.default
+              name: app-x/page/layout/HeaderLayout
               props:
                   header:
                       _type: react/element
-                      name: app-x/page/header/Header_user.default
+                      name: app-x/page/header/Header_user
                       props:
                           appName: appx
                           title: App-X

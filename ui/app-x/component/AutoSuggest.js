@@ -66,10 +66,14 @@ const AutoSuggest = (props) => {
         const valid_names = props.options
         const s_list = s.toUpperCase().split(' ').filter(s => !!s)
         const found_options = valid_names.filter(name => {
-          const name_upper = name.toUpperCase()
-          return s_list.reduce(
-            (result, obj) => !!result && name_upper.includes(obj),
-            true)
+          if (!!name) {
+            const name_upper = name.toUpperCase()
+            return s_list.reduce(
+              (result, obj) => !!result && name_upper.includes(obj),
+              true)
+          } else {
+            return false
+          }
         }).map(n => ({value: n}))
         setOptions(found_options)
       }}
@@ -99,6 +103,8 @@ const AutoSuggest = (props) => {
 
 AutoSuggest.propTypes = {
   name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
   label: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,

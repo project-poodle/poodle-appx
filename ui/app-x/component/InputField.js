@@ -43,6 +43,7 @@ import { parse, parseExpression } from "@babel/parser"
 
 import AutoSuggest from 'app-x/component/AutoSuggest'
 import ControlledEditor from 'app-x/component/ControlledEditor'
+import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   validation
 } from 'app-x/builder/ui/syntax/util_base'
@@ -113,15 +114,26 @@ const InputField = ((props) => {
 
   // destruct props
   const { name, childSpec, inputSpec, defaultValue } = props
-
   // options
-  const options = (() => {
-    if (inputSpec?.options) {
-      return eval(inputSpec?.options)
+  const [ options, setOptions ] = useState([])
+  // selfImportNames
+  const { selfImportNames } = React.useContext(NavProvider.Context)
+  // console.log(`NavProvider.Context [selfImportNames]`, selfImportNames)
+
+  // update options
+  useEffect(() => {
+    if (props.inputSpec?.options) {
+      const result = eval(props.inputSpec?.options)
+      // console.log(`props.inputSpec?.options`, result)
+      if (!!inputSpec.optionSelfImportNames) {
+        setOptions(result.concat(selfImportNames))
+      } else {
+        setOptions(result)
+      }
     } else {
-      return []
+      setOptions([])
     }
-  })()
+  }, [props.inputSpec])
 
   // monaco focused state
   const [ monacoFocused,  setMonacoFocused  ] = useState(false)
@@ -185,7 +197,7 @@ const InputField = ((props) => {
         // auto options rule
         if (!!inputSpec.optionsOnly) {
           result.validate[`validate_${count++}`] = (value) => (
-            !!options.find(option => typeof option === 'string' ? option === value : option.value === value)
+            !!options.find(option => typeof option === 'string' ? option === value : option?.value === value)
             || `${childSpec.desc || childSpec.title || childSpec.name} must be a valid value`
           )
         }

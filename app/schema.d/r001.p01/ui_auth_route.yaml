@@ -15,11 +15,11 @@ ui_route:
       ui_route_spec:
           component:
               _type: react/element
-              name: app-x/page/layout/HeaderLayout.default
+              name: app-x/page/layout/HeaderLayout
               props:
                   header:
                       _type: react/element
                       name: self/page/header/Header_user
               children:
                   - _type: react/element
-                    name: app-x/view/error/NotFoundView.default
+                    name: app-x/view/error/NotFoundView

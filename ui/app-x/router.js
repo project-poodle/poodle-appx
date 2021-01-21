@@ -122,3 +122,12 @@ export {
   A,
   HLink,
 }
+
+export default {
+  useRoutes,
+  usePath,
+  navigate,
+  hnavigate,
+  A,
+  HLink,
+}

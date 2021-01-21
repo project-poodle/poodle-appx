@@ -90,8 +90,8 @@ async function handle_react_component(req, res) {
         reg_js_variable(js_context, ui_comp_name, 'const', capitalize(req.context.ui_component_name))
         js_context.self = ui_comp_name
 
-        reg_js_import(js_context, 'react', true, 'React')
-        //reg_js_import(js_context, 'react-dom', true, 'ReactDOM')
+        reg_js_import(js_context, 'react', use_default=true, 'React')
+        //reg_js_import(js_context, 'react-dom', use_default=true, 'ReactDOM')
 
         const input = req.context.ui_component_spec
 
@@ -103,7 +103,7 @@ async function handle_react_component(req, res) {
         if ('_test' in req.context.ui_component_spec) {
           // register variable
           const ui_test_name = ui_comp_name + '.Test'
-          reg_js_variable(js_context, ui_test_name)
+          reg_js_variable(js_context, ui_test_name, use_default=true)
           // process providers
           let test_component = {
             _type: 'react/element',

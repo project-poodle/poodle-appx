@@ -26,6 +26,7 @@ export const js_import = {
           kind: 'input/text'
         },
         options: 'validation.valid_import_names()',
+        optionSelfImportNames: true,
         optionsOnly: true,
         examples: [
           'react',

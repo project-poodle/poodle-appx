@@ -33,6 +33,7 @@ export const react_element = {
         input: {
           kind: 'input/text',
           options: 'validation.valid_import_names()',
+          optionSelfImportNames: true,
           optionsOnly: true,
         },
         examples: [

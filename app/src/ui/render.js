@@ -292,6 +292,11 @@ async function handle_render(req, res, load_from_db=true) {
                 APPX_PATHS: { 'paths': req.appx_paths },
                 IMPORT_MAPS: ui_spec.importMaps,
                 API_MAPS: ui_deployment_spec.apiMaps,
+                SELF: {
+                  namespace: req.context.namespace,
+                  ui_name: req.context.ui_name,
+                  ui_deployment: req.context.ui_deployment,
+                },
                 SPEC: req.appx_spec,
             },
             entry: '$render$',

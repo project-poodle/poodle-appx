@@ -321,7 +321,7 @@ function js_import(js_context, ref, input) {
     throw new Error(`ERROR: input.name missing in [js/import] [${JSON.stringify(input)}]`)
   }
 
-  reg_js_import(js_context, input.name, use_default=false)
+  reg_js_import(js_context, input.name)
 
   // return imported name as result
   if (!!js_context.STATEMENT_CONTEXT) {
@@ -1505,13 +1505,13 @@ function react_element(js_context, ref, input) {
   const parsed_var = _parse_var_full_path(input.name)
   const capitalized_name = capitalize(parsed_var.full_paths.pop())
 
-  if (parsed_var.sub_vars.length > 0) {
-    // do not use default import if we are importing sub_var
-    reg_js_import(js_context, input.name, use_default=false, suggested_name=capitalized_name)
-  } else {
-    // use default import if we are importing top element
-    reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
-  }
+  // if (parsed_var.sub_vars.length > 0) {
+  //   // do not use default import if we are importing sub_var
+  //   reg_js_import(js_context, input.name, use_default=false, suggested_name=capitalized_name)
+  // } else {
+  //   // use default import if we are importing top element
+  reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
+  // }
 
   // create react element with props and children
   const react_element = t.jSXElement(
@@ -1850,7 +1850,7 @@ function react_context(js_context, ref, input) {
   reg_js_import(js_context, 'react.useContext')
 
   // register context name
-  reg_js_import(js_context, input.name, use_default=false)
+  reg_js_import(js_context, input.name)
 
   const callExpression = t.callExpression(
     t.identifier('react.useContext'),
@@ -2718,6 +2718,13 @@ function react_provider(js_context, input, ui_comp_name) {
         )
       )
 
+  // register js context
+  reg_js_import(js_context, 'react.createContext')
+  reg_js_variable(js_context, `${ui_comp_name}`)
+  reg_js_variable(js_context, `${ui_comp_name}_Context`)
+  reg_js_variable(js_context, `${ui_comp_name}_Context.Provider`)
+  // reg_js_import(js_context, 'react.Provider')
+
   // return a list of statement
   const result = [
     // const comp_name_Context = React.createContext()
@@ -2737,58 +2744,83 @@ function react_provider(js_context, input, ui_comp_name) {
       'const',
       [
         t.variableDeclarator(
+          t.identifier(`${ui_comp_name}_Context.Provider`),
+          t.memberExpression(
+            t.identifier(`${ui_comp_name}_Context`),
+            t.identifier('Provider')
+          )
+        )
+      ]
+    ),
+    /*
+    t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
           t.identifier(ui_comp_name),
           t.callExpression(
             t.arrowFunctionExpression(
               [],
               t.blockStatement(
                 [
+                  */
                   // const comp_name_Function = (props) => {}
-                  t.variableDeclaration(
-                    'const',
-                    [
-                      t.variableDeclarator(
-                        t.identifier(`${ui_comp_name}_Function`),
-                        t.arrowFunctionExpression(
-                          [
-                            t.identifier('props')
-                          ],
-                          t.blockStatement(
-                            [
-                              // insert block_statements from earlier
-                              ...block_statements,
-                              t.returnStatement(
-                                t.jSXElement(
-                                  t.jSXOpeningElement(
-                                    t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
-                                    [
-                                      t.jSXAttribute(
-                                        t.jSXIdentifier('value'),
-                                        t.jSXExpressionContainer(
-                                          providerExpression,
-                                        )
-                                      )
-                                    ]
-                                  ),
-                                  t.jSXClosingElement(
-                                    t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
-                                  ),
-                                  [
-                                    t.jSXExpressionContainer(
-                                      t.memberExpression(
-                                        t.identifier('props'),
-                                        t.identifier('children')
-                                      )
-                                    )
-                                  ]
-                                )
-                              )
-                            ]
+    t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(`${ui_comp_name}`),
+          t.arrowFunctionExpression(
+            [
+              t.identifier('props')
+            ],
+            t.blockStatement(
+              [
+                // insert block_statements from earlier
+                ...block_statements,
+                t.returnStatement(
+                  t.jSXElement(
+                    t.jSXOpeningElement(
+                      t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
+                      [
+                        t.jSXAttribute(
+                          t.jSXIdentifier('value'),
+                          t.jSXExpressionContainer(
+                            providerExpression,
                           )
+                        )
+                      ]
+                    ),
+                    t.jSXClosingElement(
+                      t.jSXIdentifier(`${ui_comp_name}_Context.Provider`),
+                    ),
+                    [
+                      t.jSXExpressionContainer(
+                        t.memberExpression(
+                          t.identifier('props'),
+                          t.identifier('children')
                         )
                       )
                     ]
-                  ),
+                  )
+                )
+              ]
+            )
+          )
+        )
+      ]
+    ),
+    t.expressionStatement(
+      t.assignmentExpression(
+        '=',
+        t.memberExpression(
+          t.identifier(`${ui_comp_name}`),
+          t.identifier('Context')
+        ),
+        t.identifier(`${ui_comp_name}_Context`)
+      )
+    ),
+                  /*
                   // comp_name_Function.Context = comp_name_Context
                   t.expressionStatement(
                     t.assignmentExpression(
@@ -2812,6 +2844,7 @@ function react_provider(js_context, input, ui_comp_name) {
         )
       ]
     ),
+    */
     t.exportNamedDeclaration(
       null,
       [

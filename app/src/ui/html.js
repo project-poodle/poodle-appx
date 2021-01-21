@@ -147,6 +147,11 @@ async function handle_html(req, res) {
                 APPX_PATHS: { 'paths': req.appx_paths },
                 IMPORT_MAPS: req.context.ui_spec.importMaps,
                 API_MAPS: req.context.ui_deployment_spec.apiMaps,
+                SELF: {
+                  namespace: req.context.namespace,
+                  ui_name: req.context.ui_name,
+                  ui_deployment: req.context.ui_deployment,
+                },
                 SPEC: req.appx_spec,
             },
             entry: req.context.ui_component_spec.entry,
