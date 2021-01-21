@@ -142,121 +142,119 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
+        appNav:
+          _type: react/element
+          name: self/nav/appNav
+        styles:
+          _type: mui/style
+          layout:
+            height: 100%
+          sideNav:
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
+            height: 100%
+            width: 300
+          sider: {}
         mobileNav:
-            _type: react/context
-            name: self/MobileNavProvider.Context
+          _type: react/context
+          name: self/MobileNavProvider.Context
         handlers:
-            sideNavHandler:
-                _type: js/function
-                body:
-                  - mobileNav.toggle()
+          sideNavHandler:
+            _type: js/function
+            body:
+              - mobileNav.toggle()
         component:
-            _type: react/element
-            name: app-x/page/layout/HeaderLayout
-            props:
-                header:
-                    _type: react/element
-                    name: self/page/header/Header_user
-                    props:
-                        suffix:
-                            _type: react/element
-                            name: '@material-ui/core.Hidden'
-                            props:
-                                lgUp: true
-                            children:
-                                - _type: react/element
-                                  name: '@material-ui/core.IconButton'
-                                  props:
-                                      color: inherit
-                                      onClick:
-                                          _type: js/function
-                                          body:
-                                            - mobileNav.setOpen(!mobileNav.open)
-                                  children:
-                                      - _type: react/element
-                                        name: '@material-ui/icons.Menu'
-            children:
-                - _type: react/element
-                  name: self/page/Builder
-        _test:
-          providers:
-            - _type: react/element
-              name: react-redux.Provider
+          _type: react/element
+          name: app-x/page/layout/HeaderLayout
+          props:
+            header:
+              _type: react/element
+              name: self/page/header/Header_user
               props:
-                store:
-                  _type: js/import
-                  name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
-                  _type: js/import
-                  name: app-x/theme
-            - _type: react/element
-              name: self/MobileNavProvider
-
-    ############################################################
-    - namespace: sys
-      ui_name: service
-      ui_ver: internal
-      ui_component_name: /page/Builder
-      ui_component_type: react/component
-      ui_component_spec:
-        mobileNav:
-            _type: react/context
-            name: self/MobileNavProvider.Context
-        states:
-            builder:
-                _type: react/state
-                name: data
-                setter: setData
-                init: "{ ui_builder_type: 'ui_component', ui_component_name: '/page/Console', ui_route_name: '' }"
-        handlers:
-            handleComponentSelected:
-                _type: js/function
-                params:
-                    - event
-                body:
-                  - |
-                    states.builder.setData({
-                        ui_builder_type: 'ui_component',
-                        ui_component_name: event.ui_component_name,
-                        ui_route_name: '',
-                    })
-                    console.log(event)
-                    console.log(states.builder.data)
-            handleRouteSelected:
-                _type: js/function
-                params:
-                    - event
-                body:
-                  - |
-                    states.builder.setData({
-                        ui_builder_type: 'ui_route',
-                        ui_component_name: '',
-                        ui_route_name: event.ui_route_name,
-                    })
-        component:
-            _type: react/element
-            name: 'app-x/page/layout/SideNavLayout'
-            props:
-                isMobileNavOpen:
-                    _type: js/expression
-                    data: mobileNav.open
-                onMobileClose:
-                    _type: js/function
-                    body:
-                      - mobileNav.setOpen(false)
-                sideNav:
-                    _type: react/element
-                    name: '@material-ui/core.Box'
-                    props:
-                        height: 100%
-                        display: flex
-                        flexDirection: column
-                    children:
+                suffix:
+                  _type: react/element
+                  name: "@material-ui/core.Hidden"
+                  props:
+                    lgUp: true
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.IconButton"
+                      props:
+                        color: inherit
+                        onClick:
+                          _type: js/function
+                          body:
+                            - mobileNav.setOpen(!mobileNav.open)
+                      children:
                         - _type: react/element
-                          name: 'self/nav/appNav'
+                          name: "@material-ui/icons.Menu"
+          children:
+            - _type: react/element
+              name: antd.Layout
+              props:
+                className:
+                  _type: js/expression
+                  data: styles.layout
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.Hidden"
+                  props:
+                    className:
+                      _type: js/expression
+                      data: styles.sideNav
+                    lgUp: true
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.Drawer"
+                      props:
+                        anchor: left
+                        classes:
+                          _type: js/expression
+                          data: "{paper: styles.sideNav}"
+                        onClose:
+                          _type: js/expression
+                          data: e => mobileNav.setOpen(false)
+                        open:
+                          _type: js/expression
+                          data: mobileNav.open
+                        style:
+                          _type: js/expression
+                          data: "{width:300}"
+                        variant: temporary
+                      children:
+                        - _type: js/expression
+                          data: appNav
+                - _type: react/element
+                  name: "@material-ui/core.Hidden"
+                  props:
+                    mdDown: true
+                  children:
+                    - _type: react/element
+                      name: antd.Layout.Sider
+                      props:
+                        className:
+                          _type: js/expression
+                          data: styles.sideNav
+                        width: 300
+                      children:
+                        - _type: js/expression
+                          data: appNav
+                - _type: react/element
+                  name: antd.Layout.Content
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.Box"
+                      props:
+                        alignItems: center
+                        display: flex
+                        height: 100%
+                        justifyContent: center
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/core.Typography"
+                          children:
+                            - Hello, World!
         _test:
           providers:
             - _type: react/element
