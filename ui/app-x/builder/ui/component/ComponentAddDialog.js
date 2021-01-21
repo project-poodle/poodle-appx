@@ -327,14 +327,14 @@ const ComponentAddDialog = (props) => {
                 validate: {
                   checkDuplicate: value =>
                     addDialogContext.parentNode.children
-                      .filter(child => child.subName.toUpperCase() === value.toUpperCase())
+                      .filter(child => child.subName === value)
                       .length === 0
                     || 'Component name is duplicate with an existing child',
                   checkRootFolder: value => {
                     if (addDialogContext.parentNode.key !== '/') {
                       return true
                     } else if (treeData
-                      .filter(child => child.subName.toUpperCase() === value.toUpperCase())
+                      .filter(child => child.subName === value)
                       .length === 0)
                     {
                       return true

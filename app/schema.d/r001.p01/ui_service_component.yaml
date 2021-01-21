@@ -29,7 +29,7 @@ ui_component:
           props:
             header:
               _type: react/element
-              name: app-x/page/header/Header_user
+              name: self/Header
               props:
                 appName: appx
                 title: App-X
@@ -97,29 +97,73 @@ ui_component:
     - namespace: sys
       ui_name: service
       ui_ver: internal
-      ui_component_name: /page/header/Header_user
+      ui_component_name: /page/Header
       ui_component_type: react/component
       ui_component_spec:
-        propTypes:
-            suffix: PropTypes.element
+        styles:
+          _type: mui/style
+          avatar:
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.primary.light
+          header: {}
+          icon:
+            color:
+              _type: js/expression
+              data: theme.palette.background.default
+          title:
+            color:
+              _type: js/expression
+              data: theme.palette.background.default
+            paddingLeft:
+              _type: js/expression
+              data: theme.spacing(2)
         component:
-            _type: react/element
-            name: app-x/page/header/Header_user
-            props:
-                title: Service Builder
-                titleIcon:
-                    _type: react/element
-                    name: "@material-ui/icons.ViewQuiltRounded"
-                rootUrl: '/console'
-                baseUrl: '/'
-                authUrl: '/login'
-                authDeployment:
-                    namespace: sys
-                    ui_name: console
-                    ui_deployment: base
-                suffix:
-                    _type: js/expression
-                    data: props.suffix
+          _type: react/element
+          name: "@material-ui/core.AppBar"
+          props:
+            elevation: 0
+          children:
+            - _type: react/element
+              name: "@material-ui/core.Toolbar"
+              props:
+                elevation: 0
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.IconButton"
+                  props:
+                    className:
+                      _type: js/expression
+                      data: styles.avatar
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/icons.ViewQuiltRounded"
+                      props:
+                        className:
+                          _type: js/expression
+                          data: styles.icon
+                - _type: react/element
+                  name: "@material-ui/core.Typography"
+                  props:
+                    className:
+                      _type: js/expression
+                      data: styles.title
+                    variant: h6
+                  children:
+                    - Service Builder
+                - _type: react/element
+                  name: "@material-ui/core.Box"
+                  props:
+                    flexGrow: "1"
+                - _type: react/element
+                  name: app-x/util/UserBadge
+                  props:
+                    auth:
+                      _type: js/expression
+                      data: "{namespace:'sys',ui_name:'console',ui_deployment:'base'}"
+                    authUrl: /login
+                    elevation: 0
+                    realm: main
         _test:
           providers:
             - _type: react/element
@@ -134,6 +178,8 @@ ui_component:
                 theme:
                   _type: js/import
                   name: app-x/theme
+            - _type: react/element
+              name: self/MobileNavProvider
 
     ############################################################
     - namespace: sys
@@ -147,6 +193,15 @@ ui_component:
           name: self/nav/appNav
         styles:
           _type: mui/style
+          avatar:
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.primary.light
+          header: {}
+          icon:
+            color:
+              _type: js/expression
+              data: theme.palette.background.default
           layout:
             height: 100%
           sideNav:
@@ -156,6 +211,13 @@ ui_component:
             height: 100%
             width: 300
           sider: {}
+          title:
+            color:
+              _type: js/expression
+              data: theme.palette.background.default
+            paddingLeft:
+              _type: js/expression
+              data: theme.spacing(2)
         mobileNav:
           _type: react/context
           name: self/MobileNavProvider.Context
@@ -166,91 +228,88 @@ ui_component:
               - mobileNav.toggle()
         component:
           _type: react/element
-          name: app-x/page/layout/HeaderLayout
+          name: antd.Layout
           props:
+            className:
+              _type: js/expression
+              data: styles.layout
             header:
               _type: react/element
-              name: self/page/header/Header_user
-              props:
-                suffix:
-                  _type: react/element
-                  name: "@material-ui/core.Hidden"
-                  props:
-                    lgUp: true
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.IconButton"
-                      props:
-                        color: inherit
-                        onClick:
-                          _type: js/function
-                          body:
-                            - mobileNav.setOpen(!mobileNav.open)
-                      children:
-                        - _type: react/element
-                          name: "@material-ui/icons.Menu"
+              name: self/page/Header
           children:
             - _type: react/element
-              name: antd.Layout
+              name: antd.Layout.Header
               props:
                 className:
                   _type: js/expression
-                  data: styles.layout
+                  data: styles.header
               children:
                 - _type: react/element
-                  name: "@material-ui/core.Hidden"
+                  name: self/page/Header
+            - _type: react/element
+              name: antd.Layout.Content
+              children:
+                - _type: react/element
+                  name: antd.Layout
                   props:
                     className:
                       _type: js/expression
-                      data: styles.sideNav
-                    lgUp: true
+                      data: styles.layout
                   children:
                     - _type: react/element
-                      name: "@material-ui/core.Drawer"
-                      props:
-                        anchor: left
-                        classes:
-                          _type: js/expression
-                          data: "{paper: styles.sideNav}"
-                        onClose:
-                          _type: js/expression
-                          data: e => mobileNav.setOpen(false)
-                        open:
-                          _type: js/expression
-                          data: mobileNav.open
-                      children:
-                        - _type: js/expression
-                          data: appNav
-                - _type: react/element
-                  name: "@material-ui/core.Hidden"
-                  props:
-                    mdDown: true
-                  children:
-                    - _type: react/element
-                      name: antd.Layout.Sider
+                      name: "@material-ui/core.Hidden"
                       props:
                         className:
                           _type: js/expression
                           data: styles.sideNav
-                        width: 300
-                      children:
-                        - _type: js/expression
-                          data: appNav
-                - _type: react/element
-                  name: antd.Layout.Content
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.Box"
-                      props:
-                        alignItems: center
-                        display: flex
-                        height: 100%
-                        justifyContent: center
+                        lgUp: true
                       children:
                         - _type: react/element
-                          name: "@material-ui/core.Typography"
+                          name: "@material-ui/core.Drawer"
+                          props:
+                            anchor: left
+                            classes:
+                              _type: js/expression
+                              data: "{paper: styles.sideNav}"
+                            onClose:
+                              _type: js/expression
+                              data: e => mobileNav.setOpen(false)
+                            open:
+                              _type: js/expression
+                              data: mobileNav.open
                           children:
-                            - Hello, World!
+                            - _type: js/expression
+                              data: appNav
+                    - _type: react/element
+                      name: "@material-ui/core.Hidden"
+                      props:
+                        mdDown: true
+                      children:
+                        - _type: react/element
+                          name: antd.Layout.Sider
+                          props:
+                            className:
+                              _type: js/expression
+                              data: styles.sideNav
+                            width: 300
+                          children:
+                            - _type: js/expression
+                              data: appNav
+                    - _type: react/element
+                      name: antd.Layout.Content
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/core.Box"
+                          props:
+                            alignItems: center
+                            display: flex
+                            height: 100%
+                            justifyContent: center
+                          children:
+                            - _type: react/element
+                              name: "@material-ui/core.Typography"
+                              children:
+                                - Hello, World!
         _test:
           providers:
             - _type: react/element
