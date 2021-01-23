@@ -25,27 +25,25 @@ ui_component:
           name: /
         not_found_view:
           _type: react/element
-          name: app-x/page/layout/HeaderLayout
+          name: antd.Layout
           props:
+            className:
+              _type: js/expression
+              data: styles.root
             header:
               _type: react/element
-              name: self/Header
-              props:
-                appName: appx
-                title: App-X
-                titleIcon:
-                  _type: react/element
-                  name: "@material-ui/icons.ViewQuiltRounded"
-                rootUrl: /console
-                baseUrl: /console
-                authUrl: /login
-                authDeployment:
-                  namespace: sys
-                  ui_name: console
-                  ui_deployment: base
+              name: self/page/Header
           children:
             - _type: react/element
-              name: app-x/view/error/NotFoundView
+              name: antd.Layout.Header
+              children:
+                - _type: react/element
+                  name: self/page/Header
+            - _type: react/element
+              name: antd.Layout.Content
+              children:
+                - _type: react/element
+                  name: app-x/view/error/NotFoundView
         component:
           _type: react/element
           name: react-redux.Provider
@@ -115,9 +113,12 @@ ui_component:
             color:
               _type: js/expression
               data: theme.palette.background.default
-            paddingLeft:
+            margin:
               _type: js/expression
-              data: theme.spacing(2)
+              data: theme.spacing(1)
+        mobileNav:
+          _type: react/context
+          name: self/MobileNavProvider.Context
         component:
           _type: react/element
           name: "@material-ui/core.AppBar"
@@ -130,11 +131,19 @@ ui_component:
                 elevation: 0
               children:
                 - _type: react/element
-                  name: "@material-ui/core.IconButton"
+                  name: "@material-ui/core.Fab"
                   props:
                     className:
                       _type: js/expression
                       data: styles.avatar
+                    color: primary
+                    onClick:
+                      _type: js/expression
+                      data: e => $I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')
+                    size: small
+                    style:
+                      _type: js/expression
+                      data: "{boxShadow: 'none'}"
                   children:
                     - _type: react/element
                       name: "@material-ui/icons.ViewQuiltRounded"
@@ -143,12 +152,20 @@ ui_component:
                           _type: js/expression
                           data: styles.icon
                 - _type: react/element
-                  name: "@material-ui/core.Typography"
+                  name: "@material-ui/core.Fab"
                   props:
                     className:
                       _type: js/expression
                       data: styles.title
-                    variant: h6
+                    color: primary
+                    onClick:
+                      _type: js/expression
+                      data: e => $I('app-x/router.navigate')('/')
+                    size: medium
+                    style:
+                      _type: js/expression
+                      data: "{boxShadow: 'none'}"
+                    variant: extended
                   children:
                     - Service Builder
                 - _type: react/element
@@ -164,6 +181,25 @@ ui_component:
                     authUrl: /login
                     elevation: 0
                     realm: main
+                - _type: react/element
+                  name: "@material-ui/core.Hidden"
+                  props:
+                    lgUp: true
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.Fab"
+                      props:
+                        color: primary
+                        onClick:
+                          _type: js/expression
+                          data: e => mobileNav.toggle()
+                        size: small
+                        style:
+                          _type: js/expression
+                          data: "{boxShadow: 'none'}"
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/icons.Menu"
         _test:
           providers:
             - _type: react/element
@@ -173,13 +209,13 @@ ui_component:
                   _type: js/import
                   name: app-x/redux/store
             - _type: react/element
+              name: self/MobileNavProvider
+            - _type: react/element
               name: app-x/theme/GlobalStyleProvider
               props:
                 theme:
                   _type: js/import
                   name: app-x/theme
-            - _type: react/element
-              name: self/MobileNavProvider
 
     ############################################################
     - namespace: sys
@@ -239,10 +275,6 @@ ui_component:
           children:
             - _type: react/element
               name: antd.Layout.Header
-              props:
-                className:
-                  _type: js/expression
-                  data: styles.header
               children:
                 - _type: react/element
                   name: self/page/Header

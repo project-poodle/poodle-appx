@@ -32,14 +32,35 @@ self.addEventListener('message', event => {
   // process message
   switch (event.data.type) {
     case "importMaps":
-      if ('basePath' in event.data && 'importMaps' in event.data) {
-        if (!Transpile._.isEqual(importMappings[event.data.basePath], event.data.importMaps)) {
-          importMappings[event.data.basePath] = {...event.data.importMaps }
-          console.log(`Service Worker: updated [${event.data.basePath}] importMaps`, importMappings[event.data.basePath])
+      event.waitUntil(async function() {
+        // get client
+        const client = await clients.get(event.source.id);
+        if (!client) {
+          console.error(`unable to find client [${event.source.id}]`)
+          return
         }
-      } else {
-        console.log(`Service Worker: unrecognized importMaps message - ${event.data}`)
-      }
+        // check import maps message
+        if (!!event.data.basePath && !!event.data.importMaps) {
+          if (!Transpile._.isEqual(importMappings[event.data.basePath], event.data.importMaps)) {
+            importMappings[event.data.basePath] = {...event.data.importMaps }
+            console.log(`Service Worker: updated [${event.data.basePath}] importMaps`, importMappings[event.data.basePath])
+          }
+          client.postMessage({
+            type: "importMaps",
+            status: "ok",
+            basePath: event.data.basePath,
+          })
+          // console.log(`Service Worker: updated [${event.data.basePath}] importMaps`)
+        } else {
+          console.log(`Service Worker: unrecognized importMaps message - ${JSON.stringify(event.data)}`)
+          client.postMessage({
+            type: "importMaps",
+            status: "error",
+            basePath: event.data.basePath,
+            message: `Unrecognized importMaps message [${JSON.stringify(event.data)}]`,
+          })
+        }
+      }())
       break
     case "transpile":
       if ('code' in event.data && 'url' in event.data) {
@@ -48,7 +69,10 @@ self.addEventListener('message', event => {
           // Eg, if it's cross-origin.
           if (!event.source.id) return;
           const client = await clients.get(event.source.id);
-          if (!client) return;
+          if (!client) {
+            console.error(`unable to find client [${event.source.id}]`)
+            return
+          }
           // transpile
           try {
             let transpiled_code = sw_transpile(event.data.code, event.data.url)

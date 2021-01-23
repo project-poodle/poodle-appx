@@ -171,7 +171,7 @@ function _get_token_by_app(namespace, app_name, callback, handler) {
       }
     }
   } else {
-    lookupRealm(
+    lookup_realm(
       namespace,
       app_name,
       data => {
@@ -350,7 +350,7 @@ const logout = (realm, callback, handler) => {
 }
 
 // lookup realm
-const lookupRealm = (namespace, app_name, callback, handler) => {
+const lookup_realm = (namespace, app_name, callback, handler) => {
   // get base path
   const basePath = _get_app_auth_base_path(namespace, app_name)
   return axios
@@ -393,7 +393,7 @@ const lookupRealm = (namespace, app_name, callback, handler) => {
 
 // get self information
 const me = (namespace, app_name, callback, handler) => {
-  lookupRealm(
+  lookup_realm(
     namespace,
     app_name,
     data => {
@@ -674,30 +674,198 @@ const del = (namespace, app_name, url, callback, handler) => {
   )
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// async methods
+
+const login_async = function(realm, username, password) {
+  return new Promise((resolve, reject) => {
+    login(realm, username, password,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const logout_async = function(realm) {
+  return new Promise((resolve, reject) => {
+    logout(realm,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const lookup_realm_async = function(namespace, app_name) {
+  return new Promise((resolve, reject) => {
+    lookup_realm(namespace, app_name,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const me_async = function(namespace, app_name) {
+  return new Promise((resolve, reject) => {
+    me(namespace, app_name,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const get_async = function(namespace, app_name, url) {
+  return new Promise((resolve, reject) => {
+    get(namespace, app_name, url,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const head_async = function(namespace, app_name, url) {
+  return new Promise((resolve, reject) => {
+    head(namespace, app_name, url,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const post_async = function(namespace, app_name, data, url) {
+  return new Promise((resolve, reject) => {
+    post(namespace, app_name, url, data,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const put_async = function(namespace, app_name, data, url) {
+  return new Promise((resolve, reject) => {
+    put(namespace, app_name, url, data,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const patch_async = function(namespace, app_name, data, url) {
+  return new Promise((resolve, reject) => {
+    patch(namespace, app_name, url, data,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const del_async = function(namespace, app_name, url) {
+  return new Promise((resolve, reject) => {
+    del(namespace, app_name, url,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
+const request_async = function(namespace, app_name, conf) {
+  return new Promise((resolve, reject) => {
+    request(namespace, app_name, conf,
+      result => {
+        resolve(result)
+      },
+      error => {
+        reject(error)
+      }
+    )
+  })
+}
+
 export {
   login,
+  login_async,
   logout,
-  lookupRealm,
+  logout_async,
+  lookup_realm,
+  lookup_realm_async,
   me,
+  me_async,
   get,
+  get_async,
   head,
+  head_async,
   post,
+  post_async,
   put,
+  put_async,
   patch,
+  patch_async,
   del,
+  del_async,
   request,
+  request_async,
 }
 
 export default {
   login,
+  login_async,
   logout,
-  lookupRealm,
+  logout_async,
+  lookup_realm,
+  lookup_realm_async,
   me,
+  me_async,
   get,
+  get_async,
   head,
+  head_async,
   post,
+  post_async,
   put,
+  put_async,
   patch,
+  patch_async,
   del,
+  del_async,
   request,
+  request_async,
 }

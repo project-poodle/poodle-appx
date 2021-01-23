@@ -155,8 +155,8 @@ const UI_Builder = (props) => {
   // listen to layout change event
   const onLayoutChange = (currLayout, allLayouts) => {
     // console.log(currLayout)
-    // console.log(allLayouts)
-    if (!!allLayouts) {
+    if (!!allLayouts && !!allLayouts.sm && !!allLayouts.md) {
+      console.log(`Layout saved`, allLayouts)
       globalThis.localStorage.setItem(
         `/app-x/ui/builder/grid-layout`,
         JSON.stringify(allLayouts)
@@ -167,7 +167,7 @@ const UI_Builder = (props) => {
   // load layout when loading first time
   useEffect(() => {
     const stored_layouts = globalThis.localStorage.getItem(`/app-x/ui/builder/grid-layout`)
-    if (!!stored_layouts) {
+    if (!!stored_layouts && !!stored_layouts.md && !!stored_layouts.sm) {
       // console.log(JSON.parse(stored_layouts))
       setLayouts(JSON.parse(stored_layouts))
     }

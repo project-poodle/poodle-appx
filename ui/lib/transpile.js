@@ -122,6 +122,11 @@ function importMapPlugin(import_maps, globalImports) {
 
           let found = false
 
+          // transform self?
+          if (!found && src_val.startsWith('self/')) {
+            // TODO
+          }
+
           // check 'imports'
           if (import_maps.imports) {
             Object.keys(import_maps.imports).map(key => {
@@ -231,7 +236,7 @@ function importMapPlugin(import_maps, globalImports) {
           }
 
           if (!found) {
-            throw new Error('ERROR: import cannot be resolved [' + src_val + '].')
+            throw new Error('ERROR: import cannot be resolved [' + src_val + '] [' + JSON.stringify(import_maps) + ']')
           }
         }
       }

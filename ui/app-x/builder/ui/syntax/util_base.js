@@ -777,15 +777,15 @@ function load_valid_import_data() {
       import(PATH_SEPARATOR + path)
       .then(path_module => {
         // console.log(path_module)
+        const module_name = path
         if (!!path_module.default) {
-          const module_name = path
           _valid_import_data[module_name] = {
             title: module_name,
             module: module_name,
             variable: 'default',
           }
           Object.keys(path_module.default)
-            .filter(subVar => !subVar.startsWith('$'))
+            .filter(variable_name => !variable_name.startsWith('$'))
             .map(variable_name => {
               const title = module_name + VARIABLE_SEPARATOR + variable_name
               _valid_import_data[title] = {
@@ -796,7 +796,7 @@ function load_valid_import_data() {
             })
         } else {
           Object.keys(path_module)
-            .filter(subVar => !subVar.startsWith('$'))
+            .filter(variable_name => !variable_name.startsWith('$'))
             .map(variable_name => {
               const title = module_name + VARIABLE_SEPARATOR + variable_name
               _valid_import_data[title] = {

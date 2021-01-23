@@ -20,6 +20,9 @@ const theme = createMuiTheme({
       error: colors.red[900],
     }
   },
+  // shadows: [
+  //   'none'
+  // ],
   shape: {
       borderRadius: 0,
   },

@@ -15,6 +15,10 @@ import {
   Toolbar,
   Menu,
   MenuItem,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Popover,
   makeStyles
 } from '@material-ui/core'
 import {
@@ -28,8 +32,9 @@ import { logout, me } from 'app-x/api'
 const UserBadge = (props) => {
 
   const styles = (makeStyles(theme => ({
-    margin: {
-      margin: theme.spacing(1),
+    fab: {
+      // margin: theme.spacing(1),
+      boxShadow: "none",
     },
     extendedIcon: {
       marginRight: theme.spacing(1),
@@ -112,39 +117,46 @@ const UserBadge = (props) => {
     props.reducers?.user?.token,
   ])
 
+  const fabRef = React.createRef()
+
   // menu and anchorEl
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const menuId = 'primary-account-menu'
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-      open={!!anchorEl}
-      onClose={e => setAnchorEl(null)}
-    >
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </Menu>
-  )
 
   // render
   return (
     <>
       <Fab
-        color={props.color || "secondary"}
+        ref={fabRef}
+        color={props.color || "primary"}
         size={props.size || 'medium'}
-        elevation={props.elevation || 0}
-        aria-label="user"
+        aria-label="User"
         variant="extended"
-        className={styles.margin}
-        onClick={e => setAnchorEl(event.currentTarget)}
+        className={styles.fab}
+        onClick={e => {
+          console.log(e)
+          // setAnchorEl(event.target)
+          setAnchorEl(fabRef.current)
+        }}
       >
         { props.icon || <AccountCircleOutlined className={styles.extendedIcon}/> }
         { props.reducers?.user?.username }
       </Fab>
-      {renderMenu}
+      <Popover
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        id="account-menu"
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={Boolean(anchorEl)}
+        onClose={e => setAnchorEl(null)}
+      >
+        <ListItem onClick={handleLogout} button={true}>
+          <ListItemIcon>
+            <ExitToApp/>
+          </ListItemIcon>
+          <ListItemText primary="Logout"></ListItemText>
+        </ListItem>
+      </Popover>
     </>
   )
 }
@@ -207,7 +219,6 @@ UserBadge.propTypes = {
   authUrl: PropTypes.string.isRequired,
   icon: PropTypes.element,
   color: PropTypes.string,
-  backgroundColor: PropTypes.string,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserBadge)
