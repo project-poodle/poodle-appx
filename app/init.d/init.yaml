@@ -20,12 +20,14 @@ appx:
         # mysql init values - CHANGE THIS to mysql credentials
         mysql_host:
             list:
-                - "192.168.1.200"
+                - "localhost"
+                # - "192.168.1.200"
                 # - "192.168.1.201"
-                - "192.168.1.203"
+                # - "192.168.1.203"
         mysql_port: "3306"
         mysql_admin_user: "root"
         mysql_admin_pass: "Vlt6DF6RcV"
+        # mysql_admin_pass: ""
         mysql_node_user: "{{{appx.init.appx_node_user}}}"
         mysql_node_pass: "{{{appx.init.appx_node_pass}}}"
         # LDAP configuration
