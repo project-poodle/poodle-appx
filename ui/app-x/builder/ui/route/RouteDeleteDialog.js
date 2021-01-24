@@ -63,11 +63,9 @@ const RouteDeleteDialog = (props) => {
   // nav context
   const {
     navDeployment,
-    setNavDeployment,
     navRoute,
-    setNavRoute,
     navSelected,
-    setNavSelected,
+    selectRoute
   } = useContext(NavProvider.Context)
 
   // Route context

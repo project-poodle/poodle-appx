@@ -167,11 +167,10 @@ const RouteTree = (props) => {
   // nav context
   const {
     navDeployment,
-    setNavDeployment,
     navRoute,
-    setNavRoute,
     navSelected,
-    setNavSelected,
+    selectRoute,
+    syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
   // Route context
@@ -298,10 +297,7 @@ const RouteTree = (props) => {
     // console.log(key)
     tree_traverse(treeData, key[0], (item, index, arr) => {
       setSelectedKey(item.key)
-      setNavSelected({
-        type: 'ui_route'
-      })
-      setNavRoute({
+      selectRoute({
         ui_route_name: item.key,
         ui_route_spec: item.data.ui_route_spec,
       })

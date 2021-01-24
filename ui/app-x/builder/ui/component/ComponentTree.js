@@ -157,13 +157,11 @@ const ComponentTree = (props) => {
   // nav context
   const {
     navDeployment,
-    setNavDeployment,
     navComponent,
-    setNavComponent,
     navRoute,
-    setNavRoute,
     navSelected,
-    setNavSelected,
+    selectComponent,
+    syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
   // component context
@@ -307,10 +305,7 @@ const ComponentTree = (props) => {
         // console.log(item)
         setSelectedKey(item.key)
         setContextKey(item.key)
-        setNavSelected({
-          type: 'ui_component'
-        })
-        setNavComponent({
+        selectComponent({
           ui_component_name: item.key,
           ui_component_type: item.data.ui_component_type,
           ui_component_spec: item.data.ui_component_spec,

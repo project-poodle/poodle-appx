@@ -15,6 +15,8 @@ import {
   Divider,
   Tooltip,
   Typography,
+  CircularProgress,
+  LinearProgress,
   makeStyles
 } from '@material-ui/core'
 import {
@@ -156,6 +158,7 @@ const SyntaxTree = (props) => {
     navComponent,
     navRoute,
     navSelected,
+    syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
   // context
@@ -1056,8 +1059,36 @@ const SyntaxTree = (props) => {
       )
     }
     {
+      !syntaxTreeInitialized
+      && !!navDeployment.namespace
+      && !!navDeployment.ui_name
+      && !!navDeployment.ui_ver
+      && !!navDeployment.ui_deployment
+      && !!navSelected.type
+      &&
       (
-        !!navDeployment.namespace
+        <Box
+          className={styles.root}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+          >
+          <Box>
+            <LinearProgress
+              disableShrink={true}
+            />
+            <Typography variant="body2">
+              Loading...
+            </Typography>
+          </Box>
+        </Box>
+      )
+    }
+    {
+      (
+        !!syntaxTreeInitialized
+        && !!navDeployment.namespace
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment

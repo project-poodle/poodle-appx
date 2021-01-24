@@ -64,13 +64,9 @@ const ComponentDeleteDialog = (props) => {
   // nav context
   const {
     navDeployment,
-    setNavDeployment,
     navComponent,
-    setNavComponent,
     navRoute,
-    setNavRoute,
     navSelected,
-    setNavSelected,
   } = useContext(NavProvider.Context)
 
   // component context

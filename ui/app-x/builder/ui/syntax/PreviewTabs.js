@@ -6,6 +6,8 @@ import {
   Grid,
   Tooltip,
   Typography,
+  CircularProgress,
+  LinearProgress,
   makeStyles,
 } from '@material-ui/core'
 import { WebOutlined, InsertDriveFileOutlined } from '@material-ui/icons'
@@ -79,6 +81,7 @@ const PreviewTabs = (props) => {
     navComponent,
     navRoute,
     navSelected,
+    syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
   // editor context
@@ -120,6 +123,13 @@ const PreviewTabs = (props) => {
 
     // load from backend if not livePreview
     if
+    (
+      !syntaxTreeInitialized
+    )
+    {
+      setPreviewInitialized(false)
+    }
+    else if
     (
       !livePreview
       && !!navDeployment
@@ -194,6 +204,7 @@ const PreviewTabs = (props) => {
     navSelected.type,
     loadTimer,
     livePreview,
+    syntaxTreeInitialized,
   ])
 
   // load content from UI context treeData
@@ -205,6 +216,13 @@ const PreviewTabs = (props) => {
 
     // load from UI context if livePreview
     if
+    (
+      !syntaxTreeInitialized
+    )
+    {
+      setPreviewInitialized(false)
+    }
+    else if
     (
       !previewInitialized
       && !!livePreview
@@ -334,6 +352,7 @@ const PreviewTabs = (props) => {
     treeData,
     loadTimer,
     previewInitialized,
+    syntaxTreeInitialized,
   ])
 
   // load content from UI context treeData
@@ -342,7 +361,8 @@ const PreviewTabs = (props) => {
     // load from UI context if livePreview
     if
     (
-      !!previewInitialized
+      !!syntaxTreeInitialized
+      && !!previewInitialized
       && !!livePreview
       && !!navDeployment
       && !!navDeployment.namespace
@@ -465,6 +485,7 @@ const PreviewTabs = (props) => {
     livePreview,
     treeData,
     previewInitialized,
+    syntaxTreeInitialized,
   ])
 
   return (
@@ -505,7 +526,37 @@ const PreviewTabs = (props) => {
     }
     {
       (
-        !!navDeployment.namespace
+        !syntaxTreeInitialized
+        && !!navDeployment.namespace
+        && !!navDeployment.ui_name
+        && !!navDeployment.ui_ver
+        && !!navDeployment.ui_deployment
+        && !!navSelected.type
+      )
+      &&
+      (
+        <Box
+          className={styles.root}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+          >
+          <Box>
+            <LinearProgress
+              disableShrink={true}
+            />
+            <Typography variant="body2">
+              Loading...
+            </Typography>
+          </Box>
+        </Box>
+      )
+    }
+    {
+      (
+        !!syntaxTreeInitialized
+        && !!navDeployment.namespace
         && !!navDeployment.ui_name
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment

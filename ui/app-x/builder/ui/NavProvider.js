@@ -62,7 +62,9 @@ const NavProvider = (props) => {
     namespace: null,
     ui_name: null,
     ui_ver: null,
+    ui_spec: null,
     ui_deployment: null,
+    ui_deployment_spec: null,
   })
 
   // ui_component
@@ -83,6 +85,115 @@ const NavProvider = (props) => {
     type: null,         // ui_component or ui_route
   })
 
+  // syntax tree initialized
+  const [ syntaxTreeInitialized, setSyntaxTreeInitialized ] = useState(false)
+
+  //////////////////////////////////////////////////////////////////////
+  // select deployment
+  const selectDeployment = (ui_deployment) => {
+    if
+    (
+      !ui_deployment
+      || !ui_deployment.namespace
+      || !ui_deployment.ui_name
+      || !ui_deployment.ui_ver
+      || !ui_deployment.ui_spec
+      || !ui_deployment.ui_deployment
+      || !ui_deployment.ui_deployment_spec
+    )
+    {
+      throw new Error(`ERROR: ui_deployment is missing data [${JSON.stringify(ui_deployment)}]`)
+    }
+    // navDeployment
+    setNavDeployment({
+      namespace: ui_deployment.namespace,
+      ui_name: ui_deployment.ui_name,
+      ui_ver: ui_deployment.ui_ver,
+      ui_spec: ui_deployment.ui_spec,
+      ui_deployment: ui_deployment.ui_deployment,
+      ui_deployment_spec: navDeployment.ui_deployment_spec,
+    })
+    // navComponent
+    setNavComponent({
+      ui_component_name: null,
+      ui_component_type: null,
+      ui_component_spec: null,
+    })
+    // navRoute
+    setNavRoute({
+      ui_route_name: null,
+      ui_route_spec: null,
+    })
+    // navSelected
+    setNavSelected({
+      type: null
+    })
+    // syntax tree
+    setSyntaxTreeInitialized(false)
+  }
+
+  // select ui component
+  const selectComponent = (ui_component) => {
+    if
+    (
+      !ui_component
+      || !ui_component.ui_component_name
+      || !ui_component.ui_component_type
+      || !ui_component.ui_component_spec
+    )
+    {
+      throw new Error(`ERROR: ui_component is missing data [${JSON.stringify(ui_component)}]`)
+    }
+    // navComponent
+    setNavComponent({
+      ui_component_name: ui_component.ui_component_name,
+      ui_component_type: ui_component.ui_component_type,
+      ui_component_spec: ui_component.ui_component_spec,
+    })
+    // navRoute
+    setNavRoute({
+      ui_route_name: null,
+      ui_route_spec: null,
+    })
+    // navSelected
+    setNavSelected({
+      type: 'ui_component'
+    })
+    // syntax tree
+    setSyntaxTreeInitialized(false)
+  }
+
+  // select ui route
+  const selectRoute = (ui_route) => {
+    if
+    (
+      !ui_route
+      || !ui_route.ui_route_name
+      || !ui_route.ui_route_spec
+    )
+    {
+      throw new Error(`ERROR: ui_route is missing data [${JSON.stringify(ui_route)}]`)
+    }
+    // navComponent
+    setNavComponent({
+      ui_component_name: null,
+      ui_component_type: null,
+      ui_component_spec: null,
+    })
+    // navRoute
+    setNavRoute({
+      ui_route_name: ui_route.ui_route_name,
+      ui_route_spec: ui_route.ui_route_spec,
+    })
+    // navSelected
+    setNavSelected({
+      type: 'ui_route'
+    })
+    // syntax tree
+    setSyntaxTreeInitialized(false)
+  }
+
+  //////////////////////////////////////////////////////////////////////
   // self import names
   const [ selfImportNames,  setSelfImportNames  ] = useState([])
   // load self import data
@@ -183,15 +294,15 @@ const NavProvider = (props) => {
     <NavContext.Provider
       value={{
         navDeployment,
-        setNavDeployment,
         navComponent,
-        setNavComponent,
         navRoute,
-        setNavRoute,
         navSelected,
-        setNavSelected,
+        selectDeployment,
+        selectComponent,
+        selectRoute,
+        syntaxTreeInitialized,
+        setSyntaxTreeInitialized,
         selfImportNames,
-        setSelfImportNames,
       }}
     >
       {props.children}

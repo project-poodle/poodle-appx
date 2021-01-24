@@ -341,12 +341,14 @@ ui_component:
             params:
               - value
             body:
-              - console.log('handleDeployment', value)
+              - // console.log('handleDeployment', value)
               - |
                 const found = states.uiDeployments
                     .find(d => `${d.namespace}/${d.ui_name}/${d.ui_deployment}` === value)
                 if (found) {
-                    navContext.setNavDeployment(found)
+                    navContext.selectDeployment(found)
+                } else {
+                    navContext.selectDeployment(null)
                 }
         component:
           _type: react/element
