@@ -295,13 +295,13 @@ ui_component:
               endpoint: /ui/ui_deployment
               init: ""
               result: |-
-                console.log(result)
+                // console.log(result)
                 states.setUiDeployments(result)
               error: ""
         snippet:
           _type: js/statement
           body:
-            - console.log('navContext', navContext)
+            - // console.log('navContext', navContext)
         styles:
           _type: mui/style
           divider:
@@ -690,7 +690,7 @@ ui_component:
                 })
             - _type: js/statement
               body:
-                - console.log(this)
+                - // console.log(this)
         component:
           _type: react/element
           name: "@material-ui/core.Container"

@@ -78,6 +78,7 @@ export const react_element = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_css_properties()',
         },
       },
     },

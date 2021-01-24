@@ -74,6 +74,7 @@ export const input_select = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_css_properties()',
         },
       },
     },

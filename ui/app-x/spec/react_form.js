@@ -151,6 +151,7 @@ export const react_form = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_css_properties()',
         },
       },
     },

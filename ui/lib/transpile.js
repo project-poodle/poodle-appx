@@ -42,6 +42,7 @@ const default_import_maps = {
         "lodash",
         "axios",
         "uuid",
+        "known-css-properties",
       ]
     },
     "mui": {

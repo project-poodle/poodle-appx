@@ -91,6 +91,7 @@ export const input_text = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_css_properties()',
         },
       },
     },

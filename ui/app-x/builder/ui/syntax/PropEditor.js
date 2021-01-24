@@ -81,6 +81,7 @@ import {
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
+  validation,
 } from 'app-x/builder/ui/syntax/util_base'
 
 const THIS_NODE_PROPERTIES = "_"
@@ -281,17 +282,41 @@ const PropEditor = (props) => {
   useEffect(() => {
     if (nodeType === 'js/object') {
       setPropNameOptions([])
-      if (parentNode?.data._type === 'react/element') {
-        // console.log(`here`)
-        lookup_prop_types(parentNode?.data.name, options => {
-          // console.log(`callback`, options)
+      if
+      (
+        parentNode?.data._type === 'react/element'
+        || parentNode?.data._type === 'react/html'
+        || parentNode?.data._type === 'react/form'
+        || parentNode?.data._type.startsWith('input/')
+      )
+      {
+        if (nodeRef === 'props') {
+          // console.log(`here`)
+          lookup_prop_types(parentNode?.data.name, options => {
+            // console.log(`callback`, options)
+            const newPropNameOptions = _.cloneDeep(propNameOptions)
+            newPropNameOptions[THIS_NODE_PROPERTIES] = options // .map(value => {value: value})
+            setPropNameOptions(newPropNameOptions)
+          })
+        } else if (nodeRef === 'style') {
           const newPropNameOptions = _.cloneDeep(propNameOptions)
-          newPropNameOptions[THIS_NODE_PROPERTIES] = options // .map(value => {value: value})
+          newPropNameOptions[THIS_NODE_PROPERTIES] = validation.valid_css_properties() // .map(value => {value: value})
           setPropNameOptions(newPropNameOptions)
-        })
+        } else {
+          setPropNameOptions([])
+        }
+      }
+      else if
+      (
+        parentNode?.data._type === 'mui/style'
+      )
+      {
+        const newPropNameOptions = _.cloneDeep(propNameOptions)
+        newPropNameOptions[THIS_NODE_PROPERTIES] = validation.valid_css_properties() // .map(value => {value: value})
+        setPropNameOptions(newPropNameOptions)
       }
     }
-  }, [nodeType, parentNode])
+  }, [nodeRef, nodeType, parentNode])
 
   //////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
@@ -1086,6 +1111,7 @@ const PropEditor = (props) => {
                         name={THIS_NODE_PROPERTIES}
                         key={THIS_NODE_PROPERTIES}
                         label={nodeSpec.desc}
+                        inputSpec={nodeSpec._input}
                         options={propNameOptions[THIS_NODE_PROPERTIES] || []}
                         otherNames={nodeOtherNames[THIS_NODE_PROPERTIES] || []}
                         className={styles.formControl}
@@ -1153,6 +1179,7 @@ const PropEditor = (props) => {
                                 name={childNode.data._ref}
                                 key={childNode.data._ref}
                                 label={`[ ${childNode.data._ref} ]`}
+                                inputSpec={childSpec._childNode.input}
                                 options={propNameOptions[childNode.data._ref] || []}
                                 otherNames={nodeOtherNames[childNode.data._ref] || []}
                                 className={styles.formControl}
@@ -1175,6 +1202,7 @@ const PropEditor = (props) => {
                             name={childSpec.name}
                             key={childSpec.name}
                             label={childSpec.desc}
+                            inputSpec={childSpec._childNode.input}
                             options={propNameOptions[childSpec.name] || []}
                             otherNames={nodeOtherNames[childSpec.name] || []}
                             className={styles.formControl}

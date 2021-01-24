@@ -28,6 +28,7 @@ import {
   HomeOutlined,
 } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
+import { all as CssProperties } from 'known-css-properties'
 
 import ReactIcon from 'app-x/icon/React'
 import Html from 'app-x/icon/Html'
@@ -862,6 +863,40 @@ function valid_api_endpoints() {
   return []
 }
 
+// css property names
+function cssNameToJsName(name)
+{
+    var split = name.split("-");
+    var output = "";
+    for(var i = 0; i < split.length; i++)
+    {
+        if (i > 0 && split[i].length > 0 && !(i == 1 && (split[i] == "ms" || split[i] == "webkit")))
+        {
+            split[i] = split[i].substr(0, 1).toUpperCase() + split[i].substr(1);
+        }
+        output += split[i];
+    }
+    return output;
+}
+
+function jsNameToCssName(name)
+{
+    return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+let _valid_css_properties = []
+function valid_css_properties() {
+  // console.log(`CssProperties`, CssProperties)
+  if (_valid_css_properties.length === 0) {
+    const result = []
+    CssProperties.map(prop => {
+      result.push(cssNameToJsName(prop))
+    })
+    _valid_css_properties = result.sort()
+  }
+  return _valid_css_properties
+}
+
 // all validation methods
 const validation = {
   valid_namespaces: valid_namespaces,
@@ -871,6 +906,7 @@ const validation = {
   valid_api_endpoints: valid_api_endpoints,
   valid_html_tags: valid_html_tags,
   valid_import_names: valid_import_names,
+  valid_css_properties: valid_css_properties,
 }
 
 ////////////////////////////////////////////////////////////////////////////////

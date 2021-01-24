@@ -44,6 +44,7 @@ import {
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
+  validation
 } from 'app-x/builder/ui/syntax/util_base'
 
 // array text field
@@ -103,22 +104,33 @@ const InputProperties = props => {
   )
 
   // name and thisNode
-  const { name, otherNames } = props
-
-  // states and effects
-  // options
-  const [ options, setOptions ] = useState([])
-  // selfImportNames
+  const { name, otherNames, inputSpec } = props
   const { selfImportNames } = React.useContext(NavProvider.Context)
   // console.log(`NavProvider.Context [selfImportNames]`, selfImportNames)
-  // update options
+  // states and effects
+  const [ nameOptions, setNameOptions ] = useState([])
+  const [ importNames, setImportNames ] = useState([])
+
+  // name options
   useEffect(() => {
-    // console.log(`props.inputSpec?.options`, result)
+    if (!!inputSpec.options) {
+      const name_options = eval(inputSpec.options)
+      // console.log(`inputSpec.options`, name_options)
+      setNameOptions(name_options)
+    } else if (!!props.options) {
+      setNameOptions(props.options)
+    } else {
+      setNameOptions([])
+    }
+  }, [props.options, inputSpec])
+
+  // importNames
+  useEffect(() => {
     const result = valid_import_names()
     if (!!selfImportNames) {
-      setOptions(result.concat(selfImportNames))
+      setImportNames(result.concat(selfImportNames))
     } else {
-      setOptions(result)
+      setImportNames(result)
     }
   }, [])
 
@@ -234,7 +246,7 @@ const InputProperties = props => {
                       size="small"
                       value={innerProps.value}
                       onChange={innerProps.onChange}
-                      options={props.options || []}
+                      options={nameOptions}
                       callback={props.callback}
                       >
                     </AutoSuggest>
@@ -420,7 +432,7 @@ const InputProperties = props => {
                         required: "Import name is required",
                         validate: {
                           valid_name: value => (
-                            options.includes(value)
+                            importNames.includes(value)
                             || "Must use a valid name"
                           )
                         }
@@ -435,7 +447,7 @@ const InputProperties = props => {
                               size="small"
                               value={innerProps.value}
                               onChange={innerProps.onChange}
-                              options={options}
+                              options={importNames}
                               callback={props.callback}
                               >
                             </AutoSuggest>
@@ -741,6 +753,7 @@ InputProperties.process = process_properties
 InputProperties.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  inputSpec: PropTypes.object.isRequired,
   otherNames: PropTypes.arrayOf(
     PropTypes.string.isRequired,
   ).isRequired,
