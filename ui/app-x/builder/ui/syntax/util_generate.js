@@ -579,7 +579,7 @@ function generate_tree_node(js_context, conf, input) {
         return
       }
       // add children to node
-      results.push(
+      const treeNode =
         generate_tree_node(
           {
             ...js_context,
@@ -592,7 +592,18 @@ function generate_tree_node(js_context, conf, input) {
           },
           input[key]
         )
-      )
+      // annotate order
+      treeNode._order = input[key]._order
+      // add to results
+      results.push(treeNode)
+    })
+    // sort by order
+    results.sort((a, b) => {
+      if (!!a._order && !!b._order) {
+        return a._order - b._order
+      } else {
+        return 0
+      }
     })
 
     // add root element to the top level
@@ -730,7 +741,7 @@ function generate_tree_node(js_context, conf, input) {
 
         Object.keys(input).map(key => {
           // ignore _type
-          if (key === '_type') {
+          if (key === '_type' || key === '_order') {
             return
           }
 

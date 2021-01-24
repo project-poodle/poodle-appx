@@ -102,7 +102,7 @@ function parse_tree_node(tree_context, treeNode) {
     if (Array.isArray(treeNode)) {
       // return result as object
       const result = {}
-      treeNode.map(child => {
+      treeNode.map((child, index) => {
         // ignore '/' node
         if (child.key === '/') {
           return
@@ -112,6 +112,8 @@ function parse_tree_node(tree_context, treeNode) {
           child_context,
           child
         )
+        // add order
+        childResult._order = index
         // add child to result
         if (!!child.data._ref) {
           result[child.data._ref] = childResult

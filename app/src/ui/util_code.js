@@ -2643,38 +2643,46 @@ function react_component(js_context, input) {
   const block_statements = []
 
   // check if there are any block statements
-  Object.keys(input).map(key => {
-    // ignore type / name / props / children
-    if (key === 'component' || key.startsWith('_')) {
-      return
-    }
+  Object.keys(input)
+    .sort((a, b) => {
+      if (!!input[a]._order && !!input[b]._order) {
+        return input[a]._order - input[b]._order
+      } else {
+        return 0
+      }
+    })
+    .map(key => {
+      // ignore type / name / props / children
+      if (key === 'component' || key.startsWith('_')) {
+        return
+      }
 
-    if (key.startsWith('...') && input[key]._type !== 'react/state') {
-      // unrecognized component definition starting with '...'
-      throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
-    }
+      if (key.startsWith('...') && input[key]._type !== 'react/state') {
+        // unrecognized component definition starting with '...'
+        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
+      }
 
-    // console.log(`input[${key}]`, input[key])
-    const statement = js_process(
-      {
-        ...js_context,
-        JSX_CONTEXT: false,
-        STATEMENT_CONTEXT: true
-      },
-      key,
-      input[key]
-    )
+      // console.log(`input[${key}]`, input[key])
+      const statement = js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: true
+        },
+        key,
+        input[key]
+      )
 
-    if (t.isBlockStatement(statement)) {
-      t.addComment(statement.body[0], 'leading', ` ${key} `, false)
-      t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
-      block_statements.push(...(statement.body))
-    } else {
-      t.addComment(statement, 'leading', ` ${key} `, false)
-      t.addComment(statement, 'trailing', ` ${key} `, false)
-      block_statements.push(statement)
-    }
-  })
+      if (t.isBlockStatement(statement)) {
+        t.addComment(statement.body[0], 'leading', ` ${key} `, false)
+        t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
+        block_statements.push(...(statement.body))
+      } else {
+        t.addComment(statement, 'leading', ` ${key} `, false)
+        t.addComment(statement, 'trailing', ` ${key} `, false)
+        block_statements.push(statement)
+      }
+    })
 
   // process components, this will register such as 'forms'
   const result_component = react_element(
@@ -2786,38 +2794,46 @@ function react_provider(js_context, input, ui_comp_name) {
   const block_statements = []
 
   // check if there are any block statements
-  Object.keys(input).map(key => {
-    // ignore type / name / props / children
-    if (key === 'provider' || key.startsWith('_')) {
-      return
-    }
+  Object.keys(input)
+    .sort((a, b) => {
+      if (!!input[a]._order && !!input[b]._order) {
+        return input[a]._order - input[b]._order
+      } else {
+        return 0
+      }
+    })
+    .map(key => {
+      // ignore type / name / props / children
+      if (key === 'provider' || key.startsWith('_')) {
+        return
+      }
 
-    if (key.startsWith('...') && input[key]._type !== 'react/state') {
-      // unrecognized component definition starting with '...'
-      throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
-    }
+      if (key.startsWith('...') && input[key]._type !== 'react/state') {
+        // unrecognized component definition starting with '...'
+        throw new Error(`ERROR: unrecognized react component spread definition [${key}] [${input[key]._type}]`)
+      }
 
-    // console.log(`input[${key}]`, input[key])
-    const statement = js_process(
-      {
-        ...js_context,
-        JSX_CONTEXT: false,
-        STATEMENT_CONTEXT: true
-      },
-      key,
-      input[key]
-    )
+      // console.log(`input[${key}]`, input[key])
+      const statement = js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: true
+        },
+        key,
+        input[key]
+      )
 
-    if (t.isBlockStatement(statement)) {
-      t.addComment(statement.body[0], 'leading', ` ${key} `, false)
-      t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
-      block_statements.push(...(statement.body))
-    } else {
-      t.addComment(statement, 'leading', ` ${key} `, false)
-      t.addComment(statement, 'trailing', ` ${key} `, false)
-      block_statements.push(statement)
-    }
-  })
+      if (t.isBlockStatement(statement)) {
+        t.addComment(statement.body[0], 'leading', ` ${key} `, false)
+        t.addComment(statement.body[statement.body.length - 1], 'trailing', ` ${key} `, false)
+        block_statements.push(...(statement.body))
+      } else {
+        t.addComment(statement, 'leading', ` ${key} `, false)
+        t.addComment(statement, 'trailing', ` ${key} `, false)
+        block_statements.push(statement)
+      }
+    })
 
   // console.log(`react_provider - js_context.states`, JSON.stringify(js_context.states, null, 4))
   // provider expression
