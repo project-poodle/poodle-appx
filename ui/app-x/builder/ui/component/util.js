@@ -144,9 +144,6 @@ function default_spec_for_type (type) {
               {
                 _type: 'react/element',
                 name: '@material-ui/core.Typography',
-                props: {
-                  variant: 'h6',
-                },
                 children: [
                   'This is template text'
                 ]

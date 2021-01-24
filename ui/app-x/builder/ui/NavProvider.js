@@ -288,7 +288,7 @@ const NavProvider = (props) => {
     } else {
       setSelfImportNames([])
     }
-  }, [navDeployment])
+  }, [navDeployment, navComponent, navRoute, navSelected])
 
   return (
     <NavContext.Provider
