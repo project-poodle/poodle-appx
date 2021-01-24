@@ -351,7 +351,7 @@ async function json_trigger(data, trigger, context) {
                     } else {
                       func.call(context, ...params)
                     }
-                    console.log(`INFO: invoked [${trigger[trigger_key]['module']}/${trigger[trigger_key]['method']}] with ${JSON.stringify(params)} !`)
+                    console.log(`INFO: invoke successful ! [${trigger[trigger_key]['module']}/${trigger[trigger_key]['method']}] with ${JSON.stringify(params)} !`)
                 } catch (err) {
                     console.log(`INFO: invoke failed ! [${err}] [${trigger[trigger_key]['module']}/${trigger[trigger_key]['method']}] with ${JSON.stringify(params)}`)
                 } finally {

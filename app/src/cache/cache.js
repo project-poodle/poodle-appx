@@ -45,6 +45,11 @@ async function init_cache() {
     }
 }
 
+// get all cache
+function get_all_cache() {
+    return CACHE_VARS
+}
+
 function get_cache_for(name, params) {
 
     if (name in CACHE_VARS) {
@@ -137,16 +142,17 @@ async function load_cache_for(name, params, repeat=false) {
             setTimeout(() => { load_cache_for(name, params, true) }, sleep)
             LOAD_CACHE_TIMER_TASKS[timer_key] = true
             console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)}) - reconcile in ${Math.round(sleep/1000)} sec(s)`)
-        } else {
-            console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)})`)
+        // } else {
+            // console.log(`INFO: load_cache_for("${name}", ${JSON.stringify(params)})`)
         }
     }
 }
 
 module.exports = {
     init_cache: init_cache,
+    get_all_cache: get_all_cache,
     get_cache_for: get_cache_for,
-    load_cache_for: load_cache_for
+    load_cache_for: load_cache_for,
 }
 
 // init_cache()

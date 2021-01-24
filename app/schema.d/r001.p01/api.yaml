@@ -1549,6 +1549,23 @@ api:
           permission: "ui.write"
           syntax:
               verb: "upsert"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_component"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+                  - "$invoke":
+                      module: "../ui/ui_dispatcher"
+                      method: "refresh_ui_router"
+                      params:
+                        - "$dp.namespace"
+                        - "$dp.ui_name"
+                        - "@dp"
           doc:
               desc: "upsert ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # update
@@ -1563,6 +1580,16 @@ api:
           permission: "ui.write"
           syntax:
               verb: "update"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_component"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
           doc:
               desc: "update ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # delete
@@ -1577,6 +1604,23 @@ api:
           permission: "ui.write"
           syntax:
               verb: "delete"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_component"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+                  - "$invoke":
+                      module: "../ui/ui_dispatcher"
+                      method: "refresh_ui_router"
+                      params:
+                        - "$dp.namespace"
+                        - "$dp.ui_name"
+                        - "@dp"
           doc:
               desc: "delete ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name (logical deletion)"
     # status
@@ -1681,6 +1725,23 @@ api:
           permission: "ui.write"
           syntax:
               verb: "upsert"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_route"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+                  - "$invoke":
+                      module: "../ui/ui_dispatcher"
+                      method: "refresh_ui_router"
+                      params:
+                        - "$dp.namespace"
+                        - "$dp.ui_name"
+                        - "@dp"
           doc:
               desc: "upsert ui_route for :namespace / :ui_name / :ui_ver / :ui_route_name"
     # update
@@ -1695,6 +1756,16 @@ api:
           permission: "ui.write"
           syntax:
               verb: "update"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_route"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
           doc:
               desc: "update ui_route for :namespace / :ui_name / :ui_ver / :ui_route_name"
     # delete
@@ -1709,6 +1780,23 @@ api:
           permission: "ui.write"
           syntax:
               verb: "delete"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_route"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+                  - "$invoke":
+                      module: "../ui/ui_dispatcher"
+                      method: "refresh_ui_router"
+                      params:
+                        - "$dp.namespace"
+                        - "$dp.ui_name"
+                        - "@dp"
           doc:
               desc: "delete ui_route for :namespace / :ui_name / :ui_ver / :ui_route_name (logical deletion)"
     # status

@@ -2,6 +2,7 @@ const deepEqual = require('deep-equal')
 const stringify = require('fast-json-stable-stringify')
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { json_transform, json_trigger } = require('../transform/json_transform')
 const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 /**
@@ -91,6 +92,19 @@ async function handle_update(context, req, res) {
     // record audit
     if (curr != null && obj_changed) {
         await record_spec_audit(curr.id, prev, curr, req)
+    }
+
+    // invoke trigger if configured
+    if (!!context.trigger) {
+      // console.log(`INFO: context.trigger`, context.trigger, JSON.stringify(cache.get_cache_for('ui_deployment'), null, 2))
+      const vars = {
+        context: req.context,
+        params: req.params,
+        body: req.body,
+        result: result,
+        cache: cache.get_all_cache(),
+      }
+      await json_trigger(vars, context.trigger, {})
     }
 
     // send back the result

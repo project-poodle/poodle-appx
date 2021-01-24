@@ -82,64 +82,77 @@ function get_api_spec(context, req, res) {
 
 async function handle_req(req, res) {
 
-    // check api_spec
-    let api_spec = get_api_spec(req.context, req, res)
-    if (! api_spec) {
-        return
-    }
+    try {
+        // check api_spec
+        let api_spec = get_api_spec(req.context, req, res)
+        if (! api_spec) {
+            return
+        }
 
-    if ('permission' in api_spec) {
-        let permission = api_spec.permission
+        if ('permission' in api_spec) {
+            let permission = api_spec.permission
 
-        if (req.context.user.func_perms.includes(permission)) {
+            if (req.context.user.func_perms.includes(permission)) {
 
-            req.context.func_perm_granted = true
+                req.context.func_perm_granted = true
 
-        } else {
+            } else {
 
-            let obj_perm_granted = false
-            Object.keys(req.context.user.obj_perms).map(obj_type => {
+                let obj_perm_granted = false
+                Object.keys(req.context.user.obj_perms).map(obj_type => {
 
-                if (req.context.user.obj_perms[obj_type].includes(permission)) {
-                    obj_perm_granted = true
+                    if (req.context.user.obj_perms[obj_type].includes(permission)) {
+                        obj_perm_granted = true
+                    }
+                })
+
+                if (! obj_perm_granted) {
+                    res.status(403).json({status: FAILURE, message: `Access Denied`})
+                    return
                 }
-            })
-
-            if (! obj_perm_granted) {
-                res.status(403).json({status: FAILURE, message: `Access Denied`})
-                return
             }
         }
-    }
 
-    req.context = Object.assign({}, req.context, { verb: api_spec.syntax.verb })
-    //console.log(req.context)
+        req.context = Object.assign({}, req.context, { verb: api_spec.syntax.verb, trigger: api_spec.syntax.trigger })
+        //console.log(req.context)
 
-    // handle request by verb
-    switch(api_spec.syntax.verb) {
-        case "get":
-            await handle_get(req.context, req, res)
-            return
+        // handle request by verb
+        switch(api_spec.syntax.verb) {
+            case "get":
+                await handle_get(req.context, req, res)
+                return
 
-        case "upsert":
-            await handle_upsert(req.context, req, res)
-            return
+            case "upsert":
+                await handle_upsert(req.context, req, res)
+                return
 
-        case "update":
-            await handle_update(req.context, req, res)
-            return
+            case "update":
+                await handle_update(req.context, req, res)
+                return
 
-        case "delete":
-            await handle_delete(req.context, req, res)
-            return
+            case "delete":
+                await handle_delete(req.context, req, res)
+                return
 
-        case "status":
-            await handle_status(req.context, req, res)
-            return
+            case "status":
+                await handle_status(req.context, req, res)
+                return
 
-        default:
-            log_api_status(context, FAILURE,
-                `ERROR: unsupported verb [${api_spec.syntax.verb}] - [${JSON.stringify(api_spec)}]`)
+            default:
+                log_api_status(context, FAILURE,
+                    `ERROR: unsupported verb [${api_spec.syntax.verb}] - [${JSON.stringify(api_spec)}]`)
+        }
+
+    } catch (err) {
+        console.log(err)
+        try {
+            res.status(500).json({
+                status: FAILURE,
+                message: String(err)
+            })
+        } catch (err2) {
+            console.log(err2)
+        }
     }
 }
 

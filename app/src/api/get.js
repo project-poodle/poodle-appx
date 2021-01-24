@@ -1,6 +1,7 @@
 const objPath = require("object-path")
 const db = require('../db/db')
 const cache = require('../cache/cache')
+const { json_transform, json_trigger } = require('../transform/json_transform')
 const { log_api_status, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 let DEF_START = 0
@@ -482,6 +483,19 @@ async function handle_get(context, req, res) {
     // log the sql and run query
     console.log(`INFO: ${sql}, [${sql_params}]`)
     let result = await db.query_async(sql, sql_params)
+
+    // invoke trigger if configured
+    if (!!context.trigger) {
+      // console.log(`INFO: context.trigger`, context.trigger, JSON.stringify(cache.get_cache_for('ui_deployment'), null, 2))
+      const vars = {
+        context: req.context,
+        params: req.params,
+        body: req.body,
+        result: result,
+        cache: cache.get_all_cache(),
+      }
+      await json_trigger(vars, context.trigger, {})
+    }
 
     // send back the result
     res.status(200).json(result)
