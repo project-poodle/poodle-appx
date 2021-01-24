@@ -136,23 +136,32 @@ const NavProvider = (() => {
           const processed = []
           for (const row of result.filter(data => data.ui_component_type === 'react/component' || data.ui_component_type === 'react/provider'))
           {
-            const path_module = await import((`${globalThis.appx.UI_ROOT}/${namespace}/${ui_name}/${ui_deployment}/_elem/${row.ui_component_name}`).replace(/\/+/g, '/'))
-            if (!!path_module.default) {
-              const module_name = `self/${row.ui_component_name}`.replace(/\/+/g, '/')
-              processed.push(module_name)
-              Object.keys(path_module.default)
-                .filter(variable_name => !variable_name.startsWith('$'))
-                .filter(variable_name => variable_name !== 'Test')
-                .map(variable_name => {
-                  processed.push(module_name + VARIABLE_SEPARATOR + variable_name)
-                })
-            } else {
-              Object.keys(path_module)
-                .filter(variable_name => !variable_name.startsWith('$'))
-                .filter(variable_name => variable_name !== 'Test')
-                .map(variable_name => {
-                  processed.push(module_name + VARIABLE_SEPARATOR + variable_name)
-                })
+            try {
+              const path_module = await import((`${globalThis.appx.UI_ROOT}/${namespace}/${ui_name}/${ui_deployment}/_elem/${row.ui_component_name}`).replace(/\/+/g, '/'))
+              if (!!path_module.default) {
+                const module_name = `self/${row.ui_component_name}`.replace(/\/+/g, '/')
+                processed.push(module_name)
+                Object.keys(path_module.default)
+                  .filter(variable_name => !variable_name.startsWith('$'))
+                  .filter(variable_name => variable_name !== 'Test')
+                  .map(variable_name => {
+                    processed.push(module_name + VARIABLE_SEPARATOR + variable_name)
+                  })
+              } else {
+                Object.keys(path_module)
+                  .filter(variable_name => !variable_name.startsWith('$'))
+                  .filter(variable_name => variable_name !== 'Test')
+                  .map(variable_name => {
+                    processed.push(module_name + VARIABLE_SEPARATOR + variable_name)
+                  })
+              }
+            } catch (error) {
+              console.error(error)
+              notification.error({
+                message: `Failed to load SELF component [${row.ui_component_name}]`,
+                description: typeof error === 'object' ? JSON.stringify(error) : String(error),
+                placement: 'bottomLeft',
+              })
             }
           }
           // update selfImportNames

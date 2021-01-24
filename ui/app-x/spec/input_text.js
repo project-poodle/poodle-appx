@@ -79,6 +79,22 @@ export const input_text = {
       },
     },
     {
+      name: 'style',
+      desc: 'Style',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties',
+        },
+      },
+    },
+    {
       name: 'rules',
       desc: 'Rules',
       types: [

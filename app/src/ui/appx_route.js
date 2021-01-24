@@ -75,7 +75,6 @@ async function handle_appx_route(req, res) {
 
         // process context
         const js_context = {
-            topLevel: true,
             variables: {},
             imports: {},
             states: {},

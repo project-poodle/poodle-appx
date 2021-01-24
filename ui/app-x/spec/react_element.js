@@ -66,6 +66,22 @@ export const react_element = {
       },
     },
     {
+      name: 'style',
+      desc: 'Style',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties',
+        },
+      },
+    },
+    {
       name: 'children',
       desc: 'Child Elements',
       array: true,

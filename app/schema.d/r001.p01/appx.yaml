@@ -409,6 +409,25 @@ ui:
                       path: /dist/lib/babel.js
           description: "UI Builder"
           comment: "initialize"
+    # demo
+    - namespace: "sys"
+      ui_name: "demo"
+      ui_ver: "internal"
+      ui_spec:
+          importMaps:
+              imports:
+                  app-x/: /app-x/
+              libs:
+                  main:
+                      path: /dist/lib/main.js
+                  mui:
+                      path: /dist/lib/mui.js
+                  antd:
+                      path: /dist/lib/antd.js
+                  babel:
+                      path: /dist/lib/babel.js
+          description: "Demo"
+          comment: "initialize"
 
 ######################################################################
 # ui_deployment
@@ -467,6 +486,23 @@ ui_deployment:
     # ui builder
     - namespace: "sys"
       ui_name: "ui"
+      ui_deployment: "base"
+      ui_ver: "internal"
+      ui_deployment_spec:
+          apiMaps:
+              sys:
+                  auth:
+                      rootPath: /auth/
+                  appx:
+                      rootPath: /api/
+                      deployment:
+                          namespace: sys
+                          app_name: appx
+                          app_deployment: base
+          comment: "initialize"
+    # demo
+    - namespace: "sys"
+      ui_name: "demo"
       ui_deployment: "base"
       ui_ver: "internal"
       ui_deployment_spec:

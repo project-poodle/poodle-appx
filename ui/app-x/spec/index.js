@@ -32,6 +32,7 @@ import js_reduce from 'app-x/spec/js_reduce.js'
 import js_filter from 'app-x/spec/js_filter.js'
 // others
 import mui_style from 'app-x/spec/mui_style.js'
+import mui_theme from 'app-x/spec/mui_theme.js'
 import appx_api from 'app-x/spec/appx_api.js'
 import appx_route from 'app-x/spec/appx_route.js'
 
@@ -132,8 +133,10 @@ const types = [
   js_map,
   js_reduce,
   js_filter,
-  // others
+  // mui
   mui_style,
+  mui_theme,
+  // appx
   appx_api,
   appx_route,
   // map

@@ -76,7 +76,6 @@ async function handle_react_component(req, res) {
 
         // process context
         const js_context = {
-            topLevel: true,
             variables: {},
             imports: {},
             states: {},

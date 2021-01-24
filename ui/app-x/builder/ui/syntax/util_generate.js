@@ -50,6 +50,7 @@ import InputRule from 'app-x/icon/InputRule'
 import Filter from 'app-x/icon/Filter'
 import API from 'app-x/icon/API'
 import Style from 'app-x/icon/Style'
+import Theme from 'app-x/icon/Theme'
 import Pointer from 'app-x/icon/Pointer'
 
 import {
@@ -211,6 +212,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'mui/style') {
 
     return <Style />
+
+  } else if (input._type === 'mui/theme') {
+
+    return <Theme />
 
   } else if (input._type === 'appx/api') {
 
@@ -405,6 +410,10 @@ function lookup_title_for_input(ref, input, array=false) {
     return ref ? ref : ''
 
   } else if (input._type === 'mui/style') {
+
+    return ref ? ref : ''
+
+  } else if (input._type === 'mui/theme') {
 
     return ref ? ref : ''
 

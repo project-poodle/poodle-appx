@@ -31,7 +31,7 @@ const {
 function react_form(js_context, ref, input) {
 
   // require here to avoid circular require reference
-  const { js_process } = require('./util_code')
+  const { js_process, react_element_style } = require('./util_code')
 
   if (!('_type' in input) || input._type !== 'react/form') {
     throw new Error(`ERROR: input._type is not [react/form] [${input._type}] [${JSON.stringify(input)}]`)
@@ -52,9 +52,6 @@ function react_form(js_context, ref, input) {
               js_process(
                 {
                   ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
                   JSX_CONTEXT: false,
                 },
                 null,
@@ -67,6 +64,25 @@ function react_form(js_context, ref, input) {
     } else {
       // return {}
       return t.objectExpression([])
+    }
+  })()
+
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return t.objectExpression(
+        []
+      )
     }
   })()
 
@@ -96,9 +112,6 @@ function react_form(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: false,
           },
           null,
@@ -120,9 +133,6 @@ function react_form(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: false,
           },
           null,
@@ -145,9 +155,6 @@ function react_form(js_context, ref, input) {
               js_process(
                 {
                   ...js_context,
-                  topLevel: false,
-                  parentRef: null,
-                  parentPath: null,
                   JSX_CONTEXT: false,
                 },
                 null,
@@ -170,9 +177,6 @@ function react_form(js_context, ref, input) {
         js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: true,
           },
           null,
@@ -233,6 +237,12 @@ function react_form(js_context, ref, input) {
                   ]
                 )
               )
+            ),
+            t.jSXAttribute(
+              t.jSXIdentifier('style'),
+              t.jSXExpressionContainer(
+                styleExpression
+              )
             )
           ]
         ),
@@ -253,7 +263,7 @@ function react_form(js_context, ref, input) {
 function input_text(js_context, ref, input) {
 
   // require here to avoid circular require reference
-  const { js_process } = require('./util_code')
+  const { js_process, react_element_style } = require('./util_code')
 
   if (!('_type' in input) || input._type !== 'input/text') {
     throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
@@ -318,6 +328,25 @@ function input_text(js_context, ref, input) {
     }
   })()
 
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return t.objectExpression(
+        []
+      )
+    }
+  })()
+
   // default value
   const defaultValueExpression = (() => {
     if (!!props.defaultValue) {
@@ -327,9 +356,6 @@ function input_text(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: false,
           },
           null,
@@ -348,9 +374,6 @@ function input_text(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
         },
         null,
@@ -369,9 +392,6 @@ function input_text(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
@@ -469,7 +489,7 @@ function input_text(js_context, ref, input) {
       rules={rules}
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.Box'
-          style={{width: '100%'}}
+          style={style}
           {...restProps}
           >
           <$JSX $NAME='@material-ui/core.FormControl'
@@ -508,7 +528,7 @@ function input_text(js_context, ref, input) {
     _js_parse_expression(
       js_context,
       `
-      (name, props, rules) => {
+      (name, props, style, rules) => {
         // destruct props
         const {
           type,
@@ -535,6 +555,7 @@ function input_text(js_context, ref, input) {
     [
       nameExpression,
       propsExpression,
+      styleExpression,
       rulesExpression,
     ]
   )
@@ -555,7 +576,7 @@ function input_text(js_context, ref, input) {
 function input_text_array(js_context, ref, input) {
 
   // require here to avoid circular require reference
-  const { js_process } = require('./util_code')
+  const { js_process, react_element_style } = require('./util_code')
 
   if (!('_type' in input) || input._type !== 'input/text') {
     throw new Error(`ERROR: input._type is not [input/text] [${input._type}] [${JSON.stringify(input)}]`)
@@ -633,9 +654,6 @@ function input_text_array(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
         },
         null,
@@ -647,6 +665,25 @@ function input_text_array(js_context, ref, input) {
     }
   })()
 
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return t.objectExpression(
+        []
+      )
+    }
+  })()
+
   // compute rules
   const required_desc = !!input.props.label && isPrimitive(input.props.label) ? String(input.props.label) : input.name
   const rulesExpression = (() => {
@@ -654,9 +691,6 @@ function input_text_array(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
@@ -745,6 +779,7 @@ function input_text_array(js_context, ref, input) {
   const controlElement = `
     <$JSX $NAME='@material-ui/core.Box'
       {...restProps}
+      style={style}
       >
       {
         !!props?.label
@@ -846,7 +881,7 @@ function input_text_array(js_context, ref, input) {
     _js_parse_expression(
       js_context,
       `
-      (name, props, rules) => {
+      (name, props, style, rules) => {
         // setup field arrays
         const {
           fields,
@@ -890,6 +925,7 @@ function input_text_array(js_context, ref, input) {
     [
       nameExpression,
       propsExpression,
+      styleExpression,
       rulesExpression,
     ]
   )
@@ -910,7 +946,7 @@ function input_text_array(js_context, ref, input) {
 function input_switch(js_context, ref, input) {
 
   // require here to avoid circular require reference
-  const { js_process } = require('./util_code')
+  const { js_process, react_element_style } = require('./util_code')
 
   if (!('_type' in input) || input._type !== 'input/switch') {
     throw new Error(`ERROR: input._type is not [input/switch] [${input._type}] [${JSON.stringify(input)}]`)
@@ -958,6 +994,25 @@ function input_switch(js_context, ref, input) {
   // multiline and autoSuggest options
   const required = !!input.required
 
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return t.objectExpression(
+        []
+      )
+    }
+  })()
+
   // default value
   const defaultValueExpression = (() => {
     if (!!props.defaultValue) {
@@ -967,9 +1022,6 @@ function input_switch(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: false,
           },
           null,
@@ -988,9 +1040,6 @@ function input_switch(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
         },
         null,
@@ -1009,9 +1058,6 @@ function input_switch(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
@@ -1067,8 +1113,8 @@ function input_switch(js_context, ref, input) {
       rules={rules}
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.Box'
-          style={{width: '100%'}}
           {...restProps}
+          style={style}
           >
           <$JSX $NAME='@material-ui/core.FormControl'
             style={{width:'100%'}}
@@ -1115,7 +1161,7 @@ function input_switch(js_context, ref, input) {
     _js_parse_expression(
       js_context,
       `
-      (name, props, rules) => {
+      (name, props, style, rules) => {
         // destruct props
         const {
           type,
@@ -1142,6 +1188,7 @@ function input_switch(js_context, ref, input) {
     [
       nameExpression,
       propsExpression,
+      styleExpression,
       rulesExpression,
     ]
   )
@@ -1162,7 +1209,7 @@ function input_switch(js_context, ref, input) {
 function input_select(js_context, ref, input) {
 
   // require here to avoid circular require reference
-  const { js_process } = require('./util_code')
+  const { js_process, react_element_style } = require('./util_code')
 
   if (!('_type' in input) || input._type !== 'input/select') {
     throw new Error(`ERROR: input._type is not [input/select] [${input._type}] [${JSON.stringify(input)}]`)
@@ -1210,6 +1257,25 @@ function input_select(js_context, ref, input) {
   // multiline and autoSuggest options
   const required = !!input.required
 
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return t.objectExpression(
+        []
+      )
+    }
+  })()
+
   // default value
   const defaultValueExpression = (() => {
     if (!!props.defaultValue) {
@@ -1219,9 +1285,6 @@ function input_select(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            topLevel: false,
-            parentRef: null,
-            parentPath: null,
             JSX_CONTEXT: false,
           },
           null,
@@ -1240,9 +1303,6 @@ function input_select(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
         },
         null,
@@ -1261,9 +1321,6 @@ function input_select(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
-          parentRef: null,
-          parentPath: null,
           JSX_CONTEXT: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
@@ -1337,8 +1394,8 @@ function input_select(js_context, ref, input) {
       rules={rules}
       render={innerProps => (
         <$JSX $NAME='@material-ui/core.Box'
-          style={{width: '100%'}}
           {...restProps}
+          style={style}
           >
           <$JSX $NAME='@material-ui/core.FormControl'
             style={{width:'100%'}}
@@ -1376,7 +1433,7 @@ function input_select(js_context, ref, input) {
     _js_parse_expression(
       js_context,
       `
-      (name, props, rules) => {
+      (name, props, style, rules) => {
         // destruct props
         const {
           type,
@@ -1403,6 +1460,7 @@ function input_select(js_context, ref, input) {
     [
       nameExpression,
       propsExpression,
+      styleExpression,
       rulesExpression,
     ]
   )

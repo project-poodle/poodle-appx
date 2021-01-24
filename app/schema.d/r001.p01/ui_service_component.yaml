@@ -98,24 +98,14 @@ ui_component:
       ui_component_name: /page/Header
       ui_component_type: react/component
       ui_component_spec:
+        theme:
+          _type: mui/theme
         styles:
           _type: mui/style
           avatar:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
-          header: {}
-          icon:
-            color:
-              _type: js/expression
-              data: theme.palette.background.default
-          title:
-            color:
-              _type: js/expression
-              data: theme.palette.background.default
-            margin:
-              _type: js/expression
-              data: theme.spacing(1)
         mobileNav:
           _type: react/context
           name: self/MobileNavProvider.Context
@@ -127,8 +117,6 @@ ui_component:
           children:
             - _type: react/element
               name: "@material-ui/core.Toolbar"
-              props:
-                elevation: 0
               children:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
@@ -141,37 +129,31 @@ ui_component:
                       _type: js/expression
                       data: e => $I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')
                     size: small
-                    style:
-                      _type: js/expression
-                      data: "{boxShadow: 'none'}"
+                  style:
+                    boxShadow: none
                   children:
                     - _type: react/element
                       name: "@material-ui/icons.ViewQuiltRounded"
-                      props:
-                        className:
-                          _type: js/expression
-                          data: styles.icon
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
-                    className:
-                      _type: js/expression
-                      data: styles.title
                     color: primary
                     onClick:
                       _type: js/expression
                       data: e => $I('app-x/router.navigate')('/')
                     size: medium
-                    style:
-                      _type: js/expression
-                      data: "{boxShadow: 'none'}"
                     variant: extended
+                  style:
+                    boxShadow: none
+                    margin:
+                      _type: js/expression
+                      data: theme.spacing(1)
                   children:
                     - Service Builder
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
-                    flexGrow: "1"
+                    flexGrow: 1
                 - _type: react/element
                   name: app-x/util/UserBadge
                   props:
@@ -194,9 +176,8 @@ ui_component:
                           _type: js/expression
                           data: e => mobileNav.toggle()
                         size: small
-                        style:
-                          _type: js/expression
-                          data: "{boxShadow: 'none'}"
+                      style:
+                        boxShadow: none
                       children:
                         - _type: react/element
                           name: "@material-ui/icons.Menu"

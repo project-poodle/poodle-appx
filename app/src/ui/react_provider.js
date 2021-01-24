@@ -59,7 +59,6 @@ async function handle_react_provider(req, res) {
 
         // process context
         const js_context = {
-            topLevel: true,
             variables: {},
             imports: {},
             states: {},

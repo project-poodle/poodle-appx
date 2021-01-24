@@ -194,9 +194,12 @@ const groups = {
     'js/filter',
   ],
   // mui
+  mui: [
+    'mui/style',
+    'mui/theme',
+  ],
   // appx
   appx: [
-    'mui/style',
     'appx/api',
     'appx/route',
   ],

@@ -210,7 +210,6 @@ function js_array(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -264,7 +263,6 @@ function js_object(js_context, ref, input) {
           (
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -279,7 +277,6 @@ function js_object(js_context, ref, input) {
           (
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -392,7 +389,6 @@ function js_variable(js_context, ref, input) {
             (
               {
                 ...js_context,
-                topLevel: false,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -406,7 +402,6 @@ function js_variable(js_context, ref, input) {
             (
               {
                 ...js_context,
-                topLevel: false,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -506,7 +501,6 @@ function js_statement(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -586,7 +580,6 @@ function js_function(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -652,7 +645,6 @@ function js_call(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -695,7 +687,6 @@ function js_switch(js_context, ref, input) {
     const processed = js_process(
       {
         ...js_context,
-        topLevel: false,
         JSX_CONTEXT: false
         // STATEMENT_CONTEXT: preserve
       },
@@ -736,7 +727,6 @@ function js_switch(js_context, ref, input) {
       const processed = js_process(
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false
           // STATEMENT_CONTEXT: preserve
         },
@@ -748,7 +738,6 @@ function js_switch(js_context, ref, input) {
         js_process(
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -811,7 +800,6 @@ function js_map(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -827,7 +815,6 @@ function js_map(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false
           // STATEMENT_CONTEXT: preserve
         },
@@ -1032,7 +1019,6 @@ function js_reduce(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1048,7 +1034,6 @@ function js_reduce(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1071,7 +1056,6 @@ function js_reduce(js_context, ref, input) {
         (
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1085,7 +1069,6 @@ function js_reduce(js_context, ref, input) {
         (
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1288,7 +1271,6 @@ function js_filter(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1304,7 +1286,6 @@ function js_filter(js_context, ref, input) {
       (
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1513,18 +1494,57 @@ function react_element(js_context, ref, input) {
   reg_js_import(js_context, input.name, use_default=true, suggested_name=capitalized_name)
   // }
 
-  // create react element with props and children
-  const react_element = t.jSXElement(
-    t.jSXOpeningElement(
-      t.jSXIdentifier(input.name),
-      'props' in input ? react_element_props(
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return null
+    }
+  })()
+
+  // process props and style
+  const propsExpression = (() => {
+    let result = []
+    // check input.props
+    if (!!input.props) {
+      result = react_element_props(
         {
           ...js_context,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
         input.props
-      ) : []
+      )
+    }
+    // check input.style
+    if (!!styleExpression) {
+      result.push(
+        t.jSXAttribute(
+          t.jSXIdentifier('style'),
+          t.jSXExpressionContainer(
+            styleExpression
+          )
+        )
+      )
+    }
+    // return
+    return result
+  })()
+
+  // create react element with props and children
+  const react_element = t.jSXElement(
+    t.jSXOpeningElement(
+      t.jSXIdentifier(input.name),
+      propsExpression
     ),
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
@@ -1566,18 +1586,57 @@ function react_html(js_context, ref, input) {
     throw new Error(`ERROR: input.name missing in [react/html] [${JSON.stringify(input)}]`)
   }
 
-  // create react element with props and children
-  const react_element = t.jSXElement(
-    t.jSXOpeningElement(
-      t.jSXIdentifier(input.name),
-      'props' in input ? react_element_props(
+  // process style
+  const styleExpression = (() => {
+    if (!!input.style) {
+      const style = react_element_style(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        input.style
+      )
+      return style
+    } else {
+      return null
+    }
+  })()
+
+  // process props and style
+  const propsExpression = (() => {
+    let result = []
+    // check input.props
+    if (!!input.props) {
+      result = react_element_props(
         {
           ...js_context,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
         input.props
-      ) : []
+      )
+    }
+    // check input.style
+    if (!!styleExpression) {
+      result.push(
+        t.jSXAttribute(
+          t.jSXIdentifier('style'),
+          t.jSXExpressionContainer(
+            styleExpression
+          )
+        )
+      )
+    }
+    // return
+    return result
+  })()
+
+  // create react element with props and children
+  const react_element = t.jSXElement(
+    t.jSXOpeningElement(
+      t.jSXIdentifier(input.name),
+      propsExpression
     ),
     t.jSXClosingElement(
       t.jSXIdentifier(input.name),
@@ -1616,11 +1675,11 @@ function react_element_props(js_context, props) {
   }
 
   if (typeof props !== 'object') {
-    throw new Error(`ERROR: input is not object [${typeof props}] [${JSON.stringify(props)}]`)
+    throw new Error(`ERROR: input.props is not object [${typeof props}] [${JSON.stringify(props)}]`)
   }
 
   if (Array.isArray(props)) {
-    throw new Error(`ERROR: input is array [${typeof props}] [${JSON.stringify(props)}]`)
+    throw new Error(`ERROR: input.props is array [${JSON.stringify(props)}]`)
   }
 
   const results = Object.keys(props).map(prop_key => {
@@ -1633,7 +1692,6 @@ function react_element_props(js_context, props) {
       const processed = js_process(
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -1660,6 +1718,51 @@ function react_element_props(js_context, props) {
   return results
 }
 
+// create jsx element style ast
+function react_element_style(js_context, style) {
+
+  if (!style) {
+    return t.objectExpression([])
+  }
+
+  if (typeof style !== 'object') {
+    throw new Error(`ERROR: input.style is not object [${typeof style}] [${JSON.stringify(style)}]`)
+  }
+
+  if (Array.isArray(style)) {
+    throw new Error(`ERROR: input.style is array [${JSON.stringify(style)}]`)
+  }
+
+  const results = Object.keys(style).map(style_key => {
+    // process syntax
+    let syntax = null
+    const style_value = style[style_key]
+    if (typeof style_value == 'string') {
+      syntax = t.stringLiteral(style_value)
+    } else {
+      const processed = js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        null,
+        style_value
+      )
+      syntax = processed
+    }
+    // return
+    return t.objectProperty(
+      t.identifier(style_key),
+      syntax
+    )
+  })
+
+  return t.objectExpression(
+    results
+  )
+}
+
 // create jsx element children ast
 function react_element_children(js_context, children) {
 
@@ -1683,7 +1786,6 @@ function react_element_children(js_context, children) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: true,
           STATEMENT_CONTEXT: false,
         },
@@ -1718,7 +1820,6 @@ function react_state(js_context, ref, input) {
         (
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1732,7 +1833,6 @@ function react_state(js_context, ref, input) {
         (
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: false,
           },
@@ -1894,7 +1994,6 @@ function react_effect(js_context, ref, input) {
             (
               {
                 ...js_context,
-                topLevel: false,
                 JSX_CONTEXT: false,
                 STATEMENT_CONTEXT: false,
               },
@@ -1943,7 +2042,6 @@ function react_effect(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            topLevel: false,
             JSX_CONTEXT: false,
             STATEMENT_CONTEXT: true,
           },
@@ -2014,7 +2112,6 @@ function mui_style(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: false,
             },
@@ -2024,6 +2121,38 @@ function mui_style(js_context, ref, input) {
         )
       ]
     ),
+    []
+  )
+
+  // check statement context
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          callExpression,
+        )
+      ]
+    )
+  } else {
+    return callExpression
+  }
+}
+
+// create mui theme ast
+function mui_theme(js_context, ref, input) {
+
+  if (!('_type' in input) || input._type !== 'mui/theme') {
+    throw new Error(`ERROR: input._type is not [mui/theme] [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  // register material ui makeStyles
+  reg_js_import(js_context, '@material-ui/styles.useTheme')
+
+  // return function call
+  const callExpression = t.callExpression(
+    t.identifier('@material-ui/styles.useTheme'),
     []
   )
 
@@ -2093,7 +2222,6 @@ function appx_api(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          topLevel: false,
           JSX_CONTEXT: false,
           STATEMENT_CONTEXT: false,
         },
@@ -2116,7 +2244,6 @@ function appx_api(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2143,7 +2270,6 @@ function appx_api(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2171,7 +2297,6 @@ function appx_api(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              topLevel: false,
               JSX_CONTEXT: false,
               STATEMENT_CONTEXT: true,
             },
@@ -2311,7 +2436,6 @@ function appx_route(js_context, ref, input) {
                   react_component(
                     {
                       ...js_context,
-                      topLevel: true,
                       JSX_CONTEXT: false,
                       STATEMENT_CONTEXT: false,
                     },
@@ -2462,10 +2586,6 @@ function js_process(js_context, ref, input) {
 
     return react_form(js_context, ref, input)
 
-  } else if (input._type === 'mui/style') {
-
-    return mui_style(js_context, ref, input)
-
   } else if (input._type === 'input/text') {
 
     return input_text(js_context, ref, input)
@@ -2485,6 +2605,14 @@ function js_process(js_context, ref, input) {
   } else if (input._type === 'input/rule') {
 
     return input_rule(js_context, ref, input)
+
+  } else if (input._type === 'mui/style') {
+
+    return mui_style(js_context, ref, input)
+
+  } else if (input._type === 'mui/theme') {
+
+    return mui_theme(js_context, ref, input)
 
   } else if (input._type === 'appx/api') {
 
@@ -2882,6 +3010,8 @@ module.exports = {
   js_array,
   js_object,
   react_element,
+  react_element_props,
+  react_element_style,
   react_html,
   react_state,
   react_context,

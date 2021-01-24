@@ -107,6 +107,22 @@ export const react_form = {
       },
     },
     {
+      name: 'formProps',
+      desc: 'Form Properties',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties'
+        },
+      },
+    },
+    {
       name: 'props',
       desc: 'Properties',
       types: [
@@ -123,8 +139,8 @@ export const react_form = {
       },
     },
     {
-      name: 'formProps',
-      desc: 'Form Properties',
+      name: 'style',
+      desc: 'Style',
       types: [
         {
           kind: 'class',
@@ -134,7 +150,7 @@ export const react_form = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/properties'
+          kind: 'input/properties',
         },
       },
     },

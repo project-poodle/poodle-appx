@@ -1,0 +1,10 @@
+ui_component:
+    ############################################################
+    - namespace: sys
+      ui_name: demo
+      ui_ver: internal
+      ui_component_name: /index
+      ui_component_type: html
+      ui_component_spec:
+          entry: antd.Layout
+          title: Demo

@@ -116,16 +116,12 @@ function default_spec_for_type (type) {
         root: {
           width: '100%',
           height: '100%',
-          position: 'absolute',
         }
       },
       component: {
         _type: 'react/element',
         name: '@material-ui/core.Box',
         props: {
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
           className: {
             _type: 'js/expression',
             data: 'styles.root',
@@ -134,12 +130,27 @@ function default_spec_for_type (type) {
         children: [
           {
             _type: 'react/element',
-            name: '@material-ui/core.Typography',
+            name: '@material-ui/core.Box',
             props: {
-              variant: 'h6',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              className: {
+                _type: 'js/expression',
+                data: 'styles.root',
+              },
             },
             children: [
-              'This is template text'
+              {
+                _type: 'react/element',
+                name: '@material-ui/core.Typography',
+                props: {
+                  variant: 'h6',
+                },
+                children: [
+                  'This is template text'
+                ]
+              }
             ]
           },
         ]
