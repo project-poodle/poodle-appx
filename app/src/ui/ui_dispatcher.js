@@ -8,7 +8,7 @@ const { load_ui_router }  = require('./ui_router')
 
 const UI_ROUTES = {}
 
-async function load_ui_routers() {
+async function refresh_ui_routers() {
 
     let dp_results = await db.query_async(`SELECT
                     ui_deployment.namespace,
@@ -21,15 +21,20 @@ async function load_ui_routers() {
                     ui_deployment.deleted=0`)
 
     for (const dp_result of dp_results) {
-
-        let router = await load_ui_router(dp_result.namespace, dp_result.ui_name, dp_result.ui_deployment)
-
-        let route = `/${dp_result.namespace}/${dp_result.ui_name}/${dp_result.ui_deployment}`
-
-        UI_ROUTES[route] = router
-
-        console.log(`INFO: loaded UI routes for ui_deployment [${route}]`)
+        await refresh_ui_router(dp_result.namespace, dp_result.ui_name, dp_result.ui_deployment)
     }
+}
+
+// load router
+async function refresh_ui_router(namespace, ui_name, ui_deployment) {
+
+  let router = await load_ui_router(namespace, ui_name, ui_deployment)
+
+  let route = `/${namespace}/${ui_name}/${ui_deployment}`
+
+  UI_ROUTES[route] = router
+
+  console.log(`INFO: loaded UI routes for ui_deployment [${route}]`)
 }
 
 // load_ui_routers()
@@ -72,5 +77,6 @@ const ui_dispatcher = async function (req, res, next) {
 
 module.exports = {
     ui_dispatcher: ui_dispatcher,
-    load_ui_routers: load_ui_routers
+    refresh_ui_routers: refresh_ui_routers,
+    refresh_ui_router: refresh_ui_router
 }

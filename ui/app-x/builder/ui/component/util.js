@@ -222,7 +222,7 @@ function new_folder_node(parentKey, subName) {
 }
 
 // create new component node
-function new_component_node(parentKey, subName, type, data) {
+function new_component_node(parentKey, subName, type, spec) {
   return {
     title: subName,
     type: type,
@@ -231,7 +231,7 @@ function new_component_node(parentKey, subName, type, data) {
     isLeaf: true,
     icon: lookup_icon_for_type(type),
     subName: subName,
-    data: data,
+    spec: spec,
   }
 }
 

@@ -78,7 +78,7 @@ const transformTree = (data) => {
       let found = resultData.find(treeNode => treeNode.key === currKey)
       if (!found) {
         if (subPaths.length == 0) {
-          found = new_component_node(parentKey, subName, ui_component.ui_component_type, ui_component)
+          found = new_component_node(parentKey, subName, ui_component.ui_component_type, ui_component.ui_component_spec)
         } else {
           found = new_folder_node(parentKey, subName)
         }
@@ -307,8 +307,8 @@ const ComponentTree = (props) => {
         setContextKey(item.key)
         selectComponent({
           ui_component_name: item.key,
-          ui_component_type: item.data.ui_component_type,
-          ui_component_spec: item.data.ui_component_spec,
+          ui_component_type: item.type,
+          ui_component_spec: item.spec,
         })
       } else {
         // expand folder & key

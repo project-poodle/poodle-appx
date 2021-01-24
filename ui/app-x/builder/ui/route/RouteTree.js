@@ -83,7 +83,7 @@ const transformTree = (data) => {
         if (ui_route.ui_route_name === '/') {
           found = new_folder_node(parentKey, subName, ui_route)
         } else if (subPaths.length === 0) {
-          found = new_route_node(parentKey, subName, ui_route)
+          found = new_route_node(parentKey, subName, ui_route.ui_route_spec)
         } else if (subPaths.length === 1 && subPaths[0] === '') {
           found = new_folder_node(parentKey, subName, ui_route)
         } else {
@@ -299,7 +299,7 @@ const RouteTree = (props) => {
       setSelectedKey(item.key)
       selectRoute({
         ui_route_name: item.key,
-        ui_route_spec: item.data.ui_route_spec,
+        ui_route_spec: item.spec,
       })
       // expand / close non-leaf node
       if (!item.isLeaf) {

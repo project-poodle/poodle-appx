@@ -8,7 +8,7 @@ const { load_api_router }  = require('./api_router')
 
 const ROUTES = {}
 
-async function load_api_routers() {
+async function refresh_api_routers() {
 
     let dp_results = await db.query_async(`SELECT
                     app_deployment.namespace,
@@ -23,16 +23,20 @@ async function load_api_routers() {
                     app_deployment.deleted=0`)
 
     for (const dp_result of dp_results) {
-
-        let route = `/${dp_result.namespace}/${dp_result.app_name}/${dp_result.app_deployment}`
-
-        // console.log(dp_result)
-        let router = await load_api_router(dp_result.namespace, dp_result.app_name, dp_result.app_deployment)
-
-        ROUTES[route] = router
-
-        console.log(`INFO: loaded API routes for app_deployment [${route}]`)
+        await refresh_api_router(dp_result.namespace, dp_result.app_name, dp_result.app_deployment)
     }
+}
+
+async function refresh_api_router(namespace, app_name, app_deployment) {
+
+    let route = `/${namespace}/${app_name}/${app_deployment}`
+
+    // console.log(dp_result)
+    let router = await load_api_router(namespace, app_name, app_deployment)
+
+    ROUTES[route] = router
+
+    console.log(`INFO: loaded API routes for app_deployment [${route}]`)
 }
 
 // load_api_routers()
@@ -72,5 +76,6 @@ const api_dispatcher = async function (req, res, next) {
 
 module.exports = {
     api_dispatcher: api_dispatcher,
-    load_api_routers: load_api_routers,
+    refresh_api_routers: refresh_api_routers,
+    refresh_api_router: refresh_api_router,
 }

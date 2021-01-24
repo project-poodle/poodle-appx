@@ -101,7 +101,7 @@ async function start() {
 
   //////////////////////////////////////////////////
   // initialize router --- Note: perform this step only after db_pool is initialized
-  const { api_dispatcher, load_api_routers } = require('./src/api/api_dispatcher')
+  const { api_dispatcher, refresh_api_routers } = require('./src/api/api_dispatcher')
   // api endpoints
   app.use(mount_options.api_root, bodyParser.json({type: '*/*', limit: 5 * 1024 * 1024}))
   app.use(mount_options.api_root,
@@ -115,7 +115,7 @@ async function start() {
 
   //////////////////////////////////////////////////
   // initialize ui router --- Note: perform this step only after db_pool is initialized
-  const { ui_dispatcher, load_ui_routers } = require('./src/ui/ui_dispatcher')
+  const { ui_dispatcher, refresh_ui_routers } = require('./src/ui/ui_dispatcher')
   // ui endpoints
   // app.use(mount_options.ui_root, bodyParser.urlencoded({extended: false}))
   app.use(mount_options.ui_root, bodyParser.json({type: '*/*', limit: 5 * 1024 * 1024}))
@@ -151,8 +151,8 @@ async function start() {
 
   // load all async functions
   await Promise.all([
-    await load_api_routers(),
-    await load_ui_routers(),
+    await refresh_api_routers(),
+    await refresh_ui_routers(),
   ])
 
   //////////////////////////////////////////////////

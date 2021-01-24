@@ -123,7 +123,7 @@ function new_folder_node(parentKey, subName, data) {
 }
 
 // create new element node
-function new_route_node(parentKey, subName, data) {
+function new_route_node(parentKey, subName, spec) {
   const result = {
     title: subName,
     type: 'route',
@@ -136,7 +136,7 @@ function new_route_node(parentKey, subName, data) {
     isLeaf: true,
     icon: <Route />,
     subName: subName,
-    data: data,
+    spec: spec,
   }
   // check for root
   if (result.key === ROOT_KEY) {
