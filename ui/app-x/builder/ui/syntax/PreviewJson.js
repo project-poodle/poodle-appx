@@ -197,11 +197,4 @@ const PreviewJson = (props) => {
   )
 }
 
-PreviewJson.propTypes = {
-  namespace: PropTypes.string.isRequired,
-  ui_name: PropTypes.string.isRequired,
-  ui_deployment: PropTypes.string.isRequired,
-  ui_component_name: PropTypes.string.isRequired,
-}
-
 export default PreviewJson

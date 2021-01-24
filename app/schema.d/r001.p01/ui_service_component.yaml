@@ -65,6 +65,7 @@ ui_component:
                     - _type: js/expression
                       data: routes || not_found_view
 
+    ############################################################
     - namespace: sys
       ui_name: service
       ui_ver: internal
@@ -210,49 +211,20 @@ ui_component:
           name: self/nav/appNav
         styles:
           _type: mui/style
-          avatar:
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.primary.light
-          header: {}
-          icon:
-            color:
-              _type: js/expression
-              data: theme.palette.background.default
-          layout:
-            height: 100%
           sideNav:
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
             height: 100%
             width: 300
-          sider: {}
-          title:
-            color:
-              _type: js/expression
-              data: theme.palette.background.default
-            paddingLeft:
-              _type: js/expression
-              data: theme.spacing(2)
         mobileNav:
           _type: react/context
           name: self/MobileNavProvider.Context
-        handlers:
-          sideNavHandler:
-            _type: js/function
-            body:
-              - mobileNav.toggle()
         component:
           _type: react/element
           name: antd.Layout
-          props:
-            className:
-              _type: js/expression
-              data: styles.layout
-            header:
-              _type: react/element
-              name: self/page/Header
+          style:
+            height: '100%'
           children:
             - _type: react/element
               name: antd.Layout.Header
@@ -264,10 +236,8 @@ ui_component:
               children:
                 - _type: react/element
                   name: antd.Layout
-                  props:
-                    className:
-                      _type: js/expression
-                      data: styles.layout
+                  style:
+                    height: '100%'
                   children:
                     - _type: react/element
                       name: "@material-ui/core.Hidden"

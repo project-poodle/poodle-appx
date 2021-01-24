@@ -687,12 +687,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="Code" key="code" className={styles.root}>
-                  <PreviewSource
-                    namespace={props.namespace}
-                    ui_name={props.ui_name}
-                    ui_deployment={props.ui_deployment}
-                    ui_component_name={props.ui_component_name}
-                  />
+                  <PreviewSource />
                 </TabPane>
               )
             }
@@ -716,12 +711,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="YAML" key="yaml" className={styles.root}>
-                  <PreviewYaml
-                    namespace={props.namespace}
-                    ui_name={props.ui_name}
-                    ui_deployment={props.ui_deployment}
-                    ui_component_name={props.ui_component_name}
-                  />
+                  <PreviewYaml />
                 </TabPane>
               )
             }
@@ -745,12 +735,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="JSON" key="json" className={styles.root}>
-                  <PreviewJson
-                    namespace={props.namespace}
-                    ui_name={props.ui_name}
-                    ui_deployment={props.ui_deployment}
-                    ui_component_name={props.ui_component_name}
-                  />
+                  <PreviewJson />
                 </TabPane>
               )
             }
@@ -760,13 +745,6 @@ const PreviewTabs = (props) => {
     }
     </Box>
   )
-}
-
-PreviewTabs.propTypes = {
-  namespace: PropTypes.string.isRequired,
-  ui_name: PropTypes.string.isRequired,
-  ui_deployment: PropTypes.string.isRequired,
-  ui_component_name: PropTypes.string.isRequired,
 }
 
 export default PreviewTabs
