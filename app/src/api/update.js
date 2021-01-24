@@ -94,7 +94,7 @@ async function handle_update(context, req, res) {
     }
 
     // send back the result
-    res.status(200).json({status: SUCCESS})
+    res.status(200).json({status: SUCCESS, result: result})
 }
 
 // export

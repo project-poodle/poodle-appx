@@ -12,3 +12,4 @@ init:
 test:
 	echo '{"realm":"appx","username":"appx@LOCAL","password":"P@@dle101"}' | http POST 'http://localhost:3000/api/sys/appx/login'
 	http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
+	echo '{"namespace_spec":{"comment":"update"}}' | http -a 'appx@LOCAL:P@@dle101' PUT 'http://localhost:3000/api/sys/appx/base/namespace/sys'

@@ -78,7 +78,7 @@ async function handle_status(context, req, res) {
     await record_status_audit(curr.id, curr, req)
 
     // send back the result
-    res.status(200).json({status: SUCCESS})
+    res.status(200).json({status: SUCCESS, result: result})
 }
 
 // export
