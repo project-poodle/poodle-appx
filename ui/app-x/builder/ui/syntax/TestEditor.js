@@ -385,6 +385,7 @@ const TestEditor = (props) => {
                       <InputProperties
                         name={`providers[${index}].props`}
                         label="Properties"
+                        inputSpec={{}}
                         otherNames={getValues(`providers[${index}]._otherNames`) || []}
                         className={styles.formControl}
                         callback={d => {
