@@ -56,6 +56,7 @@ const UserBadge = (props) => {
   }
 
   function handleLogout() {
+    setAnchorEl(null)
     Object.keys(globalThis.appx.API_MAPS).map(namespace => {
       Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
         logout(
