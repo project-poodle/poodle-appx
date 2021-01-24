@@ -60,7 +60,7 @@ ui_component:
                   name: app-x/theme
               children:
                 - _type: react/element
-                  name: self/MobileNavProvider
+                  name: self/page/MobileNavProvider
                   children:
                     - _type: js/expression
                       data: routes || not_found_view
@@ -69,7 +69,7 @@ ui_component:
     - namespace: sys
       ui_name: auth
       ui_ver: internal
-      ui_component_name: /MobileNavProvider
+      ui_component_name: /page/MobileNavProvider
       ui_component_type: react/provider
       ui_component_spec:
         ...open:
@@ -109,7 +109,7 @@ ui_component:
               data: theme.palette.primary.light
         mobileNav:
           _type: react/context
-          name: self/MobileNavProvider.Context
+          name: self/page/MobileNavProvider.Context
         component:
           _type: react/element
           name: "@material-ui/core.AppBar"
@@ -191,7 +191,7 @@ ui_component:
                   _type: js/import
                   name: app-x/redux/store
             - _type: react/element
-              name: self/MobileNavProvider
+              name: self/page/MobileNavProvider
             - _type: react/element
               name: app-x/theme/GlobalStyleProvider
               props:
