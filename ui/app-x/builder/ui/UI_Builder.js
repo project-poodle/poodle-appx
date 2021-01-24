@@ -158,7 +158,7 @@ const UI_Builder = (props) => {
   const onLayoutChange = (currLayout, allLayouts) => {
     // console.log(currLayout)
     if (!!allLayouts && !!allLayouts.sm && !!allLayouts.md) {
-      console.log(`Layout saved`, allLayouts)
+      // console.log(`Layout saved`, allLayouts)
       globalThis.localStorage.setItem(
         `/app-x/ui/builder/grid-layout`,
         JSON.stringify(allLayouts)
@@ -171,10 +171,10 @@ const UI_Builder = (props) => {
     try {
       const stored_layouts = JSON.parse(globalThis.localStorage.getItem(`/app-x/ui/builder/grid-layout`))
       if (!!stored_layouts && !!stored_layouts.md && !!stored_layouts.sm) {
-        console.log(`Layout loaded`, stored_layouts)
+        // console.log(`Layout loaded`, stored_layouts)
         setLayouts(stored_layouts)
       } else {
-        console.log(`Layout not loaded`, stored_layouts)
+        // console.log(`Layout not loaded`, stored_layouts)
       }
     } catch (err) {
       console.log(`Layout not loaded`, String(err))

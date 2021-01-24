@@ -544,7 +544,6 @@ const PreviewTabs = (props) => {
           >
           <Box>
             <LinearProgress
-              disableShrink={true}
             />
             <Typography variant="body2">
               Loading...

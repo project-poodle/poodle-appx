@@ -274,7 +274,7 @@ const NavProvider = (props) => {
           }
         }
         // update selfImportNames
-        console.log(`selfImportNames`, processed)
+        // console.log(`selfImportNames`, processed)
         setSelfImportNames(processed)
       } catch (error) {
         console.error(error)

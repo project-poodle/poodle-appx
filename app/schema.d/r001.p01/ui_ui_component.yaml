@@ -479,9 +479,20 @@ ui_component:
                               data: "e => handlers.handleDeployment(e.target.value)"
                             value:
                               _type: js/expression
-                              data: "\\`${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_n\
-                                ame}/${navContext.navDeployment?.ui_deployment}\\`"
+                              data: |
+                                !!navContext.navDeployment?.namespace
+                                && !!navContext.navDeployment?.ui_name
+                                && !!navContext.navDeployment?.ui_deployment
+                                ? \`${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_name}/${navContext.navDeployment?.ui_deployment}\`
+                                : ''
                           children:
+                            - _type: react/element
+                              name: "@material-ui/core.MenuItem"
+                              props:
+                                style:
+                                  display: none
+                                key: ''
+                                value: ''
                             - _type: js/map
                               data:
                                 _type: js/expression
