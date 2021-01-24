@@ -120,7 +120,7 @@ function default_spec_for_type (type) {
       },
       component: {
         _type: 'react/element',
-        name: '@material-ui/core.Box',
+        name: '@material-ui/core.Container',
         props: {
           className: {
             _type: 'js/expression',
