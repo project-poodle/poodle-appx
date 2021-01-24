@@ -168,10 +168,16 @@ const UI_Builder = (props) => {
 
   // load layout when loading first time
   useEffect(() => {
-    const stored_layouts = globalThis.localStorage.getItem(`/app-x/ui/builder/grid-layout`)
-    if (!!stored_layouts && !!stored_layouts.md && !!stored_layouts.sm) {
-      // console.log(JSON.parse(stored_layouts))
-      setLayouts(JSON.parse(stored_layouts))
+    try {
+      const stored_layouts = JSON.parse(globalThis.localStorage.getItem(`/app-x/ui/builder/grid-layout`))
+      if (!!stored_layouts && !!stored_layouts.md && !!stored_layouts.sm) {
+        console.log(`Layout loaded`, stored_layouts)
+        setLayouts(stored_layouts)
+      } else {
+        console.log(`Layout not loaded`, stored_layouts)
+      }
+    } catch (err) {
+      console.log(`Layout not loaded`, String(err))
     }
   }, [])
 
