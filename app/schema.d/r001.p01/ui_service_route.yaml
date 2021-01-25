@@ -6,6 +6,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: self/page/Console
         _test:
           providers:
@@ -29,6 +30,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: self/page/Console
         _test:
           providers:
@@ -52,6 +54,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: antd.Layout
           style:
             height: '100%'

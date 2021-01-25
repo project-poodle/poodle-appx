@@ -4,6 +4,7 @@ ui_route:
       ui_ver: internal
       ui_route_name: /
       ui_route_spec:
-          component:
-              _type: react/element
-              name: antd.Layout
+        component:
+          _type: react/element
+          _order: 1
+          name: antd.Layout

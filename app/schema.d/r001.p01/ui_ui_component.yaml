@@ -18,13 +18,16 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
+          _order: 1
           root:
             height: 100%
         routes:
           _type: appx/route
+          _order: 2
           name: /
         not_found_view:
           _type: react/element
+          _order: 3
           name: antd.Layout
           props:
             className:
@@ -46,6 +49,7 @@ ui_component:
                   name: app-x/view/error/NotFoundView
         component:
           _type: react/element
+          _order: 4
           name: react-redux.Provider
           props:
             store:
@@ -77,14 +81,17 @@ ui_component:
       ui_component_spec:
         ...open:
           _type: react/state
+          _order: 1
           name: open
           setter: setOpen
           init: "false"
         toggle:
           _type: js/function
+          _order: 2
           body:
             - setOpen(!open)
         provider:
+          _order: 3
           open:
             _type: js/expression
             data: open
@@ -104,17 +111,21 @@ ui_component:
       ui_component_spec:
         theme:
           _type: mui/theme
+          _order: 1
         styles:
           _type: mui/style
+          _order: 2
           avatar:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
         mobileNav:
           _type: react/context
+          _order: 3
           name: self/page/MobileNavProvider.Context
         component:
           _type: react/element
+          _order: 4
           name: "@material-ui/core.AppBar"
           props:
             elevation: 0
@@ -211,9 +222,11 @@ ui_component:
       ui_component_spec:
         uiNav:
           _type: react/element
+          _order: 1
           name: self/nav/uiNav
         styles:
           _type: mui/style
+          _order: 2
           sideNav:
             backgroundColor:
               _type: js/expression
@@ -222,9 +235,11 @@ ui_component:
             width: 300
         mobileNav:
           _type: react/context
+          _order: 3
           name: self/page/MobileNavProvider.Context
         component:
           _type: react/element
+          _order: 4
           name: antd.Layout
           style:
             height: '100%'
@@ -318,9 +333,11 @@ ui_component:
       ui_component_spec:
         navContext:
           _type: react/context
+          _order: 1
           name: app-x/builder/ui/NavProvider.Context
         effects:
           _type: react/effect
+          _order: 2
           body:
             - _type: appx/api
               namespace: sys
@@ -334,10 +351,12 @@ ui_component:
               error: ""
         snippet:
           _type: js/statement
+          _order: 3
           body:
             - // console.log('navContext', navContext)
         styles:
           _type: mui/style
+          _order: 4
           divider:
             margin:
               _type: js/expression
@@ -348,6 +367,7 @@ ui_component:
               data: theme.palette.background.paper
             width: 100%
         states:
+          _order: 5
           ...uiDeployments:
             _type: react/state
             name: uiDeployments
@@ -364,6 +384,7 @@ ui_component:
             setter: setOpen
             init: "false"
         handlers:
+          _order: 6
           handleComponentSelected:
             _type: js/expression
             data: props.handleComponentSelected
@@ -386,6 +407,7 @@ ui_component:
                 }
         component:
           _type: react/element
+          _order: 7
           name: "@material-ui/core.Box"
           props:
             className:
@@ -656,12 +678,14 @@ ui_component:
       ui_component_spec:
         f:
           _type: js/function
+          _order: 1
           params:
             - a
             - b
           body:
             - a+1
         layouts:
+          _order: 2
           lg:
             - h: 10
               i: a
@@ -696,6 +720,7 @@ ui_component:
               y: 0
         styles:
           _type: mui/style
+          _order: 3
           box:
             borderColor:
               _type: js/expression
@@ -721,6 +746,7 @@ ui_component:
             width: 100%
         snippet:
           _type: js/statement
+          _order: 4
           body:
             - _type: appx/api
               namespace: sys
@@ -740,6 +766,7 @@ ui_component:
                 - // console.log(this)
         component:
           _type: react/element
+          _order: 5
           name: "@material-ui/core.Container"
           props:
             className:

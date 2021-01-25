@@ -4,23 +4,24 @@ ui_route:
       ui_ver: internal
       ui_route_name: /
       ui_route_spec:
-          component:
-              _type: react/element
-              name: self/page/landing/Home
-          _test:
-            providers:
-              - _type: react/element
-                name: react-redux.Provider
-                props:
-                  store:
-                    _type: js/import
-                    name: app-x/redux/store
-              - _type: react/element
-                name: app-x/theme/GlobalStyleProvider
-                props:
-                  theme:
-                    _type: js/import
-                    name: app-x/theme
+        component:
+          _type: react/element
+          _order: 1
+          name: self/page/landing/Home
+        _test:
+          providers:
+            - _type: react/element
+              name: react-redux.Provider
+              props:
+                store:
+                  _type: js/import
+                  name: app-x/redux/store
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme
 
     - namespace: sys
       ui_name: console
@@ -29,6 +30,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: antd.Layout
           children:
             - _type: react/element
@@ -63,6 +65,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: antd.Layout
           children:
             - _type: react/element
@@ -97,6 +100,7 @@ ui_route:
       ui_route_spec:
         component:
           _type: react/element
+          _order: 1
           name: antd.Layout
           children:
             - _type: react/element

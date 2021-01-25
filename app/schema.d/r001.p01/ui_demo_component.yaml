@@ -6,5 +6,5 @@ ui_component:
       ui_component_name: /index
       ui_component_type: html
       ui_component_spec:
-          entry: antd.Layout
-          title: Demo
+        entry: antd.Layout
+        title: Demo

@@ -18,13 +18,16 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
+          _order: 1
           root:
             height: 100%
         routes:
           _type: appx/route
+          _order: 2
           name: /
         not_found_view:
           _type: react/element
+          _order: 3
           name: antd.Layout
           props:
             className:
@@ -46,6 +49,7 @@ ui_component:
                   name: app-x/view/error/NotFoundView
         component:
           _type: react/element
+          _order: 4
           name: react-redux.Provider
           props:
             store:
@@ -74,14 +78,17 @@ ui_component:
       ui_component_spec:
         ...open:
           _type: react/state
+          _order: 1
           name: open
           setter: setOpen
           init: "false"
         toggle:
           _type: js/function
+          _order: 2
           body:
             - setOpen(!open)
         provider:
+          _order: 3
           open:
             _type: js/expression
             data: open
@@ -101,17 +108,21 @@ ui_component:
       ui_component_spec:
         theme:
           _type: mui/theme
+          _order: 1
         styles:
           _type: mui/style
+          _order: 2
           avatar:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
         mobileNav:
           _type: react/context
+          _order: 3
           name: self/page/MobileNavProvider.Context
         component:
           _type: react/element
+          _order: 4
           name: "@material-ui/core.AppBar"
           props:
             elevation: 0
@@ -208,9 +219,11 @@ ui_component:
       ui_component_spec:
         appNav:
           _type: react/element
+          _order: 1
           name: self/nav/appNav
         styles:
           _type: mui/style
+          _order: 2
           sideNav:
             backgroundColor:
               _type: js/expression
@@ -219,9 +232,11 @@ ui_component:
             width: 300
         mobileNav:
           _type: react/context
+          _order: 3
           name: self/page/MobileNavProvider.Context
         component:
           _type: react/element
+          _order: 4
           name: antd.Layout
           style:
             height: '100%'
@@ -318,81 +333,83 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
         styles:
-            _type: mui/style
-            root:
-                width: 100%
+          _type: mui/style
+          _order: 1
+          root:
+            width: 100%
         component:
-            _type: react/element
-            name: '@material-ui/core.List'
-            props:
-                component: nav
-                aria-labelledby: App Builder
-                className:
-                    _type: js/expression
-                    data: styles.root
-                subheader:
-                    _type: react/element
-                    name: '@material-ui/core.ListSubheader'
-                    children:
-                        - App Builder
-            children:
-                - _type: react/element
-                  name: 'app-x/router.A'
-                  props:
-                      href: /app/dashboard
+          _type: react/element
+          _order: 2
+          name: '@material-ui/core.List'
+          props:
+              component: nav
+              aria-labelledby: App Builder
+              className:
+                  _type: js/expression
+                  data: styles.root
+              subheader:
+                  _type: react/element
+                  name: '@material-ui/core.ListSubheader'
                   children:
-                      - _type: react/element
-                        name: '@material-ui/core.ListItem'
-                        props:
-                            button: true
-                        children:
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemIcon'
-                              children:
-                                  - _type: react/element
-                                    name: '@material-ui/icons.ViewModule'
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemText'
-                              props:
-                                  primary: Objects
-                - _type: react/element
-                  name: 'app-x/router.A'
-                  props:
-                      href: /app/customers
-                  children:
-                      - _type: react/element
-                        name: '@material-ui/core.ListItem'
-                        props:
-                            button: true
-                        children:
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemIcon'
-                              children:
-                                  - _type: react/element
-                                    name: '@material-ui/icons.Link'
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemText'
-                              props:
-                                  primary: Relations
-                - _type: react/element
-                  name: 'app-x/router.A'
-                  props:
-                      href: /app/products
-                  children:
-                      - _type: react/element
-                        name: '@material-ui/core.ListItem'
-                        props:
-                            button: true
-                        children:
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemIcon'
-                              children:
-                                  - _type: react/element
-                                    name: '@material-ui/icons.VerticalAlignCenter'
-                            - _type: react/element
-                              name: '@material-ui/core.ListItemText'
-                              props:
-                                  primary: APIs
+                      - App Builder
+          children:
+              - _type: react/element
+                name: 'app-x/router.A'
+                props:
+                    href: /app/dashboard
+                children:
+                    - _type: react/element
+                      name: '@material-ui/core.ListItem'
+                      props:
+                          button: true
+                      children:
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemIcon'
+                            children:
+                                - _type: react/element
+                                  name: '@material-ui/icons.ViewModule'
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemText'
+                            props:
+                                primary: Objects
+              - _type: react/element
+                name: 'app-x/router.A'
+                props:
+                    href: /app/customers
+                children:
+                    - _type: react/element
+                      name: '@material-ui/core.ListItem'
+                      props:
+                          button: true
+                      children:
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemIcon'
+                            children:
+                                - _type: react/element
+                                  name: '@material-ui/icons.Link'
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemText'
+                            props:
+                                primary: Relations
+              - _type: react/element
+                name: 'app-x/router.A'
+                props:
+                    href: /app/products
+                children:
+                    - _type: react/element
+                      name: '@material-ui/core.ListItem'
+                      props:
+                          button: true
+                      children:
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemIcon'
+                            children:
+                                - _type: react/element
+                                  name: '@material-ui/icons.VerticalAlignCenter'
+                          - _type: react/element
+                            name: '@material-ui/core.ListItemText'
+                            props:
+                                primary: APIs
         _test:
           providers:
             - _type: react/element

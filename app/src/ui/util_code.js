@@ -254,38 +254,40 @@ function js_object(js_context, ref, input) {
   }
 
   const objectExpression = t.objectExpression(
-    Object.keys(input).map(key => {
-      const value = input[key]
-      if (key.startsWith('...')) {
-        // handle spread syntax
-        return t.spreadElement(
-          js_process
-          (
-            {
-              ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: false,
-            },
-            null,
-            value
+    Object.keys(input)
+      .filter(key => key !== '_type' && key !== '_order')
+      .map(key => {
+        const value = input[key]
+        if (key.startsWith('...')) {
+          // handle spread syntax
+          return t.spreadElement(
+            js_process
+            (
+              {
+                ...js_context,
+                JSX_CONTEXT: false,
+                STATEMENT_CONTEXT: false,
+              },
+              null,
+              value
+            )
           )
-        )
-      } else {
-        return t.objectProperty(
-          t.stringLiteral(key),
-          js_process
-          (
-            {
-              ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: false,
-            },
-            key,
-            value
+        } else {
+          return t.objectProperty(
+            t.stringLiteral(key),
+            js_process
+            (
+              {
+                ...js_context,
+                JSX_CONTEXT: false,
+                STATEMENT_CONTEXT: false,
+              },
+              key,
+              value
+            )
           )
-        )
-      }
-    })
+        }
+      })
   )
 
   if (!!js_context.STATEMENT_CONTEXT) {
