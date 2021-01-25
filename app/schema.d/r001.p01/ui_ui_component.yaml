@@ -959,3 +959,106 @@ ui_component:
                 theme:
                   _type: js/import
                   name: app-x/theme
+
+    ############################################################
+    - namespace: sys
+      ui_name: ui
+      ui_ver: internal
+      ui_component_name: /page/Deployment
+      ui_component_type: react/component
+      ui_component_spec:
+        ...deployments:
+          _type: react/state
+          name: deployments
+          setter: setDeployments
+          init: "[]"
+          _order: 1
+        effects:
+          _type: react/effect
+          body:
+            - _type: appx/api
+              namespace: sys
+              app_name: appx
+              method: get
+              endpoint: /namespace/sys/ui_deployment
+              result: |-
+                // console.log(result)
+                setDeployments(result)
+              error: |-
+                console.error(error)
+                $I('antd.notification').error({
+                    message: 'Failed to load UI deployments',
+                    description: error.message || String(error),
+                    placement: 'bottomLeft'
+                })
+          _order: 2
+        styles:
+          _type: mui/style
+          root:
+            width: 100%
+            height: 100%
+          _order: 3
+        component:
+          _type: react/element
+          name: "@material-ui/core.Box"
+          props:
+            className:
+              _type: js/expression
+              data: styles.root
+          children:
+            - _type: react/table
+              name: table
+              data:
+                _type: js/expression
+                data: deployments
+              columns:
+                - _type: table/column
+                  id: namespace
+                  accessor: namespace
+                  Header: Namespace
+                  Footer: ""
+                - _type: table/column
+                  id: ui_name
+                  accessor: ui_name
+                  Header: UI App
+                  Footer: ""
+                - _type: table/column
+                  id: ui_ver
+                  accessor: ui_ver
+                  Header: Version
+                  Footer: ""
+                - _type: table/column
+                  id: ui_deployment
+                  accessor: ui_deployment
+                  Header: Deployment
+                  Footer: ""
+                - _type: table/column
+                  id: comment
+                  accessor: ui_deployment_spec.comment
+                  Header: Comment
+                  Footer: ""
+                - _type: table/column
+                  id: apiMaps
+                  accessor:
+                    _type: js/function
+                    params:
+                      - row
+                    body:
+                      - return JSON.stringify(row.ui_deployment_spec.apiMaps)
+                  Header: API Maps
+                  Footer: ""
+          _order: 4
+        _test:
+          providers:
+            - name: react-redux.Provider
+              _type: react/element
+              props:
+                store:
+                  name: app-x/redux/store
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
+              props:
+                theme:
+                  name: app-x/theme
+                  _type: js/import

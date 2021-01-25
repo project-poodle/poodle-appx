@@ -425,7 +425,7 @@ function lookup_title_for_input(ref, input, array=false) {
 
   } else if (input._type === 'table/column') {
 
-    return input.Header || ''
+    return input.id || ''
 
   } else if (input._type === 'mui/style') {
 

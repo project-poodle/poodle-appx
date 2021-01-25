@@ -420,7 +420,9 @@ const PropEditor = (props) => {
               setValue(k, thisNode.data[k])
             })
           } else {
-            setValue(childSpec.name, thisNode.data[childSpec.name])
+            // console.log(`setValue(${childSpec.name})`, thisNode.data[childSpec.name])
+            setValue(childSpec.name, thisNode.data[childSpec.name] === undefined ? '' : thisNode.data[childSpec.name])
+            // console.log(`getValues(${childSpec.name})`, getValues(childSpec.name))
           }
           // process childSpec._thisNode.input.kind : input/list
           if (childSpec._thisNode.input?.kind === 'input/list') {

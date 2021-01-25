@@ -10,7 +10,6 @@ const {
   TOKEN_IMPORT,
   TOKEN_LOCAL,
   TOKEN_JSX,
-  TOKEN_NAME,
   isPrimitive,
   capitalize,
   reg_js_import,
@@ -454,7 +453,7 @@ function input_text(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $NAME='@material-ui/core.TextField'
+    <$JSX $I='@material-ui/core.TextField'
       // {...restProps}
       name={name}
       type="${inputType}"
@@ -482,7 +481,7 @@ function input_text(js_context, ref, input) {
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
-          <$JSX $NAME='antd.AutoComplete'
+          <$JSX $I='antd.AutoComplete'
             name={name}
             style={{width:'100%'}}
             options={_searchSuggestions}
@@ -517,7 +516,7 @@ function input_text(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $NAME='react-hook-form.Controller'
+    <$JSX $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -525,11 +524,11 @@ function input_text(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.Box'
+        <$JSX $I='@material-ui/core.Box'
           style={style}
           {...restProps}
           >
-          <$JSX $NAME='@material-ui/core.FormControl'
+          <$JSX $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -537,10 +536,10 @@ function input_text(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $NAME='@material-ui/core.Box'
+                <$JSX $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $NAME='@material-ui/core.InputLabel'
+                  <$JSX $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}
@@ -752,7 +751,7 @@ function input_text_array(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // innerElement
   let innerElement = `
-    <$JSX $NAME='@material-ui/core.TextField'
+    <$JSX $I='@material-ui/core.TextField'
       // {...restProps}
       name={\`\${name}[\${index}].value\`}
       type="${inputType}"
@@ -780,7 +779,7 @@ function input_text_array(js_context, ref, input) {
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
-          <$JSX $NAME='antd.AutoComplete'
+          <$JSX $I='antd.AutoComplete'
             options={_searchSuggestions}
             name={\`\${name}[\${index}].value\`}
             value={innerProps.value}
@@ -814,7 +813,7 @@ function input_text_array(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $NAME='@material-ui/core.Box'
+    <$JSX $I='@material-ui/core.Box'
       {...restProps}
       style={style}
       >
@@ -822,7 +821,7 @@ function input_text_array(js_context, ref, input) {
         !!props?.label
         &&
         (
-          <$JSX $NAME='@material-ui/core.InputLabel'
+          <$JSX $I='@material-ui/core.InputLabel'
             key="label"
             shrink={true}
             required={${required}}
@@ -836,12 +835,12 @@ function input_text_array(js_context, ref, input) {
         fields
           .map((item, index) => {
             return (
-              <$JSX $NAME='@material-ui/core.Box'
+              <$JSX $I='@material-ui/core.Box'
                 key={item.id}
                 display="flex"
                 style={{width:'100%'}}
               >
-                <$JSX $NAME='react-hook-form.Controller'
+                <$JSX $I='react-hook-form.Controller'
                   key={item.id}
                   name={\`\${name}[\${index}].value\`}
                   constrol={$L('${qualifiedName}.control')}
@@ -849,7 +848,7 @@ function input_text_array(js_context, ref, input) {
                   defaultValue={item.value}
                   rules={rules}
                   render={innerProps => (
-                    <$JSX $NAME='@material-ui/core.FormControl'
+                    <$JSX $I='@material-ui/core.FormControl'
                       style={{width:'100%'}}
                       error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
                       >
@@ -864,12 +863,12 @@ function input_text_array(js_context, ref, input) {
                   !props.readOnly
                   &&
                   (
-                    <$JSX $NAME='@material-ui/core.Box'
+                    <$JSX $I='@material-ui/core.Box'
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                       >
-                      <$JSX $NAME='@material-ui/core.IconButton'
+                      <$JSX $I='@material-ui/core.IconButton'
                         key="remove"
                         aria-label="Remove"
                         size={props.size}
@@ -880,7 +879,7 @@ function input_text_array(js_context, ref, input) {
                           }
                         }}
                         >
-                        <$JSX $NAME='@material-ui/icons.RemoveCircleOutline' />
+                        <$JSX $I='@material-ui/icons.RemoveCircleOutline' />
                       </$JSX>
                     </$JSX>
                   )
@@ -893,7 +892,7 @@ function input_text_array(js_context, ref, input) {
         !props.readOnly
         &&
         (
-          <$JSX $NAME='@material-ui/core.IconButton'
+          <$JSX $I='@material-ui/core.IconButton'
             key="add"
             aria-label="Add"
             size={props.size}
@@ -906,7 +905,7 @@ function input_text_array(js_context, ref, input) {
               // }
             }}
             >
-            <$JSX $NAME='@material-ui/icons.AddCircleOutline' />
+            <$JSX $I='@material-ui/icons.AddCircleOutline' />
           </$JSX>
         )
       }
@@ -1120,7 +1119,7 @@ function input_switch(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $NAME='@material-ui/core.Switch'
+    <$JSX $I='@material-ui/core.Switch'
       // {...restProps}
       name={name}
       // style={{width:'100%'}}
@@ -1141,7 +1140,7 @@ function input_switch(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $NAME='react-hook-form.Controller'
+    <$JSX $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -1149,11 +1148,11 @@ function input_switch(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.Box'
+        <$JSX $I='@material-ui/core.Box'
           {...restProps}
           style={style}
           >
-          <$JSX $NAME='@material-ui/core.FormControl'
+          <$JSX $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -1161,10 +1160,10 @@ function input_switch(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $NAME='@material-ui/core.Box'
+                <$JSX $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $NAME='@material-ui/core.InputLabel'
+                  <$JSX $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}
@@ -1180,7 +1179,7 @@ function input_switch(js_context, ref, input) {
             {
               !!$I('lodash.default').get($L('${qualifiedName}.errors'), name)
               &&
-              <$JSX $NAME='@material-ui/core.FormHelperText'>
+              <$JSX $I='@material-ui/core.FormHelperText'>
                 {
                   $I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message
                 }
@@ -1383,7 +1382,7 @@ function input_select(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $NAME='@material-ui/core.TextField'
+    <$JSX $I='@material-ui/core.TextField'
       // {...restProps}
       name={name}
       select={true}
@@ -1406,7 +1405,7 @@ function input_select(js_context, ref, input) {
         (
           props.options.map(option => {
             return (
-              <$JSX $NAME='@material-ui/core.MenuItem'
+              <$JSX $I='@material-ui/core.MenuItem'
                 key={option.value}
                 value={option.value}
                 >
@@ -1422,7 +1421,7 @@ function input_select(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $NAME='react-hook-form.Controller'
+    <$JSX $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -1430,11 +1429,11 @@ function input_select(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $NAME='@material-ui/core.Box'
+        <$JSX $I='@material-ui/core.Box'
           {...restProps}
           style={style}
           >
-          <$JSX $NAME='@material-ui/core.FormControl'
+          <$JSX $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -1442,10 +1441,10 @@ function input_select(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $NAME='@material-ui/core.Box'
+                <$JSX $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $NAME='@material-ui/core.InputLabel'
+                  <$JSX $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}

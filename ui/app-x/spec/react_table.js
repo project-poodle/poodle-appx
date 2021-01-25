@@ -7,7 +7,7 @@ import {
 // name:                     # name of the form      (:string)             - unique in a file
 // data:                     # table data            (:string|:expression)
 // tableProps:               # table options         (:object<:expression>)
-// columnProps:              # column options        (:array<:object<:expression>>)
+// columns:              # column options        (:array<:object<:expression>>)
 // props:                    # props for container   (:object<:expression>)
 // style:                    # style for container   (:object<:expression>)
 export const react_table = {
@@ -65,8 +65,8 @@ export const react_table = {
       },
     },
     {
-      name: 'columnProps',
-      desc: 'Column Properties',
+      name: 'columns',
+      desc: 'Columns',
       array: true,
       types: [
         {

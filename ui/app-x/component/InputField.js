@@ -205,7 +205,7 @@ const InputField = ((props) => {
         // console.log(`inputSpec.kind`, inputSpec.kind)
         if (inputSpec.variant === 'number') {
           result.validate[`validate_${count++}`] = (value) => {
-            return !isNaN(Number(value)) || "Must be a number"
+            return value === undefined || !isNaN(Number(value)) || "Must be a number"
           }
         }
         // expression and statement
@@ -456,6 +456,62 @@ const InputField = ((props) => {
                     &&
                     <FormHelperText>{_.get(errors, name)?.message}</FormHelperText>
                   }
+                </FormControl>
+              </Box>
+            )
+          } else if (inputSpec.variant === 'number') {
+            return (
+              <Box
+                className={props.className}
+                >
+                <FormControl
+                  name={name}
+                  size={props.size}
+                  margin={props.margin}
+                  className={styles.formControl}
+                  error={!!_.get(errors, name)}
+                  disabled={!!props.disabled}
+                  className={styles.formControl}
+                  >
+                  {
+                    !!childSpec.desc
+                    &&
+                    (
+                      <Box className={styles.label}>
+                        <InputLabel
+                          shrink={true}
+                          required={!!childSpec.required}
+                          >
+                          {childSpec.desc}
+                        </InputLabel>
+                      </Box>
+                    )
+                  }
+                  <TextField
+                    label={null}
+                    name={name}
+                    value={innerProps.value}
+                    disabled={!!props.disabled}
+                    required={!!childSpec.required}
+                    size={props.size}
+                    margin={props.margin}
+                    onChange={e => {
+                      let value = parseInt(e.target.value)
+                      if (e.target.name === '') {
+                        value = ''
+                      } else if (isNaN(value)) {
+                        value = e.target.value
+                      } else {
+                        value = String(value)
+                      }
+                      innerProps.onChange(value)
+                      if (!!props.callback) {
+                        props.callback(value)
+                      }
+                    }}
+                    error={!!_.get(errors, name)}
+                    helperText={_.get(errors, name)?.message}
+                  />
                 </FormControl>
               </Box>
             )

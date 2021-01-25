@@ -13,7 +13,6 @@ const INPUT_REQUIRED = 'INPUT_REQUIRED'
 const TOKEN_IMPORT = '$I'
 const TOKEN_LOCAL = '$L'
 const TOKEN_JSX = '$JSX'
-const TOKEN_NAME = '$NAME'
 const TOKEN_PARSED = '$P'
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,39 +100,49 @@ function _js_parse_snippet(js_context, parsed) {
         && path.node.openingElement.name.name === TOKEN_JSX
       )
       {
-        const name_attr = path.node.openingElement.attributes.find(attr => (
+        const import_name_attr = path.node.openingElement.attributes.find(attr => (
           t.isJSXAttribute(attr)
           && t.isJSXIdentifier(attr.name)
-          && attr.name.name === TOKEN_NAME
+          && attr.name.name === TOKEN_IMPORT
         ))
-        // check that $NAME attr exists
-        if (!name_attr) {
-          throw new Error(`ERROR: [${TOKEN_JSX}] missing [${TOKEN_NAME}]`)
+        const local_name_attr = path.node.openingElement.attributes.find(attr => (
+          t.isJSXAttribute(attr)
+          && t.isJSXIdentifier(attr.name)
+          && attr.name.name === TOKEN_LOCAL
+        ))
+        // check that $I or $L attr exists
+        if (!import_name_attr && !local_name_attr) {
+          throw new Error(`ERROR: [${TOKEN_JSX}] missing [${TOKEN_IMPORT}] or [${TOKEN_LOCAL}]`)
+        }
+        // get name_attr
+        let name_attr = import_name_attr || local_name_attr
+        const i_name = name_attr.value.value
+        if (!!import_name_attr) {
+          reg_js_import(js_context, i_name)
+        } else {
+          reg_js_variable(js_context, i_name)
         }
         // check that value is string literals
         if (!t.isStringLiteral(name_attr.value)) {
-          throw new Error(`ERROR: [${TOKEN_JSX}] [${TOKEN_NAME}] is not a string literal`)
+          throw new Error(`ERROR: [${TOKEN_JSX}] name is not a string literal`)
         }
-        // import
-        const import_name = name_attr.value.value
-        reg_js_import(js_context, import_name)
         // create replacement
         const replacement = t.jSXElement(
           t.jSXOpeningElement(
             t.jSXIdentifier(
-              import_name,
+              i_name,
             ),
             path.node.openingElement.attributes.filter(attr => (
               !(
                 t.isJSXAttribute(attr)
                 && t.isJSXIdentifier(attr.name)
-                && attr.name.name === TOKEN_NAME
+                && (attr.name.name === TOKEN_IMPORT || attr.name.name === TOKEN_LOCAL)
               )
             ))
           ),
           t.jSXClosingElement(
             t.jSXIdentifier(
-              import_name,
+              i_name,
             ),
           ),
           path.node.children
@@ -511,7 +520,6 @@ module.exports = {
   TOKEN_IMPORT,
   TOKEN_LOCAL,
   TOKEN_JSX,
-  TOKEN_NAME,
   isPrimitive,
   capitalize,
   reg_js_import,

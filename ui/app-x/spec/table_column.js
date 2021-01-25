@@ -12,8 +12,9 @@ export const react_table = {
   desc: 'Column Group',
   children: [
     {
-      name: 'Header',
-      desc: 'Group Header',
+      name: 'id',
+      desc: 'Column ID',
+      required: true,
       types: [
         {
           kind: 'class',
@@ -28,49 +29,190 @@ export const react_table = {
       },
     },
     {
-      name: 'columns',
-      desc: 'Columns',
-      array: true,
+      name: 'accessor',
+      desc: 'Accessor',
       types: [
         {
-          kind: 'shape',
-          data: {
-            'Header': {
-              desc: 'Header',
-              types: [
-                {
-                  kind: 'class',
-                  data: 'string',
-                }
-              ]
-            },
-            'accessor': {
-              desc: 'Accessor',
-              types: [
-                {
-                  kind: 'class',
-                  data: 'string',
-                }
-              ]
-            }
-          }
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
         },
       ],
       _thisNode: {
         types: [
           {
             kind: 'class',
-            data: 'object',
-          }
+            data: 'string'
+          },
         ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          },
+        ],
+      },
+    },
+    {
+      name: 'Header',
+      desc: 'Column Header',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+    },
+    {
+      name: 'Footer',
+      desc: 'Column Footer',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+    },
+    {
+      name: 'width',
+      desc: 'Width',
+      types: [
+        {
+          kind: 'class',
+          data: 'number'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          variant: 'number',
+        },
+      },
+    },
+    {
+      name: 'minWidth',
+      desc: 'Min Width',
+      types: [
+        {
+          kind: 'class',
+          data: 'number'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          variant: 'number',
+        },
+      },
+    },
+    {
+      name: 'maxWidth',
+      desc: 'Max Width',
+      types: [
+        {
+          kind: 'class',
+          data: 'number'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          variant: 'number',
+        },
+      },
+    },
+    {
+      name: 'columns',
+      desc: 'Columns',
+      array: true,
+      types: [
+        {
+          kind: 'type',
+          data: 'table/column'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        /*
         input: {
           kind: 'input/list',
           columns: [
             {
+              name: 'id',
+              title: 'ID',
+              required: true,
+              span: 4,
+              input: {
+                kind: 'input/text',
+              },
+            },
+            {
               name: 'Header',
               title: 'Header',
-              span: 10,
-              required: true,
+              span: 6,
               input: {
                 kind: 'input/text',
               },
@@ -78,14 +220,15 @@ export const react_table = {
             {
               name: 'accessor',
               title: 'Accessor',
-              span: 10,
               required: true,
+              span: 12,
               input: {
                 kind: 'input/expression',
               },
             },
           ]
         },
+        */
       },
     },
   ]

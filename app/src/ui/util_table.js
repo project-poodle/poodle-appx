@@ -10,7 +10,6 @@ const {
   TOKEN_IMPORT,
   TOKEN_LOCAL,
   TOKEN_JSX,
-  TOKEN_NAME,
   isPrimitive,
   capitalize,
   reg_js_import,
@@ -27,6 +26,7 @@ const REACT_TABLE_METHODS = [
   'getTableProps',
   'getTableBodyProps',
   'headerGroups',
+  'footerGroups',
   'rows',
   'prepareRow',
 ]
@@ -125,13 +125,13 @@ function react_table(js_context, ref, input) {
     }
   })()
 
-  // columnProps expression
-  const columnPropsExpression = (() => {
-    if (!!input.columnProps) {
-      if (!Array.isArray(input.columnProps)) {
-        throw new Error(`ERROR: input.columnProps is not array [${JSON.stringify(input)}]`)
+  // columns expression
+  const columnsExpression = (() => {
+    if (!!input.columns) {
+      if (!Array.isArray(input.columns)) {
+        throw new Error(`ERROR: input.columns is not array [${JSON.stringify(input)}]`)
       }
-      const result = input.columnProps.map(column => {
+      const result = input.columns.map(column => {
         return js_process(
           {
             ...js_context,
@@ -152,51 +152,157 @@ function react_table(js_context, ref, input) {
     }
   })()
 
+  reg_js_variable(js_context, 'GlobalFilter')
+
+  // global filter
+  const globalFilterElement = `
+    function GlobalFilter({
+      preGlobalFilteredRows,
+      globalFilter,
+      setGlobalFilter,
+    }) {
+      const count = preGlobalFilteredRows.length
+      const [value, setValue] = $I('react.useState')(globalFilter)
+      const onChange = $I('react-table.useAsyncDebounce')(value => {
+        setGlobalFilter(value || undefined)
+      }, 200)
+
+      return (
+        <$JSX $I="@material-ui/core.TextField"
+              value={value || ""}
+              onChange={e => {
+                setValue(e.target.value)
+                onChange(e.target.value)
+              }}
+              placeholder={\`Search \${count} records...\`}
+        />
+      )
+    }
+  `
+
+  // Define a default UI for filtering
+  const defaultFilterElement = `
+    function DefaultColumnFilter({
+      column: { filterValue, preFilteredRows, setFilter },
+    }) {
+      const count = preFilteredRows.length
+
+      return (
+        <$JSX $I="@material-ui/core.TextField"
+              value={filterValue || ''}
+              onChange={e => {
+                // Set undefined to remove the filter entirely
+                setFilter(e.target.value || undefined)
+              }}
+        />
+      )
+    }
+  `
+
   //////////////////////////////////////////////////////////////////////
   const tableElement = `
-    <$JSX $NAME="@material-ui/core.Table" {...getTableProps()}>
-      <$JSX $NAME="@material-ui/core.TableHead">
-        {
-          headerGroups.map(headerGroup => {
-            return (
-              <$JSX $NAME="@material-ui/core.TableRow" {...headerGroup.getHeaderGroupProps()}>
-                {
-                  headerGroup.headers.map(column => {
-                    return (
-                      <$JSX $NAME="@material-ui/core.TableCell" {...column.getHeaderProps()}>
-                        {
-                          column.render('Header')
-                        }
-                      </$JSX>
-                    )
-                  })
-                }
-              </$JSX>
-            )
-          })
-        }
+    <$JSX $I="@material-ui/core.TableContainer"
+          {...propsExpression}
+          style={styleExpression}
+      >
+      <$JSX $L="GlobalFilter"
+            preGlobalFilteredRows={preGlobalFilteredRows}
+            globalFilter={state.globalFilter}
+            setGlobalFilter={setGlobalFilter}
+        >
       </$JSX>
-      <$JSX $NAME="@material-ui/core.TableBody">
-        {
-          rows.map((row, index) => {
-            prepareRow(row)
-            return (
-              <$JSX $NAME="@material-ui/core.TableRow" {...row.getRowProps()}>
-                {
-                  row.cells.map(cell => {
-                    return (
-                      <$JSX $NAME="@material-ui/core.TableCell" {...cell.getCellProps()}>
-                        {
-                          cell.render('Cell')
-                        }
-                      </$JSX>
-                    )
-                  })
-                }
-              </$JSX>
-            )
-          })
-        }
+      <$JSX $I="@material-ui/core.Table"
+            {...getTableProps()}
+            stickyHeader={true}
+        >
+        <$JSX $I="@material-ui/core.TableHead">
+          {
+            headerGroups.map(headerGroup => {
+              return (
+                <$JSX $I="@material-ui/core.TableRow"
+                      {...headerGroup.getHeaderGroupProps()}
+                  >
+                  {
+                    headerGroup.headers.map(column => {
+                      return (
+                        <$JSX $I="@material-ui/core.TableCell"
+                              {...column.getHeaderProps(column.getSortByToggleProps())}
+                          >
+                          <$JSX $I="@material-ui/core.TableSortLabel"
+                                active={column.isSorted}
+                                direction={column.isSortedDesc ? 'desc' : 'asc'}
+                            >
+                            {
+                              column.render('Header')
+                            }
+                          </$JSX>
+                          <div>
+                          {
+                            column.canFilter ? column.render('Filter') : null
+                          }
+                          </div>
+                        </$JSX>
+                      )
+                    })
+                  }
+                </$JSX>
+              )
+            })
+          }
+        </$JSX>
+        <$JSX $I="@material-ui/core.TableBody"
+              {...getTableBodyProps()}
+          >
+          {
+            rows.map((row, index) => {
+              prepareRow(row)
+              return (
+                <$JSX $I="@material-ui/core.TableRow"
+                      {...row.getRowProps()}
+                  >
+                  {
+                    row.cells.map(cell => {
+                      return (
+                        <$JSX $I="@material-ui/core.TableCell"
+                              {...cell.getCellProps()}
+                          >
+                          {
+                            cell.render('Cell')
+                          }
+                        </$JSX>
+                      )
+                    })
+                  }
+                </$JSX>
+              )
+            })
+          }
+        </$JSX>
+        <$JSX $I="@material-ui/core.TableFooter">
+          {
+            footerGroups.map(footerGroup => {
+              return (
+                <$JSX $I="@material-ui/core.TableRow"
+                      {...footerGroup.getFooterGroupProps()}
+                  >
+                  {
+                    footerGroup.headers.map(column => {
+                      return (
+                        <$JSX $I="@material-ui/core.TableCell"
+                              {...column.getFooterProps()}
+                          >
+                          {
+                            column.render('Footer')
+                          }
+                        </$JSX>
+                      )
+                    })
+                  }
+                </$JSX>
+              )
+            })
+          }
+        </$JSX>
       </$JSX>
     </$JSX>
   `
@@ -207,19 +313,43 @@ function react_table(js_context, ref, input) {
       js_context,
       `
       (name, dataExpression, propsExpression, styleExpression, columnExpression) => {
+        // GlobalFilter element
+        ${globalFilterElement}
+        // DefaultColumnFilter element
+        ${defaultFilterElement}
+        // defaultColumn
+        const defaultColumn = $I('react.useMemo')(
+          () => ({
+            // Let's set up our default Filter UI
+            Filter: DefaultColumnFilter,
+          }),
+          []
+        )
         // prepare props
-        const columns = $I('react.useMemo')(() => columnExpression)
-        const data = $I('react.useMemo')(() => dataExpression)
+        const columns = $I('react.useMemo')(() => columnExpression, [])
+        const data = $I('react.useMemo')(() => dataExpression, [dataExpression])
         // useTable hook
         const {
           getTableProps,
+          getTableBodyProps,
           headerGroups,
+          footerGroups,
           rows,
-          prepareRow
-        } = $I('react-table.useTable') ({
-          columns,
-          data,
-        })
+          prepareRow,
+          state,
+          visibleColumns,
+          preGlobalFilteredRows,
+          setGlobalFilter,
+        } = $I('react-table.useTable') (
+          {
+            columns,
+            data,
+            defaultColumn,
+          },
+          $I('react-table.useFilters'),
+          $I('react-table.useGlobalFilter'),
+          $I('react-table.useSortBy'),
+        )
         // return
         return (
           ${tableElement}
@@ -237,7 +367,7 @@ function react_table(js_context, ref, input) {
       dataExpression,
       propsExpression,
       styleExpression,
-      columnPropsExpression,
+      columnsExpression,
     ]
   )
 
@@ -263,25 +393,17 @@ function table_column(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [table/column] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!input.columns) {
-    throw new Error(`ERROR: [table/column] missing input.columns [${JSON.stringify(input)}]`)
+  if (!input.id) {
+    throw new Error(`ERROR: [table/column] missing input.id [${JSON.stringify(input)}]`)
   }
 
-  if (!Array.isArray(input.columns)) {
-    throw new Error(`ERROR: [table/column] input.columns is not Array [${JSON.stringify(input)}]`)
-  }
-
+  // columns expression
   const columnsExpression = (() => {
-    // return array
-    return t.arrayExpression(
-      input.columns.map(column => {
-        if (!column) {
-          throw new Error(`ERROR: [table/column] column is empty [${JSON.stringify(column)}]`)
-        } else if (typeof column !== 'object') {
-          throw new Error(`ERROR: [table/column] column is not object [${JSON.stringify(column)}]`)
-        } else if (!column.accessor) {
-          throw new Error(`ERROR: [table/column] column missing [accessor] [${JSON.stringify(column)}]`)
-        }
+    if (!!input.columns) {
+      if (!Array.isArray(input.columns)) {
+        throw new Error(`ERROR: input.columns is not array [${JSON.stringify(input)}]`)
+      }
+      const result = input.columns.map(column => {
         return js_process(
           {
             ...js_context,
@@ -292,16 +414,25 @@ function table_column(js_context, ref, input) {
           column
         )
       })
-    )
+      // array expression
+      return t.arrayExpression(
+        result
+      )
+    } else {
+      // return null
+      return null
+    }
   })()
 
   // result
   const resultExpression = (() => {
-    if (!!input.Header) {
-      return t.objectExpression(
-        [
+    const object_properties = []
+    Object.keys(input)
+      .filter(key => !key.startsWith('_'))
+      .map(key => {
+        object_properties.push(
           t.objectProperty(
-            t.identifier('Header'),
+            t.identifier(key),
             js_process(
               {
                 ...js_context,
@@ -309,25 +440,22 @@ function table_column(js_context, ref, input) {
                 STATEMENT_CONTEXT: false,
               },
               null,
-              input.Header
+              input[key]
             )
-          ),
-          t.objectProperty(
-            t.identifier('columns'),
-            columnsExpression
           )
-        ]
-      )
-    } else {
-      return t.objectExpression(
-        [
-          t.objectProperty(
-            t.identifier('columns'),
-            columnsExpression
-          )
-        ]
+        )
+      })
+    // add column expression if exists
+    if (!!columnsExpression) {
+      object_properties.push(
+        t.objectProperty(
+          t.identifier('columns'),
+          columnsExpression
+        )
       )
     }
+    // return
+    return t.objectExpression(object_properties)
   })()
 
   // return
