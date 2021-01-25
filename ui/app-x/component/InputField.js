@@ -266,7 +266,8 @@ const InputField = ((props) => {
                     name={name}
                     size={props.size}
                     disabled={!!props.disabled}
-                    checked={innerProps.value}
+                    checked={!!innerProps.value}
+                    value={!!innerProps.value}
                     onChange={e => {
                       innerProps.onChange(e.target.checked)
                       if (!!props.callback) {
@@ -431,6 +432,7 @@ const InputField = ((props) => {
                       &&
                       (
                         options.map(option => {
+                          // console.log(`option`, option)
                           return (
                             <MenuItem
                               key={option}
@@ -442,6 +444,12 @@ const InputField = ((props) => {
                         })
                       )
                     }
+                    <MenuItem style={{display: 'none'}}
+                      key={innerProps.value}
+                      value={innerProps.value}
+                      >
+                      {innerProps.value}
+                    </MenuItem>
                   </TextField>
                   {
                     !!_.get(errors, name)

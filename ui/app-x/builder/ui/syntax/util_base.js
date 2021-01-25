@@ -180,6 +180,11 @@ const groups = {
     'input/select',
     'input/rule',
   ],
+  // table / options
+  table_options: [
+    'react/table',
+    'table/column',
+  ],
   // js advanced
   js_advanced: [
     'js/import',

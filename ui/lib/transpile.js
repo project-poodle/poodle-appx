@@ -32,6 +32,7 @@ const default_import_maps = {
         "react-router",
         "react-router-dom",
         "react-hook-form",
+        "react-table",
         "react-grid-layout",
         "react-helmet",
         "react-feather",
@@ -52,6 +53,7 @@ const default_import_maps = {
         "@material-ui/icons",
         "@material-ui/styles",
         "@material-ui/lab",
+        // "material-table",
         "material-ui-nested-menu-item",
       ]
     },

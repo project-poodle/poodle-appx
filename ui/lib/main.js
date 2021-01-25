@@ -15,6 +15,8 @@ import * as hookrouter from 'hookrouter'
 // import * as reactRouterDom from 'react-router-dom'
 // form
 import * as reactHookForm from 'react-hook-form'
+// table
+import * as reactTable from 'react-table'
 // layout
 import * as reactGridLayout from 'react-grid-layout'
 import react_grid_layout_css from 'react-grid-layout/css/styles.css'
@@ -50,6 +52,8 @@ export default {
   "hookrouter": hookrouter,
   // form
   "react-hook-form": reactHookForm,
+  // table
+  "react-table": reactTable,
   // grid layout
   "react-grid-layout": reactGridLayout,
   // "react_grid_layout_css": react_grid_layout_css,

@@ -63,6 +63,7 @@ async function handle_react_provider(req, res) {
             imports: {},
             states: {},
             forms: {},
+            tables: {},
             parsed: {},
             appx: req.context
         }

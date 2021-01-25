@@ -267,7 +267,7 @@ function parse_tree_node(tree_context, treeNode) {
             data = []
             thisNode.data[_ref].map(nodeData => {
               // process this
-              const resultData = _process_this(_ref, nodeData.value)
+              const resultData = _process_this(_ref, nodeData.value === undefined ? nodeData : nodeData.value)
               if (resultData !== undefined) {
                 data.push(resultData)
               }

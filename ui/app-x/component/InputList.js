@@ -163,6 +163,7 @@ const InputList = props => {
       {
         fields.map((item, index) => {
           const propType = watch(`${props.name}[${index}]._type`)
+          // console.log(`InputList fields.item`, item, getValues())
           return (
             <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>
               {

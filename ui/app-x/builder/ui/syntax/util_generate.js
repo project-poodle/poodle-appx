@@ -50,6 +50,8 @@ import InputRule from 'app-x/icon/InputRule'
 import Filter from 'app-x/icon/Filter'
 import API from 'app-x/icon/API'
 import Style from 'app-x/icon/Style'
+import Table from 'app-x/icon/Table'
+import TableColumn from 'app-x/icon/TableColumn'
 import Theme from 'app-x/icon/Theme'
 import Pointer from 'app-x/icon/Pointer'
 
@@ -208,6 +210,14 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'input/rule') {
 
     return <InputRule />
+
+  } else if (input._type === 'react/table') {
+
+    return <Table />
+
+  } else if (input._type === 'table/column') {
+
+    return <TableColumn />
 
   } else if (input._type === 'mui/style') {
 
@@ -408,6 +418,14 @@ function lookup_title_for_input(ref, input, array=false) {
   } else if (input._type === 'input/rule') {
 
     return ref ? ref : ''
+
+  } else if (input._type === 'react/table') {
+
+    return prefix + input.name
+
+  } else if (input._type === 'table/column') {
+
+    return input.Header || ''
 
   } else if (input._type === 'mui/style') {
 
@@ -793,7 +811,11 @@ function generate_tree_node(js_context, conf, input) {
             data.map(d => {
               const resultNodeData = _process_this(_ref, d)
               if (resultNodeData !== undefined) {
-                thisNode.data[_ref].push({value: resultNodeData})
+                if (isPrimitive(resultNodeData)) {
+                  thisNode.data[_ref].push({value: resultNodeData})
+                } else {
+                  thisNode.data[_ref].push(resultNodeData)
+                }
               }
             })
           } else {

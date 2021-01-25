@@ -132,6 +132,7 @@ export const classes = {
       'input/text',
       'input/switch',
       'input/select',
+      'react/table',
       'js/expression',
       'js/map',
       'js/switch',

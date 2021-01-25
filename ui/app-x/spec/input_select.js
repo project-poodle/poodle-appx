@@ -102,12 +102,8 @@ export const input_select = {
               input: {
                 kind: 'input/select',
                 options: [
-                  {
-                    value: 'pattern',
-                  },
-                  {
-                    value: 'validate',
-                  }
+                  'pattern',
+                  'validate',
                 ],
                 optionsOnly: true,
               },

@@ -20,12 +20,8 @@ export const input_text = {
         input: {
           kind: 'input/select',
           options: [
-            {
-              value: 'pattern',
-            },
-            {
-              value: 'validate',
-            }
+            'pattern',
+            'validate',
           ],
           optionsOnly: true,
         },

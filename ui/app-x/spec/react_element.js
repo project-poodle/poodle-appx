@@ -11,6 +11,7 @@ import {
 // class: react/element                               (~jsx|~expression)
 // name:                     # element name          (:string) - autosuggest import
 // props:                    # properties            (:object<:expression>)
+// style:                    # style                 (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_element = {
 

@@ -79,6 +79,7 @@ async function handle_appx_route(req, res) {
             imports: {},
             states: {},
             forms: {},
+            tables: {},
             parsed: {},
             appx: req.context
         }

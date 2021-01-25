@@ -6,6 +6,7 @@ import {
 // type: react/html                                  (~jsx|~expression)
 // name:                     # html tag name         (:string) - autosuggest non-restrictive
 // props:                    # properties            (:object<:expression>)
+// style:                    # style                 (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_html = {
 

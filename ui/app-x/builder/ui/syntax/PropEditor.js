@@ -550,7 +550,7 @@ const PropEditor = (props) => {
   // onSubmit
   const onBaseSubmit = data => {
     try {
-      console.log('Editor data', data)
+      // console.log('Editor data', data)
       propEditorCallback(data)
     } catch (err) {
       console.log(`Editor`, data, err)
@@ -605,7 +605,12 @@ const PropEditor = (props) => {
         if (childSpec.name === '*') {
           throw new Error(`ERROR: [input/list] do not support [*]`)
         } else {
-          thisNode.data[childSpec.name] = _.get(getValues(), childSpec.name) || []
+          lookupNode.data[childSpec.name] = _.get(getValues(), childSpec.name) || []
+          // console.log(
+          //   `lookupNode.data[childSpec.name] = _.get(getValues(), childSpec.name)`,
+          //   childSpec.name,
+          //   _.get(getValues(), childSpec.name)
+          // )
         }
       })
     //////////////////////////////////////////////////////////////////////
@@ -656,6 +661,7 @@ const PropEditor = (props) => {
     }
     //////////////////////////////////////////////////////////////////////
     // setTreeData(resultTree)
+    // console.log(`lookupNode`, lookupNode)
     updateDesignAction(
       `Update [${lookupNode.title}]`,
       resultTree,
@@ -719,7 +725,7 @@ const PropEditor = (props) => {
     // process childParent props
     InputProperties.process(lookupNode, properties)
     ////////////////////////////////////////
-    console.log(`lookupNode`, lookupNode)
+    // console.log(`lookupNode`, lookupNode)
     // reorder_children(childParent)
     if (!!parentNode) {
       reorder_children(parentNode)
@@ -1046,6 +1052,9 @@ const PropEditor = (props) => {
                     return undefined
                   }
                   if (!!hidden[childSpec.name]) {
+                    return undefined
+                  }
+                  if (childSpec._thisNode.input.kind === 'input/list') {
                     return undefined
                   }
                   // check if this is configured by child node

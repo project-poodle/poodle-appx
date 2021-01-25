@@ -12,9 +12,6 @@ const {
   JSX_CONTEXT,
   STATEMENT_CONTEXT,
   // REQUIRE_FUNCTION,
-  REACT_FORM_METHODS,
-  REACT_FORM_ARRAY_METHODS,
-  VALID_INPUT_TYPES,
   isPrimitive,
   capitalize,
   reg_js_import,
@@ -27,13 +24,18 @@ const {
   _parse_var_full_path,
 } = require('./util_base')
 const {
+  REACT_FORM_METHODS,
   react_form,
   input_text,
   input_switch,
   input_select,
   input_rule,
 } = require('./util_form')
-
+const {
+  REACT_TABLE_METHODS,
+  react_table,
+  table_column,
+} = require('./util_table')
 
 ////////////////////////////////////////////////////////////////////////////////
 // create primitive js ast
@@ -2607,6 +2609,14 @@ function js_process(js_context, ref, input) {
   } else if (input._type === 'input/rule') {
 
     return input_rule(js_context, ref, input)
+
+  } else if (input._type === 'react/table') {
+
+    return react_table(js_context, ref, input)
+
+  } else if (input._type === 'table/column') {
+
+    return table_column(js_context, ref, input)
 
   } else if (input._type === 'mui/style') {
 

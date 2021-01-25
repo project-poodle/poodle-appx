@@ -11,9 +11,6 @@ const {
   TOKEN_LOCAL,
   TOKEN_JSX,
   TOKEN_NAME,
-  REACT_FORM_METHODS,
-  REACT_FORM_ARRAY_METHODS,
-  VALID_INPUT_TYPES,
   isPrimitive,
   capitalize,
   reg_js_import,
@@ -25,6 +22,46 @@ const {
   _js_parse_expression,
   _parse_var_full_path,
 } = require('./util_base')
+
+const REACT_FORM_METHODS = [
+  'register',
+  'unregister',
+  'errors',
+  'watch',
+  'handleSubmit',
+  'reset',
+  'setError',
+  'clearErrors',
+  'setValue',
+  'getValues',
+  'trigger',
+  'control',
+  'formState',
+]
+
+const REACT_FORM_ARRAY_METHODS = [
+  'fields',
+  'append',
+  'prepend',
+  'insert',
+  'swap',
+  'move',
+  'remove'
+]
+
+const VALID_INPUT_TYPES = [
+  'text',
+  'number',
+  'password',
+  'email',
+  'tel',
+  'url',
+  'search',
+  'date',
+  'time',
+  'datetime-local'
+]
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // create react/form ast
@@ -1613,6 +1650,7 @@ function input_rule(js_context, ref, input) {
 ////////////////////////////////////////////////////////////////////////////////
 // export
 module.exports = {
+  REACT_FORM_METHODS: REACT_FORM_METHODS,
   react_form: react_form,
   input_text: input_text,
   input_switch: input_switch,

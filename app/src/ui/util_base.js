@@ -16,45 +16,6 @@ const TOKEN_JSX = '$JSX'
 const TOKEN_NAME = '$NAME'
 const TOKEN_PARSED = '$P'
 
-const REACT_FORM_METHODS = [
-  'register',
-  'unregister',
-  'errors',
-  'watch',
-  'handleSubmit',
-  'reset',
-  'setError',
-  'clearErrors',
-  'setValue',
-  'getValues',
-  'trigger',
-  'control',
-  'formState',
-]
-
-const REACT_FORM_ARRAY_METHODS = [
-  'fields',
-  'append',
-  'prepend',
-  'insert',
-  'swap',
-  'move',
-  'remove'
-]
-
-const VALID_INPUT_TYPES = [
-  'text',
-  'number',
-  'password',
-  'email',
-  'tel',
-  'url',
-  'search',
-  'date',
-  'time',
-  'datetime-local'
-]
-
 ////////////////////////////////////////////////////////////////////////////////
 // utilities
 
@@ -411,6 +372,23 @@ function reg_react_form(js_context, name, qualifiedName, formProps) {
   // console.log(`reg_react_form`, js_context.forms)
 }
 
+// register table
+function reg_react_table(js_context, name, qualifiedName, tableProps) {
+
+  // update js_context
+  if (!!name) {
+    js_context.reactTable = name
+  }
+
+  // register form name
+  js_context.tables[name] = {
+    qualifiedName: qualifiedName,
+    tableProps: tableProps,
+  }
+
+  // console.log(`reg_react_form`, js_context.forms)
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // resolve identifiers
 function js_resolve_ids(js_context, ast_tree) {
@@ -534,15 +512,13 @@ module.exports = {
   TOKEN_LOCAL,
   TOKEN_JSX,
   TOKEN_NAME,
-  REACT_FORM_METHODS,
-  REACT_FORM_ARRAY_METHODS,
-  VALID_INPUT_TYPES,
   isPrimitive,
   capitalize,
   reg_js_import,
   reg_js_variable,
   // reg_react_state,
   reg_react_form,
+  reg_react_table,
   js_resolve_ids,
   // _js_parse_snippet,
   // _js_parse_template,

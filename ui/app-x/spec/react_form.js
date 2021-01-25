@@ -7,8 +7,9 @@ import {
 // name:                     # name of the form      (:string)             - unique in a file
 // onSubmit:                 # function for submit   (:string|:array<:statement>)
 // onError:                  # function for error    (:string|:array<:statement>)
-// props:                    # props for 'form' tag  (:object<:expression>)
 // formProps:                # props for hook form   (:object<:expression>)
+// props:                    # props for 'form' tag  (:object<:expression>)
+// style:                    # style for 'form' tag  (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const react_form = {
 
