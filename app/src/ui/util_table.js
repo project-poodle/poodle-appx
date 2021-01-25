@@ -337,9 +337,13 @@ function react_table(js_context, ref, input) {
           rows,
           prepareRow,
           state,
+          allColumns,
           visibleColumns,
+          setColumnOrder,
+          getToggleHideAllColumnsProps,
           preGlobalFilteredRows,
           setGlobalFilter,
+          resetResizing,
         } = $I('react-table.useTable') (
           {
             columns,
@@ -349,6 +353,8 @@ function react_table(js_context, ref, input) {
           $I('react-table.useFilters'),
           $I('react-table.useGlobalFilter'),
           $I('react-table.useSortBy'),
+          $I('react-table.useBlockLayout'),
+          $I('react-table.useResizeColumns'),
         )
         // return
         return (

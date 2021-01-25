@@ -1028,6 +1028,16 @@ ui_component:
                   Header: Version
                   Footer: ""
                 - _type: table/column
+                  id: importMaps
+                  accessor:
+                    _type: js/function
+                    params:
+                      - row
+                    body:
+                      - return JSON.stringify(row.ui_spec.importMaps, null, 2)
+                  Header: Import Maps
+                  Footer: ""
+                - _type: table/column
                   id: ui_deployment
                   accessor: ui_deployment
                   Header: Deployment
@@ -1044,9 +1054,13 @@ ui_component:
                     params:
                       - row
                     body:
-                      - return JSON.stringify(row.ui_deployment_spec.apiMaps)
+                      - return JSON.stringify(row.ui_deployment_spec.apiMaps, null, 2)
                   Header: API Maps
                   Footer: ""
+              props:
+                className:
+                  _type: js/expression
+                  data: styles.root
           _order: 4
         _test:
           providers:
