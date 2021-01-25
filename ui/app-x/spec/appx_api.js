@@ -137,39 +137,6 @@ export const appx_api = {
       },
     },
     {
-      name: 'init',
-      desc: 'Init Code',
-      types: [
-        {
-          kind: 'class',
-          data: 'string'
-        },
-        {
-          kind: 'class',
-          data: 'statement'
-        },
-      ],
-      _thisNode: {
-        types: [
-          {
-            kind: 'class',
-            data: 'string'
-          },
-        ],
-        input: {
-          kind: 'input/statement',
-        },
-      },
-      _childNode: {
-        types: [
-          {
-            kind: 'class',
-            data: 'statement'
-          },
-        ],
-      },
-    },
-    {
       name: 'result',
       desc: 'Result Handler',
       types: [
