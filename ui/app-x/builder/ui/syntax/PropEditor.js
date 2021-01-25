@@ -6,6 +6,7 @@ import {
   Box,
   Container,
   Grid,
+  ListItem,
   ListItemIcon,
   Typography,
   FormControl,
@@ -1006,10 +1007,12 @@ const PropEditor = (props) => {
                               (() => {
                                 // const supported_types = lookup_accepted_types_for_node(parentNode)
                                 const supported_types = lookup_changeable_types(nodeType) // use changeable types
-                                return supported_types
+                                const all_types = lookup_types()
+                                return all_types
                                   .map(type => {
+                                    const display = supported_types.includes(type) ? "block" : "none"
                                     return (
-                                      <MenuItem value={type} key={type}>
+                                      <MenuItem value={type} key={type} style={{display:display}}>
                                         <ListItemIcon>
                                           { lookup_icon_for_type(type) }
                                         </ListItemIcon>
