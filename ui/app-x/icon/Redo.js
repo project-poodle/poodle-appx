@@ -17,4 +17,9 @@ const Redo = (props) => {
   )
 }
 
+// export SVG
+Redo.SVG = RedoSvg
+
+export { RedoSvg as SVG }
+
 export default Redo

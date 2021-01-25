@@ -17,4 +17,9 @@ const Effect = (props) => {
   )
 }
 
+// export SVG
+Effect.SVG = EffectSvg
+
+export { EffectSvg as SVG }
+
 export default Effect

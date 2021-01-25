@@ -60,6 +60,7 @@ const default_import_maps = {
       modules: [
         "antd",
         "@ant-design/icons",
+        // "@ant-design/icons-svg",
       ]
     },
     "babel": {

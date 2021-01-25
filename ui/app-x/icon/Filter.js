@@ -17,4 +17,9 @@ const Filter = (props) => {
   )
 }
 
+// export SVG
+Filter.SVG = FilterSvg
+
+export { FilterSvg as SVG }
+
 export default Filter

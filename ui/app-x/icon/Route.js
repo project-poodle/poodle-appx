@@ -17,4 +17,9 @@ const Route = (props) => {
   )
 }
 
+// export SVG
+Route.SVG = RouteSvg
+
+export { RouteSvg as SVG }
+
 export default Route

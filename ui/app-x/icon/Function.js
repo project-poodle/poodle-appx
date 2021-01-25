@@ -17,4 +17,9 @@ const Function = (props) => {
   )
 }
 
+// export SVG
+Function.SVG = FunctionSvg
+
+export { FunctionSvg as SVG }
+
 export default Function

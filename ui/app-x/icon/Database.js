@@ -17,4 +17,9 @@ const Database = (props) => {
   )
 }
 
+// export SVG
+Database.SVG = DatabaseSvg
+
+export { DatabaseSvg as SVG }
+
 export default Database

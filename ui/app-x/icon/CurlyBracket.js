@@ -17,4 +17,9 @@ const CurlyBracket = (props) => {
   )
 }
 
+// export SVG
+CurlyBracket.SVG = CurlyBracketSvg
+
+export { CurlyBracketSvg as SVG }
+
 export default CurlyBracket

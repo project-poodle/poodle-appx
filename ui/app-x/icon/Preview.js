@@ -17,4 +17,9 @@ const Preview = (props) => {
   )
 }
 
+// export SVG
+Preview.SVG = PreviewSvg
+
+export { PreviewSvg as SVG }
+
 export default Preview

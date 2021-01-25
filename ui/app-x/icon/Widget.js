@@ -17,4 +17,9 @@ const Widget = (props) => {
   )
 }
 
+// export SVG
+Widget.SVG = WidgetSvg
+
+export { WidgetSvg as SVG }
+
 export default Widget

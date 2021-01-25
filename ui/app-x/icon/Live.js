@@ -17,4 +17,9 @@ const Live = (props) => {
   )
 }
 
+// export SVG
+Live.SVG = LiveSvg
+
+export { LiveSvg as SVG }
+
 export default Live

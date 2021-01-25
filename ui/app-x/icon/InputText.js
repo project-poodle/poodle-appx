@@ -17,4 +17,9 @@ const InputText = (props) => {
   )
 }
 
+// export SVG
+InputText.SVG = InputTextSvg
+
+export { InputTextSvg as SVG }
+
 export default InputText

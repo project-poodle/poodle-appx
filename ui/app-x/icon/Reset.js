@@ -17,4 +17,9 @@ const Reset = (props) => {
   )
 }
 
+// export SVG
+Reset.SVG = ResetSvg
+
+export { ResetSvg as SVG }
+
 export default Reset

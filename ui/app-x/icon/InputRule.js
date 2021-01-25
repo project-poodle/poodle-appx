@@ -17,4 +17,9 @@ const InputRule = (props) => {
   )
 }
 
+// export SVG
+InputRule.SVG = InputRuleSvg
+
+export { InputRuleSvg as SVG }
+
 export default InputRule

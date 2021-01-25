@@ -19,4 +19,9 @@ const Provider = (props) => {
   )
 }
 
+// export SVG
+Provider.SVG = ProviderSvg
+
+export { ProviderSvg as SVG }
+
 export default Provider

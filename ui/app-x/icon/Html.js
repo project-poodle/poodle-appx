@@ -17,4 +17,9 @@ const Html = (props) => {
   )
 }
 
+// export SVG
+Html.SVG = HtmlSvg
+
+export { HtmlSvg as SVG }
+
 export default Html

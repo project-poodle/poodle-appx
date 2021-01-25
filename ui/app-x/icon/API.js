@@ -17,6 +17,11 @@ const API = (props) => {
   )
 }
 
+// export SVG
+API.SVG = APISvg
+
+export { APISvg as SVG }
+
 export default API
 
 /*

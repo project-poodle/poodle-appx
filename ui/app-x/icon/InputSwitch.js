@@ -18,6 +18,11 @@ const InputSwitch = (props) => {
   )
 }
 
+// export SVG
+InputSwitch.SVG = InputSwitchSvg
+
+export { InputSwitchSvg as SVG }
+
 export default InputSwitch
 
 /*

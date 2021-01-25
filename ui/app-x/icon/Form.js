@@ -17,4 +17,9 @@ const Form = (props) => {
   )
 }
 
+// export SVG
+Form.SVG = FormSvg
+
+export { FormSvg as SVG }
+
 export default Form

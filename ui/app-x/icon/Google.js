@@ -11,4 +11,9 @@ const Google = (props) => {
   );
 };
 
+// export SVG
+Google.SVG = GoogleSvg
+
+export { GoogleSvg as SVG }
+
 export default Google;

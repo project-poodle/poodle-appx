@@ -3,7 +3,7 @@ import React from 'react'
 //import { SvgIcon } from '@material-ui/core'
 import {default as Icon} from '@ant-design/icons'
 
-const ReactSvg = () => {
+const ReactIconSvg = () => {
   return (
     <svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor">
       <path d="M512 512m-91.264 0a91.264 91.264 0 1 0 182.528 0 91.264 91.264 0 1 0-182.528 0Z" p-id="579"></path>
@@ -17,8 +17,13 @@ const ReactSvg = () => {
 
 const ReactIcon = (props) => {
   return (
-    <Icon component={ReactSvg} {...props} />
+    <Icon component={ReactIconSvg} {...props} />
   )
 }
+
+// export SVG
+ReactIcon.SVG = ReactIconSvg
+
+export { ReactIconSvg as SVG }
 
 export default ReactIcon;

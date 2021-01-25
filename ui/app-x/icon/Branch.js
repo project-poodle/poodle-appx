@@ -17,4 +17,9 @@ const Branch = (props) => {
   )
 }
 
+// export SVG
+Branch.SVG = BranchSvg
+
+export { BranchSvg as SVG }
+
 export default Branch

@@ -17,6 +17,11 @@ const Context = (props) => {
   )
 }
 
+// export SVG
+Context.SVG = ContextSvg
+
+export { ContextSvg as SVG }
+
 export default Context
 
 /*

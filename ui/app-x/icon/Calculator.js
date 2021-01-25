@@ -18,4 +18,9 @@ const Calculator = (props) => {
   )
 }
 
+// export SVG
+Calculator.SVG = CalculatorSvg
+
+export { CalculatorSvg as SVG }
+
 export default Calculator

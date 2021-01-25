@@ -17,4 +17,9 @@ const Undo = (props) => {
   )
 }
 
+// export SVG
+Undo.SVG = UndoSvg
+
+export { UndoSvg as SVG }
+
 export default Undo

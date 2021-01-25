@@ -17,4 +17,9 @@ const Bracket = (props) => {
   )
 }
 
+// export SVG
+Bracket.SVG = BracketSvg
+
+export { BracketSvg as SVG }
+
 export default Bracket

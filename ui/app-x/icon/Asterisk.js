@@ -17,6 +17,11 @@ const Asterisk = (props) => {
   )
 }
 
+// export SVG
+Asterisk.SVG = AsteriskSvg
+
+export { AsteriskSvg as SVG }
+
 export default Asterisk
 
 /*

@@ -18,4 +18,9 @@ const Import = (props) => {
   )
 }
 
+// export SVG
+Import.SVG = ImportSvg
+
+export { ImportSvg as SVG }
+
 export default Import

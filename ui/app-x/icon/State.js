@@ -17,4 +17,9 @@ const State = (props) => {
   )
 }
 
+// export SVG
+State.SVG = StateSvg
+
+export { StateSvg as SVG }
+
 export default State

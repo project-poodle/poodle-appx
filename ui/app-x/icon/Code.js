@@ -17,4 +17,9 @@ const Code = (props) => {
   )
 }
 
+// export SVG
+Code.SVG = CodeSvg
+
+export { CodeSvg as SVG }
+
 export default Code

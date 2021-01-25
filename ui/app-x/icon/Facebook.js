@@ -11,4 +11,9 @@ const Facebook = (props) => {
   );
 };
 
+// export SVG
+Facebook.SVG = FacebookSvg
+
+export { FacebookSvg as SVG }
+
 export default Facebook;

@@ -17,4 +17,9 @@ const Css = (props) => {
   )
 }
 
+// export SVG
+Css.SVG = CssSvg
+
+export { CssSvg as SVG }
+
 export default Css

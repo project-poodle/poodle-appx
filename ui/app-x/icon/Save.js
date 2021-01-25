@@ -17,4 +17,9 @@ const Save = (props) => {
   )
 }
 
+// export SVG
+Save.SVG = SaveSvg
+
+export { SaveSvg as SVG }
+
 export default Save

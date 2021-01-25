@@ -17,4 +17,9 @@ const Text = (props) => {
   )
 }
 
+// export SVG
+Text.SVG = TextSvg
+
+export { TextSvg as SVG }
+
 export default Text

@@ -17,4 +17,9 @@ const Pointer = (props) => {
   )
 }
 
+// export SVG
+Pointer.SVG = PointerSvg
+
+export { PointerSvg as SVG }
+
 export default Pointer

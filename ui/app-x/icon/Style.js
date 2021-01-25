@@ -17,4 +17,9 @@ const Style = (props) => {
   )
 }
 
+// export SVG
+Style.SVG = StyleSvg
+
+export { StyleSvg as SVG }
+
 export default Style

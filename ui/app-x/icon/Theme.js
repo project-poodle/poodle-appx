@@ -17,6 +17,11 @@ const Theme = (props) => {
   )
 }
 
+// export SVG
+Theme.SVG = ThemeSvg
+
+export { ThemeSvg as SVG }
+
 export default Theme
 
 
