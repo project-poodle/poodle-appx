@@ -5,9 +5,9 @@ import {
   CssBaseline,
   createStyles,
   makeStyles,
+  createMuiTheme,
   colors,
 } from '@material-ui/core'
-import { createMuiTheme } from '@material-ui/core'
 
 import lightTheme from 'app-x/theme/light'
 import darkTheme from 'app-x/theme/dark'
