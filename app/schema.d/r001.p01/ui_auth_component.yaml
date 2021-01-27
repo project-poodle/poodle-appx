@@ -45,6 +45,8 @@ ui_component:
             header:
               _type: react/element
               name: self/page/Header
+          style:
+              height: '100%'
           children:
             - _type: react/element
               name: antd.Layout.Header
@@ -53,6 +55,8 @@ ui_component:
                   name: self/page/Header
             - _type: react/element
               name: antd.Layout.Content
+              style:
+                  height: '100%'
               children:
                 - _type: react/element
                   name: app-x/view/error/NotFoundView
@@ -70,7 +74,7 @@ ui_component:
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme
+                  name: app-x/theme/light
               children:
                 - _type: react/element
                   name: self/page/MobileNavProvider
@@ -217,7 +221,7 @@ ui_component:
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme
+                  name: app-x/theme/light
 
     ############################################################
     - namespace: sys
@@ -226,23 +230,27 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
+        theme:
+          _type: mui/theme
+          _order: 1
         styles:
           _type: mui/style
-          _order: 1
           sideNav:
+            width: 300
+            height: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
-            height: 100%
-            width: 300
+          _order: 2
         component:
           _type: react/element
-          _order: 2
           name: antd.Layout
           props:
             className:
               _type: js/expression
               data: styles.layout
+          style:
+              height: '100%'
           children:
             - _type: react/element
               name: antd.Layout.Header
@@ -254,17 +262,18 @@ ui_component:
               children:
                 - _type: react/element
                   name: app-x/view/error/NotFoundView
+          _order: 3
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
                   _type: js/import
-                  name: app-x/theme
+                  name: app-x/theme/light
