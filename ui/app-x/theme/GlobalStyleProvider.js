@@ -7,6 +7,7 @@ import {
   makeStyles,
   colors,
 } from '@material-ui/core'
+import { createMuiTheme } from '@material-ui/core'
 
 import lightTheme from 'app-x/theme/light'
 import darkTheme from 'app-x/theme/dark'
@@ -16,12 +17,50 @@ const GolbalStyleContext = React.createContext()
 const GlobalStyleProvider = (props) => {
 
   // states
-  const [ theme, setTheme ] = useState(props.theme)
+  const [ theme, setThemeInternal ] = useState(lightTheme)
+  const setTheme = (theme) => {
+    setThemeInternal(theme)
+    const themeType = theme?.palette?.type === 'dark' ? 'dark' : 'light'
+    globalThis.localStorage.setItem(
+      '/app-x/ui/user/theme',
+      JSON.stringify(
+        {
+          type: themeType,
+          theme: theme,
+        }
+      )
+    )
+  }
 
   // theme
+  // useEffect(() => {
+  //   setTheme(props.theme)
+  // }, [props.theme])
+
+  // load layout when loading first time
   useEffect(() => {
-    setTheme(props.theme)
-  }, [props.theme])
+    try {
+      const userTheme = JSON.parse(globalThis.localStorage.getItem(`/app-x/ui/user/theme`))
+      if (!!userTheme.theme) {
+        try {
+          setTheme(createMuiTheme(userTheme.theme))
+        } catch (err) {
+          console.error(`Theme set error`, err, JSON.stringify(userTheme.theme))
+          if (userTheme.type === 'dark') {
+            setTheme(darkTheme)
+          } else if (userTheme.type === 'light') {
+            setTheme(lightTheme)
+          }
+        }
+      } else if (userTheme.type === 'dark') {
+        setTheme(darkTheme)
+      } else if (userTheme.type === 'light') {
+        setTheme(lightTheme)
+      }
+    } catch (err) {
+      console.error(`Theme load error`, err)
+    }
+  }, [])
 
   const globalStyles = makeStyles(() => createStyles({
     '@global': {
