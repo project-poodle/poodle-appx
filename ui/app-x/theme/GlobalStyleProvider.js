@@ -34,7 +34,9 @@ const GlobalStyleProvider = (props) => {
 
   // theme
   // useEffect(() => {
-  //   setTheme(props.theme)
+  //   if (!!props.theme) {
+  //     setTheme(createMuiTheme(props.theme))
+  //   }
   // }, [props.theme])
 
   // load layout when loading first time
@@ -72,6 +74,7 @@ const GlobalStyleProvider = (props) => {
       html: {
         '-webkit-font-smoothing': 'antialiased',
         '-moz-osx-font-smoothing': 'grayscale',
+        backgroundColor: theme?.palette?.background?.paper,
         height: '100%',
         width: '100%'
       },
@@ -86,6 +89,7 @@ const GlobalStyleProvider = (props) => {
         color: 'inherit'
       },
       '#root': {
+        backgroundColor: theme?.palette?.background?.paper,
         height: '100%',
         width: '100%'
       },
@@ -291,9 +295,9 @@ const GlobalStyleProvider = (props) => {
 }
 
 // propTypes
-GlobalStyleProvider.propTypes = {
-  theme: PropTypes.object.isRequired,
-}
+// GlobalStyleProvider.propTypes = {
+//   theme: PropTypes.object,
+// }
 
 // update Context variable
 GlobalStyleProvider.Context = GolbalStyleContext
