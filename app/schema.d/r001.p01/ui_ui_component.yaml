@@ -185,6 +185,12 @@ ui_component:
                     elevation: 0
                     realm: main
                 - _type: react/element
+                  name: app-x/util/ThemeBadge
+                  style:
+                    margin:
+                      _type: js/expression
+                      data: theme.spacing(1)
+                - _type: react/element
                   name: "@material-ui/core.Hidden"
                   props:
                     lgUp: true

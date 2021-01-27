@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import {
   ThemeProvider,
@@ -8,239 +8,256 @@ import {
   colors,
 } from '@material-ui/core'
 
+import lightTheme from 'app-x/theme/light'
+import darkTheme from 'app-x/theme/dark'
+
 const GolbalStyleContext = React.createContext()
 
-const GlobalStyleProvider = (() => {
+const GlobalStyleProvider = (props) => {
 
-  const f = (props) => {
+  // states
+  const [ theme, setTheme ] = useState(props.theme)
 
-    const globalStyles = makeStyles(() => createStyles({
-      '@global': {
-        '*': {
-          boxSizing: 'border-box',
-          margin: 0,
-          padding: 0,
+  // theme
+  useEffect(() => {
+    setTheme(props.theme)
+  }, [props.theme])
+
+  const globalStyles = makeStyles(() => createStyles({
+    '@global': {
+      '*': {
+        boxSizing: 'border-box',
+        margin: 0,
+        padding: 0,
+      },
+      html: {
+        '-webkit-font-smoothing': 'antialiased',
+        '-moz-osx-font-smoothing': 'grayscale',
+        height: '100%',
+        width: '100%'
+      },
+      body: {
+        backgroundColor: theme?.palette?.background?.paper,
+        color: theme?.palette?.text?.primary,
+        height: '100%',
+        width: '100%',
+      },
+      a: {
+        textDecoration: 'none',
+        color: 'inherit'
+      },
+      '#root': {
+        height: '100%',
+        width: '100%'
+      },
+      // antd overrides
+      'h1': {
+        color: theme?.palette?.text?.primary,
+      },
+      'h2': {
+        color: theme?.palette?.text?.primary,
+      },
+      'h3': {
+        color: theme?.palette?.text?.primary,
+      },
+      'h4': {
+        color: theme?.palette?.text?.primary,
+      },
+      'h5': {
+        color: theme?.palette?.text?.primary,
+      },
+      'h6': {
+        color: theme?.palette?.text?.primary,
+      },
+      '.ant-tabs-content': {
+        height: '100%', // fix ant tabs
+      },
+      '.ant-notification': {
+        zIndex: 2010,
+      },
+      '.ant-tabs-tab .anticon': {
+        margin: 0,
+      },
+      // '.anticon': {
+      //   color: theme?.palette.text.primary,
+      // },
+      '.ant-btn': {
+        color: theme?.palette.text.secondary,
+        backgroundColor: 'inherit',
+        borderColor: theme?.palette.action.selected,
+        '&:hover': {
+          color: theme?.palette.text.secondary,
+          backgroundColor: theme?.palette.action.selected,
+          borderColor: theme?.palette.text.secondary,
         },
-        html: {
-          '-webkit-font-smoothing': 'antialiased',
-          '-moz-osx-font-smoothing': 'grayscale',
-          height: '100%',
-          width: '100%'
+        '&:focus': {
+          color: theme?.palette.text.secondary,
+          backgroundColor: theme?.palette.action.selected,
+          borderColor: theme?.palette.text.secondary,
         },
-        body: {
-          backgroundColor: props.theme?.palette?.background?.paper,
-          color: props.theme?.palette?.text?.primary,
-          height: '100%',
-          width: '100%',
-        },
-        a: {
-          textDecoration: 'none',
-          color: 'inherit'
-        },
-        '#root': {
-          height: '100%',
-          width: '100%'
-        },
-        // antd overrides
-        'h1': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        'h2': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        'h3': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        'h4': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        'h5': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        'h6': {
-          color: props.theme?.palette?.text?.primary,
-        },
-        '.ant-tabs-content': {
-          height: '100%', // fix ant tabs
-        },
-        '.ant-notification': {
-          zIndex: 2010,
-        },
-        '.ant-tabs-tab .anticon': {
-          margin: 0,
-        },
-        // '.anticon': {
-        //   color: props.theme?.palette.text.primary,
-        // },
-        '.ant-btn': {
-          color: props.theme?.palette.text.secondary,
-          backgroundColor: 'inherit',
-          borderColor: props.theme?.palette.action.selected,
+        '&[disabled]': {
+          color: theme?.palette.text.disabled,
+          backgroundColor: theme?.palette.action.disabledBackground,
+          borderColor: theme?.palette.action.selected,
           '&:hover': {
-            color: props.theme?.palette.text.secondary,
-            backgroundColor: props.theme?.palette.action.selected,
-            borderColor: props.theme?.palette.text.secondary,
-          },
-          '&:focus': {
-            color: props.theme?.palette.text.secondary,
-            backgroundColor: props.theme?.palette.action.selected,
-            borderColor: props.theme?.palette.text.secondary,
-          },
-          '&[disabled]': {
-            color: props.theme?.palette.text.disabled,
-            backgroundColor: props.theme?.palette.action.disabledBackground,
-            borderColor: props.theme?.palette.action.selected,
-            '&:hover': {
-              color: props.theme?.palette.text.disabled,
-              backgroundColor: props.theme?.palette.action.disabledBackground,
-              borderColor: props.theme?.palette.action.selected,
-            },
+            color: theme?.palette.text.disabled,
+            backgroundColor: theme?.palette.action.disabledBackground,
+            borderColor: theme?.palette.action.selected,
           },
         },
-        '.ant-btn-primary': {
-          color: props.theme?.palette.primary.contrastText,
-          backgroundColor: props.theme?.palette.primary.light,
-          borderColor: props.theme?.palette.primary.light,
-          '&:hover': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.main,
-            borderColor: props.theme?.palette.primary.main,
-          },
-          '&:focus': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.main,
-            borderColor: props.theme?.palette.primary.main,
-          },
+      },
+      '.ant-btn-primary': {
+        color: theme?.palette.primary.contrastText,
+        backgroundColor: theme?.palette.primary.light,
+        borderColor: theme?.palette.primary.light,
+        '&:hover': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.main,
+          borderColor: theme?.palette.primary.main,
         },
-        '.ant-btn-dangerous': {
-          color: props.theme?.palette.error.light,
-          borderColor: props.theme?.palette.error.light,
-          '&:hover': {
-            color: props.theme?.palette.error.light,
-            borderColor: props.theme?.palette.error.light,
-          },
-          '&:focus': {
-            color: props.theme?.palette.error.light,
-            borderColor: props.theme?.palette.error.light,
-          },
+        '&:focus': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.main,
+          borderColor: theme?.palette.primary.main,
         },
-        '.ant-tabs': {
-          color: props.theme?.palette.text.primary,
+      },
+      '.ant-btn-dangerous': {
+        color: theme?.palette.error.light,
+        borderColor: theme?.palette.error.light,
+        '&:hover': {
+          color: theme?.palette.error.light,
+          borderColor: theme?.palette.error.light,
         },
-        '.ant-tabs-tab': {
-          color: props.theme?.palette.text.primary,
-          '&:hover': {
-            color: props.theme?.palette.primary.light,
-          },
-          '& ant-tabs-tab-active': {
-            color: props.theme?.palette.primary.light,
-          }
+        '&:focus': {
+          color: theme?.palette.error.light,
+          borderColor: theme?.palette.error.light,
         },
-        '.ant-select-dropdown': {
-          zIndex: 2050,
-          color: props.theme?.palette.text.primary,
-          backgroundColor: props.theme?.palette.background.paper,
+      },
+      '.ant-tabs': {
+        color: theme?.palette.text.primary,
+      },
+      '.ant-tabs-tab': {
+        color: theme?.palette.text.primary,
+        '&:hover': {
+          color: theme?.palette.primary.light,
         },
-        '.ant-select-item': {
-          color: props.theme?.palette.text.primary,
-          backgroundColor: props.theme?.palette.background.paper,
-          '&.ant-select-item-option-active': {
-            color: props.theme?.palette.text.primary,
-            backgroundColor: props.theme?.palette.action.selected,
-          },
-          '&.ant-select-item-option-selected': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.light,
-          },
-        },
-        '.ant-tree': {
-          color: props.theme?.palette.text.primary,
-          backgroundColor: props.theme?.palette.background.paper,
-          /*
-          '& .ant-tree-treenode::before': {
-            backgroundColor: props.theme?.palette?.background?.paper,
-            // color: props.theme?.palette?.text?.primary,
-          },
-          '& .ant-tree-treenode:hover::before': {
-            backgroundColor: props.theme?.palette?.action?.selected,
-            // color: props.theme?.palette?.text?.primary,
-          },
-          '& .ant-tree-treenode-selected::before': {
-            color: props.theme?.palette?.action?.selected,
-            backgroundColor: props.theme?.palette?.secondary?.main,
-            // color: props.theme?.palette?.text?.primary,
-          },
-          '& .ant-tree-treenode-selected:hover::before': {
-            color: props.theme?.palette?.action?.selected,
-            backgroundColor: props.theme?.palette?.secondary?.dark,
-            // color: props.theme?.palette?.text?.primary,
-          },
-          */
-          '& .ant-tree-node-content-wrapper': {
-            backgroundColor: props.theme?.palette.background.paper,
-          },
-          '& .ant-tree-node-content-wrapper:hover': {
-            backgroundColor: props.theme?.palette.action.selected,
-          },
-          '& .ant-tree-node-content-wrapper.ant-tree-node-selected': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.light,
-          },
-          '& .ant-tree-node-content-wrapper.ant-tree-node-selected:hover': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.main,
-          },
-        },
-        '.ant-tree.ant-tree-directory': {
-          color: props.theme?.palette.text.primary,
-          backgroundColor: props.theme?.palette.background.paper,
-          '& .ant-tree-treenode::before': {
-            backgroundColor: props.theme?.palette.background.paper,
-          },
-          '& .ant-tree-treenode:hover::before': {
-            backgroundColor: props.theme?.palette.action.selected,
-          },
-          '& .ant-tree-treenode-selected::before': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.light,
-          },
-          '& .ant-tree-treenode-selected:hover::before': {
-            color: props.theme?.palette.primary.contrastText,
-            backgroundColor: props.theme?.palette.primary.main,
-          },
-        },
-        '.MuiSelect-select.MuiSelect-select': {
-          display: 'flex',
-          alignItems: 'center',
+        '& ant-tabs-tab-active': {
+          color: theme?.palette.primary.light,
         }
+      },
+      '.ant-select-dropdown': {
+        zIndex: 2050,
+        color: theme?.palette.text.primary,
+        backgroundColor: theme?.palette.background.paper,
+      },
+      '.ant-select-item': {
+        color: theme?.palette.text.primary,
+        backgroundColor: theme?.palette.background.paper,
+        '&.ant-select-item-option-active': {
+          color: theme?.palette.text.primary,
+          backgroundColor: theme?.palette.action.selected,
+        },
+        '&.ant-select-item-option-selected': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.light,
+        },
+      },
+      '.ant-tree': {
+        color: theme?.palette.text.primary,
+        backgroundColor: theme?.palette.background.paper,
+        /*
+        '& .ant-tree-treenode::before': {
+          backgroundColor: theme?.palette?.background?.paper,
+          // color: theme?.palette?.text?.primary,
+        },
+        '& .ant-tree-treenode:hover::before': {
+          backgroundColor: theme?.palette?.action?.selected,
+          // color: theme?.palette?.text?.primary,
+        },
+        '& .ant-tree-treenode-selected::before': {
+          color: theme?.palette?.action?.selected,
+          backgroundColor: theme?.palette?.secondary?.main,
+          // color: theme?.palette?.text?.primary,
+        },
+        '& .ant-tree-treenode-selected:hover::before': {
+          color: theme?.palette?.action?.selected,
+          backgroundColor: theme?.palette?.secondary?.dark,
+          // color: theme?.palette?.text?.primary,
+        },
+        */
+        '& .ant-tree-node-content-wrapper': {
+          backgroundColor: theme?.palette.background.paper,
+        },
+        '& .ant-tree-node-content-wrapper:hover': {
+          backgroundColor: theme?.palette.action.selected,
+        },
+        '& .ant-tree-node-content-wrapper.ant-tree-node-selected': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.light,
+        },
+        '& .ant-tree-node-content-wrapper.ant-tree-node-selected:hover': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.main,
+        },
+      },
+      '.ant-tree.ant-tree-directory': {
+        color: theme?.palette.text.primary,
+        backgroundColor: theme?.palette.background.paper,
+        '& .ant-tree-treenode::before': {
+          backgroundColor: theme?.palette.background.paper,
+        },
+        '& .ant-tree-treenode:hover::before': {
+          backgroundColor: theme?.palette.action.selected,
+        },
+        '& .ant-tree-treenode-selected::before': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.light,
+        },
+        '& .ant-tree-treenode-selected:hover::before': {
+          color: theme?.palette.primary.contrastText,
+          backgroundColor: theme?.palette.primary.main,
+        },
+      },
+      '.MuiSelect-select.MuiSelect-select': {
+        display: 'flex',
+        alignItems: 'center',
       }
-    }))
+    }
+  }))
 
-    globalStyles()
+  globalStyles()
 
-    return (
-      <GolbalStyleContext.Provider
-        value={{
-          globalStyles,
-        }}
-      >
-        <ThemeProvider theme={props.theme}>
-          <CssBaseline />
-          {props.children}
-        </ThemeProvider>
-      </GolbalStyleContext.Provider>
-    )
-  }
+  // return
+  return (
+    <GolbalStyleContext.Provider
+      value={{
+        theme: theme,
+        setTheme: setTheme,
+        themeType: theme?.palette.type === 'dark' ? 'dark' : 'light',
+        toggleThemeType: () => {
+          if (theme?.palette.type === 'dark') {
+            setTheme(lightTheme)
+          } else {
+            setTheme(darkTheme)
+          }
+        }
+      }}
+    >
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {props.children}
+      </ThemeProvider>
+    </GolbalStyleContext.Provider>
+  )
+}
 
-  // update Context variable
-  f.Context = GolbalStyleContext
+// propTypes
+GlobalStyleProvider.propTypes = {
+  theme: PropTypes.object.isRequired,
+}
 
-  f.propType = {
-    theme: PropTypes.object.isRequired,
-  }
-
-  return f
-}) ()
+// update Context variable
+GlobalStyleProvider.Context = GolbalStyleContext
 
 export { GolbalStyleContext as Context }
 

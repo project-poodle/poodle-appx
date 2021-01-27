@@ -133,6 +133,18 @@ ui_component:
                       data: theme.spacing(1)
                   children:
                     - App-X
+                - _type: react/element
+                  name: "@material-ui/core.Box"
+                  props:
+                    flexGrow:
+                      _type: js/expression
+                      data: "1"
+                - _type: react/element
+                  name: app-x/util/ThemeBadge
+                  style:
+                    margin:
+                      _type: js/expression
+                      data: theme.spacing(1)
         _test:
           providers:
             - _type: react/element
@@ -224,6 +236,12 @@ ui_component:
                     authUrl: /login
                     elevation: 0
                     realm: main
+                - _type: react/element
+                  name: app-x/util/ThemeBadge
+                  style:
+                    margin:
+                      _type: js/expression
+                      data: theme.spacing(1)
         _test:
           providers:
             - _type: react/element

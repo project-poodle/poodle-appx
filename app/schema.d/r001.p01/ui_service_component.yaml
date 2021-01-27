@@ -182,6 +182,12 @@ ui_component:
                     elevation: 0
                     realm: main
                 - _type: react/element
+                  name: app-x/util/ThemeBadge
+                  style:
+                    margin:
+                      _type: js/expression
+                      data: theme.spacing(1)
+                - _type: react/element
                   name: "@material-ui/core.Hidden"
                   props:
                     lgUp: true
@@ -223,29 +229,31 @@ ui_component:
       ui_component_name: /page/Console
       ui_component_type: react/component
       ui_component_spec:
+        theme:
+          _type: mui/theme
+          _order: 1
         appNav:
           _type: react/element
-          _order: 1
           name: self/nav/appNav
+          _order: 2
         styles:
           _type: mui/style
-          _order: 2
           sideNav:
+            width: 300
+            height: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
-            height: 100%
-            width: 300
+          _order: 3
         mobileNav:
           _type: react/context
-          _order: 3
           name: self/page/MobileNavProvider.Context
+          _order: 4
         component:
           _type: react/element
-          _order: 4
           name: antd.Layout
           style:
-            height: '100%'
+            height: 100%
           children:
             - _type: react/element
               name: antd.Layout.Header
@@ -258,19 +266,22 @@ ui_component:
                 - _type: react/element
                   name: antd.Layout
                   style:
-                    height: '100%'
+                    height: 100%
                   children:
                     - _type: react/element
                       name: "@material-ui/core.Hidden"
                       props:
+                        lgUp: true
                         className:
                           _type: js/expression
                           data: styles.sideNav
-                        lgUp: true
                       children:
                         - _type: react/element
                           name: "@material-ui/core.Drawer"
                           props:
+                            open:
+                              _type: js/expression
+                              data: mobileNav.open
                             anchor: left
                             classes:
                               _type: js/expression
@@ -278,9 +289,6 @@ ui_component:
                             onClose:
                               _type: js/expression
                               data: e => mobileNav.setOpen(false)
-                            open:
-                              _type: js/expression
-                              data: mobileNav.open
                           children:
                             - _type: js/expression
                               data: appNav
@@ -292,10 +300,10 @@ ui_component:
                         - _type: react/element
                           name: antd.Layout.Sider
                           props:
+                            width: 300
                             className:
                               _type: js/expression
                               data: styles.sideNav
-                            width: 300
                           children:
                             - _type: js/expression
                               data: appNav
@@ -305,31 +313,36 @@ ui_component:
                         - _type: react/element
                           name: "@material-ui/core.Box"
                           props:
-                            alignItems: center
-                            display: flex
                             height: 100%
+                            display: flex
+                            alignItems: center
                             justifyContent: center
+                          style:
+                            backgroundColor:
+                              _type: js/expression
+                              data: theme.palette.background.default
                           children:
                             - _type: react/element
                               name: "@material-ui/core.Typography"
                               children:
                                 - Hello, World!
+          _order: 5
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
-            - _type: react/element
-              name: self/page/MobileNavProvider
+                  _type: js/import
+            - name: self/page/MobileNavProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys

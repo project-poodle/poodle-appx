@@ -4,17 +4,9 @@ import { connect } from 'react-redux'
 import { A, HLink, navigate, hnavigate } from 'app-x/router'
 import PropTypes from 'prop-types'
 import {
-  Avatar,
   Typography,
-  AppBar,
-  Badge,
   Box,
-  Hidden,
   Fab,
-  IconButton,
-  Toolbar,
-  Menu,
-  MenuItem,
   ListItem,
   ListItemIcon,
   ListItemText,
@@ -22,8 +14,8 @@ import {
   makeStyles
 } from '@material-ui/core'
 import {
-  ExitToApp as ExitToApp,
-  AccountCircleOutlined
+  ExitToApp,
+  AccountCircleOutlined,
 } from '@material-ui/icons'
 
 import { logout, me } from 'app-x/api'
@@ -220,6 +212,7 @@ UserBadge.propTypes = {
   authUrl: PropTypes.string.isRequired,
   icon: PropTypes.element,
   color: PropTypes.string,
+  size: PropTypes.string,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserBadge)
