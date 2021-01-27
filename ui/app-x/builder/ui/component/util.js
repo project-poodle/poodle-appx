@@ -111,11 +111,22 @@ function default_spec_for_type (type) {
   if (type === 'react/component') {
 
     return {
+      theme: {
+        _type: 'mui/theme',
+      },
       styles: {
         _type: 'mui/style',
         root: {
           width: '100%',
           height: '100%',
+          color: {
+            _type: 'js/expression',
+            data: 'theme?.palette?.text.primary'
+          },
+          backgroundColor: {
+            _type: 'js/expression',
+            data: 'theme?.palette?.background.paper'
+          }
         }
       },
       component: {

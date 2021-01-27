@@ -7,10 +7,10 @@ import Page from 'app-x/util/Page'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    height: '100%',
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
+    backgroundColor: theme.palette.background.paper,
+    // height: '100%',
+    paddingBottom: theme.spacing(4),
+    paddingTop: theme.spacing(4)
   },
   image: {
     marginTop: 50,
@@ -24,42 +24,39 @@ const NotFoundView = () => {
   const classes = useStyles();
 
   return (
-    <Page
-      className={classes.root}
+    <Box
       title="404"
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
+      className={classes.root}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100%"
       >
-        <Container maxWidth="md">
-          <Typography
-            align="center"
-            color="textPrimary"
-            variant="h4"
-          >
-            404: The page you are looking for isn’t here
-          </Typography>
-          <Typography
-            align="center"
-            color="textPrimary"
-            variant="subtitle1"
-          >
-            You either tried some shady route or you came here by mistake.
-            Whichever it is, try using the navigation
-          </Typography>
-          <Box textAlign="center">
-            <img
-              alt="Under development"
-              className={classes.image}
-              src="/static/images/undraw_page_not_found_su7k.svg"
-            />
-          </Box>
-        </Container>
-      </Box>
-    </Page>
+      <Container maxWidth="md">
+        <Typography
+          align="center"
+          color="textPrimary"
+          variant="h4"
+        >
+          404: The page you are looking for isn’t here
+        </Typography>
+        <Typography
+          align="center"
+          color="textPrimary"
+          variant="subtitle1"
+        >
+          You either tried some shady route or you came here by mistake.
+          Whichever it is, try using the navigation
+        </Typography>
+        <Box textAlign="center">
+          <img
+            alt="Under development"
+            className={classes.image}
+            src="/static/images/undraw_page_not_found_su7k.svg"
+          />
+        </Box>
+      </Container>
+    </Box>
   )
 }
 

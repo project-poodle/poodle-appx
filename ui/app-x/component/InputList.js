@@ -13,6 +13,7 @@ import {
   ListItemIcon,
   Switch,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import {
   AddCircleOutline,
@@ -54,6 +55,8 @@ import {
 
 // array text field
 const InputList = props => {
+  // theme
+  const theme = useTheme()
   // make styles
   const styles = makeStyles((theme) => ({
     formControl: {

@@ -154,6 +154,90 @@ function react_table(js_context, ref, input) {
 
   reg_js_variable(js_context, 'GlobalFilter')
 
+  // styles
+  const stylesElement = `
+    const tableStyles = $I('@material-ui/core.makeStyles')((theme) => ({
+
+      div: {
+        padding: theme.spacing(1),
+        /* These styles are suggested for the table fill all available space in its containing element */
+        display: 'block',
+        /* These styles are required for a horizontaly scrollable table overflow */
+        overflow: 'auto',
+      },
+
+      table: {
+        borderSpacing: 0,
+        // borderTop: '1px',
+        // borderTopStyle: 'solid',
+        // borderTopColor: theme.palette.divider,
+      },
+
+      thead: {
+        /* These styles are required for a scrollable body to align with the header properly */
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      },
+
+      tbody: {
+        /* These styles are required for a scrollable table body */
+        overflowY: 'scroll',
+        overflowX: 'hidden',
+        // height: '250px',
+      },
+
+      tr: {
+        borderBottom: '1px',
+        borderBottomStyle: 'solid',
+        borderBottomColor: theme.palette.divider,
+      },
+
+      th: {
+        margin: theme.spacing(0),
+        padding: theme.spacing(1),
+        fontWeight: 500,
+        // borderRight: '1px solid black',
+
+        /* In this example we use an absolutely position resizer, so this is required. */
+        position: 'relative',
+
+        // ':last-child': {
+        //   borderRight: 0
+        // }
+      },
+
+      td: {
+        margin: theme.spacing(0),
+        padding: theme.spacing(1),
+        // borderRight: '1px solid black',
+
+        // ':last-child': {
+        //   borderRight: 0
+        // }
+      },
+
+      sorter: {
+        right: theme.spacing(1),
+        position: 'absolute',
+        zIndex: 1,
+        /* prevents from scrolling while dragging on touch devices */
+        touchAction: ':none',
+      },
+
+      resizer: {
+        right: 0,
+        background: theme.palette.divider,
+        width: theme.spacing(0.25),
+        height: '30%',
+        position: 'absolute',
+        top: '15%',
+        zIndex: 1,
+        /* prevents from scrolling while dragging on touch devices */
+        touchAction: ':none',
+      },
+    }))()
+  `
+
   // global filter
   const globalFilterElement = `
     function GlobalFilter({
@@ -165,7 +249,7 @@ function react_table(js_context, ref, input) {
       const [value, setValue] = $I('react.useState')(globalFilter)
       const onChange = $I('react-table.useAsyncDebounce')(value => {
         setGlobalFilter(value || undefined)
-      }, 200)
+      }, 500)
 
       return (
         <$JSX $I="@material-ui/core.TextField"
@@ -174,7 +258,7 @@ function react_table(js_context, ref, input) {
                 setValue(e.target.value)
                 onChange(e.target.value)
               }}
-              placeholder={\`Search \${count} records...\`}
+              helperText={\`Search \${count} records...\`}
         />
       )
     }
@@ -189,11 +273,13 @@ function react_table(js_context, ref, input) {
 
       return (
         <$JSX $I="@material-ui/core.TextField"
-              value={filterValue || ''}
-              onChange={e => {
-                // Set undefined to remove the filter entirely
-                setFilter(e.target.value || undefined)
-              }}
+            fullWidth={true}
+            size="small"
+            value={filterValue || ''}
+            onChange={e => {
+              // Set undefined to remove the filter entirely
+              setFilter(e.target.value || undefined)
+            }}
         />
       )
     }
@@ -201,39 +287,62 @@ function react_table(js_context, ref, input) {
 
   //////////////////////////////////////////////////////////////////////
   const tableElement = `
-    <$JSX $I="@material-ui/core.TableContainer"
+    <div
           {...propsExpression}
           style={styleExpression}
       >
-      <$JSX $L="GlobalFilter"
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
+      <div
+          // {...headerGroup.getHeaderGroupProps()}
+          // className={tableStyles.tr}
         >
-      </$JSX>
-      <$JSX $I="@material-ui/core.Table"
-            {...getTableProps()}
-            stickyHeader={true}
+        <$JSX $L="GlobalFilter"
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+          >
+        </$JSX>
+      </div>
+      <div
+          {...getTableProps()}
+          className={tableStyles.table}
+          // stickyHeader={true}
         >
-        <$JSX $I="@material-ui/core.TableHead">
+        <div>
           {
             headerGroups.map(headerGroup => {
               return (
-                <$JSX $I="@material-ui/core.TableRow"
-                      {...headerGroup.getHeaderGroupProps()}
+                <div
+                    {...headerGroup.getHeaderGroupProps()}
+                    // className={tableStyles.tr}
                   >
                   {
                     headerGroup.headers.map(column => {
                       return (
-                        <$JSX $I="@material-ui/core.TableCell"
-                              {...column.getHeaderProps(column.getSortByToggleProps())}
+                        <div
+                            {...column.getHeaderProps()}
+                            className={tableStyles.th}
                           >
-                          <$JSX $I="@material-ui/core.TableSortLabel"
-                                active={column.isSorted}
-                                direction={column.isSortedDesc ? 'desc' : 'asc'}
+                          <$JSX $I="@material-ui/core.Box"
+                              display="flex"
+                              justifyContent="center"
+                              // {...column.getHeaderProps(column.getSortByToggleProps())}
+                              {...column.getSortByToggleProps()}
                             >
                             {
                               column.render('Header')
+                            }
+                            {
+                              !!column.isSorted
+                              &&
+                              (
+                                column.isSortedDesc
+                                ? <div className={tableStyles.sorter}>
+                                    <$JSX $I="@material-ui/icons.ExpandMore" />
+                                  </div>
+                                : <div className={tableStyles.sorter}>
+                                    <$JSX $I="@material-ui/icons.ExpandLess" />
+                                  </div>
+                              )
                             }
                           </$JSX>
                           <div>
@@ -241,70 +350,90 @@ function react_table(js_context, ref, input) {
                             column.canFilter ? column.render('Filter') : null
                           }
                           </div>
-                        </$JSX>
+                          <$JSX $I="@material-ui/core.Divider"
+                              orientation="vertical"
+                              flexItem
+                          />
+                          {/* Use column.getResizerProps to hook up the events correctly */}
+                          {
+                            column.canResize
+                            &&
+                            (
+                              <div
+                                {...column.getResizerProps()}
+                                className={tableStyles.resizer}
+                              />
+                            )
+                          }
+                        </div>
                       )
                     })
                   }
-                </$JSX>
+                </div>
               )
             })
           }
-        </$JSX>
-        <$JSX $I="@material-ui/core.TableBody"
-              {...getTableBodyProps()}
+        </div>
+        <div
+            {...getTableBodyProps()}
+            className={tableStyles.tbody}
           >
           {
             rows.map((row, index) => {
               prepareRow(row)
               return (
-                <$JSX $I="@material-ui/core.TableRow"
-                      {...row.getRowProps()}
+                <div
+                    {...row.getRowProps()}
+                    className={tableStyles.tr}
                   >
                   {
                     row.cells.map(cell => {
                       return (
-                        <$JSX $I="@material-ui/core.TableCell"
-                              {...cell.getCellProps()}
+                        <div
+                            {...cell.getCellProps()}
+                            className={tableStyles.td}
                           >
                           {
                             cell.render('Cell')
                           }
-                        </$JSX>
+                        </div>
                       )
                     })
                   }
-                </$JSX>
+                </div>
               )
             })
           }
-        </$JSX>
-        <$JSX $I="@material-ui/core.TableFooter">
+        </div>
+        <div>
           {
             footerGroups.map(footerGroup => {
               return (
-                <$JSX $I="@material-ui/core.TableRow"
-                      {...footerGroup.getFooterGroupProps()}
+                <div
+                    {...footerGroup.getFooterGroupProps()}
+                    // className={tableStyles.tr}
                   >
                   {
                     footerGroup.headers.map(column => {
                       return (
-                        <$JSX $I="@material-ui/core.TableCell"
-                              {...column.getFooterProps()}
+                        <div
+                            {...column.getFooterProps()}
+                            className={tableStyles.td}
                           >
                           {
                             column.render('Footer')
                           }
-                        </$JSX>
+                        </div>
                       )
                     })
                   }
-                </$JSX>
+                </div>
               )
             })
           }
-        </$JSX>
-      </$JSX>
-    </$JSX>
+        </div>
+      </div>
+    </div>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -313,6 +442,8 @@ function react_table(js_context, ref, input) {
       js_context,
       `
       (name, dataExpression, propsExpression, styleExpression, columnExpression) => {
+        // styles element
+        ${stylesElement}
         // GlobalFilter element
         ${globalFilterElement}
         // DefaultColumnFilter element
@@ -353,8 +484,9 @@ function react_table(js_context, ref, input) {
           $I('react-table.useFilters'),
           $I('react-table.useGlobalFilter'),
           $I('react-table.useSortBy'),
-          $I('react-table.useBlockLayout'),
           $I('react-table.useResizeColumns'),
+          $I('react-table.useFlexLayout'),
+          $I('react-table.useRowSelect'),
         )
         // return
         return (

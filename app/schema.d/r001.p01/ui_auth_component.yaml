@@ -16,18 +16,27 @@ ui_component:
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:
+        theme:
+          _order: 1
+          _type: mui/theme
         styles:
           _type: mui/style
-          _order: 1
+          _order: 2
           root:
             height: 100%
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
         routes:
           _type: appx/route
-          _order: 2
+          _order: 3
           name: /
         not_found_view:
           _type: react/element
-          _order: 3
+          _order: 4
           name: antd.Layout
           props:
             className:
@@ -49,7 +58,7 @@ ui_component:
                   name: app-x/view/error/NotFoundView
         component:
           _type: react/element
-          _order: 4
+          _order: 5
           name: react-redux.Provider
           props:
             store:

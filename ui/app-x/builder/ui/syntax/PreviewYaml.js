@@ -7,6 +7,7 @@ import {
   Grid,
   Typography,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import { default as Editor } from '@monaco-editor/react'
 
@@ -19,7 +20,8 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewYaml = (props) => {
-
+  // theme
+  const theme = useTheme()
   // styles
   const styles = makeStyles((theme) => ({
     editor: {
@@ -194,6 +196,7 @@ const PreviewYaml = (props) => {
       >
       <Editor
         language="yaml"
+        theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
         options={{
           readOnly: true,
           wordWrap: 'on',
@@ -205,7 +208,7 @@ const PreviewYaml = (props) => {
           // lineDecorationsWidth: 4,
           minimap: {
             enabled: true
-          }
+          },
         }}
         value={yaml}
         >

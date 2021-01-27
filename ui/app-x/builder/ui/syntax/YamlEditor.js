@@ -9,6 +9,7 @@ import {
   Typography,
   Tooltip,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 // ant design
 import {
@@ -73,6 +74,8 @@ const YamlEditor = props => {
   const [ yamlError,        setYamlError      ] = useState(false)
   const [ yamlContent,      setYamlContent    ] = useState('')
 
+  // theme
+  const theme = useTheme()
   // make styles
   const styles = makeStyles((theme) => ({
     editor: {
@@ -215,6 +218,7 @@ const YamlEditor = props => {
         <ControlledEditor
           className={styles.editor}
           language="yaml"
+          theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
           options={{
             readOnly: false,
             wordWrap: 'on',

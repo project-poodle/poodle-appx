@@ -6,6 +6,7 @@ import {
   Grid,
   Typography,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import { default as Editor } from '@monaco-editor/react'
 
@@ -18,7 +19,8 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 
 const PreviewSource = (props) => {
-
+  // theme
+  const theme = useTheme()
   // styles
   const styles = makeStyles((theme) => ({
     editor: {
@@ -288,6 +290,7 @@ const PreviewSource = (props) => {
       >
       <Editor
         language="javascript"
+        theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
         options={{
           readOnly: true,
           wordWrap: 'on',

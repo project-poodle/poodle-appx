@@ -1,32 +1,4 @@
-import { createMuiTheme, colors } from '@material-ui/core'
-// import typography from 'app-x/theme/topography'
+import light from 'app-x/theme/light'
+import dark from 'app-x/theme/dark'
 
-const theme = createMuiTheme({
-  palette: {
-    background: {
-      // dark: '#F4F6F8',
-      default: colors.common.white,
-      paper: colors.common.white
-    },
-    primary: {
-      main: colors.blue[800]
-    },
-    secondary: {
-      main: colors.blue[600]
-    },
-    text: {
-      primary: colors.blueGrey[900],
-      secondary: colors.blueGrey[500],
-      error: colors.red[900],
-    }
-  },
-  // shadows: [
-  //   'none'
-  // ],
-  shape: {
-      borderRadius: 0,
-  },
-  // typography
-})
-
-export default theme
+export default light

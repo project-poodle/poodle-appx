@@ -21,6 +21,12 @@ ui_component:
           _order: 1
           root:
             height: 100%
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
         routes:
           _type: appx/route
           _order: 2
@@ -337,6 +343,12 @@ ui_component:
           _order: 1
           root:
             width: 100%
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
         component:
           _type: react/element
           _order: 2

@@ -42,6 +42,7 @@ const UI_Builder = (props) => {
       width: "100%",
       padding: theme.spacing(0),
       margin: theme.spacing(0),
+      backgroundColor: theme.palette.background.paper,
     },
     box: {
       // minHeight: 350,
@@ -49,7 +50,7 @@ const UI_Builder = (props) => {
       // height: '100%',
       // minWidth: 300,
       padding: theme.spacing(2, 0, 2),
-      backgroundColor: theme.palette.background.dark,
+      backgroundColor: theme.palette.background.default,
       // border
       border: 1,
       borderStyle: 'dotted',

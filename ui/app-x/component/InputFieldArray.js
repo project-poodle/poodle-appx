@@ -26,6 +26,7 @@ import {
   TextField,
   Switch,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import {
   AddCircleOutline,
@@ -50,6 +51,8 @@ import {
 
 // input field array
 const InputFieldArray = ((props) => {
+  // theme
+  const theme = useTheme()
   // styles
   const styles = makeStyles((theme) => ({
     formControl: {
@@ -330,6 +333,7 @@ const InputFieldArray = ((props) => {
                                   : styles.expressionSingleLine
                               }
                               language="javascript"
+                              theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
                               options={{
                                 readOnly: !!props.disabled,
                                 // lineNumbers: 'off',
