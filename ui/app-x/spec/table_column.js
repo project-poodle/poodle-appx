@@ -63,7 +63,43 @@ export const react_table = {
     },
     {
       name: 'Header',
-      desc: 'Column Header',
+      desc: 'Header',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          },
+        ],
+        input: {
+          kind: 'input/text',
+        },
+      },
+    },
+    {
+      name: 'Cell',
+      desc: 'Cell',
       types: [
         {
           kind: 'class',
@@ -99,7 +135,7 @@ export const react_table = {
     },
     {
       name: 'Footer',
-      desc: 'Column Footer',
+      desc: 'Footer',
       types: [
         {
           kind: 'class',
@@ -134,42 +170,8 @@ export const react_table = {
       },
     },
     {
-      name: 'width',
-      desc: 'Width',
-      types: [
-        {
-          kind: 'class',
-          data: 'number'
-        },
-      ],
-      _thisNode: {
-        types: 'inherit',
-        input: {
-          kind: 'input/text',
-          variant: 'number',
-        },
-      },
-    },
-    {
-      name: 'minWidth',
-      desc: 'Min Width',
-      types: [
-        {
-          kind: 'class',
-          data: 'number'
-        },
-      ],
-      _thisNode: {
-        types: 'inherit',
-        input: {
-          kind: 'input/text',
-          variant: 'number',
-        },
-      },
-    },
-    {
-      name: 'maxWidth',
-      desc: 'Max Width',
+      name: 'suggestedWidth',
+      desc: 'Suggested Width',
       types: [
         {
           kind: 'class',

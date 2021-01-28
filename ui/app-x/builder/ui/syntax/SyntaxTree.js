@@ -542,7 +542,7 @@ const SyntaxTree = (props) => {
       // console.log(`svgElement`, svgElement)
       if (svgElement.length) {
         svgElement[0].setAttribute("xmlns", "http://www.w3.org/2000/svg")
-        svgElement[0].setAttribute("fill", theme.palette.text.secondary)
+        svgElement[0].setAttribute("fill", theme.palette.text.primary)
         // console.log('svgElement.outerHTML', svgElement[0].outerHTML)
         const cursor = `url('data:image/svg+xml;base64,${btoa(svgElement[0].outerHTML)}'), copy`
         setSyntaxTreeCursor(cursor)

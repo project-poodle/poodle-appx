@@ -126,8 +126,8 @@ const UserBadge = (props) => {
         variant="extended"
         className={styles.fab}
         onClick={e => {
-          console.log(e)
-          // setAnchorEl(event.target)
+          // console.log(e)
+          // setAnchorEl(e.target)
           setAnchorEl(fabRef.current)
         }}
       >

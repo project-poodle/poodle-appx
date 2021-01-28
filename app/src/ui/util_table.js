@@ -168,6 +168,7 @@ function react_table(js_context, ref, input) {
 
       table: {
         borderSpacing: 0,
+        padding: theme.spacing(2)
         // borderTop: '1px',
         // borderTopStyle: 'solid',
         // borderTopColor: theme.palette.divider,
@@ -183,24 +184,24 @@ function react_table(js_context, ref, input) {
         /* These styles are required for a scrollable table body */
         overflowY: 'scroll',
         overflowX: 'hidden',
-        // height: '250px',
+        height: '100%',
       },
 
       tr: {
         borderBottom: '1px',
         borderBottomStyle: 'solid',
         borderBottomColor: theme.palette.divider,
+        '&:hover': {
+          backgroundColor: theme.palette.action.selected,
+        }
       },
 
       th: {
         margin: theme.spacing(0),
         padding: theme.spacing(1),
-        fontWeight: 500,
-        // borderRight: '1px solid black',
-
-        /* In this example we use an absolutely position resizer, so this is required. */
+        /* we use an absolutely position resizer, so this is required. */
         position: 'relative',
-
+        // borderRight: '1px solid black',
         // ':last-child': {
         //   borderRight: 0
         // }
@@ -210,7 +211,6 @@ function react_table(js_context, ref, input) {
         margin: theme.spacing(0),
         padding: theme.spacing(1),
         // borderRight: '1px solid black',
-
         // ':last-child': {
         //   borderRight: 0
         // }
@@ -235,6 +235,10 @@ function react_table(js_context, ref, input) {
         /* prevents from scrolling while dragging on touch devices */
         touchAction: ':none',
       },
+
+      tool: {
+        margin: theme.spacing(2)
+      },
     }))()
   `
 
@@ -244,6 +248,7 @@ function react_table(js_context, ref, input) {
       preGlobalFilteredRows,
       globalFilter,
       setGlobalFilter,
+      className,
     }) {
       const count = preGlobalFilteredRows.length
       const [value, setValue] = $I('react.useState')(globalFilter)
@@ -253,12 +258,20 @@ function react_table(js_context, ref, input) {
 
       return (
         <$JSX $I="@material-ui/core.TextField"
+              className={className}
+              size="small"
               value={value || ""}
               onChange={e => {
                 setValue(e.target.value)
                 onChange(e.target.value)
               }}
-              helperText={\`Search \${count} records...\`}
+              InputProps={{
+                startAdornment:
+                  <$JSX $I="@material-ui/core.InputAdornment" position="start">
+                    <$JSX $I="@material-ui/icons.SearchOutlined" fontSize="small" />
+                  </$JSX>
+              }}
+              // helperText={\`Search \${count} records...\`}
         />
       )
     }
@@ -291,23 +304,71 @@ function react_table(js_context, ref, input) {
           {...propsExpression}
           style={styleExpression}
       >
-      <div
-          // {...headerGroup.getHeaderGroupProps()}
-          // className={tableStyles.tr}
+      <$JSX $I='@material-ui/core.Toolbar'
+        disableGutters={true}
         >
         <$JSX $L="GlobalFilter"
               preGlobalFilteredRows={preGlobalFilteredRows}
               globalFilter={state.globalFilter}
               setGlobalFilter={setGlobalFilter}
+              className={tableStyles.tool}
           >
         </$JSX>
-      </div>
+        <$JSX $I='@material-ui/core.Box'
+          flexGrow={1}
+          >
+        </$JSX>
+        <$JSX $I="@material-ui/core.IconButton"
+        ref={columnIconRef}
+          size="medium"
+          color={props.color}
+          className={tableStyles.tool}
+          style={{boxShadow: 'none'}}
+          onClick={e => {
+            // setAnchorEl(e.target)
+            setAnchorEl(columnIconRef.current)
+          }}
+          >
+          <$JSX $I="@material-ui/icons.ViewColumnOutlined" />
+        </$JSX>
+        <$JSX $I='@material-ui/core.Popover'
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          id="column-selector-${input.name}"
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={e => setAnchorEl(null)}
+        >
+          {
+            allColumns.map(column => (
+              <$JSX $I='@material-ui/core.ListItem'
+                  key={column.id}
+                  dense={true}
+                  button={true}
+                >
+                <$JSX $I='@material-ui/core.FormControlLabel'
+                  control={
+                    <$JSX $I='@material-ui/core.Checkbox'
+                        size="small"
+                        {...column.getToggleHiddenProps()}
+                    />
+                  }
+                  label={column.Header || column.id}
+                />
+              </$JSX>
+            ))
+          }
+        </$JSX>
+      </$JSX>
       <div
           {...getTableProps()}
           className={tableStyles.table}
           // stickyHeader={true}
         >
-        <div>
+        <div
+          className={tableStyles.thead}
+          >
           {
             headerGroups.map(headerGroup => {
               return (
@@ -379,7 +440,7 @@ function react_table(js_context, ref, input) {
             className={tableStyles.tbody}
           >
           {
-            rows.map((row, index) => {
+            page.map((row, index) => {
               prepareRow(row)
               return (
                 <div
@@ -405,7 +466,9 @@ function react_table(js_context, ref, input) {
             })
           }
         </div>
-        <div>
+        <div
+          className={tableStyles.thead}
+          >
           {
             footerGroups.map(footerGroup => {
               return (
@@ -433,6 +496,45 @@ function react_table(js_context, ref, input) {
           }
         </div>
       </div>
+      <$JSX $I='@material-ui/core.Toolbar'
+        disableGutters={true}
+        >
+        <$JSX $I='@material-ui/core.Typography'
+          className={tableStyles.tool}
+          variant="body2"
+          >
+          Showing {rows.length} out of {data.length} rows
+        </$JSX>
+        <$JSX $I='@material-ui/core.Box'
+          flexGrow={1}
+          >
+        </$JSX>
+        <$JSX $I='@material-ui/core.TextField'
+          size="small"
+          select={true}
+          value={pageSize}
+          className={tableStyles.tool}
+          onChange={e => setPageSize(e.target.value)}
+          >
+          <$JSX $I='@material-ui/core.ListItem' value={2}>2 per page</$JSX>
+          <$JSX $I='@material-ui/core.ListItem' value={10}>10 per page</$JSX>
+          <$JSX $I='@material-ui/core.ListItem' value={20}>20 per page</$JSX>
+          <$JSX $I='@material-ui/core.ListItem' value={50}>50 per page</$JSX>
+          <$JSX $I='@material-ui/core.ListItem' value={100}>100 per page</$JSX>
+        </$JSX>
+        <$JSX $I='@material-ui/lab.Pagination'
+          className={tableStyles.tool}
+          color={props.color}
+          count={pageCount}
+          showFirstButton={true}
+          showLastButton={true}
+          page={pageIndex+1}
+          onChange={(event, value) => {
+            gotoPage(value-1)
+          }}
+          >
+        </$JSX>
+      </$JSX>
     </div>
   `
 
@@ -458,13 +560,31 @@ function react_table(js_context, ref, input) {
         )
         // prepare props
         const columns = $I('react.useMemo')(() => columnExpression, [])
-        const data = $I('react.useMemo')(() => dataExpression, [dataExpression])
+        const dataExpr = $I('react.useMemo')(() => dataExpression, [dataExpression])
         // useTable hook
+        const useTableProps = $I('react-table.useTable') (
+          {
+            columns,
+            data: dataExpr,
+            defaultColumn,
+            initialState: { pageSize: 10 },
+          },
+          $I('react-table.useFilters'),
+          $I('react-table.useGlobalFilter'),
+          $I('react-table.useSortBy'),
+          $I('react-table.useResizeColumns'),
+          $I('react-table.useFlexLayout'),
+          $I('react-table.usePagination'),
+          $I('react-table.useRowSelect'),
+        )
+        console.log('useTableProps', useTableProps)
         const {
           getTableProps,
           getTableBodyProps,
           headerGroups,
           footerGroups,
+          data,
+          page,
           rows,
           prepareRow,
           state,
@@ -475,19 +595,19 @@ function react_table(js_context, ref, input) {
           preGlobalFilteredRows,
           setGlobalFilter,
           resetResizing,
-        } = $I('react-table.useTable') (
-          {
-            columns,
-            data,
-            defaultColumn,
-          },
-          $I('react-table.useFilters'),
-          $I('react-table.useGlobalFilter'),
-          $I('react-table.useSortBy'),
-          $I('react-table.useResizeColumns'),
-          $I('react-table.useFlexLayout'),
-          $I('react-table.useRowSelect'),
-        )
+          canPreviousPage,
+          canNextPage,
+          pageOptions,
+          pageCount,
+          gotoPage,
+          nextPage,
+          previousPage,
+          setPageSize,
+          state: { pageIndex, pageSize },
+        } = useTableProps
+        // menu and anchorEl
+        const columnIconRef = React.createRef()
+        const [anchorEl, setAnchorEl] = React.useState(null)
         // return
         return (
           ${tableElement}

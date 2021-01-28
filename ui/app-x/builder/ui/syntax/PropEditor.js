@@ -1067,7 +1067,7 @@ const PropEditor = (props) => {
                         className={styles.formControl}
                         >
                         <FormHelperText>
-                          { `${childSpec.desc || childSpec.name} is overriden by child node` }
+                          { `* ${childSpec.desc || childSpec.name} is overriden by child` }
                         </FormHelperText>
                       </Box>
                     )

@@ -112,6 +112,9 @@ const GlobalStyleProvider = (props) => {
       'h6': {
         color: theme?.palette?.text?.primary,
       },
+      '.MuiInput-marginDense': {
+        fontSize: '0.9rem',
+      },
       '.ant-tabs-content': {
         height: '100%', // fix ant tabs
       },
@@ -125,16 +128,16 @@ const GlobalStyleProvider = (props) => {
       //   color: theme?.palette.text.primary,
       // },
       '.ant-btn': {
-        color: theme?.palette.text.secondary,
+        color: theme?.palette.text.primary,
         backgroundColor: 'inherit',
         borderColor: theme?.palette.action.selected,
         '&:hover': {
-          color: theme?.palette.text.secondary,
+          color: theme?.palette.text.primary,
           backgroundColor: theme?.palette.action.selected,
           borderColor: theme?.palette.text.secondary,
         },
         '&:focus': {
-          color: theme?.palette.text.secondary,
+          color: theme?.palette.text.primary,
           backgroundColor: theme?.palette.action.selected,
           borderColor: theme?.palette.text.secondary,
         },
