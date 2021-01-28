@@ -318,18 +318,35 @@ function react_table(js_context, ref, input) {
           flexGrow={1}
           >
         </$JSX>
-        <$JSX $I="@material-ui/core.IconButton"
-        ref={columnIconRef}
-          size="medium"
-          color={props.color}
+        <$JSX $I='@material-ui/core.Box'
+          display='flex'
           className={tableStyles.tool}
-          style={{boxShadow: 'none'}}
-          onClick={e => {
-            // setAnchorEl(e.target)
-            setAnchorEl(columnIconRef.current)
-          }}
           >
-          <$JSX $I="@material-ui/icons.ViewColumnOutlined" />
+          <$JSX $I="react-csv.CSVLink"
+            filename={"${input.name}.csv"}
+            data={rows.map(row => allColumns.map(column => column.accessor(row.original)?.replaceAll('"', '""')))}
+            headers={allColumns.map(column => column.Header || column.id)}
+            >
+            <$JSX $I="@material-ui/core.IconButton"
+              size="medium"
+              color={props.color}
+              style={{boxShadow: 'none'}}
+              >
+              <$JSX $I="@material-ui/icons.GetAppOutlined" />
+            </$JSX>
+          </$JSX>
+          <$JSX $I="@material-ui/core.IconButton"
+            ref={columnIconRef}
+            size="medium"
+            color={props.color}
+            style={{boxShadow: 'none'}}
+            onClick={e => {
+              // setAnchorEl(e.target)
+              setAnchorEl(columnIconRef.current)
+            }}
+            >
+            <$JSX $I="@material-ui/icons.ViewColumnOutlined" />
+          </$JSX>
         </$JSX>
         <$JSX $I='@material-ui/core.Popover'
           anchorEl={anchorEl}
@@ -577,7 +594,7 @@ function react_table(js_context, ref, input) {
           $I('react-table.usePagination'),
           $I('react-table.useRowSelect'),
         )
-        console.log('useTableProps', useTableProps)
+        // console.log('useTableProps', useTableProps)
         const {
           getTableProps,
           getTableBodyProps,
@@ -608,6 +625,7 @@ function react_table(js_context, ref, input) {
         // menu and anchorEl
         const columnIconRef = React.createRef()
         const [anchorEl, setAnchorEl] = React.useState(null)
+        // console.log('rows', rows, 'allColumns', allColumns)
         // return
         return (
           ${tableElement}

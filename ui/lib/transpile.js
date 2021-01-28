@@ -35,6 +35,7 @@ const default_import_maps = {
         "react-table",
         "react-grid-layout",
         "react-helmet",
+        "react-csv",
         "react-feather",
         // "monaco-editor",
         "@monaco-editor/react",

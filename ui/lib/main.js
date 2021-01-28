@@ -23,6 +23,7 @@ import react_grid_layout_css from 'react-grid-layout/css/styles.css'
 import react_resizable_css from 'react-resizable/css/styles.css'
 // react utilities
 import * as reactHelmet from 'react-helmet'
+import * as reactCsv from 'react-csv'
 // editor
 // import * as monacoEditor from 'monaco-editor'
 import * as monacoEditorReact from '@monaco-editor/react'
@@ -60,6 +61,7 @@ export default {
   // "react_resizable_css": react_resizable_css,
   // react utilities
   "react-helmet": reactHelmet,
+  "react-csv": reactCsv,
   // "react-feather": reactFeather,
   // "monaco-editor": monacoEditor,
   "@monaco-editor/react": monacoEditorReact,
