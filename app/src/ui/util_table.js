@@ -266,7 +266,7 @@ function react_table(js_context, ref, input) {
       }, 500)
 
       return (
-        <$JSX $I="@material-ui/core.TextField"
+        <$J $I="@material-ui/core.TextField"
               className={className}
               size="small"
               value={value || ""}
@@ -276,9 +276,9 @@ function react_table(js_context, ref, input) {
               }}
               InputProps={{
                 startAdornment:
-                  <$JSX $I="@material-ui/core.InputAdornment" position="start">
-                    <$JSX $I="@material-ui/icons.SearchOutlined" fontSize="small" />
-                  </$JSX>
+                  <$J $I="@material-ui/core.InputAdornment" position="start">
+                    <$J $I="@material-ui/icons.SearchOutlined" fontSize="small" />
+                  </$J>
               }}
               // helperText={\`Search \${count} records...\`}
         />
@@ -294,7 +294,7 @@ function react_table(js_context, ref, input) {
       const count = preFilteredRows.length
 
       return (
-        <$JSX $I="@material-ui/core.TextField"
+        <$J $I="@material-ui/core.TextField"
             fullWidth={true}
             size="small"
             value={filterValue || ''}
@@ -313,25 +313,25 @@ function react_table(js_context, ref, input) {
           {...propsExpression}
           style={styleExpression}
       >
-      <$JSX $I='@material-ui/core.Toolbar'
+      <$J $I='@material-ui/core.Toolbar'
         disableGutters={true}
         >
-        <$JSX $L="GlobalFilter"
+        <$J $L="GlobalFilter"
               preGlobalFilteredRows={preGlobalFilteredRows}
               globalFilter={state.globalFilter}
               setGlobalFilter={setGlobalFilter}
               className={tableStyles.tool}
           >
-        </$JSX>
-        <$JSX $I='@material-ui/core.Box'
+        </$J>
+        <$J $I='@material-ui/core.Box'
           flexGrow={1}
           >
-        </$JSX>
-        <$JSX $I='@material-ui/core.Box'
+        </$J>
+        <$J $I='@material-ui/core.Box'
           display='flex'
           className={tableStyles.tool}
           >
-          <$JSX $I="react-csv.CSVLink"
+          <$J $I="react-csv.CSVLink"
             filename={"${input.name}.csv"}
             data={rows.map(row => allColumns.map(column => {
               const result = column.accessor(row.original)
@@ -344,15 +344,15 @@ function react_table(js_context, ref, input) {
             )}
             headers={allColumns.map(column => column.Header || column.id)}
             >
-            <$JSX $I="@material-ui/core.IconButton"
+            <$J $I="@material-ui/core.IconButton"
               size="medium"
               color={props.color}
               style={{boxShadow: 'none'}}
               >
-              <$JSX $I="@material-ui/icons.GetAppOutlined" />
-            </$JSX>
-          </$JSX>
-          <$JSX $I="@material-ui/core.IconButton"
+              <$J $I="@material-ui/icons.GetAppOutlined" />
+            </$J>
+          </$J>
+          <$J $I="@material-ui/core.IconButton"
             ref={columnIconRef}
             size="medium"
             color={props.color}
@@ -362,10 +362,10 @@ function react_table(js_context, ref, input) {
               setAnchorEl(columnIconRef.current)
             }}
             >
-            <$JSX $I="@material-ui/icons.ViewColumnOutlined" />
-          </$JSX>
-        </$JSX>
-        <$JSX $I='@material-ui/core.Popover'
+            <$J $I="@material-ui/icons.ViewColumnOutlined" />
+          </$J>
+        </$J>
+        <$J $I='@material-ui/core.Popover'
           anchorEl={anchorEl}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -376,25 +376,25 @@ function react_table(js_context, ref, input) {
         >
           {
             allColumns.map(column => (
-              <$JSX $I='@material-ui/core.ListItem'
+              <$J $I='@material-ui/core.ListItem'
                   key={column.id}
                   dense={true}
                   button={true}
                 >
-                <$JSX $I='@material-ui/core.FormControlLabel'
+                <$J $I='@material-ui/core.FormControlLabel'
                   control={
-                    <$JSX $I='@material-ui/core.Checkbox'
+                    <$J $I='@material-ui/core.Checkbox'
                         size="small"
                         {...column.getToggleHiddenProps()}
                     />
                   }
                   label={column.Header || column.id}
                 />
-              </$JSX>
+              </$J>
             ))
           }
-        </$JSX>
-      </$JSX>
+        </$J>
+      </$J>
       <div
           {...getTableProps()}
           className={tableStyles.table}
@@ -417,7 +417,7 @@ function react_table(js_context, ref, input) {
                             {...column.getHeaderProps()}
                             className={tableStyles.th}
                           >
-                          <$JSX $I="@material-ui/core.Box"
+                          <$J $I="@material-ui/core.Box"
                               display="flex"
                               justifyContent="center"
                               // {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -432,20 +432,20 @@ function react_table(js_context, ref, input) {
                               (
                                 column.isSortedDesc
                                 ? <div className={tableStyles.sorter}>
-                                    <$JSX $I="@material-ui/icons.ExpandMore" />
+                                    <$J $I="@material-ui/icons.ExpandMore" />
                                   </div>
                                 : <div className={tableStyles.sorter}>
-                                    <$JSX $I="@material-ui/icons.ExpandLess" />
+                                    <$J $I="@material-ui/icons.ExpandLess" />
                                   </div>
                               )
                             }
-                          </$JSX>
+                          </$J>
                           <div>
                           {
                             column.canFilter ? column.render('Filter') : null
                           }
                           </div>
-                          <$JSX $I="@material-ui/core.Divider"
+                          <$J $I="@material-ui/core.Divider"
                               orientation="vertical"
                               flexItem
                           />
@@ -530,32 +530,32 @@ function react_table(js_context, ref, input) {
           }
         </div>
       </div>
-      <$JSX $I='@material-ui/core.Toolbar'
+      <$J $I='@material-ui/core.Toolbar'
         disableGutters={true}
         >
-        <$JSX $I='@material-ui/core.Typography'
+        <$J $I='@material-ui/core.Typography'
           className={tableStyles.tool}
           variant="body2"
           >
           Showing {rows.length} of {data.length} rows
-        </$JSX>
-        <$JSX $I='@material-ui/core.Box'
+        </$J>
+        <$J $I='@material-ui/core.Box'
           flexGrow={1}
           >
-        </$JSX>
-        <$JSX $I='@material-ui/core.TextField'
+        </$J>
+        <$J $I='@material-ui/core.TextField'
           size="small"
           select={true}
           value={pageSize}
           className={tableStyles.tool}
           onChange={e => setPageSize(e.target.value)}
           >
-          <$JSX $I='@material-ui/core.ListItem' value={10}>10 per page</$JSX>
-          <$JSX $I='@material-ui/core.ListItem' value={20}>20 per page</$JSX>
-          <$JSX $I='@material-ui/core.ListItem' value={50}>50 per page</$JSX>
-          <$JSX $I='@material-ui/core.ListItem' value={100}>100 per page</$JSX>
-        </$JSX>
-        <$JSX $I='@material-ui/lab.Pagination'
+          <$J $I='@material-ui/core.ListItem' value={10}>10 per page</$J>
+          <$J $I='@material-ui/core.ListItem' value={20}>20 per page</$J>
+          <$J $I='@material-ui/core.ListItem' value={50}>50 per page</$J>
+          <$J $I='@material-ui/core.ListItem' value={100}>100 per page</$J>
+        </$J>
+        <$J $I='@material-ui/lab.Pagination'
           className={tableStyles.tool}
           color={props.color}
           count={pageCount}
@@ -566,8 +566,8 @@ function react_table(js_context, ref, input) {
             gotoPage(value-1)
           }}
           >
-        </$JSX>
-      </$JSX>
+        </$J>
+      </$J>
     </div>
   `
 

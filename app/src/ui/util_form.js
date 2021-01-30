@@ -453,7 +453,7 @@ function input_text(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $I='@material-ui/core.TextField'
+    <$J $I='@material-ui/core.TextField'
       // {...restProps}
       name={name}
       type="${inputType}"
@@ -471,7 +471,7 @@ function input_text(js_context, ref, input) {
       error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
       helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message}
       >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -481,7 +481,7 @@ function input_text(js_context, ref, input) {
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
-          <$JSX $I='antd.AutoComplete'
+          <$J $I='antd.AutoComplete'
             name={name}
             style={{width:'100%'}}
             options={_searchSuggestions}
@@ -507,7 +507,7 @@ function input_text(js_context, ref, input) {
             {
               ${innerElement}
             }
-          </$JSX>
+          </$J>
         )
       })()
     `
@@ -516,7 +516,7 @@ function input_text(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $I='react-hook-form.Controller'
+    <$J $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -524,11 +524,11 @@ function input_text(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $I='@material-ui/core.Box'
+        <$J $I='@material-ui/core.Box'
           style={style}
           {...restProps}
           >
-          <$JSX $I='@material-ui/core.FormControl'
+          <$J $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -536,27 +536,27 @@ function input_text(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $I='@material-ui/core.Box'
+                <$J $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $I='@material-ui/core.InputLabel'
+                  <$J $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}
                   >
                     { props.label }
-                  </$JSX>
-                </$JSX>
+                  </$J>
+                </$J>
               )
             }
             {
               ${innerElement}
             }
-          </$JSX>
-        </$JSX>
+          </$J>
+        </$J>
       )}
     >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -751,7 +751,7 @@ function input_text_array(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // innerElement
   let innerElement = `
-    <$JSX $I='@material-ui/core.TextField'
+    <$J $I='@material-ui/core.TextField'
       // {...restProps}
       name={\`\${name}[\${index}].value\`}
       type="${inputType}"
@@ -769,7 +769,7 @@ function input_text_array(js_context, ref, input) {
       error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), \`\${name}[\${index}].value\`)}
       helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), \`\${name}[\${index}].value\`)?.message}
       >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -779,7 +779,7 @@ function input_text_array(js_context, ref, input) {
       (() => {
         const [ _searchSuggestions, _setSearchSuggestions ] = $I('react.useState')(props.options)
         return (
-          <$JSX $I='antd.AutoComplete'
+          <$J $I='antd.AutoComplete'
             options={_searchSuggestions}
             name={\`\${name}[\${index}].value\`}
             value={innerProps.value}
@@ -804,7 +804,7 @@ function input_text_array(js_context, ref, input) {
             {
               ${innerElement}
             }
-          </$JSX>
+          </$J>
         )
       })()
     `
@@ -813,7 +813,7 @@ function input_text_array(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $I='@material-ui/core.Box'
+    <$J $I='@material-ui/core.Box'
       {...restProps}
       style={style}
       >
@@ -821,13 +821,13 @@ function input_text_array(js_context, ref, input) {
         !!props?.label
         &&
         (
-          <$JSX $I='@material-ui/core.InputLabel'
+          <$J $I='@material-ui/core.InputLabel'
             key="label"
             shrink={true}
             required={${required}}
           >
             { props.label }
-          </$JSX>
+          </$J>
         )
       }
       {
@@ -835,12 +835,12 @@ function input_text_array(js_context, ref, input) {
         fields
           .map((item, index) => {
             return (
-              <$JSX $I='@material-ui/core.Box'
+              <$J $I='@material-ui/core.Box'
                 key={item.id}
                 display="flex"
                 style={{width:'100%'}}
               >
-                <$JSX $I='react-hook-form.Controller'
+                <$J $I='react-hook-form.Controller'
                   key={item.id}
                   name={\`\${name}[\${index}].value\`}
                   constrol={$L('${qualifiedName}.control')}
@@ -848,27 +848,27 @@ function input_text_array(js_context, ref, input) {
                   defaultValue={item.value}
                   rules={rules}
                   render={innerProps => (
-                    <$JSX $I='@material-ui/core.FormControl'
+                    <$J $I='@material-ui/core.FormControl'
                       style={{width:'100%'}}
                       error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
                       >
                       {
                         ${innerElement}
                       }
-                    </$JSX>
+                    </$J>
                   )}
                 >
-                </$JSX>
+                </$J>
                 {
                   !props.readOnly
                   &&
                   (
-                    <$JSX $I='@material-ui/core.Box'
+                    <$J $I='@material-ui/core.Box'
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                       >
-                      <$JSX $I='@material-ui/core.IconButton'
+                      <$J $I='@material-ui/core.IconButton'
                         key="remove"
                         aria-label="Remove"
                         size={props.size}
@@ -879,12 +879,12 @@ function input_text_array(js_context, ref, input) {
                           }
                         }}
                         >
-                        <$JSX $I='@material-ui/icons.RemoveCircleOutline' />
-                      </$JSX>
-                    </$JSX>
+                        <$J $I='@material-ui/icons.RemoveCircleOutline' />
+                      </$J>
+                    </$J>
                   )
                 }
-              </$JSX>
+              </$J>
             )
           })
       }
@@ -892,7 +892,7 @@ function input_text_array(js_context, ref, input) {
         !props.readOnly
         &&
         (
-          <$JSX $I='@material-ui/core.IconButton'
+          <$J $I='@material-ui/core.IconButton'
             key="add"
             aria-label="Add"
             size={props.size}
@@ -905,11 +905,11 @@ function input_text_array(js_context, ref, input) {
               // }
             }}
             >
-            <$JSX $I='@material-ui/icons.AddCircleOutline' />
-          </$JSX>
+            <$J $I='@material-ui/icons.AddCircleOutline' />
+          </$J>
         )
       }
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -1119,7 +1119,7 @@ function input_switch(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $I='@material-ui/core.Switch'
+    <$J $I='@material-ui/core.Switch'
       // {...restProps}
       name={name}
       // style={{width:'100%'}}
@@ -1134,13 +1134,13 @@ function input_switch(js_context, ref, input) {
       // error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
       // helperText={$I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message}
       >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $I='react-hook-form.Controller'
+    <$J $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -1148,11 +1148,11 @@ function input_switch(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $I='@material-ui/core.Box'
+        <$J $I='@material-ui/core.Box'
           {...restProps}
           style={style}
           >
-          <$JSX $I='@material-ui/core.FormControl'
+          <$J $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -1160,17 +1160,17 @@ function input_switch(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $I='@material-ui/core.Box'
+                <$J $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $I='@material-ui/core.InputLabel'
+                  <$J $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}
                   >
                     { props.label }
-                  </$JSX>
-                </$JSX>
+                  </$J>
+                </$J>
               )
             }
             {
@@ -1179,17 +1179,17 @@ function input_switch(js_context, ref, input) {
             {
               !!$I('lodash.default').get($L('${qualifiedName}.errors'), name)
               &&
-              <$JSX $I='@material-ui/core.FormHelperText'>
+              <$J $I='@material-ui/core.FormHelperText'>
                 {
                   $I('lodash.default').get($L('${qualifiedName}.errors'), name)?.message
                 }
-              </$JSX>
+              </$J>
             }
-          </$JSX>
-        </$JSX>
+          </$J>
+        </$J>
       )}
     >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
@@ -1382,7 +1382,7 @@ function input_select(js_context, ref, input) {
   //////////////////////////////////////////////////////////////////////
   // TextField
   let innerElement = `
-    <$JSX $I='@material-ui/core.TextField'
+    <$J $I='@material-ui/core.TextField'
       // {...restProps}
       name={name}
       select={true}
@@ -1405,23 +1405,23 @@ function input_select(js_context, ref, input) {
         (
           props.options.map(option => {
             return (
-              <$JSX $I='@material-ui/core.MenuItem'
+              <$J $I='@material-ui/core.MenuItem'
                 key={option.value}
                 value={option.value}
                 >
                 { option.value }
-              </$JSX>
+              </$J>
             )
           })
         )
       }
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////
   // control element
   const controlElement = `
-    <$JSX $I='react-hook-form.Controller'
+    <$J $I='react-hook-form.Controller'
       key={name}
       name={name}
       required={${required}}
@@ -1429,11 +1429,11 @@ function input_select(js_context, ref, input) {
       defaultValue={$P('props.defaultValue')}
       rules={rules}
       render={innerProps => (
-        <$JSX $I='@material-ui/core.Box'
+        <$J $I='@material-ui/core.Box'
           {...restProps}
           style={style}
           >
-          <$JSX $I='@material-ui/core.FormControl'
+          <$J $I='@material-ui/core.FormControl'
             style={{width:'100%'}}
             error={!!$I('lodash.default').get($L('${qualifiedName}.errors'), name)}
             >
@@ -1441,27 +1441,27 @@ function input_select(js_context, ref, input) {
               !!props?.label
               &&
               (
-                <$JSX $I='@material-ui/core.Box'
+                <$J $I='@material-ui/core.Box'
                   style={{width: '100%', paddingBottom: '16px'}}
                   >
-                  <$JSX $I='@material-ui/core.InputLabel'
+                  <$J $I='@material-ui/core.InputLabel'
                     key="label"
                     shrink={true}
                     required={${required}}
                     >
                     { props.label }
-                  </$JSX>
-                </$JSX>
+                  </$J>
+                </$J>
               )
             }
             {
               ${innerElement}
             }
-          </$JSX>
-        </$JSX>
+          </$J>
+        </$J>
       )}
     >
-    </$JSX>
+    </$J>
   `
 
   //////////////////////////////////////////////////////////////////////

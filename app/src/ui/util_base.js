@@ -12,7 +12,7 @@ const INPUT_REQUIRED = 'INPUT_REQUIRED'
 
 const TOKEN_IMPORT = '$I'
 const TOKEN_LOCAL = '$L'
-const TOKEN_JSX = '$JSX'
+const TOKEN_JSX = '$J'
 const TOKEN_PARSED = '$P'
 
 ////////////////////////////////////////////////////////////////////////////////
