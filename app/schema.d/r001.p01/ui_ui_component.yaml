@@ -245,6 +245,14 @@ ui_component:
               data: theme.palette.background.paper
             height: 100%
             width: 300
+          root:
+            height: 100%
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
         mobileNav:
           _type: react/context
           _order: 3
@@ -263,6 +271,8 @@ ui_component:
                   name: self/page/Header
             - _type: react/element
               name: antd.Layout.Content
+              style:
+                height: '100%'
               children:
                 - _type: react/element
                   name: antd.Layout
@@ -1134,7 +1144,7 @@ ui_component:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_component_name: /TextTable
+      ui_component_name: /TableTest
       ui_component_type: react/component
       ui_component_spec:
         ...apiList:
