@@ -395,7 +395,47 @@ const InputFieldArray = ((props) => {
                           </FormControl>
                         </Box>
                       )
-                    } else {
+                    }
+                    else if
+                    (
+                      inputSpec.variant === 'number'
+                    )
+                    {
+                      return (
+                        <FormControl
+                          name={itemName}
+                          size={props.size}
+                          margin={props.margin}
+                          className={styles.itemControl}
+                          error={!!_.get(errors, name)}
+                          >
+                          <TextField
+                            label={null}
+                            name={itemName}
+                            value={innerProps.value}
+                            disabled={!!props.disabled}
+                            required={!!childSpec.required}
+                            size={props.size}
+                            onChange={e => {
+                              let value = parseInt(e.target.value)
+                              if (e.target.value === '') {
+                                value = ''
+                              } else if (isNaN(value)) {
+                                value = NaN
+                              }
+                              innerProps.onChange(value)
+                              if (!!props.callback) {
+                                props.callback(value)
+                              }
+                            }}
+                            error={!!_.get(errors, itemName)}
+                            helperText={_.get(errors, itemName)?.message}
+                          />
+                        </FormControl>
+                      )
+                    }
+                    else
+                    {
                       return (
                         <FormControl
                           name={itemName}

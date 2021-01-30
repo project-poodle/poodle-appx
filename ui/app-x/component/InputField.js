@@ -501,12 +501,10 @@ const InputField = ((props) => {
                     margin={props.margin}
                     onChange={e => {
                       let value = parseInt(e.target.value)
-                      if (e.target.name === '') {
+                      if (e.target.value === '') {
                         value = ''
                       } else if (isNaN(value)) {
-                        value = e.target.value
-                      } else {
-                        value = String(value)
+                        value = NaN
                       }
                       innerProps.onChange(value)
                       if (!!props.callback) {

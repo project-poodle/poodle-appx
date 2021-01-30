@@ -90,6 +90,8 @@ function parse_tree_node(tree_context, treeNode) {
     }
   }
 
+  // console.log(`parse_tree_node`, treeNode)
+
   // child_context
   const child_context = {
     ...tree_context,
@@ -164,6 +166,10 @@ function parse_tree_node(tree_context, treeNode) {
       if (!childSpec?._thisNode) {
         return undefined
       }
+      // return undefined if not required
+      if (!childSpec.required && !nodeData) {
+        return undefined
+      }
       // sanity check
       if (!childSpec._thisNode.types) {
         throw new Error(`ERROR: childSpec._thisNode missing [types] [${JSON.stringify(childSpec._thisNode)}]`)
@@ -172,10 +178,6 @@ function parse_tree_node(tree_context, treeNode) {
       }
       // get a sane thisNodeSpec
       const thisNodeSpec = childSpec._thisNode
-      // return undefined if not required
-      if (!thisNodeSpec.required && !nodeData) {
-        return undefined
-      }
       // check if data matches spec
       const data_type = lookup_type_for_data(nodeData)
       const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
@@ -193,7 +195,6 @@ function parse_tree_node(tree_context, treeNode) {
       } else if (data_type === 'js/string') {
         return String(nodeData)
       } else if (data_type === 'js/number') {
-        console.log('js/number', nodeData)
         return Number(nodeData)
       } else if (data_type === 'js/boolean') {
         return Boolean(nodeData)
@@ -266,7 +267,7 @@ function parse_tree_node(tree_context, treeNode) {
         if (!!childSpec.array) {
           // if this node data
           // if (thisNode.data._type === 'js/function') {
-          //   console.log(`process array`, thisNode.data, _ref)
+          // console.log(`process array`, thisNode.data, _ref)
           // }
           if (_ref in thisNode.data && Array.isArray(thisNode.data[_ref])) {
             data = []
