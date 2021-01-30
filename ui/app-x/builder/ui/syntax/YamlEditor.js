@@ -143,7 +143,7 @@ const YamlEditor = props => {
       const resultTree = _.cloneDeep(treeData)
       const lookupNode = tree_lookup(resultTree, selectedKey)
       if (!!lookupNode) {
-        const js_context = { topLevel: false }
+        const js_context = { topLevel: treeNode?.data?._type === '/' }
         const parsed = generate_tree_node(
           js_context,
           {
@@ -153,7 +153,7 @@ const YamlEditor = props => {
           loaded
         )
 
-        console.log(`parsed`, parsed)
+        // console.log(`parsed`, parsed)
 
         if (treeNode?.data?._type === '/') {
 
@@ -198,11 +198,11 @@ const YamlEditor = props => {
             newExpandedKeys,
             lookupNode.key,   // update selected key
           )
-          // if we are successful, reset changed flag
-          setPropYamlDirty(false)
-          setYamlError(false)
-          setYamlMsg('')
         }
+        // if we are successful, reset changed flag
+        setPropYamlDirty(false)
+        setYamlError(false)
+        setYamlMsg('')
       }
     } catch (err) {
       // console.log(err)
