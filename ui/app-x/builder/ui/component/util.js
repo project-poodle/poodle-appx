@@ -116,16 +116,22 @@ function default_spec_for_type (type) {
       },
       styles: {
         _type: 'mui/style',
+        '@global': {
+          '#root': {
+            height: '100%',
+            width: '100%',
+          }
+        },
         root: {
           width: '100%',
           height: '100%',
           color: {
             _type: 'js/expression',
-            data: 'theme?.palette?.text.primary'
+            data: 'theme?.palette.text.primary'
           },
           backgroundColor: {
             _type: 'js/expression',
-            data: 'theme?.palette?.background.paper'
+            data: 'theme?.palette.background.paper'
           }
         }
       },
