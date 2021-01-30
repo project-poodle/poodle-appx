@@ -407,6 +407,7 @@ const SyntaxMoveDialog = (props) => {
               )
             }
             <Controller
+              key="_ref"
               name="_ref"
               control={control}
               defaultValue={props.moveDragNode?.data._ref}
@@ -472,11 +473,13 @@ const SyntaxMoveDialog = (props) => {
               }}
               render={innerProps =>
                 <Box
+                  key="_ref"
                   className={styles.formControl}
                   >
                   <FormControl
                     disabled={!!disabled["_ref"]}
                     style={{width:'100%'}}
+                    key="main"
                     >
                     <AutoSuggest
                       label="Reference"
@@ -502,7 +505,7 @@ const SyntaxMoveDialog = (props) => {
                     && !!props.moveDropParent?.data[nodeRef]
                     &&
                     (
-                      <FormHelperText style={{color: theme.palette.info.main}}>
+                      <FormHelperText key="help" style={{color: theme.palette.info.main}}>
                         { `This will override existing [ ${nodeRef} ] defined by parent` }
                       </FormHelperText>
                     )
@@ -511,6 +514,7 @@ const SyntaxMoveDialog = (props) => {
               }
             />
             <Controller
+              key="_type"
               name="_type"
               control={control}
               defaultValue={nodeType}
@@ -540,10 +544,11 @@ const SyntaxMoveDialog = (props) => {
               }}
               render={innerProps =>
                 (
-                  <FormControl className={styles.formControl}>
+                  <FormControl key="_type" className={styles.formControl}>
                     <TextField
                       label="Type"
                       select={true}
+                      key="_type"
                       name="_type"
                       value={innerProps.value}
                       required={true}
@@ -608,7 +613,7 @@ const SyntaxMoveDialog = (props) => {
                 // const childThisSpec = childSpec._thisNode
                 if (!!childSpec.array) {
                   return (
-                    <div style={{ display: 'none' }}>
+                    <div key={childSpec.name} style={{ display: 'none' }}>
                       <InputFieldArray
                         key={childSpec.name}
                         name={childSpec.name}
@@ -622,7 +627,7 @@ const SyntaxMoveDialog = (props) => {
                   )
                 } else {
                   return (
-                    <div style={{ display: 'none' }}>
+                    <div key={childSpec.name} style={{ display: 'none' }}>
                       <InputField
                         key={childSpec.name}
                         name={childSpec.name}
@@ -642,6 +647,7 @@ const SyntaxMoveDialog = (props) => {
           </DialogContent>
           <DialogActions>
             <Button
+              key="cancel"
               variant="outlined"
               onClick={
                 e => {
@@ -653,6 +659,7 @@ const SyntaxMoveDialog = (props) => {
               Cancel
             </Button>
             <Button
+              key="move"
               variant="contained"
               onClick={
                 e => {

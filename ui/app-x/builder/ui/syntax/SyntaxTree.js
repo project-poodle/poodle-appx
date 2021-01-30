@@ -724,7 +724,7 @@ const SyntaxTree = (props) => {
     const dropPos = info.node.pos.split('-')
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
 
-    console.log(`onDrop`, dragKey, dropKey, dropPosition, info.node.pos)
+    console.log(`onDrop`, info.dragNode.key, info.dragNode.parentKey, dropKey, info.dropPosition, dropPosition, info.node.pos)
 
     // check for root
     if (dragKey === '/') {
@@ -799,25 +799,29 @@ const SyntaxTree = (props) => {
       })
       */
     } else {
-      let ar
-      let i
-      let t
+      // set dropParentKey variable
       tree_traverse(resultData, dropKey, (item, index, arr) => {
-        ar = arr
-        i = index
-        t = item
+        dropParentKey = item.parentKey
       })
-      if (dropPosition === -1) {
-        dropParentKey = t.parentKey
-        dropFunc = () => {
+      // dropFunc
+      dropFunc = () => {
+        let ar
+        let i
+        let t
+        tree_traverse(resultData, dropKey, (item, index, arr) => {
+          ar = arr
+          i = index
+          t = item
+        })
+        if (dropPosition === -1) {
+          dropParentKey = t.parentKey
           dragObj.parentKey = t.parentKey
           ar.splice(i, 0, dragObj)
-        }
-      } else {
-        dropParentKey = t.parentKey
-        dropFunc = () => {
+        } else {
+          dropParentKey = t.parentKey
           dragObj.parentKey = t.parentKey
           ar.splice(i + 1, 0, dragObj)
+          // ar.splice(i, 0, dragObj)
         }
       }
     }
