@@ -323,7 +323,7 @@ const SyntaxAddDialog = (props) => {
     )
     // console.log(nodeRef, nodeParent, new_node)
     // insert to proper location
-    if (lookupParent) {
+    if (!!lookupParent) {
       if ('_pos' in nodeData) {
         let count = 0
         let found = false
@@ -352,8 +352,8 @@ const SyntaxAddDialog = (props) => {
       }
       reorder_children(lookupParent)
     } else {
-      // add to the root as first component
-      resultTree.splice(1, 0, new_node)
+      // add to the root at desiginated position
+      resultTree.splice(Number(nodeData._pos) + 1, 0, new_node)
     }
     // process expanded keys
     const newExpandedKeys = _.cloneDeep(expandedKeys)
@@ -741,6 +741,64 @@ const SyntaxAddDialog = (props) => {
                                 </Typography>
                               </MenuItem>
                             ))
+                          }
+                        </TextField>
+                      </FormControl>
+                    )
+                  }
+                />
+              )
+            }
+            {
+              (
+                props.addNodeParent?.key === '/'
+              )
+              &&
+              (
+                <Controller
+                  name="_pos"
+                  control={control}
+                  defaultValue={0}
+                  render={innerProps =>
+                    (
+                      <FormControl className={styles.formControl}>
+                        <TextField
+                          label="Position"
+                          select={true}
+                          name="_pos"
+                          value={innerProps.value}
+                          size="small"
+                          onChange={innerProps.onChange}
+                          error={!!errors._pos}
+                          helperText={errors._pos?.message}
+                          >
+                          <MenuItem
+                            key={0}
+                            value={0}
+                            >
+                            <ListItemIcon>
+                              <PlusOutlined />
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap={true}>
+                              Add at Beginning
+                            </Typography>
+                          </MenuItem>
+                          {
+                            treeData
+                              .filter(child => child.key !== '/')
+                              .map((child, index) => (
+                                <MenuItem
+                                  key={`${index+1}`}
+                                  value={index+1}
+                                  >
+                                  <ListItemIcon>
+                                    { lookup_icon_for_type(child.data?._type) }
+                                  </ListItemIcon>
+                                  <Typography variant="inherit" noWrap={true}>
+                                    Add after [{ lookup_title_for_input(child.data._ref, child.data) }]
+                                  </Typography>
+                                </MenuItem>
+                              ))
                           }
                         </TextField>
                       </FormControl>
