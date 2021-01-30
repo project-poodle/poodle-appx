@@ -265,7 +265,7 @@ const SyntaxTree = (props) => {
         },
         filtered
       )
-      console.log(`loaded treeData`, loadedTree)
+      console.log(`INFO: syntax tree loaded`, loadedTree)
 
       const parsedTest = !!spec_data._test
         ? spec_data._test
@@ -724,7 +724,7 @@ const SyntaxTree = (props) => {
     const dropPos = info.node.pos.split('-')
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
 
-    console.log(`onDrop`, info.dragNode.key, info.dragNode.parentKey, dropKey, info.dropPosition, dropPosition, info.node.pos)
+    // console.log(`onDrop`, info.dragNode.key, info.dragNode.parentKey, dropKey, info.dropPosition, dropPosition, info.node.pos)
 
     // check for root
     if (dragKey === '/') {
