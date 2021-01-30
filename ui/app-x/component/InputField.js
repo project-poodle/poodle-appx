@@ -147,7 +147,7 @@ const InputField = ((props) => {
       name={name}
       control={control}
       key={name}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || ''}
       rules={(() => {
         let count = 0
         const result = { validate: {} }

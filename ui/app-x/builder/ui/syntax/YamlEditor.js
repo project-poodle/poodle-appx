@@ -153,6 +153,8 @@ const YamlEditor = props => {
           loaded
         )
 
+        console.log(`parsed`, parsed)
+
         if (treeNode?.data?._type === '/') {
 
           // replace the entire tree
@@ -164,27 +166,36 @@ const YamlEditor = props => {
           )
 
         } else {
-          // preserve data._ref
+          // preserve data._ref, data._array, etc.
           parsed.data._ref = lookupNode.data._ref
-          // check if parent is js/switch
-          const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-          if (lookupParent?.data?._type === 'js/switch') {
-            // if yes, preserve condition
-            if (lookupNode?.data?._ref !== 'default') {
-              parsed.data.condition = lookupNode.data.condition
+          parsed.data._array = lookupNode.data._array
+          // the following can include condition for js/switch
+          Object.keys(lookupNode.data).map(key => {
+            if (! (key in parsed.data)) {
+              parsed.data[key] = lookupNode.data[key]
             }
-          }
+          })
+          // check if parent is js/switch
+          // const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
+          // if (lookupParent?.data?._type === 'js/switch') {
+          //   // if yes, preserve condition
+          //   if (lookupNode?.data?._ref !== 'default') {
+          //     parsed.data.condition = lookupNode.data.condition
+          //   }
+          // }
           lookupNode.key = parsed.key   // update node key
           lookupNode.data = parsed.data
           lookupNode.children = parsed.children
           lookupNode.title = lookup_title_for_input(lookupNode.data._ref, parsed.data)
           lookupNode.icon = lookup_icon_for_input(parsed.data)
           // lookupNode.parentKey = lookupNode.parentKey // no need to change parentKey
+          const newExpandedKeys = _.cloneDeep(expandedKeys)
+          newExpandedKeys.push(...js_context.expandedKeys)
           // console.log(lookupNode)
           makeDesignAction(
             `Replace [${lookupNode.title}]`,
             resultTree,
-            expandedKeys,
+            newExpandedKeys,
             lookupNode.key,   // update selected key
           )
           // if we are successful, reset changed flag
