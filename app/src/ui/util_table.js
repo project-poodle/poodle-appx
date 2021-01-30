@@ -74,15 +74,22 @@ function react_table(js_context, ref, input) {
   // process input expression
   const dataExpression = (() => {
     if (!!input.data) {
-      return js_process(              // process data if exists
-        {
-          ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
-        },
-        null,
-        input.data
-      )
+      if (typeof input.data === 'string') {
+        return _js_parse_expression(
+          js_context,
+          input.data
+        )
+      } else {
+        return js_process(              // process data if exists
+          {
+            ...js_context,
+            JSX_CONTEXT: false,
+            STATEMENT_CONTEXT: false,
+          },
+          null,
+          input.data
+        )
+      }
     } else {
       return t.arrayExpression([])
     }

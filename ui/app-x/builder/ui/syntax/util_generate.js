@@ -674,12 +674,12 @@ function generate_tree_node(js_context, conf, input) {
       const thisNodeSpec = childSpec._thisNode
       // check if data matches type spec
       const data_type = lookup_type_for_data(data)
-      const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
-      if (!type_matches_spec(data_type, typeSpec)) {
-        // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(typeSpec)}]`)
+      const thisTypeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
+      if (!type_matches_spec(data_type, thisTypeSpec)) {
+        // console.log(`thisNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(thisTypeSpec)}]`)
         return undefined
       } else {
-        // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(typeSpec)}]`)
+        // console.log(`thisNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisTypeSpec)}]`)
       }
       // add to current node
       if (!!thisNodeSpec.generate) {
@@ -711,12 +711,16 @@ function generate_tree_node(js_context, conf, input) {
       const childNodeSpec = childSpec._childNode
       // check if data matches spec
       const data_type = lookup_type_for_data(data)
-      const typeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
-      if (!type_matches_spec(data_type, typeSpec)) {
-        // console.log(`generate.childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(typeSpec)}]`)
+      const thisTypeSpec = childSpec._thisNode?.types === 'inherit' ? childSpec.types : childSpec._thisNode?.types
+      const childTypeSpec = childSpec._childNode.types === 'inherit' ? childSpec.types : childSpec._childNode.types
+      if (!!thisTypeSpec && type_matches_spec(data_type, thisTypeSpec)) {
+        // console.log(`thisNodeSpec already MATCH : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(thisTypeSpec)}]`)
+        return undefined
+      } else if (!type_matches_spec(data_type, childTypeSpec)) {
+        // console.log(`childNodeSpec NO MATCH : [${JSON.stringify(data)}] [${data_type}] not matching [${JSON.stringify(childTypeSpec)}]`)
         return undefined
       } else {
-        // console.log(`generate.childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(typeSpec)}]`)
+        // console.log(`childNodeSpec MATCHES : [${JSON.stringify(data)}] [${data_type}] matching [${JSON.stringify(childTypeSpec)}]`)
       }
       // generate function
       const generate = (data) => {

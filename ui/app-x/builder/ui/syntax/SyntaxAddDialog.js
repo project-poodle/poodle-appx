@@ -26,6 +26,7 @@ import {
   TextField,
   Switch,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import {
   AddCircleOutline,
@@ -96,7 +97,8 @@ import {
 
 // add dialog
 const SyntaxAddDialog = (props) => {
-
+  // theme
+  const theme = useTheme()
   // styles
   const styles = makeStyles((theme) => ({
     dialog: {
@@ -557,8 +559,8 @@ const SyntaxAddDialog = (props) => {
                     && !!props.addNodeParent?.data[nodeRef]
                     &&
                     (
-                      <FormHelperText>
-                        { `This will override parent [ ${nodeRef} ]` }
+                      <FormHelperText style={{color: theme.palette.info.main}}>
+                        { `This will override existing [ ${nodeRef} ] defined by parent` }
                       </FormHelperText>
                     )
                   }

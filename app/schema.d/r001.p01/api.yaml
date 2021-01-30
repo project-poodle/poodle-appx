@@ -957,6 +957,23 @@ api:
       app_rev: "default"
       obj_name: "api"
       api_method: "get"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/api"
+      api_spec:
+          permission: "app.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "obj"
+                  - obj: "app"
+                  - obj: "namespace"
+          doc:
+              desc: "list apis for :namespace / :app_name / :app_ver"
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "api"
+      api_method: "get"
       api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api"
       api_spec:
           permission: "app.read"

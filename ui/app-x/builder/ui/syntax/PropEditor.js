@@ -19,7 +19,8 @@ import {
   TextField,
   MenuItem,
   Divider,
-  makeStyles
+  makeStyles,
+  useTheme,
 } from '@material-ui/core'
 // ant design
 import {
@@ -89,6 +90,8 @@ const THIS_NODE_PROPERTIES = "_"
 let pendingTimer = new Date()
 
 const PropEditor = (props) => {
+  // theme
+  const theme = useTheme()
   // make styles
   const styles = makeStyles((theme) => ({
     root: {
@@ -1066,8 +1069,8 @@ const PropEditor = (props) => {
                       <Box
                         className={styles.formControl}
                         >
-                        <FormHelperText>
-                          { `* ${childSpec.desc || childSpec.name} is overriden by child` }
+                        <FormHelperText style={{color: theme.palette.info.main}}>
+                          { `${childSpec.desc || childSpec.name} is overriden by [${childSpec.name}] defined by child` }
                         </FormHelperText>
                       </Box>
                     )
