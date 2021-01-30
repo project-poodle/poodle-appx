@@ -1089,12 +1089,6 @@ ui_component:
                   Header: API Maps
                 - _type: table/column
                   id: action
-                  accessor:
-                    _type: js/function
-                    params:
-                      - row
-                    body:
-                      - return String(row.id)
                   Header: Action
                   Cell:
                     _type: react/element
@@ -1229,7 +1223,6 @@ ui_component:
                       })()
                 - _type: table/column
                   id: action
-                  accessor: id
                   Header: Action
                   Cell:
                     _type: react/element

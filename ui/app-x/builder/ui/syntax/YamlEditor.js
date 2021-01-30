@@ -213,7 +213,7 @@ const YamlEditor = props => {
       const ref = contentRef.current
       function resizeYamlEditor() {
         const node = ReactDOM.findDOMNode(ref)
-        console.log(node, node.offsetWidth, node.offsetHeight)
+        // console.log(node, node.offsetWidth, node.offsetHeight)
         setMaxHeight(node.offsetHeight)
       }
       // resize now
@@ -249,6 +249,7 @@ const YamlEditor = props => {
           <ControlledEditor
             className={styles.editor}
             maxHeight={maxHeight}
+            height={maxHeight}
             language="yaml"
             theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
             options={{

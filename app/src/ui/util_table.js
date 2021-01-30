@@ -334,7 +334,7 @@ function react_table(js_context, ref, input) {
           <$J $I="react-csv.CSVLink"
             filename={"${input.name}.csv"}
             data={rows.map(row => allColumns.map(column => {
-              const result = column.accessor(row.original)
+              const result = !!column.accessor ? column.accessor(row.original) : ''
               if (typeof result === 'string') {
                 return result.replaceAll('"', '""')
               } else {

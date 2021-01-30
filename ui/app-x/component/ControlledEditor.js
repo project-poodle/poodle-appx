@@ -65,7 +65,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
       _isControlledMode={true}
       {...props}
       width='100%'
-      height={!!props.maxHeight ? Math.min(props.maxHeight, rows * 18 + 4) : rows * 18 + 4 }
+      height={!!props.height ? props.height : !!props.maxHeight ? Math.min(props.maxHeight, rows * 18 + 4) : rows * 18 + 4 }
     />
   )
 }
