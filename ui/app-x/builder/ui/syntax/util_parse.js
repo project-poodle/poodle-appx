@@ -172,6 +172,10 @@ function parse_tree_node(tree_context, treeNode) {
       }
       // get a sane thisNodeSpec
       const thisNodeSpec = childSpec._thisNode
+      // return undefined if not required
+      if (!thisNodeSpec.required && !nodeData) {
+        return undefined
+      }
       // check if data matches spec
       const data_type = lookup_type_for_data(nodeData)
       const typeSpec = childSpec._thisNode.types === 'inherit' ? childSpec.types : childSpec._thisNode.types
@@ -189,6 +193,7 @@ function parse_tree_node(tree_context, treeNode) {
       } else if (data_type === 'js/string') {
         return String(nodeData)
       } else if (data_type === 'js/number') {
+        console.log('js/number', nodeData)
         return Number(nodeData)
       } else if (data_type === 'js/boolean') {
         return Boolean(nodeData)

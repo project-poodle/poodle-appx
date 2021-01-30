@@ -9,7 +9,8 @@ import {
 export const react_table = {
 
   type: 'table/column',
-  desc: 'Column Group',
+  desc: 'Table Column',
+  _expand: true,
   children: [
     {
       name: 'id',

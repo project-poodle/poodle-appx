@@ -825,6 +825,7 @@ const PropEditor = (props) => {
                           <InputField
                             key={custom.name}
                             name={custom.name}
+                            size="small"
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
                             inputSpec={custom.input}
@@ -857,6 +858,7 @@ const PropEditor = (props) => {
                           <InputField
                             key={custom.name}
                             name={custom.name}
+                            size="small"
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
                             inputSpec={custom.input}
@@ -1081,6 +1083,7 @@ const PropEditor = (props) => {
                       <InputFieldArray
                         key={childSpec.name}
                         name={childSpec.name}
+                        size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}
@@ -1096,6 +1099,7 @@ const PropEditor = (props) => {
                       <InputField
                         key={childSpec.name}
                         name={childSpec.name}
+                        size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={thisNode?.data[childSpec.name]}

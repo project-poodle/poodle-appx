@@ -217,6 +217,8 @@ function react_table(js_context, ref, input) {
       td: {
         margin: theme.spacing(0),
         padding: theme.spacing(1),
+        overflowY: 'auto',
+        overflowX: 'hidden',
         // borderRight: '1px solid black',
         // ':last-child': {
         //   borderRight: 0
@@ -527,7 +529,7 @@ function react_table(js_context, ref, input) {
           className={tableStyles.tool}
           variant="body2"
           >
-          Showing {rows.length} out of {data.length} rows
+          Showing {rows.length} of {data.length} rows
         </$JSX>
         <$JSX $I='@material-ui/core.Box'
           flexGrow={1}
@@ -540,7 +542,6 @@ function react_table(js_context, ref, input) {
           className={tableStyles.tool}
           onChange={e => setPageSize(e.target.value)}
           >
-          <$JSX $I='@material-ui/core.ListItem' value={2}>2 per page</$JSX>
           <$JSX $I='@material-ui/core.ListItem' value={10}>10 per page</$JSX>
           <$JSX $I='@material-ui/core.ListItem' value={20}>20 per page</$JSX>
           <$JSX $I='@material-ui/core.ListItem' value={50}>50 per page</$JSX>
