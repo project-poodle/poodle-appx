@@ -204,6 +204,7 @@ const YamlEditor = props => {
     }
   }
 
+  /*
   const contentRef = React.createRef()
   const [ maxHeight, setMaxHeight ] = useState(150)
   // resize listener
@@ -228,6 +229,7 @@ const YamlEditor = props => {
       })
     }
   }, [contentRef.current])
+  */
 
   // editor change
   const handleEditorChange = (ev, value) => {
@@ -243,13 +245,12 @@ const YamlEditor = props => {
       <Content
         >
         <Box
-          ref={contentRef}
+          // ref={contentRef}
           className={styles.editor}
           >
           <ControlledEditor
             className={styles.editor}
-            maxHeight={maxHeight}
-            height={maxHeight}
+            height='100%'
             language="yaml"
             theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
             options={{

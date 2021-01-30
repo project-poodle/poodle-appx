@@ -331,7 +331,7 @@ const InputField = ((props) => {
                           : styles.expressionSingleLine
                       }
                       */
-                      maxHeight={274}
+                      maxRows={15}
                       language="javascript"
                       theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
                       options={{

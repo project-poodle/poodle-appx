@@ -65,7 +65,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
       _isControlledMode={true}
       {...props}
       width='100%'
-      height={!!props.height ? props.height : !!props.maxHeight ? Math.min(props.maxHeight, rows * 18 + 4) : rows * 18 + 4 }
+      height={!!props.height ? props.height : !!props.maxRows ? Math.min(props.maxRows, rows) * 18 + 4 : rows * 18 + 4 }
     />
   )
 }
@@ -76,7 +76,8 @@ ControlledEditor.propTypes = {
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
-  maxHeight: PropTypes.number,
+  height: PropTypes.any,
+  maxRows: PropTypes.number,
 }
 
 ControlledEditor.defaultProps = {
