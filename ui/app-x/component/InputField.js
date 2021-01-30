@@ -87,7 +87,7 @@ const InputField = ((props) => {
     },
     expressionBlock: {
       width: '100%',
-      height: theme.spacing(12),
+      height: theme.spacing(16),
       padding: theme.spacing(0, 0),
     },
     dummyTextField: {
@@ -322,6 +322,7 @@ const InputField = ((props) => {
                     className={styles.expressionBox}
                     >
                     <ControlledEditor
+                      /*
                       className={
                         (getValues(name)?.split(/\r\n|\r|\n/).length > 3)
                         ? styles.expressionBlock
@@ -329,6 +330,8 @@ const InputField = ((props) => {
                           ? styles.expressionMultiLine
                           : styles.expressionSingleLine
                       }
+                      */
+                      maxHeight={274}
                       language="javascript"
                       theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
                       options={{

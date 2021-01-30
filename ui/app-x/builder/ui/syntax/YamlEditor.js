@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef, useCallback, memo } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import YAML from 'yaml'
 // import { default as parseCST } from 'yaml/parse-cst'
@@ -203,6 +204,31 @@ const YamlEditor = props => {
     }
   }
 
+  const contentRef = React.createRef()
+  const [ maxHeight, setMaxHeight ] = useState(150)
+  // resize listener
+  useEffect(() => {
+    if (!!contentRef.current) {
+      // closure on ref
+      const ref = contentRef.current
+      function resizeYamlEditor() {
+        const node = ReactDOM.findDOMNode(ref)
+        console.log(node, node.offsetWidth, node.offsetHeight)
+        setMaxHeight(node.offsetHeight)
+      }
+      // resize now
+      setTimeout(() => {
+        resizeYamlEditor()
+      }, 500)
+      // event listener
+      window.addEventListener("resize", event => {
+        // console.log(event)
+        // console.log(ref)
+        resizeYamlEditor()
+      })
+    }
+  }, [contentRef.current])
+
   // editor change
   const handleEditorChange = (ev, value) => {
     setPropYamlDirty(true)
@@ -214,32 +240,39 @@ const YamlEditor = props => {
       className={styles.editor}
       onScroll={e => e.stopPropagation()}
       >
-      <Content>
-        <ControlledEditor
+      <Content
+        >
+        <Box
+          ref={contentRef}
           className={styles.editor}
-          language="yaml"
-          theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
-          options={{
-            readOnly: false,
-            wordWrap: 'on',
-            wrappingIndent: 'deepIndent',
-            scrollBeyondLastLine: false,
-            wrappingStrategy: 'advanced',
-            lineNumbersMinChars: 0,
-            glyphMargin: true,
-            // lineDecorationsWidth: 4,
-            minimap: {
-              enabled: false
-            },
-            // layoutInfo: {
-            //  glyphMarginWidth: 2,
-            //  glyphMarginLeft: 2,
-            //},
-          }}
-          value={yamlContent}
-          onChange={handleEditorChange}
           >
-        </ControlledEditor>
+          <ControlledEditor
+            className={styles.editor}
+            maxHeight={maxHeight}
+            language="yaml"
+            theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
+            options={{
+              readOnly: false,
+              wordWrap: 'on',
+              wrappingIndent: 'deepIndent',
+              scrollBeyondLastLine: false,
+              wrappingStrategy: 'advanced',
+              lineNumbersMinChars: 0,
+              glyphMargin: true,
+              // lineDecorationsWidth: 4,
+              minimap: {
+                enabled: false
+              },
+              // layoutInfo: {
+              //  glyphMarginWidth: 2,
+              //  glyphMarginLeft: 2,
+              //},
+            }}
+            value={yamlContent}
+            onChange={handleEditorChange}
+            >
+          </ControlledEditor>
+        </Box>
       </Content>
       <Footer className={styles.yamlFooter}>
         <Layout>

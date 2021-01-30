@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types';
 // monaco editor
 import { default as Editor } from '@monaco-editor/react'
@@ -22,6 +22,9 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
 
       if (typeof directChange === 'string' && editorValue !== directChange) {
         editor.current.setValue(directChange)
+        const totalRow = directChange?.split(/\r\n|\r|\n/).length || 1
+        // console.log(`directChange totalRow`, totalRow)
+        setRows(totalRow)
       }
     }
   }, [onChange])
@@ -48,12 +51,21 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
     })
   }, [attachChangeEventListener, editorDidMount])
 
+  const [ rows, setRows ] = useState(1)
+  useEffect(() => {
+    const totalRow = providedValue?.split(/\r\n|\r|\n/).length || 1
+    // console.log(`totalRow`, totalRow)
+    setRows(totalRow)
+  }, [providedValue])
+
   return (
     <Editor
       value={providedValue}
       editorDidMount={handleEditorDidMount}
       _isControlledMode={true}
       {...props}
+      width='100%'
+      height={!!props.maxHeight ? Math.min(props.maxHeight, rows * 18 + 4) : rows * 18 + 4 }
     />
   )
 }
@@ -64,6 +76,7 @@ ControlledEditor.propTypes = {
   onChange: PropTypes.func,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
+  maxHeight: PropTypes.number,
 }
 
 ControlledEditor.defaultProps = {
