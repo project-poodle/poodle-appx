@@ -7,7 +7,7 @@ const dark = createMuiTheme({
       main: colors.indigo[400]
     },
     secondary: {
-      main: colors.indigo[600]
+      main: colors.indigo[200]
     },
   },
   // shadows: [
