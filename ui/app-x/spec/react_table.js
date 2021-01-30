@@ -65,6 +65,19 @@ export const react_table = {
       },
     },
     {
+      name: 'toolbar',
+      desc: 'Toolbar',
+      types: [
+        {
+          kind: 'class',
+          data: 'jsx'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+      },
+    },
+    {
       name: 'columns',
       desc: 'Columns',
       array: true,

@@ -801,7 +801,7 @@ const PropEditor = (props) => {
                     className={styles.root}
                     >
                     <Typography variant="body2">
-                      Root element has no attribute, use YAML for advanced editing
+                      Root has no attribute, use YAML for advanced editing
                     </Typography>
                   </Box>
                 )
