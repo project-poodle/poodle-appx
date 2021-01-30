@@ -12,6 +12,7 @@ export const react_effect = {
 
   type: 'react/effect',
   desc: 'React Effect',
+  _expand: true,
   children: [
     {
       name: 'body',

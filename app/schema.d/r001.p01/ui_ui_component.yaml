@@ -1194,11 +1194,6 @@ ui_component:
               data: apiList
               columns:
                 - _type: table/column
-                  id: namespace
-                  accessor: namespace
-                  Header: Namespace
-                  suggestedWidth: 100
-                - _type: table/column
                   id: app_name
                   accessor: app_name
                   Header: App Name
@@ -1222,11 +1217,15 @@ ui_component:
                     _type: js/expression
                     data: |-
                       (() => {
-                          const TimeAgo = $I("javascript-time-ago").default
-                          const locale = $I("javascript-time-ago/locale/en").default
-                          TimeAgo.addLocale(locale)
-                          const timeAgo = new TimeAgo("en-US")
-                          return timeAgo.format(Date.parse(value))
+                          try {
+                              const TimeAgo = $I("javascript-time-ago").default
+                              const locale = $I("javascript-time-ago/locale/en").default
+                              TimeAgo.addLocale(locale)
+                              const timeAgo = new TimeAgo("en-US")
+                              return timeAgo.format(Date.parse(value))
+                          } catch (error) {
+                              return error.message || String(error)
+                          }
                       })()
                 - _type: table/column
                   id: action

@@ -746,8 +746,11 @@ function table_column(js_context, ref, input) {
                         t.identifier('value'),
                         t.identifier('value'),
                       ),
+                      t.restElement(
+                        t.identifier('props'),
+                      )
                     ]
-                  )
+                  ),
                 ],
                 t.blockStatement(
                   [
