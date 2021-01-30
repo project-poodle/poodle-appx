@@ -850,7 +850,7 @@ const SyntaxTree = (props) => {
     if (!accepted_types.includes(dragObj.data._type)) {
       notification.info({
         message: `Move not Allowed`,
-        description: `Move [ ${dragObj?.data._type.replace('/', ' / ')} ] to [ ${dropParent?.data._type.replace('/', ' / ')} ]} is not allowed`,
+        description: `Move [ ${dragObj?.data._type.replace('/', ' / ')} ] to [ ${dropParent?.data._type.replace('/', ' / ')} ] is not allowed`,
         placement: 'bottomLeft',
       })
       return
