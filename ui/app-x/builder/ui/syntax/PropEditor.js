@@ -879,6 +879,7 @@ const PropEditor = (props) => {
                 &&
                 (
                   <Controller
+                    key="_ref"
                     name="_ref"
                     control={control}
                     defaultValue={thisNode?.data._ref}
@@ -968,6 +969,7 @@ const PropEditor = (props) => {
                 (
                   <Controller
                     name="_type"
+                    key="_type"
                     control={control}
                     defaultValue={nodeType}
                     rules={{
@@ -1069,6 +1071,7 @@ const PropEditor = (props) => {
                   if (!!childNode) {
                     return (
                       <Box
+                        key={childSpec.name}
                         className={styles.formControl}
                         >
                         <FormHelperText style={{color: theme.palette.info.main}}>
