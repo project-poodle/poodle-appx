@@ -44,6 +44,8 @@ const default_import_maps = {
         "lodash",
         "axios",
         "uuid",
+        "javascript-time-ago",
+        "javascript-time-ago/locale/en",
         "known-css-properties",
       ]
     },

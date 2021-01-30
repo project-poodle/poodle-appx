@@ -71,8 +71,8 @@ export const react_table = {
           data: 'string'
         },
         {
-          kind: 'type',
-          data: 'js/function'
+          kind: 'class',
+          data: 'jsx'
         },
       ],
       _thisNode: {
@@ -89,13 +89,10 @@ export const react_table = {
       _childNode: {
         types: [
           {
-            kind: 'type',
-            data: 'js/function'
+            kind: 'class',
+            data: 'jsx'
           },
         ],
-        input: {
-          kind: 'input/text',
-        },
       },
     },
     {
@@ -104,34 +101,16 @@ export const react_table = {
       types: [
         {
           kind: 'class',
-          data: 'string'
-        },
-        {
-          kind: 'type',
-          data: 'js/function'
+          data: 'jsx'
         },
       ],
-      _thisNode: {
-        types: [
-          {
-            kind: 'class',
-            data: 'string'
-          },
-        ],
-        input: {
-          kind: 'input/text',
-        },
-      },
       _childNode: {
         types: [
           {
-            kind: 'type',
-            data: 'js/function'
+            kind: 'class',
+            data: 'jsx'
           },
         ],
-        input: {
-          kind: 'input/text',
-        },
       },
     },
     {
@@ -143,8 +122,8 @@ export const react_table = {
           data: 'string'
         },
         {
-          kind: 'type',
-          data: 'js/function'
+          kind: 'class',
+          data: 'jsx'
         },
       ],
       _thisNode: {
@@ -161,13 +140,10 @@ export const react_table = {
       _childNode: {
         types: [
           {
-            kind: 'type',
-            data: 'js/function'
+            kind: 'class',
+            data: 'jsx'
           },
         ],
-        input: {
-          kind: 'input/text',
-        },
       },
     },
     {

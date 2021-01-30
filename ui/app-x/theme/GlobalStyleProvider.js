@@ -75,14 +75,14 @@ const GlobalStyleProvider = (props) => {
         '-webkit-font-smoothing': 'antialiased',
         '-moz-osx-font-smoothing': 'grayscale',
         backgroundColor: theme?.palette?.background?.paper,
-        height: '100%',
-        width: '100%'
+        // height: '100%',
+        // width: '100%'
       },
       body: {
         backgroundColor: theme?.palette?.background?.paper,
         color: theme?.palette?.text?.primary,
-        height: '100%',
-        width: '100%',
+        // height: '100%',
+        // width: '100%',
       },
       a: {
         textDecoration: 'none',
@@ -90,8 +90,8 @@ const GlobalStyleProvider = (props) => {
       },
       '#root': {
         backgroundColor: theme?.palette?.background?.paper,
-        height: '100%',
-        width: '100%'
+        // height: '100%',
+        // width: '100%'
       },
       // antd overrides
       'h1': {
@@ -113,7 +113,7 @@ const GlobalStyleProvider = (props) => {
         color: theme?.palette?.text?.primary,
       },
       '.MuiInput-marginDense': {
-        fontSize: '0.9rem',
+        fontSize: '0.875rem',
       },
       '.ant-tabs-content': {
         height: '100%', // fix ant tabs

@@ -33,6 +33,8 @@ import * as jsYaml from 'js-yaml'
 import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
+import * as timeAgo from 'javascript-time-ago'
+import * as timeAgoLocaleEn from 'javascript-time-ago/locale/en'
 import * as knownCssProperties from 'known-css-properties'
 // reflective prop types
 //import reflectPropTypes from './reflectPropTypes'
@@ -71,5 +73,7 @@ export default {
   "lodash": lodash,
   "axios": axios,
   "uuid": uuid,
+  "javascript-time-ago": timeAgo,
+  "javascript-time-ago/locale/en": timeAgoLocaleEn,
   "known-css-properties": knownCssProperties,
 }

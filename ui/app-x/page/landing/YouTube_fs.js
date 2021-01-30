@@ -30,7 +30,7 @@ export default function Youtube_Landing(props) {
       right: 0,
       bottom: 0,
       left: 0,
-      zIndex: -99
+      zIndex: 0
     },
     videoForeground: {
       position: "absolute",
@@ -39,19 +39,13 @@ export default function Youtube_Landing(props) {
       width: "100%",
       height: "100%",
       ['@media (min-aspect-ratio: 16/9)']: {
-        height: "500%",
-        top: "-200%",
+        height: "300%",
+        top: "-100%",
       },
       ['@media (max-aspect-ratio: 16/9)']: {
-        width: "500%",
-        left: "-200%",
+        width: "300%",
+        left: "-100%",
       },
-    },
-
-    grid: {
-      position: "fixed",
-      bottom: "8%",
-      zIndex: 0
     },
   }))
 
@@ -65,12 +59,11 @@ export default function Youtube_Landing(props) {
 
   function init_player() {
 
-    console.log(`INFO: playing youtube video`)
     let idx = Math.floor(Math.random() * videos.length)
     let video = videos[idx]
     let start = 'start' in video ? video.start : 0
     let end = 'end' in video ? video.end : -1
-    // console.log(`INFO: YT start ${JSON.stringify(video)}`)
+    // console.log(`INFO: YT start video [${JSON.stringify(video)}]`)
 
     player = new window.YT.Player('video-foreground', {
       videoId: video.vid, // YouTube Video ID
@@ -90,6 +83,7 @@ export default function Youtube_Landing(props) {
       },
       events: {
         onReady: function() {
+          // console.log(`INFO: YT.player onReady [${video.vid}]`)
           player.mute()
           player.playVideo()
         },
@@ -100,18 +94,19 @@ export default function Youtube_Landing(props) {
             let s = 'start' in v ? v.start : 0
             let e = 'end' in v ? v.end : -1
             player.cueVideoById({videoId:v.vid, startSeconds:s, endSeconds:e})
-            // console.log(`INFO: YT cued ${JSON.stringify(v)}`)
+            // console.log(`INFO: YT cued video ${JSON.stringify(v)}`)
             player.playVideo()
           }
         },
         onPlaybackQualityChange: function(e) {
-          //console.log(`INFO: ${e.data}`)
+          // console.log(`INFO: YT quality ${e.data}`)
         }
       }
     });
   }
 
   window.onYouTubeIframeAPIReady = () => {
+    // console.log(`onYouTubeIframeAPIReady`, window.YT, player)
     init_player()
   }
 
@@ -129,11 +124,10 @@ export default function Youtube_Landing(props) {
           // console.log(player)
         }
       } else {
-        // console.log(window.YT)
-        // console.log(player)
+        console.log(`INFO: already exist`, window.YT, player)
         init_player()
       }
-  });
+  }, [])
 
   // console.log(props)
 

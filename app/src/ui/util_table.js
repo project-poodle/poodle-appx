@@ -333,7 +333,15 @@ function react_table(js_context, ref, input) {
           >
           <$JSX $I="react-csv.CSVLink"
             filename={"${input.name}.csv"}
-            data={rows.map(row => allColumns.map(column => column.accessor(row.original)?.replaceAll('"', '""')))}
+            data={rows.map(row => allColumns.map(column => {
+              const result = column.accessor(row.original)
+              if (typeof result === 'string') {
+                return result.replaceAll('"', '""')
+              } else {
+                return result
+              }
+              })
+            )}
             headers={allColumns.map(column => column.Header || column.id)}
             >
             <$JSX $I="@material-ui/core.IconButton"
@@ -714,20 +722,67 @@ function table_column(js_context, ref, input) {
     Object.keys(input)
       .filter(key => !key.startsWith('_'))
       .map(key => {
-        object_properties.push(
-          t.objectProperty(
-            t.identifier(key),
-            js_process(
-              {
-                ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
-              },
-              null,
-              input[key]
+        if (!isPrimitive(input[key]) && (key === 'Header' || key === 'Footer' || key === 'Cell')) {
+          object_properties.push(
+            t.objectProperty(
+              t.identifier(key),
+              t.arrowFunctionExpression(
+                [
+                  t.objectPattern(
+                    [
+                      t.objectProperty(
+                        t.identifier('row'),
+                        t.identifier('row'),
+                      ),
+                      t.objectProperty(
+                        t.identifier('column'),
+                        t.identifier('column'),
+                      ),
+                      t.objectProperty(
+                        t.identifier('cell'),
+                        t.identifier('cell'),
+                      ),
+                      t.objectProperty(
+                        t.identifier('value'),
+                        t.identifier('value'),
+                      ),
+                    ]
+                  )
+                ],
+                t.blockStatement(
+                  [
+                    t.returnStatement(
+                      js_process(
+                        {
+                          ...js_context,
+                          JSX_CONTEXT: false,
+                          STATEMENT_CONTEXT: false,
+                        },
+                        null,
+                        input[key]
+                      )
+                    )
+                  ]
+                )
+              )
             )
           )
-        )
+        } else {
+          object_properties.push(
+            t.objectProperty(
+              t.identifier(key),
+              js_process(
+                {
+                  ...js_context,
+                  JSX_CONTEXT: false,
+                  STATEMENT_CONTEXT: false,
+                },
+                null,
+                input[key]
+              )
+            )
+          )
+        }
       })
     // add column expression if exists
     if (!!columnsExpression) {

@@ -34,6 +34,7 @@
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
     "hookrouter": "^1.2.3",
+    "javascript-time-ago": "^2.3.4",
     "js-yaml": "^3.14.1",
     "known-css-properties": "^0.20.0",
     "lodash": "^4.17.20",
