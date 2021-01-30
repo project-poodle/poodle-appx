@@ -162,7 +162,11 @@ const PreviewTabs = (props) => {
           + '/_elem' + navComponent.ui_component_name + '.html').replace(/\+/g, '/')
         // console.log(iframeUrl)
         iframeRef.current.src=iframeUrl
-        setPreviewInitialized(false)
+        if (navComponent.ui_component_type === 'react/component') {
+          setPreviewInitialized(false)
+        } else {
+          setPreviewInitialized(true)
+        }
         setWidgetLoading(false)
       }
       else if
@@ -337,6 +341,9 @@ const PreviewTabs = (props) => {
           })
         }
       }
+    }
+    else {
+      setPreviewInitialized(true)
     }
   },
   [
