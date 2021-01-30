@@ -543,12 +543,12 @@ const PropEditor = (props) => {
     pendingTimer = baseSubmitTimer
     setTimeout(() => {
       const timeDiff = (new Date()).getTime() - pendingTimer.getTime()
-      if (timeDiff < 700) {
+      if (timeDiff < 500) {
         return  // do not process, just return
       } else {
         handleSubmit(onBaseSubmit)()
       }
-    }, 750)
+    }, 500)
   }, [baseSubmitTimer])
 
   //////////////////////////////////////////////////////////////////////////////
