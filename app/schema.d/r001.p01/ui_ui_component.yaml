@@ -1200,10 +1200,6 @@ ui_component:
                   accessor: app_name
                   Header: App Name
                 - _type: table/column
-                  id: app_ver
-                  accessor: app_ver
-                  Header: Version
-                - _type: table/column
                   id: api_method
                   accessor: api_method
                   Header: Method
