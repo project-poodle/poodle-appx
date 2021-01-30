@@ -4,10 +4,10 @@ const dark = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: colors.blue[900]
+      main: colors.indigo[400]
     },
     secondary: {
-      main: colors.blue[700]
+      main: colors.indigo[600]
     },
   },
   // shadows: [

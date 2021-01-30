@@ -399,7 +399,7 @@ const TestEditor = (props) => {
             }
             <Button
               variant="outlined"
-              color="secondary"
+              color="primary"
               aria-label="Add Context Provider"
               startIcon={<AddCircleOutline />}
               className={styles.addProvider}
