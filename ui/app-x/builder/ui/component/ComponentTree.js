@@ -137,8 +137,8 @@ const ComponentTree = (props) => {
     treeBox: {
       height: '100%',
       width: '100%',
-      margin: theme.spacing(1, 1),
-      padding: theme.spacing(1, 1),
+      // margin: theme.spacing(1, 1),
+      padding: theme.spacing(2, 2),
       // maxHeight: theme.spacing(100),
       // overflow: 'scroll',
       // border
