@@ -353,74 +353,65 @@ ui_component:
       ui_component_spec:
         navContext:
           _type: react/context
-          _order: 1
           name: app-x/builder/ui/NavProvider.Context
+          _order: 1
         effects:
           _type: react/effect
-          _order: 2
           body:
             - _type: appx/api
               namespace: sys
               app_name: appx
               method: get
               endpoint: /ui/ui_deployment
-              init: ""
               result: |-
                 // console.log(result)
                 states.setUiDeployments(result)
-              error: ""
+          _order: 2
         snippet:
           _type: js/statement
-          _order: 3
           body:
             - // console.log('navContext', navContext)
+          _order: 3
         styles:
           _type: mui/style
-          _order: 4
+          root:
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            width: 100%
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
           divider:
             margin:
               _type: js/expression
               data: theme.spacing(3, 0, 2)
-          root:
-            width: 100%
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
+          _order: 4
         states:
-          _order: 5
-          ...uiDeployments:
-            _type: react/state
-            name: uiDeployments
-            setter: setUiDeployments
-            init: "['a','b','c']"
-          uiComponentNav:
-            _type: react/state
-            name: open
-            setter: setOpen
-            init: "false"
           uiRouteNav:
             _type: react/state
             name: open
             setter: setOpen
             init: "false"
+          uiComponentNav:
+            _type: react/state
+            name: open
+            setter: setOpen
+            init: "false"
+          ...uiDeployments:
+            _type: react/state
+            name: uiDeployments
+            setter: setUiDeployments
+            init: "['a','b','c']"
+          _order: 5
         handlers:
-          _order: 6
-          handleComponentSelected:
-            _type: js/expression
-            data: props.handleComponentSelected
-          handleRouteSelected:
-            _type: js/expression
-            data: props.handleRouteSelected
           handleDeployment:
             _type: js/function
             params:
               - value
             body:
               - // console.log('handleDeployment', value)
-              - |
+              - >
                 const found = states.uiDeployments
                     .find(d => `${d.namespace}/${d.ui_name}/${d.ui_deployment}` === value)
                 if (found) {
@@ -428,9 +419,15 @@ ui_component:
                 } else {
                     navContext.selectDeployment(null)
                 }
+          handleRouteSelected:
+            _type: js/expression
+            data: props.handleRouteSelected
+          handleComponentSelected:
+            _type: js/expression
+            data: props.handleComponentSelected
+          _order: 6
         component:
           _type: react/element
-          _order: 7
           name: "@material-ui/core.Box"
           props:
             className:
@@ -440,11 +437,11 @@ ui_component:
             - _type: react/element
               name: "@material-ui/core.List"
               props:
-                component: nav
-                aria-labelledby: UI Builder
                 className:
                   _type: js/expression
                   data: styles.root
+                component: nav
+                aria-labelledby: UI Builder
               children:
                 - _type: react/element
                   name: "@material-ui/core.ListSubheader"
@@ -493,8 +490,8 @@ ui_component:
                         - _type: react/element
                           name: "@material-ui/core.ListItemText"
                           props:
-                            variant: small
                             primary: UI Deployments
+                            variant: small
                 - _type: react/element
                   name: "@material-ui/core.Divider"
                   props:
@@ -519,25 +516,29 @@ ui_component:
                         - _type: react/element
                           name: "@material-ui/core.Select"
                           props:
-                            onChange:
-                              _type: js/expression
-                              data: "e => handlers.handleDeployment(e.target.value)"
                             value:
                               _type: js/expression
-                              data: |
+                              data: >
                                 !!navContext.navDeployment?.namespace
+
                                 && !!navContext.navDeployment?.ui_name
+
                                 && !!navContext.navDeployment?.ui_deployment
-                                ? \`${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_name}/${navContext.navDeployment?.ui_deployment}\`
+
+                                ? `${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_name}/${navContext.navDeployment?.ui_deployment}`
+
                                 : ''
+                            onChange:
+                              _type: js/expression
+                              data: e => handlers.handleDeployment(e.target.value)
                           children:
                             - _type: react/element
                               name: "@material-ui/core.MenuItem"
                               props:
+                                key: ""
                                 style:
                                   display: none
-                                key: ''
-                                value: ''
+                                value: ""
                             - _type: js/map
                               data:
                                 _type: js/expression
@@ -559,140 +560,36 @@ ui_component:
                                       - _type: js/expression
                                         data: "\\`[ ${item.namespace} / ${item.ui_name} / ${item.ui_deployment} ]\\`"
                 - _type: react/element
-                  name: "@material-ui/core.ListItem"
-                  props:
-                    dense: true
-                    button: true
-                    onClick:
-                      _type: js/expression
-                      data: |
-                        () => {
-                          states.uiComponentNav.setOpen(!states.uiComponentNav.open)
-                        }
+                  name: "@material-ui/core.Box"
                   children:
                     - _type: react/element
-                      name: "@material-ui/core.ListItemIcon"
+                      name: app-x/builder/ui/component/ComponentProvider
                       children:
                         - _type: react/element
-                          name: "@material-ui/icons.WidgetsOutlined"
+                          name: app-x/builder/ui/component/ComponentTree
                           props:
-                            fontSize: small
-                    - _type: react/element
-                      name: "@material-ui/core.ListItemText"
-                      props:
-                        primary: UI Components
-                    - _type: js/switch
-                      children:
-                        - condition: "!!states.uiComponentNav.open"
-                          result:
-                            _type: react/element
-                            name: "@material-ui/icons.ExpandLess"
-                            props:
-                              fontSize: small
-                        - condition: "!states.uiComponentNav.open"
-                          result:
-                            _type: react/element
-                            name: "@material-ui/icons.ExpandMore"
-                            props:
-                              fontSize: small
-                - _type: react/element
-                  name: "@material-ui/core.Collapse"
-                  props:
-                    in:
-                      _type: js/expression
-                      data: |
-                        states.uiComponentNav.open
-                    unmountOnExit: true
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.Box"
-                      children:
-                        - _type: react/element
-                          name: app-x/builder/ui/component/ComponentProvider
-                          children:
-                            - _type: react/element
-                              name: app-x/builder/ui/component/ComponentTree
-                              props:
-                                namespace: sys
-                                ui_name: ui
-                                ui_deployment: base
-                - _type: react/element
-                  name: "@material-ui/core.ListItem"
-                  props:
-                    dense: true
-                    button: true
-                    onClick:
-                      _type: js/expression
-                      data: |
-                        () => {
-                          states.uiRouteNav.setOpen(!states.uiRouteNav.open)
-                        }
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.ListItemIcon"
-                      children:
-                        - _type: react/element
-                          name: "@material-ui/icons.SwapCallsOutlined"
-                          props:
-                            fontSize: small
-                    - _type: react/element
-                      name: "@material-ui/core.ListItemText"
-                      props:
-                        primary: UI Routes
-                    - _type: js/switch
-                      children:
-                        - condition: "!!states.uiRouteNav.open"
-                          result:
-                            _type: react/element
-                            name: "@material-ui/icons.ExpandLess"
-                            props:
-                              fontSize: small
-                        - condition: "!states.uiRouteNav.open"
-                          result:
-                            _type: react/element
-                            name: "@material-ui/icons.ExpandMore"
-                            props:
-                              fontSize: small
-                - _type: react/element
-                  name: "@material-ui/core.Collapse"
-                  props:
-                    in:
-                      _type: js/expression
-                      data: |
-                        states.uiRouteNav.open
-                    unmountOnExit: true
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.Box"
-                      children:
-                        - _type: react/element
-                          name: app-x/builder/ui/route/RouteProvider
-                          children:
-                            - _type: react/element
-                              name: app-x/builder/ui/route/RouteTree
-                              props:
-                                namespace: sys
-                                ui_name: ui
-                                ui_deployment: base
+                            ui_name: ui
+                            namespace: sys
+                            ui_deployment: base
+          _order: 7
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
-            - _type: react/element
-              name: app-x/builder/ui/NavProvider
+                  _type: js/import
+            - name: app-x/builder/ui/NavProvider
+              _type: react/element
             - name: app-x/route/RouterProvider
               _type: react/element
-
 
     ############################################################
     - namespace: sys
