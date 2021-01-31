@@ -3,16 +3,6 @@ ui_component:
     - namespace: sys
       ui_name: console
       ui_ver: internal
-      ui_component_name: /index
-      ui_component_type: html
-      ui_component_spec:
-          entry: /Router
-          title: Design Your Own Apps with App-X
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:

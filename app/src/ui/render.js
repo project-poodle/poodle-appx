@@ -7,7 +7,7 @@ const Mustache = require('mustache')
 
 const db = require('../db/db')
 const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
-const { get_ui_deployment, get_ui_component, get_ui_route } = require ('./util_lookup')
+const { get_ui_deployment } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
@@ -234,7 +234,19 @@ async function handle_render(req, res, load_from_db=true) {
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_spec.importMaps not defined [${ui_spec}]`
+                    message: `ERROR: ui_spec.importMaps not defined [${JSON.stringify(ui_spec)}]`
+                }
+            }
+        }
+
+        // check for ui_spec.index.entry
+        if (! ('index' in ui_spec) || ! ('entry' in ui_spec.index)) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_spec.index.entry not defined [${JSON.stringify(ui_spec)}]`
                 }
             }
         }
@@ -246,7 +258,7 @@ async function handle_render(req, res, load_from_db=true) {
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_deployment_spec.apiMaps not defined [${ui_deployment_spec}]`
+                    message: `ERROR: ui_deployment_spec.apiMaps not defined [${JSON.stringify(ui_deployment_spec)}]`
                 }
             }
         }
@@ -258,19 +270,19 @@ async function handle_render(req, res, load_from_db=true) {
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_component_spec not defined [${ui_component_spec}]`
+                    message: `ERROR: ui_component_spec not defined [${JSON.stringify(ui_component_spec)}]`
                 }
             }
         }
 
-        // check for ui_component_spec
+        // check for ui_route_spec
         if (req_type === 'ui_route' && (!ui_route_spec) ) {
             return {
                 status: 422,
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_route_spec not defined [${ui_route_spec}]`
+                    message: `ERROR: ui_route_spec not defined [${JSON.stringify(ui_route_spec)}]`
                 }
             }
         }

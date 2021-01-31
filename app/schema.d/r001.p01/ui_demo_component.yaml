@@ -1,10 +1,51 @@
 ui_component:
     ############################################################
     - namespace: sys
-      ui_name: demo
+      ui_name: auth
       ui_ver: internal
-      ui_component_name: /index
-      ui_component_type: html
+      ui_component_name: /Router
+      ui_component_type: react/component
       ui_component_spec:
-        entry: antd.Layout
-        title: Demo
+        theme:
+          _order: 1
+          _type: mui/theme
+        styles:
+          _type: mui/style
+          _order: 2
+          "@global":
+            "#root":
+              width: 100%
+              height: 100%
+          root:
+            height: 100%
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
+        routes:
+          _type: appx/route
+          _order: 3
+          name: /
+        not_found_view:
+          _type: react/element
+          name: app-x/view/error/NotFoundView
+        component:
+          _type: react/element
+          _order: 5
+          name: react-redux.Provider
+          props:
+            store:
+              _type: js/import
+              name: app-x/redux/store
+          children:
+            - _type: react/element
+              name: app-x/theme/GlobalStyleProvider
+              props:
+                theme:
+                  _type: js/import
+                  name: app-x/theme/light
+              children:
+                - _type: js/expression
+                  data: routes || not_found_view

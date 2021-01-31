@@ -7,7 +7,7 @@ const Mustache = require('mustache')
 
 const db = require('../db/db')
 const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
-const { get_ui_deployment, get_ui_component, get_ui_route } = require ('./util_lookup')
+const { get_ui_deployment } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_html } = require('./html')
 const { handle_react_component } = require('./react_component')

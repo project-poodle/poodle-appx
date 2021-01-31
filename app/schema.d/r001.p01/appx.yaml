@@ -338,6 +338,9 @@ ui:
       ui_name: "console"
       ui_ver: "internal"
       ui_spec:
+          index:
+              entry: /Router
+              title: Design Your Own Apps with App-X
           importMaps:
               imports:
                   app-x/: /app-x/
@@ -357,6 +360,9 @@ ui:
       ui_name: "auth"
       ui_ver: "internal"
       ui_spec:
+          index:
+              entry: /Router
+              title: Design Your Own Apps with App-X
           importMaps:
               imports:
                   app-x/: /app-x/
@@ -376,6 +382,9 @@ ui:
       ui_name: "service"
       ui_ver: "internal"
       ui_spec:
+          index:
+              entry: /Router
+              title: Design Your Own Apps with App-X
           importMaps:
               imports:
                   app-x/: /app-x/
@@ -395,6 +404,9 @@ ui:
       ui_name: "ui"
       ui_ver: "internal"
       ui_spec:
+          index:
+              entry: /Router
+              title: Design Your Own Apps with App-X
           importMaps:
               imports:
                   app-x/: /app-x/
@@ -414,6 +426,9 @@ ui:
       ui_name: "demo"
       ui_ver: "internal"
       ui_spec:
+          index:
+              entry: /Router
+              title: Design Your Own Apps with App-X
           importMaps:
               imports:
                   app-x/: /app-x/

@@ -7,7 +7,6 @@ const Mustache = require('mustache')
 const { SUCCESS, FAILURE, REGEX_VAR } = require('../api/util')
 
 const rootDir = path.join(__dirname, '../../../ui/')
-// const INDEX_HTML = 'index.html'
 
 const RENDER_JSON = function() {
 
@@ -89,7 +88,19 @@ async function handle_html(req, res) {
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_spec.importMaps not defined [${ui_deployment}]`
+                    message: `ERROR: ui_spec.importMaps not defined [${JSON.stringify(req.context.ui_spec)}]`
+                }
+            }
+        }
+
+        // check for ui_spec.index.entry
+        if (! ('index' in req.context.ui_spec) || ! ('entry' in req.context.ui_spec.index)) {
+            return {
+                status: 422,
+                type: 'application/json',
+                data: {
+                    status: FAILURE,
+                    message: `ERROR: ui_spec.index.entry not defined [${JSON.stringify(req.context.ui_spec)}]`
                 }
             }
         }
@@ -101,31 +112,7 @@ async function handle_html(req, res) {
                 type: 'application/json',
                 data: {
                     status: FAILURE,
-                    message: `ERROR: ui_deployment_spec.apiMaps not defined [${ui_deployment}]`
-                }
-            }
-        }
-
-        // check for ui_component_spec
-        if (! ('ui_component_spec' in req.context) ) {
-            return {
-                status: 422,
-                type: 'application/json',
-                data: {
-                    status: FAILURE,
-                    message: `ERROR: ui_component_spec not defined [${ui_component}]`
-                }
-            }
-        }
-
-        // check for ui_component_spec.entry
-        if (! ('entry' in req.context.ui_component_spec) ) {
-            return {
-                status: 422,
-                type: 'application/json',
-                data: {
-                    status: FAILURE,
-                    message: `ERROR: ui_component_spec.entry not defined [${ui_component}]`
+                    message: `ERROR: ui_deployment_spec.apiMaps not defined [${JSON.stringify(req.context.ui_deployment_spec)}]`
                 }
             }
         }
@@ -154,8 +141,8 @@ async function handle_html(req, res) {
                 },
                 SPEC: req.appx_spec,
             },
-            entry: req.context.ui_component_spec.entry,
-            data: req.context.ui_component_spec,
+            entry: req.context.ui_spec.index.entry,
+            data: req.context.ui_spec.index,
         }
 
         context.init_js = Mustache.render(initjs_content, context)

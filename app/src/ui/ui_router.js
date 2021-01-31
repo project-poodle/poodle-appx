@@ -21,9 +21,9 @@ const { handle_preview } = require('./preview')
 const ELEM_PREFIX = "/_elem/"
 const ROUTE_PREFIX = "/_route/"
 
-const EXCLUDED_TYPES = [
-  "html",
-]
+// const EXCLUDED_TYPES = [
+//   "html",
+// ]
 
 /**
  * handle_elment
@@ -51,16 +51,7 @@ async function handle_component(req, res) {
     //console.log(req.context)
 
     // handle request by component_js type
-    if (ui_component.ui_component_type == 'html'
-        || ui_component.ui_component_type.startsWith('html/')) {
-
-        const result = await handle_html(req, res)
-        res.status(result.status)
-            .type(result.type)
-            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-        return
-
-    } else if (ui_component.ui_component_type == 'react/component') {
+    if (ui_component.ui_component_type == 'react/component') {
 
         const result = await handle_react_component(req, res)
         res.status(result.status)
@@ -105,11 +96,13 @@ async function handle_route(req, res) {
       ...req.context,
       ...ui_deployment,
       ...ui_route,
-      ui_component_name: '/index'
+      // ui_component_name: '/index'
     }
 
-    // handle root component_js '/index'
-    await handle_component(req, res)
+    const result = await handle_html(req, res)
+    res.status(result.status)
+        .type(result.type)
+        .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
     return
 }
 
@@ -292,96 +285,83 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
             ui_component_type: comp_result.ui_component_type,
         }
 
-        // console.log(comp_context)
-        if (EXCLUDED_TYPES.includes(comp_result.ui_component_type)
-            || EXCLUDED_TYPES.find(row => comp_result.ui_component_type.startsWith(row + '/'))) {
+        // add index.js if directory; add .js if no suffix
 
-            // not JAVASCRIPT types - handles normally
-            const route_path = (ELEM_PREFIX + comp_result.ui_component_name).replace(/\/+/g, '/')
-            router.get(route_path, async (req, res) => {
+        let js_route_path = (ELEM_PREFIX + comp_result.ui_component_name).replace(/\/+/g, '/')
+        if (js_route_path.endsWith('.js') || js_route_path.endsWith('.jsx')) {
+
+            // JAVASCRIPT types, ensure route has .js suffix
+            router.get(js_route_path, async (req, res) => {
                 req.context = {...comp_context, ...req.context}
                 await handle_component(req, res)
             })
 
         } else {
-            // add index.js if directory; add .js if no suffix
 
-            let js_route_path = (ELEM_PREFIX + comp_result.ui_component_name).replace(/\/+/g, '/')
-            if (js_route_path.endsWith('.js') || js_route_path.endsWith('.jsx')) {
-
-                // JAVASCRIPT types, ensure route has .js suffix
-                router.get(js_route_path, async (req, res) => {
-                    req.context = {...comp_context, ...req.context}
-                    await handle_component(req, res)
-                })
-
-            } else {
-
-                let new_js_route_path = js_route_path
-                if (js_route_path.endsWith('/')) {
-                    // route path without '/' will add '/'
-                    router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
-                        res.status(302).redirect(redirect_url)
-                    })
-                    // route path add 'index.js' and 'index.source'
-                    new_js_route_path = js_route_path + 'index.js'
-                    router.get(new_js_route_path, async (req, res) => {
-                        req.context = {...comp_context, ...req.context}
-                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_component(req, res)
-                    })
-                    source_js_route_path = js_route_path + 'index.source'
-                    router.get(source_js_route_path, async (req, res) => {
-                        req.context = {...comp_context, ...req.context}
-                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_component(req, res)
-                    })
-                    // generate render page if ui_component_type === 'react/component'
-                    if (comp_context.ui_component_type === 'react/component') {
-                        render_js_route_path = js_route_path + 'index.html'
-                        router.get(render_js_route_path, async (req, res) => {
-                            req.context = {...comp_context, ...req.context, req_type: 'ui_component'}
-                            // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                            const result = await handle_render(req, res, load_from_db=true)
-                            res.status(result.status)
-                                .type(result.type)
-                                .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-                        })
-                    }
-                } else {
-                    // route path without '.js' will add '.js' and '.source'
-                    new_js_route_path = js_route_path + '.js'
-                    router.get(new_js_route_path, async (req, res) => {
-                        req.context = {...comp_context, ...req.context}
-                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_component(req, res)
-                    })
-                    source_js_route_path = js_route_path + '.source'
-                    router.get(source_js_route_path, async (req, res) => {
-                        req.context = {...comp_context, ...req.context}
-                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                        await handle_component(req, res)
-                    })
-                    // generate render page if ui_component_type === 'react/component'
-                    if (comp_context.ui_component_type === 'react/component') {
-                        render_js_route_path = js_route_path + '.html'
-                        router.get(render_js_route_path, async (req, res) => {
-                            req.context = {...comp_context, ...req.context, req_type: 'ui_component'}
-                            // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                            const result = await handle_render(req, res, load_from_db=true)
-                            res.status(result.status)
-                                .type(result.type)
-                                .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-                        })
-                    }
-                }
-
-                // redirect to new js path
-                router.get(js_route_path, (req, res) => {
-                    let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')
+            let new_js_route_path = js_route_path
+            if (js_route_path.endsWith('/')) {
+                // route path without '/' will add '/'
+                router.get(js_route_path.substring(0, js_route_path.Length - 1), (req, res) => {
                     res.status(302).redirect(redirect_url)
                 })
+                // route path add 'index.js' and 'index.source'
+                new_js_route_path = js_route_path + 'index.js'
+                router.get(new_js_route_path, async (req, res) => {
+                    req.context = {...comp_context, ...req.context}
+                    // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                    await handle_component(req, res)
+                })
+                source_js_route_path = js_route_path + 'index.source'
+                router.get(source_js_route_path, async (req, res) => {
+                    req.context = {...comp_context, ...req.context}
+                    // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                    await handle_component(req, res)
+                })
+                // generate render page if ui_component_type === 'react/component'
+                if (comp_context.ui_component_type === 'react/component') {
+                    render_js_route_path = js_route_path + 'index.html'
+                    router.get(render_js_route_path, async (req, res) => {
+                        req.context = {...comp_context, ...req.context, req_type: 'ui_component'}
+                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                        const result = await handle_render(req, res, load_from_db=true)
+                        res.status(result.status)
+                            .type(result.type)
+                            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+                    })
+                }
+            } else {
+                // route path without '.js' will add '.js' and '.source'
+                new_js_route_path = js_route_path + '.js'
+                router.get(new_js_route_path, async (req, res) => {
+                    req.context = {...comp_context, ...req.context}
+                    // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                    await handle_component(req, res)
+                })
+                source_js_route_path = js_route_path + '.source'
+                router.get(source_js_route_path, async (req, res) => {
+                    req.context = {...comp_context, ...req.context}
+                    // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                    await handle_component(req, res)
+                })
+                // generate render page if ui_component_type === 'react/component'
+                if (comp_context.ui_component_type === 'react/component') {
+                    render_js_route_path = js_route_path + '.html'
+                    router.get(render_js_route_path, async (req, res) => {
+                        req.context = {...comp_context, ...req.context, req_type: 'ui_component'}
+                        // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
+                        const result = await handle_render(req, res, load_from_db=true)
+                        res.status(result.status)
+                            .type(result.type)
+                            .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+                    })
+                }
             }
+
+            // redirect to new js path
+            router.get(js_route_path, (req, res) => {
+                let redirect_url = (req.baseUrl + new_js_route_path).replace(/\/+/g, '/')
+                res.status(302).redirect(redirect_url)
+            })
         }
 
         log_comp_status(comp_context,
@@ -405,14 +385,12 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
 
         } else {
 
-            // treat as '/' element for all other paths
-            req.context = {
-                ...req.context,
-                ui_component_name: '/index',
-            }
-
             // handle root element '/'
-            await handle_component(req, res)
+            const result = await handle_html(req, res)
+            res.status(result.status)
+                .type(result.type)
+                .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
+            return
         }
     })
 

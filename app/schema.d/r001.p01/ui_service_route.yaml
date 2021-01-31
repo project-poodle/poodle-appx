@@ -22,6 +22,8 @@ ui_route:
                 theme:
                   _type: js/import
                   name: app-x/theme
+            - name: self/page/MobileNavProvider
+              _type: react/element
 
     - namespace: sys
       ui_name: service
@@ -46,6 +48,8 @@ ui_route:
                 theme:
                   _type: js/import
                   name: app-x/theme
+            - name: self/page/MobileNavProvider
+              _type: react/element
 
     - namespace: sys
       ui_name: service
