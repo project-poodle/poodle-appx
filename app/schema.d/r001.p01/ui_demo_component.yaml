@@ -46,7 +46,17 @@ ui_component:
                       path: /
                       element:
                         _type: react/element
-                        name: app-x/page/error/NotFoundView
+                        name: "@material-ui/core.Box"
+                        props:
+                          height: 100%
+                          display: flex
+                          alignItems: center
+                          justifyContent: center
+                        children:
+                          - _type: react/element
+                            name: "@material-ui/core.Typography"
+                            children:
+                              - Hello World!
                     - _type: route/path
                       path: "*"
                       element:

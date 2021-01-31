@@ -8,10 +8,6 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
-          "@global":
-            "#root":
-              width: 100%
-              height: 100%
           root:
             color:
               _type: js/expression
@@ -20,28 +16,11 @@ ui_component:
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          "@global":
+            "#root":
+              width: 100%
+              height: 100%
           _order: 1
-        routes:
-          _type: appx/route
-          name: /
-          _order: 2
-        not_found_view:
-          _type: react/element
-          name: antd.Layout
-          style:
-            height: 100%
-          children:
-            - _type: react/element
-              name: antd.Layout.Header
-              children:
-                - _type: react/element
-                  name: self/page/HeaderPlain
-            - _type: react/element
-              name: antd.Layout.Content
-              children:
-                - _type: react/element
-                  name: app-x/page/error/NotFoundView
-          _order: 3
         component:
           _type: react/element
           name: react-redux.Provider
@@ -57,9 +36,63 @@ ui_component:
                   _type: js/import
                   name: app-x/theme/light
               children:
-                - _type: js/expression
-                  data: routes || not_found_view
-          _order: 4
+                - _type: react/element
+                  name: app-x/route/RouterProvider
+                  children:
+                    - _type: route/path
+                      path: /
+                      element:
+                        _type: react/element
+                        name: self/page/landing/Home
+                    - _type: route/path
+                      path: /console
+                      element:
+                        _type: react/element
+                        name: antd.Layout
+                        children:
+                          - _type: react/element
+                            name: antd.Layout.Header
+                            children:
+                              - _type: react/element
+                                name: self/page/HeaderUser
+                          - _type: react/element
+                            name: antd.Layout.Content
+                            children:
+                              - _type: react/element
+                                name: self/page/Console
+                    - _type: route/path
+                      path: /login
+                      element:
+                        _type: react/element
+                        name: antd.Layout
+                        children:
+                          - _type: react/element
+                            name: antd.Layout.Header
+                            children:
+                              - _type: react/element
+                                name: self/page/HeaderPlain
+                          - _type: react/element
+                            name: antd.Layout.Content
+                            children:
+                              - _type: react/element
+                                name: self/page/auth/Login
+                    - _type: route/path
+                      path: "*"
+                      element:
+                        _type: react/element
+                        name: antd.Layout
+                        children:
+                          - _type: react/element
+                            name: antd.Layout.Header
+                            children:
+                              - _type: react/element
+                                name: self/page/HeaderPlain
+                          - _type: react/element
+                            name: antd.Layout.Content
+                            children:
+                              - _type: react/element
+                                name: app-x/page/error/NotFoundView
+          _order: 2
 
     ############################################################
     - namespace: sys
@@ -73,23 +106,26 @@ ui_component:
           _order: 1
         styles:
           _type: mui/style
-          _order: 2
           icon:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
           root:
-            width: 100%
-            height: 100%
             color:
               _type: js/expression
               data: theme.palette.text.primary
+            width: 100%
+            height: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          _order: 2
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 3
         component:
           _type: react/element
-          _order: 3
           name: "@material-ui/core.AppBar"
           children:
             - _type: react/element
@@ -98,14 +134,14 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
-                    className:
-                      _type: js/expression
-                      data: styles.icon
+                    size: small
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.hnavigate')('sys', 'console', 'base', '/')
-                    size: small
+                      data: e => router.hnavigate('sys', 'console', 'base', '/')
+                    className:
+                      _type: js/expression
+                      data: styles.icon
                   style:
                     boxShadow: none
                   children:
@@ -114,17 +150,17 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
+                    size: medium
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.navigate')('/')
-                    size: medium
+                      data: e => router.navigate('/')
                     variant: extended
                   style:
-                    boxShadow: none
                     margin:
                       _type: js/expression
                       data: theme.spacing(1)
+                    boxShadow: none
                   children:
                     - App-X
                 - _type: react/element
@@ -139,15 +175,17 @@ ui_component:
                     margin:
                       _type: js/expression
                       data: theme.spacing(1)
+          _order: 4
         _test:
           providers:
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
-
+                  _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -161,23 +199,26 @@ ui_component:
           _order: 1
         styles:
           _type: mui/style
-          _order: 2
           icon:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
           root:
-            width: 100%
-            height: 100%
             color:
               _type: js/expression
               data: theme.palette.text.primary
+            width: 100%
+            height: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          _order: 2
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 3
         component:
           _type: react/element
-          _order: 3
           name: "@material-ui/core.AppBar"
           children:
             - _type: react/element
@@ -186,14 +227,14 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
-                    className:
-                      _type: js/expression
-                      data: styles.icon
+                    size: small
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')
-                    size: small
+                      data: e => router.hnavigate('sys', 'console', 'base', '/console')
+                    className:
+                      _type: js/expression
+                      data: styles.icon
                   style:
                     boxShadow: none
                   children:
@@ -202,17 +243,17 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
+                    size: medium
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.navigate')('/console')
-                    size: medium
+                      data: e => router.navigate('/console')
                     variant: extended
                   style:
-                    boxShadow: none
                     margin:
                       _type: js/expression
                       data: theme.spacing(1)
+                    boxShadow: none
                   children:
                     - App-X
                 - _type: react/element
@@ -227,29 +268,32 @@ ui_component:
                     auth:
                       _type: js/expression
                       data: "{namespace:'sys',ui_name:'console',ui_deployment:'base'}"
+                    realm: main
                     authUrl: /login
                     elevation: 0
-                    realm: main
                 - _type: react/element
                   name: app-x/util/ThemeBadge
                   style:
                     margin:
                       _type: js/expression
                       data: theme.spacing(1)
+          _order: 4
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
+                  _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -260,188 +304,194 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
-          _order: 1
           grid:
-              position: fixed
-              bottom: "10%"
-              width: "100%"
-              padding:
-                _type: js/expression
-                data: theme.spacing(2)
-              zIndex: 0
+            width: 100%
+            bottom: 10%
+            zIndex: 0
+            padding:
+              _type: js/expression
+              data: theme.spacing(2)
+            position: fixed
+          _order: 1
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 2
         effect:
           _type: react/effect
-          _order: 2
           body:
-            - |+
+            - |
               // console.log(props)
+          _order: 3
         component:
           _type: react/element
-          _order: 3
           name: app-x/page/landing/YouTube_fs
           props:
-              youtube_playlist:
-                  - vid: 'vzR0dsZeQsY' # natural
-                    start: 6
-                    end: -1
-                  - vid: 'HHBsvKnCkwI' # city
-                    start: 0
-                    end: -1
-                  - vid: 'RQ18TpXxbzU' # flower
-                    start: 6
-                    end: -1
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 0
-                    end: 8
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 47
-                    end: 338
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 375
-                    end: 512
-                  - vid: 'k5obtOZe4ZQ' # people
-                    start: 554
-                    end: 596
-                  - vid: '_f43Gl_6hkc' # ocean waves
-                    start: 0
-                    end: -1
-                  - vid: '-hcXR9aMTxI' # trees
-                    start: 0
-                    end: 135
-                  - vid: 'wnhvanMdx4s' # space
-                    start: 0
-                    end: 103
-                  - vid: 'wnhvanMdx4s' # space
-                    start: 263
-                    end: 336
-                  - vid: 'xRFrjAVH1uQ' # scene
-                    start: 18
-                    end: 400
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 0
-                    end: 63
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 99
-                    end: 546
-                  - vid: 'zRpazyH1WzI' # compilation
-                    start: 1990
-                    end: 2050
-                  - vid: 'vOxmsqd8f58' # water drop
-                    start: 0
+            youtube_playlist:
+              - end: -1
+                vid: vzR0dsZeQsY
+                start: 6
+              - end: -1
+                vid: HHBsvKnCkwI
+                start: 0
+              - end: -1
+                vid: RQ18TpXxbzU
+                start: 6
+              - end: 8
+                vid: k5obtOZe4ZQ
+                start: 0
+              - end: 338
+                vid: k5obtOZe4ZQ
+                start: 47
+              - end: 512
+                vid: k5obtOZe4ZQ
+                start: 375
+              - end: 596
+                vid: k5obtOZe4ZQ
+                start: 554
+              - end: -1
+                vid: _f43Gl_6hkc
+                start: 0
+              - end: 135
+                vid: -hcXR9aMTxI
+                start: 0
+              - end: 103
+                vid: wnhvanMdx4s
+                start: 0
+              - end: 336
+                vid: wnhvanMdx4s
+                start: 263
+              - end: 400
+                vid: xRFrjAVH1uQ
+                start: 18
+              - end: 63
+                vid: zRpazyH1WzI
+                start: 0
+              - end: 546
+                vid: zRpazyH1WzI
+                start: 99
+              - end: 2050
+                vid: zRpazyH1WzI
+                start: 1990
+              - vid: vOxmsqd8f58
+                start: 0
           children:
-              - _type: react/element
-                name: "@material-ui/core.Box"
-                props:
-                    className:
-                        _type: js/expression
-                        data: "styles.grid"
-                children:
+            - _type: react/element
+              name: "@material-ui/core.Box"
+              props:
+                className:
+                  _type: js/expression
+                  data: styles.grid
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.Grid"
+                  props:
+                    spacing: 1
+                    container: true
+                  children:
                     - _type: react/element
                       name: "@material-ui/core.Grid"
                       props:
-                          container: true
-                          spacing: 1
+                        lg: 2
+                        md: 1
+                        sm: 1
+                        xl: 3
+                        xs: false
+                        item: true
+                    - _type: react/element
+                      name: "@material-ui/core.Grid"
+                      props:
+                        lg: 3
+                        md: 4
+                        sm: 5
+                        xl: 2
+                        xs: 12
+                        item: true
                       children:
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: false
-                                sm: 1
-                                md: 1
-                                lg: 2
-                                xl: 3
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: 12
-                                sm: 5
-                                md: 4
-                                lg: 3
-                                xl: 2
-                            children:
-                                - _type: react/element
-                                  name: "@material-ui/core.Button"
-                                  props:
-                                      variant: contained
-                                      color: primary
-                                      fullWidth: true
-                                      startIcon:
-                                          _type: react/element
-                                          name: "@material-ui/icons.MenuBook"
-                                      onClick:
-                                          _type: js/function
-                                          body:
-                                            - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/docs')"
-                                      size: large
-                                  children:
-                                      - "Getting Started"
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: false
-                                md: 1
-                                lg: 1
-                                xl: 1
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: false
-                                md: 1
-                                lg: 1
-                                xl: 1
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: 12
-                                sm: 5
-                                md: 4
-                                lg: 3
-                                xl: 2
-                            children:
-                                - _type: react/element
-                                  name: "@material-ui/core.Button"
-                                  props:
-                                      variant: contained
-                                      color: primary
-                                      fullWidth: true
-                                      startIcon:
-                                          _type: react/element
-                                          name: "@material-ui/icons.Slideshow"
-                                      onClick:
-                                          _type: js/function
-                                          body:
-                                            - "$I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')"
-                                      size: large
-                                  children:
-                                      - "Live Demo"
-                          - _type: react/element
-                            name: "@material-ui/core.Grid"
-                            props:
-                                item: true
-                                xs: false
-                                sm: 1
-                                md: 1
-                                lg: 2
-                                xl: 3
+                        - _type: react/element
+                          name: "@material-ui/core.Button"
+                          props:
+                            size: large
+                            color: primary
+                            onClick:
+                              _type: js/function
+                              body:
+                                - router.hnavigate('sys', 'console', 'base', '/docs')
+                            variant: contained
+                            fullWidth: true
+                            startIcon:
+                              _type: react/element
+                              name: "@material-ui/icons.MenuBook"
+                          children:
+                            - Getting Started
+                    - _type: react/element
+                      name: "@material-ui/core.Grid"
+                      props:
+                        lg: 1
+                        md: 1
+                        xl: 1
+                        xs: false
+                        item: true
+                    - _type: react/element
+                      name: "@material-ui/core.Grid"
+                      props:
+                        lg: 1
+                        md: 1
+                        xl: 1
+                        xs: false
+                        item: true
+                    - _type: react/element
+                      name: "@material-ui/core.Grid"
+                      props:
+                        lg: 3
+                        md: 4
+                        sm: 5
+                        xl: 2
+                        xs: 12
+                        item: true
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/core.Button"
+                          props:
+                            size: large
+                            color: primary
+                            onClick:
+                              _type: js/function
+                              body:
+                                - router.hnavigate('sys', 'console', 'base', '/console')
+                            variant: contained
+                            fullWidth: true
+                            startIcon:
+                              _type: react/element
+                              name: "@material-ui/icons.Slideshow"
+                          children:
+                            - Live Demo
+                    - _type: react/element
+                      name: "@material-ui/core.Grid"
+                      props:
+                        lg: 2
+                        md: 1
+                        sm: 1
+                        xl: 3
+                        xs: false
+                        item: true
+          _order: 4
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
+                  _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -551,6 +601,8 @@ ui_component:
                 theme:
                   name: app-x/theme/dark
                   _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -593,6 +645,10 @@ ui_component:
           facebook:
             backgroundColor: "#4267B2"
           _order: 2
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 3
         states:
           error:
             _type: react/state
@@ -609,7 +665,7 @@ ui_component:
             name: value
             setter: setValue
             init: '""'
-          _order: 3
+          _order: 4
         handlers:
           handleSubmit:
             _type: js/function
@@ -636,7 +692,7 @@ ui_component:
                                 }
                             })
                         })
-                        $I('app-x/router.hnavigate')('sys', 'console', 'base', props.consoleUrl)
+                        router.hnavigate('sys', 'console', 'base', props.consoleUrl)
                     },
                     err => {
                         // TODO
@@ -644,7 +700,7 @@ ui_component:
                         states.error.setValue(err.message)
                     }
                 )
-          _order: 4
+          _order: 5
         component:
           _type: react/element
           name: "@material-ui/core.Container"
@@ -792,7 +848,7 @@ ui_component:
                         - "Copyright © app-x.org "
                         - _type: js/expression
                           data: new Date().getFullYear()
-          _order: 5
+          _order: 6
         _test:
           providers:
             - name: react-redux.Provider
@@ -807,6 +863,8 @@ ui_component:
                 theme:
                   name: app-x/theme/dark
                   _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
