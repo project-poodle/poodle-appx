@@ -1,39 +1,31 @@
 ui_component:
     ############################################################
     - namespace: sys
-      ui_name: auth
+      ui_name: demo
       ui_ver: internal
       ui_component_name: /Router
       ui_component_type: react/component
       ui_component_spec:
         theme:
-          _order: 1
           _type: mui/theme
+          _order: 1
         styles:
           _type: mui/style
-          _order: 2
+          root:
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            height: 100%
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
           "@global":
             "#root":
               width: 100%
               height: 100%
-          root:
-            height: 100%
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-        routes:
-          _type: appx/route
-          _order: 3
-          name: /
-        not_found_view:
-          _type: react/element
-          name: app-x/page/error/NotFoundView
+          _order: 2
         component:
           _type: react/element
-          _order: 5
           name: react-redux.Provider
           props:
             store:
@@ -47,5 +39,17 @@ ui_component:
                   _type: js/import
                   name: app-x/theme/light
               children:
-                - _type: js/expression
-                  data: routes || not_found_view
+                - _type: react/element
+                  name: app-x/route/RouterProvider
+                  children:
+                    - _type: route/path
+                      path: /
+                      element:
+                        _type: react/element
+                        name: app-x/page/error/NotFoundView
+                    - _type: route/path
+                      path: "*"
+                      element:
+                        _type: react/element
+                        name: app-x/page/error/NotFoundView
+          _order: 3
