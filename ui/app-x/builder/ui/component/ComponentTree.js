@@ -138,7 +138,7 @@ const ComponentTree = (props) => {
       height: '100%',
       width: '100%',
       // margin: theme.spacing(1, 1),
-      padding: theme.spacing(2, 2),
+      padding: theme.spacing(2, 1),
       // maxHeight: theme.spacing(100),
       // overflow: 'scroll',
       // border
