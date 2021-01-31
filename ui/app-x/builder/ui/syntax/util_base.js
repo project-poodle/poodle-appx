@@ -209,7 +209,7 @@ const groups = {
     'route/context',
     'route/path',
     'appx/api',
-    'appx/route',
+    // 'appx/route',
   ],
 }
 

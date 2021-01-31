@@ -1094,28 +1094,3 @@ INSERT INTO
         ui_component_spec=VALUES(ui_component_spec);
 {{/.}}
 {{/ui_component}}
-
--- ui_route --
-{{#ui_route}}
-{{#.}}
-INSERT INTO
-    `{{{global.schema_prefix}}}`.`ui_route`
-    (
-        `namespace`,
-        `ui_name`,
-        `ui_ver`,
-        `ui_route_name`,
-        `ui_route_spec`
-    )
-    VALUES
-    (
-        '{{{namespace}}}',
-        '{{{ui_name}}}',
-        '{{{ui_ver}}}',
-        '{{{ui_route_name}}}',
-        {{#ui_route_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_route_spec}}
-    )
-    ON DUPLICATE KEY UPDATE
-        ui_route_spec=VALUES(ui_route_spec);
-{{/.}}
-{{/ui_route}}

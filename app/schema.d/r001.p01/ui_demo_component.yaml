@@ -56,7 +56,7 @@ ui_component:
                           - _type: react/element
                             name: "@material-ui/core.Typography"
                             children:
-                              - Hello World!
+                              - Demo Text
                     - _type: route/path
                       path: "*"
                       element:
