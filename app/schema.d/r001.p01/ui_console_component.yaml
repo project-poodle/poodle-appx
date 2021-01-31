@@ -573,7 +573,6 @@ ui_component:
             margin:
               _type: js/expression
               data: theme.spacing(2, 0, 2)
-          line: {}
           error:
             color:
               _type: js/expression
@@ -589,11 +588,8 @@ ui_component:
               data: theme.spacing(6, 3)
             alignItems: center
             flexDirection: column
-          avatar: {}
-          button: {}
           google:
             backgroundColor: "#DB4437"
-          submit: {}
           facebook:
             backgroundColor: "#4267B2"
           _order: 2
@@ -602,17 +598,17 @@ ui_component:
             _type: react/state
             name: value
             setter: setValue
-            init: ""
+            init: '""'
           password:
             _type: react/state
             name: value
             setter: setValue
-            init: ""
+            init: '""'
           username:
             _type: react/state
             name: value
             setter: setValue
-            init: ""
+            init: '""'
           _order: 3
         handlers:
           handleSubmit:
@@ -942,6 +938,7 @@ ui_component:
                                         props:
                                           size: medium
                                           color: secondary
+                                          component: div
                                         style:
                                           margin:
                                             _type: js/expression

@@ -696,7 +696,7 @@ ui_component:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_component_name: /GridLayoutTest
+      ui_component_name: /test/GridLayoutTest
       ui_component_type: react/component
       ui_component_spec:
         f:
@@ -1136,7 +1136,7 @@ ui_component:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_component_name: /TableTest
+      ui_component_name: /test/TableTest
       ui_component_type: react/component
       ui_component_spec:
         ...apiList:
