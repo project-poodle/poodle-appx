@@ -11,8 +11,8 @@ import * as reactRedux from 'react-redux'
 import * as redux from 'redux'
 // routers
 import * as hookrouter from 'hookrouter'
-// import * as reactRouter from 'react-router'
-// import * as reactRouterDom from 'react-router-dom'
+import * as reactRouter from 'react-router'
+import * as reactRouterDom from 'react-router-dom'
 // form
 import * as reactHookForm from 'react-hook-form'
 // table
@@ -54,6 +54,8 @@ export default {
   "redux": redux,
   // routers
   "hookrouter": hookrouter,
+  "react-router": reactRouter,
+  "react-router/dom": reactRouterDom,
   // form
   "react-hook-form": reactHookForm,
   // table
