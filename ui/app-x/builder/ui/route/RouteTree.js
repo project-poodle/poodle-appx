@@ -170,6 +170,7 @@ const RouteTree = (props) => {
     navRoute,
     navSelected,
     selectRoute,
+    unselectNav,
     syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
@@ -295,27 +296,32 @@ const RouteTree = (props) => {
   // select
   const onSelect = key => {
     // console.log(key)
-    tree_traverse(treeData, key[0], (item, index, arr) => {
-      setSelectedKey(item.key)
-      selectRoute({
-        ui_route_name: item.key,
-        ui_route_spec: item.spec,
-      })
-      // expand / close non-leaf node
-      if (!item.isLeaf) {
-        // expand folder & key
-        const idx = expandedKeys.indexOf(item.key)
-        if (idx < 0) {
-          setExpandedKeys(
-            [...expandedKeys, item.key]
-          )
-        } else {
-          const newKeys = [...expandedKeys]
-          newKeys.splice(idx, 1)
-          setExpandedKeys(newKeys)
+    if (!!key.length && key[0] !== selectedKey) {
+      tree_traverse(treeData, key[0], (item, index, arr) => {
+        setSelectedKey(item.key)
+        selectRoute({
+          ui_route_name: item.key,
+          ui_route_spec: item.spec,
+        })
+        // expand / close non-leaf node
+        if (!item.isLeaf) {
+          // expand folder & key
+          const idx = expandedKeys.indexOf(item.key)
+          if (idx < 0) {
+            setExpandedKeys(
+              [...expandedKeys, item.key]
+            )
+          } else {
+            const newKeys = [...expandedKeys]
+            newKeys.splice(idx, 1)
+            setExpandedKeys(newKeys)
+          }
         }
-      }
-    })
+      })
+    } else {
+      setSelectedKey(null)
+      unselectNav()
+    }
   }
 
   // drop

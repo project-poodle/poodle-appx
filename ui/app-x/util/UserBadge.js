@@ -73,7 +73,7 @@ const UserBadge = (props) => {
         namespace,
         app_name,
         (data) => {
-          console.log({
+          console.log(`INFO: user`, {
             ...data,
             t: new Date()
           })
