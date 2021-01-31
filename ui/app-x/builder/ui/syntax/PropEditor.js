@@ -125,15 +125,15 @@ const PropEditor = (props) => {
     },
     properties: {
       width: '100%',
-      margin: theme.spacing(2, 0),
+      // margin: theme.spacing(2, 0),
       padding: theme.spacing(0, 0),
       // border
-      border: 1,
-      borderLeft: 0,
-      borderRight: 0,
-      borderBottom: 0,
-      borderStyle: 'dotted',
-      borderColor: theme.palette.divider,
+      // border: 1,
+      // borderLeft: 0,
+      // borderRight: 0,
+      // borderBottom: 0,
+      // borderStyle: 'dotted',
+      // borderColor: theme.palette.divider,
     },
   }))()
 

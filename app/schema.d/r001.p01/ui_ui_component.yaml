@@ -1065,12 +1065,12 @@ ui_component:
           root:
             color:
               _type: js/expression
-              data: theme?.palette?.text.primary
+              data: theme?.palette.text.primary
             width: 100%
             height: 100%
             backgroundColor:
               _type: js/expression
-              data: theme?.palette?.background.paper
+              data: theme?.palette.background.paper
           _order: 4
         component:
           _type: react/element

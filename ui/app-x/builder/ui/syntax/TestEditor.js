@@ -74,9 +74,9 @@ const TestEditor = (props) => {
     },
     contextProvider: {
       width: '100%',
-      padding: theme.spacing(2, 0, 2),
+      padding: theme.spacing(0, 0, 2),
       // border
-      border: 1,
+      border: 0,
       borderLeft: 0,
       borderRight: 0,
       borderBottom: 0,
@@ -89,7 +89,7 @@ const TestEditor = (props) => {
     },
     props: {
       width: '100%',
-      padding: theme.spacing(2, 0, 2, 5),
+      padding: theme.spacing(1, 0, 2, 4),
     },
     addProvider: {
       margin: theme.spacing(2, 0),

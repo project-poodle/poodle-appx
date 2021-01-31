@@ -143,6 +143,7 @@ const ComponentTree = (props) => {
       // overflow: 'scroll',
       // border
       border: 1,
+      borderTop: 0,
       borderLeft: 0,
       borderRight: 0,
       borderStyle: 'dotted',
