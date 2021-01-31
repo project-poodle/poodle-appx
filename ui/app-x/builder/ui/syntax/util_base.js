@@ -201,8 +201,8 @@ const groups = {
   ],
   // mui
   mui: [
-    'mui/style',
     'mui/theme',
+    'mui/style',
   ],
   // appx
   appx: [

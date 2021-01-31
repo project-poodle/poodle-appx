@@ -135,6 +135,10 @@ function default_spec_for_type (type) {
           }
         }
       },
+      router: {
+        _type: 'route/context',
+        name: 'app-x/route/RouterProvider.Context',
+      },
       component: {
         _type: 'react/element',
         name: '@material-ui/core.Box',
@@ -166,6 +170,28 @@ function default_spec_for_type (type) {
                 ]
               }
             ]
+          },
+        ]
+      },
+      _test: {
+        providers: [
+          {
+            _type: 'react/element',
+            name: 'react-redux.Provider',
+            props: {
+              store: {
+                _type: 'js/import',
+                name: 'app-x/redux/store'
+              }
+            }
+          },
+          {
+            _type: 'react/element',
+            name: 'app-x/theme/GlobalStyleProvider',
+          },
+          {
+            _type: 'react/element',
+            name: 'app-x/route/RouterProvider',
           },
         ]
       }

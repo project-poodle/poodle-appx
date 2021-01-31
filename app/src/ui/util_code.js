@@ -2305,13 +2305,11 @@ function route_context(js_context, ref, input) {
         }
       })()
       const params = $I('react-router-dom.useParams')()
-      // const _match = $I('react-router-dom.useRouteMatch')()
       return {
         ...routerContext,
         navigate: navigate,
         pathname: pathname,
         params: params,
-        // match: _match,
       }
     })()
     `,

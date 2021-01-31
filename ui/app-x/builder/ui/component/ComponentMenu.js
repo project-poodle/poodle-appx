@@ -122,7 +122,6 @@ const ComponentMenu = (props) => {
                 null,
                 'react/component',
                 'react/provider',
-                'html',
               ].map(type => {
                 if (!!type) {
                   return (
