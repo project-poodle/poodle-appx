@@ -30,7 +30,7 @@ ui_component:
           name: /
         not_found_view:
           _type: react/element
-          name: app-x/view/error/NotFoundView
+          name: app-x/page/error/NotFoundView
         component:
           _type: react/element
           _order: 5

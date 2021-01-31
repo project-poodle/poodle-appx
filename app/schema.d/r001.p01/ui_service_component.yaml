@@ -46,7 +46,7 @@ ui_component:
               name: antd.Layout.Content
               children:
                 - _type: react/element
-                  name: app-x/view/error/NotFoundView
+                  name: app-x/page/error/NotFoundView
         component:
           _type: react/element
           _order: 4

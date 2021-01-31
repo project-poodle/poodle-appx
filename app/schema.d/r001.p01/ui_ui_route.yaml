@@ -48,7 +48,7 @@ ui_route:
               name: antd.Layout.Content
               children:
                 - _type: react/element
-                  name: app-x/view/error/NotFoundView
+                  name: app-x/page/error/NotFoundView
         _test:
           providers:
             - _type: react/element

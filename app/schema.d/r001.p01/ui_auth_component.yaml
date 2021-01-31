@@ -53,7 +53,7 @@ ui_component:
                   height: '100%'
               children:
                 - _type: react/element
-                  name: app-x/view/error/NotFoundView
+                  name: app-x/page/error/NotFoundView
         component:
           _type: react/element
           _order: 5
@@ -265,7 +265,7 @@ ui_component:
               name: antd.Layout.Content
               children:
                 - _type: react/element
-                  name: app-x/view/error/NotFoundView
+                  name: app-x/page/error/NotFoundView
           _order: 3
         _test:
           providers:

@@ -385,6 +385,19 @@ async function load_ui_router(namespace, ui_name, ui_deployment) {
 
         } else {
 
+            // check ui_deployment
+            let ui_deployment = await get_ui_deployment(req, res)
+            if (req.fatal) {
+                return
+            }
+
+            req.context = {
+              ...req.context,
+              ...ui_deployment,
+              // ...ui_route,
+              // ui_component_name: '/index'
+            }
+
             // handle root element '/'
             const result = await handle_html(req, res)
             res.status(result.status)
