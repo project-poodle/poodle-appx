@@ -63,7 +63,7 @@ export default function Youtube_Landing(props) {
     let video = videos[idx]
     let start = 'start' in video ? video.start : 0
     let end = 'end' in video ? video.end : -1
-    console.log(`INFO: YT start video [${JSON.stringify(video)}]`)
+    // console.log(`INFO: YT start video [${JSON.stringify(video)}]`)
 
     player = new window.YT.Player('video-foreground', {
       videoId: video.vid, // YouTube Video ID
@@ -94,7 +94,7 @@ export default function Youtube_Landing(props) {
             let s = 'start' in v ? v.start : 0
             let e = 'end' in v ? v.end : -1
             player.cueVideoById({videoId:v.vid, startSeconds:s, endSeconds:e})
-            console.log(`INFO: YT cued video ${JSON.stringify(v)}`)
+            // console.log(`INFO: YT cued video ${JSON.stringify(v)}`)
             player.playVideo()
           }
         },
