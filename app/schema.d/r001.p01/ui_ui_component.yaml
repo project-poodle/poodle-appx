@@ -159,7 +159,7 @@ ui_component:
                       data: theme.spacing(1)
                     boxShadow: none
                   children:
-                    - Service Builder
+                    - UI Builder
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
