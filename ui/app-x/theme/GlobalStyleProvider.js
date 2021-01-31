@@ -123,7 +123,7 @@ const GlobalStyleProvider = (props) => {
       },
       '::selection': {
         color: theme?.palette.primary.contrastText,
-        backgroundColor: theme?.palette.primary.light,
+        backgroundColor: theme?.palette.primary.main,
       },
       // '.anticon': {
       //   color: theme?.palette.text.primary,
