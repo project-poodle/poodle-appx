@@ -163,6 +163,27 @@ const NavProvider = (props) => {
     setSyntaxTreeInitialized(false)
   }
 
+  // unselect ui component
+  const unselectNav = () => {
+    // navComponent
+    setNavComponent({
+      ui_component_name: null,
+      ui_component_type: null,
+      ui_component_spec: null,
+    })
+    // navRoute
+    setNavRoute({
+      ui_route_name: null,
+      ui_route_spec: null,
+    })
+    // navSelected
+    setNavSelected({
+      type: null
+    })
+    // syntax tree
+    setSyntaxTreeInitialized(false)
+  }
+
   // select ui route
   const selectRoute = (ui_route) => {
     if
@@ -300,6 +321,7 @@ const NavProvider = (props) => {
         selectDeployment,
         selectComponent,
         selectRoute,
+        unselectNav,
         syntaxTreeInitialized,
         setSyntaxTreeInitialized,
         selfImportNames,

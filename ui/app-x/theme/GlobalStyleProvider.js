@@ -210,6 +210,11 @@ const GlobalStyleProvider = (props) => {
           margin: 0,
         },
       },
+      '&.ant-tabs-nav': {
+        '&::before': {
+          borderBottomColor: theme?.palette.divider,
+        }
+      },
       '.ant-tabs-tab-btn': {
         '&:focus': {
           color: theme?.palette.secondary.light,
@@ -273,7 +278,8 @@ const GlobalStyleProvider = (props) => {
         },
         '& .ant-tree-node-content-wrapper.ant-tree-node-selected:hover': {
           color: theme?.palette.primary.contrastText,
-          backgroundColor: theme?.palette.primary.main,
+          backgroundColor: theme?.palette.primary.dark,
+          // backgroundColor: theme?.palette.action.selected,
         },
       },
       '.ant-tree.ant-tree-directory': {
@@ -291,7 +297,8 @@ const GlobalStyleProvider = (props) => {
         },
         '& .ant-tree-treenode-selected:hover::before': {
           color: theme?.palette.primary.contrastText,
-          backgroundColor: theme?.palette.primary.main,
+          backgroundColor: theme?.palette.primary.dark,
+          // backgroundColor: theme?.palette.action.selected,
         },
       },
       '.MuiSelect-select.MuiSelect-select': {

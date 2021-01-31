@@ -161,6 +161,7 @@ const ComponentTree = (props) => {
     navRoute,
     navSelected,
     selectComponent,
+    unselectNav,
     syntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
@@ -300,30 +301,36 @@ const ComponentTree = (props) => {
   // select
   const onSelect = key => {
     // console.log(key)
-    tree_traverse(treeData, key[0], (item, index, arr) => {
-      if (item.isLeaf) {
-        // console.log(item)
-        setSelectedKey(item.key)
-        setContextKey(item.key)
-        selectComponent({
-          ui_component_name: item.key,
-          ui_component_type: item.type,
-          ui_component_spec: item.spec,
-        })
-      } else {
-        // expand folder & key
-        const idx = expandedKeys.indexOf(item.key)
-        if (idx < 0) {
-          setExpandedKeys(
-            [...expandedKeys, item.key]
-          )
+    if (!!key.length && key[0] !== selectedKey) {
+      tree_traverse(treeData, key[0], (item, index, arr) => {
+        if (item.isLeaf) {
+          // console.log(item)
+          setSelectedKey(item.key)
+          setContextKey(item.key)
+          selectComponent({
+            ui_component_name: item.key,
+            ui_component_type: item.type,
+            ui_component_spec: item.spec,
+          })
         } else {
-          const newKeys = [...expandedKeys]
-          newKeys.splice(idx, 1)
-          setExpandedKeys(newKeys)
+          // expand folder & key
+          const idx = expandedKeys.indexOf(item.key)
+          if (idx < 0) {
+            setExpandedKeys(
+              [...expandedKeys, item.key]
+            )
+          } else {
+            const newKeys = [...expandedKeys]
+            newKeys.splice(idx, 1)
+            setExpandedKeys(newKeys)
+          }
         }
-      }
-    })
+      })
+    } else {
+      setSelectedKey(null)
+      setContextKey(null)
+      unselectNav()
+    }
   }
 
   // drop
