@@ -354,6 +354,7 @@ const TestEditor = (props) => {
                               <AutoSuggest
                                 key={item.id}
                                 name={`providers[${index}].name`}
+                                size="small"
                                 className={styles.formControl}
                                 value={innerProps.value}
                                 onChange={innerProps.onChange}
