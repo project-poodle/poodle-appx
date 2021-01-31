@@ -81,7 +81,7 @@ const transformTree = (data) => {
       let found = resultData.find(treeNode => treeNode.key === currKey)
       if (!found) {
         if (ui_route.ui_route_name === '/') {
-          found = new_folder_node(parentKey, subName, ui_route)
+          found = new_route_node(parentKey, subName, ui_route.ui_route_spec)
         } else if (subPaths.length === 0) {
           found = new_route_node(parentKey, subName, ui_route.ui_route_spec)
         } else if (subPaths.length === 1 && subPaths[0] === '') {
