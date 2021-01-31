@@ -6,6 +6,7 @@ import {
   HashRouter,
   MemoryRouter,
   Routes,
+  Route,
   Link as _Link,
   useParams,
   useLocation,
@@ -117,7 +118,8 @@ const RouterProvider = (props) => {
           }}
           >
           <Routes basename={computed_basename}>
-            { props.children }
+            <Route path="/*" element={props.children}>
+            </Route>
           </Routes>
         </RouterContext.Provider>
       </HashRouter>
@@ -136,7 +138,8 @@ const RouterProvider = (props) => {
           }}
           >
           <Routes basename={computed_basename}>
-            { props.children }
+            <Route path="/*" element={props.children}>
+            </Route>
           </Routes>
         </RouterContext.Provider>
       </NativeRouter>
@@ -155,7 +158,8 @@ const RouterProvider = (props) => {
           }}
           >
           <Routes basename={computed_basename}>
-            { props.children }
+            <Route path="/*" element={props.children}>
+            </Route>
           </Routes>
         </RouterContext.Provider>
       </MemoryRouter>
@@ -174,7 +178,8 @@ const RouterProvider = (props) => {
           }}
         >
         <Routes basename={computed_basename}>
-          { props.children }
+          <Route path="/*" element={props.children}>
+          </Route>
         </Routes>
         </RouterContext.Provider>
       </BrowserRouter>

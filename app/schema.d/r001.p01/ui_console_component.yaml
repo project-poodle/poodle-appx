@@ -39,59 +39,62 @@ ui_component:
                 - _type: react/element
                   name: app-x/route/RouterProvider
                   children:
-                    - _type: route/path
-                      path: /
-                      element:
-                        _type: react/element
-                        name: self/page/landing/Home
-                    - _type: route/path
-                      path: /console
-                      element:
-                        _type: react/element
-                        name: antd.Layout
-                        children:
-                          - _type: react/element
-                            name: antd.Layout.Header
+                    - _type: react/element
+                      name: react-router-dom.Routes
+                      children:
+                        - _type: route/path
+                          path: /
+                          element:
+                            _type: react/element
+                            name: self/page/landing/Home
+                        - _type: route/path
+                          path: /console
+                          element:
+                            _type: react/element
+                            name: antd.Layout
                             children:
                               - _type: react/element
-                                name: self/page/HeaderUser
-                          - _type: react/element
-                            name: antd.Layout.Content
+                                name: antd.Layout.Header
+                                children:
+                                  - _type: react/element
+                                    name: self/page/HeaderUser
+                              - _type: react/element
+                                name: antd.Layout.Content
+                                children:
+                                  - _type: react/element
+                                    name: self/page/Console
+                        - _type: route/path
+                          path: /login
+                          element:
+                            _type: react/element
+                            name: antd.Layout
                             children:
                               - _type: react/element
-                                name: self/page/Console
-                    - _type: route/path
-                      path: /login
-                      element:
-                        _type: react/element
-                        name: antd.Layout
-                        children:
-                          - _type: react/element
-                            name: antd.Layout.Header
+                                name: antd.Layout.Header
+                                children:
+                                  - _type: react/element
+                                    name: self/page/HeaderPlain
+                              - _type: react/element
+                                name: antd.Layout.Content
+                                children:
+                                  - _type: react/element
+                                    name: self/page/auth/Login
+                        - _type: route/path
+                          path: "*"
+                          element:
+                            _type: react/element
+                            name: antd.Layout
                             children:
                               - _type: react/element
-                                name: self/page/HeaderPlain
-                          - _type: react/element
-                            name: antd.Layout.Content
-                            children:
+                                name: antd.Layout.Header
+                                children:
+                                  - _type: react/element
+                                    name: self/page/HeaderPlain
                               - _type: react/element
-                                name: self/page/auth/Login
-                    - _type: route/path
-                      path: "*"
-                      element:
-                        _type: react/element
-                        name: antd.Layout
-                        children:
-                          - _type: react/element
-                            name: antd.Layout.Header
-                            children:
-                              - _type: react/element
-                                name: self/page/HeaderPlain
-                          - _type: react/element
-                            name: antd.Layout.Content
-                            children:
-                              - _type: react/element
-                                name: app-x/page/error/NotFoundView
+                                name: antd.Layout.Content
+                                children:
+                                  - _type: react/element
+                                    name: app-x/page/error/NotFoundView
           _order: 2
 
     ############################################################

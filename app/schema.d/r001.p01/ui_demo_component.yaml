@@ -42,24 +42,27 @@ ui_component:
                 - _type: react/element
                   name: app-x/route/RouterProvider
                   children:
-                    - _type: route/path
-                      path: /
-                      element:
-                        _type: react/element
-                        name: "@material-ui/core.Box"
-                        props:
-                          height: 100%
-                          display: flex
-                          alignItems: center
-                          justifyContent: center
-                        children:
-                          - _type: react/element
-                            name: "@material-ui/core.Typography"
+                    - _type: react/element
+                      name: react-router-dom.Routes
+                      children:
+                        - _type: route/path
+                          path: /
+                          element:
+                            _type: react/element
+                            name: "@material-ui/core.Box"
+                            props:
+                              height: 100%
+                              display: flex
+                              alignItems: center
+                              justifyContent: center
                             children:
-                              - Demo Text
-                    - _type: route/path
-                      path: "*"
-                      element:
-                        _type: react/element
-                        name: app-x/page/error/NotFoundView
+                              - _type: react/element
+                                name: "@material-ui/core.Typography"
+                                children:
+                                  - Demo Text
+                        - _type: route/path
+                          path: "*"
+                          element:
+                            _type: react/element
+                            name: app-x/page/error/NotFoundView
           _order: 3
