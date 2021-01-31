@@ -27,7 +27,7 @@ import { parse, parseExpression } from "@babel/parser"
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
-import AutoSuggest from 'app-x/component/AutoSuggest'
+import AutoSuggest from 'app-x/builder/component/AutoSuggest'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   new_tree_node,

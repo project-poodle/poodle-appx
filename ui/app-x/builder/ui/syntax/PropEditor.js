@@ -33,17 +33,17 @@ import { parse, parseExpression } from "@babel/parser"
 // context provider
 import * as api from 'app-x/api'
 import Asterisk from 'app-x/icon/Asterisk'
-import TextFieldArray from 'app-x/component/TextFieldArray'
-import InputProperties from 'app-x/component/InputProperties'
-import InputList from 'app-x/component/InputList'
+import TextFieldArray from 'app-x/builder/component/TextFieldArray'
+import InputProperties from 'app-x/builder/component/InputProperties'
+import InputList from 'app-x/builder/component/InputList'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import YamlEditor from 'app-x/builder/ui/syntax/YamlEditor'
 import ReactIcon from 'app-x/icon/React'
-import AutoSuggest from 'app-x/component/AutoSuggest'
-import InputField from 'app-x/component/InputField'
-import InputFieldArray from 'app-x/component/InputFieldArray'
-import ControlledEditor from 'app-x/component/ControlledEditor'
+import AutoSuggest from 'app-x/builder/component/AutoSuggest'
+import InputField from 'app-x/builder/component/InputField'
+import InputFieldArray from 'app-x/builder/component/InputFieldArray'
+import ControlledEditor from 'app-x/builder/component/ControlledEditor'
 import {
   generate_tree_node,
   new_tree_node,

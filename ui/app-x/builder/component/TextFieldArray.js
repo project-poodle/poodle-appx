@@ -21,7 +21,7 @@ import {
 } from 'react-hook-form'
 import { v4 as uuidv4 } from 'uuid'
 
-import AutoSuggest from 'app-x/component/AutoSuggest'
+import AutoSuggest from 'app-x/builder/component/AutoSuggest'
 
 // array text field
 const TextFieldArray = props => {

@@ -42,8 +42,8 @@ import {
 } from "react-hook-form";
 import { parse, parseExpression } from "@babel/parser"
 
-import AutoSuggest from 'app-x/component/AutoSuggest'
-import ControlledEditor from 'app-x/component/ControlledEditor'
+import AutoSuggest from 'app-x/builder/component/AutoSuggest'
+import ControlledEditor from 'app-x/builder/component/ControlledEditor'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   validation,

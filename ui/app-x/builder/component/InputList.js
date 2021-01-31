@@ -32,8 +32,8 @@ import { parse, parseExpression } from "@babel/parser"
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
-import AutoSuggest from 'app-x/component/AutoSuggest'
-import InputField from 'app-x/component/InputField'
+import AutoSuggest from 'app-x/builder/component/AutoSuggest'
+import InputField from 'app-x/builder/component/InputField'
 import {
   new_tree_node,
   lookup_title_for_input,

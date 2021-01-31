@@ -42,7 +42,7 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 // context provider
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
-import ControlledEditor from 'app-x/component/ControlledEditor'
+import ControlledEditor from 'app-x/builder/component/ControlledEditor'
 import Asterisk from 'app-x/icon/Asterisk'
 
 // console.log(monaco)
