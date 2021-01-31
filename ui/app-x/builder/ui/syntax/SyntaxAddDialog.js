@@ -421,6 +421,7 @@ const SyntaxAddDialog = (props) => {
                       <InputField
                         key={custom.name}
                         name={custom.name}
+                        size="small"
                         className={styles.formControl}
                         disabled={!!disabled[custom.name]}
                         childSpec={custom}
@@ -450,6 +451,7 @@ const SyntaxAddDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          size="small"
                           className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
@@ -669,6 +671,7 @@ const SyntaxAddDialog = (props) => {
                     <InputFieldArray
                       key={childSpec.name}
                       name={childSpec.name}
+                      size="small"
                       className={styles.formControl}
                       disabled={!!disabled[childSpec.name]}
                       childSpec={childSpec}
@@ -680,6 +683,7 @@ const SyntaxAddDialog = (props) => {
                     <InputField
                       key={childSpec.name}
                       name={childSpec.name}
+                      size="small"
                       className={styles.formControl}
                       disabled={!!disabled[childSpec.name]}
                       defaultValue=''
@@ -710,8 +714,8 @@ const SyntaxAddDialog = (props) => {
                           label="Position"
                           select={true}
                           name="_pos"
-                          value={innerProps.value}
                           size="small"
+                          value={innerProps.value}
                           onChange={innerProps.onChange}
                           error={!!errors._pos}
                           helperText={errors._pos?.message}
@@ -719,6 +723,7 @@ const SyntaxAddDialog = (props) => {
                           <MenuItem
                             key={0}
                             value={0}
+                            dense={true}
                             >
                             <ListItemIcon>
                               <PlusOutlined />
@@ -732,6 +737,7 @@ const SyntaxAddDialog = (props) => {
                               <MenuItem
                                 key={`${index+1}`}
                                 value={index+1}
+                                dense={true}
                                 >
                                 <ListItemIcon>
                                   { lookup_icon_for_type(child.data?._type) }
@@ -816,7 +822,7 @@ const SyntaxAddDialog = (props) => {
                   props.setOpen(false)
                 }
               }
-              color="primary"
+              color="secondary"
               >
               Cancel
             </Button>
@@ -830,7 +836,7 @@ const SyntaxAddDialog = (props) => {
                   handleSubmit(onSubmit)()
                 }
               }
-              color="primary"
+              color="secondary"
               autoFocus
               >
               Add

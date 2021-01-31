@@ -125,9 +125,6 @@ const GlobalStyleProvider = (props) => {
         color: theme?.palette.primary.contrastText,
         backgroundColor: theme?.palette.primary.light,
       },
-      '.ant-tabs-tab .anticon': {
-        margin: 0,
-      },
       // '.anticon': {
       //   color: theme?.palette.text.primary,
       // },
@@ -189,29 +186,40 @@ const GlobalStyleProvider = (props) => {
       '.ant-tabs-tab': {
         color: theme?.palette.text.primary,
         '&:hover': {
-          color: theme?.palette.primary.light,
+          color: theme?.palette.secondary.light,
           // backgroundColor: theme?.palette.hover,
         },
         '&.ant-tabs-tab-active': {
           padding: theme?.spacing(0, 1),
           // color: theme?.palette.primary.contrastText,
           // color: theme?.palette.text.primary,
-          color: theme?.palette.primary.light,
+          color: theme?.palette.secondary.main,
           // backgroundColor: theme?.palette.primary.light,
           // borderColor: theme?.palette.primary.light,
           // outlineColor: theme?.palette.primary.light,
           '& .ant-tabs-tab-btn': {
             // color: theme?.palette.primary.contrastText,
             // color: theme?.palette.text.primary,
-            color: theme?.palette.primary.light,
+            color: theme?.palette.secondary.main,
             // backgroundColor: theme?.palette.primary.light,
             // borderColor: theme?.palette.primary.light,
             // outlineColor: theme?.palette.primary.light,
           }
         },
+        '& .anticon': {
+          margin: 0,
+        },
+      },
+      '.ant-tabs-tab-btn': {
+        '&:focus': {
+          color: theme?.palette.secondary.light,
+        },
+        '&:active': {
+          color: theme?.palette.secondary.light,
+        }
       },
       '.ant-tabs-ink-bar': {
-        backgroundColor: theme?.palette.primary.light,
+        backgroundColor: theme?.palette.secondary.main,
       },
       '.ant-select-dropdown': {
         zIndex: 2050,

@@ -364,6 +364,7 @@ const SyntaxMoveDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          size="small"
                           className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
@@ -393,6 +394,7 @@ const SyntaxMoveDialog = (props) => {
                         <InputField
                           key={custom.name}
                           name={custom.name}
+                          size="small"
                           className={styles.formControl}
                           disabled={!!disabled[custom.name]}
                           childSpec={custom}
@@ -617,6 +619,7 @@ const SyntaxMoveDialog = (props) => {
                       <InputFieldArray
                         key={childSpec.name}
                         name={childSpec.name}
+                        size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
@@ -631,6 +634,7 @@ const SyntaxMoveDialog = (props) => {
                       <InputField
                         key={childSpec.name}
                         name={childSpec.name}
+                        size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
                         defaultValue={props.moveDragNode?.data[childSpec.name]}
@@ -654,7 +658,7 @@ const SyntaxMoveDialog = (props) => {
                   props.setOpen(false)
                 }
               }
-              color="primary"
+              color="secondary"
               >
               Cancel
             </Button>
@@ -669,7 +673,7 @@ const SyntaxMoveDialog = (props) => {
                   handleSubmit(onSubmit)()
                 }
               }
-              color="primary"
+              color="secondary"
               autoFocus
               >
               Move

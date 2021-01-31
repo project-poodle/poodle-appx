@@ -167,7 +167,7 @@ const SyntaxDeleteDialog = (props) => {
           onClick={
             e => props.setOpen(false)
           }
-          color="primary"
+          color="secondary"
           >
           Cancel
         </Button>
@@ -188,7 +188,7 @@ const SyntaxDeleteDialog = (props) => {
               }
             }
           }
-          color="primary"
+          color="secondary"
           autoFocus
           >
           Delete
