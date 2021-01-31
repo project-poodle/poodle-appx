@@ -8,48 +8,21 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
-          _order: 1
+          root:
+            color:
+              _type: js/expression
+              data: theme.palette.text.primary
+            height: 100%
+            backgroundColor:
+              _type: js/expression
+              data: theme.palette.background.paper
           "@global":
             "#root":
               width: 100%
               height: 100%
-          root:
-            height: 100%
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-        routes:
-          _type: appx/route
-          _order: 2
-          name: /
-        not_found_view:
-          _type: react/element
-          _order: 3
-          name: antd.Layout
-          props:
-            className:
-              _type: js/expression
-              data: styles.root
-            header:
-              _type: react/element
-              name: self/page/Header
-          children:
-            - _type: react/element
-              name: antd.Layout.Header
-              children:
-                - _type: react/element
-                  name: self/page/Header
-            - _type: react/element
-              name: antd.Layout.Content
-              children:
-                - _type: react/element
-                  name: app-x/page/error/NotFoundView
+          _order: 1
         component:
           _type: react/element
-          _order: 4
           name: react-redux.Provider
           props:
             store:
@@ -58,16 +31,35 @@ ui_component:
           children:
             - _type: react/element
               name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
-                  _type: js/import
-                  name: app-x/theme
               children:
                 - _type: react/element
                   name: self/page/MobileNavProvider
                   children:
-                    - _type: js/expression
-                      data: routes || not_found_view
+                    - _type: react/element
+                      name: app-x/route/RouterProvider
+                      children:
+                        - _type: route/path
+                          path: /
+                          element:
+                            _type: react/element
+                            name: self/page/Console
+                        - _type: route/path
+                          path: "*"
+                          element:
+                            _type: react/element
+                            name: antd.Layout
+                            children:
+                              - _type: react/element
+                                name: antd.Layout.Header
+                                children:
+                                  - _type: react/element
+                                    name: self/page/Header
+                              - _type: react/element
+                                name: antd.Layout.Content
+                                children:
+                                  - _type: react/element
+                                    name: app-x/page/error/NotFoundView
+          _order: 2
 
     ############################################################
     - namespace: sys
@@ -111,18 +103,21 @@ ui_component:
           _order: 1
         styles:
           _type: mui/style
-          _order: 2
           avatar:
             backgroundColor:
               _type: js/expression
               data: theme.palette.primary.light
+          _order: 2
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 3
         mobileNav:
           _type: react/context
-          _order: 3
           name: self/page/MobileNavProvider.Context
+          _order: 4
         component:
           _type: react/element
-          _order: 4
           name: "@material-ui/core.AppBar"
           props:
             elevation: 0
@@ -133,14 +128,14 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
-                    className:
-                      _type: js/expression
-                      data: styles.avatar
+                    size: small
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.hnavigate')('sys', 'console', 'base', '/console')
-                    size: small
+                      data: e => router.hnavigate('sys', 'console', 'base', '/console')
+                    className:
+                      _type: js/expression
+                      data: styles.avatar
                   style:
                     boxShadow: none
                   children:
@@ -149,17 +144,17 @@ ui_component:
                 - _type: react/element
                   name: "@material-ui/core.Fab"
                   props:
+                    size: medium
                     color: primary
                     onClick:
                       _type: js/expression
-                      data: e => $I('app-x/router.navigate')('/')
-                    size: medium
+                      data: e => router.navigate('/')
                     variant: extended
                   style:
-                    boxShadow: none
                     margin:
                       _type: js/expression
                       data: theme.spacing(1)
+                    boxShadow: none
                   children:
                     - Service Builder
                 - _type: react/element
@@ -172,9 +167,9 @@ ui_component:
                     auth:
                       _type: js/expression
                       data: "{namespace:'sys',ui_name:'console',ui_deployment:'base'}"
+                    realm: main
                     authUrl: /login
                     elevation: 0
-                    realm: main
                 - _type: react/element
                   name: app-x/util/ThemeBadge
                   style:
@@ -189,32 +184,35 @@ ui_component:
                     - _type: react/element
                       name: "@material-ui/core.Fab"
                       props:
+                        size: small
                         color: primary
                         onClick:
                           _type: js/expression
                           data: e => mobileNav.toggle()
-                        size: small
                       style:
                         boxShadow: none
                       children:
                         - _type: react/element
                           name: "@material-ui/icons.Menu"
+          _order: 5
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: self/page/MobileNavProvider
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: self/page/MobileNavProvider
+              _type: react/element
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
+                  _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -341,6 +339,8 @@ ui_component:
                   _type: js/import
             - name: self/page/MobileNavProvider
               _type: react/element
+            - name: app-x/route/RouterProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys
@@ -351,99 +351,101 @@ ui_component:
       ui_component_spec:
         styles:
           _type: mui/style
-          _order: 1
           root:
-            width: 100%
             color:
               _type: js/expression
               data: theme.palette.text.primary
+            width: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          _order: 1
         component:
           _type: react/element
-          _order: 2
-          name: '@material-ui/core.List'
+          name: "@material-ui/core.List"
           props:
-              component: nav
-              aria-labelledby: App Builder
-              className:
-                  _type: js/expression
-                  data: styles.root
-              subheader:
-                  _type: react/element
-                  name: '@material-ui/core.ListSubheader'
-                  children:
-                      - App Builder
+            className:
+              _type: js/expression
+              data: styles.root
+            component: nav
+            subheader:
+              _type: react/element
+              name: "@material-ui/core.ListSubheader"
+              children:
+                - App Builder
+            aria-labelledby: App Builder
           children:
-              - _type: react/element
-                name: 'app-x/router.A'
-                props:
-                    href: /app/dashboard
-                children:
+            - _type: react/element
+              name: app-x/route/RouterProvider.Link
+              props:
+                to: /app/customers
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.ListItem"
+                  props:
+                    button: true
+                  children:
                     - _type: react/element
-                      name: '@material-ui/core.ListItem'
-                      props:
-                          button: true
+                      name: "@material-ui/core.ListItemIcon"
                       children:
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemIcon'
-                            children:
-                                - _type: react/element
-                                  name: '@material-ui/icons.ViewModule'
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemText'
-                            props:
-                                primary: Objects
-              - _type: react/element
-                name: 'app-x/router.A'
-                props:
-                    href: /app/customers
-                children:
+                        - _type: react/element
+                          name: "@material-ui/icons.Link"
                     - _type: react/element
-                      name: '@material-ui/core.ListItem'
+                      name: "@material-ui/core.ListItemText"
                       props:
-                          button: true
-                      children:
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemIcon'
-                            children:
-                                - _type: react/element
-                                  name: '@material-ui/icons.Link'
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemText'
-                            props:
-                                primary: Relations
-              - _type: react/element
-                name: 'app-x/router.A'
-                props:
-                    href: /app/products
-                children:
+                        primary: Relations
+            - _type: react/element
+              name: app-x/route/RouterProvider.Link
+              props:
+                to: /app/dashboard
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.ListItem"
+                  props:
+                    button: true
+                  children:
                     - _type: react/element
-                      name: '@material-ui/core.ListItem'
-                      props:
-                          button: true
+                      name: "@material-ui/core.ListItemIcon"
                       children:
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemIcon'
-                            children:
-                                - _type: react/element
-                                  name: '@material-ui/icons.VerticalAlignCenter'
-                          - _type: react/element
-                            name: '@material-ui/core.ListItemText'
-                            props:
-                                primary: APIs
+                        - _type: react/element
+                          name: "@material-ui/icons.ViewModule"
+                    - _type: react/element
+                      name: "@material-ui/core.ListItemText"
+                      props:
+                        primary: Objects
+            - _type: react/element
+              name: app-x/route/RouterProvider.Link
+              props:
+                to: /app/products
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.ListItem"
+                  props:
+                    button: true
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.ListItemIcon"
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/icons.VerticalAlignCenter"
+                    - _type: react/element
+                      name: "@material-ui/core.ListItemText"
+                      props:
+                        primary: APIs
+          _order: 2
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
               props:
                 theme:
-                  _type: js/import
                   name: app-x/theme
+                  _type: js/import
+            - name: app-x/route/RouterProvider
+              _type: react/element

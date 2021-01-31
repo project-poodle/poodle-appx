@@ -33,9 +33,13 @@ import js_switch from 'app-x/spec/js_switch.js'
 import js_map from 'app-x/spec/js_map.js'
 import js_reduce from 'app-x/spec/js_reduce.js'
 import js_filter from 'app-x/spec/js_filter.js'
-// others
+// mui
 import mui_style from 'app-x/spec/mui_style.js'
 import mui_theme from 'app-x/spec/mui_theme.js'
+// routes
+import route_path from 'app-x/spec/route_path.js'
+import route_context from 'app-x/spec/route_context.js'
+// appx
 import appx_api from 'app-x/spec/appx_api.js'
 import appx_route from 'app-x/spec/appx_route.js'
 
@@ -142,6 +146,9 @@ const types = [
   // mui
   mui_style,
   mui_theme,
+  // route
+  route_path,
+  route_context,
   // appx
   appx_api,
   appx_route,

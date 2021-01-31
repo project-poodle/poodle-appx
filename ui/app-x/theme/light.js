@@ -7,7 +7,7 @@ const light = createMuiTheme({
       main: colors.blue[800]
     },
     secondary: {
-      main: colors.blue[600]
+      main: colors.blue[700]
     },
   },
   // shadows: [

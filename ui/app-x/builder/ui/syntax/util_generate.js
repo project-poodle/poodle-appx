@@ -39,6 +39,7 @@ import Function from 'app-x/icon/Function'
 import Code from 'app-x/icon/Code'
 import Branch from 'app-x/icon/Branch'
 import Route from 'app-x/icon/Route'
+import Router from 'app-x/icon/Router'
 import Effect from 'app-x/icon/Effect'
 import State from 'app-x/icon/State'
 import Form from 'app-x/icon/Form'
@@ -226,6 +227,14 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'mui/theme') {
 
     return <Theme />
+
+  } else if (input._type === 'route/path') {
+
+    return <Route />
+
+  } else if (input._type === 'route/context') {
+
+    return <Router />
 
   } else if (input._type === 'appx/api') {
 
@@ -432,6 +441,14 @@ function lookup_title_for_input(ref, input, array=false) {
     return ref ? ref : ''
 
   } else if (input._type === 'mui/theme') {
+
+    return ref ? ref : ''
+
+  } else if (input._type === 'route/path') {
+
+    return `[ ${input.path} ]`
+
+  } else if (input._type === 'route/context') {
 
     return ref ? ref : ''
 

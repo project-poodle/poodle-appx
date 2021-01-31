@@ -385,7 +385,11 @@ const InputProperties = props => {
                         validate: {
                           expressionSyntax: value => {
                             try {
-                              parseExpression(String(value))
+                              parseExpression(String(value), {
+                                plugins: [
+                                  'jsx', // support jsx
+                                ]
+                              })
                               return true
                             } catch (err) {
                               return String(err)

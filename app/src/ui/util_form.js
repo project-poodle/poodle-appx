@@ -142,7 +142,11 @@ function react_form(js_context, ref, input) {
     if (!!input.onSubmit) {
       if (isPrimitive(input.onSubmit)) {
         return t.blockStatement(
-          _js_parse_statements(js_context, input.onSubmit)
+          _js_parse_statements(js_context, input.onSubmit, {
+            plugins: [
+              'jsx', // support jsx
+            ]
+          })
         )
       } else {
         return js_process(
@@ -163,7 +167,11 @@ function react_form(js_context, ref, input) {
     if (!!input.onError) {
       if (isPrimitive(input.onError)) {
         return t.blockStatement(
-          _js_parse_statements(js_context, input.onError)
+          _js_parse_statements(js_context, input.onError, {
+            plugins: [
+              'jsx', // support jsx
+            ]
+          })
         )
       } else {
         return js_process(

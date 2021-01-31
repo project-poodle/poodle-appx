@@ -206,6 +206,8 @@ const groups = {
   ],
   // appx
   appx: [
+    'route/context',
+    'route/path',
     'appx/api',
     'appx/route',
   ],

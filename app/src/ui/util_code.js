@@ -443,12 +443,9 @@ function js_expression(js_context, ref, input) {
   }
 
   const parsed = _js_parse_expression(js_context, data, {
-    plugins:
-      js_context.JSX_CONTEXT
-      ? [
-          'jsx', // support jsx here
-        ]
-      : []
+    plugins: [
+      'jsx', // support jsx
+    ]
   })
 
   if (!!js_context.STATEMENT_CONTEXT) {
@@ -491,7 +488,7 @@ function js_statement(js_context, ref, input) {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
-            // 'jsx', // do not support jsx here
+            'jsx', // support jsx
           ]
         })
         // console.log(`statement`, statement, child_statement)
@@ -570,7 +567,7 @@ function js_function(js_context, ref, input) {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
-            // 'jsx', // do not support jsx here
+            'jsx', // support jsx
           ]
         })
         // console.log(`statement`, statement, child_statement)
@@ -2032,7 +2029,7 @@ function react_effect(js_context, ref, input) {
           // sourceType: 'module', // do not support module here
           allowReturnOutsideFunction: true, // allow return in the block statement
           plugins: [
-            // 'jsx', // do not support jsx here
+            'jsx', // support jsx
           ]
         })
         // console.log(`statement`, statement, child_statement)
@@ -2176,6 +2173,171 @@ function mui_theme(js_context, ref, input) {
   }
 }
 
+// create route path ast
+function route_path(js_context, ref, input) {
+
+  if (!('_type' in input) || input._type !== 'route/path') {
+    throw new Error(`ERROR: input._type is not [route/path] [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('path' in input)) {
+    throw new Error(`ERROR: input.path missing in [route/path] [${JSON.stringify(input)}]`)
+  }
+
+  // register material ui makeStyles
+  reg_js_import(js_context, 'react-router-dom.Route')
+
+  const childrenExpression = (() => {
+    if (!!input.children) {
+      if (!Array.isArray(input.children)) {
+        throw new Error(`ERROR: [route/path] children is not an array [${JSON.stringify(input.children)}]`)
+      }
+      return input.children.map(child => {
+        return js_process(
+          {
+            ...js_context,
+            JSX_CONTEXT: true,
+            STATEMENT_CONTEXT: false,
+          },
+          null,
+          child
+        )
+      })
+    } else {
+      return []
+    }
+  })()
+
+  // create jsx element with props and children
+  const jsx_element = t.jSXElement(
+    t.jSXOpeningElement(
+      t.jSXIdentifier('react-router-dom.Route'),
+      [
+        t.jSXAttribute(
+          t.jSXIdentifier('path'),
+          t.stringLiteral(input.path),
+        ),
+        t.jSXAttribute(
+          t.jSXIdentifier('element'),
+          !!input.element
+          ? js_process(
+              {
+                ...js_context,
+                JSX_CONTEXT: true,
+                STATEMENT_CONTEXT: false,
+              },
+              'element',
+              input.element
+            )
+          : t.jSXExpressionContainer(
+            t.nullLiteral()
+          )
+        )
+      ]
+    ),
+    t.jSXClosingElement(
+      t.jSXIdentifier('react-router-dom.Route'),
+    ),
+    childrenExpression
+  )
+
+  // check statement context
+  if (js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          callExpression,
+        )
+      ]
+    )
+  } else {
+    return jsx_element
+  }
+}
+
+// create route context ast
+function route_context(js_context, ref, input) {
+
+  if (!('_type' in input) || input._type !== 'route/context') {
+    throw new Error(`ERROR: input._type is not [route/context] [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  if (! ('name' in input)) {
+    throw new Error(`ERROR: input.name missing in [react/context] [${JSON.stringify(input)}]`)
+  }
+
+  // register
+  reg_js_import(js_context, 'react-router-dom.useNavigate')
+  reg_js_import(js_context, 'react-router-dom.useLocation')
+  reg_js_import(js_context, 'react-router-dom.useParams')
+  // reg_js_import(js_context, 'react-router-dom.useRouteMatch')
+
+  // register context name
+  reg_js_import(js_context, input.name)
+
+  // contextExpression
+  const contextExpression = t.callExpression(
+    t.identifier('react.useContext'),
+    [
+      t.identifier(input.name)
+    ]
+  )
+
+  const resultExpression = _js_parse_expression(
+    js_context,
+    `
+    (() => {
+      const routerContext = $I('react.useContext')($I('${input.name}'))
+      const _navigate = $I('react-router-dom.useNavigate')()
+      const navigate = (path) => {
+        const new_path = (routerContext.basename + '/' + path).replace(/\\/+/g, '/')
+        _navigate(new_path)
+      }
+      const _location = $I('react-router-dom.useLocation')()
+      const pathname = (() => {
+        if (_location.pathname.startsWith(routerContext.basename)) {
+          const newUrl = ('/' + _location.pathname.substring(routerContext.basename.length))
+          return newUrl.replace(/\\/+/g, '/')
+        } else {
+          return _location.pathname
+        }
+      })()
+      const params = $I('react-router-dom.useParams')()
+      // const _match = $I('react-router-dom.useRouteMatch')()
+      return {
+        ...routerContext,
+        navigate: navigate,
+        pathname: pathname,
+        params: params,
+        // match: _match,
+      }
+    })()
+    `,
+    {
+      plugins: [
+        'jsx', // support jsx here
+      ]
+    }
+  )
+
+  // if STATEMENT_CONTEXT
+  if (!!js_context.STATEMENT_CONTEXT) {
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          resultExpression
+        )
+      ]
+    )
+  } else {
+    return resultExpression
+  }
+}
+
 // create appx api ast
 function appx_api(js_context, ref, input) {
 
@@ -2235,39 +2397,18 @@ function appx_api(js_context, ref, input) {
     }
   })()
 
-  // add prep code if exist
-  const prep_statements = (() => {
-    if (!!input.prep) {
-      if (isPrimitive(input.prep)) {
-        return _js_parse_statements(
-          js_context,
-          String(input.prep)
-        )
-      } else {
-        return [
-          js_process(
-            {
-              ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: true,
-            },
-            null,
-            input.prep
-          )
-        ]
-      }
-    } else {
-      return []
-    }
-  })()
-
   // add result handler if exist
   const result_statements = (() => {
     if (!!input.result) {
       if (isPrimitive(input.result)) {
         return _js_parse_statements(
           js_context,
-          String(input.result)
+          String(input.result),
+          {
+            plugins: [
+              'jsx', // support jsx
+            ]
+          }
         )
       } else {
         return [
@@ -2294,7 +2435,12 @@ function appx_api(js_context, ref, input) {
       if (isPrimitive(input.error)) {
         return _js_parse_statements(
           js_context,
-          String(input.error)
+          String(input.error),
+          {
+            plugins: [
+              'jsx', // support jsx
+            ]
+          }
         )
       } else {
         return [
@@ -2321,7 +2467,6 @@ function appx_api(js_context, ref, input) {
     [],
     t.blockStatement(
       [
-        ...prep_statements,
         t.expressionStatement(
           t.callExpression(
             t.memberExpression(
@@ -2625,6 +2770,14 @@ function js_process(js_context, ref, input) {
   } else if (input._type === 'mui/theme') {
 
     return mui_theme(js_context, ref, input)
+
+  } else if (input._type === 'route/path') {
+
+    return route_path(js_context, ref, input)
+
+  } else if (input._type === 'route/context') {
+
+    return route_context(js_context, ref, input)
 
   } else if (input._type === 'appx/api') {
 

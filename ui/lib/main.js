@@ -46,6 +46,7 @@ export default {
   "react": react,
   "react-dom": reactDom,
   "react-dom/server": reactDomServer,
+  // propTypes
   "prop-types": propTypes,     // override original propTypes?
   // "original-prop-types": reflectivePropTypes._original,     // override original propTypes?
   "reflect-prop-types": reflectivePropTypes,
@@ -55,7 +56,7 @@ export default {
   // routers
   "hookrouter": hookrouter,
   "react-router": reactRouter,
-  "react-router/dom": reactRouterDom,
+  "react-router-dom": reactRouterDom,
   // form
   "react-hook-form": reactHookForm,
   // table

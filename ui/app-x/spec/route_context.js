@@ -3,12 +3,11 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: react/context                               (~expression|~statement)
-// name:                     # context name          (:string) - autosuggest import
-export const react_context = {
+// type: route/context                                (~expression)
+export const route_context = {
 
-  type: 'react/context',
-  desc: 'React Context',
+  type: 'route/context',
+  desc: 'Route Context',
   children: [
     {
       name: 'name',
@@ -17,7 +16,7 @@ export const react_context = {
       types: [
         {
           kind: 'class',
-          data: 'string',
+          data: 'string'
         },
       ],
       _thisNode: {
@@ -29,11 +28,11 @@ export const react_context = {
           optionsOnly: true,
         },
         examples: [
-          'app-x/builder/ui/NavProvider.Context',
+          'app-x/route/RouterProvider.Context',
         ],
       },
     },
   ]
 }
 
-export default react_context
+export default route_context

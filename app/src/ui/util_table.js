@@ -77,7 +77,12 @@ function react_table(js_context, ref, input) {
       if (typeof input.data === 'string') {
         return _js_parse_expression(
           js_context,
-          input.data
+          input.data,
+          {
+            plugins: [
+              'jsx', // support jsx
+            ]
+          }
         )
       } else {
         return js_process(              // process data if exists

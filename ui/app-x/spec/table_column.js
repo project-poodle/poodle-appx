@@ -6,7 +6,7 @@ import {
 // type: table/column
 // Header:                   # Header of column      (:string)
 // columns:                  # columns               (:array<:object>)
-export const react_table = {
+export const table_column = {
 
   type: 'table/column',
   desc: 'Table Column',
@@ -213,4 +213,4 @@ export const react_table = {
   ]
 }
 
-export default react_table
+export default table_column

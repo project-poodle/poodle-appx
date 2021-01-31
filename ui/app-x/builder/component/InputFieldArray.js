@@ -254,7 +254,11 @@ const InputFieldArray = ((props) => {
                   if (inputSpec.kind === 'input/expression') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
-                        parseExpression(String(value))
+                        parseExpression(String(value), {
+                          plugins: [
+                            'jsx', // support jsx
+                          ]
+                        })
                         return true
                       } catch (err) {
                         return String(err)
@@ -265,6 +269,9 @@ const InputFieldArray = ((props) => {
                       try {
                         parse(value, {
                           allowReturnOutsideFunction: true, // allow return in the block statement
+                          plugins: [
+                            'jsx', // support jsx
+                          ]
                         })
                         return true
                       } catch (err) {

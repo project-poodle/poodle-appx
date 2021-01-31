@@ -99,6 +99,7 @@ export const classes = {
       'react/context',
       'mui/style',
       'mui/theme',
+      'route/context',
       'appx/route',
     ],
     // icon: '@ant-design/icons.PercentageOutlined'
@@ -138,6 +139,7 @@ export const classes = {
       'js/switch',
       'js/reduce',
       'js/filter',
+      'route/path',
     ],
     // icon: 'app-x/icon.React'
   },
