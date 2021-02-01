@@ -78,6 +78,19 @@ export const react_table = {
       },
     },
     {
+      name: 'subComponent',
+      desc: 'Sub Component',
+      types: [
+        {
+          kind: 'class',
+          data: 'jsx'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+      },
+    },
+    {
       name: 'columns',
       desc: 'Columns',
       array: true,

@@ -100,6 +100,42 @@ function react_table(js_context, ref, input) {
     }
   })()
 
+  // toolbar expression
+  const toolbarExpression = (() => {
+    if (!!input.toolbar) {
+      return js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        null,
+        input.toolbar
+      )
+    } else {
+      // return null
+      return t.nullLiteral()
+    }
+  })()
+
+  // subComponent expression
+  const subComponentExpression = (() => {
+    if (!!input.subComponent) {
+      return js_process(
+        {
+          ...js_context,
+          JSX_CONTEXT: false,
+          STATEMENT_CONTEXT: false,
+        },
+        null,
+        input.subComponent
+      )
+    } else {
+      // return null
+      return t.nullLiteral()
+    }
+  })()
+
   // props expression
   const propsExpression = (() => {
     if (!!input.props) {
@@ -336,6 +372,9 @@ function react_table(js_context, ref, input) {
           display='flex'
           className={tableStyles.tool}
           >
+          {
+            toolbarExpression
+          }
           <$J $I="react-csv.CSVLink"
             filename={"${input.name}.csv"}
             data={rows.map(row => allColumns.map(column => {
@@ -581,7 +620,15 @@ function react_table(js_context, ref, input) {
     _js_parse_expression(
       js_context,
       `
-      (name, dataExpression, propsExpression, styleExpression, columnExpression) => {
+      (
+        name,
+        dataExpression,
+        propsExpression,
+        styleExpression,
+        columnExpression,
+        toolbarExpression,
+        subComponentExpression
+      ) => {
         // styles element
         ${stylesElement}
         // GlobalFilter element
@@ -665,6 +712,8 @@ function react_table(js_context, ref, input) {
       propsExpression,
       styleExpression,
       columnsExpression,
+      toolbarExpression,
+      subComponentExpression,
     ]
   )
 
