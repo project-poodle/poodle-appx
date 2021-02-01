@@ -986,16 +986,11 @@ ui_component:
                       - row
                     body:
                       - |-
-                        const apiMaps
-                            = row.ui_deployment_spec.apiMaps
-                        return Object.keys(apiMaps)
-                            .map(namespace => {
-                                const row = apiMaps[namespace]
-                                return Object.keys(row)
-                                    .map(app_name => (
-                                        `${namespace}/${app_name}`
-                                    ))
-                            }).flat().join(', ')
+                        const apiMaps =
+                          row.ui_deployment_spec.apiMaps
+                        return apiMaps.map(map => (
+                            `${map.namespace}/${map.app_name}`
+                        )).flat().join(', ')
                   Header: API Maps
                 - _type: table/column
                   id: action

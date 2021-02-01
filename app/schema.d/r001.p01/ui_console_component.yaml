@@ -980,7 +980,7 @@ ui_component:
                             name: "@material-ui/core.CardActionArea"
                             children:
                               - _type: react/element
-                                name: app-x/router.HLink
+                                name: app-x/route/RouterProvider.HLink
                                 props:
                                   href: /
                                   ui_name:

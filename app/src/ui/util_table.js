@@ -535,7 +535,9 @@ function react_table(js_context, ref, input) {
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div>
+                <div
+                  key={row.id}
+                  >
                   <div
                     {...row.getRowProps()}
                     className={tableStyles.tr}
@@ -570,6 +572,7 @@ function react_table(js_context, ref, input) {
                     (
                       <div
                         {...row.getRowProps()}
+                        key="expanded"
                         >
                         {$L('$local.renderRowPanel')({row})}
                       </div>
