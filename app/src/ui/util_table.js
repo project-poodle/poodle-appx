@@ -164,7 +164,7 @@ function react_table(js_context, ref, input) {
     }
   })()
 
-  reg_js_variable(js_context, 'GlobalFilter')
+  // reg_js_variable(js_context, '$local.GlobalFilter')
 
   // styles
   const stylesElement = `
@@ -258,12 +258,12 @@ function react_table(js_context, ref, input) {
 
   // global filter
   const globalFilterElement = `
-    function GlobalFilter({
+    const GlobalFilter = $I('react.useCallback')(({
       preGlobalFilteredRows,
       globalFilter,
       setGlobalFilter,
       className,
-    }) {
+    }) => {
       const count = preGlobalFilteredRows.length
       const [value, setValue] = $I('react.useState')(globalFilter)
       const onChange = $I('react-table.useAsyncDebounce')(value => {
@@ -288,7 +288,7 @@ function react_table(js_context, ref, input) {
               // helperText={\`Search \${count} records...\`}
         />
       )
-    }
+    }, [])
   `
 
   // Define a default UI for filtering
@@ -321,7 +321,7 @@ function react_table(js_context, ref, input) {
       <$J $I='@material-ui/core.Toolbar'
         disableGutters={true}
         >
-        <$J $L="GlobalFilter"
+        <$J $L="$local.GlobalFilter"
               preGlobalFilteredRows={preGlobalFilteredRows}
               globalFilter={state.globalFilter}
               setGlobalFilter={setGlobalFilter}

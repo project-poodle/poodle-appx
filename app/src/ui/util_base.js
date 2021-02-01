@@ -279,7 +279,7 @@ function reg_js_variable(js_context, var_full_path, kind='const', suggested_name
                 }
             })
             // update our own variable name
-            if (var_prefix) {
+            if (!!var_prefix.length) {
                 var_name = var_name + '$' + var_prefix.pop().replace(SPECIAL_CHARACTER, '_')
             } else {
                 // we have exhausted the full path, throw exception
