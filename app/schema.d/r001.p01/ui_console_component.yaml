@@ -697,7 +697,6 @@ ui_component:
             body:
               - >
                 event.preventDefault()
-
                 $I('app-x/api.login')(
                     'main',
                     states.username.value,
@@ -706,8 +705,7 @@ ui_component:
                         router.hnavigate('sys', 'console', 'base', props.consoleUrl)
                     },
                     err => {
-                        // TODO
-                        // console.log(err)
+                        // console.error(err)
                         states.error.setValue(err.message)
                     }
                 )
