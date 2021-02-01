@@ -16,6 +16,10 @@ const {
   TreeNode,
   DirectoryTree,
 } = Tree
+import {
+  useNavigate,
+  useLocation,
+} from 'react-router-dom'
 
 import * as api from 'app-x/api'
 import ReactIcon from 'app-x/icon/React'
@@ -26,6 +30,7 @@ import Code from 'app-x/icon/Code'
 import Effect from 'app-x/icon/Effect'
 import Pointer from 'app-x/icon/Pointer'
 
+import RouterProvider from 'app-x/route/RouterProvider'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import ComponentProvider from 'app-x/builder/ui/component/ComponentProvider'
 import ComponentAddDialog from 'app-x/builder/ui/component/ComponentAddDialog'
@@ -40,7 +45,6 @@ import {
   new_component_node,
   PATH_SEPARATOR,
 } from 'app-x/builder/ui/component/util'
-
 
 
 // generate tree data
@@ -195,6 +199,17 @@ const ComponentTree = (props) => {
     setDeleteDialogCallback,
   } = useContext(ComponentProvider.Context)
 
+  const router = useContext(RouterProvider.Context)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const pathname = (() => {
+    if (location.pathname.startsWith(router.basename)) {
+      return ('/' + location.pathname.substring(router.basename.length)).replace(/^\/+/, '/')
+    } else {
+      return location.pathname
+    }
+  })()
+
   // context menu
   const [ contextAnchorEl, setContextAnchorEl ] = useState(null)
 
@@ -313,6 +328,8 @@ const ComponentTree = (props) => {
             ui_component_type: item.type,
             ui_component_spec: item.spec,
           })
+          const navTarget = (`${router.basename}/ui_component/${item.key}`).replace(/\/+/g, '/')
+          navigate(navTarget)
         } else {
           // expand folder & key
           const idx = expandedKeys.indexOf(item.key)
@@ -328,6 +345,7 @@ const ComponentTree = (props) => {
         }
       })
     } else {
+      navigate(`${router.basename}/ui_component/`).replace(/\/+/g, '/')
       setSelectedKey(null)
       setContextKey(null)
       unselectNav()

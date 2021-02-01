@@ -309,23 +309,22 @@ ui_component:
                           name: react-router-dom.Routes
                           children:
                             - _type: route/path
-                              path: ui_deployments
-                              element:
-                                _type: react/element
-                                name: "@material-ui/core.Box"
-                                children:
-                                  - _type: react/element
-                                    name: self/page/Deployment
-                            - _type: route/path
-                              path: ui_apps
-                              element:
-                                _type: react/element
-                                name: "@material-ui/core.Box"
-                                children:
-                                  - _type: react/element
-                                    name: self/page/UIApps
-                            - _type: route/path
                               path: /
+                              element:
+                                _type: react/element
+                                name: self/page/Dashboard
+                            - _type: route/path
+                              path: /ui_deployments
+                              element:
+                                _type: react/element
+                                name: self/page/Deployment
+                            - _type: route/path
+                              path: /ui_apps
+                              element:
+                                _type: react/element
+                                name: self/page/UIApps
+                            - _type: route/path
+                              path: /ui_component/*
                               element:
                                 _type: react/element
                                 name: app-x/builder/ui/UI_Builder
@@ -1284,6 +1283,195 @@ ui_component:
                                 .flat().join(', ')
                   Header: Import Maps
           _order: 6
+        _test:
+          providers:
+            - name: react-redux.Provider
+              _type: react/element
+              props:
+                store:
+                  name: app-x/redux/store
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
+            - name: app-x/route/RouterProvider
+              _type: react/element
+
+
+    ############################################################
+    - namespace: sys
+      ui_name: ui
+      ui_ver: internal
+      ui_component_name: /page/Dashboard
+      ui_component_type: react/component
+      ui_component_spec:
+        ...uiApps:
+          _type: react/state
+          name: uiApps
+          setter: setUiApps
+          init: "[]"
+          _order: 1
+        ...uiDeployments:
+          _type: react/state
+          name: uiDeployments
+          setter: setUiDeployments
+          init: "[]"
+          _order: 2
+        effects:
+          _type: react/effect
+          body:
+            - _type: appx/api
+              namespace: sys
+              app_name: appx
+              method: get
+              endpoint: /ui/ui_app
+              result: setUiApps(result)
+              error: console.error(error)
+            - _type: appx/api
+              namespace: sys
+              app_name: appx
+              method: get
+              endpoint: /namespace/sys/ui_deployment
+              result: setUiDeployments(result)
+              error: console.error(error)
+          _order: 3
+        theme:
+          _type: mui/theme
+          _order: 4
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 5
+        styles:
+          _type: mui/style
+          card:
+            width: 300
+            margin:
+              _type: js/expression
+              data: theme.spacing(2)
+            padding:
+              _type: js/expression
+              data: theme.spacing(0)
+          root:
+            color:
+              _type: js/expression
+              data: theme?.palette.text.primary
+            width: 100%
+            height: 100%
+            backgroundColor:
+              _type: js/expression
+              data: theme?.palette.background.paper
+          _order: 6
+        component:
+          _type: react/element
+          name: "@material-ui/core.Box"
+          props:
+            className:
+              _type: js/expression
+              data: styles.root
+          children:
+            - _type: react/element
+              name: "@material-ui/core.Box"
+              props:
+                display: flex
+                className:
+                  _type: js/expression
+                  data: styles.root
+                alignItems: center
+                justifyContent: center
+              style:
+                backgroundColor:
+                  _type: js/expression
+                  data: theme.palette.background.default
+              children:
+                - _type: react/element
+                  name: "@material-ui/core.Card"
+                  props:
+                    className:
+                      _type: js/expression
+                      data: styles.card
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.CardActionArea"
+                      props:
+                        onClick:
+                          _type: js/expression
+                          data: e => router.navigate('/ui_apps')
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/core.Box"
+                          style:
+                            padding:
+                              _type: js/expression
+                              data: theme.spacing(2)
+                          children:
+                            - _type: react/element
+                              name: "@material-ui/core.Typography"
+                              children:
+                                - UI Apps
+                            - _type: react/element
+                              name: antd.Statistic
+                              props:
+                                value:
+                                  _type: js/expression
+                                  data: uiApps.length
+                            - _type: js/map
+                              data:
+                                _type: js/expression
+                                data: uiApps
+                              result:
+                                _type: react/element
+                                name: "@material-ui/core.Typography"
+                                props:
+                                  variant: body2
+                                children:
+                                  - _type: js/expression
+                                    data: "\\`${item.namespace} / ${item.ui_name}\\`"
+                - _type: react/element
+                  name: "@material-ui/core.Card"
+                  props:
+                    className:
+                      _type: js/expression
+                      data: styles.card
+                  children:
+                    - _type: react/element
+                      name: "@material-ui/core.CardActionArea"
+                      props:
+                        onClick:
+                          _type: js/expression
+                          data: e => router.navigate('/ui_deployments')
+                      style:
+                        padding: theme.spacing(1)
+                      children:
+                        - _type: react/element
+                          name: "@material-ui/core.Box"
+                          style:
+                            padding:
+                              _type: js/expression
+                              data: theme.spacing(2)
+                          children:
+                            - _type: react/element
+                              name: "@material-ui/core.Typography"
+                              children:
+                                - UI Deployments
+                            - _type: react/element
+                              name: antd.Statistic
+                              props:
+                                value:
+                                  _type: js/expression
+                                  data: uiDeployments.length
+                            - _type: js/map
+                              data:
+                                _type: js/expression
+                                data: uiDeployments
+                              result:
+                                _type: react/element
+                                name: "@material-ui/core.Typography"
+                                props:
+                                  variant: body2
+                                children:
+                                  - _type: js/expression
+                                    data: "\\`${item.namespace} / ${item.ui_name} / ${item.ui_deployment}\\`"
+          _order: 7
         _test:
           providers:
             - name: react-redux.Provider
