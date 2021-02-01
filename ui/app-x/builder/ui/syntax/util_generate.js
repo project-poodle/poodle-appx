@@ -446,7 +446,7 @@ function lookup_title_for_input(ref, input, array=false) {
 
   } else if (input._type === 'route/path') {
 
-    return `[ ${input.path} ]`
+    return `${input.path}`
 
   } else if (input._type === 'route/context') {
 
