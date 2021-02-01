@@ -10,7 +10,7 @@ import * as reflectivePropTypes from 'reflect-prop-types'
 import * as reactRedux from 'react-redux'
 import * as redux from 'redux'
 // routers
-import * as hookrouter from 'hookrouter'
+// import * as hookrouter from 'hookrouter'
 import * as reactRouter from 'react-router'
 import * as reactRouterDom from 'react-router-dom'
 // form
@@ -54,7 +54,7 @@ export default {
   "react-redux": reactRedux,
   "redux": redux,
   // routers
-  "hookrouter": hookrouter,
+  // "hookrouter": hookrouter,
   "react-router": reactRouter,
   "react-router-dom": reactRouterDom,
   // form

@@ -28,7 +28,7 @@ const default_import_maps = {
         "reflect-prop-types",
         "react-redux",
         "redux",
-        "hookrouter",
+        // "hookrouter",
         "react-router",
         "react-router-dom",
         "react-hook-form",

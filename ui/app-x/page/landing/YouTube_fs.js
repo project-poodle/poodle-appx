@@ -1,10 +1,4 @@
-//const React = lib['react']
-// const { useEffect } = React
 import React, { useEffect } from 'react'
-
-//const { navigate } = lib['hookrouter']
-import { navigate } from 'hookrouter'
-
 //const MaterialUI = lib['@material-ui/core']
 //const MaterialIcons = lib['@material-ui/icons']
 import { Box, Button, Grid, CssBaseline, makeStyles } from '@material-ui/core'
