@@ -1409,10 +1409,11 @@ ui_component:
                               children:
                                 - UI Apps
                             - _type: react/element
-                              name: antd.Statistic
+                              name: "@material-ui/core.Typography"
                               props:
-                                value:
-                                  _type: js/expression
+                                variant: h5
+                              children:
+                                - _type: js/expression
                                   data: uiApps.length
                             - _type: js/map
                               data:
@@ -1454,10 +1455,11 @@ ui_component:
                               children:
                                 - UI Deployments
                             - _type: react/element
-                              name: antd.Statistic
+                              name: "@material-ui/core.Typography"
                               props:
-                                value:
-                                  _type: js/expression
+                                variant: h5
+                              children:
+                                - _type: js/expression
                                   data: uiDeployments.length
                             - _type: js/map
                               data:
