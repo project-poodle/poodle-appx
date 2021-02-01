@@ -841,27 +841,19 @@ function valid_import_names() {
 }
 
 function valid_namespaces() {
-  return Object.keys(globalThis.appx.API_MAPS).sort().filter(onlyUnique)
+  return globalThis.appx.API_MAPS.api.map(api => api.namespaces).sort().filter(onlyUnique)
 }
 
 function valid_app_names() {
-  const app_names = []
-  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-    Object.keys(globalThis.appx.API_MAPS[namespace])
-      .map(app_name => {
-        app_names.push(app_name)
-      })
-  })
-  return app_names.sort().filter(onlyUnique)
+  return globalThis.appx.API_MAPS.api.map(api => api.app_name).sort().filter(onlyUnique)
 }
 
 function valid_app_deployments() {
   const app_deployments = []
-  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-    Object.keys(globalThis.appx.API_MAPS[namespace])
-      .map(app_name => {
-        app_deployments.push(deployment.app_deployments)
-      })
+  globalThis.appx.API_MAPS.api.map(api => {
+    if (!!api.deployment?.app_deployment) {
+      app_deployments.push(api.deployment.app_deployment)
+    }
   })
   return app_deployments.sort().filter(onlyUnique)
 }

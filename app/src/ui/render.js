@@ -303,7 +303,7 @@ async function handle_render(req, res, load_from_db=true) {
                 RELATIVE_URL: url.parse(req.url).pathname,
                 APPX_PATHS: { 'paths': req.appx_paths },
                 IMPORT_MAPS: ui_spec.importMaps,
-                API_MAPS: ui_deployment_spec.apiMaps,
+                API_MAPS: { 'api': req.context.ui_deployment_spec.apiMaps},
                 SELF: {
                   namespace: req.context.namespace,
                   ui_name: req.context.ui_name,

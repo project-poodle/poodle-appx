@@ -8,8 +8,8 @@ const VALID_API_STATUS = ['ok', 'error', 'info', 'warning', 'success']
 
 // compute base path from namespace and app_name
 function _get_base_path(namespace, app_name) {
-  if (!globalThis.appx.API_MAPS) {
-    throw new Error(`ERROR: appx.API_MAPS not set`)
+  if (!globalThis.appx?.API_MAPS.api) {
+    throw new Error(`ERROR: appx.API_MAPS.api not set`)
   }
 
   if (typeof namespace != 'string') {
@@ -20,23 +20,23 @@ function _get_base_path(namespace, app_name) {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (namespace in globalThis.appx.API_MAPS)) {
-    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}]`)
+  const apiMap = globalThis.appx.API_MAPS.api.find(row => {
+    return (row.namespace === namespace) && (row.app_name === app_name)
+  })
+
+  if (! apiMap) {
+    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}/${app_name}]`)
   }
 
-  if (! (app_name in globalThis.appx.API_MAPS[namespace])) {
-    throw new Error(`ERROR: appx.API_MAPS[${namespace}] missing [${app_name}]`)
-  }
-
-  if (! ('rootPath' in globalThis.appx.API_MAPS[namespace][app_name])) {
+  if (! ('rootPath' in apiMap)) {
     throw new Error(`ERROR: rootPath missing in appx.API_MAPS[${namespace}][${app_name}]`)
   }
 
-  let basePath = globalThis.appx.API_MAPS[namespace][app_name]['rootPath']
+  let basePath = apiMap['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
-    const deployment = globalThis.appx.API_MAPS[namespace][app_name]['deployment']
+  if ('deployment' in apiMap) {
+    const deployment = apiMap['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
@@ -52,8 +52,8 @@ function _get_base_path(namespace, app_name) {
 // compute app auth base path from namespace and app_name
 function _get_app_auth_base_path(namespace, app_name) {
   // validity check
-  if (!globalThis.appx.API_MAPS) {
-    throw new Error(`ERROR: appx.API_MAPS not set`)
+  if (!globalThis.appx?.API_MAPS.api) {
+    throw new Error(`ERROR: appx.API_MAPS.api not set`)
   }
 
   if (typeof namespace != 'string') {
@@ -64,23 +64,23 @@ function _get_app_auth_base_path(namespace, app_name) {
     throw new Error(`ERROR: app_name is not string [${typeof app_name}]`)
   }
 
-  if (! (namespace in globalThis.appx.API_MAPS)) {
-    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}]`)
+  const apiMap = globalThis.appx.API_MAPS.api.find(row => {
+    return (row.namespace === namespace) && (row.app_name === app_name)
+  })
+
+  if (! apiMap) {
+    throw new Error(`ERROR: appx.API_MAPS missing [${namespace}/${app_name}]`)
   }
 
-  if (! (app_name in globalThis.appx.API_MAPS[namespace])) {
-    throw new Error(`ERROR: appx.API_MAPS[${namespace}] missing [${app_name}]`)
-  }
-
-  if (! ('rootPath' in globalThis.appx.API_MAPS[namespace][app_name])) {
+  if (! ('rootPath' in apiMap)) {
     throw new Error(`ERROR: rootPath missing in appx.API_MAPS[${namespace}][${app_name}]`)
   }
 
-  let basePath = globalThis.appx.API_MAPS[namespace][app_name]['rootPath']
+  let basePath = apiMap['rootPath']
 
   // deployment is optional
-  if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
-    const deployment = globalThis.appx.API_MAPS[namespace][app_name]['deployment']
+  if ('deployment' in apiMap) {
+    const deployment = apiMap['deployment']
     if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
       throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
     }
@@ -96,7 +96,7 @@ function _get_app_auth_base_path(namespace, app_name) {
 // compute global auth base path
 function _get_global_auth_base_path(realm) {
   // validity check
-  if (!globalThis.appx.API_MAPS) {
+  if (!globalThis.appx?.API_MAPS.api) {
     throw new Error(`ERROR: appx.API_MAPS not set`)
   }
 
@@ -104,15 +104,19 @@ function _get_global_auth_base_path(realm) {
     throw new Error(`ERROR: realm is not string [${typeof realm}]`)
   }
 
-  if (! ('sys' in globalThis.appx.API_MAPS) || ! ('auth' in globalThis.appx.API_MAPS['sys'])) {
+  const apiMap = globalThis.appx.API_MAPS.api.find(row => {
+    return (row.namespace === 'sys') && (row.app_name === 'auth')
+  })
+
+  if (! apiMap) {
     throw new Error(`ERROR: appx.API_MAPS missing [sys][auth]`)
   }
 
-  if (! ('rootPath' in globalThis.appx.API_MAPS['sys']['auth'])) {
+  if (! ('rootPath' in apiMap)) {
     throw new Error(`ERROR: rootPath missing in appx.API_MAPS[sys][auth]`)
   }
 
-  let basePath = globalThis.appx.API_MAPS['sys']['auth']['rootPath']
+  let basePath = apiMap['rootPath']
 
   basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
 

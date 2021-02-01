@@ -454,15 +454,16 @@ ui_deployment:
       ui_ver: "internal"
       ui_deployment_spec:
           apiMaps:
-              sys:
-                  auth:
-                      rootPath: /auth/
-                  appx:
-                      rootPath: /api/
-                      deployment:
-                          namespace: sys
-                          app_name: appx
-                          app_deployment: base
+              - namespace: sys
+                app_name: auth
+                rootPath: /auth/
+              - namespace: sys
+                app_name: appx
+                rootPath: /api/
+                deployment:
+                    namespace: sys
+                    app_name: appx
+                    app_deployment: base
           comment: "initialize"
     # auth editor
     - namespace: "sys"
@@ -471,15 +472,16 @@ ui_deployment:
       ui_ver: "internal"
       ui_deployment_spec:
           apiMaps:
-              sys:
-                  auth:
-                      rootPath: /auth/
-                  appx:
-                      rootPath: /api/
-                      deployment:
-                          namespace: sys
-                          app_name: appx
-                          app_deployment: base
+              - namespace: sys
+                app_name: auth
+                rootPath: /auth/
+              - namespace: sys
+                app_name: appx
+                rootPath: /api/
+                deployment:
+                    namespace: sys
+                    app_name: appx
+                    app_deployment: base
           comment: "initialize"
     # service builder
     - namespace: "sys"
@@ -488,15 +490,16 @@ ui_deployment:
       ui_ver: "internal"
       ui_deployment_spec:
           apiMaps:
-              sys:
-                  auth:
-                      rootPath: /auth/
-                  appx:
-                      rootPath: /api/
-                      deployment:
-                          namespace: sys
-                          app_name: appx
-                          app_deployment: base
+              - namespace: sys
+                app_name: auth
+                rootPath: /auth/
+              - namespace: sys
+                app_name: appx
+                rootPath: /api/
+                deployment:
+                    namespace: sys
+                    app_name: appx
+                    app_deployment: base
           comment: "initialize"
     # ui builder
     - namespace: "sys"
@@ -505,15 +508,16 @@ ui_deployment:
       ui_ver: "internal"
       ui_deployment_spec:
           apiMaps:
-              sys:
-                  auth:
-                      rootPath: /auth/
-                  appx:
-                      rootPath: /api/
-                      deployment:
-                          namespace: sys
-                          app_name: appx
-                          app_deployment: base
+              - namespace: sys
+                app_name: auth
+                rootPath: /auth/
+              - namespace: sys
+                app_name: appx
+                rootPath: /api/
+                deployment:
+                    namespace: sys
+                    app_name: appx
+                    app_deployment: base
           comment: "initialize"
     # demo
     - namespace: "sys"
@@ -522,13 +526,14 @@ ui_deployment:
       ui_ver: "internal"
       ui_deployment_spec:
           apiMaps:
-              sys:
-                  auth:
-                      rootPath: /auth/
-                  appx:
-                      rootPath: /api/
-                      deployment:
-                          namespace: sys
-                          app_name: appx
-                          app_deployment: base
+              - namespace: sys
+                app_name: auth
+                rootPath: /auth/
+              - namespace: sys
+                app_name: appx
+                rootPath: /api/
+                deployment:
+                    namespace: sys
+                    app_name: appx
+                    app_deployment: base
           comment: "initialize"

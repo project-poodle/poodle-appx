@@ -116,12 +116,6 @@ function default_spec_for_type (type) {
       },
       styles: {
         _type: 'mui/style',
-        '@global': {
-          '#root': {
-            height: '100%',
-            width: '100%',
-          }
-        },
         root: {
           width: '100%',
           height: '100%',

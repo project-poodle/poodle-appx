@@ -49,21 +49,17 @@ const UserBadge = (props) => {
 
   function handleLogout() {
     setAnchorEl(null)
-    Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-      Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
-        logout(
-          props.realm,
-          (res) => {
-            redirectLogout()
-          },
-          (err) => {
-            // TODO
-            console.log(err.stack)
-            redirectLogout()
-          }
-        )
-      })
-    })
+      logout(
+        props.realm,
+        (res) => {
+          redirectLogout()
+        },
+        (err) => {
+          // TODO
+          console.log(err.stack)
+          redirectLogout()
+        }
+      )
   }
 
   // check each api map with deployment
@@ -84,12 +80,10 @@ const UserBadge = (props) => {
       )
     }
 
-    Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-      Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
-        if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
-          self_check(namespace, app_name)
-        }
-      })
+    globalThis.appx.API_MAPS.api.map(apiMap => {
+      if ('deployment' in apiMap) {
+        self_check(apiMap.namespace, apiMap.app_name)
+      }
     })
   }, [])
 
@@ -166,23 +160,23 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   // update role reducers
-  Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-    Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
-      if (! (namespace in updateState.reducers.role)) {
-        updateState.reducers.role[namespace] = {}
+  globalThis.appx.API_MAPS.api.map(apiMap => {
+    const namespace = apiMap.namespace
+    const app_name = apiMap.app_name
+    if (! (namespace in updateState.reducers.role)) {
+      updateState.reducers.role[namespace] = {}
+    }
+    if (namespace in state.roleReducer && app_name in state.roleReducer[namespace]) {
+      updateState.reducers.role[namespace][app_name] = {
+        namespace: namespace,
+        app_name: app_name,
+        realm: state.roleReducer[namespace][app_name].realm,
+        username: state.roleReducer[namespace][app_name].username,
+        data: _.cloneDeep(state.roleReducer[namespace][app_name].username),
       }
-      if (namespace in state.roleReducer && app_name in state.roleReducer[namespace]) {
-        updateState.reducers.role[namespace][app_name] = {
-          namespace: namespace,
-          app_name: app_name,
-          realm: state.roleReducer[namespace][app_name].realm,
-          username: state.roleReducer[namespace][app_name].username,
-          data: _.cloneDeep(state.roleReducer[namespace][app_name].username),
-        }
-        // update realm
-        updateState.realm = state.roleReducer[namespace][app_name].realm
-      }
-    })
+      // update realm
+      updateState.realm = state.roleReducer[namespace][app_name].realm
+    }
   })
 
   // update user reducers

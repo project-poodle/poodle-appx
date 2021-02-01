@@ -16,10 +16,6 @@ ui_component:
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
-          "@global":
-            "#root":
-              width: 100%
-              height: 100%
           _order: 1
         component:
           _type: react/element
@@ -707,18 +703,6 @@ ui_component:
                     states.username.value,
                     states.password.value,
                     res => {
-                        // console.log(res)
-                        Object.keys(globalThis.appx.API_MAPS).map(namespace => {
-                            Object.keys(globalThis.appx.API_MAPS[namespace]).map(app_name => {
-                                if ('deployment' in globalThis.appx.API_MAPS[namespace][app_name]) {
-                                    // console.log(namespace, app_name)
-                                    $I('app-x/api.me')(
-                                        namespace,
-                                        app_name
-                                    )
-                                }
-                            })
-                        })
                         router.hnavigate('sys', 'console', 'base', props.consoleUrl)
                     },
                     err => {
@@ -905,10 +889,6 @@ ui_component:
           _order: 1
         styles:
           _type: mui/style
-          "@global":
-            "#root":
-              width: 100%
-              height: 100%
           box:
             display: flex
             padding:
