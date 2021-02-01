@@ -268,7 +268,7 @@ function react_table(js_context, ref, input) {
       const [value, setValue] = $I('react.useState')(globalFilter)
       const onChange = $I('react-table.useAsyncDebounce')(value => {
         setGlobalFilter(value || undefined)
-      }, 500)
+      }, 300)
 
       return (
         <$J $I="@material-ui/core.TextField"
