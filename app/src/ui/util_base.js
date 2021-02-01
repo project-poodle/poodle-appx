@@ -1,5 +1,6 @@
 const traverse = require('@babel/traverse').default
 const { parse, parseExpression } = require('@babel/parser')
+const generate = require('@babel/generator').default
 const t = require("@babel/types")
 
 const PATH_SEPARATOR = '/'
@@ -213,6 +214,142 @@ function _js_parse_expression(js_context, data, options) {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// generate utilities
+function _js_generate_snippet(js_context, ast) {
+
+  // console.log(ast)
+
+  traverse(ast, {
+    // resolve call expressins with TOKEN_IMPORT require syntax
+    //   $I('app-x/router|navigate')
+    /*
+    CallExpression(path) {
+      // check if matches TOKEN_IMPORT syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name === TOKEN_IMPORT
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // register and import TOKEN_IMPORT syntax
+        const name = path.node.arguments[0].value
+        reg_js_import(js_context, name)
+        path.replaceWith(t.identifier(name))
+      }
+      // check if matches TOKEN_LOCAL syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name === TOKEN_LOCAL
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // register variable for TOKEN_LOCAL syntax
+        const name = path.node.arguments[0].value
+        reg_js_variable(js_context, name)
+        path.replaceWith(t.identifier(name))
+      }
+      // check if matches TOKEN_PARSED syntax
+      if (t.isIdentifier(path.node.callee)
+          && path.node.callee.name === TOKEN_PARSED
+          && path.node.arguments.length > 0
+          && t.isStringLiteral(path.node.arguments[0])) {
+        // replace with parsed syntax
+        const name = path.node.arguments[0].value
+        // console.log(`$P`, name, js_context.parsed[name])
+        path.replaceWith(js_context.parsed[name])
+      }
+    },
+    */
+    /*
+    // register all variable declarators with local prefix
+    VariableDeclarator(path) {
+      if (t.isIdentifier(path.node.id)) {
+        // register variable defined by local snippet
+        const scope = js_context.SCOPE || `$local`
+        const nodeName = `${scope}.${path.node.id.name}`
+        reg_js_variable(js_context, nodeName)
+        path.node.id.name = nodeName
+      }
+    },
+    */
+    JSXElement(path) {
+      if
+      (
+        t.isJSXOpeningElement(path.node.openingElement)
+        && t.isJSXIdentifier(path.node.openingElement.name)
+        && path.node.openingElement.name.name !== TOKEN_JSX
+      )
+      {
+        // name attr
+        const name = path.node.openingElement.name.name
+        let name_attr = null
+        if (name.startsWith('$local')) {
+          name_attr = t.jSXAttribute(
+            t.jSXIdentifier(TOKEN_LOCAL),
+            t.stringLiteral(name)
+          )
+        } else {
+          name_attr = t.jSXAttribute(
+            t.jSXIdentifier(TOKEN_IMPORT),
+            t.stringLiteral(name)
+          )
+        }
+        // create replacement
+        const replacement = t.jSXElement(
+          t.jSXOpeningElement(
+            t.jSXIdentifier(
+              TOKEN_JSX,
+            ),
+            [
+              name_attr,
+              ...path.node.openingElement.attributes
+            ]
+          ),
+          t.jSXClosingElement(
+            t.jSXIdentifier(
+              TOKEN_JSX,
+            ),
+          ),
+          path.node.children
+        )
+        // console.log(`replacement [${name}]`, name_attr, replacement)
+        // replace
+        path.replaceWith(replacement)
+      }
+    }
+  })
+
+  // ast object is already modified, return same object for convinience
+  return ast
+}
+
+// generate code snippet
+function _js_generate_expression(js_context, ast) {
+
+  try {
+
+    const program = t.file(
+      t.program(
+        [
+          t.returnStatement(
+            ast
+          )
+        ]
+      )
+    )
+
+    // pre-process ast
+    _js_generate_snippet(js_context, program)
+
+    const output = generate(program.program.body[0].argument)
+
+    return output.code
+
+  } catch (err) {
+
+    console.log(`_js_generate_expression error [${JSON.stringify(ast, null, 2)}]`)
+    throw err
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // parse variable full path
 function _parse_var_full_path(var_full_path) {
 
@@ -339,30 +476,6 @@ function reg_js_import(js_context, var_full_path, use_default=true, suggested_na
         js_context.imports[import_path].sub_vars[sub_var_name] = parsed_var.sub_vars
     }
 }
-
-/*
-// register state
-function reg_react_state(js_context, react_state) {
-
-  const { name, setter } = react_state
-
-  // if parentPath is '[]'
-  console.log(`reg_react_state`, js_context.parentPath, react_state)
-  if (!!js_context.parentPath) {
-    js_context.states[name] = {
-      parentPath: js_context.parentPath,
-      name: name
-    }
-
-    js_context.states[setter] = {
-      parentPath: js_context.parentPath,
-      name: setter
-    }
-  } else {
-
-  }
-}
-*/
 
 // register form
 function reg_react_form(js_context, name, qualifiedName, formProps) {
@@ -532,5 +645,6 @@ module.exports = {
   // _js_parse_template,
   _js_parse_statements,
   _js_parse_expression,
+  _js_generate_expression,
   _parse_var_full_path,
 }

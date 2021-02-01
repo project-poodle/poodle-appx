@@ -78,8 +78,8 @@ export const react_table = {
       },
     },
     {
-      name: 'subComponent',
-      desc: 'Sub Component',
+      name: 'rowPanel',
+      desc: 'Row Panel',
       types: [
         {
           kind: 'class',

@@ -19,6 +19,7 @@ const {
   _js_parse_snippet,
   _js_parse_statements,
   _js_parse_expression,
+  _js_generate_expression,
   _parse_var_full_path,
 } = require('./util_base')
 
@@ -118,9 +119,9 @@ function react_table(js_context, ref, input) {
     }
   })()
 
-  // subComponent expression
-  const subComponentExpression = (() => {
-    if (!!input.subComponent) {
+  // rowPanel expression
+  const rowPanelExpression = (() => {
+    if (!!input.rowPanel) {
       return js_process(
         {
           ...js_context,
@@ -128,7 +129,7 @@ function react_table(js_context, ref, input) {
           STATEMENT_CONTEXT: false,
         },
         null,
-        input.subComponent
+        input.rowPanel
       )
     } else {
       // return null
@@ -348,6 +349,19 @@ function react_table(js_context, ref, input) {
     }
   `
 
+  const renderRowPanelElement = `
+    const renderRowPanel = $I('react.useCallback')(
+      ({row}) => {
+        return (
+          ${_js_generate_expression(js_context, rowPanelExpression)}
+        )
+      },
+      []
+    )
+  `
+
+  // console.log(renderRowPanelElement)
+
   //////////////////////////////////////////////////////////////////////
   const tableElement = `
     <div
@@ -521,23 +535,45 @@ function react_table(js_context, ref, input) {
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div
+                <div>
+                  <div
                     {...row.getRowProps()}
                     className={tableStyles.tr}
-                  >
+                    >
+                    {
+                      row.cells.map(cell => {
+                        return (
+                          <div
+                              {...cell.getCellProps()}
+                              className={tableStyles.td}
+                            >
+                            <$J $I="@material-ui/core.Box"
+                                {...row.getToggleRowExpandedProps()}
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                width="100%"
+                                height="100%"
+                              >
+                              {
+                                cell.render('Cell')
+                              }
+                            </$J>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
                   {
-                    row.cells.map(cell => {
-                      return (
-                        <div
-                            {...cell.getCellProps()}
-                            className={tableStyles.td}
-                          >
-                          {
-                            cell.render('Cell')
-                          }
-                        </div>
-                      )
-                    })
+                    !!row.isExpanded
+                    &&
+                    (
+                      <div
+                        {...row.getRowProps()}
+                        >
+                        {$L('$local.renderRowPanel')({row})}
+                      </div>
+                    )
                   }
                 </div>
               )
@@ -627,7 +663,6 @@ function react_table(js_context, ref, input) {
         styleExpression,
         columnExpression,
         toolbarExpression,
-        subComponentExpression
       ) => {
         // styles element
         ${stylesElement}
@@ -635,6 +670,8 @@ function react_table(js_context, ref, input) {
         ${globalFilterElement}
         // DefaultColumnFilter element
         ${defaultFilterElement}
+        // render row element
+        ${renderRowPanelElement}
         // defaultColumn
         const defaultColumn = $I('react.useMemo')(
           () => ({
@@ -659,6 +696,7 @@ function react_table(js_context, ref, input) {
           $I('react-table.useSortBy'),
           $I('react-table.useResizeColumns'),
           $I('react-table.useFlexLayout'),
+          $I('react-table.useExpanded'),
           $I('react-table.usePagination'),
           $I('react-table.useRowSelect'),
         )
@@ -688,7 +726,7 @@ function react_table(js_context, ref, input) {
           nextPage,
           previousPage,
           setPageSize,
-          state: { pageIndex, pageSize },
+          state: { pageIndex, pageSize, expanded },
         } = useTableProps
         // menu and anchorEl
         const columnIconRef = React.createRef()
@@ -713,7 +751,6 @@ function react_table(js_context, ref, input) {
       styleExpression,
       columnsExpression,
       toolbarExpression,
-      subComponentExpression,
     ]
   )
 

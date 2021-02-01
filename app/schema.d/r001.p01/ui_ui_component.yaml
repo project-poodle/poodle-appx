@@ -929,14 +929,14 @@ ui_component:
         styles:
           _type: mui/style
           root:
-            width: 100%
-            height: 100%
             color:
               _type: js/expression
               data: theme.palette.text.primary
+            width: 100%
+            height: 100%
             backgroundColor:
               _type: js/expression
-              data: theme.palette.background.paper
+              data: theme.palette.background.default
           _order: 3
         component:
           _type: react/element
@@ -947,10 +947,28 @@ ui_component:
               data: styles.root
           children:
             - _type: react/table
-              name: table
-              data:
-                _type: js/expression
-                data: deployments
+              name: ui_deployments
+              data: deployments
+              toolbar:
+                _type: react/element
+                name: "@material-ui/core.IconButton"
+                children:
+                  - _type: react/element
+                    name: "@material-ui/icons.AddOutlined"
+              rowPanel:
+                _type: react/element
+                name: "@material-ui/core.Box"
+                children:
+                  - _type: react/element
+                    name: "@material-ui/core.Typography"
+                    children:
+                      - _type: js/expression
+                        data: |-
+                          JSON.stringify(
+                              row.original.ui_deployment_spec.apiMaps,
+                              null,
+                              2
+                          )
               columns:
                 - _type: table/column
                   id: namespace
@@ -965,22 +983,9 @@ ui_component:
                   accessor: ui_ver
                   Header: Version
                 - _type: table/column
-                  id: importMaps
-                  accessor:
-                    _type: js/function
-                    params:
-                      - row
-                    body:
-                      - return JSON.stringify(row.ui_spec.importMaps, null, 2)
-                  Header: Import Maps
-                - _type: table/column
                   id: ui_deployment
                   accessor: ui_deployment
                   Header: Deployment
-                - _type: table/column
-                  id: comment
-                  accessor: ui_deployment_spec.comment
-                  Header: Comment
                 - _type: table/column
                   id: apiMaps
                   accessor:
@@ -988,7 +993,17 @@ ui_component:
                     params:
                       - row
                     body:
-                      - return JSON.stringify(row.ui_deployment_spec.apiMaps, null, 2)
+                      - |-
+                        const apiMaps
+                            = row.ui_deployment_spec.apiMaps
+                        return Object.keys(apiMaps)
+                            .map(namespace => {
+                                const row = apiMaps[namespace]
+                                return Object.keys(row)
+                                    .map(app_name => (
+                                        `${namespace}/${app_name}`
+                                    ))
+                            }).flat().join(', ')
                   Header: API Maps
                 - _type: table/column
                   id: action
@@ -1034,7 +1049,6 @@ ui_component:
                 theme:
                   name: app-x/theme
                   _type: js/import
-
 
 
     ############################################################
