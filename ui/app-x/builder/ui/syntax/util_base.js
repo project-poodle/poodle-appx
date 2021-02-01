@@ -841,7 +841,7 @@ function valid_import_names() {
 }
 
 function valid_namespaces() {
-  return globalThis.appx.API_MAPS.api.map(api => api.namespaces).sort().filter(onlyUnique)
+  return globalThis.appx.API_MAPS.api.map(api => api.namespace).sort().filter(onlyUnique)
 }
 
 function valid_app_names() {

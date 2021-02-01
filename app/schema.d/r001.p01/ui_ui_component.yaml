@@ -303,9 +303,15 @@ ui_component:
                                 name: "@material-ui/core.Box"
                                 children:
                                   - _type: react/element
-                                    name: "@material-ui/core.Typography"
-                                    children:
-                                      - ui_deployments
+                                    name: "self/page/Deployment"
+                            - _type: route/path
+                              path: ui_apps
+                              element:
+                                _type: react/element
+                                name: "@material-ui/core.Box"
+                                children:
+                                  - _type: react/element
+                                    name: "self/page/UIApps"
                             - _type: route/path
                               path: /
                               element:
@@ -448,7 +454,7 @@ ui_component:
                 - _type: react/element
                   name: app-x/route/RouterProvider.Link
                   props:
-                    to: /ui_settings
+                    to: /ui_apps
                   children:
                     - _type: react/element
                       name: "@material-ui/core.ListItem"
@@ -1150,4 +1156,93 @@ ui_component:
         _test:
           providers:
             - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
+
+
+    ############################################################
+    - namespace: sys
+      ui_name: ui
+      ui_ver: internal
+      ui_component_name: /page/UIApps
+      ui_component_type: react/component
+      ui_component_spec:
+        theme:
+          _type: mui/theme
+          _order: 1
+        styles:
+          _type: mui/style
+          root:
+            color:
+              _type: js/expression
+              data: theme?.palette.text.primary
+            width: 100%
+            height: 100%
+            backgroundColor:
+              _type: js/expression
+              data: theme?.palette.background.paper
+          _order: 2
+        ...uiApps:
+          _type: react/state
+          name: uiApps
+          setter: setUiApps
+          init: "[]"
+          _order: 3
+        effects:
+          _type: react/effect
+          body:
+            - _type: appx/api
+              namespace: sys
+              app_name: appx
+              method: get
+              endpoint: /ui/ui_app
+              result: |-
+                console.log('uiApps', result)
+                setUiApps(result)
+              error: console.error(error)
+          _order: 4
+        router:
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
+          _order: 5
+        component:
+          _type: react/element
+          name: "@material-ui/core.Box"
+          props:
+            className:
+              _type: js/expression
+              data: styles.root
+          children:
+            - _type: react/table
+              name: ui_app
+              data: uiApps
+              columns:
+                - _type: table/column
+                  id: ui_name
+                  accessor: ui_name
+                  Header: UI App
+                - _type: table/column
+                  id: ui_ver
+                  accessor: ui_ver
+                  Header: Version
+                - _type: table/column
+                  id: importMaps
+                  accessor:
+                    _type: js/function
+                    params:
+                      - row
+                    body:
+                      - return JSON.stringify(row.ui_spec.importMaps, null, 2)
+                  Header: Import Maps
+          _order: 6
+        _test:
+          providers:
+            - name: react-redux.Provider
+              _type: react/element
+              props:
+                store:
+                  name: app-x/redux/store
+                  _type: js/import
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
+            - name: app-x/route/RouterProvider
               _type: react/element
