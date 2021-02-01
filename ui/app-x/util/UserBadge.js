@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { A, HLink, navigate, hnavigate } from 'app-x/router'
+import RouterProvider, { hnavigate } from 'app-x/route/RouterProvider'
 import PropTypes from 'prop-types'
 import {
   Typography,
@@ -17,11 +17,17 @@ import {
   ExitToApp,
   AccountCircleOutlined,
 } from '@material-ui/icons'
+import {
+  useNavigate,
+} from 'react-router-dom'
 
 import { logout, me } from 'app-x/api'
 
 // user badge
 const UserBadge = (props) => {
+
+  // const router = React.useContext(RouterProvider.Context)
+  const navigate = useNavigate()
 
   const styles = (makeStyles(theme => ({
     fab: {
