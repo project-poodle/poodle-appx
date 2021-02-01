@@ -696,7 +696,7 @@ ui_component:
               - event
             body:
               - >
-                event.preventDefault()
+                event.preventDefault();
                 $I('app-x/api.login')(
                     'main',
                     states.username.value,
