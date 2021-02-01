@@ -205,6 +205,9 @@ ui_component:
           _type: react/element
           name: self/nav/uiNav
           _order: 1
+        theme:
+          _type: mui/theme
+          _order: 2
         styles:
           _type: mui/style
           root:
@@ -221,15 +224,15 @@ ui_component:
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
-          _order: 2
+          _order: 3
         router:
           _type: route/context
           name: app-x/route/RouterProvider.Context
-          _order: 3
+          _order: 4
         mobileNav:
           _type: react/context
           name: self/page/MobileNavProvider.Context
-          _order: 4
+          _order: 5
         component:
           _type: react/element
           name: antd.Layout
@@ -287,6 +290,15 @@ ui_component:
                             className:
                               _type: js/expression
                               data: styles.sideNav
+                          style:
+                            border: 1
+                            borderTop: 0
+                            borderLeft: 0
+                            borderColor:
+                              _type: js/expression
+                              data: theme.palette.divider
+                            borderStyle: dotted
+                            borderBottom: "0"
                           children:
                             - _type: js/expression
                               data: uiNav
@@ -303,7 +315,7 @@ ui_component:
                                 name: "@material-ui/core.Box"
                                 children:
                                   - _type: react/element
-                                    name: "self/page/Deployment"
+                                    name: self/page/Deployment
                             - _type: route/path
                               path: ui_apps
                               element:
@@ -311,7 +323,7 @@ ui_component:
                                 name: "@material-ui/core.Box"
                                 children:
                                   - _type: react/element
-                                    name: "self/page/UIApps"
+                                    name: self/page/UIApps
                             - _type: route/path
                               path: /
                               element:
@@ -326,7 +338,7 @@ ui_component:
                               element:
                                 _type: react/element
                                 name: app-x/page/error/NotFoundView
-          _order: 5
+          _order: 6
         _test:
           providers:
             - name: react-redux.Provider
@@ -337,10 +349,6 @@ ui_component:
                   _type: js/import
             - name: app-x/theme/GlobalStyleProvider
               _type: react/element
-              props:
-                theme:
-                  name: app-x/theme
-                  _type: js/import
             - name: self/page/MobileNavProvider
               _type: react/element
             - name: app-x/builder/ui/NavProvider
@@ -934,7 +942,7 @@ ui_component:
             height: 100%
             backgroundColor:
               _type: js/expression
-              data: theme.palette.background.default
+              data: theme.palette.background.paper
           _order: 3
         component:
           _type: react/element
@@ -1066,7 +1074,7 @@ ui_component:
               method: get
               endpoint: /namespace/sys/app/appx/internal/api
               result: |-
-                console.log(result)
+                // console.log(result)
                 setApiList(result)
               error: console.error(error)
           _order: 2
@@ -1196,7 +1204,7 @@ ui_component:
               method: get
               endpoint: /ui/ui_app
               result: |-
-                console.log('uiApps', result)
+                // console.log('uiApps', result)
                 setUiApps(result)
               error: console.error(error)
           _order: 4
@@ -1215,7 +1223,35 @@ ui_component:
             - _type: react/table
               name: ui_app
               data: uiApps
+              toolbar:
+                _type: react/element
+                name: "@material-ui/core.IconButton"
+                children:
+                  - _type: react/element
+                    name: "@material-ui/icons.AddOutlined"
+              rowPanel:
+                _type: react/element
+                name: "@material-ui/core.Box"
+                props:
+                  display: flex
+                  justifyContent: center
+                  alignItems: center
+                children:
+                  - _type: react/element
+                    name: "@material-ui/core.Typography"
+                    children:
+                      - _type: js/expression
+                        data: |-
+                          JSON.stringify(
+                              row.original.ui_spec.importMaps,
+                              null,
+                              2
+                          )
               columns:
+                - _type: table/column
+                  id: namespace
+                  accessor: namespace
+                  Header: Namespace
                 - _type: table/column
                   id: ui_name
                   accessor: ui_name
@@ -1225,13 +1261,27 @@ ui_component:
                   accessor: ui_ver
                   Header: Version
                 - _type: table/column
+                  id: entry
+                  accessor: ui_spec.index.entry
+                  Header: Entry Point
+                - _type: table/column
+                  id: title
+                  accessor: ui_spec.index.title
+                  Header: Title
+                - _type: table/column
                   id: importMaps
                   accessor:
                     _type: js/function
                     params:
                       - row
                     body:
-                      - return JSON.stringify(row.ui_spec.importMaps, null, 2)
+                      - |-
+                        const imports =
+                        Object.keys(row.ui_spec.importMaps.imports)
+                        const libs =
+                        Object.keys(row.ui_spec.importMaps.libs)
+                        return [].concat(imports, libs)
+                                .flat().join(', ')
                   Header: Import Maps
           _order: 6
         _test:
