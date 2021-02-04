@@ -12,17 +12,15 @@ schema, rest API, and UI based on user defined model schema.
     -- edit app/init.d/init.yaml
        update credentials and mysql connection info
 
-    $ cd app && npm install && cd -                      (alternatively, 'make build')
+    $ make build    (this will build both the server and the client)
 
-    $ cd ui && npm install && cd -                       (alternatively, 'make build')
+    $ make init     (this will initialize the database)
 
-    $ sudo ./app/init.d/init.sh ./app/init.d/init.yaml   (alternatively, 'make init')
+    $ make run      (this will start the server)
 
-    $ ./app/schema.d/r001.p1/run.sh                      (alternatively, 'make init')
+    -- Use a browser to connect to http://localhost:3000/
 
-    $ ./app/app.sh -c ./app/conf.d/mysql_appx.conf       (alternatively, 'make')
-
-    -- start a new terminal
+    -- To check out the APIs, start a new terminal
 
     $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
 
