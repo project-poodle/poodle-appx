@@ -12,7 +12,7 @@ schema, rest API, and UI based on user defined model schema.
     -- edit app/init.d/init.yaml
        update credentials and mysql connection info
 
-    $ make build    (this will build both the server and the client)
+    $ make build    (this will build both server and client)
 
     $ make init     (this will initialize the database)
 
@@ -20,7 +20,9 @@ schema, rest API, and UI based on user defined model schema.
 
     -- Use a browser to connect to http://localhost:3000/
 
-    -- To check out the APIs, start a new terminal
+
+
+    -- (Optional) To check out the APIs from CLI, start a new terminal
 
     $ http -a 'appx@LOCAL:P@@dle101' 'http://localhost:3000/api/sys/appx/base/namespace'
 
