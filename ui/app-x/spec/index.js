@@ -29,7 +29,7 @@ import js_expression from 'app-x/spec/js_expression.js'
 import js_statement from 'app-x/spec/js_statement.js'
 import js_function from 'app-x/spec/js_function.js'
 // map, reduce, swith, filter
-import js_switch from 'app-x/spec/js_switch.js'
+import js_condition from 'app-x/spec/js_condition.js'
 import js_map from 'app-x/spec/js_map.js'
 import js_reduce from 'app-x/spec/js_reduce.js'
 import js_filter from 'app-x/spec/js_filter.js'
@@ -139,7 +139,7 @@ const types = [
   js_statement,
   js_function,
   // map, reduce, switch, filter
-  js_switch,
+  js_condition,
   js_map,
   js_reduce,
   js_filter,

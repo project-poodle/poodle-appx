@@ -169,15 +169,15 @@ const YamlEditor = props => {
           // preserve data._ref, data._array, etc.
           parsed.data._ref = lookupNode.data._ref
           parsed.data._array = lookupNode.data._array
-          // the following can include condition for js/switch
+          // the following can include condition for js/condition
           Object.keys(lookupNode.data).map(key => {
             if (! (key in parsed.data)) {
               parsed.data[key] = lookupNode.data[key]
             }
           })
-          // check if parent is js/switch
+          // check if parent is js/condition
           // const lookupParent = tree_lookup(resultTree, lookupNode.parentKey)
-          // if (lookupParent?.data?._type === 'js/switch') {
+          // if (lookupParent?.data?._type === 'js/condition') {
           //   // if yes, preserve condition
           //   if (lookupNode?.data?._ref !== 'default') {
           //     parsed.data.condition = lookupNode.data.condition

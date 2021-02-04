@@ -194,7 +194,7 @@ const groups = {
   ],
   // js controls
   js_control: [
-    'js/switch',
+    'js/condition',
     'js/map',
     'js/reduce',
     'js/filter',

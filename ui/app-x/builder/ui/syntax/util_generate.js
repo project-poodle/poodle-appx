@@ -156,7 +156,7 @@ function lookup_icon_for_input(input) {
 
     return <Function />
 
-  } else if (input._type === 'js/switch') {
+  } else if (input._type === 'js/condition') {
 
     return <Branch />
 
@@ -356,7 +356,7 @@ function lookup_title_for_input(ref, input, array=false) {
       +  ')'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
-  } else if (input._type === 'js/switch') {
+  } else if (input._type === 'js/condition') {
 
     return prefix + 'Switch'
 

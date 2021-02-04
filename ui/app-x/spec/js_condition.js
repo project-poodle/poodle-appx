@@ -3,15 +3,15 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: js/switch                                   (~expression|~statement)
+// type: js/condition                                (~expression|~statement)
 // children:
 //   - condition:            # condition expression  (:expression)
 //     result:               # result data           (:expression|:statement)
 // default:                  # default data          (:expression|:statement)
-export const js_switch = {
+export const js_condition = {
 
-  type: 'js/switch',
-  desc: 'Switch',
+  type: 'js/condition',
+  desc: 'Condition',
   _expand: true,
   children: [
     {
@@ -147,4 +147,4 @@ export const js_switch = {
   ],
 }
 
-export default js_switch
+export default js_condition

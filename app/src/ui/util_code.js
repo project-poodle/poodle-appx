@@ -671,10 +671,10 @@ function js_call(js_context, ref, input) {
 }
 
 // create switch ast
-function js_switch(js_context, ref, input) {
+function js_condition(js_context, ref, input) {
 
-  if (!('_type' in input) || input._type !== 'js/switch') {
-    throw new Error(`ERROR: input._type is not [js/switch] [${input._type}] [${JSON.stringify(input)}]`)
+  if (!('_type' in input) || input._type !== 'js/condition') {
+    throw new Error(`ERROR: input._type is not [js/condition] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
   // create default return statement
@@ -713,16 +713,16 @@ function js_switch(js_context, ref, input) {
     // stack the conditions
     [...input.children].reverse().map(child => {
       if (!child) {
-        throw new Error(`ERROR: [js/switch] child is empty [${JSON.stringify(child)}]`)
+        throw new Error(`ERROR: [js/condition] child is empty [${JSON.stringify(child)}]`)
       }
       if (typeof child !== 'object') {
-        throw new Error(`ERROR: [js/switch] child is not object type [${JSON.stringify(child)}]`)
+        throw new Error(`ERROR: [js/condition] child is not object type [${JSON.stringify(child)}]`)
       }
       if (! ('condition' in child)) {
-        throw new Error(`ERROR: [js/switch] child missing [condition] [${JSON.stringify(child)}]`)
+        throw new Error(`ERROR: [js/condition] child missing [condition] [${JSON.stringify(child)}]`)
       }
       if (! ('result' in child)) {
-        throw new Error(`ERROR: [js/switch] child missing [result] [${JSON.stringify(child)}]`)
+        throw new Error(`ERROR: [js/condition] child missing [result] [${JSON.stringify(child)}]`)
       }
       // process statement body
       const processed = js_process(
@@ -2683,9 +2683,9 @@ function js_process(js_context, ref, input) {
 
     return js_call(js_context, ref, input)
 
-  } else if (input._type === 'js/switch') {
+  } else if (input._type === 'js/condition') {
 
-    return js_switch(js_context, ref, input)
+    return js_condition(js_context, ref, input)
 
   } else if (input._type === 'js/map') {
 
