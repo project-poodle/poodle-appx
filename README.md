@@ -1,3 +1,5 @@
+<img alt="Poodle Logo" src="./poodle.svg" width="320px" height="320px" />
+
 # Project Poodle - App-X
 
 Project Poodle - AppX - app builder
