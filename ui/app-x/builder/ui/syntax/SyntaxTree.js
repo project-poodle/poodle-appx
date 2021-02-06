@@ -839,7 +839,7 @@ const SyntaxTree = (props) => {
     } else if (!!dropParent.isLeaf) {
       notification.info({
         message: `Move not Allowed`,
-        description: `Child not allowed for [ ${dropParent?.data._type.replace('/', ' / ')} ]`,
+        description: `Child not allowed for [ ${dropParent?.data._type.replaceAll('/', ' / ')} ]`,
         placement: 'bottomLeft',
       })
       return
@@ -850,7 +850,7 @@ const SyntaxTree = (props) => {
     if (!accepted_types.includes(dragObj.data._type)) {
       notification.info({
         message: `Move not Allowed`,
-        description: `Move [ ${dragObj?.data._type.replace('/', ' / ')} ] to [ ${dropParent?.data._type.replace('/', ' / ')} ] is not allowed`,
+        description: `Move [ ${dragObj?.data._type.replaceAll('/', ' / ')} ] to [ ${dropParent?.data._type.replaceAll('/', ' / ')} ] is not allowed`,
         placement: 'bottomLeft',
       })
       return
@@ -987,7 +987,7 @@ const SyntaxTree = (props) => {
             return (
               <Tooltip
                 key={type}
-                title={type.replace('/', ' / ')}
+                title={type.replaceAll('/', ' / ')}
                 placement="left"
                 >
                 <AntButton

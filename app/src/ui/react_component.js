@@ -76,13 +76,14 @@ async function handle_react_component(req, res) {
 
         // process context
         const js_context = {
+            spec: req.appx_spec,
             variables: {},
             imports: {},
             states: {},
             forms: {},
             tables: {},
             parsed: {},
-            appx: req.context
+            appx: req.context,
         }
 
         // ui_elem

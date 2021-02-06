@@ -13,9 +13,6 @@ import input_text from 'app-x/spec/input_text.js'
 import input_switch from 'app-x/spec/input_switch.js'
 import input_select from 'app-x/spec/input_select.js'
 import input_rule from 'app-x/spec/input_rule.js'
-// table and table options
-import react_table from 'app-x/spec/react_table.js'
-import table_column from 'app-x/spec/table_column.js'
 // javascript classes
 import js_null from 'app-x/spec/js_null.js'
 import js_string from 'app-x/spec/js_string.js'
@@ -39,9 +36,11 @@ import mui_theme from 'app-x/spec/mui_theme.js'
 // routes
 import route_path from 'app-x/spec/route_path.js'
 import route_context from 'app-x/spec/route_context.js'
-// appx
+// appx table and table options
+import appx_table from 'app-x/spec/appx_table.js'
+import appx_table_column from 'app-x/spec/appx_table_column.js'
+// appx api
 import appx_api from 'app-x/spec/appx_api.js'
-import appx_route from 'app-x/spec/appx_route.js'
 
 // check type spec
 function check_type_spec(typeSpec) {
@@ -124,8 +123,8 @@ const types = [
   input_select,
   input_rule,
   // table and table options
-  react_table,
-  table_column,
+  appx_table,
+  appx_table_column,
   // javascript classes,
   js_null,
   js_string,
@@ -151,7 +150,6 @@ const types = [
   route_context,
   // appx
   appx_api,
-  appx_route,
   // map
 ]
 .map(item => {

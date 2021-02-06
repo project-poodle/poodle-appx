@@ -9,8 +9,8 @@ const {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
-  JSX_CONTEXT,
-  STATEMENT_CONTEXT,
+  CONTEXT_JSX,
+  CONTEXT_STATEMENT,
   // REQUIRE_FUNCTION,
   isPrimitive,
   capitalize,
@@ -22,6 +22,10 @@ const {
   _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,
+  lookup_type_for_data,
+  type_matches_spec,
+  data_matches_spec,
+  check_input_data,
 } = require('./util_base')
 const {
   REACT_FORM_METHODS,
@@ -32,10 +36,9 @@ const {
   input_rule,
 } = require('./util_form')
 const {
-  REACT_TABLE_METHODS,
-  react_table,
-  table_column,
-} = require('./util_table')
+  template_react_element,
+  template_js_object,
+} = require('./util_template')
 
 ////////////////////////////////////////////////////////////////////////////////
 // create primitive js ast
@@ -66,7 +69,8 @@ function js_primitive(js_context, ref, input) {
       throw new Error(`ERROR: input is not primitive [${typeof input}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -76,7 +80,7 @@ function js_primitive(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       result
     )
@@ -92,7 +96,8 @@ function js_string(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [js/string] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -102,7 +107,7 @@ function js_string(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       t.stringLiteral(String(input.data))
     )
@@ -118,7 +123,8 @@ function js_number(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [js/number] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -128,7 +134,7 @@ function js_number(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       t.numericLiteral(Number(input.data))
     )
@@ -144,7 +150,8 @@ function js_boolean(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [js/boolean] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -154,7 +161,7 @@ function js_boolean(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       t.booleanLiteral(Boolean(input.data))
     )
@@ -170,7 +177,8 @@ function js_null(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [js/null] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -180,7 +188,7 @@ function js_null(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       t.nullLiteral()
     )
@@ -212,8 +220,8 @@ function js_array(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         row
@@ -221,7 +229,8 @@ function js_array(js_context, ref, input) {
     })
   )
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -231,7 +240,7 @@ function js_array(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       arrayExpression
     )
@@ -267,8 +276,8 @@ function js_object(js_context, ref, input) {
             (
               {
                 ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: false,
+                CONTEXT_STATEMENT: false,
               },
               null,
               value
@@ -281,8 +290,8 @@ function js_object(js_context, ref, input) {
             (
               {
                 ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: false,
+                CONTEXT_STATEMENT: false,
               },
               key,
               value
@@ -292,7 +301,8 @@ function js_object(js_context, ref, input) {
       })
   )
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -302,7 +312,7 @@ function js_object(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       objectExpression
     )
@@ -325,7 +335,8 @@ function js_import(js_context, ref, input) {
   reg_js_import(js_context, input.name)
 
   // return imported name as result
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -335,7 +346,7 @@ function js_import(js_context, ref, input) {
         )
       ]
     )
-  } else if (!!js_context.JSX_CONTEXT) {
+  } else if (!!js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       t.identifier(input.name)
     )
@@ -393,8 +404,8 @@ function js_variable(js_context, ref, input) {
             (
               {
                 ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: false,
+                CONTEXT_STATEMENT: false,
               },
               ref,
               {
@@ -406,8 +417,8 @@ function js_variable(js_context, ref, input) {
             (
               {
                 ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: false,
+                CONTEXT_STATEMENT: false,
               },
               ref,
               input.expression
@@ -448,7 +459,8 @@ function js_expression(js_context, ref, input) {
     ]
   })
 
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -458,7 +470,7 @@ function js_expression(js_context, ref, input) {
         )
       ]
     )
-  } else if (js_context.JSX_CONTEXT) {
+  } else if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       parsed
     )
@@ -502,8 +514,8 @@ function js_statement(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: true,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: true,
           },
           null,
           statement
@@ -581,8 +593,8 @@ function js_function(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: true,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: true,
           },
           null,
           statement
@@ -609,7 +621,8 @@ function js_function(js_context, ref, input) {
     input.async ? true : false
   )
 
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -619,7 +632,7 @@ function js_function(js_context, ref, input) {
         )
       ]
     )
-  } else if (js_context.JSX_CONTEXT) {
+  } else if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       functionExpression
     )
@@ -646,8 +659,8 @@ function js_call(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         param))
@@ -655,12 +668,12 @@ function js_call(js_context, ref, input) {
   )
 
   // check statement context
-  if (!!js_context.STATEMENT_CONTEXT) {
+  if (!!js_context.CONTEXT_STATEMENT) {
     return t.expressionStatement(
       callExpression
     )
   } else {
-    if (!!js_context.JSX_CONTEXT) {
+    if (!!js_context.CONTEXT_JSX) {
       return t.jSXExpressionContainer(
         callExpression
       )
@@ -679,7 +692,7 @@ function js_condition(js_context, ref, input) {
 
   // create default return statement
   let ifElseStatements =
-    !!js_context.STATEMENT_CONTEXT
+    !!js_context.CONTEXT_STATEMENT
     ? t.blockStatement([])
     : t.returnStatement(
         t.nullLiteral()
@@ -688,15 +701,15 @@ function js_condition(js_context, ref, input) {
     const processed = js_process(
       {
         ...js_context,
-        JSX_CONTEXT: false
-        // STATEMENT_CONTEXT: preserve
+        CONTEXT_JSX: false
+        // CONTEXT_STATEMENT: preserve
       },
       null,
       input.default
     )
     // update if else statements
     ifElseStatements =
-      !!js_context.STATEMENT_CONTEXT
+      !!js_context.CONTEXT_STATEMENT
       ? processed
       : t.returnStatement(
           processed
@@ -728,8 +741,8 @@ function js_condition(js_context, ref, input) {
       const processed = js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false
-          // STATEMENT_CONTEXT: preserve
+          CONTEXT_JSX: false
+          // CONTEXT_STATEMENT: preserve
         },
         null,
         child.result
@@ -739,8 +752,8 @@ function js_condition(js_context, ref, input) {
         js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: false,
           },
           null,
           {
@@ -748,7 +761,7 @@ function js_condition(js_context, ref, input) {
             data: String(child.condition),
           }
         ),
-        !!js_context.STATEMENT_CONTEXT
+        !!js_context.CONTEXT_STATEMENT
           ? processed
           : t.returnStatement(
               processed
@@ -759,7 +772,7 @@ function js_condition(js_context, ref, input) {
   }
 
   // check statement context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
     // if statement context
     return ifElseStatements
   } else {
@@ -777,7 +790,7 @@ function js_condition(js_context, ref, input) {
       []
     )
     // return with jsx context
-    if (js_context.JSX_CONTEXT) {
+    if (js_context.CONTEXT_JSX) {
       return t.jSXExpressionContainer(
         callExpression
       )
@@ -801,8 +814,8 @@ function js_map(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         input.data
@@ -816,19 +829,19 @@ function js_map(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false
-          // STATEMENT_CONTEXT: preserve
+          CONTEXT_JSX: false
+          // CONTEXT_STATEMENT: preserve
         },
         null,
         input.result
       )
-    : !!js_context.STATEMENT_CONTEXT
+    : !!js_context.CONTEXT_STATEMENT
       ? t.blockStatement([])
       : t.nullLiteral()
 
   // result
   const resultStatement =
-    !!js_context.STATEMENT_CONTEXT
+    !!js_context.CONTEXT_STATEMENT
     ? processed
     : t.returnStatement(processed)
 
@@ -989,11 +1002,11 @@ function js_map(js_context, ref, input) {
   )
 
   // return with context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
     return t.expressionStatement(
       callExpression
     )
-  } else if (js_context.JSX_CONTEXT) {
+  } else if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -1020,8 +1033,8 @@ function js_reduce(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         input.data
@@ -1035,8 +1048,8 @@ function js_reduce(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         {
@@ -1057,8 +1070,8 @@ function js_reduce(js_context, ref, input) {
         (
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: false,
           },
           null,
           {
@@ -1070,8 +1083,8 @@ function js_reduce(js_context, ref, input) {
         (
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: false,
           },
           null,
           input.init,
@@ -1241,11 +1254,12 @@ function js_reduce(js_context, ref, input) {
   )
 
   // return with context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.expressionStatement(
       callExpression
     )
-  } else if (js_context.JSX_CONTEXT) {
+  } else if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -1272,8 +1286,8 @@ function js_filter(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         input.data
@@ -1287,8 +1301,8 @@ function js_filter(js_context, ref, input) {
       (
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         {
@@ -1459,11 +1473,12 @@ function js_filter(js_context, ref, input) {
   )
 
   // return with context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.expressionStatement(
       callExpression
     )
-  } else if (js_context.JSX_CONTEXT) {
+  } else if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       callExpression
     )
@@ -1501,8 +1516,8 @@ function react_element(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -1520,8 +1535,8 @@ function react_element(js_context, ref, input) {
       result = react_element_props(
         {
           ...js_context,
-          JSX_CONTEXT: true,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: true,
+          CONTEXT_STATEMENT: false,
         },
         input.props
       )
@@ -1553,14 +1568,15 @@ function react_element(js_context, ref, input) {
     react_element_children(
       {
         ...js_context,
-        JSX_CONTEXT: true,
-        STATEMENT_CONTEXT: false,
+        CONTEXT_JSX: true,
+        CONTEXT_STATEMENT: false,
       },
       input.children
     )
   )
 
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -1593,8 +1609,8 @@ function react_html(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -1612,8 +1628,8 @@ function react_html(js_context, ref, input) {
       result = react_element_props(
         {
           ...js_context,
-          JSX_CONTEXT: true,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: true,
+          CONTEXT_STATEMENT: false,
         },
         input.props
       )
@@ -1645,14 +1661,15 @@ function react_html(js_context, ref, input) {
     react_element_children(
       {
         ...js_context,
-        JSX_CONTEXT: true,
-        STATEMENT_CONTEXT: false,
+        CONTEXT_JSX: true,
+        CONTEXT_STATEMENT: false,
       },
       input.children
     )
   )
 
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -1693,8 +1710,8 @@ function react_element_props(js_context, props) {
       const processed = js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         prop
@@ -1744,8 +1761,8 @@ function react_element_style(js_context, style) {
       const processed = js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         style_value
@@ -1787,8 +1804,8 @@ function react_element_children(js_context, children) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: true,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: true,
+          CONTEXT_STATEMENT: false,
         },
         null,
         row
@@ -1821,8 +1838,8 @@ function react_state(js_context, ref, input) {
         (
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: false,
           },
           null,
           {
@@ -1834,8 +1851,8 @@ function react_state(js_context, ref, input) {
         (
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: false,
           },
           null,
           input.init,
@@ -1901,10 +1918,12 @@ function react_state(js_context, ref, input) {
     []
   )
 
-  // if STATEMENT_CONTEXT
-  if (!!js_context.STATEMENT_CONTEXT) {
+  // if CONTEXT_STATEMENT
+  if (!!js_context.CONTEXT_STATEMENT) {
     // console.log(`here`)
     if (ref.startsWith('...')) {
+      reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${input.name}`)
+      reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${input.setter}`)
       return t.variableDeclaration(
         'const',
         [
@@ -1920,6 +1939,7 @@ function react_state(js_context, ref, input) {
         ]
       )
     } else {
+      reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
       return t.variableDeclaration(
         'const',
         [
@@ -1960,8 +1980,9 @@ function react_context(js_context, ref, input) {
     ]
   )
 
-  // if STATEMENT_CONTEXT
-  if (!!js_context.STATEMENT_CONTEXT) {
+  // if CONTEXT_STATEMENT
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -1995,8 +2016,8 @@ function react_effect(js_context, ref, input) {
             (
               {
                 ...js_context,
-                JSX_CONTEXT: false,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: false,
+                CONTEXT_STATEMENT: false,
               },
               null,
               {
@@ -2043,8 +2064,8 @@ function react_effect(js_context, ref, input) {
         const child_statement = js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
-            STATEMENT_CONTEXT: true,
+            CONTEXT_JSX: false,
+            CONTEXT_STATEMENT: true,
           },
           null,
           statement
@@ -2078,7 +2099,7 @@ function react_effect(js_context, ref, input) {
   )
 
   // return with context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
     return t.expressionStatement(
       callExpression
     )
@@ -2113,8 +2134,8 @@ function mui_style(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: false,
+              CONTEXT_JSX: false,
+              CONTEXT_STATEMENT: false,
             },
             null,
             styles
@@ -2126,7 +2147,8 @@ function mui_style(js_context, ref, input) {
   )
 
   // check statement context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -2158,7 +2180,8 @@ function mui_theme(js_context, ref, input) {
   )
 
   // check statement context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -2196,8 +2219,8 @@ function route_path(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: true,
-            STATEMENT_CONTEXT: false,
+            CONTEXT_JSX: true,
+            CONTEXT_STATEMENT: false,
           },
           null,
           child
@@ -2223,8 +2246,8 @@ function route_path(js_context, ref, input) {
           ? js_process(
               {
                 ...js_context,
-                JSX_CONTEXT: true,
-                STATEMENT_CONTEXT: false,
+                CONTEXT_JSX: true,
+                CONTEXT_STATEMENT: false,
               },
               'element',
               input.element
@@ -2242,7 +2265,8 @@ function route_path(js_context, ref, input) {
   )
 
   // check statement context
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -2320,8 +2344,9 @@ function route_context(js_context, ref, input) {
     }
   )
 
-  // if STATEMENT_CONTEXT
-  if (!!js_context.STATEMENT_CONTEXT) {
+  // if CONTEXT_STATEMENT
+  if (!!js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(
       'const',
       [
@@ -2386,8 +2411,8 @@ function appx_api(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         null,
         input.prep
@@ -2413,8 +2438,8 @@ function appx_api(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: true,
+              CONTEXT_JSX: false,
+              CONTEXT_STATEMENT: true,
             },
             null,
             input.result
@@ -2445,8 +2470,8 @@ function appx_api(js_context, ref, input) {
           js_process(
             {
               ...js_context,
-              JSX_CONTEXT: false,
-              STATEMENT_CONTEXT: true,
+              CONTEXT_JSX: false,
+              CONTEXT_STATEMENT: true,
             },
             null,
             input.result
@@ -2502,7 +2527,7 @@ function appx_api(js_context, ref, input) {
   )
 
   // call api
-  if (js_context.STATEMENT_CONTEXT) {
+  if (js_context.CONTEXT_STATEMENT) {
     return t.expressionStatement(
       t.callExpression(
         arrowFunction,
@@ -2511,114 +2536,6 @@ function appx_api(js_context, ref, input) {
     )
   } else {
     return arrowFunction
-  }
-}
-
-// create appx route ast
-function appx_route(js_context, ref, input) {
-
-  if (!('_type' in input) || input._type !== 'appx/route') {
-    throw new Error(`ERROR: input._type is not [appx/route] [${input._type}] [${JSON.stringify(input)}]`)
-  }
-
-  if (!('appx' in js_context) || !('ui_deployment' in js_context.appx)) {
-    throw new Error(`ERROR: context missing appx.ui_deployment [${JSON.stringify(js_context)}]`)
-  }
-
-  const { namespace, ui_name, ui_deployment } = js_context.appx
-
-  let cache_props = [
-      namespace,
-      "ui_deployments",
-      ui_name,
-      ui_deployment,
-      "ui_routes",
-  ]
-
-  let cache_ui_route = cache.get_cache_for('ui_route')
-  let route_results = _.get(cache_ui_route, cache_props) || {}
-
-  // console.log(`route_results`, route_results)
-
-  /*
-  let route_results = await db.query_async(`SELECT
-                  ui_route.namespace,
-                  ui_route.ui_name,
-                  ui_route.ui_ver,
-                  ui_deployment.ui_deployment,
-                  ui_deployment.ui_deployment_spec,
-                  ui_route.ui_route_name,
-                  ui_route.ui_route_spec,
-                  ui_route.create_time,
-                  ui_route.update_time
-              FROM ui_route
-              JOIN ui_deployment
-                  ON ui_route.namespace = ui_deployment.namespace
-                  AND ui_route.ui_name = ui_deployment.ui_name
-                  AND ui_route.ui_ver = ui_deployment.ui_ver
-              WHERE
-                  ui_route.namespace = ?
-                  AND ui_route.ui_name = ?
-                  AND ui_deployment.ui_deployment = ?
-                  AND ui_route.deleted=0
-                  AND ui_deployment.deleted=0`,
-              [
-                  namespace,
-                  ui_name,
-                  ui_deployment,
-              ]
-  )
-  */
-
-  const objectExpression = t.objectExpression(
-    Object.keys(route_results).map(key => {
-      return t.objectProperty(
-        t.stringLiteral(route_results[key].ui_route_name),
-        t.arrowFunctionExpression(
-          [],
-          t.blockStatement(
-            [
-              t.returnStatement(
-                t.callExpression(
-                  react_component(
-                    {
-                      ...js_context,
-                      JSX_CONTEXT: false,
-                      STATEMENT_CONTEXT: false,
-                    },
-                    route_results[key].ui_route_spec,
-                  ),
-                  []
-                )
-              )
-            ]
-          )
-        )
-      )
-    })
-  )
-
-  reg_js_import(js_context, 'app-x/router.useRoutes')
-  const callExpression = t.callExpression(
-    t.identifier('app-x/router.useRoutes'),
-    [
-      objectExpression,
-    ]
-  )
-
-  // console.log(route_results)
-  if (js_context.STATEMENT_CONTEXT) {
-    return t.variableDeclaration(
-      'const',
-      [
-        t.variableDeclarator(
-          t.identifier(ref),
-          callExpression
-        )
-      ]
-    )
-  } else {
-    return callExpression
   }
 }
 
@@ -2638,8 +2555,20 @@ function js_process(js_context, ref, input) {
     return js_object(js_context, ref, input)
   }
 
-  // '_type' is presented in the json object
-  if (input._type === 'js/string') {
+  const typeSpec = js_context.spec.types[input._type]
+  if (!typeSpec) {
+    throw new Error(`ERROR: unknown type [${input._type}]`)
+  }
+
+  if (typeSpec.template?.kind === 'react/element') {
+
+    return template_react_element(js_context, ref, input)
+
+  } else if (typeSpec.template?.kind === 'js/object') {
+
+    return template_js_object(js_context, ref, input)
+
+  } else if (input._type === 'js/string') {
 
     return js_string(js_context, ref, input)
 
@@ -2753,14 +2682,6 @@ function js_process(js_context, ref, input) {
 
     return input_rule(js_context, ref, input)
 
-  } else if (input._type === 'react/table') {
-
-    return react_table(js_context, ref, input)
-
-  } else if (input._type === 'table/column') {
-
-    return table_column(js_context, ref, input)
-
   } else if (input._type === 'mui/style') {
 
     return mui_style(js_context, ref, input)
@@ -2781,10 +2702,6 @@ function js_process(js_context, ref, input) {
 
     return appx_api(js_context, ref, input)
 
-  } else if (input._type === 'appx/route') {
-
-    return appx_route(js_context, ref, input)
-
   } else {
 
     throw new Error(`ERROR: unrecognized input._type [${input._type}] [${JSON.stringify(input)}]`)
@@ -2800,7 +2717,8 @@ function react_component(js_context, input) {
 
   js_context = {
     ...js_context,
-    STATEMENT_CONTEXT: true
+    CONTEXT_STATEMENT: true,
+    CONTEXT_SCOPE: '$local',
   }
 
   const block_statements = []
@@ -2829,8 +2747,8 @@ function react_component(js_context, input) {
       const statement = js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: true
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: true
         },
         key,
         input[key]
@@ -2851,14 +2769,12 @@ function react_component(js_context, input) {
   const result_component = react_element(
     {
       ...js_context,
-      JSX_CONTEXT: false,
-      STATEMENT_CONTEXT: false
+      CONTEXT_JSX: false,
+      CONTEXT_STATEMENT: false
     },
     null,
     input.component
   )
-
-  // console.log(`react_component - js_context.forms`, JSON.stringify(js_context.forms, null, 4))
 
   // add react/form useForm or useFormContext here (AFTER react_element)
   if (!!js_context.forms && !!Object.keys(js_context.forms).length) {
@@ -2951,7 +2867,8 @@ function react_provider(js_context, input, ui_comp_name) {
 
   js_context = {
     ...js_context,
-    STATEMENT_CONTEXT: true
+    CONTEXT_STATEMENT: true,
+    CONTEXT_SCOPE: '$local'
   }
 
   const block_statements = []
@@ -2980,8 +2897,8 @@ function react_provider(js_context, input, ui_comp_name) {
       const statement = js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: true
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: true
         },
         key,
         input[key]
@@ -2998,7 +2915,6 @@ function react_provider(js_context, input, ui_comp_name) {
       }
     })
 
-  // console.log(`react_provider - js_context.states`, JSON.stringify(js_context.states, null, 4))
   // provider expression
   const providerExpression =
     t.objectExpression
@@ -3014,8 +2930,8 @@ function react_provider(js_context, input, ui_comp_name) {
               (
                 {
                   ...js_context,
-                  JSX_CONTEXT: false,
-                  STATEMENT_CONTEXT: false
+                  CONTEXT_JSX: false,
+                  CONTEXT_STATEMENT: false
                 },
                 key,
                 value
@@ -3127,31 +3043,6 @@ function react_provider(js_context, input, ui_comp_name) {
         t.identifier(`${ui_comp_name}_Context`)
       )
     ),
-                  /*
-                  // comp_name_Function.Context = comp_name_Context
-                  t.expressionStatement(
-                    t.assignmentExpression(
-                      '=',
-                      t.memberExpression(
-                        t.identifier(`${ui_comp_name}_Function`),
-                        t.identifier('Context')
-                      ),
-                      t.identifier(`${ui_comp_name}_Context`)
-                    )
-                  ),
-                  // return comp_name_Function
-                  t.returnStatement(
-                    t.identifier(`${ui_comp_name}_Function`)
-                  )
-                ]
-              )
-            ),
-            []
-          )
-        )
-      ]
-    ),
-    */
     t.exportNamedDeclaration(
       null,
       [
@@ -3205,5 +3096,4 @@ module.exports = {
   js_call,
   input_text,
   appx_api,
-  appx_route,
 }

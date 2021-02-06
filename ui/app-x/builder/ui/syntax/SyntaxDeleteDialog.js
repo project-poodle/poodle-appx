@@ -87,7 +87,7 @@ const SyntaxDeleteDialog = (props) => {
     } catch (err) {
       console.log(`Delete`, node, err)
       notification.error({
-        message: `Failed to Delete [ ${node?.data._type.replace('/', ' / ')} ]`,
+        message: `Failed to Delete [ ${node?.data._type.replaceAll('/', ' / ')} ]`,
         description: String(err),
         placement: 'bottomLeft',
       })

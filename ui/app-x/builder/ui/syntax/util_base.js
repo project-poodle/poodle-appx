@@ -182,8 +182,8 @@ const groups = {
   ],
   // table / options
   table_options: [
-    'react/table',
-    'table/column',
+    'appx/table',
+    'appx/table/column',
   ],
   // js advanced
   js_advanced: [
@@ -464,7 +464,7 @@ const lookup_types_for_spec = (typeSpec) => {
 const type_matches_spec = (data_type, typeSpec) => {
   // type spec must be an array
   if (!Array.isArray(typeSpec)) {
-    throw new Error(`ERROR: type spec is not array`)
+    throw new Error(`ERROR: type spec is not an array`)
   }
   // iterate type spec
   return !!typeSpec.find(spec => {

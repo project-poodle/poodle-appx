@@ -951,8 +951,8 @@ ui_component:
               _type: js/expression
               data: styles.root
           children:
-            - _type: react/table
-              name: ui_deployments
+            - _type: appx/table
+              name: app-x/widget/Table
               data: deployments
               toolbar:
                 _type: react/element
@@ -975,23 +975,23 @@ ui_component:
                               2
                           )
               columns:
-                - _type: table/column
+                - _type: appx/table/column
                   id: namespace
                   accessor: namespace
                   Header: Namespace
-                - _type: table/column
+                - _type: appx/table/column
                   id: ui_name
                   accessor: ui_name
                   Header: UI App
-                - _type: table/column
+                - _type: appx/table/column
                   id: ui_ver
                   accessor: ui_ver
                   Header: Version
-                - _type: table/column
+                - _type: appx/table/column
                   id: ui_deployment
                   accessor: ui_deployment
                   Header: Deployment
-                - _type: table/column
+                - _type: appx/table/column
                   id: apiMaps
                   accessor:
                     _type: js/function
@@ -1005,7 +1005,7 @@ ui_component:
                             `${map.namespace}/${map.app_name}`
                         )).flat().join(', ')
                   Header: API Maps
-                - _type: table/column
+                - _type: appx/table/column
                   id: action
                   Header: Action
                   Cell:
@@ -1100,23 +1100,23 @@ ui_component:
               _type: js/expression
               data: styles.root
           children:
-            - _type: react/table
-              name: apiTable
+            - _type: appx/table
+              name: app-x/widget/Table
               data: apiList
               columns:
-                - _type: table/column
+                - _type: appx/table/column
                   id: app_name
                   accessor: app_name
                   Header: App Name
-                - _type: table/column
+                - _type: appx/table/column
                   id: api_method
                   accessor: api_method
                   Header: Method
-                - _type: table/column
+                - _type: appx/table/column
                   id: api_endpoint
                   accessor: api_endpoint
                   Header: Endpoint
-                - _type: table/column
+                - _type: appx/table/column
                   id: update_time
                   accessor: update_time
                   Header: Updated
@@ -1134,7 +1134,7 @@ ui_component:
                               return error.message || String(error)
                           }
                       })()
-                - _type: table/column
+                - _type: appx/table/column
                   id: action
                   Header: Action
                   Cell:
@@ -1219,8 +1219,8 @@ ui_component:
               _type: js/expression
               data: styles.root
           children:
-            - _type: react/table
-              name: ui_app
+            - _type: appx/table
+              name: app-x/widget/Table
               data: uiApps
               toolbar:
                 _type: react/element
@@ -1247,27 +1247,27 @@ ui_component:
                               2
                           )
               columns:
-                - _type: table/column
+                - _type: appx/table/column
                   id: namespace
                   accessor: namespace
                   Header: Namespace
-                - _type: table/column
+                - _type: appx/table/column
                   id: ui_name
                   accessor: ui_name
                   Header: UI App
-                - _type: table/column
+                - _type: appx/table/column
                   id: ui_ver
                   accessor: ui_ver
                   Header: Version
-                - _type: table/column
+                - _type: appx/table/column
                   id: entry
                   accessor: ui_spec.index.entry
                   Header: Entry Point
-                - _type: table/column
+                - _type: appx/table/column
                   id: title
                   accessor: ui_spec.index.title
                   Header: Title
-                - _type: table/column
+                - _type: appx/table/column
                   id: importMaps
                   accessor:
                     _type: js/function

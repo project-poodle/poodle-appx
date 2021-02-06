@@ -133,7 +133,7 @@ export const classes = {
       'input/text',
       'input/switch',
       'input/select',
-      'react/table',
+      'appx/table',
       'js/expression',
       'js/map',
       'js/condition',

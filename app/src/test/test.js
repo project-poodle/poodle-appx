@@ -1,513 +1,475 @@
-(
-  name,
-  dataExpression,
-  propsExpression,
-  styleExpression,
-  columnExpression,
-  toolbarExpression,
-  subComponentExpression
-) => {
-  // styles element
-
-const tableStyles = $I('@material-ui/core.makeStyles')((theme) => ({
-
-div: {
-  padding: theme.spacing(1),
-  /* These styles are suggested for the table fill all available space in its containing element */
-  display: 'block',
-  /* These styles are required for a horizontaly scrollable table overflow */
-  overflow: 'auto',
-},
-
-table: {
-  borderSpacing: 0,
-  padding: theme.spacing(2)
-  // borderTop: '1px',
-  // borderTopStyle: 'solid',
-  // borderTopColor: theme.palette.divider,
-},
-
-thead: {
-  /* These styles are required for a scrollable body to align with the header properly */
-  overflowY: 'auto',
-  overflowX: 'hidden',
-},
-
-tbody: {
-  /* These styles are required for a scrollable table body */
-  overflowY: 'scroll',
-  overflowX: 'hidden',
-  height: '100%',
-},
-
-tr: {
-  borderBottom: '1px',
-  borderBottomStyle: 'solid',
-  borderBottomColor: theme.palette.divider,
-  '&:hover': {
-    backgroundColor: theme.palette.action.selected,
+variables: {
+  'self/page/Deployment': {
+    kind: 'const',
+    name: '_page_Deployment',
+    var_full_path: 'self/page/Deployment',
+    var_prefix: [Array]
+  },
+  react: {
+    kind: 'const',
+    name: 'React',
+    var_full_path: 'react',
+    var_prefix: []
+  },
+  'react.useState': {
+    kind: 'const',
+    name: 'useState',
+    var_full_path: 'react.useState',
+    var_prefix: [Array]
+  },
+  deployments: {
+    kind: 'const',
+    name: 'deployments',
+    var_full_path: 'deployments',
+    var_prefix: []
+  },
+  setDeployments: {
+    kind: 'const',
+    name: 'setDeployments',
+    var_full_path: 'setDeployments',
+    var_prefix: []
+  },
+  'react.useEffect': {
+    kind: 'const',
+    name: 'useEffect',
+    var_full_path: 'react.useEffect',
+    var_prefix: [Array]
+  },
+  antd: {
+    kind: 'const',
+    name: 'antd',
+    var_full_path: 'antd',
+    var_prefix: []
+  },
+  'antd.notification': {
+    kind: 'const',
+    name: 'notification',
+    var_full_path: 'antd.notification',
+    var_prefix: [Array]
+  },
+  'app-x/api': {
+    kind: 'const',
+    name: 'api',
+    var_full_path: 'app-x/api',
+    var_prefix: [Array]
+  },
+  '@material-ui/core': {
+    kind: 'const',
+    name: 'core',
+    var_full_path: '@material-ui/core',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.makeStyles': {
+    kind: 'const',
+    name: 'makeStyles',
+    var_full_path: '@material-ui/core.makeStyles',
+    var_prefix: [Array]
+  },
+  styles: {
+    kind: 'const',
+    name: 'styles',
+    var_full_path: 'styles',
+    var_prefix: []
+  },
+  'react-table': {
+    kind: 'const',
+    name: 'react_table',
+    var_full_path: 'react-table',
+    var_prefix: []
+  },
+  'react-table.useTable': {
+    kind: 'const',
+    name: 'useTable',
+    var_full_path: 'react-table.useTable',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2': {
+    kind: 'const',
+    name: 'table2',
+    var_full_path: 'react-table.useTable.table2',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.getTableProps': {
+    kind: 'const',
+    name: 'getTableProps',
+    var_full_path: 'react-table.useTable.table2.getTableProps',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.getTableBodyProps': {
+    kind: 'const',
+    name: 'getTableBodyProps',
+    var_full_path: 'react-table.useTable.table2.getTableBodyProps',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.headerGroups': {
+    kind: 'const',
+    name: 'headerGroups',
+    var_full_path: 'react-table.useTable.table2.headerGroups',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.footerGroups': {
+    kind: 'const',
+    name: 'footerGroups',
+    var_full_path: 'react-table.useTable.table2.footerGroups',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.rows': {
+    kind: 'const',
+    name: 'rows',
+    var_full_path: 'react-table.useTable.table2.rows',
+    var_prefix: [Array]
+  },
+  'react-table.useTable.table2.prepareRow': {
+    kind: 'const',
+    name: 'prepareRow',
+    var_full_path: 'react-table.useTable.table2.prepareRow',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.tableStyles': {
+    kind: 'const',
+    name: 'tableStyles',
+    var_full_path: '$local.table.table2.tableStyles',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.GlobalFilter': {
+    kind: 'const',
+    name: 'GlobalFilter',
+    var_full_path: '$local.table.table2.GlobalFilter',
+    var_prefix: [Array]
+  },
+  'react.useCallback': {
+    kind: 'const',
+    name: 'useCallback',
+    var_full_path: 'react.useCallback',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.count': {
+    kind: 'const',
+    name: 'count',
+    var_full_path: '$local.table.table2.count',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.onChange': {
+    kind: 'const',
+    name: 'onChange',
+    var_full_path: '$local.table.table2.onChange',
+    var_prefix: [Array]
+  },
+  'react-table.useAsyncDebounce': {
+    kind: 'const',
+    name: 'useAsyncDebounce',
+    var_full_path: 'react-table.useAsyncDebounce',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.TextField': {
+    kind: 'const',
+    name: 'TextField',
+    var_full_path: '@material-ui/core.TextField',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.InputAdornment': {
+    kind: 'const',
+    name: 'InputAdornment',
+    var_full_path: '@material-ui/core.InputAdornment',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons': {
+    kind: 'const',
+    name: 'icons',
+    var_full_path: '@material-ui/icons',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons.SearchOutlined': {
+    kind: 'const',
+    name: 'SearchOutlined',
+    var_full_path: '@material-ui/icons.SearchOutlined',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.DefaultColumnFilter': {
+    kind: 'const',
+    name: 'DefaultColumnFilter',
+    var_full_path: '$local.table.table2.DefaultColumnFilter',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.renderRowPanel': {
+    kind: 'const',
+    name: 'renderRowPanel',
+    var_full_path: '$local.table.table2.renderRowPanel',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.defaultColumn': {
+    kind: 'const',
+    name: 'defaultColumn',
+    var_full_path: '$local.table.table2.defaultColumn',
+    var_prefix: [Array]
+  },
+  'react.useMemo': {
+    kind: 'const',
+    name: 'useMemo',
+    var_full_path: 'react.useMemo',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.columns': {
+    kind: 'const',
+    name: 'columns',
+    var_full_path: '$local.table.table2.columns',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.dataExpr': {
+    kind: 'const',
+    name: 'dataExpr',
+    var_full_path: '$local.table.table2.dataExpr',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.useTableProps': {
+    kind: 'const',
+    name: 'useTableProps',
+    var_full_path: '$local.table.table2.useTableProps',
+    var_prefix: [Array]
+  },
+  'react-table.useFilters': {
+    kind: 'const',
+    name: 'useFilters',
+    var_full_path: 'react-table.useFilters',
+    var_prefix: [Array]
+  },
+  'react-table.useGlobalFilter': {
+    kind: 'const',
+    name: 'useGlobalFilter',
+    var_full_path: 'react-table.useGlobalFilter',
+    var_prefix: [Array]
+  },
+  'react-table.useSortBy': {
+    kind: 'const',
+    name: 'useSortBy',
+    var_full_path: 'react-table.useSortBy',
+    var_prefix: [Array]
+  },
+  'react-table.useResizeColumns': {
+    kind: 'const',
+    name: 'useResizeColumns',
+    var_full_path: 'react-table.useResizeColumns',
+    var_prefix: [Array]
+  },
+  'react-table.useFlexLayout': {
+    kind: 'const',
+    name: 'useFlexLayout',
+    var_full_path: 'react-table.useFlexLayout',
+    var_prefix: [Array]
+  },
+  'react-table.useExpanded': {
+    kind: 'const',
+    name: 'useExpanded',
+    var_full_path: 'react-table.useExpanded',
+    var_prefix: [Array]
+  },
+  'react-table.usePagination': {
+    kind: 'const',
+    name: 'usePagination',
+    var_full_path: 'react-table.usePagination',
+    var_prefix: [Array]
+  },
+  'react-table.useRowSelect': {
+    kind: 'const',
+    name: 'useRowSelect',
+    var_full_path: 'react-table.useRowSelect',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.columnIconRef': {
+    kind: 'const',
+    name: 'columnIconRef',
+    var_full_path: '$local.table.table2.columnIconRef',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Toolbar': {
+    kind: 'const',
+    name: 'Toolbar',
+    var_full_path: '@material-ui/core.Toolbar',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Box': {
+    kind: 'const',
+    name: 'Box',
+    var_full_path: '@material-ui/core.Box',
+    var_prefix: [Array]
+  },
+  'react-csv': {
+    kind: 'const',
+    name: 'react_csv',
+    var_full_path: 'react-csv',
+    var_prefix: []
+  },
+  'react-csv.CSVLink': {
+    kind: 'const',
+    name: 'CSVLink',
+    var_full_path: 'react-csv.CSVLink',
+    var_prefix: [Array]
+  },
+  '$local.table.table2.result': {
+    kind: 'const',
+    name: 'result',
+    var_full_path: '$local.table.table2.result',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.IconButton': {
+    kind: 'const',
+    name: 'IconButton',
+    var_full_path: '@material-ui/core.IconButton',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons.GetAppOutlined': {
+    kind: 'const',
+    name: 'GetAppOutlined',
+    var_full_path: '@material-ui/icons.GetAppOutlined',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons.ViewColumnOutlined': {
+    kind: 'const',
+    name: 'ViewColumnOutlined',
+    var_full_path: '@material-ui/icons.ViewColumnOutlined',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Popover': {
+    kind: 'const',
+    name: 'Popover',
+    var_full_path: '@material-ui/core.Popover',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.ListItem': {
+    kind: 'const',
+    name: 'ListItem',
+    var_full_path: '@material-ui/core.ListItem',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.FormControlLabel': {
+    kind: 'const',
+    name: 'FormControlLabel',
+    var_full_path: '@material-ui/core.FormControlLabel',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Checkbox': {
+    kind: 'const',
+    name: 'Checkbox',
+    var_full_path: '@material-ui/core.Checkbox',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons.ExpandMore': {
+    kind: 'const',
+    name: 'ExpandMore',
+    var_full_path: '@material-ui/icons.ExpandMore',
+    var_prefix: [Array]
+  },
+  '@material-ui/icons.ExpandLess': {
+    kind: 'const',
+    name: 'ExpandLess',
+    var_full_path: '@material-ui/icons.ExpandLess',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Divider': {
+    kind: 'const',
+    name: 'Divider',
+    var_full_path: '@material-ui/core.Divider',
+    var_prefix: [Array]
+  },
+  '@material-ui/core.Typography': {
+    kind: 'const',
+    name: 'Typography',
+    var_full_path: '@material-ui/core.Typography',
+    var_prefix: [Array]
+  },
+  '@material-ui/lab': {
+    kind: 'const',
+    name: 'lab',
+    var_full_path: '@material-ui/lab',
+    var_prefix: [Array]
+  },
+  '@material-ui/lab.Pagination': {
+    kind: 'const',
+    name: 'Pagination',
+    var_full_path: '@material-ui/lab.Pagination',
+    var_prefix: [Array]
   }
 },
-
-th: {
-  margin: theme.spacing(0),
-  padding: theme.spacing(1),
-  /* we use an absolutely position resizer, so this is required. */
-  position: 'relative',
-  // borderRight: '1px solid black',
-  // ':last-child': {
-  //   borderRight: 0
-  // }
+imports: {
+  react: {
+    use_default: true,
+    suggested_name: 'React',
+    path: 'react',
+    sub_vars: [Object]
+  },
+  antd: {
+    use_default: true,
+    suggested_name: null,
+    path: 'antd',
+    sub_vars: [Object]
+  },
+  'app-x/api': {
+    use_default: true,
+    suggested_name: null,
+    path: 'app-x/api',
+    sub_vars: {}
+  },
+  '@material-ui/core': {
+    use_default: true,
+    suggested_name: null,
+    path: '@material-ui/core',
+    sub_vars: [Object]
+  },
+  'react-table': {
+    use_default: true,
+    suggested_name: null,
+    path: 'react-table',
+    sub_vars: [Object]
+  },
+  '@material-ui/icons': {
+    use_default: true,
+    suggested_name: null,
+    path: '@material-ui/icons',
+    sub_vars: [Object]
+  },
+  'react-csv': {
+    use_default: true,
+    suggested_name: null,
+    path: 'react-csv',
+    sub_vars: [Object]
+  },
+  '@material-ui/lab': {
+    use_default: true,
+    suggested_name: null,
+    path: '@material-ui/lab',
+    sub_vars: [Object]
+  }
 },
-
-td: {
-  margin: theme.spacing(0),
-  padding: theme.spacing(1),
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  // borderRight: '1px solid black',
-  // ':last-child': {
-  //   borderRight: 0
-  // }
+states: {},
+forms: {},
+tables: {},
+parsed: {},
+appx: {
+  namespace: 'sys',
+  ui_name: 'ui',
+  ui_deployment: 'base',
+  ui_ver: 'internal',
+  ui_component_name: '/page/Deployment',
+  ui_component_type: 'react/component',
+  ui_component_spec: {
+    '...deployments': [Object],
+    effects: [Object],
+    styles: [Object],
+    table2: [Object],
+    component: [Object],
+    _test: [Object]
+  },
+  req_type: 'ui_component',
+  ui_spec: {
+    index: [Object],
+    comment: 'initialize',
+    importMaps: [Object],
+    description: 'UI Builder'
+  },
+  ui_deployment_spec: { apiMaps: [Array], comment: 'initialize' }
 },
-
-sorter: {
-  right: theme.spacing(1),
-  position: 'absolute',
-  zIndex: 1,
-  /* prevents from scrolling while dragging on touch devices */
-  touchAction: ':none',
-},
-
-resizer: {
-  right: 0,
-  background: theme.palette.divider,
-  width: theme.spacing(0.25),
-  height: '30%',
-  position: 'absolute',
-  top: '15%',
-  zIndex: 1,
-  /* prevents from scrolling while dragging on touch devices */
-  touchAction: ':none',
-},
-
-tool: {
-  margin: theme.spacing(2)
-},
-}))()
-
-  // GlobalFilter element
-
-const GlobalFilter = $I('react.useCallback')(({
-preGlobalFilteredRows,
-globalFilter,
-setGlobalFilter,
-className,
-}) => {
-const count = preGlobalFilteredRows.length
-const [value, setValue] = $I('react.useState')(globalFilter)
-const onChange = $I('react-table.useAsyncDebounce')(value => {
-  setGlobalFilter(value || undefined)
-}, 300)
-
-return (
-  <$J $I="@material-ui/core.TextField"
-        className={className}
-        size="small"
-        value={value || ""}
-        onChange={e => {
-          setValue(e.target.value)
-          onChange(e.target.value)
-        }}
-        InputProps={{
-          startAdornment:
-            <$J $I="@material-ui/core.InputAdornment" position="start">
-              <$J $I="@material-ui/icons.SearchOutlined" fontSize="small" />
-            </$J>
-        }}
-        // helperText={`Search ${count} records...`}
-  />
-)
-}, [])
-
-  // DefaultColumnFilter element
-
-function DefaultColumnFilter({
-column: { filterValue, preFilteredRows, setFilter },
-}) {
-const count = preFilteredRows.length
-
-return (
-  <$J $I="@material-ui/core.TextField"
-      fullWidth={true}
-      size="small"
-      value={filterValue || ''}
-      onChange={e => {
-        // Set undefined to remove the filter entirely
-        setFilter(e.target.value || undefined)
-      }}
-  />
-)
-}
-
-  // render row element
-
-const renderRowSubComponent = $I('react.useCallback')(
-({row}) => {
-  return (
-    [object Object]
-  )
-},
-[]
-)
-
-  // defaultColumn
-  const defaultColumn = $I('react.useMemo')(
-    () => ({
-      // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter,
-    }),
-    []
-  )
-  // prepare props
-  const columns = $I('react.useMemo')(() => columnExpression, [])
-  const dataExpr = $I('react.useMemo')(() => dataExpression, [dataExpression])
-  // useTable hook
-  const useTableProps = $I('react-table.useTable') (
-    {
-      columns,
-      data: dataExpr,
-      defaultColumn,
-      initialState: { pageSize: 10 },
-    },
-    $I('react-table.useFilters'),
-    $I('react-table.useGlobalFilter'),
-    $I('react-table.useSortBy'),
-    $I('react-table.useResizeColumns'),
-    $I('react-table.useFlexLayout'),
-    $I('react-table.useExpanded'),
-    $I('react-table.usePagination'),
-    $I('react-table.useRowSelect'),
-  )
-  // console.log('useTableProps', useTableProps)
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    footerGroups,
-    data,
-    page,
-    rows,
-    prepareRow,
-    state,
-    allColumns,
-    visibleColumns,
-    setColumnOrder,
-    getToggleHideAllColumnsProps,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-    resetResizing,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize, expanded },
-  } = useTableProps
-  // menu and anchorEl
-  const columnIconRef = React.createRef()
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  // console.log('rows', rows, 'allColumns', allColumns)
-  // return
-  return (
-
-<div
-    {...propsExpression}
-    style={styleExpression}
->
-<$J $I='@material-ui/core.Toolbar'
-  disableGutters={true}
-  >
-  <$J $L="$local.GlobalFilter"
-        preGlobalFilteredRows={preGlobalFilteredRows}
-        globalFilter={state.globalFilter}
-        setGlobalFilter={setGlobalFilter}
-        className={tableStyles.tool}
-    >
-  </$J>
-  <$J $I='@material-ui/core.Box'
-    flexGrow={1}
-    >
-  </$J>
-  <$J $I='@material-ui/core.Box'
-    display='flex'
-    className={tableStyles.tool}
-    >
-    {
-      toolbarExpression
-    }
-    <$J $I="react-csv.CSVLink"
-      filename={"ui_deployments.csv"}
-      data={rows.map(row => allColumns.map(column => {
-        const result = !!column.accessor ? column.accessor(row.original) : ''
-        if (typeof result === 'string') {
-          return result.replaceAll('"', '""')
-        } else {
-          return result
-        }
-        })
-      )}
-      headers={allColumns.map(column => column.Header || column.id)}
-      >
-      <$J $I="@material-ui/core.IconButton"
-        size="medium"
-        color={props.color}
-        style={{boxShadow: 'none'}}
-        >
-        <$J $I="@material-ui/icons.GetAppOutlined" />
-      </$J>
-    </$J>
-    <$J $I="@material-ui/core.IconButton"
-      ref={columnIconRef}
-      size="medium"
-      color={props.color}
-      style={{boxShadow: 'none'}}
-      onClick={e => {
-        // setAnchorEl(e.target)
-        setAnchorEl(columnIconRef.current)
-      }}
-      >
-      <$J $I="@material-ui/icons.ViewColumnOutlined" />
-    </$J>
-  </$J>
-  <$J $I='@material-ui/core.Popover'
-    anchorEl={anchorEl}
-    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-    id="column-selector-ui_deployments"
-    keepMounted
-    open={Boolean(anchorEl)}
-    onClose={e => setAnchorEl(null)}
-  >
-    {
-      allColumns.map(column => (
-        <$J $I='@material-ui/core.ListItem'
-            key={column.id}
-            dense={true}
-            button={true}
-          >
-          <$J $I='@material-ui/core.FormControlLabel'
-            control={
-              <$J $I='@material-ui/core.Checkbox'
-                  size="small"
-                  {...column.getToggleHiddenProps()}
-              />
-            }
-            label={column.Header || column.id}
-          />
-        </$J>
-      ))
-    }
-  </$J>
-</$J>
-<div
-    {...getTableProps()}
-    className={tableStyles.table}
-    // stickyHeader={true}
-  >
-  <div
-    className={tableStyles.thead}
-    >
-    {
-      headerGroups.map(headerGroup => {
-        return (
-          <div
-              {...headerGroup.getHeaderGroupProps()}
-              // className={tableStyles.tr}
-            >
-            {
-              headerGroup.headers.map(column => {
-                return (
-                  <div
-                      {...column.getHeaderProps()}
-                      className={tableStyles.th}
-                    >
-                    <$J $I="@material-ui/core.Box"
-                        display="flex"
-                        justifyContent="center"
-                        // {...column.getHeaderProps(column.getSortByToggleProps())}
-                        {...column.getSortByToggleProps()}
-                      >
-                      {
-                        column.render('Header')
-                      }
-                      {
-                        !!column.isSorted
-                        &&
-                        (
-                          column.isSortedDesc
-                          ? <div className={tableStyles.sorter}>
-                              <$J $I="@material-ui/icons.ExpandMore" />
-                            </div>
-                          : <div className={tableStyles.sorter}>
-                              <$J $I="@material-ui/icons.ExpandLess" />
-                            </div>
-                        )
-                      }
-                    </$J>
-                    <div>
-                    {
-                      column.canFilter ? column.render('Filter') : null
-                    }
-                    </div>
-                    <$J $I="@material-ui/core.Divider"
-                        orientation="vertical"
-                        flexItem
-                    />
-                    {/* Use column.getResizerProps to hook up the events correctly */}
-                    {
-                      column.canResize
-                      &&
-                      (
-                        <div
-                          {...column.getResizerProps()}
-                          className={tableStyles.resizer}
-                        />
-                      )
-                    }
-                  </div>
-                )
-              })
-            }
-          </div>
-        )
-      })
-    }
-  </div>
-  <div
-      {...getTableBodyProps()}
-      className={tableStyles.tbody}
-    >
-    {
-      page.map((row, index) => {
-        prepareRow(row)
-        return (
-          <div
-            className={tableStyles.tr}
-            >
-            <div
-              {...row.getRowProps()}
-              className={tableStyles.tr}
-              >
-              {
-                row.cells.map(cell => {
-                  return (
-                    <div
-                        {...cell.getCellProps()}
-                        className={tableStyles.td}
-                      >
-                      <$J $I="@material-ui/core.Box"
-                          {...row.getToggleRowExpandedProps()}
-                          width="100%"
-                          height="100%"
-                        >
-                        {
-                          cell.render('Cell')
-                        }
-                      </$J>
-                    </div>
-                  )
-                })
-              }
-            </div>
-            {
-              !!row.isExpanded
-              &&
-              (
-                <div
-                  {...row.getRowProps()}
-                  >
-                  {$L('$local.renderRowSubComponent')({row})}
-                </div>
-              )
-            }
-          </div>
-        )
-      })
-    }
-  </div>
-  <div
-    className={tableStyles.thead}
-    >
-    {
-      footerGroups.map(footerGroup => {
-        return (
-          <div
-              {...footerGroup.getFooterGroupProps()}
-              // className={tableStyles.tr}
-            >
-            {
-              footerGroup.headers.map(column => {
-                return (
-                  <div
-                      {...column.getFooterProps()}
-                      className={tableStyles.td}
-                    >
-                    {
-                      column.render('Footer')
-                    }
-                  </div>
-                )
-              })
-            }
-          </div>
-        )
-      })
-    }
-  </div>
-</div>
-<$J $I='@material-ui/core.Toolbar'
-  disableGutters={true}
-  >
-  <$J $I='@material-ui/core.Typography'
-    className={tableStyles.tool}
-    variant="body2"
-    >
-    Showing {rows.length} of {data.length} rows
-  </$J>
-  <$J $I='@material-ui/core.Box'
-    flexGrow={1}
-    >
-  </$J>
-  <$J $I='@material-ui/core.TextField'
-    size="small"
-    select={true}
-    value={pageSize}
-    className={tableStyles.tool}
-    onChange={e => setPageSize(e.target.value)}
-    >
-    <$J $I='@material-ui/core.ListItem' value={10}>10 per page</$J>
-    <$J $I='@material-ui/core.ListItem' value={20}>20 per page</$J>
-    <$J $I='@material-ui/core.ListItem' value={50}>50 per page</$J>
-    <$J $I='@material-ui/core.ListItem' value={100}>100 per page</$J>
-  </$J>
-  <$J $I='@material-ui/lab.Pagination'
-    className={tableStyles.tool}
-    color={props.color}
-    count={pageCount}
-    showFirstButton={true}
-    showLastButton={true}
-    page={pageIndex+1}
-    onChange={(event, value) => {
-      gotoPage(value-1)
-    }}
-    >
-  </$J>
-</$J>
-</div>
-
-  )
-}
+self: 'self/page/Deployment',
+CONTEXT_STATEMENT: true,
+CONTEXT_SCOPE: '$local.table.table2',
+CONTEXT_JSX: false
+} table2

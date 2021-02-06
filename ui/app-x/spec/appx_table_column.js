@@ -3,13 +3,21 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: table/column
-// Header:                   # Header of column      (:string)
-// columns:                  # columns               (:array<:object>)
-export const table_column = {
+// type: appx/table/column
+// id:                       # column id             (:string)
+// accessor:                 # accessor              (:string|:function)
+// Header:                   # Header of column      (:string|:function)
+// Cell:                     # Cell of column        (:string|:function)
+// Footer:                   # Footer of column      (:string|:function)
+// suggestedWidth:           # suggested width       (:number)
+// columns:                  # columns               (:array<:appx/table/column>)
+export const appx_table_column = {
 
-  type: 'table/column',
+  type: 'appx/table/column',
   desc: 'Table Column',
+  template: {
+    kind: 'js/object'
+  },
   _expand: true,
   children: [
     {
@@ -72,7 +80,14 @@ export const table_column = {
         },
         {
           kind: 'class',
-          data: 'jsx'
+          data: 'jsx',
+          expr: '(props) => $child'
+        },
+      ],
+      context: [
+        {
+          name: 'props',
+          desc: 'Props',
         },
       ],
       _thisNode: {
@@ -101,7 +116,30 @@ export const table_column = {
       types: [
         {
           kind: 'class',
-          data: 'jsx'
+          data: 'jsx',
+          expr: '({row, column, cell, value, ...props}) => $child'
+        },
+      ],
+      context: [
+        {
+          name: 'row',
+          desc: 'Row',
+        },
+        {
+          name: 'column',
+          desc: 'Column',
+        },
+        {
+          name: 'cell',
+          desc: 'Cell',
+        },
+        {
+          name: 'value',
+          desc: 'Value',
+        },
+        {
+          name: 'props',
+          desc: 'Props',
         },
       ],
       _childNode: {
@@ -123,7 +161,14 @@ export const table_column = {
         },
         {
           kind: 'class',
-          data: 'jsx'
+          data: 'jsx',
+          expr: '(props) => $child'
+        },
+      ],
+      context: [
+        {
+          name: 'props',
+          desc: 'Props',
         },
       ],
       _thisNode: {
@@ -170,47 +215,14 @@ export const table_column = {
       types: [
         {
           kind: 'type',
-          data: 'table/column'
+          data: 'appx/table/column'
         },
       ],
       _childNode: {
         types: 'inherit',
-        /*
-        input: {
-          kind: 'input/list',
-          columns: [
-            {
-              name: 'id',
-              title: 'ID',
-              required: true,
-              span: 4,
-              input: {
-                kind: 'input/text',
-              },
-            },
-            {
-              name: 'Header',
-              title: 'Header',
-              span: 6,
-              input: {
-                kind: 'input/text',
-              },
-            },
-            {
-              name: 'accessor',
-              title: 'Accessor',
-              required: true,
-              span: 12,
-              input: {
-                kind: 'input/expression',
-              },
-            },
-          ]
-        },
-        */
       },
     },
   ]
 }
 
-export default table_column
+export default appx_table_column

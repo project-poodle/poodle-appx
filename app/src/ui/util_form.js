@@ -5,7 +5,7 @@ const {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
   SPECIAL_CHARACTER,
-  JSX_CONTEXT,
+  CONTEXT_JSX,
   INPUT_REQUIRED,
   TOKEN_IMPORT,
   TOKEN_LOCAL,
@@ -20,6 +20,10 @@ const {
   _js_parse_statements,
   _js_parse_expression,
   _parse_var_full_path,
+  lookup_type_for_data,
+  type_matches_spec,
+  data_matches_spec,
+  check_input_data,
 } = require('./util_base')
 
 const REACT_FORM_METHODS = [
@@ -77,6 +81,13 @@ function react_form(js_context, ref, input) {
     throw new Error(`ERROR: input.name not set in [react/form] [${JSON.stringify(input)}]`)
   }
 
+  // establish scope
+  const scope = `${js_context.CONTEXT_SCOPE}.form.${input.name}`
+  js_context = {
+    ...js_context,
+    CONTEXT_SCOPE: scope,
+  }
+
   // formProps expression
   const formProps = (() => {
     if (!!input.formProps) {
@@ -88,7 +99,7 @@ function react_form(js_context, ref, input) {
               js_process(
                 {
                   ...js_context,
-                  JSX_CONTEXT: false,
+                  CONTEXT_JSX: false,
                 },
                 null,
                 input.formProps[key]
@@ -109,8 +120,8 @@ function react_form(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -126,12 +137,13 @@ function react_form(js_context, ref, input) {
   reg_js_import(js_context, 'react-hook-form.useForm')
   reg_js_import(js_context, 'react-hook-form.FormProvider')
   // register react hook form with [input.name]
-  const qualifiedName = `react-hook-form.useForm.${input.name}`
-  reg_js_variable(js_context, qualifiedName)
+  // const qualifiedName = `react-hook-form.useForm.${input.name}`
+  // reg_js_variable(js_context, qualifiedName)
   // register form
-  reg_react_form(js_context, input.name, qualifiedName, formProps)
+  // reg_react_form(js_context, input.name, qualifiedName, formProps)
   // console.log(`js_context.reactForm`, js_context.reactForm)
   // register variables
+  const qualifiedName = `react-hook-form.useForm`
   REACT_FORM_METHODS.map(method => {
     reg_js_variable(js_context, `${qualifiedName}.${method}`)
   })
@@ -152,7 +164,7 @@ function react_form(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
+            CONTEXT_JSX: false,
           },
           null,
           input.onSubmit
@@ -177,7 +189,7 @@ function react_form(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
+            CONTEXT_JSX: false,
           },
           null,
           input.onError
@@ -199,7 +211,7 @@ function react_form(js_context, ref, input) {
               js_process(
                 {
                   ...js_context,
-                  JSX_CONTEXT: false,
+                  CONTEXT_JSX: false,
                 },
                 null,
                 input.props[key]
@@ -221,7 +233,7 @@ function react_form(js_context, ref, input) {
         js_process(
           {
             ...js_context,
-            JSX_CONTEXT: true,
+            CONTEXT_JSX: true,
           },
           null,
           child
@@ -378,8 +390,8 @@ function input_text(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -400,7 +412,7 @@ function input_text(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
+            CONTEXT_JSX: false,
           },
           null,
           props.defaultValue
@@ -418,7 +430,7 @@ function input_text(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
         },
         null,
         input.props
@@ -436,7 +448,7 @@ function input_text(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         null,
@@ -605,8 +617,8 @@ function input_text(js_context, ref, input) {
   )
 
   //////////////////////////////////////////////////////////////////////
-  // check for JSX_CONTEXT and return
-  if (js_context.JSX_CONTEXT) {
+  // check for CONTEXT_JSX and return
+  if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       result
     )
@@ -698,7 +710,7 @@ function input_text_array(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
         },
         null,
         input.props
@@ -715,8 +727,8 @@ function input_text_array(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -735,7 +747,7 @@ function input_text_array(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         null,
@@ -975,8 +987,8 @@ function input_text_array(js_context, ref, input) {
   )
 
   //////////////////////////////////////////////////////////////////////
-  // check for JSX_CONTEXT and return
-  if (js_context.JSX_CONTEXT) {
+  // check for CONTEXT_JSX and return
+  if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       result
     )
@@ -1044,8 +1056,8 @@ function input_switch(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -1066,7 +1078,7 @@ function input_switch(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
+            CONTEXT_JSX: false,
           },
           null,
           props.defaultValue
@@ -1084,7 +1096,7 @@ function input_switch(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
         },
         null,
         input.props
@@ -1102,7 +1114,7 @@ function input_switch(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         null,
@@ -1238,8 +1250,8 @@ function input_switch(js_context, ref, input) {
   )
 
   //////////////////////////////////////////////////////////////////////
-  // check for JSX_CONTEXT and return
-  if (js_context.JSX_CONTEXT) {
+  // check for CONTEXT_JSX and return
+  if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       result
     )
@@ -1307,8 +1319,8 @@ function input_select(js_context, ref, input) {
       const style = react_element_style(
         {
           ...js_context,
-          JSX_CONTEXT: false,
-          STATEMENT_CONTEXT: false,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
         },
         input.style
       )
@@ -1329,7 +1341,7 @@ function input_select(js_context, ref, input) {
         return js_process(
           {
             ...js_context,
-            JSX_CONTEXT: false,
+            CONTEXT_JSX: false,
           },
           null,
           props.defaultValue
@@ -1347,7 +1359,7 @@ function input_select(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
         },
         null,
         input.props
@@ -1365,7 +1377,7 @@ function input_select(js_context, ref, input) {
       return js_process(
         {
           ...js_context,
-          JSX_CONTEXT: false,
+          CONTEXT_JSX: false,
           INPUT_REQUIRED: !!input.required ? required_desc : false
         },
         null,
@@ -1510,8 +1522,8 @@ function input_select(js_context, ref, input) {
   )
 
   //////////////////////////////////////////////////////////////////////
-  // check for JSX_CONTEXT and return
-  if (js_context.JSX_CONTEXT) {
+  // check for CONTEXT_JSX and return
+  if (js_context.CONTEXT_JSX) {
     return t.jSXExpressionContainer(
       result
     )

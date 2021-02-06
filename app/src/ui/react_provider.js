@@ -59,6 +59,7 @@ async function handle_react_provider(req, res) {
 
         // process context
         const js_context = {
+            spec: req.appx_spec,
             variables: {},
             imports: {},
             states: {},
@@ -70,8 +71,8 @@ async function handle_react_provider(req, res) {
 
         // ui_elem
         const ui_comp_name = ('self/' + req.context.ui_component_name).replace(/\/+/g, '/')
-        reg_js_variable(js_context, ui_comp_name, 'const', capitalize(req.context.ui_component_name))
-        js_context.self = ui_comp_name
+        reg_js_variable(js_context, `${ui_comp_name}`, 'const', capitalize(req.context.ui_component_name))
+        js_context.self = `${ui_comp_name}`
 
         // register other variables
         reg_js_variable(js_context, `${ui_comp_name}_Context`)

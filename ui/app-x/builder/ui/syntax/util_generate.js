@@ -212,11 +212,11 @@ function lookup_icon_for_input(input) {
 
     return <InputRule />
 
-  } else if (input._type === 'react/table') {
+  } else if (input._type === 'appx/table') {
 
     return <Table />
 
-  } else if (input._type === 'table/column') {
+  } else if (input._type === 'appx/table/column') {
 
     return <TableColumn />
 
@@ -428,11 +428,12 @@ function lookup_title_for_input(ref, input, array=false) {
 
     return ref ? ref : ''
 
-  } else if (input._type === 'react/table') {
+  } else if (input._type === 'appx/table') {
 
-    return prefix + input.name
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
 
-  } else if (input._type === 'table/column') {
+  } else if (input._type === 'appx/table/column') {
 
     return input.id || ''
 

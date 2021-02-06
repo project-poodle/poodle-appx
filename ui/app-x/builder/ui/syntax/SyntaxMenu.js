@@ -142,7 +142,7 @@ const SyntaxMenu = (props) => {
                   <ListItemIcon>
                     { lookup_icon_for_type(group_type) }
                   </ListItemIcon>
-                  <ListItemText primary={`Add : ${group_type.replace('/', ' / ')}`} />
+                  <ListItemText primary={`Add : ${group_type.replaceAll('/', ' / ')}`} />
                 </MenuItem>
               )
             }

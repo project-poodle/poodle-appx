@@ -560,7 +560,7 @@ const PropEditor = (props) => {
     } catch (err) {
       console.log(`Editor`, data, err)
       notification.error({
-        message: `Failed to Edit [ ${nodeType?.replace('/', ' / ')} ]`,
+        message: `Failed to Edit [ ${nodeType?.replaceAll('/', ' / ')} ]`,
         description: String(err),
         placement: 'bottomLeft',
       })
@@ -922,7 +922,7 @@ const PropEditor = (props) => {
                           if (!!found) {
                             const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
                             return type_matches_spec(getValues('_type'), typeSpec)
-                              || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
+                              || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replaceAll('/', ' / ')} ]`
                           }
                         }
                       },
@@ -988,7 +988,7 @@ const PropEditor = (props) => {
                           if (!!found) {
                             const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
                             return type_matches_spec(value, typeSpec)
-                              || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
+                              || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replaceAll('/', ' / ')} ]`
                           }
                         }
                       }
@@ -1032,7 +1032,7 @@ const PropEditor = (props) => {
                                           { lookup_icon_for_type(type) }
                                         </ListItemIcon>
                                         <Typography variant="inherit" noWrap={true}>
-                                          { type?.replace('/', ' / ') }
+                                          { type?.replaceAll('/', ' / ') }
                                         </Typography>
                                       </MenuItem>
                                     )

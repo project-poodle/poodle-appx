@@ -75,6 +75,7 @@ async function handle_appx_route(req, res) {
 
         // process context
         const js_context = {
+            spec: req.appx_spec,
             variables: {},
             imports: {},
             states: {},

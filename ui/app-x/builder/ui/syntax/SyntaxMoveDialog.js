@@ -286,7 +286,7 @@ const SyntaxMoveDialog = (props) => {
     } catch (err) {
       console.log(`Move`, data, err)
       notification.error({
-        message: `Failed to Move [ ${nodeType?.replace('/', ' / ')} ]`,
+        message: `Failed to Move [ ${nodeType?.replaceAll('/', ' / ')} ]`,
         description: String(err),
         placement: 'bottomLeft',
       })
@@ -338,8 +338,8 @@ const SyntaxMoveDialog = (props) => {
               <Typography id="alert-dialog-title" variant="h6">
                 {
                   !!nodeRef
-                  ? `${nodeRef} - [ ${nodeType?.replace('/', ' / ')} ]`
-                  : `[ ${nodeType?.replace('/', ' / ')} ]`
+                  ? `${nodeRef} - [ ${nodeType?.replaceAll('/', ' / ')} ]`
+                  : `[ ${nodeType?.replaceAll('/', ' / ')} ]`
                 }
               </Typography>
             </ListItem>
@@ -468,7 +468,7 @@ const SyntaxMoveDialog = (props) => {
                     if (!!found) {
                       const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
                       return type_matches_spec(getValues('_type'), typeSpec)
-                        || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replace('/', ' / ')} ]`
+                        || `Reference name [ ${value} ] does not allow type [ ${getValues('_type')?.replaceAll('/', ' / ')} ]`
                     }
                   }
                 },
@@ -539,7 +539,7 @@ const SyntaxMoveDialog = (props) => {
                     if (!!found) {
                       const typeSpec = found._childNode.types === 'inherit' ? found.types : found._childNode.types
                       return type_matches_spec(value, typeSpec)
-                        || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replace('/', ' / ')} ]`
+                        || `Reference name [ ${getValues('_ref')} ] does not allow type [ ${value?.replaceAll('/', ' / ')} ]`
                     }
                   }
                 }
@@ -582,7 +582,7 @@ const SyntaxMoveDialog = (props) => {
                                       { lookup_icon_for_type(type) }
                                     </ListItemIcon>
                                     <Typography variant="inherit" noWrap={true}>
-                                      {type.replace('/', ' / ')}
+                                      {type.replaceAll('/', ' / ')}
                                     </Typography>
                                   </MenuItem>
                                 )
