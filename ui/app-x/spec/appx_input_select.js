@@ -237,7 +237,7 @@ export const input_select = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/list',
+          kind: 'input/tabular',
           type: 'appx/input/rule',
           field: 'data',
           columns: [

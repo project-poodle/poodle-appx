@@ -254,7 +254,7 @@ export const input_text = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/list',
+          kind: 'input/tabular',
           type: 'appx/input/rule',
           field: 'data',
           columns: [

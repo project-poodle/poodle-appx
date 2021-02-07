@@ -54,7 +54,7 @@ import {
 
 
 // array text field
-const InputList = props => {
+const InputFieldTabular = props => {
   // theme
   const theme = useTheme()
   // make styles
@@ -119,7 +119,7 @@ const InputList = props => {
   const { name, label, spec } = props
 
   // console.log(`props`, name, label, spec, spec.kind, Array.isArray(spec.columns),
-  //   (spec.kind === 'input/list') && (Array.isArray(spec.columns))
+  //   (spec.kind === 'input/tabular') && (Array.isArray(spec.columns))
   // )
 
   //////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ const InputList = props => {
       {
         <Row key="title" className={styles.title} justify="center" align="middle" gutter={8}>
           {
-            (spec.kind === 'input/list')
+            (spec.kind === 'input/tabular')
             && (Array.isArray(spec.columns))
             && (!!fields && !!fields.length)
             &&
@@ -166,11 +166,11 @@ const InputList = props => {
       {
         fields.map((item, index) => {
           const propType = watch(`${props.name}[${index}]._type`)
-          // console.log(`InputList fields.item`, item, getValues())
+          // console.log(`InputFieldTabular fields.item`, item, getValues())
           return (
             <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>
               {
-                spec.kind === 'input/list'
+                spec.kind === 'input/tabular'
                 && Array.isArray(spec.columns)
                 &&
                 (
@@ -223,7 +223,7 @@ const InputList = props => {
         onClick={e => {
           // console.log(`getValues`, getValues(), getValues(props.name))
           const new_row = {}
-          if (spec.kind === 'input/list' && Array.isArray(spec.columns)) {
+          if (spec.kind === 'input/tabular' && Array.isArray(spec.columns)) {
             spec.columns.map(column => {
               if (!!spec.default) {
                 new_row[column.name] = eval(spec.default)
@@ -243,7 +243,7 @@ const InputList = props => {
 }
 
 // propTypes
-InputList.propTypes = {
+InputFieldTabular.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   spec: PropTypes.object.isRequired,
@@ -251,4 +251,4 @@ InputList.propTypes = {
   className: PropTypes.string,              // display className for element
 }
 
-export default InputList
+export default InputFieldTabular

@@ -39,7 +39,7 @@ export const appx_input_rule = {
     ',
   },
   _input: {
-    kind: 'input/list',
+    kind: 'input/tabular',
     columns: [
       {
         name: 'kind',
