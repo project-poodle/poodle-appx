@@ -224,7 +224,7 @@ const InputText = (props) => {
         <Controller
           key={props.id}
           name={props.id}
-          required={props.required}
+          required={!!props.required}
           constrol={control}
           defaultValue={props.defaultValue || ''}
           rules={rules}
@@ -244,7 +244,7 @@ const InputText = (props) => {
                     <InputLabel
                       key="label"
                       shrink={true}
-                      required={props.required}
+                      required={!!props.required}
                       >
                       { props.label }
                     </InputLabel>
@@ -278,7 +278,7 @@ const InputText = (props) => {
                 <TextField
                   {...(props.TextProps || {})}
                   name={props.id}
-                  required={props.required}
+                  required={!!props.required}
                   style={{width:'100%'}}
                   value={innerProps.value}
                   onChange={e => {

@@ -722,7 +722,7 @@ ui_component:
               name: "@material-ui/core.Fab"
               props:
                 size: medium
-                color: secondary
+                color: primary
               style:
                 margin:
                   _type: js/expression
@@ -1000,7 +1000,7 @@ ui_component:
                                         name: "@material-ui/core.Fab"
                                         props:
                                           size: medium
-                                          color: secondary
+                                          color: primary
                                           component: div
                                         style:
                                           margin:

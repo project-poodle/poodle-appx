@@ -57,7 +57,7 @@ const InputSwitch = (props) => {
       <Controller
         key={props.id}
         name={props.id}
-        required={props.required}
+        required={!!props.required}
         constrol={control}
         defaultValue={!!props.defaultValue || false}
         rules={rules}
@@ -77,7 +77,7 @@ const InputSwitch = (props) => {
                   <InputLabel
                     key="label"
                     shrink={true}
-                    required={props.required}
+                    required={!!props.required}
                   >
                     { props.label }
                   </InputLabel>

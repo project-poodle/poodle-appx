@@ -825,6 +825,7 @@ const PropEditor = (props) => {
                             key={custom.name}
                             name={custom.name}
                             size="small"
+                            className={styles.formControl}
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
                             inputSpec={custom.input}
@@ -858,6 +859,7 @@ const PropEditor = (props) => {
                             key={custom.name}
                             name={custom.name}
                             size="small"
+                            className={styles.formControl}
                             disabled={!!disabled[custom.name]}
                             childSpec={custom}
                             inputSpec={custom.input}

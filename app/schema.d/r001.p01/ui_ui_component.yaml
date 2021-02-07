@@ -527,6 +527,7 @@ ui_component:
                         - _type: react/element
                           name: "@material-ui/core.Select"
                           props:
+                            color: secondary
                             value:
                               _type: js/expression
                               data: >
@@ -781,6 +782,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
+                                color: secondary
                                 size: small
                             - _type: appx/input/select
                               name: app-x/widget/InputSelect
@@ -796,6 +798,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
+                                color: secondary
                                 size: small
                             - _type: appx/input/text
                               name: app-x/widget/InputText
@@ -810,6 +813,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
+                                color: secondary
                                 size: small
                     - a
                 - _type: react/element
@@ -868,6 +872,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
+                                color: secondary
                                 size: small
                             - _type: appx/input/switch
                               name: app-x/widget/InputSwitch
@@ -879,6 +884,7 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               SwitchProps:
+                                color: secondary
                                 size: small
                     - b
                 - _type: react/element
