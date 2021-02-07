@@ -49,7 +49,7 @@ const InputText = (props) => {
     rules.required = `${props.label || props.name} is required`
   }
 
-  console.log(`rules`, rules)
+  // console.log(`rules`, rules)
 
   const [ _searchOptions, _setSearchOptions ] = useState([])
 
