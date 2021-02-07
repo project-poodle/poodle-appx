@@ -110,12 +110,15 @@ function parse_tree_node(tree_context, treeNode) {
           return
         }
         // process each child
-        const childResult = parse_tree_node(
+        let childResult = parse_tree_node(
           child_context,
           child
         )
         // add order
-        childResult._order = index
+        childResult = {
+          _order: index,
+          ...childResult,
+        }
         // add child to result
         if (!!child.data._ref) {
           result[child.data._ref] = childResult
