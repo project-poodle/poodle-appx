@@ -415,7 +415,6 @@ const InputField = ((props) => {
                   className={styles.formControl}
                   error={!!_.get(errors, name)}
                   disabled={!!props.disabled}
-                  focused={monacoFocused}
                   >
                   {
                     !!childSpec.desc
