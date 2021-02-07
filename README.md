@@ -13,7 +13,7 @@ rest API, and UI applications.
 - NodeJS __v14__ or above (ES module support)
   https://nodejs.org/en/
 
-- MySQL __5.7__ or above (JSON support)
+- MySQL __v5.7__ or above (JSON support)
   https://www.mysql.com/
 
 
