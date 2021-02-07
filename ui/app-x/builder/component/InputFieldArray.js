@@ -170,6 +170,7 @@ const InputFieldArray = ((props) => {
             <InputLabel
               shrink={true}
               required={!!childSpec.required}
+              color='secondary'
               >
               {childSpec.desc}
             </InputLabel>
@@ -302,6 +303,7 @@ const InputFieldArray = ((props) => {
                           >
                           <Switch
                             name={itemName}
+                            color='secondary'
                             size={props.size}
                             checked={innerProps.value}
                             onChange={e => {
@@ -398,6 +400,7 @@ const InputFieldArray = ((props) => {
                               // size="small"
                               inputProps={{style:{height:0}}}
                               style={{height:0}}
+                              color='secondary'
                               error={!!_.get(errors, itemName)}
                               >
                             </Input>
@@ -431,6 +434,7 @@ const InputFieldArray = ((props) => {
                             value={innerProps.value}
                             disabled={!!props.disabled}
                             required={!!childSpec.required}
+                            color='secondary'
                             size={props.size}
                             onChange={e => {
                               let value = parseInt(e.target.value)
@@ -465,6 +469,7 @@ const InputFieldArray = ((props) => {
                             value={innerProps.value}
                             required={!!childSpec.required}
                             options={options}
+                            color='secondary'
                             size={props.size}
                             onChange={innerProps.onChange}
                             error={!!_.get(errors, itemName)}

@@ -174,6 +174,7 @@ const InputProperties = props => {
                       select={true}
                       name={innerProps.name}
                       value={innerProps.value}
+                      color='secondary'
                       size="small"
                       onChange={e => {
                         innerProps.onChange(e.target.value)
@@ -246,6 +247,7 @@ const InputProperties = props => {
                       key='name'
                       name={`${props.name}[${index}].name`}
                       // className={styles.nameControl}
+                      color='secondary'
                       size="small"
                       value={innerProps.value}
                       onChange={innerProps.onChange}
@@ -271,6 +273,7 @@ const InputProperties = props => {
                           <FormControl key="boolean" className={styles.valueControl}>
                             <Switch
                               name={innerProps.name}
+                              color='secondary'
                               size="small"
                               checked={innerProps.value}
                               onChange={e => {
@@ -305,6 +308,7 @@ const InputProperties = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              color='secondary'
                               size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
@@ -349,6 +353,7 @@ const InputProperties = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              color='secondary'
                               size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
@@ -404,6 +409,7 @@ const InputProperties = props => {
                               className={styles.formControl}
                               name={innerProps.name}
                               value={innerProps.value}
+                              color='secondary'
                               size="small"
                               onChange={e => {
                                 innerProps.onChange(e.target.value)
@@ -451,6 +457,7 @@ const InputProperties = props => {
                               key='value'
                               name={`${props.name}[${index}].value`}
                               className={styles.valueControl}
+                              color='secondary'
                               size="small"
                               value={innerProps.value}
                               onChange={innerProps.onChange}

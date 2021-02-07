@@ -38,7 +38,6 @@ import {
 } from "react-hook-form";
 // context provider
 import AutoSuggest from 'app-x/builder/component/AutoSuggest'
-import TextFieldArray from 'app-x/builder/component/TextFieldArray'
 import InputProperties from 'app-x/builder/component/InputProperties'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
