@@ -17,7 +17,7 @@ export const appx_input_rule = {
         const result = !!pattern \
           ? { \
               pattern: {  \
-                value: pattern.data,  \
+                value: eval(pattern.data),  \
                 message: eval(pattern.message), \
               } \
             } \

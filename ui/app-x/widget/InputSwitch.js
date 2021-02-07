@@ -43,6 +43,11 @@ const InputSwitch = (props) => {
     formState,
   } = useFormContext()
 
+  const rules = props.rules || {}
+  if (!!props.required) {
+    rules.required = `${props.label || props.name} is required`
+  }
+
   // not array
   return (
     <Box
@@ -54,15 +59,16 @@ const InputSwitch = (props) => {
         name={props.id}
         required={props.required}
         constrol={control}
-        defaultValue={props.defaultValue || false}
-        rules={props.rules}
+        defaultValue={!!props.defaultValue || false}
+        rules={rules}
         render={innerProps => (
           <FormControl
+            name={props.id}
             style={{width:'100%'}}
-            error={_.get(errors, props.id)}
+            error={!!_.get(errors, props.id)}
             >
             {
-              !!props?.label
+              !!props.label
               &&
               (
                 <Box
@@ -85,15 +91,18 @@ const InputSwitch = (props) => {
               checked={innerProps.value}
               value={innerProps.value}
               onChange={e => {
-                innerProps.onChange(e.target.value)
+                innerProps.onChange(e.target.checked)
                 if (!!props.callback) {
-                  props.callback(e.target.value)
+                  props.callback(e.target.checked)
                 }
               }}
-              error={!!_.get(errors, props.id)}
-              helperText={_.get(errors, props.id)?.message}
               >
             </Switch>
+            {
+              !!_.get(errors, props.id)
+              &&
+              <FormHelperText>{_.get(errors, props.id)?.message || ''}</FormHelperText>
+            }
           </FormControl>
         )}
         >

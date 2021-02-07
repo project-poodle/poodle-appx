@@ -44,6 +44,11 @@ const InputSelect = (props) => {
     formState,
   } = useFormContext()
 
+  const rules = props.rules || {}
+  if (!!props.required) {
+    rules.required = `${props.label || props.name} is required`
+  }
+
   // not array
   return (
     <Box
@@ -56,11 +61,12 @@ const InputSelect = (props) => {
         required={props.required}
         constrol={control}
         defaultValue={props.defaultValue || ''}
-        rules={props.rules}
+        rules={rules}
         render={innerProps => (
           <FormControl
+            name={props.id}
             style={{width:'100%'}}
-            error={_.get(errors, props.id)}
+            error={!!_.get(errors, props.id)}
             >
             {
               !!props?.label
@@ -93,7 +99,7 @@ const InputSelect = (props) => {
                 }
               }}
               error={!!_.get(errors, props.id)}
-              helperText={_.get(errors, props.id)?.message}
+              helperText={_.get(errors, props.id)?.message || ''}
               >
               <MenuItem style={{display:'none'}}
                 key=''

@@ -44,6 +44,13 @@ const InputText = (props) => {
     formState,
   } = useFormContext()
 
+  const rules = props.rules || {}
+  if (!!props.required) {
+    rules.required = `${props.label || props.name} is required`
+  }
+
+  console.log(`rules`, rules)
+
   const [ _searchOptions, _setSearchOptions ] = useState([])
 
   useEffect(() => {
@@ -103,9 +110,10 @@ const InputText = (props) => {
                     control={control}
                     required={!!props.required}
                     defaultValue={item.value || ''}
-                    rules={props.rules}
+                    rules={rules}
                     render={innerProps => (
                       <FormControl
+                        name={`${name}[${index}].value`}
                         style={{width:'100%'}}
                         error={!!_.get(errors, name)}
                         >
@@ -145,7 +153,7 @@ const InputText = (props) => {
                               }
                             }}
                             error={!!_.get(errors, `${name}[${index}].value`)}
-                            helperText={_.get(errors, `${name}[${index}].value`)?.message}
+                            helperText={_.get(errors, `${name}[${index}].value`)?.message || ''}
                             >
                           </TextField>
                         </AutoComplete>
@@ -219,14 +227,15 @@ const InputText = (props) => {
           required={props.required}
           constrol={control}
           defaultValue={props.defaultValue || ''}
-          rules={props.rules}
+          rules={rules}
           render={innerProps => (
             <FormControl
+              name={props.id}
               style={{width:'100%'}}
-              error={_.get(errors, props.id)}
+              error={!!_.get(errors, props.id)}
               >
               {
-                !!props?.label
+                !!props.label
                 &&
                 (
                   <Box
@@ -279,7 +288,7 @@ const InputText = (props) => {
                     }
                   }}
                   error={!!_.get(errors, props.id)}
-                  helperText={_.get(errors, props.id)?.message}
+                  helperText={_.get(errors, props.id)?.message || ''}
                   >
                 </TextField>
               </AutoComplete>
