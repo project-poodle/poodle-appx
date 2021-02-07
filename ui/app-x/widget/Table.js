@@ -362,74 +362,80 @@ const Table = (props) => {
         {...getTableProps()}
         className={styles.table}
         >
-        <div
-          className={styles.thead}
-          >
-          {
-            headerGroups.map(headerGroup => {
-              return (
-                <div
-                  {...headerGroup.getHeaderGroupProps()}
-                  // className={styles.tr}
-                  >
-                  {
-                    headerGroup.headers.map(column => {
-                      return (
-                        <div
-                          {...column.getHeaderProps()}
-                          className={styles.th}
-                          >
-                          <Box
-                            display="flex"
-                            justifyContent="center"
-                            {...column.getSortByToggleProps()}
-                            >
-                            {
-                              column.render('Header')
-                            }
-                            {
-                              !!column.isSorted
-                              &&
-                              (
-                                column.isSortedDesc
-                                ? <div className={styles.sorter}>
-                                    <ExpandMore />
-                                  </div>
-                                : <div className={styles.sorter}>
-                                    <ExpandLess />
-                                  </div>
-                              )
-                            }
-                          </Box>
-                          <div>
-                          {
-                            column.canFilter ? column.render('Filter') : null
-                          }
-                          </div>
-                          <Divider
-                            orientation="vertical"
-                            flexItem
-                          />
-                          {/* Use column.getResizerProps to hook up the events correctly */}
-                          {
-                            column.canResize
-                            &&
-                            (
-                              <div
-                                {...column.getResizerProps()}
-                                className={styles.resizer}
+        {
+          !props.hideHeader
+          &&
+          (
+            <div
+              className={styles.thead}
+              >
+              {
+                headerGroups.map(headerGroup => {
+                  return (
+                    <div
+                      {...headerGroup.getHeaderGroupProps()}
+                      // className={styles.tr}
+                      >
+                      {
+                        headerGroup.headers.map(column => {
+                          return (
+                            <div
+                              {...column.getHeaderProps()}
+                              className={styles.th}
+                              >
+                              <Box
+                                display="flex"
+                                justifyContent="center"
+                                {...column.getSortByToggleProps()}
+                                >
+                                {
+                                  column.render('Header')
+                                }
+                                {
+                                  !!column.isSorted
+                                  &&
+                                  (
+                                    column.isSortedDesc
+                                    ? <div className={styles.sorter}>
+                                        <ExpandMore />
+                                      </div>
+                                    : <div className={styles.sorter}>
+                                        <ExpandLess />
+                                      </div>
+                                  )
+                                }
+                              </Box>
+                              <div>
+                              {
+                                column.canFilter ? column.render('Filter') : null
+                              }
+                              </div>
+                              <Divider
+                                orientation="vertical"
+                                flexItem
                               />
-                            )
-                          }
-                        </div>
-                      )
-                    })
-                  }
-                </div>
-              )
-            })
-          }
-        </div>
+                              {/* Use column.getResizerProps to hook up the events correctly */}
+                              {
+                                column.canResize
+                                &&
+                                (
+                                  <div
+                                    {...column.getResizerProps()}
+                                    className={styles.resizer}
+                                  />
+                                )
+                              }
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                  )
+                })
+              }
+            </div>
+          )
+        }
         <div
             {...getTableBodyProps()}
             className={styles.tbody}
@@ -487,7 +493,7 @@ const Table = (props) => {
           }
         </div>
         {
-          !!props.hasFooter
+          !!props.showFooter
           &&
           (
             <div
@@ -582,7 +588,8 @@ Table.propTypes = {
   color: PropTypes.string,
   hideToolbar: PropTypes.bool,
   hidePagination: PropTypes.bool,
-  hasFooter: PropTypes.bool,
+  hideHeader: PropTypes.bool,
+  showFooter: PropTypes.bool,
   defaultPageSize: PropTypes.number,
 }
 

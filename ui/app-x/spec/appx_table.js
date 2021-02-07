@@ -12,7 +12,8 @@ import {
 // style:                    # style for container   (:object<:expression>)
 // color:                    # color                 (primary|secondary)
 // hideToolbar:              # hide toolbar?         (:boolean)
-// hasFooter:                # has footer?           (:boolean)
+// showHeader:               # show header?          (:boolean)
+// showFooter:               # show footer?          (:boolean)
 // defaultPageSize:          # default page size     (:number)
 export const appx_table = {
 
@@ -157,8 +158,24 @@ export const appx_table = {
       },
     },
     {
-      name: 'hasFooter',
-      desc: 'Has Footer',
+      name: 'hideHeader',
+      desc: 'Hide Header',
+      types: [
+        {
+          kind: 'class',
+          data: 'boolean'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/switch',
+        },
+      },
+    },
+    {
+      name: 'showFooter',
+      desc: 'Show Footer',
       types: [
         {
           kind: 'class',
