@@ -74,7 +74,7 @@ const SyntaxMenu = (props) => {
   // styles
   const styles = makeStyles((theme) => ({
     menuItem: {
-      minWidth: 224,
+      minWidth: 272,
     },
     nestedMenuItem: {
       padding: 0,
@@ -142,7 +142,7 @@ const SyntaxMenu = (props) => {
                   <ListItemIcon>
                     { lookup_icon_for_type(group_type) }
                   </ListItemIcon>
-                  <ListItemText primary={`Add : ${group_type.replaceAll('/', ' / ')}`} />
+                  <ListItemText primary={`[ ${name} ] : ${group_type.replaceAll('/', ' / ')}`} />
                 </MenuItem>
               )
             }

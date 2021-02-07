@@ -113,7 +113,8 @@ export const input_text = {
         },
         {
           kind: 'type',
-          data: 'js/expression'
+          data: 'js/expression',
+          expr: '$child.flat()'
         }
       ],
       _thisNode: {

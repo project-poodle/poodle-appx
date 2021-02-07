@@ -782,9 +782,6 @@ ui_component:
                                   data: styles.formControl
                               TextProps:
                                 size: small
-                              rules:
-                                _type: appx/input/rule
-                                data: []
                             - _type: appx/input/select
                               name: app-x/widget/InputSelect
                               id: select
@@ -800,9 +797,6 @@ ui_component:
                                   data: styles.formControl
                               TextProps:
                                 size: small
-                              rules:
-                                _type: appx/input/rule
-                                data: []
                             - _type: appx/input/text
                               name: app-x/widget/InputText
                               id: text2
@@ -817,9 +811,6 @@ ui_component:
                                   data: styles.formControl
                               TextProps:
                                 size: small
-                              rules:
-                                _type: appx/input/rule
-                                data: []
                     - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
@@ -878,9 +869,6 @@ ui_component:
                                   data: styles.formControl
                               TextProps:
                                 size: small
-                              rules:
-                                _type: appx/input/rule
-                                data: []
                             - _type: appx/input/switch
                               name: app-x/widget/InputSwitch
                               id: switch
@@ -892,9 +880,6 @@ ui_component:
                                   data: styles.formControl
                               SwitchProps:
                                 size: small
-                              rules:
-                                _type: appx/input/rule
-                                data: []
                     - b
                 - _type: react/element
                   name: "@material-ui/core.Box"

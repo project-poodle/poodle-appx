@@ -96,7 +96,8 @@ export const input_select = {
         },
         {
           kind: 'type',
-          data: 'js/expression'
+          data: 'js/expression',
+          expr: '$child.flat()'
         }
       ],
       _thisNode: {
