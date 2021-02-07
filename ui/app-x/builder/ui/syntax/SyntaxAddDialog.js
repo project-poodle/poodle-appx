@@ -539,6 +539,8 @@ const SyntaxAddDialog = (props) => {
                     <AutoSuggest
                       label="Reference"
                       name="_ref"
+                      color='secondary'
+                      size="small"
                       disabled={!!disabled["_ref"]}
                       required={true}
                       onChange={value => {
@@ -549,9 +551,7 @@ const SyntaxAddDialog = (props) => {
                       }}
                       value={innerProps.value}
                       options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
-                      size="small"
                       error={!!errors._ref}
-                      size="small"
                       helperText={errors._ref?.message}
                       />
                   </FormControl>
@@ -605,6 +605,7 @@ const SyntaxAddDialog = (props) => {
                       name="_type"
                       value={innerProps.value}
                       required={true}
+                      color='secondary'
                       size="small"
                       onChange={
                         e => {
@@ -713,6 +714,7 @@ const SyntaxAddDialog = (props) => {
                           label="Position"
                           select={true}
                           name="_pos"
+                          color='secondary'
                           size="small"
                           value={innerProps.value}
                           onChange={innerProps.onChange}
@@ -772,6 +774,7 @@ const SyntaxAddDialog = (props) => {
                           select={true}
                           name="_pos"
                           value={innerProps.value}
+                          color='secondary'
                           size="small"
                           onChange={innerProps.onChange}
                           error={!!errors._pos}

@@ -485,6 +485,8 @@ const SyntaxMoveDialog = (props) => {
                     <AutoSuggest
                       label="Reference"
                       name="_ref"
+                      color='secondary'
+                      size="small"
                       disabled={!!disabled["_ref"]}
                       required={true}
                       onChange={value => {
@@ -495,9 +497,7 @@ const SyntaxMoveDialog = (props) => {
                       }}
                       value={innerProps.value}
                       options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*') || []}
-                      size="small"
                       error={!!errors._ref}
-                      size="small"
                       helperText={errors._ref?.message}
                       />
                   </FormControl>
@@ -554,6 +554,7 @@ const SyntaxMoveDialog = (props) => {
                       value={innerProps.value}
                       required={true}
                       disabled={true}
+                      color='secondary'
                       size="small"
                       onChange={
                         e => {

@@ -937,6 +937,8 @@ const PropEditor = (props) => {
                         <AutoSuggest
                           label="Reference"
                           name="_ref"
+                          color='secondary'
+                          size="small"
                           // className={styles.formControl}
                           disabled={
                             !parentSpec?.children.find(childSpec => childSpec.name === '*')
@@ -952,9 +954,7 @@ const PropEditor = (props) => {
                           }}
                           value={innerProps.value}
                           options={parentSpec?.children?.filter(spec => !!spec._childNode).map(child => child.name).filter(name => name !== '*')}
-                          size="small"
                           error={!!errors._ref}
-                          size="small"
                           helperText={errors._ref?.message}
                           />
                       </FormControl>
@@ -1004,6 +1004,7 @@ const PropEditor = (props) => {
                             name="_type"
                             value={innerProps.value}
                             required={true}
+                            color='secondary'
                             size="small"
                             onChange={
                               e => {
