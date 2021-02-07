@@ -245,7 +245,7 @@ const InputText = (props) => {
                       key="label"
                       shrink={true}
                       required={props.required}
-                    >
+                      >
                       { props.label }
                     </InputLabel>
                   </Box>
