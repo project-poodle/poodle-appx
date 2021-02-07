@@ -142,6 +142,7 @@ const Table = (props) => {
     return (
       <TextField
         className={className}
+        color={props.color || 'primary'}
         size="small"
         value={value || ""}
         onChange={e => {
@@ -168,6 +169,7 @@ const Table = (props) => {
     return (
       <TextField
         fullWidth={true}
+        color={props.color || 'primary'}
         size="small"
         value={filterValue || ''}
         onChange={e => {
@@ -547,6 +549,7 @@ const Table = (props) => {
               >
             </Box>
             <TextField
+              color={props.color || 'primary'}
               size="small"
               select={true}
               value={pageSize}
