@@ -209,7 +209,7 @@ const InputFieldArray = ((props) => {
                           try {
                             return !!eval(rule.data) || rule.message
                           } catch (e) {
-                            return String(e)
+                            return e.message || String(e)
                           }
                         }
                       }
@@ -230,7 +230,7 @@ const InputFieldArray = ((props) => {
                           try {
                             return !!eval(rule.data) || rule.message
                           } catch (e) {
-                            return String(e)
+                            return e.message || String(e)
                           }
                         }
                       }
@@ -254,6 +254,9 @@ const InputFieldArray = ((props) => {
                   if (inputSpec.kind === 'input/expression') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
+                        if (!childSpec.required && !value.trim()) {
+                          return true
+                        }
                         parseExpression(String(value), {
                           plugins: [
                             'jsx', // support jsx
@@ -267,6 +270,9 @@ const InputFieldArray = ((props) => {
                   } else if (inputSpec.kind === 'input/statement') {
                     result.validate[`validate_${count++}`] = (value) => {
                       try {
+                        if (!childSpec.required && !value.trim()) {
+                          return true
+                        }
                         parse(value, {
                           allowReturnOutsideFunction: true, // allow return in the block statement
                           plugins: [

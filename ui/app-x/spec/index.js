@@ -5,14 +5,17 @@ import { REGEX_VAR, classes } from 'app-x/spec/classes.js'
 import react_element from 'app-x/spec/react_element.js'
 import react_html from 'app-x/spec/react_html.js'
 import react_state from 'app-x/spec/react_state.js'
-import react_context from 'app-x/spec/react_context.js'
 import react_effect from 'app-x/spec/react_effect.js'
+import react_context from 'app-x/spec/react_context.js'
 // forms and inputs
-import react_form from 'app-x/spec/react_form.js'
-import input_text from 'app-x/spec/input_text.js'
-import input_switch from 'app-x/spec/input_switch.js'
-import input_select from 'app-x/spec/input_select.js'
-import input_rule from 'app-x/spec/input_rule.js'
+import appx_form from 'app-x/spec/appx_form.js'
+import appx_input_text from 'app-x/spec/appx_input_text.js'
+import appx_input_switch from 'app-x/spec/appx_input_switch.js'
+import appx_input_select from 'app-x/spec/appx_input_select.js'
+import appx_input_rule from 'app-x/spec/appx_input_rule.js'
+// appx table and columns
+import appx_table from 'app-x/spec/appx_table.js'
+import appx_table_column from 'app-x/spec/appx_table_column.js'
 // javascript classes
 import js_null from 'app-x/spec/js_null.js'
 import js_string from 'app-x/spec/js_string.js'
@@ -36,9 +39,6 @@ import mui_theme from 'app-x/spec/mui_theme.js'
 // routes
 import route_path from 'app-x/spec/route_path.js'
 import route_context from 'app-x/spec/route_context.js'
-// appx table and table options
-import appx_table from 'app-x/spec/appx_table.js'
-import appx_table_column from 'app-x/spec/appx_table_column.js'
 // appx api
 import appx_api from 'app-x/spec/appx_api.js'
 
@@ -114,15 +114,15 @@ const types = [
   react_element,
   react_html,
   react_state,
-  react_context,
   react_effect,
+  react_context,
   // form and inputs
-  react_form,
-  input_text,
-  input_switch,
-  input_select,
-  input_rule,
-  // table and table options
+  appx_form,
+  appx_input_text,
+  appx_input_switch,
+  appx_input_select,
+  appx_input_rule,
+  // table and columns
   appx_table,
   appx_table_column,
   // javascript classes,

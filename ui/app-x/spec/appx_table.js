@@ -125,6 +125,54 @@ export const appx_table = {
       },
     },
     {
+      name: 'hideToolbar',
+      desc: 'Hide Toolbar',
+      types: [
+        {
+          kind: 'class',
+          data: 'boolean'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/switch',
+        },
+      },
+    },
+    {
+      name: 'hidePagination',
+      desc: 'Hide Pagination',
+      types: [
+        {
+          kind: 'class',
+          data: 'boolean'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/switch',
+        },
+      },
+    },
+    {
+      name: 'hasFooter',
+      desc: 'Has Footer',
+      types: [
+        {
+          kind: 'class',
+          data: 'boolean'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/switch',
+        },
+      },
+    },
+    {
       name: 'style',
       desc: 'Style',
       types: [
@@ -162,34 +210,22 @@ export const appx_table = {
       },
     },
     {
-      name: 'hideToolbar',
-      desc: 'Hide Toolbar',
+      name: 'margin',
+      desc: 'Margin',
       types: [
         {
           kind: 'class',
-          data: 'boolean'
+          data: 'string'
         },
       ],
       _thisNode: {
         types: 'inherit',
         input: {
-          kind: 'input/switch',
-        },
-      },
-    },
-    {
-      name: 'hasFooter',
-      desc: 'Has Footer',
-      types: [
-        {
-          kind: 'class',
-          data: 'boolean'
-        },
-      ],
-      _thisNode: {
-        types: 'inherit',
-        input: {
-          kind: 'input/switch',
+          kind: 'input/text',
+          options: [
+            "normal",
+            "dense"
+          ]
         },
       },
     },

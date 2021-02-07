@@ -3,19 +3,43 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: input/text                                  (~jsx|~expression)
+// type: appx/input/text                             (~jsx|~expression)
 // name:                     # name of input         (:string)
+// id:                       # id of input           (:string)
 // array:                    # whether array         (:boolean)
-// props:                    # properties            (:object<:expression>)
-// rules:                    # input rules           (:input/rule)
+// rules:                    # input rules           (:appx/input/rule)
 export const input_text = {
 
-  type: 'input/text',
+  type: 'appx/input/text',
   desc: 'Text Input',
+  template: {
+    kind: 'react/element',
+  },
+  _expand: true,
   children: [
     {
       name: 'name',
-      desc: 'Input Name',
+      desc: 'Name',
+      required: true,
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          options: 'validation.valid_import_names()',
+          optionSelfImportNames: true,
+          optionsOnly: true,
+        },
+      },
+    },
+    {
+      name: 'id',
+      desc: 'Input ID',
       required: true,
       types: [
         {
@@ -27,6 +51,22 @@ export const input_text = {
         types: 'inherit',
         input: {
           kind: 'input/text'
+        },
+      },
+    },
+    {
+      name: 'label',
+      desc: 'Label',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        }
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
         },
       },
     },
@@ -63,8 +103,114 @@ export const input_text = {
       },
     },
     {
-      name: 'props',
-      desc: 'Properties',
+      name: 'options',
+      desc: 'Options',
+      array: true,
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'type',
+          data: 'js/expression'
+        }
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/text'
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/expression'
+          }
+        ]
+      }
+    },
+    {
+      name: 'defaultValue',
+      desc: 'Default Value',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/expression'
+        },
+      },
+    },
+    {
+      name: 'callback',
+      desc: 'Callback',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          },
+        ],
+        input: {
+          kind: 'input/expression'
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          }
+        ]
+      }
+    },
+    {
+      name: 'BoxProps',
+      desc: 'Box Properties',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        }
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties',
+        },
+      },
+    },
+    {
+      name: 'TextProps',
+      desc: 'TextField Properties',
       types: [
         {
           kind: 'class',
@@ -101,14 +247,14 @@ export const input_text = {
       types: [
         {
           kind: 'type',
-          data: 'input/rule'
+          data: 'appx/input/rule'
         },
       ],
       _childNode: {
         types: 'inherit',
         input: {
           kind: 'input/list',
-          type: 'input/rule',
+          type: 'appx/input/rule',
           field: 'data',
           columns: [
             {

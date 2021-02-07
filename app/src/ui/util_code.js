@@ -36,6 +36,7 @@ const {
   input_rule,
 } = require('./util_form')
 const {
+  template_custom,
   template_react_element,
   template_js_object,
 } = require('./util_template')
@@ -2560,7 +2561,11 @@ function js_process(js_context, ref, input) {
     throw new Error(`ERROR: unknown type [${input._type}]`)
   }
 
-  if (typeSpec.template?.kind === 'react/element') {
+  if (typeSpec.template?.kind === 'custom') {
+
+    return template_custom(js_context, ref, input)
+
+  } else if (typeSpec.template?.kind === 'react/element') {
 
     return template_react_element(js_context, ref, input)
 
@@ -2650,37 +2655,13 @@ function js_process(js_context, ref, input) {
 
     return react_state(js_context, ref, input)
 
-  } else if (input._type === 'react/context') {
-
-    return react_context(js_context, ref, input)
-
   } else if (input._type === 'react/effect') {
 
     return react_effect(js_context, ref, input)
 
-  } else if (input._type === 'react/form') {
+  } else if (input._type === 'react/context') {
 
-    return react_form(js_context, ref, input)
-
-  } else if (input._type === 'input/text') {
-
-    return input_text(js_context, ref, input)
-
-  } else if (input._type === 'input/select') {
-
-    return input_select(js_context, ref, input)
-
-  } else if (input._type === 'input/switch') {
-
-    return input_switch(js_context, ref, input)
-
-  } else if (input._type === 'input/select') {
-
-    return input_select(js_context, ref, input)
-
-  } else if (input._type === 'input/rule') {
-
-    return input_rule(js_context, ref, input)
+    return react_context(js_context, ref, input)
 
   } else if (input._type === 'mui/style') {
 

@@ -3,12 +3,41 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: input/rule                                  (~jsx|~expression)
+// type: appx/input/rule                             (~jsx|~expression)
 // children:                 # children              (:object:string>)
-export const input_text = {
+export const appx_input_rule = {
 
-  type: 'input/rule',
+  type: 'appx/input/rule',
   desc: 'Input Rules',
+  template: {
+    kind: 'custom',
+    expr: ' \
+      ((data) => {  \
+        const pattern = data.find(row => row.kind === "pattern"); \
+        const result = !!pattern \
+          ? { \
+              pattern: {  \
+                value: pattern.data,  \
+                message: eval(pattern.message), \
+              } \
+            } \
+          : {}; \
+        let i=1;  \
+        result.validate = data \
+          .filter(row => row.kind === "validate") \
+          .reduce((accumulator, item) => {  \
+            accumulator[`${validate}_${i++}`] = (value) => {  \
+              try { \
+                return eval(item.data) || eval(item.message)  \
+              } catch (e) { \
+                return e.message || String(e)  \
+              } \
+            } \
+          }, {}); \
+        return result \
+      })($data)  \
+    ',
+  },
   _input: {
     kind: 'input/list',
     columns: [
@@ -127,4 +156,4 @@ export const input_text = {
   ]
 }
 
-export default input_text
+export default appx_input_rule

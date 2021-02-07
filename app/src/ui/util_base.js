@@ -54,12 +54,14 @@ function _js_parse_snippet(js_context, parsed, variables) {
   traverse(parsed, {
     // custom variables
     Identifier(path) {
-      if (!!variables && variables[path.node.name]) {
+      if (!!variables && !!variables[path.node.name]) {
+        // console.log(`replace`, path.node.name, variables[path.node.name])
         path.replaceWith(variables[path.node.name])
       }
     },
     JSXIdentifier(path) {
-      if (!!variables && variables[path.node.name]) {
+      if (!!variables && !!variables[path.node.name]) {
+        // console.log(`replace`, path.node.name, variables[path.node.name])
         path.replaceWith(variables[path.node.name])
       }
     },

@@ -611,14 +611,13 @@ ui_component:
       ui_component_spec:
         f:
           _type: js/function
-          _order: 1
           params:
             - a
             - b
           body:
             - a+1
+          _order: 1
         layouts:
-          _order: 2
           lg:
             - h: 10
               i: a
@@ -651,48 +650,47 @@ ui_component:
               w: 4
               x: 4
               y: 0
+          _order: 2
         styles:
           _type: mui/style
-          _order: 3
           box:
             borderColor:
               _type: js/expression
               data: theme.palette.divider
             borderStyle: solid
-          formControl:
-            padding:
+          root:
+            color:
               _type: js/expression
-              data: theme.spacing(2,0)
+              data: theme.palette.text.primary
             width: 100%
-          innerBox:
+            height: 100%
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          innerBox:
             margin:
               _type: js/expression
               data: theme.spacing(2,0)
             padding:
               _type: js/expression
               data: theme.spacing(2,2)
-          root:
-            height: 100%
-            width: 100%
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
             backgroundColor:
               _type: js/expression
               data: theme.palette.background.paper
+          formControl:
+            width: 100%
+            padding:
+              _type: js/expression
+              data: theme.spacing(2,0)
+          _order: 3
         snippet:
           _type: js/statement
-          _order: 4
           body:
             - _type: appx/api
               namespace: sys
               app_name: appx
               method: get
               endpoint: /namespace
-              init: ""
               result: console.log(result)
               error: |-
                 $I('antd.notification').error({
@@ -703,9 +701,9 @@ ui_component:
             - _type: js/statement
               body:
                 - // console.log(this)
+          _order: 4
         component:
           _type: react/element
-          _order: 5
           name: "@material-ui/core.Container"
           props:
             className:
@@ -715,189 +713,209 @@ ui_component:
             - _type: react/element
               name: react-grid-layout.Responsive
               props:
-                breakpoints:
-                  lg: 1200
-                  md: 0
-                className:
-                  _type: js/expression
-                  data: styles.root
                 cols:
                   lg: 12
                   md: 12
+                width: 800
                 layouts:
                   _type: js/expression
                   data: layouts
+                className:
+                  _type: js/expression
+                  data: styles.root
                 rowHeight: 30
-                width: 800
+                breakpoints:
+                  lg: 1200
+                  md: 0
               children:
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
+                    key: a
                     className:
                       _type: js/expression
                       data: styles.box
-                    key: a
                   children:
                     - _type: react/element
                       name: "@material-ui/core.Box"
                       props:
-                        className:
+                        onDrag:
                           _type: js/expression
-                          data: styles.innerBox
+                          data: e => e.stopPropagation()
                         onClick:
                           _type: js/expression
                           data: e => e.stopPropagation()
-                        onDrag:
+                        className:
+                          _type: js/expression
+                          data: styles.innerBox
+                        onMouseUp:
                           _type: js/expression
                           data: e => e.stopPropagation()
                         onMouseDown:
                           _type: js/expression
                           data: e => e.stopPropagation()
-                        onMouseUp:
-                          _type: js/expression
-                          data: e => e.stopPropagation()
                       children:
-                        - _type: react/form
-                          name: a
-                          onSubmit: console.log(data)
-                          onError: ""
-                          props:
-                            classname:
-                              _type: js/expression
-                              data: styles.root
+                        - _type: appx/form
+                          name: app-x/widget/Form
+                          onSubmit:
+                            _type: js/function
+                            params:
+                              - data
+                            body:
+                              - console.log('form a', data)
                           formProps:
                             mode: onChange
                             revalidateMode: onChange
                           children:
-                            - _type: input/text
-                              name: text
+                            - _type: appx/input/text
+                              name: app-x/widget/InputText
+                              id: text1
+                              label: A Label
                               required: true
-                              array: false
-                              props:
-                                autoSuggest: true
+                              options:
+                                - a
+                                - abc
+                                - def
+                              BoxProps:
                                 className:
                                   _type: js/expression
                                   data: styles.formControl
-                                label: A Label
-                                options:
-                                  _type: js/expression
-                                  data: "[{value:'a'},{value:'abc'},{value:'def'}]"
-                            - _type: input/select
-                              name: select
-                              required: true
-                              props:
-                                className:
-                                  _type: js/expression
-                                  data: styles.formControl
-                                defaultValue: abc
-                                label: Select Label
-                                options:
-                                  _type: js/expression
-                                  data: '[{value:"abc"},{value:"def"}]'
-                            - _type: input/text
-                              name: text2
-                              required: true
-                              props:
-                                autoSuggest: false
-                                className:
-                                  _type: js/expression
-                                  data: styles.formControl
-                                label: "Text #2"
-                                options:
-                                  _type: js/expression
-                                  data: '[{value:"a"},{value:"b"}]'
+                              TextProps:
+                                size: small
                               rules:
-                                _type: input/rule
+                                _type: appx/input/rule
+                                data: []
+                            - _type: appx/input/select
+                              name: app-x/widget/InputSelect
+                              id: select
+                              label: Select Label
+                              required: true
+                              options:
+                                - abc
+                                - def
+                              defaultValue: '"abc"'
+                              BoxProps:
+                                className:
+                                  _type: js/expression
+                                  data: styles.formControl
+                              TextProps:
+                                size: small
+                              rules:
+                                _type: appx/input/rule
+                                data: []
+                            - _type: appx/input/text
+                              name: app-x/widget/InputText
+                              id: text2
+                              label: "Text #2"
+                              required: true
+                              options:
+                                - a
+                                - b
+                              BoxProps:
+                                className:
+                                  _type: js/expression
+                                  data: styles.formControl
+                              TextProps:
+                                size: small
+                              rules:
+                                _type: appx/input/rule
                                 data: []
                     - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
+                    key: b
                     className:
                       _type: js/expression
                       data: styles.box
-                    key: b
                   children:
                     - _type: react/element
                       name: "@material-ui/core.Box"
                       props:
-                        className:
+                        onDrag:
                           _type: js/expression
-                          data: styles.innerBox
+                          data: e => e.stopPropagation()
                         onClick:
                           _type: js/expression
                           data: e => e.stopPropagation()
-                        onDrag:
+                        className:
+                          _type: js/expression
+                          data: styles.innerBox
+                        onMouseUp:
                           _type: js/expression
                           data: e => e.stopPropagation()
                         onMouseDown:
                           _type: js/expression
                           data: e => e.stopPropagation()
-                        onMouseUp:
-                          _type: js/expression
-                          data: e => e.stopPropagation()
                       children:
-                        - _type: react/form
-                          name: b
-                          onSubmit: console.log(data)
-                          onError: ""
+                        - _type: appx/form
+                          name: app-x/widget/Form
+                          onSubmit:
+                            _type: js/function
+                            params:
+                              - data
+                            body:
+                              - console.log('form b', data)
                           formProps:
                             mode: onChange
                           children:
-                            - _type: input/text
-                              name: text
+                            - _type: appx/input/text
+                              name: app-x/widget/InputText
+                              id: text
+                              label: Text Label
                               required: true
                               array: true
-                              props:
-                                autoSuggest: true
-                                callback:
-                                  _type: js/expression
-                                  data: "(data) => {console.log(\\`callback data: ${data}\\`)}"
+                              options:
+                                - abc
+                                - def
+                                - k
+                                - cat
+                              defaultValue: '["a", "b"]'
+                              callback: "(data) => {console.log(`callback data: ${data}`)}"
+                              BoxProps:
                                 className:
                                   _type: js/expression
                                   data: styles.formControl
-                                defaultValue:
-                                  _type: js/expression
-                                  data: "[{value:'a'},{value:'b'}]"
-                                label: Text Label
-                                multiline: false
+                              TextProps:
                                 size: small
-                                options:
-                                  _type: js/expression
-                                  data: "[{value:'abc'},{value:'def'},{value:'k'},{value:'cat'}]"
-                            - _type: input/switch
-                              name: switch
+                              rules:
+                                _type: appx/input/rule
+                                data: []
+                            - _type: appx/input/switch
+                              name: app-x/widget/InputSwitch
+                              id: switch
+                              label: Switch Label
                               required: true
-                              props:
+                              BoxProps:
                                 className:
                                   _type: js/expression
                                   data: styles.formControl
-                                label: Switch Label
+                              SwitchProps:
                                 size: small
+                              rules:
+                                _type: appx/input/rule
+                                data: []
                     - b
                 - _type: react/element
                   name: "@material-ui/core.Box"
                   props:
+                    key: c
                     className:
                       _type: js/expression
                       data: styles.box
-                    key: c
                   children:
                     - c
+          _order: 5
         _test:
           providers:
-            - _type: react/element
-              name: react-redux.Provider
+            - name: react-redux.Provider
+              _type: react/element
               props:
                 store:
-                  _type: js/import
                   name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
                   _type: js/import
-                  name: app-x/theme
+            - name: app-x/theme/GlobalStyleProvider
+              _type: react/element
 
     ############################################################
     - namespace: sys

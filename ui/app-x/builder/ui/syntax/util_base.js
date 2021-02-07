@@ -173,15 +173,15 @@ const groups = {
     'react/effect',
   ],
   // form / inputs
-  form_input: [
-    'react/form',
-    'input/text',
-    'input/switch',
-    'input/select',
-    'input/rule',
+  appx_form: [
+    'appx/form',
+    'appx/input/text',
+    'appx/input/switch',
+    'appx/input/select',
+    'appx/input/rule',
   ],
-  // table / options
-  table_options: [
+  // table / columns
+  appx_table: [
     'appx/table',
     'appx/table/column',
   ],
@@ -209,7 +209,6 @@ const groups = {
     'route/context',
     'route/path',
     'appx/api',
-    // 'appx/route',
   ],
 }
 
@@ -283,26 +282,24 @@ function lookup_changeable_types(type) {
   (
     type === 'react/element'
     || type === 'react/html'
-    || type === 'react/form'
   )
   {
     return [
       'react/element',
       'react/html',
-      'react/form',
     ]
   }
   else if
   (
-    type === 'input/text'
-    || type === 'input/select'
-    || type === 'input/switch'
+    type === 'appx/input/text'
+    || type === 'appx/input/select'
+    || type === 'appx/input/switch'
   )
   {
     return [
-      'input/text',
-      'input/select',
-      'input/switch',
+      'appx/input/text',
+      'appx/input/select',
+      'appx/input/switch',
     ]
   }
   else

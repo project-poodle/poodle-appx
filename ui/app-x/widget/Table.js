@@ -54,7 +54,8 @@ const Table = (props) => {
 
     table: {
       borderSpacing: 0,
-      padding: theme.spacing(2)
+      // padding: theme.spacing(2),
+      padding: props.margin === 'dense' ? theme.spacing(1, 2) : theme.spacing(2)
       // borderTop: '1px',
       // borderTopStyle: 'solid',
       // borderTopColor: theme.palette.divider,
@@ -84,14 +85,14 @@ const Table = (props) => {
 
     th: {
       margin: theme.spacing(0),
-      padding: theme.spacing(1),
+      padding: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(1),
       /* use an absolute position resizer, so this is required. */
       position: 'relative',
     },
 
     td: {
       margin: theme.spacing(0),
-      padding: theme.spacing(1),
+      padding: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(1),
       overflowY: 'auto',
       overflowX: 'hidden',
     },
@@ -116,8 +117,12 @@ const Table = (props) => {
       touchAction: ':none',
     },
 
+    toolbar: {
+      padding: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(0, 1)
+    },
+
     tool: {
-      margin: theme.spacing(2)
+      margin: props.margin === 'dense' ? theme.spacing(0, 2) : theme.spacing(2)
     },
   }))()
 
@@ -268,6 +273,7 @@ const Table = (props) => {
         (
           <Toolbar
             disableGutters={true}
+            className={styles.toolbar}
             >
             <GlobalFilter
               preGlobalFilteredRows={preGlobalFilteredRows}
@@ -516,44 +522,52 @@ const Table = (props) => {
           )
         }
       </div>
-      <Toolbar
-        disableGutters={true}
-        >
-        <Typography
-          className={styles.tool}
-          variant="body2"
-          >
-          Showing {rows.length} of {data.length} rows
-        </Typography>
-        <Box
-          flexGrow={1}
-          >
-        </Box>
-        <TextField
-          size="small"
-          select={true}
-          value={pageSize}
-          className={styles.tool}
-          onChange={e => setPageSize(e.target.value)}
-          >
-          <ListItem value={10}>10 per page</ListItem>
-          <ListItem value={20}>20 per page</ListItem>
-          <ListItem value={50}>50 per page</ListItem>
-          <ListItem value={100}>100 per page</ListItem>
-        </TextField>
-        <Pagination
-          className={styles.tool}
-          color={props.color}
-          count={pageCount}
-          showFirstButton={true}
-          showLastButton={true}
-          page={pageIndex+1}
-          onChange={(event, value) => {
-            gotoPage(value-1)
-          }}
-          >
-        </Pagination>
-      </Toolbar>
+      {
+        !props.hidePagination
+        &&
+        (
+          <Toolbar
+            disableGutters={true}
+            className={styles.toolbar}
+            >
+            <Typography
+              className={styles.tool}
+              variant="body2"
+              >
+              Showing {rows.length} of {data.length} rows
+            </Typography>
+            <Box
+              flexGrow={1}
+              >
+            </Box>
+            <TextField
+              size="small"
+              select={true}
+              value={pageSize}
+              className={styles.tool}
+              onChange={e => setPageSize(e.target.value)}
+              >
+              <ListItem value={10}>10 per page</ListItem>
+              <ListItem value={20}>20 per page</ListItem>
+              <ListItem value={50}>50 per page</ListItem>
+              <ListItem value={100}>100 per page</ListItem>
+            </TextField>
+            <Pagination
+              className={styles.tool}
+              color={props.color}
+              count={pageCount}
+              showFirstButton={true}
+              showLastButton={true}
+              page={pageIndex+1}
+              size="small"
+              onChange={(event, value) => {
+                gotoPage(value-1)
+              }}
+              >
+            </Pagination>
+          </Toolbar>
+        )
+      }
     </div>
   )
 }
@@ -567,10 +581,11 @@ Table.propTypes = {
   style: PropTypes.object,
   color: PropTypes.string,
   hideToolbar: PropTypes.bool,
+  hidePagination: PropTypes.bool,
   hasFooter: PropTypes.bool,
   defaultPageSize: PropTypes.number,
 }
 
-Table.appxType = 'react/table'
+Table.appxType = 'appx/table'
 
 export default Table

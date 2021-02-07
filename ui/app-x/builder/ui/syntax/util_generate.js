@@ -192,23 +192,23 @@ function lookup_icon_for_input(input) {
 
     return <Effect />
 
-  } else if (input._type === 'react/form') {
+  } else if (input._type === 'appx/form') {
 
     return <Form />
 
-  } else if (input._type === 'input/text') {
+  } else if (input._type === 'appx/input/text') {
 
     return <InputText />
 
-  } else if (input._type === 'input/switch') {
+  } else if (input._type === 'appx/input/switch') {
 
     return <InputSwitch />
 
-  } else if (input._type === 'input/select') {
+  } else if (input._type === 'appx/input/select') {
 
     return <InputSelect />
 
-  } else if (input._type === 'input/rule') {
+  } else if (input._type === 'appx/input/rule') {
 
     return <InputRule />
 
@@ -408,23 +408,27 @@ function lookup_title_for_input(ref, input, array=false) {
       +  ']'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
-  } else if (input._type === 'react/form') {
+  } else if (input._type === 'appx/form') {
 
-    return prefix + input.name
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
 
-  } else if (input._type === 'input/text') {
+  } else if (input._type === 'appx/input/text') {
 
-    return prefix + `Input [${input.name}]`
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()} [${input.id}]`
 
-  } else if (input._type === 'input/switch') {
+  } else if (input._type === 'appx/input/switch') {
 
-    return prefix + `Input [${input.name}]`
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()} [${input.id}]`
 
-  } else if (input._type === 'input/select') {
+  } else if (input._type === 'appx/input/select') {
 
-    return prefix + `Input [${input.name}]`
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()} [${input.id}]`
 
-  } else if (input._type === 'input/rule') {
+  } else if (input._type === 'appx/input/rule') {
 
     return ref ? ref : ''
 

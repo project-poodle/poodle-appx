@@ -74,7 +74,8 @@ const AutoSuggest = (props) => {
           } else {
             return false
           }
-        }).map(n => ({value: n}))
+        })
+        .map(n => ({value: n}))
         setOptions(found_options)
       }}
       >

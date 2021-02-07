@@ -1,6 +1,7 @@
 const { parse, parseExpression } = require('@babel/parser')
 const generate = require('@babel/generator').default
 const t = require("@babel/types")
+const prettier = require("prettier")
 const {
   PATH_SEPARATOR,
   VARIABLE_SEPARATOR,
@@ -98,6 +99,134 @@ function _process_child(js_context, childSpec, childData) {
   return processed
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// create template custom
+function template_custom(js_context, ref, input) {
+  // require here to avoid circular require reference
+  const { js_process } = require('./util_code')
+
+  if (!('_type' in input)) {
+    throw new Error(`ERROR: input._type is not defined [${input._type}] [${JSON.stringify(input)}]`)
+  }
+
+  check_input_data(js_context, input)
+
+  const typeSpec = js_context.spec.types[input._type]
+  if (typeSpec.template?.kind !== 'custom') {
+    throw new Error(`ERROR: [${input._type}] template is not custom [${typeSpec.template}]`)
+  }
+
+  // prepare variables
+  const variables = (() => {
+    const result = {}
+    typeSpec.children
+      .map(child => {
+        if (child.name === '*') {
+          Object.keys(input)
+            .filter(key => key !== '_type')
+            .map(key => {
+            result[`$${key}`] = _process_child(
+              {
+                ...js_context,
+                CONTEXT_STATEMENT: false,
+                CONTEXT_JSX: false,
+              },
+              child,
+              input[child.name]
+            )
+          })
+        } else if (! (child.name in input)) {
+          // if not present
+          return
+        } else if (!!child.array) {
+          // if array
+          result[`$${child.name}`] = t.arrayExpression(
+            input[child.name].map(data => {
+              return _process_child(
+                {
+                  ...js_context,
+                  CONTEXT_STATEMENT: false,
+                  CONTEXT_JSX: false,
+                },
+                child,
+                data
+              )
+            })
+          )
+        } else {
+          // if not array
+          result[`$${child.name}`] = _process_child(
+            {
+              ...js_context,
+              CONTEXT_STATEMENT: false,
+              CONTEXT_JSX: false,
+            },
+            child,
+            input[child.name]
+          )
+        }
+      })
+    return result
+  })()
+
+  // typeSpec expr
+  let processed = null
+  if (!!typeSpec.template?.expr) {
+    // if expr is defined
+    // const expr = prettier.format(typeSpec.template.expr, { semi: false, parser: "babel" })
+    // console.log(expr)
+    processed = _js_parse_expression(
+      js_context,
+      typeSpec.template.expr,
+      {
+        plugins: [
+          'jsx', // support jsx
+        ]
+      },
+      variables
+    )
+  } else if (!!typeSpec.template?.stmt) {
+    // if stmt is defined
+    // const stmt = prettier.format(typeSpec.template.stmt, { semi: false, parser: "babel" })
+    // console.log(stmt)
+    processed = _js_parse_statement(
+      js_context,
+      typeSpec.template.stmt,
+      {
+        plugins: [
+          'jsx', // support jsx
+        ]
+      },
+      variables
+    )
+  } else {
+    // invalid syntax
+    throw new Error(`ERROR: [${input._type}] template [custom] missing [expr] or [stmt] [${JSON.stringify(input.template, null, 2)}]`)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // check for CONTEXT_JSX and return
+  if (js_context.CONTEXT_STATEMENT) {
+    // console.log(`reg`, js_context, ref)
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          processed
+        )
+      ]
+    )
+  } else if (js_context.CONTEXT_JSX) {
+    return t.jSXExpressionContainer(
+      processed
+    )
+  } else {
+    return processed
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // create template react/element
@@ -233,9 +362,9 @@ function template_js_object(js_context, ref, input) {
     typeSpec.children
       .map(child => {
         if (child.name === '*') {
-          return Object.keys(input).map(key => {
+          return Object.keys(input).filter(key => key !== '_type').map(key => {
             return t.objectProperty(
-              t.identifier(child.name),
+              t.identifier(key),
               _process_child(
                 {
                   ...js_context,
@@ -243,7 +372,7 @@ function template_js_object(js_context, ref, input) {
                   CONTEXT_JSX: false,
                 },
                 child,
-                input[child.name]
+                input[key]
               )
             )
           })
@@ -314,6 +443,7 @@ function template_js_object(js_context, ref, input) {
 ////////////////////////////////////////////////////////////////////////////////
 // export
 module.exports = {
+  template_custom: template_custom,
   template_react_element: template_react_element,
   template_js_object: template_js_object,
 }

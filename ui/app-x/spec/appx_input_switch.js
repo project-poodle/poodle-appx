@@ -3,18 +3,42 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: input/select                                (~jsx|~expression)
+// type: appx/input/switch                           (~jsx|~expression)
 // name:                     # name of input         (:string)
 // props:                    # properties            (:object<:expression>)
-// rules:                    # input rules           (:input/rule)
-export const input_select = {
+// rules:                    # input rules           (:appx/input/rule)
+export const input_switch = {
 
-  type: 'input/select',
+  type: 'appx/input/switch',
   desc: 'Text Input',
+  template: {
+    kind: 'react/element',
+  },
+  _expand: true,
   children: [
     {
       name: 'name',
-      desc: 'Input Name',
+      desc: 'Name',
+      required: true,
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          options: 'validation.valid_import_names()',
+          optionSelfImportNames: true,
+          optionsOnly: true,
+        },
+      },
+    },
+    {
+      name: 'id',
+      desc: 'Input ID',
       required: true,
       types: [
         {
@@ -26,6 +50,22 @@ export const input_select = {
         types: 'inherit',
         input: {
           kind: 'input/text'
+        },
+      },
+    },
+    {
+      name: 'label',
+      desc: 'Label',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        }
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
         },
       },
     },
@@ -46,8 +86,80 @@ export const input_select = {
       },
     },
     {
-      name: 'props',
-      desc: 'Properties',
+      name: 'defaultValue',
+      desc: 'Default Value',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/expression'
+        },
+      },
+    },
+    {
+      name: 'callback',
+      desc: 'Callback',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
+          kind: 'type',
+          data: 'js/function'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          },
+        ],
+        input: {
+          kind: 'input/expression'
+        },
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'type',
+            data: 'js/function'
+          }
+        ]
+      }
+    },
+    {
+      name: 'BoxProps',
+      desc: 'Box Properties',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        }
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties',
+        },
+      },
+    },
+    {
+      name: 'SwitchProps',
+      desc: 'Switch Properties',
       types: [
         {
           kind: 'class',
@@ -84,14 +196,14 @@ export const input_select = {
       types: [
         {
           kind: 'type',
-          data: 'input/rule'
+          data: 'appx/input/rule'
         },
       ],
       _childNode: {
         types: 'inherit',
         input: {
           kind: 'input/list',
-          type: 'input/rule',
+          type: 'appx/input/rule',
           field: 'data',
           columns: [
             {
@@ -160,4 +272,4 @@ export const input_select = {
   ]
 }
 
-export default input_select
+export default input_switch
