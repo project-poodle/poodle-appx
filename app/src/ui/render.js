@@ -11,7 +11,6 @@ const { get_ui_deployment } = require ('./util_lookup')
 const { RENDER_JSON, KEY_VALUE } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
-const { handle_appx_route } = require('./appx_route')
 
 const rootDir = path.join(__dirname, '../../../ui/')
 // const INDEX_HTML = 'index.html'
@@ -319,15 +318,7 @@ async function handle_render(req, res, load_from_db=true) {
         context.init_js = Mustache.render(initjs_content, context)
         // console.log(context.init_js)
 
-        if (req_type === 'ui_route') {
-          // process source code for ui_route
-          const element_js = await handle_appx_route(req, res)
-          if (element_js.status !== 200) {
-              return element_js
-          }
-          context.element_js = element_js.data
-
-        } else if (ui_component_type == 'react/component') {
+        if (ui_component_type == 'react/component') {
           // process source code [element_js]
           const element_js = await handle_react_component(req, res)
           if (element_js.status !== 200) {

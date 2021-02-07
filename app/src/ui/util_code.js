@@ -17,7 +17,6 @@ const {
   reg_js_import,
   reg_js_variable,
   // reg_react_state,
-  reg_react_form,
   js_resolve_ids,
   _js_parse_statements,
   _js_parse_expression,
@@ -27,14 +26,6 @@ const {
   data_matches_spec,
   check_input_data,
 } = require('./util_base')
-const {
-  REACT_FORM_METHODS,
-  react_form,
-  input_text,
-  input_switch,
-  input_select,
-  input_rule,
-} = require('./util_form')
 const {
   template_custom,
   template_react_element,
@@ -3050,7 +3041,6 @@ module.exports = {
   // register & resolve
   reg_js_import,
   reg_js_variable,
-  reg_react_form,
   js_resolve_ids,
   // types
   js_primitive,
@@ -3061,13 +3051,10 @@ module.exports = {
   js_array,
   js_object,
   react_element,
-  react_element_props,
-  react_element_style,
   react_html,
   react_state,
   react_context,
   react_effect,
-  react_form,
   js_import,
   js_export,
   js_variable,
@@ -3075,6 +3062,5 @@ module.exports = {
   js_function,
   js_statement,
   js_call,
-  input_text,
   appx_api,
 }

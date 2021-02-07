@@ -453,40 +453,6 @@ function reg_js_import(js_context, var_full_path, use_default=true, suggested_na
     }
 }
 
-// register form
-function reg_react_form(js_context, name, qualifiedName, formProps) {
-
-  // update js_context
-  if (!!name) {
-    js_context.reactForm = name
-  }
-
-  // register form name
-  js_context.forms[name] = {
-    qualifiedName: qualifiedName,
-    formProps: formProps,
-  }
-
-  // console.log(`reg_react_form`, js_context.forms)
-}
-
-// register table
-function reg_react_table(js_context, name, qualifiedName, tableProps) {
-
-  // update js_context
-  if (!!name) {
-    js_context.reactTable = name
-  }
-
-  // register form name
-  js_context.tables[name] = {
-    qualifiedName: qualifiedName,
-    tableProps: tableProps,
-  }
-
-  // console.log(`reg_react_form`, js_context.forms)
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // resolve identifiers
 function js_resolve_ids(js_context, ast_tree) {
@@ -786,8 +752,6 @@ module.exports = {
   reg_js_import,
   reg_js_variable,
   // reg_react_state,
-  reg_react_form,
-  reg_react_table,
   js_resolve_ids,
   // _js_parse_snippet,
   // _js_parse_template,

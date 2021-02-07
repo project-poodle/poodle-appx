@@ -14,7 +14,6 @@ const {
 const { handle_html } = require('./html')
 const { handle_react_component } = require('./react_component')
 const { handle_react_provider } = require('./react_provider')
-const { handle_appx_route } = require('./appx_route')
 const { handle_render } = require('./render')
 const { handle_preview } = require('./preview')
 
@@ -76,174 +75,11 @@ async function handle_component(req, res) {
 }
 
 /**
- * handle_ruote
- */
-async function handle_route(req, res) {
-
-    // check ui_deployment
-    let ui_deployment = await get_ui_deployment(req, res)
-    if (req.fatal) {
-        return
-    }
-
-    // check ui_route
-    let ui_route = await get_ui_route(req, res)
-    if (req.fatal) {
-        return
-    }
-
-    req.context = {
-      ...req.context,
-      ...ui_deployment,
-      ...ui_route,
-      // ui_component_name: '/index'
-    }
-
-    const result = await handle_html(req, res)
-    res.status(result.status)
-        .type(result.type)
-        .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-    return
-}
-
-/**
- * handle route as element
- */
-async function handle_route_element(req, res) {
-
-  // check ui_deployment
-  let ui_deployment = await get_ui_deployment(req, res)
-  if (req.fatal) {
-      return
-  }
-
-  // check ui_route
-  let ui_route = await get_ui_route(req, res)
-  if (req.fatal) {
-      return
-  }
-
-  // update context
-  req.context = {
-      ...req.context,
-      ...ui_deployment,
-      ...ui_route,
-  }
-  //console.log(req.context)
-
-  const result = await handle_appx_route(req, res)
-  res.status(result.status)
-      .type(result.type)
-      .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-  return
-}
-
-/**
  * load_ui_router
  */
 async function load_ui_router(namespace, ui_name, ui_deployment) {
 
-    // query ui_route
-    let route_results = await db.query_async(`SELECT
-                    ui_route.namespace,
-                    ui_route.ui_name,
-                    ui_route.ui_ver,
-                    ui_deployment.ui_deployment,
-                    ui_deployment.ui_deployment_spec,
-                    ui_route.ui_route_name,
-                    ui_route.ui_route_spec,
-                    ui_route.create_time,
-                    ui_route.update_time
-                FROM ui_route
-                JOIN ui_deployment
-                    ON ui_route.namespace = ui_deployment.namespace
-                    AND ui_route.ui_name = ui_deployment.ui_name
-                    AND ui_route.ui_ver = ui_deployment.ui_ver
-                WHERE
-                    ui_route.namespace = ?
-                    AND ui_route.ui_name = ?
-                    AND ui_deployment.ui_deployment = ?
-                    AND ui_route.deleted=0
-                    AND ui_deployment.deleted=0`,
-                [
-                    namespace,
-                    ui_name,
-                    ui_deployment,
-                ]
-    )
-
     let router = express.Router()
-
-    for (const route_result of route_results) {
-
-        let route_context = {
-            namespace: route_result.namespace,
-            ui_name: route_result.ui_name,
-            ui_deployment: route_result.ui_deployment,
-            ui_route_name: route_result.ui_route_name,
-        }
-
-        const route_path = route_result.ui_route_name.replace(/\/+/g, '/')
-        router.get(route_path, async (req, res) => {
-
-            req.context = {...route_context, ...req.context}
-            // req.context = Object.assign({}, {ui_route: route_context}, req.context)
-            await handle_route(req, res)
-        })
-
-        const prefix_route_path = (ROUTE_PREFIX + route_path).replace(/\*/g, '/').replace(/\/+/g, '/')
-        if (prefix_route_path.endsWith('/') || prefix_route_path.endsWith('*')) {
-            // route path add 'index.js' and 'index.source'
-            const new_route_path = prefix_route_path.slice(0,-1) + '/index.js'
-            router.get(new_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                await handle_route_element(req, res)
-            })
-            const source_route_path = prefix_route_path.slice(0,-1) + '/index.source'
-            router.get(source_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                await handle_route_element(req, res)
-            })
-            const render_route_path = prefix_route_path.slice(0,-1) + '/index.html'
-            router.get(render_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context, req_type: 'ui_route'}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                const result = await handle_render(req, res, load_from_db=true)
-                res.status(result.status)
-                    .type(result.type)
-                    .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-            })
-        } else {
-            // route path without '.js' will add '.js' and '.source'
-            const new_route_path = prefix_route_path + '.js'
-            router.get(new_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                await handle_route_element(req, res)
-            })
-            const source_route_path = prefix_route_path + '.source'
-            router.get(source_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                await handle_route_element(req, res)
-            })
-            const render_route_path = prefix_route_path + '.html'
-            router.get(render_route_path, async (req, res) => {
-                req.context = {...route_context, ...req.context, req_type: 'ui_route'}
-                // req.context = Object.assign({}, {ui_component: comp_context}, req.context)
-                const result = await handle_render(req, res, load_from_db=true)
-                res.status(result.status)
-                    .type(result.type)
-                    .send(typeof result.data === 'object' ? JSON.stringify(result.data) : String(result.data))
-            })
-        }
-
-        log_route_status(route_context,
-            SUCCESS,
-            `INFO: route published successfully [${JSON.stringify(route_context)}] !`)
-    }
 
     // query ui_component
     let comp_results = await db.query_async(`SELECT
