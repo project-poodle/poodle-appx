@@ -1086,6 +1086,7 @@ const SyntaxTree = (props) => {
           >
           <Box>
             <LinearProgress
+              color='secondary'
             />
             <Typography variant="body2">
               Loading...
