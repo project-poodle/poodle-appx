@@ -10,10 +10,10 @@ schema, rest API, and UI based on user defined model schema.
 
 # Prerequisites
 
-- NodeJS v14 or above
+- NodeJS _v14_ or above
   https://nodejs.org/en/
 
-- MySQL 5.7 or above
+- MySQL _5.7_ or above
   https://www.mysql.com/
 
 
