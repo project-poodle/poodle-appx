@@ -164,6 +164,20 @@ const groups = {
     'js/object',
     'js/array',
   ],
+  // js advanced
+  js_advanced: [
+    'js/import',
+    'js/expression',
+    'js/statement',
+    'js/function',
+  ],
+  // js controls
+  js_control: [
+    'js/condition',
+    'js/map',
+    'js/reduce',
+    'js/filter',
+  ],
   // react
   react: [
     'react/element',
@@ -184,20 +198,6 @@ const groups = {
   appx_table: [
     'appx/table',
     'appx/table/column',
-  ],
-  // js advanced
-  js_advanced: [
-    'js/import',
-    'js/expression',
-    'js/statement',
-    'js/function',
-  ],
-  // js controls
-  js_control: [
-    'js/condition',
-    'js/map',
-    'js/reduce',
-    'js/filter',
   ],
   // mui
   mui: [
