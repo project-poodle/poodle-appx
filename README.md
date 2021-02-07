@@ -17,7 +17,7 @@ rest API, and UI applications.
   https://www.mysql.com/
 
 
-# Initial setup of App-X service
+# Initial setup of App-X
 
     -- edit app/init.d/init.yaml
        update credentials and mysql connection info
