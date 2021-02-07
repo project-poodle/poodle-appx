@@ -10,10 +10,10 @@ rest API, and UI applications.
 
 # Prerequisites
 
-- NodeJS __v14__ or above (with ES module support)
+- NodeJS __v14__ or above (ES module support)
   https://nodejs.org/en/
 
-- MySQL __5.7__ or above (with JSON support)
+- MySQL __5.7__ or above (JSON support)
   https://www.mysql.com/
 
 
