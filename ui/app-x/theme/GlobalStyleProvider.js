@@ -122,8 +122,8 @@ const GlobalStyleProvider = (props) => {
         zIndex: 2010,
       },
       '::selection': {
-        color: theme?.palette.primary.contrastText,
-        backgroundColor: theme?.palette.primary.main,
+        color: theme?.palette.secondary.contrastText,
+        backgroundColor: theme?.palette.secondary.main,
       },
       // '.anticon': {
       //   color: theme?.palette.text.primary,
