@@ -8,6 +8,14 @@ This repo is an application builder that enables easy building of database
 schema, rest API, and UI based on user defined model schema.
 
 
+# Prerequisites
+
+- NodeJS v14 or above
+  https://nodejs.org/en/
+
+- MySQL 5.7 or above
+  https://www.mysql.com/
+
 
 # Initial setup of App-X service
 
