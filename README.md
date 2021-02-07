@@ -2,10 +2,10 @@
 
 # Project Poodle - App-X
 
-Project Poodle - AppX - app builder
+Project Poodle - App-X - app builder
 
-This repo is an application builder that enables easy building of database
-schema, rest API, and UI based on user defined model schema.
+This repo is an application builder that enables easy building of data schema,
+rest API, and UI applications.
 
 
 # Prerequisites
