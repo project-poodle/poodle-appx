@@ -87,22 +87,18 @@ const InputTabular = (props) => {
   }
 
   // withRowContext
-  const withRowContext = (BaseComponent, {key, defaultValue, callback, props}) => () => {
+  const withRowContext = (BaseComponent, props) => () => {
     return (
       <BaseComponent
         {...props}
-        label=''
-        key={key}
-        defaultValue={defaultValue}
-        callback={callback}
         />
     )
   }
 
   // rowPanel widget need to convert to react hooks
-  const renderColumn = useCallback((column, {key, defaultValue, callback, props}) => {
+  const renderColumn = useCallback((column, props) => {
     // console.log(`column`, column)
-    const Column = withRowContext(column, {key, defaultValue, callback, props})
+    const Column = withRowContext(column, props)
     // console.log(`Column`, Column)
     return (
       <Column />
@@ -176,8 +172,9 @@ const InputTabular = (props) => {
                             renderColumn(
                               column.type,
                               {
-                                props: column.props,
+                                ...column.props,
                                 key: column.props.id,
+                                label: '',
                                 defaultValue: _.get(getValues(), fieldName) || getColumnDefaultValue(column),
                                 callback: props.callback || null,
                               }
