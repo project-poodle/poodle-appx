@@ -309,14 +309,10 @@ InputText.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   required: PropTypes.bool,
-  array: PropTypes.bool,
   options: PropTypes.arrayOf(
     PropTypes.string.isRequired
   ),
-  defaultValue: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array
-  ]),
+  defaultValue: PropTypes.string,
   callback: PropTypes.func,
   BoxProps: PropTypes.object,
   TextProps: PropTypes.object,

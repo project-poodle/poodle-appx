@@ -45,6 +45,7 @@ import State from 'app-x/icon/State'
 import Form from 'app-x/icon/Form'
 import Context from 'app-x/icon/Context'
 import InputText from 'app-x/icon/InputText'
+import InputTextArray from 'app-x/icon/InputTextArray'
 import InputSwitch from 'app-x/icon/InputSwitch'
 import InputSelect from 'app-x/icon/InputSelect'
 import InputTabular from 'app-x/icon/InputTabular'
@@ -200,6 +201,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'appx/input/text') {
 
     return <InputText />
+
+  } else if (input._type === 'appx/input/textarray') {
+
+    return <InputTextArray />
 
   } else if (input._type === 'appx/input/switch') {
 
@@ -419,6 +424,11 @@ function lookup_title_for_input(ref, input, array=false) {
     return prefix + parsed.full_paths.pop()
 
   } else if (input._type === 'appx/input/text') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()} [${input.id}]`
+
+  } else if (input._type === 'appx/input/textarray') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + `${parsed.full_paths.pop()} [${input.id}]`

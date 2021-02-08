@@ -611,26 +611,27 @@ ui_component:
       ui_component_type: react/component
       ui_component_spec:
         f:
+          _order: 1
           _type: js/function
           params:
             - a
             - b
           body:
             - a+1
-          _order: 1
         layouts:
+          _order: 2
           lg:
-            - h: 12
+            - h: 10
               i: a
               w: 4
               x: 0
               y: 0
-            - h: 12
+            - h: 8
               i: b
-              w: 6
+              w: 5
               x: 4
               y: 0
-            - h: 4
+            - h: 3
               i: c
               w: 4
               x: 4
@@ -651,8 +652,8 @@ ui_component:
               w: 4
               x: 4
               y: 0
-          _order: 2
         styles:
+          _order: 3
           _type: mui/style
           box:
             borderColor:
@@ -683,8 +684,8 @@ ui_component:
             padding:
               _type: js/expression
               data: theme.spacing(2,0)
-          _order: 3
         snippet:
+          _order: 4
           _type: js/statement
           body:
             - _type: appx/api
@@ -702,8 +703,8 @@ ui_component:
             - _type: js/statement
               body:
                 - // console.log(this)
-          _order: 4
         component:
+          _order: 5
           _type: react/element
           name: "@material-ui/core.Container"
           props:
@@ -782,8 +783,8 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
-                                color: secondary
                                 size: small
+                                color: secondary
                             - _type: appx/input/select
                               name: app-x/widget/InputSelect
                               id: select
@@ -798,8 +799,8 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
-                                color: secondary
                                 size: small
+                                color: secondary
                             - _type: appx/input/text
                               name: app-x/widget/InputText
                               id: text2
@@ -813,8 +814,8 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
-                                color: secondary
                                 size: small
+                                color: secondary
                     - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
@@ -854,26 +855,25 @@ ui_component:
                           formProps:
                             mode: onChange
                           children:
-                            - _type: appx/input/text
-                              name: app-x/widget/InputText
+                            - _type: appx/input/textarray
+                              name: app-x/widget/InputTextArray
                               id: text
                               label: Text Label
                               required: true
-                              array: true
                               options:
                                 - abc
                                 - def
                                 - k
                                 - cat
                               defaultValue: '["a", "b"]'
-                              callback: "(data) => {console.log(`callback data: ${data}`)}"
+                              callback: "(data) => {console.log(\\`callback data: ${data}\\`)}"
                               BoxProps:
                                 className:
                                   _type: js/expression
                                   data: styles.formControl
                               TextProps:
-                                color: secondary
                                 size: small
+                                color: secondary
                             - _type: appx/input/switch
                               name: app-x/widget/InputSwitch
                               id: switch
@@ -884,8 +884,39 @@ ui_component:
                                   _type: js/expression
                                   data: styles.formControl
                               SwitchProps:
-                                color: secondary
                                 size: small
+                                color: secondary
+                            - _type: appx/input/tabular
+                              name: app-x/widget/InputTabular
+                              id: tabular
+                              label: Tabular
+                              BoxProps:
+                                className:
+                                  _type: js/expression
+                                  data: styles.formControl
+                              columns:
+                                - _type: appx/input/text
+                                  name: app-x/widget/InputText
+                                  id: text1
+                                  label: Text 1
+                                  required: true
+                                  TextProps:
+                                    size: small
+                                - _type: appx/input/switch
+                                  name: app-x/widget/InputSwitch
+                                  id: switch2
+                                  label: Switch 2
+                                  SwitchProps:
+                                    size: small
+                                - _type: appx/input/select
+                                  name: app-x/widget/InputSelect
+                                  id: select3
+                                  label: Select 3
+                                  options:
+                                    - a
+                                    - b
+                                  TextProps:
+                                    size: small
                     - b
                 - _type: react/element
                   name: "@material-ui/core.Box"
@@ -896,7 +927,6 @@ ui_component:
                       data: styles.box
                   children:
                     - c
-          _order: 5
         _test:
           providers:
             - name: react-redux.Provider

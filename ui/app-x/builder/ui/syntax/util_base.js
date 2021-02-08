@@ -190,6 +190,7 @@ const groups = {
   appx_form: [
     'appx/form',
     'appx/input/text',
+    'appx/input/textarray',
     'appx/input/switch',
     'appx/input/select',
     'appx/input/tabular',
@@ -293,12 +294,14 @@ function lookup_changeable_types(type) {
   else if
   (
     type === 'appx/input/text'
+    || type === 'appx/input/textarray'
     || type === 'appx/input/select'
     || type === 'appx/input/switch'
   )
   {
     return [
       'appx/input/text',
+      'appx/input/textarray',
       'appx/input/select',
       'appx/input/switch',
     ]

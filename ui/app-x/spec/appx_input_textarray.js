@@ -3,14 +3,14 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: appx/input/text                             (~jsx|~expression)
+// type: appx/input/textarray                        (~jsx|~expression)
 // name:                     # name of input         (:string)
 // id:                       # id of input           (:string)
 // rules:                    # input rules           (:appx/input/rule)
-export const appx_input_text = {
+export const appx_input_textarray = {
 
-  type: 'appx/input/text',
-  desc: 'Text Input',
+  type: 'appx/input/textarray',
+  desc: 'Text Array Input',
   template: {
     kind: 'react/element',
   },
@@ -307,4 +307,4 @@ export const appx_input_text = {
   ]
 }
 
-export default appx_input_text
+export default appx_input_textarray

@@ -10,6 +10,7 @@ import react_context from 'app-x/spec/react_context.js'
 // forms and inputs
 import appx_form from 'app-x/spec/appx_form.js'
 import appx_input_text from 'app-x/spec/appx_input_text.js'
+import appx_input_textarray from 'app-x/spec/appx_input_textarray.js'
 import appx_input_switch from 'app-x/spec/appx_input_switch.js'
 import appx_input_select from 'app-x/spec/appx_input_select.js'
 import appx_input_tabular from 'app-x/spec/appx_input_tabular.js'
@@ -120,6 +121,7 @@ const types = [
   // form and inputs
   appx_form,
   appx_input_text,
+  appx_input_textarray,
   appx_input_switch,
   appx_input_select,
   appx_input_tabular,
