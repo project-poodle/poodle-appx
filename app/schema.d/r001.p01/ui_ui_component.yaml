@@ -825,7 +825,7 @@ ui_component:
                                 - _type: react/element
                                   name: "@material-ui/core.Button"
                                   props:
-                                    color: primary
+                                    color: secondary
                                     variant: outlined
                                   style:
                                     margin:
@@ -940,7 +940,7 @@ ui_component:
                                 - _type: react/element
                                   name: "@material-ui/core.Button"
                                   props:
-                                    color: primary
+                                    color: secondary
                                     variant: outlined
                                   style:
                                     margin:
