@@ -14,6 +14,7 @@ import appx_input_textarray from 'app-x/spec/appx_input_textarray.js'
 import appx_input_switch from 'app-x/spec/appx_input_switch.js'
 import appx_input_select from 'app-x/spec/appx_input_select.js'
 import appx_input_tabular from 'app-x/spec/appx_input_tabular.js'
+import appx_input_submit from 'app-x/spec/appx_input_submit.js'
 import appx_input_rule from 'app-x/spec/appx_input_rule.js'
 // appx table and columns
 import appx_table from 'app-x/spec/appx_table.js'
@@ -125,6 +126,7 @@ const types = [
   appx_input_switch,
   appx_input_select,
   appx_input_tabular,
+  appx_input_submit,
   appx_input_rule,
   // table and columns
   appx_table,
