@@ -234,6 +234,6 @@ InputTextArray.propTypes = {
 
 InputTextArray.appxType = 'appx/input/textarray'
 
-InputTextArray.defaultValue = ''
+InputTextArray.defaultValue = []
 
 export default InputTextArray
