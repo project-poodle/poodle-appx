@@ -25,7 +25,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
-import InputScopeProvider from 'app-x/widget/InputScopeProvider'
+import InputProvider from 'app-x/widget/InputProvider'
 
 const InputTabular = (props) => {
   // theme
@@ -58,7 +58,7 @@ const InputTabular = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputScopeProvider.Context)
+  const { basename } = useContext(InputProvider.Context)
   const propsId = !!basename ? `${basename}.${props.id}` : props.id
 
   // useFieldArray
@@ -163,7 +163,7 @@ const InputTabular = (props) => {
           // console.log(`InputFieldTabular fields.item`, item, getValues())
           return (
             <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>
-              <InputScopeProvider basename={`${propsId}[${index}]`}>
+              <InputProvider basename={`${propsId}[${index}]`}>
                 {
                   Array.isArray(props.columns)
                   &&
@@ -205,7 +205,7 @@ const InputTabular = (props) => {
                     </IconButton>
                   </Box>
                 </Col>
-              </InputScopeProvider>
+              </InputProvider>
             </Row>
           )
         })

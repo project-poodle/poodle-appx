@@ -22,7 +22,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
-import InputScopeProvider from 'app-x/widget/InputScopeProvider'
+import InputProvider from 'app-x/widget/InputProvider'
 
 const InputSwitch = (props) => {
   // theme
@@ -45,7 +45,7 @@ const InputSwitch = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputScopeProvider.Context)
+  const { basename } = useContext(InputProvider.Context)
   const propsId = !!basename ? `${basename}.${props.id}` : props.id
 
   // rules

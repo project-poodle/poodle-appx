@@ -23,7 +23,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
-import InputScopeProvider from 'app-x/widget/InputScopeProvider'
+import InputProvider from 'app-x/widget/InputProvider'
 
 const InputTextArray = (props) => {
   // theme
@@ -46,7 +46,7 @@ const InputTextArray = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputScopeProvider.Context)
+  const { basename } = useContext(InputProvider.Context)
   const propsId = !!basename ? `${basename}.${props.id}` : props.id
 
   // options

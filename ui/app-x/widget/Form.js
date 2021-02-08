@@ -5,7 +5,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import _ from 'lodash'
-import InputScopeProvider from 'app-x/widget/InputScopeProvider'
+import InputProvider from 'app-x/widget/InputProvider'
 
 const Form = (props) => {
   // useForm hook
@@ -29,20 +29,22 @@ const Form = (props) => {
     formState,
   } = useFormProps
 
+  const onSubmit = handleSubmit(
+    props.onSubmit,
+    props.onError
+  )
+
   // return
   return (
     <FormProvider
       {...useFormProps}
       >
       <form
-        onSubmit={handleSubmit(
-          props.onSubmit,
-          props.onError
-        )}
+        onSubmit={onSubmit}
         >
-        <InputScopeProvider basename="">
+        <InputProvider basename="" onSubmit={onSubmit}>
           { props.children }
-        </InputScopeProvider>
+        </InputProvider>
       </form>
     </FormProvider>
   )
