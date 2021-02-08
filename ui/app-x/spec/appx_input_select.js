@@ -7,7 +7,7 @@ import {
 // name:                     # name of input         (:string)
 // id:                       # id of input           (:string)
 // rules:                    # input rules           (:appx/input/rule)
-export const input_select = {
+export const appx_input_select = {
 
   type: 'appx/input/select',
   desc: 'Text Input',
@@ -307,4 +307,4 @@ export const input_select = {
   ]
 }
 
-export default input_select
+export default appx_input_select

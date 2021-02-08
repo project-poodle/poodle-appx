@@ -22,6 +22,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
+import InputScopeProvider from 'app-x/widget/InputScopeProvider'
 
 const InputSwitch = (props) => {
   // theme
@@ -43,6 +44,11 @@ const InputSwitch = (props) => {
     formState,
   } = useFormContext()
 
+  // basename and propsId
+  const { basename } = useContext(InputScopeProvider.Context)
+  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+
+  // rules
   const rules = props.rules || {}
   if (!!props.required) {
     rules.required = `${props.label || props.name} is required`
@@ -55,17 +61,17 @@ const InputSwitch = (props) => {
       style={props.style}
       >
       <Controller
-        key={props.id}
-        name={props.id}
+        key={propsId}
+        name={propsId}
         required={!!props.required}
         constrol={control}
         defaultValue={!!props.defaultValue || false}
         rules={rules}
         render={innerProps => (
           <FormControl
-            name={props.id}
+            name={propsId}
             style={{width:'100%'}}
-            error={!!_.get(errors, props.id)}
+            error={!!_.get(errors, propsId)}
             >
             {
               !!props.label
@@ -86,7 +92,7 @@ const InputSwitch = (props) => {
             }
             <Switch
               {...(props.SwitchProps || {})}
-              name={props.id}
+              name={propsId}
               required={!!props.required}
               checked={innerProps.value}
               value={innerProps.value}
@@ -99,9 +105,9 @@ const InputSwitch = (props) => {
               >
             </Switch>
             {
-              !!_.get(errors, props.id)
+              !!_.get(errors, propsId)
               &&
-              <FormHelperText>{_.get(errors, props.id)?.message || ''}</FormHelperText>
+              <FormHelperText>{_.get(errors, propsId)?.message || ''}</FormHelperText>
             }
           </FormControl>
         )}

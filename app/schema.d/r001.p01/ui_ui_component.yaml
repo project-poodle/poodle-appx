@@ -620,30 +620,30 @@ ui_component:
           _order: 1
         layouts:
           lg:
-            - h: 10
+            - h: 12
               i: a
               w: 4
               x: 0
               y: 0
-            - h: 8
+            - h: 12
               i: b
-              w: 5
+              w: 6
               x: 4
               y: 0
-            - h: 3
+            - h: 4
               i: c
               w: 4
               x: 4
               y: 0
           md:
-            - h: 10
+            - h: 12
               i: a
               w: 4
               x: 0
               y: 0
-            - h: 8
+            - h: 12
               i: b
-              w: 5
+              w: 6
               x: 4
               y: 0
             - h: 4

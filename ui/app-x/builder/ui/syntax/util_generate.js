@@ -47,6 +47,7 @@ import Context from 'app-x/icon/Context'
 import InputText from 'app-x/icon/InputText'
 import InputSwitch from 'app-x/icon/InputSwitch'
 import InputSelect from 'app-x/icon/InputSelect'
+import InputTabular from 'app-x/icon/InputTabular'
 import InputRule from 'app-x/icon/InputRule'
 import Filter from 'app-x/icon/Filter'
 import API from 'app-x/icon/API'
@@ -207,6 +208,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'appx/input/select') {
 
     return <InputSelect />
+
+  } else if (input._type === 'appx/input/tabular') {
+
+    return <InputTabular />
 
   } else if (input._type === 'appx/input/rule') {
 
@@ -424,6 +429,11 @@ function lookup_title_for_input(ref, input, array=false) {
     return prefix + `${parsed.full_paths.pop()} [${input.id}]`
 
   } else if (input._type === 'appx/input/select') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()} [${input.id}]`
+
+  } else if (input._type === 'appx/input/tabular') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + `${parsed.full_paths.pop()} [${input.id}]`

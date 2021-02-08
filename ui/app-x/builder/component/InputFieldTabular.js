@@ -66,22 +66,6 @@ const InputFieldTabular = props => {
       width: '100%',
       padding: theme.spacing(1, 0, 0),
     },
-    typeControl: {
-      width: theme.spacing(12),
-      padding: theme.spacing(0, 1),
-    },
-    nameControl: {
-      width: '60%',
-      padding: theme.spacing(0, 1),
-    },
-    valueControl: {
-      width: '100%',
-      padding: theme.spacing(0, 1),
-    },
-    hiddenPrompt: {
-      width: '100%',
-      paddingLeft: theme.spacing(1),
-    },
   }))()
 
   const {
@@ -165,7 +149,6 @@ const InputFieldTabular = props => {
       }
       {
         fields.map((item, index) => {
-          const propType = watch(`${props.name}[${index}]._type`)
           // console.log(`InputFieldTabular fields.item`, item, getValues())
           return (
             <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>

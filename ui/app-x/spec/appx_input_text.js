@@ -8,7 +8,7 @@ import {
 // id:                       # id of input           (:string)
 // array:                    # whether array         (:boolean)
 // rules:                    # input rules           (:appx/input/rule)
-export const input_text = {
+export const appx_input_text = {
 
   type: 'appx/input/text',
   desc: 'Text Input',
@@ -324,4 +324,4 @@ export const input_text = {
   ]
 }
 
-export default input_text
+export default appx_input_text

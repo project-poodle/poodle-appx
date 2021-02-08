@@ -5,6 +5,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import _ from 'lodash'
+import InputScopeProvider from 'app-x/widget/InputScopeProvider'
 
 const Form = (props) => {
   // useForm hook
@@ -39,7 +40,9 @@ const Form = (props) => {
           props.onError
         )}
         >
-        { props.children }
+        <InputScopeProvider basename="">
+          { props.children }
+        </InputScopeProvider>
       </form>
     </FormProvider>
   )

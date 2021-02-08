@@ -191,6 +191,7 @@ const Table = (props) => {
   // rowPanel widget need to convert to react hooks
   const renderRowPanel = useCallback(({row}) => {
     if (!!props.rowPanel) {
+      console.log(`props.rowPanel`, props.rowPanel)
       const RowPanel = withRow(props.rowPanel, row)
       return (
         <RowPanel />
@@ -199,7 +200,6 @@ const Table = (props) => {
       return null
     }
   }, [])
-
 
   // defaultColumn
   const defaultColumn = useMemo(

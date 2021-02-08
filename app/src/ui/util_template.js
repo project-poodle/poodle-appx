@@ -133,8 +133,9 @@ function template_custom(js_context, ref, input) {
                 CONTEXT_JSX: false,
               },
               child,
-              input[child.name]
+              input[key]
             )
+            result[`$${key}$raw`] = input[key]
           })
         } else if (! (child.name in input)) {
           // if not present
@@ -154,6 +155,7 @@ function template_custom(js_context, ref, input) {
               )
             })
           )
+          result[`$${child.name}$raw`] = input[child.name]
         } else {
           // if not array
           result[`$${child.name}`] = _process_child(
@@ -165,6 +167,7 @@ function template_custom(js_context, ref, input) {
             child,
             input[child.name]
           )
+          result[`$${child.name}$raw`] = input[child.name]
         }
       })
     return result

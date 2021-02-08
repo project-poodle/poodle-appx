@@ -7,7 +7,7 @@ import {
 // name:                     # name of input         (:string)
 // props:                    # properties            (:object<:expression>)
 // rules:                    # input rules           (:appx/input/rule)
-export const input_switch = {
+export const appx_input_switch = {
 
   type: 'appx/input/switch',
   desc: 'Text Input',
@@ -272,4 +272,4 @@ export const input_switch = {
   ]
 }
 
-export default input_switch
+export default appx_input_switch

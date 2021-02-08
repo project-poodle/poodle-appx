@@ -192,6 +192,7 @@ const groups = {
     'appx/input/text',
     'appx/input/switch',
     'appx/input/select',
+    'appx/input/tabular',
     'appx/input/rule',
   ],
   // table / columns

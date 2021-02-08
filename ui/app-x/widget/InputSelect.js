@@ -23,6 +23,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
+import InputScopeProvider from 'app-x/widget/InputScopeProvider'
 
 const InputSelect = (props) => {
   // theme
@@ -44,6 +45,11 @@ const InputSelect = (props) => {
     formState,
   } = useFormContext()
 
+  // basename and propsId
+  const { basename } = useContext(InputScopeProvider.Context)
+  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+
+  // rules
   const rules = props.rules || {}
   if (!!props.required) {
     rules.required = `${props.label || props.name} is required`
@@ -56,17 +62,17 @@ const InputSelect = (props) => {
       style={props.style}
       >
       <Controller
-        key={props.id}
-        name={props.id}
+        key={propsId}
+        name={propsId}
         required={!!props.required}
         constrol={control}
         defaultValue={props.defaultValue || ''}
         rules={rules}
         render={innerProps => (
           <FormControl
-            name={props.id}
+            name={propsId}
             style={{width:'100%'}}
-            error={!!_.get(errors, props.id)}
+            error={!!_.get(errors, propsId)}
             >
             {
               !!props?.label
@@ -87,7 +93,7 @@ const InputSelect = (props) => {
             }
             <TextField
               {...(props.TextProps || {})}
-              name={props.id}
+              name={propsId}
               select={true}
               required={!!props.required}
               style={{width:'100%'}}
@@ -98,8 +104,8 @@ const InputSelect = (props) => {
                   props.callback(e.target.value)
                 }
               }}
-              error={!!_.get(errors, props.id)}
-              helperText={_.get(errors, props.id)?.message || ''}
+              error={!!_.get(errors, propsId)}
+              helperText={_.get(errors, propsId)?.message || ''}
               >
               <MenuItem style={{display:'none'}}
                 key=''
