@@ -942,6 +942,10 @@ ui_component:
                                   props:
                                     color: primary
                                     variant: outlined
+                                  style:
+                                    margin:
+                                      _type: js/expression
+                                      data: theme.spacing(2,0)
                                   children:
                                     - Submit
                     - b
