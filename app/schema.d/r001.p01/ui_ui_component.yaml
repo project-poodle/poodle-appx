@@ -668,7 +668,7 @@ ui_component:
             height: 100%
             backgroundColor:
               _type: js/expression
-              data: theme.palette.background.paper
+              data: theme.palette.background.default
           innerBox:
             margin:
               _type: js/expression
