@@ -154,4 +154,6 @@ InputSelect.propTypes = {
 
 InputSelect.appxType = 'appx/input/select'
 
+InputSelect.defaultValue = ''
+
 export default InputSelect

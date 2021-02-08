@@ -131,4 +131,6 @@ InputSwitch.propTypes = {
 
 InputSwitch.appxType = 'appx/input/switch'
 
+InputSwitch.defaultValue = false
+
 export default InputSwitch

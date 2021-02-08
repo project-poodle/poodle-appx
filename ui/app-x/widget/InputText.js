@@ -326,4 +326,6 @@ InputText.propTypes = {
 
 InputText.appxType = 'appx/input/text'
 
+InputText.defaultValue = ''
+
 export default InputText

@@ -26,7 +26,6 @@ import {
 } from 'antd'
 import _ from 'lodash'
 import InputScopeProvider from 'app-x/widget/InputScopeProvider'
-import InputText from 'app-x/widget/InputText'
 
 const InputTabular = (props) => {
   // theme
@@ -76,7 +75,18 @@ const InputTabular = (props) => {
     name: propsId,
   })
 
-  // withRow
+  // getColumnDefaultValue
+  function getColumnDefaultValue(column) {
+    if (column?.props?.defaultValue !== undefined) {
+      return column.props.defaultValue
+    } else if (column?.type?.defaultValue !== undefined) {
+      return column.type.defaultValue
+    } else {
+      return ''
+    }
+  }
+
+  // withRowContext
   const withRowContext = (BaseComponent, {key, defaultValue, callback, props}) => () => {
     return (
       <BaseComponent
@@ -91,7 +101,7 @@ const InputTabular = (props) => {
 
   // rowPanel widget need to convert to react hooks
   const renderColumn = useCallback((column, {key, defaultValue, callback, props}) => {
-    console.log(`column`, column)
+    // console.log(`column`, column)
     const Column = withRowContext(column, {key, defaultValue, callback, props})
     // console.log(`Column`, Column)
     return (
@@ -168,7 +178,7 @@ const InputTabular = (props) => {
                               {
                                 props: column.props,
                                 key: column.props.id,
-                                defaultValue: _.get(item, column.props.id) || column.props.defaultValue || '',
+                                defaultValue: _.get(getValues(), fieldName) || getColumnDefaultValue(column),
                                 callback: props.callback || null,
                               }
                             )
@@ -209,11 +219,7 @@ const InputTabular = (props) => {
           const new_row = {}
           if (Array.isArray(props.columns)) {
             React.Children.map(props.columns, (column) => {
-              if (!!column.props.defaultValue) {
-                new_row[column.props.id] = eval(column.props.defaultValue)
-              } else {
-                new_row[column.props.id] = ''
-              }
+              new_row[column.props.id] = getColumnDefaultValue(column)
             })
           }
           // console.log(`append`, new_row)
