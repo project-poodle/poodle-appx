@@ -618,31 +618,34 @@ ui_component:
             - b
           body:
             - a+1
-        layouts:
+        theme:
           _order: 2
+          _type: mui/theme
+        layouts:
+          _order: 3
           lg:
-            - h: 10
+            - h: 15
               i: a
               w: 4
               x: 0
               y: 0
-            - h: 8
+            - h: 15
               i: b
-              w: 5
+              w: 6
               x: 4
               y: 0
-            - h: 3
+            - h: 4
               i: c
               w: 4
               x: 4
               y: 0
           md:
-            - h: 12
+            - h: 15
               i: a
               w: 4
               x: 0
               y: 0
-            - h: 12
+            - h: 15
               i: b
               w: 6
               x: 4
@@ -653,7 +656,7 @@ ui_component:
               x: 4
               y: 0
         styles:
-          _order: 3
+          _order: 4
           _type: mui/style
           box:
             borderColor:
@@ -685,7 +688,7 @@ ui_component:
               _type: js/expression
               data: theme.spacing(2,0)
         snippet:
-          _order: 4
+          _order: 5
           _type: js/statement
           body:
             - _type: appx/api
@@ -704,7 +707,7 @@ ui_component:
               body:
                 - // console.log(this)
         component:
-          _order: 5
+          _order: 6
           _type: react/element
           name: "@material-ui/core.Container"
           props:
@@ -816,6 +819,20 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                            - _type: appx/input/submit
+                              name: app-x/widget/InputSubmit
+                              children:
+                                - _type: react/element
+                                  name: "@material-ui/core.Button"
+                                  props:
+                                    color: primary
+                                    variant: outlined
+                                  style:
+                                    margin:
+                                      _type: js/expression
+                                      data: theme.spacing(2,0)
+                                  children:
+                                    - Submit
                     - a
                 - _type: react/element
                   name: "@material-ui/core.Box"
@@ -917,6 +934,16 @@ ui_component:
                                     - b
                                   TextProps:
                                     size: small
+                            - _type: appx/input/submit
+                              name: app-x/widget/InputSubmit
+                              children:
+                                - _type: react/element
+                                  name: "@material-ui/core.Button"
+                                  props:
+                                    color: primary
+                                    variant: outlined
+                                  children:
+                                    - Submit
                     - b
                 - _type: react/element
                   name: "@material-ui/core.Box"
