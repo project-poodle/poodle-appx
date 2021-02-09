@@ -1,7 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
-require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss', label: false})
+// require('console-stamp')(console, { pattern: 'yyyy-mm-dd HH:MM:ss', label: false})
+require('console-stamp')(console, {
+    format: ':date(yyyy-mm-dd HH:MM:ss)'
+} );
 
 //////////////////////////////////////////////////
 // load spec
