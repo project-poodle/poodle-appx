@@ -362,11 +362,40 @@ ui_component:
       ui_component_name: /nav/uiNav
       ui_component_type: react/component
       ui_component_spec:
+        router:
+          _order: 1
+          _type: route/context
+          name: app-x/route/RouterProvider.Context
         navContext:
+          _order: 2
           _type: react/context
           name: app-x/builder/ui/NavProvider.Context
-          _order: 1
+        ...uiDeployments:
+          _order: 3
+          _type: react/state
+          name: uiDeployments
+          setter: setUiDeployments
+          init: "[]"
+        handleDeployment:
+          _order: 4
+          _type: js/function
+          params:
+            - value
+          body:
+            - // console.log('handleDeployment', value)
+            - |-
+              const found = uiDeployments.find(d =>
+                  `${d.namespace}/${d.ui_name}/${d.ui_deployment}`
+                  === value)
+              if (found) {
+                  navContext.selectDeployment(found)
+                  const path = `/ui_component/${value}/`
+                  router.navigate(path.replace(/\\//g, '/'))
+              } else {
+                  navContext.selectDeployment(null)
+              }
         effects:
+          _order: 5
           _type: react/effect
           body:
             - _type: appx/api
@@ -376,14 +405,26 @@ ui_component:
               endpoint: /ui/ui_deployment
               result: |-
                 // console.log(result)
-                states.setUiDeployments(result)
-          _order: 2
-        snippet:
-          _type: js/statement
-          body:
-            - // console.log('navContext', navContext)
-          _order: 3
+                setUiDeployments(result)
+                if (router?.pathname.startsWith('/ui_component')) {
+                    const parts = router.pathname.split('/')
+                    const namespace = parts[2]
+                    const ui_name = parts[3]
+                    const ui_deployment = parts[4]
+                    const found = result.find(d =>
+                    `${d.namespace}/${d.ui_name}/${d.ui_deployment}`
+                     === `${namespace}/${ui_name}/${ui_deployment}`)
+                    if (found) {
+                        navContext.selectDeployment(found)
+                    } else {
+                        navContext.selectDeployment(null)
+                    }
+                }
+        theme:
+          _order: 6
+          _type: mui/theme
         styles:
+          _order: 7
           _type: mui/style
           root:
             color:
@@ -397,47 +438,8 @@ ui_component:
             margin:
               _type: js/expression
               data: theme.spacing(3, 0, 2)
-          _order: 4
-        states:
-          uiRouteNav:
-            _type: react/state
-            name: open
-            setter: setOpen
-            init: "false"
-          uiComponentNav:
-            _type: react/state
-            name: open
-            setter: setOpen
-            init: "false"
-          ...uiDeployments:
-            _type: react/state
-            name: uiDeployments
-            setter: setUiDeployments
-            init: "['a','b','c']"
-          _order: 5
-        handlers:
-          handleDeployment:
-            _type: js/function
-            params:
-              - value
-            body:
-              - // console.log('handleDeployment', value)
-              - >
-                const found = states.uiDeployments
-                    .find(d => `${d.namespace}/${d.ui_name}/${d.ui_deployment}` === value)
-                if (found) {
-                    navContext.selectDeployment(found)
-                } else {
-                    navContext.selectDeployment(null)
-                }
-          handleRouteSelected:
-            _type: js/expression
-            data: props.handleRouteSelected
-          handleComponentSelected:
-            _type: js/expression
-            data: props.handleComponentSelected
-          _order: 6
         component:
+          _order: 8
           _type: react/element
           name: "@material-ui/core.Box"
           props:
@@ -468,6 +470,9 @@ ui_component:
                       props:
                         dense: true
                         button: true
+                        selected:
+                          _type: js/expression
+                          data: router?.pathname.startsWith('/ui_apps')
                       children:
                         - _type: react/element
                           name: "@material-ui/core.ListItemIcon"
@@ -490,6 +495,9 @@ ui_component:
                       props:
                         dense: true
                         button: true
+                        selected:
+                          _type: js/expression
+                          data: router?.pathname.startsWith('/ui_deployments')
                       children:
                         - _type: react/element
                           name: "@material-ui/core.ListItemIcon"
@@ -530,19 +538,15 @@ ui_component:
                             color: secondary
                             value:
                               _type: js/expression
-                              data: >
+                              data: |
                                 !!navContext.navDeployment?.namespace
-
                                 && !!navContext.navDeployment?.ui_name
-
                                 && !!navContext.navDeployment?.ui_deployment
-
                                 ? `${navContext.navDeployment?.namespace}/${navContext.navDeployment?.ui_name}/${navContext.navDeployment?.ui_deployment}`
-
                                 : ''
                             onChange:
                               _type: js/expression
-                              data: e => handlers.handleDeployment(e.target.value)
+                              data: e => handleDeployment(e.target.value)
                           children:
                             - _type: react/element
                               name: "@material-ui/core.MenuItem"
@@ -554,7 +558,7 @@ ui_component:
                             - _type: js/map
                               data:
                                 _type: js/expression
-                                data: states.uiDeployments
+                                data: uiDeployments
                               result:
                                 _type: react/element
                                 name: "@material-ui/core.MenuItem"
@@ -583,7 +587,6 @@ ui_component:
                             ui_name: ui
                             namespace: sys
                             ui_deployment: base
-          _order: 7
         _test:
           providers:
             - name: react-redux.Provider

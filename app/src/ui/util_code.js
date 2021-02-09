@@ -2320,11 +2320,13 @@ function route_context(js_context, ref, input) {
           return _location.pathname
         }
       })()
+      const search = _location.search
       const params = $I('react-router-dom.useParams')()
       return {
         ...routerContext,
         navigate: navigate,
         pathname: pathname,
+        search: search,
         params: params,
       }
     })()
