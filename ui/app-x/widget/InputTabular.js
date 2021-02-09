@@ -89,7 +89,7 @@ const InputTabular = (props) => {
   // propsColumns
   const propsColumns = useMemo(
     () => {
-      console.log(`useMemo`, props.columns.map(column => column.type))
+      // console.log(`useMemo`, props.columns.map(column => column.type))
       return props.columns
     },
     props.columns.map(column => column.type)

@@ -30,7 +30,7 @@ const Form = (props) => {
   } = useFormProps
 
   const onSubmit = () => {
-    console.log(`getValues`, getValues(), _.get(getValues(), 'tabular[0]'))
+    // console.log(`getValues`, getValues(), _.get(getValues(), 'tabular[0]'))
     handleSubmit(
       props.onSubmit,
       props.onError

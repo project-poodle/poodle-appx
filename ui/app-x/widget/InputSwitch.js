@@ -47,7 +47,7 @@ const InputSwitch = (props) => {
   // basename and propsId
   const context = useContext(InputProvider.Context)
   const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
-  console.log(`InputSwitch propsId [${propsId}]`)
+  // console.log(`InputSwitch propsId [${propsId}]`)
 
   // rules
   const rules = props.rules || {}

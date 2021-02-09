@@ -48,7 +48,7 @@ const InputSelect = (props) => {
   // basename and propsId
   const context = useContext(InputProvider.Context)
   const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
-  console.log(`InputSelect propsId [${propsId}]`)
+  // console.log(`InputSelect propsId [${propsId}]`)
 
   // rules
   const rules = props.rules || {}
