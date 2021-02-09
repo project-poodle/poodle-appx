@@ -1496,6 +1496,7 @@ ui_component:
                                 _type: react/element
                                 name: "@material-ui/core.Typography"
                                 props:
+                                  key: "\\`${item.namespace} / ${item.ui_name}\\`"
                                   variant: body2
                                 children:
                                   - _type: js/expression

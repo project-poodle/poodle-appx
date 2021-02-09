@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import queryString from 'query-string'
 import {
   Box,
   makeStyles
@@ -250,16 +251,7 @@ const ComponentTree = (props) => {
 
   // useEffoct on pathname
   useEffect(() => {
-    if (router?.pathname?.startsWith('/ui_component/')) {
-      // TDOO
-      // setSelectedKey(item.key)
-      // setContextKey(item.key)
-      // selectComponent({
-      //   ui_component_name: item.key,
-      //   ui_component_type: item.type,
-      //   ui_component_spec: item.spec,
-      // })
-    } else {
+    if (!(router?.pathname?.startsWith('/ui_component/'))) {
       setSelectedKey(null)
       setContextKey(null)
       unselectNav()
@@ -284,7 +276,38 @@ const ComponentTree = (props) => {
           const translated = transformTree(data)
           // console.log(translated)
           setTreeData(translated)
-          if (navSelected?.type !== 'ui_component') {
+          console.log(`translated`, translated)
+          if (router?.pathname.startsWith('/ui_component')) {
+            const parsed = queryString.parse(router.search)
+            if (!!parsed.s) {
+              console.log(`parsed.s`, parsed.s)
+              tree_traverse(translated, parsed.s, (item, index, arr) => {
+                if (item.isLeaf) {
+                  // console.log(item)
+                  setSelectedKey(item.key)
+                  setContextKey(item.key)
+                  selectComponent({
+                    ui_component_name: item.key,
+                    ui_component_type: item.type,
+                    ui_component_spec: item.spec,
+                  })
+                  // expand all parent nodes
+                  const expands = []
+                  const parts = item.key.split('/')
+                  for (let i = 0; i < parts.length; i++) {
+                    expands.push(parts.slice(0,i+1).join('/'))
+                  }
+                  setExpandedKeys(expands)
+                } else {
+                  setSelectedKey(null)
+                  setContextKey(null)
+                }
+              })
+            } else {
+              setSelectedKey(null)
+              setContextKey(null)
+            }
+          } else {
             setSelectedKey(null)
             setContextKey(null)
           }
@@ -311,9 +334,9 @@ const ComponentTree = (props) => {
   },
   [
     navDeployment,
-    navComponent,
-    navRoute,
-    navSelected,
+    // navComponent,
+    // navRoute,
+    // navSelected,
     loadTimer
   ])
 
