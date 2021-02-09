@@ -45,8 +45,9 @@ const InputSwitch = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputProvider.Context)
-  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+  const context = useContext(InputProvider.Context)
+  const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
+  console.log(`InputSwitch propsId [${propsId}]`)
 
   // rules
   const rules = props.rules || {}
@@ -65,7 +66,7 @@ const InputSwitch = (props) => {
         name={propsId}
         required={!!props.required}
         constrol={control}
-        defaultValue={!!props.defaultValue || false}
+        defaultValue={!!_.get(getValues(), propsId)}
         rules={rules}
         render={innerProps => (
           <FormControl

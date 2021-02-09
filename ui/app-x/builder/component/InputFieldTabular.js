@@ -170,7 +170,7 @@ const InputFieldTabular = props => {
                           // disabled={!!disabled[custom.name]}
                           childSpec={column}
                           inputSpec={column.input}
-                          defaultValue={item[column.name]}
+                          defaultValue={_.get(item, column.name)}
                           callback={props.callback}
                         />
                       </Col>

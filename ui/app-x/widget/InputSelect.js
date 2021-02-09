@@ -46,8 +46,9 @@ const InputSelect = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputProvider.Context)
-  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+  const context = useContext(InputProvider.Context)
+  const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
+  console.log(`InputSelect propsId [${propsId}]`)
 
   // rules
   const rules = props.rules || {}
@@ -105,7 +106,6 @@ const InputSelect = (props) => {
                 }
               }}
               error={!!_.get(errors, propsId)}
-              helperText={_.get(errors, propsId)?.message || ''}
               >
               <MenuItem style={{display:'none'}}
                 key=''
@@ -129,6 +129,11 @@ const InputSelect = (props) => {
                 )
               }
             </TextField>
+            {
+              !!_.get(errors, propsId)
+              &&
+              <FormHelperText>{_.get(errors, propsId)?.message || ''}</FormHelperText>
+            }
           </FormControl>
         )}
         >

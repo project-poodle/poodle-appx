@@ -29,23 +29,26 @@ const Form = (props) => {
     formState,
   } = useFormProps
 
-  const onSubmit = handleSubmit(
-    props.onSubmit,
-    props.onError
-  )
+  const onSubmit = () => {
+    console.log(`getValues`, getValues(), _.get(getValues(), 'tabular[0]'))
+    handleSubmit(
+      props.onSubmit,
+      props.onError
+    )()
+  }
 
   // return
   return (
     <FormProvider
       {...useFormProps}
       >
-      <form
-        onSubmit={onSubmit}
-        >
-        <InputProvider basename="" onSubmit={onSubmit}>
+      <InputProvider basename="" onSubmit={onSubmit}>
+        <form
+          onSubmit={onSubmit}
+          >
           { props.children }
-        </InputProvider>
-      </form>
+        </form>
+      </InputProvider>
     </FormProvider>
   )
 }

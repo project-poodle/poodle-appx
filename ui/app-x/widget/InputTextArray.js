@@ -46,8 +46,8 @@ const InputTextArray = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputProvider.Context)
-  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+  const context = useContext(InputProvider.Context)
+  const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
 
   // options
   const [ _searchOptions, _setSearchOptions ] = useState([])

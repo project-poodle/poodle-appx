@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from "react"
+import React, { useState, useContext, useEffect, useCallback, useMemo } from "react"
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -58,8 +58,8 @@ const InputTabular = (props) => {
   } = useFormContext()
 
   // basename and propsId
-  const { basename } = useContext(InputProvider.Context)
-  const propsId = !!basename ? `${basename}.${props.id}` : props.id
+  const context = useContext(InputProvider.Context)
+  const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
 
   // useFieldArray
   const {
@@ -86,22 +86,23 @@ const InputTabular = (props) => {
     }
   }
 
-  // withRowContext
-  const withRowContext = (BaseComponent, props) => () => {
-    return (
-      <BaseComponent
-        {...props}
-        />
-    )
-  }
+  // propsColumns
+  const propsColumns = useMemo(
+    () => {
+      console.log(`useMemo`, props.columns.map(column => column.type))
+      return props.columns
+    },
+    props.columns.map(column => column.type)
+  )
 
   // rowPanel widget need to convert to react hooks
   const renderColumn = useCallback((column, props) => {
     // console.log(`column`, column)
-    const Column = withRowContext(column, props)
+    // const Column = withRowContext(column, props)
+    const Column = column
     // console.log(`Column`, Column)
     return (
-      <Column />
+      <Column  {...props} />
     )
   }, [])
 
@@ -127,11 +128,11 @@ const InputTabular = (props) => {
       {
         <Row key="title" className={styles.title} justify="center" align="middle" gutter={theme.spacing(1)}>
           {
-            (Array.isArray(props.columns))
+            (Array.isArray(propsColumns))
             && (!!fields && !!fields.length)
             &&
             (
-              React.Children.map(props.columns, (column) => {
+              React.Children.map(propsColumns, (column) => {
                 // console.log(`column`, column)
                 return (
                   <Col span={column.props.span || 6} key={column.props.id}>
@@ -161,11 +162,15 @@ const InputTabular = (props) => {
             <Row key={item.id} className={styles.formControl} justify="center" align="middle" gutter={8}>
               <InputProvider basename={`${propsId}[${index}]`}>
                 {
-                  Array.isArray(props.columns)
+                  Array.isArray(propsColumns)
                   &&
                   (
-                    React.Children.map(props.columns, (column) => {
+                    // React.Children.map(propsColumns, (column) => {
+                    propsColumns.map((column) => {
                       const fieldName = `${propsId}[${index}].${column.props.id}`
+                      const defaultValue = _.get(item, column.props.id) || getColumnDefaultValue(column)
+                      // const defaultValue = getColumnDefaultValue(column)
+                      // console.log(`[${column.props.id}] defaultValue [${defaultValue}]`)
                       return (
                         <Col span={column.props.span || 6} key={column.props.id}>
                           {
@@ -175,7 +180,7 @@ const InputTabular = (props) => {
                                 ...column.props,
                                 key: column.props.id,
                                 label: '',
-                                defaultValue: _.get(getValues(), fieldName) || getColumnDefaultValue(column),
+                                defaultValue: defaultValue,
                                 callback: props.callback || null,
                               }
                             )
@@ -212,10 +217,11 @@ const InputTabular = (props) => {
         aria-label="Add"
         size="small"
         onClick={e => {
-          // console.log(`getValues`, getValues(), getValues(props.name))
+          // console.log(`getValues`, getValues(), getValues(propsId))
           const new_row = {}
-          if (Array.isArray(props.columns)) {
-            React.Children.map(props.columns, (column) => {
+          if (Array.isArray(propsColumns)) {
+            // React.Children.map(propsColumns, (column) => {
+            propsColumns.map((column) => {
               new_row[column.props.id] = getColumnDefaultValue(column)
             })
           }
