@@ -139,7 +139,7 @@ export const classes = {
       'appx/input/submit',
       'appx/table',
       'js/expression',
-      'js/function',
+      'js/call',
       'js/map',
       'js/condition',
       'js/reduce',

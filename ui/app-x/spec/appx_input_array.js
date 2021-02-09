@@ -53,6 +53,19 @@ export const appx_input_array = {
       },
     },
     {
+      name: 'item',
+      desc: 'Array Item',
+      types: [
+        {
+          kind: 'class',
+          data: 'jsx'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+      },
+    },
+    {
       name: 'children',
       desc: 'Child Elements',
       array: true,

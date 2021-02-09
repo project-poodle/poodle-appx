@@ -67,7 +67,7 @@ const InputArrayProvider = (props) => {
   const arrayItems =  fields.map((item, index) => {
     return (
       <InputProvider basename={`${propsId}[${index}]`}>
-        {  props.arryItem }
+        {  props.item }
       </InputProvider>
     )
   })
@@ -85,7 +85,7 @@ const InputArrayProvider = (props) => {
 
 InputArrayProvider.propTypes = {
   id: PropTypes.string.isRequired,
-  arrayItem: PropTypes.element,
+  item: PropTypes.element,
 }
 
 InputArrayProvider.appxType = 'appx/input/array'
