@@ -276,11 +276,11 @@ const ComponentTree = (props) => {
           const translated = transformTree(data)
           // console.log(translated)
           setTreeData(translated)
-          console.log(`translated`, translated)
+          // console.log(`translated`, translated)
           if (router?.pathname.startsWith('/ui_component')) {
             const parsed = queryString.parse(router.search)
             if (!!parsed.s) {
-              console.log(`parsed.s`, parsed.s)
+              // console.log(`parsed.s`, parsed.s)
               tree_traverse(translated, parsed.s, (item, index, arr) => {
                 if (item.isLeaf) {
                   // console.log(item)
