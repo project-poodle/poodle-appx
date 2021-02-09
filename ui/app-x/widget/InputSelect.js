@@ -53,7 +53,7 @@ const InputSelect = (props) => {
   // rules
   const rules = props.rules || {}
   if (!!props.required) {
-    rules.required = `${props.label || props.name} is required`
+    rules.required = `${props.label || props.id} is required`
   }
 
   // not array
