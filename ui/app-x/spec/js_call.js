@@ -14,8 +14,9 @@ export const js_call = {
   _expand: true,
   children: [
     {
-      name: 'name',
-      desc: 'Function Name',
+      name: 'func',
+      desc: 'Function',
+      required: true,
       types: [
         {
           kind: 'class',

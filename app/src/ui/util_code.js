@@ -669,15 +669,15 @@ function js_call(js_context, ref, input) {
     throw new Error(`ERROR: input._type is not [js/call] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
-  if (! ('name' in input)) {
-    throw new Error(`ERROR: input.name missing in [js/call] [${JSON.stringify(input)}]`)
+  if (! ('func' in input)) {
+    throw new Error(`ERROR: input.func missing in [js/call] [${JSON.stringify(input)}]`)
   }
 
-  // name expression
-  const nameExpression = (() => {
-    if (typeof input.name === 'string') {
+  // func expression
+  const funcExpression = (() => {
+    if (typeof input.func === 'string') {
       // parse user code snippet
-      const parsed_expression = _js_parse_expression(js_context, input.name, {
+      const parsed_expression = _js_parse_expression(js_context, input.func, {
         plugins: [
           'jsx', // support jsx
         ]
@@ -692,14 +692,14 @@ function js_call(js_context, ref, input) {
           CONTEXT_STATEMENT: false,
         },
         null,
-        input.name
+        input.func
       )
-      return parsed_expression
+      return child_expression
     }
   })()
 
   const callExpression = t.callExpression(
-    nameExpression,
+    funcExpression,
     input.params ? input.params.map(
       param => js_process
       (

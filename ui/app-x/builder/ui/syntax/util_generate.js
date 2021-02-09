@@ -925,7 +925,10 @@ function generate_tree_node(js_context, conf, input) {
                 thisNode.children.push(childNode)
                 // console.log(`childNode`, childNode)
             } else if (!!childSpec.required) {
-              throw new Error(`ERROR: unable to process child data [${_ref}] [${JSON.stringify(data)}]`)
+              if (thisNode.data[_ref] === undefined) {
+                // throw exception only if _ref is not already defined by _thisNode
+                throw new Error(`ERROR: unable to process child data [${_ref}] [${JSON.stringify(data)}]`)
+              }
             }
           }
         }
