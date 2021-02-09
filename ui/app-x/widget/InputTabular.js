@@ -241,6 +241,9 @@ InputTabular.propTypes = {
   callback: PropTypes.func,                 // callback function
   BoxProps: PropTypes.object,
   style: PropTypes.object,
+  columns: PropTypes.arrayOf(
+    PropTypes.element.isRequired,
+  )
 }
 
 InputTabular.appxType = 'appx/input/tabular'
