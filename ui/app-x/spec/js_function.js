@@ -12,6 +12,7 @@ export const js_function = {
 
   type: 'js/function',
   desc: 'Function',
+  _expand: true,
   children: [
     {
       name: 'params',
@@ -71,6 +72,39 @@ export const js_function = {
         ],
       },
     },
+    {
+      name: 'return',
+      desc: 'Return',
+      types: [
+        {
+          kind: 'class',
+          data: 'string'
+        },
+        {
+          kind: 'class',
+          data: 'expression'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string'
+          },
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'expression'
+          },
+        ],
+      },
+    }
   ]
 }
 

@@ -106,7 +106,7 @@ const InputTabular = (props) => {
     )
   }, [])
 
-  // not array
+  // return
   return (
     <Box
       {...(props.BoxProps || {})}

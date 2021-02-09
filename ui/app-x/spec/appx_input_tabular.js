@@ -9,7 +9,7 @@ import {
 export const appx_input_tabular = {
 
   type: 'appx/input/tabular',
-  desc: 'Text Input',
+  desc: 'Tabular Input',
   template: {
     kind: 'react/element',
   },

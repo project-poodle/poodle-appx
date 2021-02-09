@@ -605,6 +605,35 @@ function js_function(js_context, ref, input) {
     })
   }
 
+  // return statement
+  if (!!input.return) {
+    if (typeof input.return === 'string') {
+      // parse user code snippet
+      const parsed_expression = _js_parse_expression(js_context, input.return, {
+        plugins: [
+          'jsx', // support jsx
+        ]
+      })
+      block_statements.push(t.returnStatement(
+        parsed_expression
+      ))
+    } else {
+      // process child expression
+      const child_expression = js_process(
+        {
+          ...js_context,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
+        },
+        null,
+        input.return
+      )
+      block_statements.push(t.returnStatement(
+        child_expression
+      ))
+    }
+  }
+
   const functionExpression = t.arrowFunctionExpression(
     params,
     t.blockStatement(

@@ -49,6 +49,7 @@ import InputTextArray from 'app-x/icon/InputTextArray'
 import InputSwitch from 'app-x/icon/InputSwitch'
 import InputSelect from 'app-x/icon/InputSelect'
 import InputTabular from 'app-x/icon/InputTabular'
+import InputArray from 'app-x/icon/InputArray'
 import InputSubmit from 'app-x/icon/InputSubmit'
 import InputRule from 'app-x/icon/InputRule'
 import Filter from 'app-x/icon/Filter'
@@ -218,6 +219,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'appx/input/tabular') {
 
     return <InputTabular />
+
+  } else if (input._type === 'appx/input/array') {
+
+    return <InputArray />
 
   } else if (input._type === 'appx/input/submit') {
 
@@ -452,6 +457,11 @@ function lookup_title_for_input(ref, input, array=false) {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + `${parsed.full_paths.pop()} [${input.id}]`
+
+  } else if (input._type === 'appx/input/array') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()}`
 
   } else if (input._type === 'appx/input/submit') {
 

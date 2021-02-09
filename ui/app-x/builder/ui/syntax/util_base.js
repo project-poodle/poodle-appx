@@ -194,6 +194,7 @@ const groups = {
     'appx/input/switch',
     'appx/input/select',
     'appx/input/tabular',
+    'appx/input/array',
     'appx/input/submit',
     'appx/input/rule',
   ],
