@@ -665,7 +665,7 @@ function js_function(js_context, ref, input) {
 // create call ast
 function js_call(js_context, ref, input) {
 
-  if (!('_type' in input) || input._type !== 'js/function') {
+  if (!('_type' in input) || input._type !== 'js/call') {
     throw new Error(`ERROR: input._type is not [js/call] [${input._type}] [${JSON.stringify(input)}]`)
   }
 
@@ -673,8 +673,33 @@ function js_call(js_context, ref, input) {
     throw new Error(`ERROR: input.name missing in [js/call] [${JSON.stringify(input)}]`)
   }
 
+  // name expression
+  const nameExpression = (() => {
+    if (typeof input.name === 'string') {
+      // parse user code snippet
+      const parsed_expression = _js_parse_expression(js_context, input.name, {
+        plugins: [
+          'jsx', // support jsx
+        ]
+      })
+      return parsed_expression
+    } else {
+      // process child expression
+      const child_expression = js_process(
+        {
+          ...js_context,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
+        },
+        null,
+        input.name
+      )
+      return parsed_expression
+    }
+  })()
+
   const callExpression = t.callExpression(
-    t.identifier(input.name),
+    nameExpression,
     input.params ? input.params.map(
       param => js_process
       (
@@ -689,18 +714,23 @@ function js_call(js_context, ref, input) {
   )
 
   // check statement context
-  if (!!js_context.CONTEXT_STATEMENT) {
-    return t.expressionStatement(
+  if (js_context.CONTEXT_STATEMENT) {
+    reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
+    return t.variableDeclaration(
+      'const',
+      [
+        t.variableDeclarator(
+          t.identifier(ref),
+          callExpression
+        )
+      ]
+    )
+  } else if (js_context.CONTEXT_JSX) {
+    return t.jSXExpressionContainer(
       callExpression
     )
   } else {
-    if (!!js_context.CONTEXT_JSX) {
-      return t.jSXExpressionContainer(
-        callExpression
-      )
-    } else {
-      return callExpression
-    }
+    return callExpression
   }
 }
 
@@ -3090,8 +3120,8 @@ module.exports = {
   js_export,
   js_variable,
   js_expression,
-  js_function,
   js_statement,
+  js_function,
   js_call,
   appx_api,
 }

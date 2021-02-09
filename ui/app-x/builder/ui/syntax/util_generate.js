@@ -36,6 +36,7 @@ import Bracket from 'app-x/icon/Bracket'
 import CurlyBracket from 'app-x/icon/CurlyBracket'
 import Calculator from 'app-x/icon/Calculator'
 import Function from 'app-x/icon/Function'
+import FunctionCall from 'app-x/icon/FunctionCall'
 import Code from 'app-x/icon/Code'
 import Branch from 'app-x/icon/Branch'
 import Route from 'app-x/icon/Route'
@@ -159,6 +160,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'js/function') {
 
     return <Function />
+
+  } else if (input._type === 'js/call') {
+
+    return <FunctionCall />
 
   } else if (input._type === 'js/condition') {
 
@@ -365,7 +370,7 @@ function lookup_title_for_input(ref, input, array=false) {
 
   } else if (input._type === 'js/function') {
 
-    const name = 'func (' +
+    const name = ' (' +
       (
         input.params
           ? input.params
@@ -375,6 +380,11 @@ function lookup_title_for_input(ref, input, array=false) {
       )
       +  ')'
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
+
+  } else if (input._type === 'js/call') {
+
+    const name = input.name || 'call'
+    return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name) + ' (...)'
 
   } else if (input._type === 'js/condition') {
 

@@ -170,6 +170,7 @@ const groups = {
     'js/expression',
     'js/statement',
     'js/function',
+    'js/call',
   ],
   // js controls
   js_control: [

@@ -32,6 +32,7 @@ import js_import from 'app-x/spec/js_import.js'
 import js_expression from 'app-x/spec/js_expression.js'
 import js_statement from 'app-x/spec/js_statement.js'
 import js_function from 'app-x/spec/js_function.js'
+import js_call from 'app-x/spec/js_call.js'
 // map, reduce, swith, filter
 import js_condition from 'app-x/spec/js_condition.js'
 import js_map from 'app-x/spec/js_map.js'
@@ -145,6 +146,7 @@ const types = [
   js_expression,
   js_statement,
   js_function,
+  js_call,
   // map, reduce, switch, filter
   js_condition,
   js_map,
