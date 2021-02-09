@@ -4,7 +4,7 @@ import html from '@rollup/plugin-html'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import nodeGlobals from 'rollup-plugin-node-globals'
-import nodeBuiltins from 'rollup-plugin-node-builtins'
+// import nodeBuiltins from 'rollup-plugin-node-builtins'
 // import css from 'rollup-plugin-import-css'
 import postcss from 'rollup-plugin-postcss'
 //import { terser } from "rollup-plugin-terser"
@@ -37,7 +37,7 @@ const plugins = [
     //  moduleDirectory: 'js_modules'
   }),
   nodeGlobals(),
-  nodeBuiltins(),
+  // nodeBuiltins(),
   // replace({
   //  //exclude: 'package.json',
   //  include: 'node_modules/**',  // Default: undefined

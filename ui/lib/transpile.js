@@ -45,6 +45,7 @@ const default_import_maps = {
         "axios",
         "uuid",
         "flatted",
+        "query-string",
         "javascript-time-ago",
         "javascript-time-ago/locale/en",
         "known-css-properties",

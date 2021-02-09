@@ -34,6 +34,7 @@ import * as lodash from 'lodash'
 import * as axios from 'axios'
 import * as uuid from 'uuid'
 import * as flatted from 'flatted'
+import * as queryString from 'query-string'
 import * as timeAgo from 'javascript-time-ago'
 import * as timeAgoLocaleEn from 'javascript-time-ago/locale/en'
 import * as knownCssProperties from 'known-css-properties'
@@ -78,6 +79,7 @@ export default {
   "axios": axios,
   "uuid": uuid,
   "flatted": flatted,
+  "query-string": queryString,
   "javascript-time-ago": timeAgo,
   "javascript-time-ago/locale/en": timeAgoLocaleEn,
   "known-css-properties": knownCssProperties,
