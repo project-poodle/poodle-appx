@@ -140,14 +140,20 @@
     - type: js/expression                               (~expression)
       data:                     # expression
 
+    - type: js/statement                                (~statement)
+      body:                     # code block            (:string|:array<:statement>)
+
     - type: js/function                                 (~expression)
       params:                                           (:array<:string>)
         - p1
         - p2
       body:                     # code body             (:string|:array<:statement>)
 
-    - type: js/statement                                (~statement)
-      body:                     # code block            (:string|:array<:statement>)
+    - type: js/call             # TODO                  (~statement)
+      func:                     #                       (:expression)
+      params:                                           (:array<:expression>)
+        - p1
+        - p2
 
                                   - type: js/module           # TODO
 
@@ -178,13 +184,6 @@
                                     kind:                     # (var / let / const)
                                     name:                     # variable name
                                     data:                     # js/expression, js/call, js/function
-
-                                  - type: js/call             # TODO    (~statement)
-                                    name:                     #         (:expression)
-                                    params:                             (:array<:expression>)
-                                      - primitive/json
-                                      - js/expression
-                                      - js/call
 
                                   - type: js/promise          # TODO    (~statement)
                                     name:                     #         (:expression)
