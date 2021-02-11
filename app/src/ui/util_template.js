@@ -131,6 +131,7 @@ function template_custom(js_context, ref, input) {
                 ...js_context,
                 CONTEXT_STATEMENT: false,
                 CONTEXT_JSX: false,
+                CONTEXT_CUSTOM_CHILD: child.customChild,
               },
               child,
               input[key]
@@ -149,6 +150,7 @@ function template_custom(js_context, ref, input) {
                   ...js_context,
                   CONTEXT_STATEMENT: false,
                   CONTEXT_JSX: false,
+                  CONTEXT_CUSTOM_CHILD: child.customChild,
                 },
                 child,
                 data
@@ -163,6 +165,7 @@ function template_custom(js_context, ref, input) {
               ...js_context,
               CONTEXT_STATEMENT: false,
               CONTEXT_JSX: false,
+              CONTEXT_CUSTOM_CHILD: child.customChild,
             },
             child,
             input[child.name]
@@ -273,6 +276,7 @@ function template_react_element(js_context, ref, input) {
                         ...js_context,
                         CONTEXT_STATEMENT: false,
                         CONTEXT_JSX: false,
+                        CONTEXT_CUSTOM_CHILD: child.customChild,
                       },
                       child,
                       data
@@ -290,6 +294,7 @@ function template_react_element(js_context, ref, input) {
                   ...js_context,
                   CONTEXT_STATEMENT: false,
                   CONTEXT_JSX: true,
+                  CONTEXT_CUSTOM_CHILD: child.customChild,
                 },
                 child,
                 input[child.name]
@@ -297,6 +302,50 @@ function template_react_element(js_context, ref, input) {
             )
           }
         })
+        .concat(
+          js_context.CONTEXT_CUSTOM_CHILD?.map(child => {
+            if (! (child.name in input)) {
+              // if not present
+              return undefined
+            } else if (!!child.array) {
+              // if array
+              return t.jSXAttribute(
+                t.jSXIdentifier(child.name),
+                t.jSXExpressionContainer(
+                  t.arrayExpression(
+                    input[child.name].map(data => {
+                      return _process_child(
+                        {
+                          ...js_context,
+                          CONTEXT_STATEMENT: false,
+                          CONTEXT_JSX: false,
+                          CONTEXT_CUSTOM_CHILD: child.customChild,
+                        },
+                        child,
+                        data
+                      )
+                    })
+                  )
+                )
+              )
+            } else {
+              // if not array
+              return t.jSXAttribute(
+                t.jSXIdentifier(child.name),
+                _process_child(
+                  {
+                    ...js_context,
+                    CONTEXT_STATEMENT: false,
+                    CONTEXT_JSX: true,
+                    CONTEXT_CUSTOM_CHILD: child.customChild,
+                  },
+                  child,
+                  input[child.name]
+                )
+              )
+            }
+          })
+        )
         .flat(2)
         .filter(child => child !== undefined) // remove undefined
     ),
@@ -310,6 +359,7 @@ function template_react_element(js_context, ref, input) {
             ...js_context,
             CONTEXT_STATEMENT: false,
             CONTEXT_JSX: true,
+            CONTEXT_CUSTOM_CHILD: child.customChild,
           },
           null,
           child
@@ -373,6 +423,7 @@ function template_js_object(js_context, ref, input) {
                   ...js_context,
                   CONTEXT_STATEMENT: false,
                   CONTEXT_JSX: false,
+                  CONTEXT_CUSTOM_CHILD: child.customChild,
                 },
                 child,
                 input[key]
@@ -393,6 +444,7 @@ function template_js_object(js_context, ref, input) {
                     ...js_context,
                     CONTEXT_STATEMENT: false,
                     CONTEXT_JSX: false,
+                    CONTEXT_CUSTOM_CHILD: child.customChild,
                   },
                   child,
                   data
@@ -409,6 +461,7 @@ function template_js_object(js_context, ref, input) {
                 ...js_context,
                 CONTEXT_STATEMENT: false,
                 CONTEXT_JSX: false,
+                CONTEXT_CUSTOM_CHILD: child.customChild,
               },
               child,
               input[child.name]
@@ -416,6 +469,48 @@ function template_js_object(js_context, ref, input) {
           )
         }
       })
+      .concat(
+        js_context.CONTEXT_CUSTOM_CHILD?.map(child => {
+          if (! (child.name in input)) {
+            // if not present
+            return undefined
+          } else if (!!child.array) {
+            // if array
+            return t.objectProperty(
+              t.identifier(child.name),
+              t.arrayExpression(
+                input[child.name].map(data => {
+                  return _process_child(
+                    {
+                      ...js_context,
+                      CONTEXT_STATEMENT: false,
+                      CONTEXT_JSX: false,
+                      CONTEXT_CUSTOM_CHILD: child.customChild,
+                    },
+                    child,
+                    data
+                  )
+                })
+              )
+            )
+          } else {
+            // if not array
+            return t.objectProperty(
+              t.identifier(child.name),
+              _process_child(
+                {
+                  ...js_context,
+                  CONTEXT_STATEMENT: false,
+                  CONTEXT_JSX: false,
+                  CONTEXT_CUSTOM_CHILD: child.customChild,
+                },
+                child,
+                input[child.name]
+              )
+            )
+          }
+        })
+      )
       .flat(2)
       .filter(child => child !== undefined) // remove undefined
     )

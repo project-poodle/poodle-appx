@@ -317,7 +317,7 @@ ui_component:
                               path: /ui_deployments
                               element:
                                 _type: react/element
-                                name: self/page/Deployment
+                                name: self/page/UIDeployments
                             - _type: route/path
                               path: /ui_apps
                               element:
@@ -1059,7 +1059,7 @@ ui_component:
     - namespace: sys
       ui_name: ui
       ui_ver: internal
-      ui_component_name: /page/Deployment
+      ui_component_name: /page/UIDeployments
       ui_component_type: react/component
       ui_component_spec:
         ...deployments:

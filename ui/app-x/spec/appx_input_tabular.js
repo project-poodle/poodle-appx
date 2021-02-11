@@ -69,6 +69,23 @@ export const appx_input_tabular = {
       },
     },
     {
+      name: 'actionSpan',
+      desc: 'Action Span (total 24 spans)',
+      types: [
+        {
+          kind: 'class',
+          data: 'number'
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/text',
+          variant: 'number',
+        },
+      },
+    },
+    {
       name: 'BoxProps',
       desc: 'Box Properties',
       types: [
@@ -119,8 +136,47 @@ export const appx_input_tabular = {
           data: 'appx/input/select'
         },
       ],
+      customChild: [
+        {
+          name: '_span',
+          desc: 'Span',
+          required: true,
+          types: [
+            {
+              kind: 'type',
+              data: 'number',
+            }
+          ]
+        }
+      ],
       _childNode: {
         types: 'inherit',
+        generate: ' \
+          (() => {  \
+            const node = generate(data); \
+            node.data._span = data._span; \
+            return node \
+          })() \
+        ',
+        parse: ' \
+          (() => ({ \
+            ...parse(node), \
+            _span: node.data._span \
+          }))() \
+        ',
+        customs: [
+          {
+            name: '_span',
+            desc: 'Span',
+            class: 'number',
+            required: true,
+            context: [ 'add', 'move', 'editor' ],
+            input: {
+              kind: 'input/text',
+              variant: 'number',
+            },
+          },
+        ]
       },
     },
   ]

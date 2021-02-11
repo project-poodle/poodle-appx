@@ -135,7 +135,7 @@ const InputTabular = (props) => {
               React.Children.map(propsColumns, (column) => {
                 // console.log(`column`, column)
                 return (
-                  <Col span={column.props.span || 6} key={column.props.id}>
+                  <Col span={column.props._span || 6} key={column.props.id}>
                     <Box display="flex" justifyContent="center">
                       <InputLabel
                         shrink={true}
@@ -148,7 +148,7 @@ const InputTabular = (props) => {
                 )
               })
               .concat(
-                <Col span={2} key='_action'>
+                <Col span={props.actionSpan || 2} key='_action'>
                 </Col>
               )
             )
@@ -172,7 +172,7 @@ const InputTabular = (props) => {
                       // const defaultValue = getColumnDefaultValue(column)
                       // console.log(`[${column.props.id}] defaultValue [${defaultValue}]`)
                       return (
-                        <Col span={column.props.span || 6} key={column.props.id}>
+                        <Col span={column.props._span || 6} key={column.props.id}>
                           {
                             renderColumn(
                               column.type,
@@ -190,7 +190,7 @@ const InputTabular = (props) => {
                     })
                   )
                 }
-                <Col span={2}>
+                <Col span={props.actionSpan || 2}>
                   <Box display="flex" justifyContent="center" alignItems="center">
                     <IconButton
                       key="remove"
@@ -239,6 +239,7 @@ InputTabular.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   callback: PropTypes.func,                 // callback function
+  actionSpan: PropTypes.number,
   BoxProps: PropTypes.object,
   style: PropTypes.object,
   columns: PropTypes.arrayOf(
