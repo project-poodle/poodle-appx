@@ -23,7 +23,7 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
-import InputProvider from 'app-x/widget/InputProvider'
+import InputProvider from 'app-x/core/InputProvider'
 
 const InputText = (props) => {
   // theme

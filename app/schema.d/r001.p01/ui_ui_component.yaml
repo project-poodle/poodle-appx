@@ -764,7 +764,7 @@ ui_component:
                           data: e => e.stopPropagation()
                       children:
                         - _type: appx/form
-                          name: app-x/widget/Form
+                          name: app-x/core/Form
                           onSubmit:
                             _type: js/function
                             params:
@@ -776,7 +776,7 @@ ui_component:
                             revalidateMode: onChange
                           children:
                             - _type: appx/input/text
-                              name: app-x/widget/InputText
+                              name: app-x/core/InputText
                               id: text1
                               label: A Label
                               required: true
@@ -792,7 +792,7 @@ ui_component:
                                 size: small
                                 color: secondary
                             - _type: appx/input/select
-                              name: app-x/widget/InputSelect
+                              name: app-x/core/InputSelect
                               id: select
                               label: Select Label
                               required: true
@@ -808,7 +808,7 @@ ui_component:
                                 size: small
                                 color: secondary
                             - _type: appx/input/text
-                              name: app-x/widget/InputText
+                              name: app-x/core/InputText
                               id: text2
                               label: "Text #2"
                               required: true
@@ -823,7 +823,7 @@ ui_component:
                                 size: small
                                 color: secondary
                             - _type: appx/input/array
-                              name: app-x/widget/InputArrayProvider
+                              name: app-x/core/InputArrayProvider
                               id: arr
                               itemPanel:
                                 _type: react/element
@@ -837,7 +837,7 @@ ui_component:
                                       width: 100%
                                     children:
                                       - _type: appx/input/text
-                                        name: app-x/widget/InputText
+                                        name: app-x/core/InputText
                                         id: texta
                                         label: Text A
                                         TextProps:
@@ -850,7 +850,7 @@ ui_component:
                                           _type: appx/input/rule
                                           data: []
                                       - _type: appx/input/switch
-                                        name: app-x/widget/InputSwitch
+                                        name: app-x/core/InputSwitch
                                         id: switchb
                                         label: Switch B
                                         SwitchProps:
@@ -906,7 +906,7 @@ ui_component:
                                       - _type: react/element
                                         name: "@material-ui/icons.AddCircleOutline"
                             - _type: appx/input/submit
-                              name: app-x/widget/InputSubmit
+                              name: app-x/core/InputSubmit
                               children:
                                 - _type: react/element
                                   name: "@material-ui/core.Button"
@@ -948,7 +948,7 @@ ui_component:
                           data: e => e.stopPropagation()
                       children:
                         - _type: appx/form
-                          name: app-x/widget/Form
+                          name: app-x/core/Form
                           onSubmit:
                             _type: js/function
                             params:
@@ -959,7 +959,7 @@ ui_component:
                             mode: onChange
                           children:
                             - _type: appx/input/textarray
-                              name: app-x/widget/InputTextArray
+                              name: app-x/core/InputTextArray
                               id: text
                               label: Text Label
                               required: true
@@ -978,7 +978,7 @@ ui_component:
                                 size: small
                                 color: secondary
                             - _type: appx/input/switch
-                              name: app-x/widget/InputSwitch
+                              name: app-x/core/InputSwitch
                               id: switch
                               label: Switch Label
                               required: true
@@ -990,7 +990,7 @@ ui_component:
                                 size: small
                                 color: secondary
                             - _type: appx/input/tabular
-                              name: app-x/widget/InputTabular
+                              name: app-x/core/InputTabular
                               id: tabular
                               label: Tabular
                               BoxProps:
@@ -999,20 +999,20 @@ ui_component:
                                   data: styles.formControl
                               columns:
                                 - _type: appx/input/text
-                                  name: app-x/widget/InputText
+                                  name: app-x/core/InputText
                                   id: text1
                                   label: Text 1
                                   required: true
                                   TextProps:
                                     size: small
                                 - _type: appx/input/switch
-                                  name: app-x/widget/InputSwitch
+                                  name: app-x/core/InputSwitch
                                   id: switch2
                                   label: Switch 2
                                   SwitchProps:
                                     size: small
                                 - _type: appx/input/select
-                                  name: app-x/widget/InputSelect
+                                  name: app-x/core/InputSelect
                                   id: select3
                                   label: Select 3
                                   options:
@@ -1021,7 +1021,7 @@ ui_component:
                                   TextProps:
                                     size: small
                             - _type: appx/input/submit
-                              name: app-x/widget/InputSubmit
+                              name: app-x/core/InputSubmit
                               children:
                                 - _type: react/element
                                   name: "@material-ui/core.Button"
@@ -1108,7 +1108,7 @@ ui_component:
               data: styles.root
           children:
             - _type: appx/table
-              name: app-x/widget/Table
+              name: app-x/core/Table
               data: deployments
               toolbar:
                 _type: react/element
@@ -1257,7 +1257,7 @@ ui_component:
               data: styles.root
           children:
             - _type: appx/table
-              name: app-x/widget/Table
+              name: app-x/core/Table
               data: apiList
               columns:
                 - _type: appx/table/column
@@ -1376,7 +1376,7 @@ ui_component:
               data: styles.root
           children:
             - _type: appx/table
-              name: app-x/widget/Table
+              name: app-x/core/Table
               data: uiApps
               toolbar:
                 _type: react/element

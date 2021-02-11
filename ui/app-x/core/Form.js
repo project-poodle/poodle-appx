@@ -5,7 +5,7 @@ import {
   useForm,
 } from 'react-hook-form'
 import _ from 'lodash'
-import InputProvider from 'app-x/widget/InputProvider'
+import InputProvider from 'app-x/core/InputProvider'
 
 const Form = (props) => {
   // useForm hook

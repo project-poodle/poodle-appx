@@ -5,8 +5,9 @@ import {
   FormControl,
   FormHelperText,
   InputLabel,
+  TextField,
+  MenuItem,
   IconButton,
-  Switch,
   makeStyles,
   useTheme,
 } from '@material-ui/core'
@@ -22,9 +23,9 @@ import {
   AutoComplete,
 } from 'antd'
 import _ from 'lodash'
-import InputProvider from 'app-x/widget/InputProvider'
+import InputProvider from 'app-x/core/InputProvider'
 
-const InputSwitch = (props) => {
+const InputSelect = (props) => {
   // theme
   const theme = useTheme()
   // useFormContext
@@ -47,7 +48,7 @@ const InputSwitch = (props) => {
   // basename and propsId
   const context = useContext(InputProvider.Context)
   const propsId = !!context?.basename ? `${context.basename}.${props.id}` : props.id
-  // console.log(`InputSwitch propsId [${propsId}]`)
+  // console.log(`InputSelect propsId [${propsId}]`)
 
   // rules
   const rules = props.rules || {}
@@ -66,7 +67,7 @@ const InputSwitch = (props) => {
         name={propsId}
         required={!!props.required}
         constrol={control}
-        defaultValue={!!_.get(getValues(), propsId)}
+        defaultValue={props.defaultValue || ''}
         rules={rules}
         render={innerProps => (
           <FormControl
@@ -75,7 +76,7 @@ const InputSwitch = (props) => {
             error={!!_.get(errors, propsId)}
             >
             {
-              !!props.label
+              !!props?.label
               &&
               (
                 <Box
@@ -91,20 +92,43 @@ const InputSwitch = (props) => {
                 </Box>
               )
             }
-            <Switch
-              {...(props.SwitchProps || {})}
+            <TextField
+              {...(props.TextProps || {})}
               name={propsId}
+              select={true}
               required={!!props.required}
-              checked={innerProps.value}
+              style={{width:'100%'}}
               value={innerProps.value}
               onChange={e => {
-                innerProps.onChange(e.target.checked)
+                innerProps.onChange(e.target.value)
                 if (!!props.callback) {
-                  props.callback(e.target.checked)
+                  props.callback(e.target.value)
                 }
               }}
+              error={!!_.get(errors, propsId)}
               >
-            </Switch>
+              <MenuItem style={{display:'none'}}
+                key=''
+                value=''
+                >
+              </MenuItem>
+              {
+                !!props.options
+                &&
+                (
+                  props.options.map(option => {
+                    return (
+                      <MenuItem
+                        key={option}
+                        value={option}
+                        >
+                        { option }
+                      </MenuItem>
+                    )
+                  })
+                )
+              }
+            </TextField>
             {
               !!_.get(errors, propsId)
               &&
@@ -118,20 +142,23 @@ const InputSwitch = (props) => {
   )
 }
 
-InputSwitch.propTypes = {
+InputSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   required: PropTypes.bool,
-  defaultValue: PropTypes.bool,
+  options: PropTypes.arrayOf(
+    PropTypes.string.isRequired
+  ),
+  defaultValue: PropTypes.string,
   callback: PropTypes.func,
   BoxProps: PropTypes.object,
-  SwitchProps: PropTypes.object,
+  TextProps: PropTypes.object,
   style: PropTypes.object,
   rules: PropTypes.object,
 }
 
-InputSwitch.appxType = 'appx/input/switch'
+InputSelect.appxType = 'appx/input/select'
 
-InputSwitch.defaultValue = false
+InputSelect.defaultValue = ''
 
-export default InputSwitch
+export default InputSelect
