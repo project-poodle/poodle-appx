@@ -412,6 +412,8 @@ const PropEditor = (props) => {
     if (!!thisNode && !!nodeSpec) {
       setValue('_ref', thisNode.data._ref)
       setValue('_type', thisNode.data._type)
+      trigger('_ref')
+      trigger('_type')
       // process _thisNode
       nodeSpec.children
         .filter(childSpec => !!childSpec._thisNode)
