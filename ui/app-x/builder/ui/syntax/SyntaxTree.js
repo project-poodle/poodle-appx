@@ -265,7 +265,7 @@ const SyntaxTree = (props) => {
         },
         filtered
       )
-      console.log(`INFO: syntax tree loaded`, loadedTree)
+      console.log(`INFO: Loaded Syntax Tree`, loadedTree)
 
       const parsedTest = !!spec_data._test
         ? spec_data._test
