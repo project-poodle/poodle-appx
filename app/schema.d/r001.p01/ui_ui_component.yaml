@@ -822,6 +822,89 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                            - _type: appx/input/array
+                              name: app-x/widget/InputArrayProvider
+                              id: arr
+                              itemPanel:
+                                _type: react/element
+                                name: "@material-ui/core.Box"
+                                style:
+                                  display: flex
+                                children:
+                                  - _type: react/element
+                                    name: "@material-ui/core.Box"
+                                    style:
+                                      width: 100%
+                                    children:
+                                      - _type: appx/input/text
+                                        name: app-x/widget/InputText
+                                        id: texta
+                                        label: Text A
+                                        TextProps:
+                                          size: small
+                                        style:
+                                          padding:
+                                            _type: js/expression
+                                            data: theme.spacing(2, 0)
+                                        rules:
+                                          _type: appx/input/rule
+                                          data: []
+                                      - _type: appx/input/switch
+                                        name: app-x/widget/InputSwitch
+                                        id: switchb
+                                        label: Switch B
+                                        SwitchProps:
+                                          size: small
+                                        style:
+                                          padding:
+                                            _type: js/expression
+                                            data: theme.spacing(2, 0)
+                                        rules:
+                                          _type: appx/input/rule
+                                          data: []
+                                  - _type: react/element
+                                    name: "@material-ui/core.Box"
+                                    props:
+                                      height: 100%
+                                      display: flex
+                                      alignitems: center
+                                      justifyContent: center
+                                    style:
+                                      padding:
+                                        _type: js/expression
+                                        data: theme.spacing(1)
+                                    children:
+                                      - _type: react/element
+                                        name: "@material-ui/core.IconButton"
+                                        props:
+                                          size: small
+                                          onClick:
+                                            _type: js/expression
+                                            data: e => fieldArrayProps.remove(index)
+                                        children:
+                                          - _type: react/element
+                                            name: "@material-ui/icons.RemoveCircleOutline"
+                              render:
+                                _type: react/element
+                                name: "@material-ui/core.Box"
+                                children:
+                                  - _type: react/element
+                                    name: "@material-ui/core.FormHelperText"
+                                    children:
+                                      - Array List
+                                  - _type: js/expression
+                                    data: itemPanels
+                                  - _type: react/element
+                                    name: "@material-ui/core.IconButton"
+                                    props:
+                                      size: small
+                                      onClick:
+                                        _type: js/expression
+                                        data: e => {fieldArrayProps.append( { texta:'', switchb:false } );
+                                          console.log(fieldArrayProps.fields)}
+                                    children:
+                                      - _type: react/element
+                                        name: "@material-ui/icons.AddCircleOutline"
                             - _type: appx/input/submit
                               name: app-x/widget/InputSubmit
                               children:

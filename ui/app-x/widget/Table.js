@@ -180,25 +180,15 @@ const Table = (props) => {
     )
   }
 
-  // withRow
-  const withRow = (BaseComponent, row) => props => (
-    <BaseComponent
-      {...props}
-      row={row}
-      />
-  )
-
   // rowPanel widget need to convert to react hooks
   const renderRowPanel = useCallback(({row}) => {
-    if (!!props.rowPanel) {
-      // console.log(`props.rowPanel`, props.rowPanel)
-      const RowPanel = withRow(props.rowPanel, row)
-      return (
-        <RowPanel />
-      )
-    } else {
-      return null
-    }
+    // console.log(`props.rowPanel`, props.rowPanel)
+    const RowPanel = props.rowPanel || (() => null)
+    return (
+      <RowPanel
+        row={row}
+        />
+    )
   }, [])
 
   // defaultColumn

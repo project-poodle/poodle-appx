@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback, useMemo, createContext } from "react"
+import React, { useState, useContext, useEffect, useCallback, useMemo } from "react"
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -22,12 +22,11 @@ import {
 import _ from 'lodash'
 import InputProvider from 'app-x/widget/InputProvider'
 
-// input array provider
-const InputArrayProvider_Context = createContext()
-
 // input array
 const InputArrayProvider = (props) => {
   // useFormContext
+  const formProps = useFormContext()
+  // props
   const {
     register,
     unregister,
@@ -42,7 +41,7 @@ const InputArrayProvider = (props) => {
     trigger,
     control,
     formState,
-  } = useFormContext()
+  } = formProps
 
   // basename and propsId
   const context = useContext(InputProvider.Context)
@@ -64,34 +63,46 @@ const InputArrayProvider = (props) => {
     remove,
   } = fieldArrayProps
 
-  const arrayItems =  fields.map((item, index) => {
-    return (
-      <InputProvider basename={`${propsId}[${index}]`}>
-        {  props.item }
-      </InputProvider>
-    )
-  })
-
+  // render
+  const Render = props.render || (() => null)
 
   // return
   return (
-    <InputArrayProvider_Context.Provider
-      value={{...fieldArrayProps, items: arrayItems}}
-      >
-      { props.children }
-    </InputArrayProvider_Context.Provider>
+    <React.Fragment>
+      <Render
+        itemPanels={
+          fields.map((item, index) => {
+            // console.log(`fieldArrayProps.fields [item]`, item)
+            const ItemPanel = props.itemPanel || (() => null)
+            return (
+              <InputProvider
+                key={item.id}
+                basename={`${propsId}[${index}]`}
+                >
+                <ItemPanel
+                  item={item}
+                  index={index}
+                  formProps={formProps}
+                  fieldArrayProps={fieldArrayProps}
+                />
+              </InputProvider>
+            )
+          })
+        }
+        formProps={formProps}
+        fieldArrayProps={fieldArrayProps}
+        >
+      </Render>
+    </React.Fragment>
   )
 }
 
 InputArrayProvider.propTypes = {
   id: PropTypes.string.isRequired,
-  item: PropTypes.element,
+  itemPanel: PropTypes.func,
+  render: PropTypes.func,
 }
 
 InputArrayProvider.appxType = 'appx/input/array'
-
-InputArrayProvider.Context = InputArrayProvider_Context
-
-export { InputArrayProvider_Context  as Context }
 
 export default InputArrayProvider

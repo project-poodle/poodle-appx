@@ -53,27 +53,60 @@ export const appx_input_array = {
       },
     },
     {
-      name: 'item',
-      desc: 'Array Item',
+      name: 'itemPanel',
+      desc: 'Item Panel',
       types: [
         {
           kind: 'class',
-          data: 'jsx'
+          data: 'jsx',
+          expr: '({item, index, formProps, fieldArrayProps}) => $child'
         },
+      ],
+      context: [
+        {
+          name: 'item',
+          desc: 'a single item in [fields] from [react-hook-form.useFieldArray]'
+        },
+        {
+          name: 'index',
+          desc: 'index for item in [fields] from [react-hook-form.useFieldArray]'
+        },
+        {
+          name: 'formProps',
+          desc: 'method props from [react-hook-form.useFormContext]'
+        },
+        {
+          name: 'fieldArrayProps',
+          desc: 'method props from [react-hook-form.useFieldArray]'
+        }
       ],
       _childNode: {
         types: 'inherit',
       },
     },
     {
-      name: 'children',
-      desc: 'Child Elements',
-      array: true,
+      name: 'render',
+      desc: 'Render',
       types: [
         {
           kind: 'class',
-          data: 'jsx'
+          data: 'jsx',
+          expr: '({itemPanels, formProps, fieldArrayProps}) => $child'
         },
+      ],
+      context: [
+        {
+          name: 'itemPanels',
+          desc: 'a list of rendered item panel elements'
+        },
+        {
+          name: 'formProps',
+          desc: 'method props from [react-hook-form.useFormContext]'
+        },
+        {
+          name: 'fieldArrayProps',
+          desc: 'method props from [react-hook-form.useFieldArray]'
+        }
       ],
       _childNode: {
         types: 'inherit',
