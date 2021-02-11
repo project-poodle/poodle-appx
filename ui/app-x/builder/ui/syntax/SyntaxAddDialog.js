@@ -224,9 +224,10 @@ const SyntaxAddDialog = (props) => {
         .filter(effect => !!effect.context && effect.context.includes('add') && Array.isArray(effect.data))
         .map(effect => {
           effect.data.map(data => eval(data))
+          // console.log(`eval(data), [${effect.data}]`)
         })
     }
-  }, [watchData])
+  }, [nodeSpec, parentSpec, watchData])
 
   //////////////////////////////////////////////////////////////////////////////
   // parentSpec
@@ -246,19 +247,35 @@ const SyntaxAddDialog = (props) => {
         setParentSpec(spec)
       }
     }
-  }, [props.addNodeParent])
+    // set node spec
+    if (!props.addNodeType) {
+      setNodeSpec(null)
+    } else {
+      const spec = globalThis.appx.SPEC.types[props.addNodeType]
+      // console.log(`nodeSpec`, spec)
+      if (!spec) {
+        setNodeSpec(null)
+      } else {
+        setNodeSpec(spec)
+      }
+    }
+    // console.log(`props.addNodeType [${props.addNodeType}], props.addNodeRef [${props.addNodeRef}]`)
+    setNodeType(props.addNodeType || '')
+    setNodeRef(props.addNodeRef || '')
+    setValue("_type", props.addNodeType || '')
+    setValue("_ref", props.addNodeRef || '')
+  }, [props.addNodeParent, props.addNodeType, props.addNodeRef, props.open])
 
-  // nodeType
+  /*
+  // nodeType && nodeRef
   useEffect(() => {
-    setNodeType(props.addNodeType)
-    setValue("_type", props.addNodeType)
-  }, [props.addNodeType])
-
-  // nodeRef
-  useEffect(() => {
-    setNodeRef(props.addNodeRef)
-    setValue("_ref", props.addNodeRef)
-  }, [props.addNodeRef])
+    console.log(`props.addNodeType [${props.addNodeType}], props.addNodeRef [${props.addNodeRef}]`)
+    setNodeType(props.addNodeType || '')
+    setNodeRef(props.addNodeRef || '')
+    setValue("_type", props.addNodeType || '')
+    setValue("_ref", props.addNodeRef || '')
+  }, [props.addNodeType, props.addNodeRef])
+  */
 
   // nodeSpec
   useEffect(() => {
@@ -467,7 +484,7 @@ const SyntaxAddDialog = (props) => {
             <Controller
               name="_ref"
               control={control}
-              defaultValue={props?.addNodeRef === '*' ? '' : props?.addNodeRef}
+              defaultValue={nodeRef}
               rules={{
                 required: "Reference name is required",
                 validate: {

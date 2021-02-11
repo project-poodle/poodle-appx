@@ -250,10 +250,10 @@ const SyntaxMoveDialog = (props) => {
 
   // nodeType
   useEffect(() => {
-    setNodeType(props.moveDragNode?.data?._type)
-    setNodeRef(props.moveDragNode?.data?._ref)
-    setValue("_type", props.moveDragNode?.data?._type)
-    setValue("_ref", props.moveDragNode?.data?._ref)
+    setNodeType(props.moveDragNode?.data?._type || '')
+    setNodeRef(props.moveDragNode?.data?._ref || '')
+    setValue("_type", props.moveDragNode?.data?._type || '')
+    setValue("_ref", props.moveDragNode?.data?._ref || '')
   }, [props.moveDragNode])
 
   // nodeSpec
@@ -411,7 +411,7 @@ const SyntaxMoveDialog = (props) => {
               key="_ref"
               name="_ref"
               control={control}
-              defaultValue={props.moveDragNode?.data._ref}
+              defaultValue={props.moveDragNode?.data._ref || ''}
               rules={{
                 required: "Reference name is required",
                 validate: {
