@@ -11,13 +11,11 @@ const SELF = {{#SELF}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/SELF}}
 const SPEC = {{#SPEC}}{{#RENDER_JSON}}{{/RENDER_JSON}}{{/SPEC}}
 const RELATIVE_URL = "{{{RELATIVE_URL}}}"
 
-
+let lib_index = 0
 {{#IMPORT_MAPS}}
   {{#libs}}
-    {{#KEY_VALUE}}
-        import { default as {{{key}}} } from "{{{value.path}}}";
-        IMPORT_MAPS["libs"]["{{{key}}}"]["modules"] = Object.keys({{{key}}})
-    {{/KEY_VALUE}}
+    import { default as {{{name}}} } from "{{{path}}}";
+    IMPORT_MAPS["libs"][lib_index++]["modules"] = Object.keys({{{name}}})
   {{/libs}}
 {{/IMPORT_MAPS}}
 
@@ -30,7 +28,7 @@ if (window.location.pathname.endsWith(RELATIVE_URL)) {
 }
 
 const BASE_ELEM_PATH = BASE_PATH + '_elem/'
-IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': BASE_ELEM_PATH })
+IMPORT_MAPS.imports.push({ prefix: 'self/', path: BASE_ELEM_PATH })
 IMPORT_MAPS.origin = window.location.origin
 
 const ENTRY_ELEM_PATH = (BASE_PATH + "/_elem/" + "{{{entry}}}").replace(/\/+/g, '/')

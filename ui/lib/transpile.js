@@ -14,11 +14,15 @@ const babelConf = {
 ////////////////////////////////////////////////////////////////////////////////
 // import maps
 const default_import_maps = {
-  imports: {
-    "app-x/": "/app-x/",
-  },
-  libs: {
-    "main": {
+  imports: [
+    {
+      prefix: "app-x/",
+      path: "/app-x/",
+    }
+  ],
+  libs: [
+    {
+      name: "main",
       path: "/dist/lib/main.js",
       modules: [
         "react",
@@ -28,7 +32,6 @@ const default_import_maps = {
         "reflect-prop-types",
         "react-redux",
         "redux",
-        // "hookrouter",
         "react-router",
         "react-router-dom",
         "react-hook-form",
@@ -51,18 +54,19 @@ const default_import_maps = {
         "known-css-properties",
       ]
     },
-    "mui": {
+    {
+      name: "mui",
       path: "/dist/lib/mui.js",
       modules: [
         "@material-ui/core",
         "@material-ui/icons",
         "@material-ui/styles",
         "@material-ui/lab",
-        // "material-table",
         "material-ui-nested-menu-item",
       ]
     },
-    "antd": {
+    {
+      name: "antd",
       path: "/dist/lib/antd.js",
       modules: [
         "antd",
@@ -70,7 +74,8 @@ const default_import_maps = {
         // "@ant-design/icons-svg",
       ]
     },
-    "babel": {
+    {
+      name: "babel",
       path: "/dist/lib/babel.js",
       modules: [
         "@babel/standalone",
@@ -80,7 +85,7 @@ const default_import_maps = {
         "@babel/generator",
       ]
     },
-  }
+  ]
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,21 +143,21 @@ function importMapPlugin(import_maps, globalImports) {
 
           // check 'imports'
           if (import_maps.imports) {
-            Object.keys(import_maps.imports).map(key => {
+            import_maps.imports.map(row => {
               // compute import key based on configured origin and configured key
-              const import_key =
-                !!import_maps.origin && !import_maps.imports[key].includes('//')
-                ? import_maps.origin + import_maps.imports[key]
-                : import_maps.imports[key]
+              const import_prefix =
+                !!import_maps.origin && !row.path.includes('//')
+                ? import_maps.origin + row.path
+                : row.path
               // process
               if (found) {
                 return
-              } else if (src_val == key) {
+              } else if (src_val == row.prefix) {
                 found = true
-                path.node.source.value = import_key
-              } else if (key.endsWith('/') && src_val.startsWith(key)) {
+                path.node.source.value = import_prefix
+              } else if (row.prefix.endsWith('/') && src_val.startsWith(row.prefix)) {
                 found = true
-                path.node.source.value = import_key + src_val.substring(key.length)
+                path.node.source.value = import_prefix + src_val.substring(row.prefix.length)
               }
             })
           }
@@ -160,8 +165,8 @@ function importMapPlugin(import_maps, globalImports) {
           // check 'libs'
           if (!found && import_maps.libs) {
 
-            Object.keys(import_maps.libs).map(lib_key => {
-              const lib = import_maps.libs[lib_key]
+            import_maps.libs.map(lib => {
+              const lib_key = lib.name
               if (found) {
                 return
               } else if (lib.modules) {
@@ -270,7 +275,7 @@ function transpile(input, import_maps) {
 
   } catch (err) {
 
-    // console.log(err)
+    console.log(`Failed to transpile with import maps`, import_maps)
     throw err
   }
 }

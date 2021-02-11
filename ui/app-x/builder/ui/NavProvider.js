@@ -246,7 +246,7 @@ const NavProvider = (props) => {
         const basePath = `${globalThis.appx.UI_ROOT}/${namespace}/${ui_name}/${ui_deployment}/`
         const baseElemPath = basePath + '_elem/'
         // update import maps
-        IMPORT_MAPS.imports = Object.assign({}, IMPORT_MAPS.imports, { 'self/': baseElemPath })
+        IMPORT_MAPS.imports.push({ prefix: 'self/', path: baseElemPath })
         IMPORT_MAPS.origin = window.location.origin
         // update import maps
         for (const lib_key of Object.keys(IMPORT_MAPS.libs)) {

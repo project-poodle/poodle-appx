@@ -1431,12 +1431,9 @@ ui_component:
                       - row
                     body:
                       - |-
-                        const imports =
-                        Object.keys(row.ui_spec.importMaps.imports)
-                        const libs =
-                        Object.keys(row.ui_spec.importMaps.libs)
-                        return [].concat(imports, libs)
-                                .flat().join(', ')
+                        const imports = row.ui_spec.importMaps.imports.map(i => i.prefix)
+                        const libs = row.ui_spec.importMaps.libs.map(l => l.name)
+                        return [].concat(imports, libs).flat().join(', ')
                   Header: Import Maps
           _order: 6
         _test:

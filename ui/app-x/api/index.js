@@ -34,14 +34,9 @@ function _get_base_path(namespace, app_name) {
 
   let basePath = apiMap['rootPath']
 
-  // deployment is optional
-  if ('deployment' in apiMap) {
-    const deployment = apiMap['deployment']
-    if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
-      throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
-    }
-
-    basePath += '/' + deployment.namespace + '/' + deployment.app_name + '/' + deployment.app_deployment
+  // app_deployment is optional
+  if ('app_deployment' in apiMap) {
+    basePath += '/' + apiMap.namespace + '/' + apiMap.app_name + '/' + apiMap.app_deployment
   }
 
   basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
@@ -78,14 +73,9 @@ function _get_app_auth_base_path(namespace, app_name) {
 
   let basePath = apiMap['rootPath']
 
-  // deployment is optional
-  if ('deployment' in apiMap) {
-    const deployment = apiMap['deployment']
-    if (!deployment.namespace || !deployment.app_name || !deployment.app_deployment) {
-      throw new Error(`ERROR: deployment syntax incorrect ${JSON.stringify(deployment)}`)
-    }
-
-    basePath += '/' + deployment.namespace + '/' + deployment.app_name
+  // app_deployment is optional
+  if ('app_deployment' in apiMap) {
+    basePath += '/' + apiMap.namespace + '/' + apiMap.app_name + '/' + apiMap.app_deployment
   }
 
   basePath = ('/' + basePath + '/').replace(/\/+/g, '/')

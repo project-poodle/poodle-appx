@@ -343,16 +343,17 @@ ui:
               title: Design Your Own Apps with App-X
           importMaps:
               imports:
-                  app-x/: /app-x/
+                  - prefix: app-x/
+                    path: /app-x/
               libs:
-                  main:
-                      path: /dist/lib/main.js
-                  mui:
-                      path: /dist/lib/mui.js
-                  antd:
-                      path: /dist/lib/antd.js
-                  babel:
-                      path: /dist/lib/babel.js
+                  - name: main
+                    path: /dist/lib/main.js
+                  - name: mui
+                    path: /dist/lib/mui.js
+                  - name: antd
+                    path: /dist/lib/antd.js
+                  - name: babel
+                    path: /dist/lib/babel.js
           description: "App-X Console"
           comment: "initialize"
     # auth editor
@@ -365,16 +366,17 @@ ui:
               title: Design Your Own Apps with App-X
           importMaps:
               imports:
-                  app-x/: /app-x/
+                  - prefix: app-x/
+                    path: /app-x/
               libs:
-                  main:
-                      path: /dist/lib/main.js
-                  mui:
-                      path: /dist/lib/mui.js
-                  antd:
-                      path: /dist/lib/antd.js
-                  babel:
-                      path: /dist/lib/babel.js
+                  - name: main
+                    path: /dist/lib/main.js
+                  - name: mui
+                    path: /dist/lib/mui.js
+                  - name: antd
+                    path: /dist/lib/antd.js
+                  - name: babel
+                    path: /dist/lib/babel.js
           description: "Auth Editor"
           comment: "initialize"
     # service builder
@@ -387,16 +389,17 @@ ui:
               title: Design Your Own Apps with App-X
           importMaps:
               imports:
-                  app-x/: /app-x/
+                  - prefix: app-x/
+                    path: /app-x/
               libs:
-                  main:
-                      path: /dist/lib/main.js
-                  mui:
-                      path: /dist/lib/mui.js
-                  antd:
-                      path: /dist/lib/antd.js
-                  babel:
-                      path: /dist/lib/babel.js
+                  - name: main
+                    path: /dist/lib/main.js
+                  - name: mui
+                    path: /dist/lib/mui.js
+                  - name: antd
+                    path: /dist/lib/antd.js
+                  - name: babel
+                    path: /dist/lib/babel.js
           description: "Service Builder"
           comment: "initialize"
     # ui builder
@@ -409,16 +412,17 @@ ui:
               title: Design Your Own Apps with App-X
           importMaps:
               imports:
-                  app-x/: /app-x/
+                  - prefix: app-x/
+                    path: /app-x/
               libs:
-                  main:
-                      path: /dist/lib/main.js
-                  mui:
-                      path: /dist/lib/mui.js
-                  antd:
-                      path: /dist/lib/antd.js
-                  babel:
-                      path: /dist/lib/babel.js
+                  - name: main
+                    path: /dist/lib/main.js
+                  - name: mui
+                    path: /dist/lib/mui.js
+                  - name: antd
+                    path: /dist/lib/antd.js
+                  - name: babel
+                    path: /dist/lib/babel.js
           description: "UI Builder"
           comment: "initialize"
     # demo
@@ -431,16 +435,17 @@ ui:
               title: Design Your Own Apps with App-X
           importMaps:
               imports:
-                  app-x/: /app-x/
+                  - prefix: app-x/
+                    path: /app-x/
               libs:
-                  main:
-                      path: /dist/lib/main.js
-                  mui:
-                      path: /dist/lib/mui.js
-                  antd:
-                      path: /dist/lib/antd.js
-                  babel:
-                      path: /dist/lib/babel.js
+                  - name: main
+                    path: /dist/lib/main.js
+                  - name: mui
+                    path: /dist/lib/mui.js
+                  - name: antd
+                    path: /dist/lib/antd.js
+                  - name: babel
+                    path: /dist/lib/babel.js
           description: "Demo"
           comment: "initialize"
 
@@ -460,10 +465,7 @@ ui_deployment:
               - namespace: sys
                 app_name: appx
                 rootPath: /api/
-                deployment:
-                    namespace: sys
-                    app_name: appx
-                    app_deployment: base
+                app_deployment: base
           comment: "initialize"
     # auth editor
     - namespace: "sys"
@@ -478,10 +480,7 @@ ui_deployment:
               - namespace: sys
                 app_name: appx
                 rootPath: /api/
-                deployment:
-                    namespace: sys
-                    app_name: appx
-                    app_deployment: base
+                app_deployment: base
           comment: "initialize"
     # service builder
     - namespace: "sys"
@@ -496,10 +495,7 @@ ui_deployment:
               - namespace: sys
                 app_name: appx
                 rootPath: /api/
-                deployment:
-                    namespace: sys
-                    app_name: appx
-                    app_deployment: base
+                app_deployment: base
           comment: "initialize"
     # ui builder
     - namespace: "sys"
@@ -514,10 +510,7 @@ ui_deployment:
               - namespace: sys
                 app_name: appx
                 rootPath: /api/
-                deployment:
-                    namespace: sys
-                    app_name: appx
-                    app_deployment: base
+                app_deployment: base
           comment: "initialize"
     # demo
     - namespace: "sys"
@@ -532,8 +525,5 @@ ui_deployment:
               - namespace: sys
                 app_name: appx
                 rootPath: /api/
-                deployment:
-                    namespace: sys
-                    app_name: appx
-                    app_deployment: base
+                app_deployment: base
           comment: "initialize"
