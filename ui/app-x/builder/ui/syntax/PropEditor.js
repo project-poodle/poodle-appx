@@ -505,7 +505,7 @@ const PropEditor = (props) => {
         nodeSpec._customs
           .filter(custom => custom.context?.includes('editor'))
           .map(custom => {
-            setValue(custom.name, thisNode.data[custom.name])
+            setValue(custom.name, thisNode.data[custom.name] || '')
           })
       }
       // process customization by parentSpec
@@ -517,7 +517,7 @@ const PropEditor = (props) => {
               childSpec._childNode.customs
                 .filter(custom => custom.context?.includes('editor'))
                 .map(custom => {
-                  setValue(custom.name, thisNode.data[custom.name])
+                  setValue(custom.name, thisNode.data[custom.name] || '')
                 })
             }
           })
