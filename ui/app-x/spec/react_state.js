@@ -26,11 +26,11 @@ export const react_state = {
       context: [ "add", "move" ],
       data: [
         '(() => { if (!states.getValue("_customRef")) states.setRef("..." + states.getValue("name")) })()',
-        '(() => { const name = states.getValue("name") || ""; if (!states.getValue("_customRef")) states.setValue("setter", "set" + name.charAt(0).toUpperCase() + name.slice(1)) })()',
         '(() => { if (!states.getValue("_customRef")) states.setDisabled("_ref", true) })()',
         '(() => { if (!states.getValue("_customRef")) states.setDisabled("setter", true) })()',
         '(() => { if (!!states.getValue("_customRef")) states.setDisabled("_ref", false) })()',
         '(() => { if (!!states.getValue("_customRef")) states.setDisabled("setter", false) })()',
+        '(() => { const name = states.getValue("name") || ""; if (!states.getValue("_customRef")) states.setValue("setter", "set" + name.charAt(0).toUpperCase() + name.slice(1)) })()',
       ]
     },
     {
