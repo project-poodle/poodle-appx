@@ -90,9 +90,9 @@ const InputTabular = (props) => {
   const propsColumns = useMemo(
     () => {
       // console.log(`useMemo`, props.columns.map(column => column.type))
-      return props.columns
+      return props.columns || []
     },
-    props.columns.map(column => column.type)
+    props.columns?.map(column => column.type)
   )
 
   // rowPanel widget need to convert to react hooks
