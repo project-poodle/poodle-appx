@@ -212,7 +212,7 @@ const PropEditor = (props) => {
       return !!disabled[name]
     },
     setDisabled: (name, target) => {
-      if (disabled[name] !== target) {
+      if (!!disabled[name] !== !!target) {
         const result = _.clone(disabled)
         result[name] = !!target
         setDisabled(result)
@@ -222,10 +222,18 @@ const PropEditor = (props) => {
       return !!hidden[name]
     },
     setHidden: (name, target) => {
-      if (hidden[name] !== target) {
+      if (!!hidden[name] !== !!target) {
         const result = _.clone(hidden)
         result[name] = !!target
         setHidden(result)
+      }
+    },
+    getValue: (name) => {
+      return getValues(name)
+    },
+    setValue: (name, target) => {
+      if (getValues(name) !== undefined && getValues(name) !== target) {
+        setValue(name, target)
       }
     },
     getRef: () => {

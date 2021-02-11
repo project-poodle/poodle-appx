@@ -25,16 +25,22 @@ export const react_state = {
     {
       context: [ "add", "move" ],
       data: [
-        '(() => { if (!form.getValues("_customRef")) states.setRef("..." + form.getValues("name")) })()',
-        '(() => { if (!form.getValues("_customRef")) states.setDisabled("_ref", true) })()',
-        '(() => { if (!!form.getValues("_customRef")) states.setDisabled("_ref", false) })()',
+        '(() => { if (!states.getValue("_customRef")) states.setRef("..." + states.getValue("name")) })()',
+        '(() => { const name = states.getValue("name") || ""; if (!states.getValue("_customRef")) states.setValue("setter", "set" + name.charAt(0).toUpperCase() + name.slice(1)) })()',
+        '(() => { if (!states.getValue("_customRef")) states.setDisabled("_ref", true) })()',
+        '(() => { if (!states.getValue("_customRef")) states.setDisabled("setter", true) })()',
+        '(() => { if (!!states.getValue("_customRef")) states.setDisabled("_ref", false) })()',
+        '(() => { if (!!states.getValue("_customRef")) states.setDisabled("setter", false) })()',
       ]
     },
     {
       context: [ "editor" ],
       data: [
         '(() => { states.setDisabled("_ref", true) })()',
-        '(() => { if (form.getValues("_ref").startsWith("...")) states.setRef("..." + form.getValues("name")) })()',
+        '(() => { if (states.getValue("_ref").startsWith("...")) states.setDisabled("setter", true) })()',
+        '(() => { if (!states.getValue("_ref").startsWith("...")) states.setDisabled("setter", false) })()',
+        '(() => { if (states.getValue("_ref").startsWith("...")) states.setRef("..." + states.getValue("name")) })()',
+        '(() => { const name = states.getValue("name") || ""; if (states.getValue("_ref").startsWith("...")) states.setValue("setter", "set" + name.charAt(0).toUpperCase() + name.slice(1)) })()',
       ]
     }
   ],
