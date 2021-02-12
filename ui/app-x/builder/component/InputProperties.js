@@ -378,19 +378,21 @@ const InputProperties = props => {
                   )
                 }
               </Box>
-              <IconButton
-                key="remove"
-                aria-label="Remove"
-                size="small"
-                onClick={e => {
-                  remove(index)
-                  if (!!props.callback) {
-                    props.callback(e)
-                  }
-                }}
-                >
-                <RemoveCircleOutline />
-              </IconButton>
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <IconButton
+                  key="remove"
+                  aria-label="Remove"
+                  size="small"
+                  onClick={e => {
+                    remove(index)
+                    if (!!props.callback) {
+                      props.callback(e)
+                    }
+                  }}
+                  >
+                  <RemoveCircleOutline />
+                </IconButton>
+              </Box>
             </Box>
           )
         })
