@@ -28,6 +28,7 @@ import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 import AutoSuggest from 'app-x/builder/component/AutoSuggest'
+import InputField from 'app-x/builder/component/InputField'
 import NavProvider from 'app-x/builder/ui/NavProvider'
 import {
   new_tree_node,
@@ -263,29 +264,21 @@ const InputProperties = props => {
                   (propType === 'js/boolean')
                   &&
                   (
-                    <Controller
+                    <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      control={control}
                       defaultValue={item?.value}
-                      render={innerProps =>
-                        (
-                          <FormControl key="boolean" className={styles.valueControl}>
-                            <Switch
-                              name={innerProps.name}
-                              color='secondary'
-                              size="small"
-                              checked={innerProps.value}
-                              onChange={e => {
-                                innerProps.onChange(e.target.checked)
-                                if (props.callback) {
-                                  props.callback(e.target.checked, innerProps.name)
-                                }
-                              }}
-                            />
-                          </FormControl>
-                        )
-                      }
+                      size="small"
+                      margin="none"
+                      className={styles.formControl}
+                      childSpec={{
+                        name: props.name,
+                        title: 'Value',
+                      }}
+                      inputSpec={{
+                        kind: 'input/switch'
+                      }}
+                      callback={props.callback}
                     />
                   )
                 }
@@ -293,41 +286,22 @@ const InputProperties = props => {
                   (propType === 'js/string')
                   &&
                   (
-                    <Controller
+                    <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      control={control}
                       defaultValue={item?.value}
-                      rules={{
-                        required: "Property value is required"
+                      size="small"
+                      margin="none"
+                      className={styles.formControl}
+                      childSpec={{
+                        name: props.name,
+                        title: 'Value',
+                        required: true,
                       }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              color='secondary'
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
+                      inputSpec={{
+                        kind: 'input/text'
+                      }}
+                      callback={props.callback}
                     />
                   )
                 }
@@ -335,44 +309,23 @@ const InputProperties = props => {
                   (propType === 'js/number')
                   &&
                   (
-                    <Controller
+                    <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      control={control}
                       defaultValue={item?.value}
-                      rules={{
-                        required: "Number is required",
-                        validate: {
-                          checkNumber: value => !isNaN(Number(value)) || "Must be a number",
-                        }
+                      size="small"
+                      margin="none"
+                      className={styles.formControl}
+                      childSpec={{
+                        name: props.name,
+                        title: 'Number',
+                        required: true,
                       }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              color='secondary'
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
+                      inputSpec={{
+                        kind: 'input/text',
+                        variant: 'number',
+                      }}
+                      callback={props.callback}
                     />
                   )
                 }
@@ -380,55 +333,22 @@ const InputProperties = props => {
                   (propType === 'js/expression')
                   &&
                   (
-                    <Controller
+                    <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      control={control}
                       defaultValue={item?.value}
-                      rules={{
-                        required: "Expression is required",
-                        validate: {
-                          expressionSyntax: value => {
-                            try {
-                              parseExpression(String(value), {
-                                plugins: [
-                                  'jsx', // support jsx
-                                ]
-                              })
-                              return true
-                            } catch (err) {
-                              return String(err)
-                            }
-                          }
-                        }
+                      size="small"
+                      margin="none"
+                      className={styles.formControl}
+                      childSpec={{
+                        name: props.name,
+                        title: 'Expression',
+                        required: true,
                       }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <TextField
-                              className={styles.formControl}
-                              name={innerProps.name}
-                              value={innerProps.value}
-                              color='secondary'
-                              size="small"
-                              onChange={e => {
-                                innerProps.onChange(e.target.value)
-                                if (props.callback) {
-                                  props.callback(e.target.value, innerProps.name)
-                                }
-                              }}
-                              error={
-                                !!_.get(errors, props.name)
-                                && !!_.get(errors, props.name)[index]?.value
-                              }
-                              helperText={
-                                !!_.get(errors, props.name)
-                                && _.get(errors, props.name)[index]?.value?.message
-                              }
-                            />
-                          </FormControl>
-                        )
-                      }
+                      inputSpec={{
+                        kind: 'input/expression',
+                      }}
+                      callback={props.callback}
                     />
                   )
                 }
@@ -436,38 +356,24 @@ const InputProperties = props => {
                   (propType === 'js/import')
                   &&
                   (
-                    <Controller
+                    <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      control={control}
                       defaultValue={item?.value}
-                      rules={{
-                        required: "Import name is required",
-                        validate: {
-                          valid_name: value => (
-                            importNames.includes(value)
-                            || "Must use a valid name"
-                          )
-                        }
+                      size="small"
+                      margin="none"
+                      className={styles.formControl}
+                      childSpec={{
+                        name: props.name,
+                        title: 'Import Name',
+                        required: true,
                       }}
-                      render={innerProps =>
-                        (
-                          <FormControl key="data" className={styles.valueControl}>
-                            <AutoSuggest
-                              key='value'
-                              name={`${props.name}[${index}].value`}
-                              className={styles.valueControl}
-                              color='secondary'
-                              size="small"
-                              value={innerProps.value}
-                              onChange={innerProps.onChange}
-                              options={importNames}
-                              callback={props.callback}
-                              >
-                            </AutoSuggest>
-                          </FormControl>
-                        )
-                      }
+                      inputSpec={{
+                        kind: 'input/text',
+                        options: importNames,
+                        optionsOnly: true,
+                      }}
+                      callback={props.callback}
                     />
                   )
                 }
