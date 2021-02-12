@@ -55,10 +55,13 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
 
   const [ rows, setRows ] = useState(1)
   useEffect(() => {
-    // const totalRow = providedValue?.split(/\r\n|\r|\n/).length || 1
     try {
+      // set tab size, and use spaces
+      editor.current?.getModel().updateOptions({ tabSize: 2, insertSpaces: true })
+      const rowCount = providedValue?.split(/\r\n|\r|\n/).length || 1
+      const lineCount = editor.current?.getModel().getLineCount() || rowCount
       // console.log(`editor`, editor.current, editor.current?.getModel(), editor.current?._getViewModel())
-      const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || 1
+      const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || lineCount
       // console.log(`viewLineCount`, viewLineCount)
       setRows(viewLineCount)
     } catch (err) {
@@ -66,7 +69,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
       const lineCount = editor.current?.getModel().getLineCount() || 1
       setRows(lineCount)
     }
-  }, [providedValue])
+  }, [providedValue, editor.current, editor.current?.getModel().getLineCount()])
 
   return (
     <Editor
