@@ -25,6 +25,7 @@ import {
   FormControlLabel,
   InputAdornment,
   makeStyles,
+  useTheme,
 } from '@material-ui/core'
 import {
   Pagination,
@@ -40,6 +41,8 @@ import { CSVLink, CSVDownload } from "react-csv"
 import _ from 'lodash'
 
 const Table = (props) => {
+  // theme
+  const theme = useTheme()
   // make styles
   const styles = makeStyles((theme) => ({
 
@@ -118,11 +121,11 @@ const Table = (props) => {
     },
 
     toolbar: {
-      padding: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(0, 1)
+      padding: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(0, 2)
     },
 
     tool: {
-      margin: props.margin === 'dense' ? theme.spacing(0, 2) : theme.spacing(2)
+      margin: props.margin === 'dense' ? theme.spacing(0, 1) : theme.spacing(0, 0)
     },
   }))()
 
@@ -144,6 +147,7 @@ const Table = (props) => {
         className={className}
         color={props.color || 'primary'}
         size="small"
+        // size={props.margin === 'dense' ? "small" : "normal"}
         value={value || ""}
         onChange={e => {
           setValue(e.target.value)
@@ -278,12 +282,12 @@ const Table = (props) => {
             </Box>
             <Box
               display='flex'
-              className={styles.tool}
               >
               {
                 props.toolbar
               }
               <CSVLink
+                className={styles.tool}
                 filename={`Table.csv`}
                 data={rows.map(row =>
                   allColumns.map(column => {
@@ -298,7 +302,7 @@ const Table = (props) => {
                 headers={allColumns.map(column => column.Header || column.id)}
                 >
                 <IconButton
-                  size="medium"
+                  size={props.margin === 'dense' ? "small" : "medium"}
                   color={props.color}
                   style={{boxShadow: 'none'}}
                   >
@@ -307,8 +311,9 @@ const Table = (props) => {
               </CSVLink>
               <IconButton
                 ref={columnIconRef}
-                size="medium"
+                size={props.margin === 'dense' ? "small" : "medium"}
                 color={props.color}
+                className={styles.tool}
                 style={{boxShadow: 'none'}}
                 onClick={e => {
                   // setAnchorEl(e.target)
