@@ -22,6 +22,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
 
       if (typeof directChange === 'string' && editorValue !== directChange) {
         editor.current.setValue(directChange)
+        updateRowCount()
       //   const totalRow = directChange?.split(/\r\n|\r|\n/).length || 1
       //   // console.log(`directChange totalRow`, totalRow)
       //   setRows(totalRow)
@@ -71,7 +72,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
       const lineCount = editor.current?.getModel().getLineCount() || rowCount
       const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || lineCount
       // console.log(`lineCount`, lineCount, `viewLineCount`, viewLineCount)
-      setRows(viewLineCount)
+      setRows(Math.min(viewLineCount, lineCount*3))
     } catch (err) {
       console.error(err)
       const lineCount = editor.current?.getModel().getLineCount() || rowCount
