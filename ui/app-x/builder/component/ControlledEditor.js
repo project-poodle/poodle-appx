@@ -72,7 +72,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
       const lineCount = editor.current?.getModel().getLineCount() || rowCount
       const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || lineCount
       // console.log(`lineCount`, lineCount, `viewLineCount`, viewLineCount)
-      setRows(Math.min(viewLineCount, lineCount*3))
+      setRows(Math.min(viewLineCount, lineCount*2))
     } catch (err) {
       console.error(err)
       const lineCount = editor.current?.getModel().getLineCount() || rowCount

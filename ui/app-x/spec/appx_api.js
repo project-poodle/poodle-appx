@@ -108,7 +108,8 @@ export const appx_api = {
       types: [
         {
           kind: 'class',
-          data: 'string'
+          data: 'string',
+          parse: true,
         },
         {
           kind: 'class',
