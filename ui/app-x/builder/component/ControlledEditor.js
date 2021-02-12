@@ -41,7 +41,7 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
   const handleEditorDidMount = useCallback((getValue, _editor) => {
     editor.current = _editor
     attachChangeEventListener()
-
+    // listen to focus and blur events
     editorDidMount(getValue, _editor)
     _editor.onDidBlurEditorText(() => {
       if (!!props.onBlur) props.onBlur(_editor)
@@ -49,13 +49,23 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
     _editor.onDidFocusEditorText(() => {
       if (!!props.onFocus) props.onFocus(_editor)
     })
+    // set tab size, and use spaces
+    _editor.getModel().updateOptions({ tabSize: 2, insertSpaces: true })
   }, [attachChangeEventListener, editorDidMount])
 
   const [ rows, setRows ] = useState(1)
   useEffect(() => {
-    const totalRow = providedValue?.split(/\r\n|\r|\n/).length || 1
-    // console.log(`totalRow`, totalRow)
-    setRows(totalRow)
+    // const totalRow = providedValue?.split(/\r\n|\r|\n/).length || 1
+    try {
+      // console.log(`editor`, editor.current, editor.current?.getModel(), editor.current?._getViewModel())
+      const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || 1
+      // console.log(`viewLineCount`, viewLineCount)
+      setRows(viewLineCount)
+    } catch (err) {
+      console.error(err)
+      const lineCount = editor.current?.getModel().getLineCount() || 1
+      setRows(lineCount)
+    }
   }, [providedValue])
 
   return (
