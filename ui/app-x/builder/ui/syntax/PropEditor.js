@@ -643,32 +643,39 @@ const PropEditor = (props) => {
         } else if (!childSpec._childNode?.input?.field) {
           throw new Error(`ERROR: child node [input/tabular] missing [field] [${JSON.stringify(childSpec._childNode.input)}]`)
         } else {
-          // add props child if exist
-          let childNode = lookup_child_for_ref(lookupNode, childSpec.name)
-          // console.log(`_process_child_props`, refKey, childNode)
-          if (!childNode) {
-            const childTypeSpec = lookup_spec_for_type(childSpec._childNode.input.type)
-            if (!childTypeSpec) {
-              throw new Error(`ERROR: cannot find child type [${childSpec._childNode.input.type}] [${JSON.stringify(childSpec._childNode.input)}]`)
+          const childData = _.get(getValues(), childSpec.name) || []
+          if (childData.length === 0) {
+            // what is it
+            remove_child_for_ref(lookupNode, childSpec.name)
+            reorder_children(lookupNode)
+          } else {
+            // add props child if exist
+            let childNode = lookup_child_for_ref(lookupNode, childSpec.name)
+            // console.log(`_process_child_props`, refKey, childNode)
+            if (!childNode) {
+              const childTypeSpec = lookup_spec_for_type(childSpec._childNode.input.type)
+              if (!childTypeSpec) {
+                throw new Error(`ERROR: cannot find child type [${childSpec._childNode.input.type}] [${JSON.stringify(childSpec._childNode.input)}]`)
+              }
+              // add child node if not exist
+              childNode = new_tree_node(
+                '',
+                null,
+                {
+                  _ref: childSpec.name,
+                  _type: childSpec._childNode.input.type,
+                  _array: !!childSpec.array,
+                },
+                !childTypeSpec.children?.find(childSpec => !!childSpec._childNode),
+                lookupNode.key,
+              )
+              childNode.title = lookup_title_for_node(childNode)
+              childNode.icon = lookup_icon_for_node(childNode)
+              lookupNode.children.push(childNode)
             }
-            // add child node if not exist
-            childNode = new_tree_node(
-              '',
-              null,
-              {
-                _ref: childSpec.name,
-                _type: childSpec._childNode.input.type,
-                _array: !!childSpec.array,
-              },
-              !childTypeSpec.children?.find(childSpec => !!childSpec._childNode),
-              lookupNode.key,
-            )
-            childNode.title = lookup_title_for_node(childNode)
-            childNode.icon = lookup_icon_for_node(childNode)
-            lookupNode.children.push(childNode)
+            childNode.data[childSpec._childNode.input.field] = childData
+            reorder_children(lookupNode)
           }
-          childNode.data[childSpec._childNode.input.field] = _.get(getValues(), childSpec.name) || []
-          reorder_children(lookupNode)
         }
       })
     //////////////////////////////////////////////////////////////////////
