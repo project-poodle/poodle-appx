@@ -45,10 +45,26 @@ export const appx_form = {
       desc: 'onSubmit',
       types: [
         {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
           kind: 'type',
           data: 'js/function',
         },
       ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          }
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
       _childNode: {
         types: 'inherit'
       },
@@ -58,10 +74,26 @@ export const appx_form = {
       desc: 'onError',
       types: [
         {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
           kind: 'type',
           data: 'js/function',
         },
       ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          }
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
       _childNode: {
         types: 'inherit'
       },
@@ -80,6 +112,40 @@ export const appx_form = {
         input: {
           kind: 'input/properties'
         },
+      },
+    },
+    {
+      name: 'defaultValue',
+      desc: 'Default Value',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          }
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
+      _childNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'object',
+          }
+        ],
       },
     },
     {

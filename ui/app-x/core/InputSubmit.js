@@ -52,6 +52,7 @@ const InputSubmit = (props) => {
     <Box
       {...(props.BoxProps || {})}
       style={props.style}
+      flexShrink={0}
       onClick={context?.onSubmit || (() => {})}
       >
       {

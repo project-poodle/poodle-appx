@@ -37,6 +37,15 @@ const Form = (props) => {
     )()
   }
 
+  useEffect(() => {
+    if (!!props.defaultValue) {
+      Object.keys(props.defaultValue).map(key => {
+        // console.log(`setValue`, key, props.defaultValue[key])
+        setValue(key, props.defaultValue[key])
+      })
+    }
+  }, [props.defaultValue])
+
   // return
   return (
     <FormProvider
@@ -55,6 +64,7 @@ const Form = (props) => {
 
 Form.propTypes = {
   formProps: PropTypes.object,
+  defaultValues: PropTypes.object,
   onSubmit: PropTypes.func,
   onError: PropTypes.func,
 }

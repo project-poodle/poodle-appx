@@ -20,12 +20,12 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
     if (value.current !== editorValue) {
       const directChange = onChange(event, editorValue)
 
-      // if (typeof directChange === 'string' && editorValue !== directChange) {
-      //   editor.current.setValue(directChange)
+      if (typeof directChange === 'string' && editorValue !== directChange) {
+        editor.current.setValue(directChange)
       //   const totalRow = directChange?.split(/\r\n|\r|\n/).length || 1
       //   // console.log(`directChange totalRow`, totalRow)
       //   setRows(totalRow)
-      // }
+      }
     }
   }, [onChange])
 
@@ -51,27 +51,33 @@ function ControlledEditor({ value: providedValue, onChange, editorDidMount, ...p
     })
     // set tab size, and use spaces
     _editor.getModel().updateOptions({ tabSize: 2, insertSpaces: true })
+    // model line count
+    updateRowCount()
   }, [attachChangeEventListener, editorDidMount])
 
   const [ rows, setRows ] = useState(1)
   useEffect(() => {
     // line count from provided value
-    const rowCount = providedValue?.split(/\r\n|\r|\n/).length || 1
+    // const rowCount = providedValue?.split(/\r\n|\r|\n/).length || 1
+    updateRowCount()
+  }, [providedValue, editor.current])
+
+  function updateRowCount() {
+    const rowCount = 1
     try {
       // set tab size, and use spaces
       editor.current?.getModel().updateOptions({ tabSize: 2, insertSpaces: true })
       // model line count
       const lineCount = editor.current?.getModel().getLineCount() || rowCount
-      // console.log(`editor`, editor.current, editor.current?.getModel(), editor.current?._getViewModel())
       const viewLineCount = editor.current?._getViewModel()?._lines?.getViewLineCount() || lineCount
-      // console.log(`viewLineCount`, viewLineCount)
+      // console.log(`lineCount`, lineCount, `viewLineCount`, viewLineCount)
       setRows(viewLineCount)
     } catch (err) {
       console.error(err)
       const lineCount = editor.current?.getModel().getLineCount() || rowCount
       setRows(lineCount)
     }
-  }, [providedValue, editor.current])
+  }
 
   return (
     <Editor
