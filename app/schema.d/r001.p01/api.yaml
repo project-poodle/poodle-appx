@@ -992,7 +992,7 @@ api:
       app_rev: "default"
       obj_name: "api"
       api_method: "get"
-      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/deployment/:app_runtime/:app_deployment/obj/:obj_name/api"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/deployment/:app_deployment/api"
       api_spec:
           permission: "app.read"
           syntax:
@@ -1006,7 +1006,29 @@ api:
                   - obj: "api_status"
                     type: "left"
           doc:
-              desc: "list app_deployment apis for :namespace / :app_name / :app_runtime / :app_deployment / :obj_name"
+              desc: "list app_deployment apis for :namespace / :app_name / :app_deployment"
+    # list by app_deployment and obj_name
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "api"
+      api_method: "get"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/deployment/:app_deployment/obj/:obj_name/api"
+      api_spec:
+          permission: "app.read"
+          syntax:
+              verb: "get"
+              join:
+                  - obj: "obj"
+                  - obj: "app"
+                  - obj: "app_runtime"
+                  - obj: "app_deployment"
+                  - obj: "namespace"
+                  - obj: "api_status"
+                    type: "left"
+          doc:
+              desc: "list app_deployment apis for :namespace / :app_name / :app_deployment / :obj_name"
     # get
     - namespace: "sys"
       app_name: "appx"

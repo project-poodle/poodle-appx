@@ -862,8 +862,35 @@ function valid_app_deployments() {
   return app_deployments.sort().filter(onlyUnique)
 }
 
+let apiEndpoints = []
+function load_api_endpoints() {
+  globalThis.appx.API_MAPS.api
+    .filter(row => !!row.app_deployment)
+    .map(row => {
+      api.get(
+        'sys',
+        'appx',
+        `/namespace/${row.namespace}/app_deployment/app/${row.app_name}/deployment/${row.app_deployment}/api`,
+        result => {
+          const endpoints = result.map(row => row.api_endpoint)
+          apiEndpoints = endpoints.sort().filter(onlyUnique)
+          console.log(`apiEndpoints : ${apiEndpoints.length}`)
+        },
+        error => {
+          console.error(error)
+          notification.error({
+            message: 'Failed to retrieve list of APIs',
+            description: error.message || String(error),
+            placement: 'bottomLeft',
+          })
+        }
+      )
+    })
+}
+load_api_endpoints()
+
 function valid_api_endpoints() {
-  return []
+  return apiEndpoints
 }
 
 // css property names

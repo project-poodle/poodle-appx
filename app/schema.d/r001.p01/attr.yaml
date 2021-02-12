@@ -597,14 +597,6 @@ attr:
       app_name: "appx"
       app_ver: "internal"
       obj_name: "relation_status"
-      attr_name: "app_runtime"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "relation_status"
       attr_name: "app_deployment"
       attr_spec:
           key: true
@@ -719,14 +711,6 @@ attr:
       attr_spec:
           key: true
           type: "VARCHAR(15)"
-    - namespace: "sys"
-      app_name: "appx"
-      app_ver: "internal"
-      obj_name: "api_status"
-      attr_name: "app_runtime"
-      attr_spec:
-          key: true
-          type: "VARCHAR(9)"
     - namespace: "sys"
       app_name: "appx"
       app_ver: "internal"
