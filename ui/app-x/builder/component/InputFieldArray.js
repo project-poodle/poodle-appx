@@ -71,20 +71,9 @@ const InputFieldArray = ((props) => {
     label: {
       padding: theme.spacing(0, 0, 0),
     },
-    expressionSingleLine: {
+    expressionBox: {
       width: '100%',
-      height: theme.spacing(3),
-      padding: theme.spacing(0, 0),
-    },
-    expressionMultiLine: {
-      width: '100%',
-      height: theme.spacing(7),
-      padding: theme.spacing(0, 0),
-    },
-    expressionBlock: {
-      width: '100%',
-      height: theme.spacing(16),
-      padding: theme.spacing(0, 0),
+      padding: theme.spacing(0.625, 0, 0),
     },
     dummyTextField: {
       width: '100%',
@@ -156,7 +145,7 @@ const InputFieldArray = ((props) => {
   // set default values
   useEffect(() => {
     // console.log(`setValue [${name}]`, props.defaultValue)
-    setValue(name, props.defaultValue)
+    setValue(name, (props.defaultValue || []).map(row => ({value: row})))
   }, [props.defaultValue])
 
   // return
@@ -339,60 +328,64 @@ const InputFieldArray = ((props) => {
                             className={styles.itemControl}
                             error={!!_.get(errors, itemName)}
                             >
-                            <ControlledEditor
-                              /*
-                              className={
-                                (getValues(itemName)?.split(/\r\n|\r|\n/).length > 3)
-                                ? styles.expressionBlock
-                                : (getValues(itemName)?.split(/\r\n|\r|\n/).length > 1)
-                                  ? styles.expressionMultiLine
-                                  : styles.expressionSingleLine
-                              }
-                              */
-                              maxRows={15}
-                              language="javascript"
-                              theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
-                              options={{
-                                readOnly: !!props.disabled,
-                                // lineNumbers: 'off',
-                                lineNumbersMinChars: 0,
-                                wordWrap: 'on',
-                                wrappingIndent: 'deepIndent',
-                                scrollBeyondLastLine: false,
-                                wrappingStrategy: 'advanced',
-                                glyphMargin: false,
-                                folding: false,
-                                // lineDecorationsWidth: 0,
-                                renderLineHighlight: 'none',
-                                // snippetSuggestions: 'none',
-                                minimap: {
-                                  enabled: false
-                                },
-                                quickSuggestions: {
-                                  "other": false,
-                                  "comments": false,
-                                  "strings": false
-                                },
-                              }}
-                              value={innerProps.value}
-                              onFocus={() => {
-                                const newMonacoFocused = _.cloneDeep(monacoFocused)
-                                newMonacoFocused[itemName] = true
-                                setMonacoFocused(newMonacoFocused)
-                              }}
-                              onBlur={() => {
-                                const newMonacoFocused = _.cloneDeep(monacoFocused)
-                                newMonacoFocused[itemName] = false
-                                setMonacoFocused(newMonacoFocused)
-                              }}
-                              onChange={(ev, value) => {
-                                innerProps.onChange(value)
-                                if (!!props.callback) {
-                                  props.callback(value)
-                                }
-                              }}
+                            <Box
+                              className={styles.expressionBox}
                               >
-                            </ControlledEditor>
+                              <ControlledEditor
+                                /*
+                                className={
+                                  (getValues(itemName)?.split(/\r\n|\r|\n/).length > 3)
+                                  ? styles.expressionBlock
+                                  : (getValues(itemName)?.split(/\r\n|\r|\n/).length > 1)
+                                    ? styles.expressionMultiLine
+                                    : styles.expressionSingleLine
+                                }
+                                */
+                                maxRows={15}
+                                language="javascript"
+                                theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
+                                options={{
+                                  readOnly: !!props.disabled,
+                                  // lineNumbers: 'off',
+                                  lineNumbersMinChars: 0,
+                                  wordWrap: 'on',
+                                  wrappingIndent: 'deepIndent',
+                                  scrollBeyondLastLine: false,
+                                  wrappingStrategy: 'advanced',
+                                  glyphMargin: false,
+                                  folding: false,
+                                  // lineDecorationsWidth: 0,
+                                  renderLineHighlight: 'none',
+                                  // snippetSuggestions: 'none',
+                                  minimap: {
+                                    enabled: false
+                                  },
+                                  quickSuggestions: {
+                                    "other": false,
+                                    "comments": false,
+                                    "strings": false
+                                  },
+                                }}
+                                value={innerProps.value}
+                                onFocus={() => {
+                                  const newMonacoFocused = _.cloneDeep(monacoFocused)
+                                  newMonacoFocused[itemName] = true
+                                  setMonacoFocused(newMonacoFocused)
+                                }}
+                                onBlur={() => {
+                                  const newMonacoFocused = _.cloneDeep(monacoFocused)
+                                  newMonacoFocused[itemName] = false
+                                  setMonacoFocused(newMonacoFocused)
+                                }}
+                                onChange={(ev, value) => {
+                                  innerProps.onChange(value)
+                                  if (!!props.callback) {
+                                    props.callback(value)
+                                  }
+                                }}
+                                >
+                              </ControlledEditor>
+                            </Box>
                             <Input
                               // className={`${styles.dummyTextField} Mui-focused`}
                               className={`${styles.dummyTextField}`}

@@ -75,21 +75,6 @@ const InputField = ((props) => {
       width: '100%',
       padding: theme.spacing(0.625, 0, 0),
     },
-    expressionSingleLine: {
-      width: '100%',
-      height: theme.spacing(3),
-      padding: theme.spacing(0, 0),
-    },
-    expressionMultiLine: {
-      width: '100%',
-      height: theme.spacing(7),
-      padding: theme.spacing(0, 0),
-    },
-    expressionBlock: {
-      width: '100%',
-      height: theme.spacing(16),
-      padding: theme.spacing(0, 0),
-    },
     dummyTextField: {
       width: '100%',
       padding: theme.spacing(0, 0),

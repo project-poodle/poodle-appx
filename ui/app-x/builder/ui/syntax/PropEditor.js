@@ -432,9 +432,13 @@ const PropEditor = (props) => {
               setValue(k, thisNode.data[k])
             })
           } else {
-            // console.log(`setValue(${childSpec.name})`, thisNode.data[childSpec.name])
-            setValue(childSpec.name, thisNode.data[childSpec.name] === undefined ? '' : thisNode.data[childSpec.name])
-            // console.log(`getValues(${childSpec.name})`, getValues(childSpec.name))
+            if (!!childSpec.array) {
+              setValue(childSpec.name, thisNode.data[childSpec.name] === undefined ? [] : thisNode.data[childSpec.name])
+            } else {
+              // console.log(`setValue(${childSpec.name})`, thisNode.data[childSpec.name])
+              setValue(childSpec.name, thisNode.data[childSpec.name] === undefined ? '' : thisNode.data[childSpec.name])
+              // console.log(`getValues(${childSpec.name})`, getValues(childSpec.name))
+            }
           }
           // process childSpec._thisNode.input.kind : input/tabular
           if (childSpec._thisNode.input?.kind === 'input/tabular') {
@@ -1101,7 +1105,7 @@ const PropEditor = (props) => {
                         size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
-                        defaultValue={thisNode?.data[childSpec.name]}
+                        defaultValue={_.get(thisNode?.data, childSpec.name)}
                         childSpec={childSpec}
                         inputSpec={childSpec._thisNode?.input}
                         callback={d => {
@@ -1117,7 +1121,7 @@ const PropEditor = (props) => {
                         size="small"
                         className={styles.formControl}
                         disabled={!!disabled[childSpec.name]}
-                        defaultValue={thisNode?.data[childSpec.name]}
+                        defaultValue={_.get(thisNode?.data, childSpec.name)}
                         childSpec={childSpec}
                         inputSpec={childSpec._thisNode?.input}
                         callback={d => {
