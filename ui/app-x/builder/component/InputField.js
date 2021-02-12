@@ -73,7 +73,7 @@ const InputField = ((props) => {
     },
     expressionBox: {
       width: '100%',
-      padding: theme.spacing(0.75, 0, 0),
+      padding: theme.spacing(0.625, 0, 0),
     },
     expressionSingleLine: {
       width: '100%',
