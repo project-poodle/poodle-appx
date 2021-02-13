@@ -1102,7 +1102,7 @@ ui_component:
           _type: react/element
           style:
             padding:
-              data: theme.spacing(2, 4, 1)
+              data: theme.spacing(0, 4)
               _type: js/expression
             backgroundColor:
               data: theme.palette.background.default
@@ -1112,47 +1112,94 @@ ui_component:
               _type: appx/form
               onError: error => console.error(error)
               children:
-                - id: namespace
-                  name: app-x/core/InputText
-                  _type: appx/input/text
-                  label: Namespace
+                - name: "@material-ui/core.Box"
+                  _type: react/element
                   style:
                     padding:
-                      data: theme.spacing(2,0)
+                      data: theme.spacing(2, 0)
                       _type: js/expression
-                    maxWidth: 300
-                  required: true
-                  TextProps:
-                    size: small
-                    disabled: true
-                - id: ui_name
-                  name: app-x/core/InputText
-                  _type: appx/input/text
-                  label: UI App
-                  style:
-                    padding:
-                      data: theme.spacing(2,0)
-                      _type: js/expression
-                    maxWidth: 300
-                  required: true
-                  TextProps:
-                    size: small
-                    disabled: true
-                - id: ui_ver
-                  name: app-x/core/InputText
-                  _type: appx/input/text
-                  label: UI Version
-                  style:
-                    padding:
-                      data: theme.spacing(2,0)
-                      _type: js/expression
-                    maxWidth: 300
-                  required: true
-                  TextProps:
-                    size: small
-                    color: secondary
-                    margin: none
-                    disabled: true
+                  children:
+                    - name: antd.Row
+                      _type: react/element
+                      children:
+                        - name: antd.Col
+                          _type: react/element
+                          props:
+                            span: 12
+                          children:
+                            - id: namespace
+                              name: app-x/core/InputText
+                              _type: appx/input/text
+                              label: Namespace
+                              style:
+                                padding:
+                                  data: theme.spacing(1, 2, 1, 0)
+                                  _type: js/expression
+                                maxWidth: 300
+                              required: true
+                              TextProps:
+                                size: small
+                                disabled: true
+                        - name: antd.Col
+                          _type: react/element
+                          props:
+                            span: 12
+                          children:
+                            - id: ui_name
+                              name: app-x/core/InputText
+                              _type: appx/input/text
+                              label: UI App
+                              style:
+                                padding:
+                                  data: theme.spacing(1, 2, 1, 0)
+                                  _type: js/expression
+                                maxWidth: 300
+                              required: true
+                              TextProps:
+                                size: small
+                                disabled: true
+                    - name: antd.Row
+                      _type: react/element
+                      children:
+                        - name: antd.Col
+                          _type: react/element
+                          props:
+                            span: 12
+                          children:
+                            - id: ui_ver
+                              name: app-x/core/InputText
+                              _type: appx/input/text
+                              label: UI Version
+                              style:
+                                padding:
+                                  data: theme.spacing(1, 2, 1, 0)
+                                  _type: js/expression
+                                maxWidth: 300
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                                margin: none
+                                disabled: true
+                        - name: antd.Col
+                          _type: react/element
+                          props:
+                            span: 12
+                          children:
+                            - id: ui_deployment
+                              name: app-x/core/InputText
+                              _type: appx/input/text
+                              label: UI Deployment
+                              style:
+                                padding:
+                                  data: theme.spacing(1, 2, 1, 0)
+                                  _type: js/expression
+                                maxWidth: 300
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                                disabled: true
                 - id: ui_deployment_spec.apiMaps
                   name: app-x/core/InputTabular
                   _type: appx/input/tabular
@@ -1756,56 +1803,4 @@ ui_component:
                 Header: Method
                 accessor: api_method
               - id: api_endpoint
-                _type: appx/table/column
-                Header: Endpoint
-                accessor: api_endpoint
-              - id: update_time
-                Cell:
-                  data: >-
-                    (() => {
-                        try {
-                            const TimeAgo = $I("javascript-time-ago").default
-                            const locale = $I("javascript-time-ago/locale/en").default
-                            TimeAgo.addLocale(locale)
-                            const timeAgo = new TimeAgo("en-US")
-                            return timeAgo.format(Date.parse(value))
-                        } catch (error) {
-                            return error.message || String(error)
-                        }
-                    })()
-                  _type: js/expression
-                _type: appx/table/column
-                Header: Updated
-                accessor: update_time
-              - id: action
-                Cell:
-                  name: "@material-ui/core.Box"
-                  _type: react/element
-                  props:
-                    display: flex
-                    alignItems: center
-                    justifyContent: center
-                  children:
-                    - name: "@material-ui/core.IconButton"
-                      _type: react/element
-                      props:
-                        size: small
-                      children:
-                        - name: "@material-ui/icons.EditOutlined"
-                          _type: react/element
-                    - name: "@material-ui/core.IconButton"
-                      _type: react/element
-                      props:
-                        size: small
-                      children:
-                        - name: "@material-ui/icons.DeleteOutline"
-                          _type: react/element
-                _type: appx/table/column
-                Header: Action
-      ...apiList:
-        init: "[]"
-        name: apiList
-        _type: react/state
-        _order: 1
-        setter: setApiList
-
+                _type: appx/table/c
