@@ -1079,7 +1079,7 @@ ui_component:
                     - data: row
                       _type: js/expression
                     - body:
-                        - console.log(data)
+                        - console.log('submitData', data)
                       _type: js/function
                       params:
                         - data
@@ -1112,7 +1112,7 @@ ui_component:
               _type: appx/form
               onError: error => console.error(error)
               children:
-                - id: apiMaps
+                - id: ui_deployment_spec.apiMaps
                   name: app-x/core/InputTabular
                   _type: appx/input/tabular
                   label: API Maps
@@ -1153,7 +1153,7 @@ ui_component:
                       TextProps:
                         size: small
                   actionSpan: 1
-                - id: comment
+                - id: ui_deployment_spec.comment
                   name: app-x/core/InputText
                   _type: appx/input/text
                   label: Comment
@@ -1201,7 +1201,7 @@ ui_component:
                             - data: actionName
                               _type: js/expression
               onSubmit: onSubmit
-              defaultValue: row.original.ui_deployment_spec
+              defaultValue: row.original
   - namespace: sys
     ui_name: ui
     ui_ver: internal

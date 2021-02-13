@@ -75,6 +75,8 @@ const InputTabular = (props) => {
     name: propsId,
   })
 
+  // console.log(`InputTabular propsId [${propsId}]`, getValues(), _.get(getValues(), propsId))
+
   // getColumnDefaultValue
   function getColumnDefaultValue(column) {
     if (column?.props?.defaultValue !== undefined) {
