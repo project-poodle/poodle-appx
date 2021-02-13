@@ -1084,6 +1084,7 @@ ui_component:
                       params:
                         - data
                     - Update
+                    - true
       ...deployments:
         init: "[]"
         name: deployments
@@ -1097,12 +1098,13 @@ ui_component:
           - row
           - onSubmit
           - actionName
+          - disableKeys
         return:
           name: "@material-ui/core.Box"
           _type: react/element
           style:
             padding:
-              data: theme.spacing(0, 4)
+              data: theme.spacing(1, 4)
               _type: js/expression
             backgroundColor:
               data: theme.palette.background.default
@@ -1139,7 +1141,9 @@ ui_component:
                               required: true
                               TextProps:
                                 size: small
-                                disabled: true
+                                disabled:
+                                  data: "!!disableKeys"
+                                  _type: js/expression
                         - name: antd.Col
                           _type: react/element
                           props:
@@ -1157,7 +1161,9 @@ ui_component:
                               required: true
                               TextProps:
                                 size: small
-                                disabled: true
+                                disabled:
+                                  data: "!!disableKeys"
+                                  _type: js/expression
                     - name: antd.Row
                       _type: react/element
                       children:
@@ -1180,7 +1186,9 @@ ui_component:
                                 size: small
                                 color: secondary
                                 margin: none
-                                disabled: true
+                                disabled:
+                                  data: "!!disableKeys"
+                                  _type: js/expression
                         - name: antd.Col
                           _type: react/element
                           props:
@@ -1199,7 +1207,9 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
-                                disabled: true
+                                disabled:
+                                  data: "!!disableKeys"
+                                  _type: js/expression
                 - id: ui_deployment_spec.apiMaps
                   name: app-x/core/InputTabular
                   _type: appx/input/tabular
@@ -1789,18 +1799,4 @@ ui_component:
             data: styles.root
             _type: js/expression
         _order: 5
-        children:
-          - data: apiList
-            name: app-x/core/Table
-            _type: appx/table
-            columns:
-              - id: app_name
-                _type: appx/table/column
-                Header: App Name
-                accessor: app_name
-              - id: api_method
-                _type: appx/table/column
-                Header: Method
-                accessor: api_method
-              - id: api_endpoint
-                _type: appx/table/c
+ 

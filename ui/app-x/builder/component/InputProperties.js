@@ -158,6 +158,30 @@ const InputProperties = props => {
       {
         fields.map((item, index) => {
           const propType = watch(`${props.name}[${index}]._type`)
+          const value = _.get(getValues(), `${props.name}[${index}].value`)
+          if (
+            (
+              propType === 'js/string'
+              || propType === 'js/import'
+              || propType === 'js/expression'
+            )
+            &&
+            (typeof value !== 'string')
+          ) {
+            setValue(`${props.name}[${index}].value`, String(value || ''))
+          } else if (
+            propType === 'js/number'
+            &&
+            (typeof value !== 'number')
+          ) {
+            setValue(`${props.name}[${index}].value`, Number(value || 0))
+          } else if (
+            propType === 'js/boolean'
+            &&
+            (typeof value !== 'boolean')
+          ) {
+            setValue(`${props.name}[${index}].value`, Boolean(value || false))
+          }
           return (
             <Box key={item.id} display="flex" className={styles.formControl}>
               <Controller
@@ -267,7 +291,7 @@ const InputProperties = props => {
                     <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      defaultValue={item?.value}
+                      defaultValue={Boolean(item?.value || false)}
                       size="small"
                       margin="none"
                       className={styles.formControl}
@@ -289,7 +313,7 @@ const InputProperties = props => {
                     <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      defaultValue={item?.value}
+                      defaultValue={String(item?.value || '')}
                       size="small"
                       margin="none"
                       className={styles.formControl}
@@ -312,7 +336,7 @@ const InputProperties = props => {
                     <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      defaultValue={item?.value}
+                      defaultValue={Number(item?.value || 0)}
                       size="small"
                       margin="none"
                       className={styles.formControl}
@@ -336,7 +360,7 @@ const InputProperties = props => {
                     <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      defaultValue={item?.value}
+                      defaultValue={String(item?.value || '')}
                       size="small"
                       margin="none"
                       className={styles.formControl}
@@ -359,7 +383,7 @@ const InputProperties = props => {
                     <InputField
                       key='value'
                       name={`${props.name}[${index}].value`}
-                      defaultValue={item?.value}
+                      defaultValue={String(item?.value || '')}
                       size="small"
                       margin="none"
                       className={styles.formControl}
