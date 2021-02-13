@@ -71,12 +71,7 @@ function _get_app_auth_base_path(namespace, app_name) {
     throw new Error(`ERROR: rootPath missing in appx.API_MAPS[${namespace}][${app_name}]`)
   }
 
-  let basePath = apiMap['rootPath']
-
-  // app_deployment is optional
-  if ('app_deployment' in apiMap) {
-    basePath += '/' + apiMap.namespace + '/' + apiMap.app_name + '/' + apiMap.app_deployment
-  }
+  let basePath = apiMap['rootPath'] + '/' + apiMap.namespace + '/' + apiMap.app_name + '/'
 
   basePath = ('/' + basePath + '/').replace(/\/+/g, '/')
 
@@ -190,6 +185,7 @@ function _get_token_by_app(namespace, app_name, callback, handler) {
         }
       },
       err => {
+        console.error(err)
         if (handler) {
           handler(err)
         }
@@ -268,13 +264,13 @@ const login = (realm, username, password, callback, handler) => {
       }
     })
     .catch((err) => {
-      console.log(err.stack)
+      console.error(err)
       if (err.response && 'status' in err.response && err.response.status === 401) {
         _handle_logout(realm)
       }
       let res = {
         status: 'error',
-        message: err.toString(),
+        message: err.message || err.toString(),
         data: err.response,
       }
       if (!!err.response?.data) {
@@ -325,13 +321,13 @@ const logout = (realm, callback, handler) => {
       }
     })
     .catch((err) => {
-      console.log(err.stack)
+      console.error(err)
       if ('status' in err.response && err.response.status === 401) {
         _handle_logout(realm)
       }
       let res = {
         status: 'error',
-        message: err.toString(),
+        message: err.message || err.toString(),
         data: err.response,
       }
       if (!!err.response?.data) {
@@ -347,6 +343,7 @@ const logout = (realm, callback, handler) => {
 const lookup_realm = (namespace, app_name, callback, handler) => {
   // get base path
   const basePath = _get_app_auth_base_path(namespace, app_name)
+  // console.log(`_get_app_auth_base_path`, namespace, app_name, basePath)
   return axios
     .get(
       basePath + 'realm'
@@ -370,10 +367,10 @@ const lookup_realm = (namespace, app_name, callback, handler) => {
       }
     })
     .catch((err) => {
-      console.log(err.stack)
+      console.error(err)
       let res = {
         status: 'error',
-        message: err.toString(),
+        message: err.message || err.toString(),
         data: err.response,
       }
       if (!!err.response?.data) {
@@ -447,13 +444,13 @@ const me = (namespace, app_name, callback, handler) => {
           }
         })
         .catch((err) => {
-          console.log(err.stack)
+          console.error(err)
           if (err.response && 'status' in err.response && err.response.status === 401) {
             _handle_logout(realm)
           }
           let res = {
             status: 'error',
-            message: err.toString(),
+            message: err.message || err.toString(),
             data: err.response,
           }
           if (!!err.response?.data) {
@@ -465,10 +462,10 @@ const me = (namespace, app_name, callback, handler) => {
         })
     },
     err => {
-      console.log(err.stack)
+      console.error(err)
       let res = {
         status: 'error',
-        message: err.toString(),
+        message: err.message || err.toString(),
         data: err.response,
       }
       if (!!err.response?.data) {
@@ -577,10 +574,10 @@ const request = (namespace, app_name, conf, callback, handler) => {
         })
     },
     err => {
-      console.log(err.stack)
-      notification['error']({
+      console.error(err)
+      notification.error({
         message: 'API ERROR',
-        description: String(err),
+        description: err.message || String(err),
         placement: 'bottomLeft',
       })
     }
