@@ -1028,20 +1028,30 @@ ui_component:
                     alignItems: center
                     justifyContent: center
                   children:
-                    - name: "@material-ui/core.IconButton"
+                    - name: "@material-ui/core.Tooltip"
                       _type: react/element
                       props:
-                        size: small
+                        title: Clone
                       children:
-                        - name: "@material-ui/icons.EditOutlined"
+                        - name: "@material-ui/core.IconButton"
                           _type: react/element
-                    - name: "@material-ui/core.IconButton"
+                          props:
+                            size: small
+                          children:
+                            - name: "@material-ui/icons.AddToPhotosOutlined"
+                              _type: react/element
+                    - name: "@material-ui/core.Tooltip"
                       _type: react/element
                       props:
-                        size: small
+                        title: Delete
                       children:
-                        - name: "@material-ui/icons.DeleteOutline"
+                        - name: "@material-ui/core.IconButton"
                           _type: react/element
+                          props:
+                            size: small
+                          children:
+                            - name: "@material-ui/icons.DeleteOutline"
+                              _type: react/element
                 _type: appx/table/column
                 Header: Action
             toolbar:
@@ -1117,23 +1127,31 @@ ui_component:
                       _type: appx/input/text
                       label: Namespace
                       required: true
+                      TextProps:
+                        size: small
                     - id: app_name
                       name: app-x/core/InputText
                       _span: 5
                       _type: appx/input/text
                       label: App Name
                       required: true
+                      TextProps:
+                        size: small
                     - id: rootPath
                       name: app-x/core/InputText
                       _span: 8
                       _type: appx/input/text
                       label: Root Path
                       required: true
+                      TextProps:
+                        size: small
                     - id: app_deployment
                       name: app-x/core/InputText
                       _span: 5
                       _type: appx/input/text
                       label: App Deployment
+                      TextProps:
+                        size: small
                   actionSpan: 1
                 - id: comment
                   name: app-x/core/InputText
@@ -1143,6 +1161,8 @@ ui_component:
                     padding:
                       data: theme.spacing(2, 0)
                       _type: js/expression
+                  TextProps:
+                    size: small
                 - name: "@material-ui/core.Box"
                   _type: react/element
                   props:
