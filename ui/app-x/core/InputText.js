@@ -84,6 +84,7 @@ const InputText = (props) => {
             name={propsId}
             style={{width:'100%'}}
             error={!!_.get(errors, propsId)}
+            disabled={!!props.TextProps?.disabled}
             >
             {
               !!props.label
@@ -105,6 +106,7 @@ const InputText = (props) => {
             <AutoComplete
               name={propsId}
               style={{width:'100%'}}
+              disabled={!!props.TextProps?.disabled}
               options={_searchOptions}
               value={innerProps.value}
               onChange={data => {

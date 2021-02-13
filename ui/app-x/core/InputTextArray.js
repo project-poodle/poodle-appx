@@ -118,10 +118,13 @@ const InputTextArray = (props) => {
                     name={`${propsId}[${index}].value`}
                     style={{width:'100%'}}
                     error={!!_.get(errors, name)}
+                    disabled={!!props.TextProps?.disabled}
                     >
                     <AutoComplete
                       options={_searchOptions}
                       name={`${propsId}[${index}].value`}
+                      disabled={!!props.TextProps?.disabled}
+                      options={_searchOptions}
                       value={innerProps.value}
                       onChange={data => {
                         innerProps.onChange(data)

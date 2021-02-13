@@ -1112,6 +1112,47 @@ ui_component:
               _type: appx/form
               onError: error => console.error(error)
               children:
+                - id: namespace
+                  name: app-x/core/InputText
+                  _type: appx/input/text
+                  label: Namespace
+                  style:
+                    padding:
+                      data: theme.spacing(2,0)
+                      _type: js/expression
+                    maxWidth: 300
+                  required: true
+                  TextProps:
+                    size: small
+                    disabled: true
+                - id: ui_name
+                  name: app-x/core/InputText
+                  _type: appx/input/text
+                  label: UI App
+                  style:
+                    padding:
+                      data: theme.spacing(2,0)
+                      _type: js/expression
+                    maxWidth: 300
+                  required: true
+                  TextProps:
+                    size: small
+                    disabled: true
+                - id: ui_ver
+                  name: app-x/core/InputText
+                  _type: appx/input/text
+                  label: UI Version
+                  style:
+                    padding:
+                      data: theme.spacing(2,0)
+                      _type: js/expression
+                    maxWidth: 300
+                  required: true
+                  TextProps:
+                    size: small
+                    color: secondary
+                    margin: none
+                    disabled: true
                 - id: ui_deployment_spec.apiMaps
                   name: app-x/core/InputTabular
                   _type: appx/input/tabular
@@ -1129,6 +1170,7 @@ ui_component:
                       required: true
                       TextProps:
                         size: small
+                        color: secondary
                     - id: app_name
                       name: app-x/core/InputText
                       _span: 5
@@ -1137,6 +1179,7 @@ ui_component:
                       required: true
                       TextProps:
                         size: small
+                        color: secondary
                     - id: rootPath
                       name: app-x/core/InputText
                       _span: 8
@@ -1145,6 +1188,7 @@ ui_component:
                       required: true
                       TextProps:
                         size: small
+                        color: secondary
                     - id: app_deployment
                       name: app-x/core/InputText
                       _span: 5
@@ -1152,6 +1196,7 @@ ui_component:
                       label: App Deployment
                       TextProps:
                         size: small
+                        color: secondary
                   actionSpan: 1
                 - id: ui_deployment_spec.comment
                   name: app-x/core/InputText
@@ -1163,6 +1208,7 @@ ui_component:
                       _type: js/expression
                   TextProps:
                     size: small
+                    color: secondary
                 - name: "@material-ui/core.Box"
                   _type: react/element
                   props:
@@ -1418,6 +1464,7 @@ ui_component:
                             TextProps:
                               size: small
                               color: secondary
+                              disabled: true
                           - id: arr
                             name: app-x/core/InputArrayProvider
                             _type: appx/input/array

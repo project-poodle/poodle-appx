@@ -73,6 +73,7 @@ const InputSwitch = (props) => {
             name={propsId}
             style={{width:'100%'}}
             error={!!_.get(errors, propsId)}
+            disabled={!!props.SwitchProps?.disabled}
             >
             {
               !!props.label
