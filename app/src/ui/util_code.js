@@ -2456,10 +2456,20 @@ function appx_api(js_context, ref, input) {
     }
   })()
 
-  // process input.data
-  const data = (() => {
-    if (!input.data) {
-      return t.nullLiteral()
+  // process input.params
+  const params = (() => {
+    if (!input.params) {
+      return t.objectExpression([])
+    } else if (isPrimitive(input.params)) {
+      return _js_parse_expression(
+        js_context,
+        String(input.params),
+        {
+          plugins: [
+            'jsx', // support jsx
+          ]
+        }
+      )
     } else {
       return js_process(
         {
@@ -2468,7 +2478,34 @@ function appx_api(js_context, ref, input) {
           CONTEXT_STATEMENT: false,
         },
         null,
-        input.prep
+        input.params
+      )
+    }
+  })()
+
+  // process input.data
+  const data = (() => {
+    if (!input.data) {
+      return t.nullLiteral()
+    } else if (isPrimitive(input.data)) {
+      return _js_parse_expression(
+        js_context,
+        String(input.data),
+        {
+          plugins: [
+            'jsx', // support jsx
+          ]
+        }
+      )
+    } else {
+      return js_process(
+        {
+          ...js_context,
+          CONTEXT_JSX: false,
+          CONTEXT_STATEMENT: false,
+        },
+        null,
+        input.data
       )
     }
   })()

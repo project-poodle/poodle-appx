@@ -79,20 +79,6 @@ export const appx_table = {
       },
     },
     {
-      name: 'columns',
-      desc: 'Columns',
-      array: true,
-      types: [
-        {
-          kind: 'type',
-          data: 'appx/table/column'
-        },
-      ],
-      _childNode: {
-        types: 'inherit',
-      },
-    },
-    {
       name: 'toolbar',
       desc: 'Toolbar',
       types: [
@@ -120,6 +106,20 @@ export const appx_table = {
           name: 'row',
           desc: 'row data - e.g. row.original'
         }
+      ],
+      _childNode: {
+        types: 'inherit',
+      },
+    },
+    {
+      name: 'columns',
+      desc: 'Columns',
+      array: true,
+      types: [
+        {
+          kind: 'type',
+          data: 'appx/table/column'
+        },
       ],
       _childNode: {
         types: 'inherit',

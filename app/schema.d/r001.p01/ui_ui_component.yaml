@@ -1079,7 +1079,27 @@ ui_component:
                     - data: row
                       _type: js/expression
                     - body:
-                        - console.log('submitData', data)
+                        - data: |-
+                            {
+                              ui_ver: data.ui_ver,
+                              ui_deployment_spec: data.ui_deployment_spec
+                            }
+                          _type: appx/api
+                          method: put
+                          params:
+                            ui_name:
+                              data: data.ui_name
+                              _type: js/expression
+                            namespace:
+                              data: data.namespace
+                              _type: js/expression
+                            ui_deployment:
+                              data: data.ui_deployment
+                              _type: js/expression
+                          result: console.log(result)
+                          app_name: appx
+                          endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
+                          namespace: sys
                       _type: js/function
                       params:
                         - data
@@ -1756,3 +1776,4 @@ ui_component:
                     _type: js/expression
                 children:
                   - c
+
