@@ -195,7 +195,9 @@ async function run() {
             }
 
             // success, exit 0
+            // setTimeout(() => {
             process.exit(0)
+            // }, 500)
 
         } catch (error) {
 
