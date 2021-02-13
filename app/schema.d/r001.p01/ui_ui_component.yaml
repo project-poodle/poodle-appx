@@ -942,6 +942,9 @@ ui_component:
               theme:
                 name: app-x/theme
                 _type: js/import
+      theme:
+        _type: mui/theme
+        _order: 3
       styles:
         root:
           color:
@@ -953,7 +956,7 @@ ui_component:
             data: theme.palette.background.paper
             _type: js/expression
         _type: mui/style
-        _order: 3
+        _order: 4
       effects:
         body:
           - _type: appx/api
@@ -980,15 +983,11 @@ ui_component:
           className:
             data: styles.root
             _type: js/expression
-        _order: 4
+        _order: 6
         children:
           - data: deployments
             name: app-x/core/Table
             _type: appx/table
-            props:
-              className:
-                data: styles.root
-                _type: js/expression
             columns:
               - id: namespace
                 _type: appx/table/column
@@ -1054,23 +1053,135 @@ ui_component:
             rowPanel:
               name: "@material-ui/core.Box"
               _type: react/element
+              props:
+                width: 100%
+              style:
+                border: 1
+                borderTop: "0"
+                borderColor:
+                  data: theme.palette.divider
+                  _type: js/expression
+                borderStyle: solid
               children:
-                - name: "@material-ui/core.Typography"
-                  _type: react/element
-                  children:
-                    - data: |-
-                        JSON.stringify(
-                            row.original.ui_deployment_spec.apiMaps,
-                            null,
-                            2
-                        )
+                - func: renderRowPanel
+                  _type: js/call
+                  params:
+                    - data: row
                       _type: js/expression
+                    - body:
+                        - console.log(data)
+                      _type: js/function
+                      params:
+                        - data
+                    - Update
       ...deployments:
         init: "[]"
         name: deployments
         _type: react/state
         _order: 1
         setter: setDeployments
+      renderRowPanel:
+        _type: js/function
+        _order: 5
+        params:
+          - row
+          - onSubmit
+          - actionName
+        return:
+          name: "@material-ui/core.Box"
+          _type: react/element
+          style:
+            padding:
+              data: theme.spacing(2, 4, 1)
+              _type: js/expression
+            backgroundColor:
+              data: theme.palette.background.default
+              _type: js/expression
+          children:
+            - name: app-x/core/Form
+              _type: appx/form
+              onError: error => console.error(error)
+              children:
+                - id: apiMaps
+                  name: app-x/core/InputTabular
+                  _type: appx/input/tabular
+                  label: API Maps
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
+                      _type: js/expression
+                  columns:
+                    - id: namespace
+                      name: app-x/core/InputText
+                      _span: 5
+                      _type: appx/input/text
+                      label: Namespace
+                      required: true
+                    - id: app_name
+                      name: app-x/core/InputText
+                      _span: 5
+                      _type: appx/input/text
+                      label: App Name
+                      required: true
+                    - id: rootPath
+                      name: app-x/core/InputText
+                      _span: 8
+                      _type: appx/input/text
+                      label: Root Path
+                      required: true
+                    - id: app_deployment
+                      name: app-x/core/InputText
+                      _span: 5
+                      _type: appx/input/text
+                      label: App Deployment
+                  actionSpan: 1
+                - id: comment
+                  name: app-x/core/InputText
+                  _type: appx/input/text
+                  label: Comment
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
+                      _type: js/expression
+                - name: "@material-ui/core.Box"
+                  _type: react/element
+                  props:
+                    display: flex
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
+                      _type: js/expression
+                  children:
+                    - name: "@material-ui/core.Box"
+                      _type: react/element
+                      props:
+                        flexGrow: "1"
+                    - name: "@material-ui/core.Button"
+                      _type: react/element
+                      props:
+                        color: secondary
+                        variant: outlined
+                      style:
+                        margin:
+                          data: theme.spacing(0, 2)
+                          _type: js/expression
+                      children:
+                        - Cancel
+                    - name: app-x/core/InputSubmit
+                      _type: appx/input/submit
+                      children:
+                        - name: "@material-ui/core.Button"
+                          _type: react/element
+                          props:
+                            color: secondary
+                            variant: contained
+                          style:
+                            boxShadow: none
+                          children:
+                            - data: actionName
+                              _type: js/expression
+              onSubmit: onSubmit
+              defaultValue: row.original.ui_deployment_spec
   - namespace: sys
     ui_name: ui
     ui_ver: internal
