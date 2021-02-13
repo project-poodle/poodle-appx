@@ -1,5 +1,6 @@
 const fs = require('fs');
 const mysql = require('mysql');
+const YAML = require('yaml');
 const { ArgumentParser } = require('argparse');
 
 const DEFAULT_MAX_RETRIES = 9
@@ -17,8 +18,10 @@ parser.add_argument('-c', '--conf',         { help: 'mysql config file', require
 parser.add_argument('-f', '--filepath',     { help: 'mysql command(s) filepath' });
 parser.add_argument('-e', '--execute',      { help: 'execute mysql command line' });
 parser.add_argument('-p', '--print',        { action: 'store_true', help: 'print command' });
-parser.add_argument('-r', '--result',       { action: 'store_true', help: 'print results' });
-parser.add_argument('-y', '--max_retries',  { help: 'max retry count' });
+parser.add_argument('-j', '--json',         { action: 'store_true', help: 'print JSON results' });
+parser.add_argument('-y', '--yaml',         { action: 'store_true', help: 'print YAML results' });
+parser.add_argument('-b', '--top_obj',      { help: 'top object for results' });
+parser.add_argument('-r', '--max_retries',  { help: 'max retry count' });
 
 args = parser.parse_args();
 
@@ -54,14 +57,13 @@ if (args.filepath == undefined && args.execute == undefined) {
     process.exit(1)
 }
 
-
 if (!fs.existsSync(args.conf)) {
     console.error("ERROR: mysql config file do not exist [" + args.conf + "] !")
     process.exit(1)
 }
 
 let mysql_conf = JSON.parse(fs.readFileSync(args.conf, 'utf8'))
-// console.log(mysql_conf)
+// console.error(mysql_conf)
 
 ////////////////////////////////////////////////////////////////////////////////
 // db connection
@@ -146,16 +148,33 @@ async function run() {
                         console.log(`INFO: success! [${command}]`)
                     }
 
-                    // print result
-                    if (args.result) {
-                        console.log(JSON.stringify(results, null, 4))
+                    // print json result
+                    if (args.json) {
+                        if (args.top_obj) {
+                          const output = {}
+                          output[args.top_obj] = results
+                          console.log(JSON.stringify(output, null, 2))
+                        } else {
+                          console.log(JSON.stringify(results, null, 2))
+                        }
+                    }
+
+                    // print yaml result
+                    if (args.yaml) {
+                        if (args.top_obj) {
+                          const output = {}
+                          output[args.top_obj] = results
+                          console.log(YAML.stringify(output, null, 2))
+                        } else {
+                          console.log(YAML.stringify(results, null, 2))
+                        }
                     }
 
                 } catch (error) {
 
                     if (error.fatal) {
                         // connection error, retry
-                        // console.log(error)
+                        // console.error(error)
                         throw error
 
                     } else {
@@ -167,7 +186,7 @@ async function run() {
 
             try {
               const end = async function() {
-                // console.log(`end`)
+                // console.error(`end`)
                 conn.end()
               }
               end()

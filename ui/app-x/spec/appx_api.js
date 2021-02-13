@@ -16,6 +16,7 @@ export const appx_api = {
 
   type: 'appx/api',
   desc: 'API',
+  _expand: true,
   _effects: [
     {
       context: [ "add", "move", "editor" ],
@@ -100,6 +101,22 @@ export const appx_api = {
           options: 'validation.valid_api_endpoints()',
           optionsOnly: false,
         },
+      },
+    },
+    {
+      name: 'params',
+      desc: 'Parameters',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties'
+        }
       },
     },
     {

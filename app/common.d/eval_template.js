@@ -61,36 +61,22 @@ let variables = {
 
         "TO_JSON": function() {
 
-            let process = function(data, depth) {
-
-                if (typeof data == null || typeof data == "undefined") {
-                    return 'null';
-                } else if (typeof data == "number") {
-                    return data.toString()
-                } else if (typeof data == "boolean") {
-                    return data.toString()
-                } else if (typeof data == "string") {
-                    return '"' + data.replace(/"/g, '\\"') + '"'
-                } else if (Array.isArray(data) || (data instanceof Array)) {
-                    let results = []
-                    data.forEach((value) => {
-                        results.push(process(value, depth+1))
-                    })
-                    return '[ ' + results.join(', ') + ' ]'
-                } else {
-                    let results = []
-                    Object.keys(data).forEach((key) => {
-                        results.push('"' + key + '": ' + process(data[key], depth+1))
-                    })
-                    return '{ ' + results.join(', ') + ' }'
-                }
-            }
-
             return function(text, render) {
                 // console.log(`this`, this, (typeof this), Array.isArray(this), (typeof this.valueOf()), Object.keys(this))
-                const result =  process(this, 0)
+                // const result =  process(this, 0)
+                const result = JSON.stringify(this)
                 // console.log(`result`, result)
                 return result
+            }
+        },
+
+        "TO_ESCAPE_JSON": function() {
+
+            return function(text, render) {
+
+                const result = JSON.stringify(this)
+
+                return result.replace(/\\/g, "\\\\").replace(/'/g, "\\'")
             }
         },
 

@@ -644,7 +644,7 @@ INSERT INTO
     (
         '{{{meta_name}}}',
         '{{{meta_key}}}',
-        {{#meta_info}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/meta_info}}
+        '{{#meta_info}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/meta_info}}'
     )
     ON DUPLICATE KEY UPDATE
         meta_info=VALUES(meta_info);
@@ -666,7 +666,7 @@ INSERT INTO
     (
         '{{{realm}}}',
         {{{realm_key}}},
-        {{#realm_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_spec}}
+        '{{#realm_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/realm_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         realm_key=VALUES(realm_key),
@@ -690,7 +690,7 @@ INSERT INTO
         '{{{realm}}}',
         '{{{username}}}',
         {{{password}}},
-        {{#user_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/user_spec}}
+        '{{#user_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/user_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         password=VALUES(password),
@@ -714,7 +714,7 @@ INSERT INTO
         '{{{realm}}}',
         '{{{module_name}}}',
         '{{{module_pattern}}}',
-        {{#module_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/module_spec}}
+        '{{#module_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/module_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         module_pattern=VALUES(module_pattern),
@@ -738,7 +738,7 @@ INSERT INTO
         '{{{namespace}}}',
         '{{{app_name}}}',
         '{{{realm}}}',
-        {{#realm_app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/realm_app_spec}}
+        '{{#realm_app_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/realm_app_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         realm=values(realm),
@@ -766,7 +766,7 @@ INSERT INTO
         '{{{role_name}}}',
         '{{{grant_type}}}',
         '{{{grant_name}}}',
-        {{#grant_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/grant_spec}}
+        '{{#grant_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/grant_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         grant_spec=VALUES(grant_spec);
@@ -791,7 +791,7 @@ INSERT INTO
         '{{{app_name}}}',
         '{{{role_name}}}',
         '{{{auth_func_name}}}',
-        {{#auth_func_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/auth_func_spec}}
+        '{{#auth_func_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/auth_func_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         auth_func_spec=VALUES(auth_func_spec);
@@ -814,7 +814,7 @@ INSERT INTO
         '{{{namespace}}}',
         '{{{owner_realm}}}',
         '{{{owner_name}}}',
-        {{#namespace_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/namespace_spec}}
+        '{{#namespace_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/namespace_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         owner_realm=VALUES(owner_realm),
@@ -839,7 +839,7 @@ INSERT INTO
         '{{{namespace}}}',
         '{{{app_name}}}',
         '{{{app_ver}}}',
-        {{#app_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_spec}}
+        '{{#app_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/app_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         app_spec=VALUES(app_spec);
@@ -864,7 +864,7 @@ INSERT INTO
         '{{{app_name}}}',
         '{{{app_runtime}}}',
         '{{{app_ver}}}',
-        {{#app_runtime_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_runtime_spec}}
+        '{{#app_runtime_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/app_runtime_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         app_ver=VALUES(app_ver),
@@ -894,7 +894,7 @@ INSERT INTO
         '{{{app_runtime}}}',
         '{{{app_ver}}}',
         '{{{app_rev}}}',
-        {{#app_deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/app_deployment_spec}}
+        '{{#app_deployment_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/app_deployment_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         app_runtime=VALUES(app_runtime),
@@ -924,7 +924,7 @@ INSERT INTO
         '{{{app_ver}}}',
         '{{{obj_name}}}',
         '{{{obj_type}}}',
-        {{#obj_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/obj_spec}}
+        '{{#obj_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/obj_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         obj_type=VALUES(obj_type),
@@ -952,7 +952,7 @@ INSERT INTO
         '{{{app_ver}}}',
         '{{{obj_name}}}',
         '{{{attr_name}}}',
-        {{#attr_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/attr_spec}}
+        '{{#attr_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/attr_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         attr_spec=VALUES(attr_spec);
@@ -981,7 +981,7 @@ INSERT INTO
         '{{{app_rev}}}',
         '{{{obj_name}}}',
         '{{{objn_name}}}',
-        {{#relation_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/relation_spec}}
+        '{{#relation_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/relation_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         relation_spec=VALUES(relation_spec);
@@ -1012,7 +1012,7 @@ INSERT INTO
         '{{{obj_name}}}',
         '{{{api_method}}}',
         '{{{api_endpoint}}}',
-        {{#api_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/api_spec}}
+        '{{#api_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/api_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         api_spec=VALUES(api_spec);
@@ -1035,7 +1035,7 @@ INSERT INTO
         '{{{namespace}}}',
         '{{{ui_name}}}',
         '{{{ui_ver}}}',
-        {{#ui_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_spec}}
+        '{{#ui_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/ui_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         ui_spec=VALUES(ui_spec);
@@ -1060,7 +1060,7 @@ INSERT INTO
         '{{{ui_name}}}',
         '{{{ui_deployment}}}',
         '{{{ui_ver}}}',
-        {{#ui_deployment_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_deployment_spec}}
+        '{{#ui_deployment_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/ui_deployment_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         ui_deployment_spec=VALUES(ui_deployment_spec);
@@ -1087,7 +1087,7 @@ INSERT INTO
         '{{{ui_ver}}}',
         '{{{ui_component_name}}}',
         '{{{ui_component_type}}}',
-        {{#ui_component_spec}}{{#APPX.TO_MYSQL_JSON}}{{/APPX.TO_MYSQL_JSON}}{{/ui_component_spec}}
+        '{{#ui_component_spec}}{{#APPX.TO_ESCAPE_JSON}}{{/APPX.TO_ESCAPE_JSON}}{{/ui_component_spec}}'
     )
     ON DUPLICATE KEY UPDATE
         ui_component_type=VALUES(ui_component_type),
