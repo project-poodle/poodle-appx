@@ -1523,8 +1523,8 @@ ui_component:
                               color: secondary
                               disabled: true
                           - id: arr
-                            name: app-x/core/InputArrayProvider
-                            _type: appx/input/array
+                            name: app-x/core/InputCollection
+                            _type: appx/input/collection
                             render:
                               name: "@material-ui/core.Box"
                               _type: react/element
@@ -1799,4 +1799,3 @@ ui_component:
             data: styles.root
             _type: js/expression
         _order: 5
- 

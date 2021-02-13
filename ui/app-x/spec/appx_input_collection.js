@@ -3,12 +3,12 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: appx/input/array                            (~jsx|~expression)
+// type: appx/input/collection                       (~jsx|~expression)
 // name:                     # name of input         (:string)
 // id:                       # id of input           (:string)
-export const appx_input_array = {
+export const appx_input_collection = {
 
-  type: 'appx/input/array',
+  type: 'appx/input/collection',
   desc: 'Input Array',
   template: {
     kind: 'react/element',
@@ -115,4 +115,4 @@ export const appx_input_array = {
   ]
 }
 
-export default appx_input_array
+export default appx_input_collection

@@ -23,7 +23,7 @@ import _ from 'lodash'
 import InputProvider from 'app-x/core/InputProvider'
 
 // input array
-const InputArrayProvider = (props) => {
+const InputCollection = (props) => {
   // useFormContext
   const formProps = useFormContext()
   // props
@@ -97,12 +97,12 @@ const InputArrayProvider = (props) => {
   )
 }
 
-InputArrayProvider.propTypes = {
+InputCollection.propTypes = {
   id: PropTypes.string.isRequired,
   itemPanel: PropTypes.func,
   render: PropTypes.func,
 }
 
-InputArrayProvider.appxType = 'appx/input/array'
+InputCollection.appxType = 'appx/input/array'
 
-export default InputArrayProvider
+export default InputCollection
