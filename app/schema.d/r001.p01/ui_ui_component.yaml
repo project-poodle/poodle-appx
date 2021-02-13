@@ -1279,17 +1279,20 @@ ui_component:
                       _type: react/element
                       props:
                         flexGrow: "1"
-                    - name: "@material-ui/core.Button"
-                      _type: react/element
-                      props:
-                        color: secondary
-                        variant: outlined
-                      style:
-                        margin:
-                          data: theme.spacing(0, 2)
-                          _type: js/expression
+                    - name: app-x/core/InputReset
+                      _type: appx/input/reset
                       children:
-                        - Cancel
+                        - name: "@material-ui/core.Button"
+                          _type: react/element
+                          props:
+                            color: secondary
+                            variant: outlined
+                          style:
+                            margin:
+                              data: theme.spacing(0, 2)
+                              _type: js/expression
+                          children:
+                            - Cancel
                     - name: app-x/core/InputSubmit
                       _type: appx/input/submit
                       children:
@@ -1792,10 +1795,4 @@ ui_component:
         _type: react/effect
         _order: 2
       component:
-        name: "@material-ui/core.Box"
-        _type: react/element
-        props:
-          className:
-            data: styles.root
-            _type: js/expression
-        _order: 5
+        nam

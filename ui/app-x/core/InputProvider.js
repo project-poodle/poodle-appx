@@ -14,11 +14,14 @@ const InputProvider = (props) => {
 
   const onSubmit = props.onSubmit || parentContext?.onSubmit || (() => {})
 
+  const onReset = props.onReset || parentContext?.onReset || (() => {})
+
   return (
     <Provider
       value={{
         basename: basename,
         onSubmit: onSubmit,
+        onReset: onReset,
       }}
     >
       {props.children}

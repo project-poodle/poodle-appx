@@ -197,6 +197,7 @@ const groups = {
     'appx/input/tabular',
     'appx/input/collection',
     'appx/input/submit',
+    'appx/input/reset',
     'appx/input/rule',
   ],
   // table / columns

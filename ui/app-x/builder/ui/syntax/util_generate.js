@@ -52,6 +52,7 @@ import InputSelect from 'app-x/icon/InputSelect'
 import InputTabular from 'app-x/icon/InputTabular'
 import InputCollection from 'app-x/icon/InputCollection'
 import InputSubmit from 'app-x/icon/InputSubmit'
+import InputReset from 'app-x/icon/InputReset'
 import InputRule from 'app-x/icon/InputRule'
 import Filter from 'app-x/icon/Filter'
 import API from 'app-x/icon/API'
@@ -232,6 +233,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'appx/input/submit') {
 
     return <InputSubmit />
+
+  } else if (input._type === 'appx/input/reset') {
+
+    return <InputReset />
 
   } else if (input._type === 'appx/input/rule') {
 
@@ -474,6 +479,11 @@ function lookup_title_for_input(ref, input, array=false) {
     return prefix + `${parsed.full_paths.pop()}`
 
   } else if (input._type === 'appx/input/submit') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + `${parsed.full_paths.pop()}`
+
+  } else if (input._type === 'appx/input/reset') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + `${parsed.full_paths.pop()}`

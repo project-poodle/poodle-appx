@@ -34,6 +34,7 @@ const Form = (props) => {
     formState,
   } = useFormProps
 
+  // onSubmit
   const onSubmit = () => {
     // console.log(`getValues`, getValues(), _.get(getValues(), 'tabular[0]'))
     handleSubmit(
@@ -42,7 +43,9 @@ const Form = (props) => {
     )()
   }
 
-  useEffect(() => {
+  // onReset
+  const onReset = () => {
+    /*
     // recursive function to set form data
     function setFormData(key, value) {
       if (isPrimitive(value)) {
@@ -62,14 +65,22 @@ const Form = (props) => {
         throw new Error(`ERROR: unexpected data type [${JSON.stringify(value)}]`)
       }
     }
+    */
     // set form default value
     if (!!props.defaultValue) {
-      Object.keys(props.defaultValue).map(key => {
-        // console.log(`setValue`, key, props.defaultValue[key])
-        setFormData(key, _.get(props.defaultValue, key))
-      })
+      // Object.keys(props.defaultValue).map(key => {
+      //   setFormData(key, _.get(props.defaultValue, key))
+      // })
+      reset(props.defaultValue)
+    } else {
+      // reset
+      reset()
     }
     // console.log(`Form getValues`, getValues())
+  }
+
+  useEffect(() => {
+    onReset()
   }, [props.defaultValue])
 
   // return
@@ -77,7 +88,7 @@ const Form = (props) => {
     <FormProvider
       {...useFormProps}
       >
-      <InputProvider basename="" onSubmit={onSubmit}>
+      <InputProvider basename="" onSubmit={onSubmit} onReset={onReset}>
         <form
           onSubmit={onSubmit}
           >
@@ -90,7 +101,7 @@ const Form = (props) => {
 
 Form.propTypes = {
   formProps: PropTypes.object,
-  defaultValues: PropTypes.object,
+  defaultValue: PropTypes.object,
   onSubmit: PropTypes.func,
   onError: PropTypes.func,
 }

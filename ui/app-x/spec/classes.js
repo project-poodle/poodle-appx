@@ -137,6 +137,7 @@ export const classes = {
       'appx/input/tabular',
       'appx/input/collection',
       'appx/input/submit',
+      'appx/input/reset',
       'appx/table',
       'js/expression',
       'js/call',

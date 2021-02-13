@@ -16,6 +16,7 @@ import appx_input_select from 'app-x/spec/appx_input_select.js'
 import appx_input_tabular from 'app-x/spec/appx_input_tabular.js'
 import appx_input_collection from 'app-x/spec/appx_input_collection.js'
 import appx_input_submit from 'app-x/spec/appx_input_submit.js'
+import appx_input_reset from 'app-x/spec/appx_input_reset.js'
 import appx_input_rule from 'app-x/spec/appx_input_rule.js'
 // appx table and columns
 import appx_table from 'app-x/spec/appx_table.js'
@@ -130,6 +131,7 @@ const types = [
   appx_input_tabular,
   appx_input_collection,
   appx_input_submit,
+  appx_input_reset,
   appx_input_rule,
   // table and columns
   appx_table,
