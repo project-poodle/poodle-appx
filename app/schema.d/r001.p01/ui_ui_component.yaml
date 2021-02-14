@@ -1287,6 +1287,7 @@ ui_component:
                           name: app-x/core/InputText
                           _type: appx/input/text
                           label: Title
+                          required: true
                           TextProps:
                             size: small
                     - name: antd.Col
