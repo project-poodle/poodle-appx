@@ -1025,6 +1025,7 @@ ui_component:
                 params:
                   - Delete
                   - true
+                  - false
                   - true
             onSubmit: data => console.log(`delete`, data)
             DialogProps:
@@ -1148,6 +1149,7 @@ ui_component:
                       params:
                         - Update
                         - true
+                        - true
                   onSubmit:
                     body:
                       - data: |-
@@ -1210,6 +1212,7 @@ ui_component:
         params:
           - actionName
           - disableKeys
+          - hideKeys
           - hideNonKeys
         return:
           name: "@material-ui/core.Box"
@@ -1221,6 +1224,10 @@ ui_component:
           children:
             - name: "@material-ui/core.Box"
               _type: react/element
+              props:
+                display:
+                  data: "!!hideKeys ? 'none' : 'block'"
+                  _type: js/expression
               style:
                 padding:
                   data: theme.spacing(2, 0)
