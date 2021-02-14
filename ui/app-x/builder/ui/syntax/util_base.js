@@ -753,16 +753,28 @@ function load_valid_import_data() {
                 }
                 */
                 const title = module_name + VARIABLE_SEPARATOR + variable_name
+                const react_element = module_content[variable_name]
                 _valid_import_data[title] = {
                   title: title,
                   module: module_name,
                   variable: variable_name,
+                  propTypes: [],
+                }
+                // handle propTypes
+                if (!!react_element && !!react_element.propTypes) {
+                  // special handling for @material-ui/ styled components
+                  if (module_name.startsWith('@material-ui/') && !!react_element.Naked?.propTypes) {
+                    // console.log('@material-ui/', `propTypes`, found, react_element, react_element.propTypes)
+                    _valid_import_data[title].propTypes = Object.keys(react_element.Naked.propTypes)
+                  } else {
+                    // console.log(`propTypes`, react_element, react_element.propTypes)
+                    _valid_import_data[title].propTypes = Object.keys(react_element.propTypes)
+                  }
                 }
                 // add children if not in exluded list
                 if (!MODULES_EXCLUDE_SECONDARY.includes(module_name)) {
-                  const variable = module_content[variable_name]
-                  if (!!variable) {
-                    Object.keys(variable)
+                  if (!!react_element) {
+                    Object.keys(react_element)
                       .filter(subVar => !subVar.startsWith('$'))
                       .map(subVar => {
                         const subvar_title = module_name + VARIABLE_SEPARATOR + variable_name + VARIABLE_SEPARATOR + subVar
@@ -796,10 +808,23 @@ function load_valid_import_data() {
         // console.log(path_module)
         const module_name = path
         if (!!path_module.default) {
+          const react_element = path_module.default
           _valid_import_data[module_name] = {
             title: module_name,
             module: module_name,
             variable: 'default',
+            propTypes: [],
+          }
+          // handle propTypes
+          if (!!react_element && !!react_element.propTypes) {
+            // special handling for @material-ui/ styled components
+            if (path.startsWith('@material-ui/') && !!react_element.Naked?.propTypes) {
+              // console.log('@material-ui/', `propTypes`, found, react_element, react_element.propTypes)
+              _valid_import_data[module_name].propTypes = Object.keys(react_element.Naked.propTypes)
+            } else {
+              // console.log(`propTypes`, react_element, react_element.propTypes)
+              _valid_import_data[module_name].propTypes = Object.keys(react_element.propTypes)
+            }
           }
           Object.keys(path_module.default)
             .filter(variable_name => !variable_name.startsWith('$'))
@@ -929,6 +954,10 @@ function valid_css_properties() {
   return _valid_css_properties
 }
 
+function valid_propTypes_for(name) {
+  return _valid_import_data[name]?.propTypes || []
+}
+
 // all validation methods
 const validation = {
   valid_namespaces: valid_namespaces,
@@ -939,6 +968,7 @@ const validation = {
   valid_html_tags: valid_html_tags,
   valid_import_names: valid_import_names,
   valid_css_properties: valid_css_properties,
+  valid_propTypes_for: valid_propTypes_for,
 }
 
 ////////////////////////////////////////////////////////////////////////////////

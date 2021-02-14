@@ -113,7 +113,16 @@ export const appx_form = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/properties'
+          kind: 'input/properties',
+          options: [
+            'mode',
+            'reValidateMode',
+            'resolver',
+            'context',
+            'criteriaMode',
+            'shouldFocusError',
+            'shouldUnregister',
+          ]
         },
       },
     },

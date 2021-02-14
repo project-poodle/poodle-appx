@@ -189,6 +189,7 @@ export const appx_input_text = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_propTypes_for("@material-ui/core.Box")',
         },
       },
     },
@@ -205,6 +206,7 @@ export const appx_input_text = {
         types: 'inherit',
         input: {
           kind: 'input/properties',
+          options: 'validation.valid_propTypes_for("@material-ui/core.TextField")',
         },
       },
     },

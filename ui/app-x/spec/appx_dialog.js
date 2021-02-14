@@ -186,7 +186,16 @@ export const appx_dialog = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/properties'
+          kind: 'input/properties',
+          options: [
+            'mode',
+            'reValidateMode',
+            'resolver',
+            'context',
+            'criteriaMode',
+            'shouldFocusError',
+            'shouldUnregister',
+          ]
         },
       },
     },
@@ -202,7 +211,8 @@ export const appx_dialog = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/properties'
+          kind: 'input/properties',
+          options: 'validation.valid_propTypes_for("@material-ui/core.Dialog")',
         },
       },
     },
@@ -218,7 +228,8 @@ export const appx_dialog = {
       _childNode: {
         types: 'inherit',
         input: {
-          kind: 'input/properties'
+          kind: 'input/properties',
+          options: 'validation.valid_css_properties()',
         },
       },
     },

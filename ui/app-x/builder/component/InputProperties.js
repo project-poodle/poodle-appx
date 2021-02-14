@@ -119,7 +119,7 @@ const InputProperties = props => {
   useEffect(() => {
     if (!!inputSpec.options) {
       const name_options = eval(inputSpec.options)
-      // console.log(`inputSpec.options`, name_options)
+      // console.log(`inputSpec.options [${name}]`, name_options)
       setNameOptions(name_options)
     } else if (!!props.options) {
       setNameOptions(props.options)
