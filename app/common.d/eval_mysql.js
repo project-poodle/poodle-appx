@@ -189,15 +189,14 @@ async function run() {
                 // console.error(`end`)
                 conn.end()
               }
-              end()
+              await end()
             } catch (error) {
               // ignore
             }
 
             // success, exit 0
-            // setTimeout(() => {
+            await(sleep(300))
             process.exit(0)
-            // }, 500)
 
         } catch (error) {
 

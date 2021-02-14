@@ -3,13 +3,11 @@ import {
   classes
 } from 'app-x/spec/classes.js'
 
-// type: appx/form                                  (~jsx|~expression)
-// name:                     # name of the form      (:string)             - unique in a file
+// type: appx/form                                   (~jsx|~expression)
+// name:                     # react element name    (:string)
+// defaultValue:             # default value         (:string|:object)
 // onSubmit:                 # function for submit   (:string|:array<:statement>)
-// onError:                  # function for error    (:string|:array<:statement>)
-// formProps:                # props for hook form   (:object<:expression>)
-// props:                    # props for 'form' tag  (:object<:expression>)
-// style:                    # style for 'form' tag  (:object<:expression>)
+// FormProps:                # props for hook form   (:object<:expression>)
 // children:                 # children              (:array<:jsx|:primitive|:expression>)
 export const appx_form = {
 
@@ -37,80 +35,6 @@ export const appx_form = {
           options: 'validation.valid_import_names()',
           optionSelfImportNames: true,
           optionsOnly: true,
-        },
-      },
-    },
-    {
-      name: 'onSubmit',
-      desc: 'onSubmit',
-      types: [
-        {
-          kind: 'class',
-          data: 'string',
-          parse: true,
-        },
-        {
-          kind: 'type',
-          data: 'js/function',
-        },
-      ],
-      _thisNode: {
-        types: [
-          {
-            kind: 'class',
-            data: 'string',
-          }
-        ],
-        input: {
-          kind: 'input/expression',
-        }
-      },
-      _childNode: {
-        types: 'inherit'
-      },
-    },
-    {
-      name: 'onError',
-      desc: 'onError',
-      types: [
-        {
-          kind: 'class',
-          data: 'string',
-          parse: true,
-        },
-        {
-          kind: 'type',
-          data: 'js/function',
-        },
-      ],
-      _thisNode: {
-        types: [
-          {
-            kind: 'class',
-            data: 'string',
-          }
-        ],
-        input: {
-          kind: 'input/expression',
-        }
-      },
-      _childNode: {
-        types: 'inherit'
-      },
-    },
-    {
-      name: 'formProps',
-      desc: 'Form Properties',
-      types: [
-        {
-          kind: 'class',
-          data: 'object'
-        },
-      ],
-      _childNode: {
-        types: 'inherit',
-        input: {
-          kind: 'input/properties'
         },
       },
     },
@@ -146,6 +70,51 @@ export const appx_form = {
             data: 'object',
           }
         ],
+      },
+    },
+    {
+      name: 'onSubmit',
+      desc: 'onSubmit',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
+          kind: 'type',
+          data: 'js/function',
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          }
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
+      _childNode: {
+        types: 'inherit'
+      },
+    },
+    {
+      name: 'FormProps',
+      desc: 'Form Properties',
+      types: [
+        {
+          kind: 'class',
+          data: 'object'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/properties'
+        },
       },
     },
     {

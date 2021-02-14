@@ -34,6 +34,9 @@ if [ $? -ne 0 ]; then
     >&2 echo "ERROR: failed to execute SQL !"
     rm -fR /tmp/$$
     exit 1
+else
+    >&2 echo "----------"
+    >&2 echo "Success!"
 fi
 
 >&2 echo "----------"

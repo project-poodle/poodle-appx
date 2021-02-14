@@ -130,6 +130,7 @@ export const classes = {
       'react/element',
       'react/html',
       'appx/form',
+      'appx/dialog',
       'appx/input/text',
       'appx/input/textarray',
       'appx/input/switch',

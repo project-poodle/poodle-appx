@@ -190,6 +190,7 @@ const groups = {
   // form / inputs
   appx_form: [
     'appx/form',
+    'appx/dialog',
     'appx/input/text',
     'appx/input/textarray',
     'appx/input/switch',

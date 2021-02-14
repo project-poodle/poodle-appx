@@ -274,7 +274,7 @@ const Table = (props) => {
   return (
     <div
       className={props.className}
-      style={props.style}
+      style={props.style || {}}
       >
       {
         !props.hideToolbar

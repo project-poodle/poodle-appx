@@ -7,8 +7,9 @@ import react_html from 'app-x/spec/react_html.js'
 import react_state from 'app-x/spec/react_state.js'
 import react_effect from 'app-x/spec/react_effect.js'
 import react_context from 'app-x/spec/react_context.js'
-// forms and inputs
+// form, dialog, and inputs
 import appx_form from 'app-x/spec/appx_form.js'
+import appx_dialog from 'app-x/spec/appx_dialog.js'
 import appx_input_text from 'app-x/spec/appx_input_text.js'
 import appx_input_textarray from 'app-x/spec/appx_input_textarray.js'
 import appx_input_switch from 'app-x/spec/appx_input_switch.js'
@@ -124,6 +125,7 @@ const types = [
   react_context,
   // form and inputs
   appx_form,
+  appx_dialog,
   appx_input_text,
   appx_input_textarray,
   appx_input_switch,

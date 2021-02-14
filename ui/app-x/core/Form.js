@@ -15,7 +15,7 @@ function isPrimitive(test) {
 const Form = (props) => {
   // useForm hook
   const useFormProps = useForm(
-    props.formProps || {}
+    props.FormProps || {}
   )
   // console.log('useFormProps', useFormProps)
   const {
@@ -39,38 +39,16 @@ const Form = (props) => {
     // console.log(`getValues`, getValues(), _.get(getValues(), 'tabular[0]'))
     handleSubmit(
       props.onSubmit,
-      props.onError
+      (error) => {
+        console.log(error)
+      }
     )()
   }
 
   // onReset
   const onReset = () => {
-    /*
-    // recursive function to set form data
-    function setFormData(key, value) {
-      if (isPrimitive(value)) {
-        setValue(key, value)
-      } else if (Array.isArray(value)) {
-        setValue(key, value)
-        value.map((row, index) => {
-          setFormData(`${key}[${index}]`, row)
-        })
-      } else if (typeof value === 'object') {
-        setValue(key, value)
-        Object.keys(value).map(childKey => {
-          const childData = value[childKey]
-          setFormData(`${key}.${childKey}`, childData)
-        })
-      } else {
-        throw new Error(`ERROR: unexpected data type [${JSON.stringify(value)}]`)
-      }
-    }
-    */
-    // set form default value
     if (!!props.defaultValue) {
-      // Object.keys(props.defaultValue).map(key => {
-      //   setFormData(key, _.get(props.defaultValue, key))
-      // })
+      // set form default value
       reset(props.defaultValue)
     } else {
       // reset
@@ -100,10 +78,9 @@ const Form = (props) => {
 }
 
 Form.propTypes = {
-  formProps: PropTypes.object,
   defaultValue: PropTypes.object,
   onSubmit: PropTypes.func,
-  onError: PropTypes.func,
+  FormProps: PropTypes.object,
 }
 
 Form.appxType = 'appx/form'

@@ -44,6 +44,7 @@ import Router from 'app-x/icon/Router'
 import Effect from 'app-x/icon/Effect'
 import State from 'app-x/icon/State'
 import Form from 'app-x/icon/Form'
+import Dialog from 'app-x/icon/Dialog'
 import Context from 'app-x/icon/Context'
 import InputText from 'app-x/icon/InputText'
 import InputTextArray from 'app-x/icon/InputTextArray'
@@ -205,6 +206,10 @@ function lookup_icon_for_input(input) {
   } else if (input._type === 'appx/form') {
 
     return <Form />
+
+  } else if (input._type === 'appx/dialog') {
+
+    return <Dialog />
 
   } else if (input._type === 'appx/input/text') {
 
@@ -444,6 +449,11 @@ function lookup_title_for_input(ref, input, array=false) {
     return prefix + (name.length > 32 ? name.substring(0, 30) + '...' : name)
 
   } else if (input._type === 'appx/form') {
+
+    const parsed = parse_var_full_path(input.name)
+    return prefix + parsed.full_paths.pop()
+
+  } else if (input._type === 'appx/dialog') {
 
     const parsed = parse_var_full_path(input.name)
     return prefix + parsed.full_paths.pop()

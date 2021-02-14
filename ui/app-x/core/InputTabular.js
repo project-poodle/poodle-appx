@@ -112,7 +112,7 @@ const InputTabular = (props) => {
   return (
     <Box
       {...(props.BoxProps || {})}
-      style={props.style}
+      style={props.style || {}}
       >
       {
         !!props.label

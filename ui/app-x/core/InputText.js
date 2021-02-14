@@ -70,7 +70,7 @@ const InputText = (props) => {
   return (
     <Box
       {...(props.BoxProps || {})}
-      style={props.style}
+      style={props.style || {}}
       >
       <Controller
         key={propsId}
