@@ -78,7 +78,7 @@ import {
   lookup_first_accepted_childSpec,
   lookup_icon_for_class,
   type_matches_spec,
-  lookup_prop_types,
+  valid_propTypes_for,
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
@@ -280,12 +280,11 @@ const PropEditor = (props) => {
     if (nodeType === 'react/element') {
       // console.log(`here`)
       setPropNameOptions([])
-      lookup_prop_types(thisNode?.data.name, options => {
-        // console.log(`callback`, options)
-        const newPropNameOptions = _.cloneDeep(propNameOptions)
-        newPropNameOptions.props = options // .map(value => {value: value})
-        setPropNameOptions(newPropNameOptions)
-      })
+      const options = valid_propTypes_for(thisNode?.data.name)
+      // console.log(`callback`, options)
+      const newPropNameOptions = _.cloneDeep(propNameOptions)
+      newPropNameOptions.props = options // .map(value => {value: value})
+      setPropNameOptions(newPropNameOptions)
     }
   }, [nodeType, thisNode])
 
@@ -303,12 +302,11 @@ const PropEditor = (props) => {
       {
         if (nodeRef === 'props') {
           // console.log(`here`)
-          lookup_prop_types(parentNode?.data.name, options => {
-            // console.log(`callback`, options)
-            const newPropNameOptions = _.cloneDeep(propNameOptions)
-            newPropNameOptions[THIS_NODE_PROPERTIES] = options // .map(value => {value: value})
-            setPropNameOptions(newPropNameOptions)
-          })
+          const options = valid_propTypes_for(parentNode?.data.name)
+          // console.log(`callback`, options)
+          const newPropNameOptions = _.cloneDeep(propNameOptions)
+          newPropNameOptions[THIS_NODE_PROPERTIES] = options // .map(value => {value: value})
+          setPropNameOptions(newPropNameOptions)
         } else if (nodeRef === 'style') {
           const newPropNameOptions = _.cloneDeep(propNameOptions)
           newPropNameOptions[THIS_NODE_PROPERTIES] = validation.valid_css_properties() // .map(value => {value: value})

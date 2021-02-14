@@ -1005,5 +1005,5 @@ export {
   valid_api_methods,
   valid_import_names,
   valid_html_tags,
-  lookup_prop_types,
+  valid_propTypes_for,
 }
