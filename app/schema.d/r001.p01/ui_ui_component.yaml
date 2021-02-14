@@ -1223,6 +1223,10 @@ ui_component:
               children:
                 - name: app-x/core/Form
                   _type: appx/form
+                  onReset:
+                    body:
+                      - row.toggleRowExpanded()
+                    _type: js/function
                   children:
                     - func: renderRowPanel
                       _type: js/call

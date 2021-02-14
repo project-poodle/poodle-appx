@@ -102,6 +102,35 @@ export const appx_form = {
       },
     },
     {
+      name: 'onReset',
+      desc: 'onReset',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+        {
+          kind: 'type',
+          data: 'js/function',
+        },
+      ],
+      _thisNode: {
+        types: [
+          {
+            kind: 'class',
+            data: 'string',
+          }
+        ],
+        input: {
+          kind: 'input/expression',
+        }
+      },
+      _childNode: {
+        types: 'inherit'
+      },
+    },
+    {
       name: 'FormProps',
       desc: 'Form Properties',
       types: [

@@ -61,6 +61,9 @@ const Dialog = (props) => {
       // reset
       reset()
     }
+    if (!!props.onReset) {
+      props.onReset()
+    }
     // close the dialog
     props.setOpen && props.setOpen(false)
   }
@@ -112,6 +115,7 @@ Dialog.propTypes = {
   icon: PropTypes.element,
   defaultValue: PropTypes.object,
   onSubmit: PropTypes.func,
+  onReset: PropTypes.func,
   FormProps: PropTypes.object,
   DialogProps: PropTypes.object,
   style: PropTypes.object,

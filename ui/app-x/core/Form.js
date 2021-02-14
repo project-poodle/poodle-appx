@@ -54,11 +54,20 @@ const Form = (props) => {
       // reset
       reset()
     }
+    if (!!props.onReset) {
+      props.onReset()
+    }
     // console.log(`Form getValues`, getValues())
   }
 
   useEffect(() => {
-    onReset()
+    if (!!props.defaultValue) {
+      // set form default value
+      reset(props.defaultValue)
+    } else {
+      // reset
+      reset()
+    }
   }, [props.defaultValue])
 
   // return
@@ -80,6 +89,7 @@ const Form = (props) => {
 Form.propTypes = {
   defaultValue: PropTypes.object,
   onSubmit: PropTypes.func,
+  onReset: PropTypes.func,
   FormProps: PropTypes.object,
 }
 
