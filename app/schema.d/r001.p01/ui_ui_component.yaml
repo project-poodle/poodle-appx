@@ -55,10 +55,6 @@ ui_component:
                 _type: js/import
           - name: app-x/theme/GlobalStyleProvider
             _type: react/element
-            props:
-              theme:
-                name: app-x/theme
-                _type: js/import
           - name: app-x/builder/ui/NavProvider
             _type: react/element
           - name: app-x/route/RouterProvider
@@ -665,10 +661,6 @@ ui_component:
             _type: react/element
           - name: app-x/theme/GlobalStyleProvider
             _type: react/element
-            props:
-              theme:
-                name: app-x/theme
-                _type: js/import
           - name: app-x/route/RouterProvider
             _type: react/element
       theme:
@@ -1454,10 +1446,6 @@ ui_component:
                 _type: js/import
           - name: app-x/theme/GlobalStyleProvider
             _type: react/element
-            props:
-              theme:
-                name: app-x/theme
-                _type: js/import
       theme:
         _type: mui/theme
         _order: 8
@@ -2487,3 +2475,4 @@ ui_component:
                     _type: js/expression
                 children:
                   - c
+
