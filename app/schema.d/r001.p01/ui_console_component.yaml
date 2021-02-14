@@ -1,1066 +1,1053 @@
 ui_component:
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /Router
-      ui_component_type: react/component
-      ui_component_spec:
-        styles:
-          _type: mui/style
-          root:
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            height: 100%
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          _order: 1
-        component:
-          _type: react/element
-          name: react-redux.Provider
-          props:
-            store:
-              _type: js/import
-              name: app-x/redux/store
-          children:
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
-                  _type: js/import
-                  name: app-x/theme/light
-              children:
-                - _type: react/element
-                  name: app-x/route/RouterProvider
-                  children:
-                    - _type: react/element
-                      name: react-router-dom.Routes
-                      children:
-                        - _type: route/path
-                          path: /
-                          element:
-                            _type: react/element
-                            name: self/page/landing/Home
-                        - _type: route/path
-                          path: /console
-                          element:
-                            _type: react/element
-                            name: antd.Layout
-                            children:
-                              - _type: react/element
-                                name: antd.Layout.Header
-                                children:
-                                  - _type: react/element
-                                    name: self/page/HeaderUser
-                              - _type: react/element
-                                name: antd.Layout.Content
-                                children:
-                                  - _type: react/element
-                                    name: self/page/Console
-                        - _type: route/path
-                          path: /login
-                          element:
-                            _type: react/element
-                            name: antd.Layout
-                            children:
-                              - _type: react/element
-                                name: antd.Layout.Header
-                                children:
-                                  - _type: react/element
-                                    name: self/page/HeaderPlain
-                              - _type: react/element
-                                name: antd.Layout.Content
-                                children:
-                                  - _type: react/element
-                                    name: self/page/auth/Login
-                        - _type: route/path
-                          path: "*"
-                          element:
-                            _type: react/element
-                            name: antd.Layout
-                            children:
-                              - _type: react/element
-                                name: antd.Layout.Header
-                                children:
-                                  - _type: react/element
-                                    name: self/page/HeaderPlain
-                              - _type: react/element
-                                name: antd.Layout.Content
-                                children:
-                                  - _type: react/element
-                                    name: app-x/page/error/NotFoundView
-          _order: 2
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/HeaderPlain
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          icon:
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.primary.light
-          root:
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            width: 100%
-            height: 100%
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          _order: 2
-        router:
-          _type: route/context
-          name: app-x/route/RouterProvider.Context
-          _order: 3
-        component:
-          _type: react/element
-          name: "@material-ui/core.AppBar"
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Toolbar"
-              children:
-                - _type: react/element
-                  name: "@material-ui/core.Fab"
-                  props:
-                    size: small
-                    color: primary
-                    onClick:
-                      _type: js/expression
-                      data: e => router.hnavigate('sys', 'console', 'base', '/')
-                    className:
-                      _type: js/expression
-                      data: styles.icon
-                  style:
-                    boxShadow: none
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                - _type: react/element
-                  name: "@material-ui/core.Fab"
-                  props:
-                    size: medium
-                    color: primary
-                    onClick:
-                      _type: js/expression
-                      data: e => router.navigate('/')
-                    variant: extended
-                  style:
-                    margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-                    boxShadow: none
-                  children:
-                    - App-X
-                - _type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    flexGrow:
-                      _type: js/expression
-                      data: "1"
-                - _type: react/element
-                  name: app-x/util/ThemeBadge
-                  style:
-                    margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-          _order: 4
-        _test:
-          providers:
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme
-                  _type: js/import
-            - name: app-x/route/RouterProvider
-              _type: react/element
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/HeaderUser
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          icon:
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.primary.light
-          root:
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            width: 100%
-            height: 100%
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          _order: 2
-        router:
-          _type: route/context
-          name: app-x/route/RouterProvider.Context
-          _order: 3
-        component:
-          _type: react/element
-          name: "@material-ui/core.AppBar"
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Toolbar"
-              children:
-                - _type: react/element
-                  name: "@material-ui/core.Fab"
-                  props:
-                    size: small
-                    color: primary
-                    onClick:
-                      _type: js/expression
-                      data: e => router.hnavigate('sys', 'console', 'base', '/console')
-                    className:
-                      _type: js/expression
-                      data: styles.icon
-                  style:
-                    boxShadow: none
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/icons.ViewQuiltRounded"
-                - _type: react/element
-                  name: "@material-ui/core.Fab"
-                  props:
-                    size: medium
-                    color: primary
-                    onClick:
-                      _type: js/expression
-                      data: e => router.navigate('/console')
-                    variant: extended
-                  style:
-                    margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-                    boxShadow: none
-                  children:
-                    - App-X
-                - _type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    flexGrow:
-                      _type: js/expression
-                      data: "1"
-                - _type: react/element
-                  name: app-x/util/UserBadge
-                  props:
-                    auth:
-                      _type: js/expression
-                      data: "{namespace:'sys',ui_name:'console',ui_deployment:'base'}"
-                    realm: main
-                    authUrl: /login
-                    elevation: 0
-                - _type: react/element
-                  name: app-x/util/ThemeBadge
-                  style:
-                    margin:
-                      _type: js/expression
-                      data: theme.spacing(1)
-          _order: 4
-        _test:
-          providers:
-            - name: react-redux.Provider
-              _type: react/element
-              props:
-                store:
-                  name: app-x/redux/store
-                  _type: js/import
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme
-                  _type: js/import
-            - name: app-x/route/RouterProvider
-              _type: react/element
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/landing/Home
-      ui_component_type: react/component
-      ui_component_spec:
-        styles:
-          _type: mui/style
-          grid:
-            width: 100%
-            bottom: 10%
-            zIndex: 0
-            padding:
-              _type: js/expression
-              data: theme.spacing(2)
-            position: fixed
-          _order: 1
-        router:
-          _type: route/context
-          name: app-x/route/RouterProvider.Context
-          _order: 2
-        effect:
-          _type: react/effect
-          body:
-            - |
-              // console.log(props)
-          _order: 3
-        component:
-          _type: react/element
-          name: app-x/page/landing/YouTube_fs
-          props:
-            youtube_playlist:
-              - end: 690
-                vid: vzR0dsZeQsY
-                start: 500
-              - end: 500
-                vid: vzR0dsZeQsY
-                start: 330
-              - end: 230
-                vid: vzR0dsZeQsY
-                start: 20
-              - end: 120
-                vid: HHBsvKnCkwI
-                start: 0
-              - end: 300
-                vid: HHBsvKnCkwI
-                start: 180
-              - end: 450
-                vid: HHBsvKnCkwI
-                start: 301
-              - end: 360
-                vid: RQ18TpXxbzU
-                start: 240
-              - end: 240
-                vid: RQ18TpXxbzU
-                start: 120
-              - end: 120
-                vid: RQ18TpXxbzU
-                start: 10
-              - end: 8
-                vid: k5obtOZe4ZQ
-                start: 0
-              - end: 338
-                vid: k5obtOZe4ZQ
-                start: 47
-              - end: 512
-                vid: k5obtOZe4ZQ
-                start: 375
-              - end: 596
-                vid: k5obtOZe4ZQ
-                start: 554
-              - end: -1
-                vid: _f43Gl_6hkc
-                start: 0
-              - end: 135
-                vid: -hcXR9aMTxI
-                start: 2
-              - end: 103
-                vid: wnhvanMdx4s
-                start: 0
-              - end: 306
-                vid: wnhvanMdx4s
-                start: 263
-              - end: 360
-                vid: xRFrjAVH1uQ
-                start: 238
-              - end: 235
-                vid: xRFrjAVH1uQ
-                start: 128
-              - end: 120
-                vid: xRFrjAVH1uQ
-                start: 20
-              - end: 63
-                vid: zRpazyH1WzI
-                start: 5
-              - end: 220
-                vid: zRpazyH1WzI
-                start: 99
-              - end: 2050
-                vid: zRpazyH1WzI
-                start: 1992
-              - vid: vOxmsqd8f58
-                start: 0
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Box"
-              props:
-                className:
-                  _type: js/expression
-                  data: styles.grid
-              children:
-                - _type: react/element
-                  name: "@material-ui/core.Grid"
-                  props:
-                    spacing: 1
-                    container: true
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
-                      props:
-                        lg: 2
-                        md: 1
-                        sm: 1
-                        xl: 3
-                        xs: false
-                        item: true
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
-                      props:
-                        lg: 3
-                        md: 4
-                        sm: 5
-                        xl: 2
-                        xs: 12
-                        item: true
-                      children:
-                        - _type: react/element
-                          name: "@material-ui/core.Button"
-                          props:
-                            size: large
-                            color: primary
-                            onClick:
-                              _type: js/function
-                              body:
-                                - router.hnavigate('sys', 'console', 'base', '/docs')
-                            variant: contained
-                            fullWidth: true
-                            startIcon:
-                              _type: react/element
-                              name: "@material-ui/icons.MenuBook"
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /Router
+    ui_component_type: react/component
+    ui_component_spec:
+      styles:
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 1
+      component:
+        name: react-redux.Provider
+        _type: react/element
+        props:
+          store:
+            name: app-x/redux/store
+            _type: js/import
+        _order: 2
+        children:
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme/light
+                _type: js/import
+            children:
+              - name: app-x/route/RouterProvider
+                _type: react/element
+                children:
+                  - name: react-router-dom.Routes
+                    _type: react/element
+                    children:
+                      - path: /
+                        _type: route/path
+                        element:
+                          name: self/page/landing/Home
+                          _type: react/element
+                      - path: /console
+                        _type: route/path
+                        element:
+                          name: antd.Layout
+                          _type: react/element
                           children:
-                            - Getting Started
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
-                      props:
-                        lg: 1
-                        md: 1
-                        xl: 1
-                        xs: false
-                        item: true
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
-                      props:
-                        lg: 1
-                        md: 1
-                        xl: 1
-                        xs: false
-                        item: true
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
-                      props:
-                        lg: 3
-                        md: 4
-                        sm: 5
-                        xl: 2
-                        xs: 12
-                        item: true
-                      children:
-                        - _type: react/element
-                          name: "@material-ui/core.Button"
-                          props:
-                            size: large
-                            color: primary
-                            onClick:
-                              _type: js/function
-                              body:
-                                - router.hnavigate('sys', 'console', 'base', '/console')
-                            variant: contained
-                            fullWidth: true
-                            startIcon:
+                            - name: antd.Layout.Header
                               _type: react/element
-                              name: "@material-ui/icons.Slideshow"
+                              children:
+                                - name: self/page/HeaderUser
+                                  _type: react/element
+                            - name: antd.Layout.Content
+                              _type: react/element
+                              children:
+                                - name: self/page/Console
+                                  _type: react/element
+                      - path: /login
+                        _type: route/path
+                        element:
+                          name: antd.Layout
+                          _type: react/element
                           children:
-                            - Live Demo
-                    - _type: react/element
-                      name: "@material-ui/core.Grid"
+                            - name: antd.Layout.Header
+                              _type: react/element
+                              children:
+                                - name: self/page/HeaderPlain
+                                  _type: react/element
+                            - name: antd.Layout.Content
+                              _type: react/element
+                              children:
+                                - name: self/page/auth/Login
+                                  _type: react/element
+                      - path: "*"
+                        _type: route/path
+                        element:
+                          name: antd.Layout
+                          _type: react/element
+                          children:
+                            - name: antd.Layout.Header
+                              _type: react/element
+                              children:
+                                - name: self/page/HeaderPlain
+                                  _type: react/element
+                            - name: antd.Layout.Content
+                              _type: react/element
+                              children:
+                                - name: app-x/page/error/NotFoundView
+                                  _type: react/element
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/Console
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme/dark
+                _type: js/import
+      theme:
+        _type: mui/theme
+        _order: 1
+      effect:
+        body:
+          - |
+            $I('app-x/api.get')(
+                'sys',
+                'appx',
+                '/ui/ui_deployment',
+                data => {
+                    states.ui.setDeployments(data)
+                },
+                err => {
+                    console.log(err)
+                    // TODO
+                }
+            )
+        _type: react/effect
+        _order: 4
+      states:
+        ui:
+          init: "[]"
+          name: deployments
+          _type: react/state
+          setter: setDeployments
+        _order: 3
+      styles:
+        box:
+          display: flex
+          padding:
+            data: theme.spacing(4, 2)
+            _type: js/expression
+          flexWrap: wrap
+          justifyContent: space-evenly
+        card:
+          width: 360
+          margin:
+            data: theme.spacing(3, 2)
+            _type: js/expression
+          zIndex: 0
+          maxWidth: 360
+          minWidth: 360
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 2
+        avatar: {}
+        container: {}
+        cardContent:
+          margin:
+            data: theme.spacing(1)
+            _type: js/expression
+      component:
+        name: self/page/landing/Unsplash_bg
+        _type: react/element
+        _order: 5
+        children:
+          - name: "@material-ui/core.Container"
+            _type: react/element
+            props:
+              className:
+                data: styles.container
+                _type: js/expression
+            children:
+              - name: "@material-ui/core.Box"
+                _type: react/element
+                props:
+                  className:
+                    data: styles.box
+                    _type: js/expression
+                children:
+                  - data:
+                      data:
+                        data: states.ui.deployments
+                        _type: js/expression
+                      _type: js/filter
+                      filter: |
+                        !(item.namespace == 'sys' && item.ui_name == 'console')
+                    _type: js/map
+                    result:
+                      name: "@material-ui/core.Card"
+                      _type: react/element
                       props:
-                        lg: 2
-                        md: 1
-                        sm: 1
-                        xl: 3
-                        xs: false
-                        item: true
-          _order: 4
-        _test:
-          providers:
-            - name: react-redux.Provider
-              _type: react/element
-              props:
-                store:
-                  name: app-x/redux/store
-                  _type: js/import
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme
-                  _type: js/import
-            - name: app-x/route/RouterProvider
-              _type: react/element
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/landing/Unsplash_bg
-      ui_component_type: react/component
-      ui_component_spec:
-        styles:
-          _type: mui/style
-          _order: 1
-          root:
-            height: "100%"
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-        component:
-          _type: react/element
-          _order: 2
-          name: app-x/page/landing/Unsplash_bg
-          props:
-              unsplashCollections:
-                  - 542909          # snow ice and winter
-                  - 1922729         # beautiful shots from above
-                  - 852718          # vibrant blackouts (oled)
-                  - 1023843         # tiny people in a big world
-                  - 543765          # metro
-                  - 148982          # mountain majesty
-                  - 349521          # road-to nowhere
-                  - 427860          # view angle
-                  - 353649          # sea me now
-          children:
-              - _type: js/expression
-                data: props.children
-        _test:
-          providers:
-            - _type: react/element
-              name: react-redux.Provider
-              props:
-                store:
-                  _type: js/import
-                  name: app-x/redux/store
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
-                  _type: js/import
-                  name: app-x/theme
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/auth/Login
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          root:
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            height: 100%
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          _order: 2
-        component:
-          _type: react/element
-          name: self/page/landing/Unsplash_bg
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Box"
-              style:
-                top: 0
-                right: 0
-                margin:
-                  _type: js/expression
-                  data: theme.spacing(12,3)
-                position: fixed
-                backgroundColor:
-                  _type: js/expression
-                  data: theme.palette.background.paper
-              children:
-                - _type: react/element
-                  name: self/page/auth/SignInForm
-                  props:
-                    consoleUrl: /console
-          _order: 3
-        _test:
-          providers:
-            - name: react-redux.Provider
-              _type: react/element
-              props:
-                store:
-                  name: app-x/redux/store
-                  _type: js/import
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme/dark
-                  _type: js/import
-            - name: app-x/route/RouterProvider
-              _type: react/element
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/auth/SignInForm
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          form:
-            width: 100%
-            margin:
-              _type: js/expression
-              data: theme.spacing(1)
-          grid:
-            margin:
-              _type: js/expression
-              data: theme.spacing(2, 0, 2)
-          error:
-            color:
-              _type: js/expression
-              data: theme.palette.error.main
-            margin:
-              _type: js/expression
-              data: theme.spacing(1)
-          paper:
-            width: 432
-            display: flex
-            padding:
-              _type: js/expression
-              data: theme.spacing(6, 3)
-            alignItems: center
-            flexDirection: column
-          google:
-            backgroundColor: "#DB4437"
-          facebook:
-            backgroundColor: "#4267B2"
-          _order: 2
-        router:
-          _type: route/context
-          name: app-x/route/RouterProvider.Context
-          _order: 3
-        states:
-          error:
-            _type: react/state
-            name: value
-            setter: setValue
-            init: '""'
-          password:
-            _type: react/state
-            name: value
-            setter: setValue
-            init: '""'
-          username:
-            _type: react/state
-            name: value
-            setter: setValue
-            init: '""'
-          _order: 4
-        handlers:
-          handleSubmit:
-            _type: js/function
-            params:
-              - event
-            body:
-              - >
-                event.preventDefault();
-                $I('app-x/api.login')(
-                    'main',
-                    states.username.value,
-                    states.password.value,
-                    res => {
-                        router.hnavigate('sys', 'console', 'base', props.consoleUrl)
-                    },
-                    err => {
-                        // console.error(err)
-                        states.error.setValue(err.message)
-                    }
-                )
-          _order: 5
-        component:
-          _type: react/element
-          name: "@material-ui/core.Container"
-          props:
-            className:
-              _type: js/expression
-              data: styles.paper
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Fab"
-              props:
-                size: medium
-                color: primary
-              style:
-                margin:
-                  _type: js/expression
-                  data: theme.spacing(1)
-                boxShadow: none
-              children:
-                - _type: react/element
-                  name: "@material-ui/icons.ViewQuiltRounded"
-            - _type: react/element
-              name: "@material-ui/core.Typography"
-              props:
-                variant: h6
-              style:
-                margin:
-                  _type: js/expression
-                  data: theme.spacing(1)
-              children:
-                - Sign in to App-X
-            - _type: react/element
-              name: "@material-ui/core.Grid"
-              props:
-                spacing: 2
-                className:
-                  _type: js/expression
-                  data: styles.grid
-                container: true
-            - _type: react/html
-              name: form
-              props:
-                onSubmit:
-                  _type: js/expression
-                  data: handlers.handleSubmit
-                className:
-                  _type: js/expression
-                  data: styles.form
-                noValidate: true
-              children:
-                - _type: react/element
-                  name: "@material-ui/core.TextField"
-                  props:
-                    id: username
-                    label: Login
-                    value:
-                      _type: js/expression
-                      data: states.username.value
-                    margin: normal
-                    variant: outlined
-                    onChange:
-                      _type: js/function
-                      params:
-                        - e
-                      body:
-                        - |
-                          states.username.setValue(e.target.value)
-                          states.error.setValue('')
-                    required: true
-                    autoFocus: true
-                    fullWidth: true
-                    autoComplete: username
-                - _type: react/element
-                  name: "@material-ui/core.TextField"
-                  props:
-                    id: password
-                    type: password
-                    label: Password
-                    value:
-                      _type: js/expression
-                      data: states.password.value
-                    margin: normal
-                    variant: outlined
-                    onChange:
-                      _type: js/function
-                      params:
-                        - e
-                      body:
-                        - |
-                          states.password.setValue(e.target.value)
-                          states.error.setValue('')
-                    required: true
-                    fullWidth: true
-                    autoComplete: current-password
-                - _type: js/condition
-                  children:
-                    - condition: states.error.value
-                      result:
-                        _type: react/element
-                        name: "@material-ui/core.Grid"
-                        props:
-                          xs: 12
-                          item: true
-                        children:
-                          - _type: react/element
-                            name: "@material-ui/core.Typography"
-                            props:
-                              variant: subtitle1
-                              className:
-                                _type: js/expression
-                                data: styles.error
-                              component: h1
-                            children:
-                              - _type: js/expression
-                                data: states.error.value
-                - _type: react/element
-                  name: "@material-ui/core.Button"
-                  props:
-                    size: large
-                    color: primary
-                    onClick:
-                      _type: js/expression
-                      data: handlers.handleSubmit
-                    variant: contained
-                    fullWidth: true
-                  style:
-                    margin:
-                      _type: js/expression
-                      data: theme.spacing(2,0)
-                    boxShadow: none
-                  children:
-                    - Sign In
-                - _type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    mt: 5
-                  children:
-                    - _type: react/element
-                      name: "@material-ui/core.Typography"
-                      props:
-                        align: center
-                        color: textSecondary
-                        variant: body2
+                        key:
+                          data: item.id
+                          _type: js/expression
+                        style:
+                          cursor: move
+                        className:
+                          data: styles.card
+                          _type: js/expression
+                        draggable: true
                       children:
-                        - "Copyright © app-x.org "
-                        - _type: js/expression
-                          data: new Date().getFullYear()
-          _order: 6
-        _test:
-          providers:
-            - name: react-redux.Provider
-              _type: react/element
-              props:
-                store:
-                  name: app-x/redux/store
-                  _type: js/import
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme/dark
-                  _type: js/import
-            - name: app-x/route/RouterProvider
-              _type: react/element
-
-    ############################################################
-    - namespace: sys
-      ui_name: console
-      ui_ver: internal
-      ui_component_name: /page/Console
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          box:
-            display: flex
-            padding:
-              _type: js/expression
-              data: theme.spacing(4, 2)
-            flexWrap: wrap
-            justifyContent: space-evenly
-          card:
-            width: 360
-            margin:
-              _type: js/expression
-              data: theme.spacing(3, 2)
-            zIndex: 0
-            maxWidth: 360
-            minWidth: 360
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          avatar: {}
-          container: {}
-          cardContent:
-            margin:
-              _type: js/expression
-              data: theme.spacing(1)
-          _order: 2
-        states:
-          ui:
-            _type: react/state
-            name: deployments
-            setter: setDeployments
-            init: "[]"
-          _order: 3
-        effect:
-          _type: react/effect
+                        - name: "@material-ui/core.CardActionArea"
+                          _type: react/element
+                          children:
+                            - name: app-x/route/RouterProvider.HLink
+                              _type: react/element
+                              props:
+                                href: /
+                                ui_name:
+                                  data: item.ui_name
+                                  _type: js/expression
+                                namespace:
+                                  data: item.namespace
+                                  _type: js/expression
+                                ui_deployment:
+                                  data: item.ui_deployment
+                                  _type: js/expression
+                              children:
+                                - name: "@material-ui/core.CardContent"
+                                  _type: react/element
+                                  children:
+                                    - name: "@material-ui/core.Fab"
+                                      _type: react/element
+                                      props:
+                                        size: medium
+                                        color: primary
+                                        component: div
+                                      style:
+                                        margin:
+                                          data: theme.spacing(1)
+                                          _type: js/expression
+                                        boxShadow: none
+                                      children:
+                                        - name: "@material-ui/icons.ViewQuiltRounded"
+                                          _type: react/element
+                                    - name: "@material-ui/core.Typography"
+                                      _type: react/element
+                                      props:
+                                        variant: body2
+                                        className:
+                                          data: styles.cardContent
+                                          _type: js/expression
+                                      children:
+                                        - data: item.namespace
+                                          _type: js/expression
+                                        - " / "
+                                        - data: item.ui_name
+                                          _type: js/expression
+                                        - " / "
+                                        - data: item.ui_deployment
+                                          _type: js/expression
+                                    - name: "@material-ui/core.Typography"
+                                      _type: react/element
+                                      props:
+                                        variant: h6
+                                        className:
+                                          data: styles.cardContent
+                                          _type: js/expression
+                                      children:
+                                        - data: item.ui_spec.description
+                                          _type: js/expression
+                        - name: "@material-ui/core.CardActions"
+                          _type: react/element
+                          children:
+                            - name: "@material-ui/core.Button"
+                              _type: react/element
+                              props:
+                                size: small
+                                color: secondary
+                                className:
+                                  data: styles.cardContent
+                                  _type: js/expression
+                              children:
+                                - Details
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/HeaderPlain
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme
+                _type: js/import
+          - name: app-x/route/RouterProvider
+            _type: react/element
+      theme:
+        _type: mui/theme
+        _order: 1
+      router:
+        name: app-x/route/RouterProvider.Context
+        _type: route/context
+        _order: 3
+      styles:
+        icon:
+          backgroundColor:
+            data: theme.palette.primary.light
+            _type: js/expression
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          width: 100%
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 2
+      component:
+        name: "@material-ui/core.AppBar"
+        _type: react/element
+        _order: 4
+        children:
+          - name: "@material-ui/core.Toolbar"
+            _type: react/element
+            children:
+              - name: "@material-ui/core.Fab"
+                _type: react/element
+                props:
+                  size: small
+                  color: primary
+                  onClick:
+                    data: e => router.hnavigate('sys', 'console', 'base', '/')
+                    _type: js/expression
+                  className:
+                    data: styles.icon
+                    _type: js/expression
+                style:
+                  boxShadow: none
+                children:
+                  - name: "@material-ui/icons.ViewQuiltRounded"
+                    _type: react/element
+              - name: "@material-ui/core.Fab"
+                _type: react/element
+                props:
+                  size: medium
+                  color: primary
+                  onClick:
+                    data: e => router.navigate('/')
+                    _type: js/expression
+                  variant: extended
+                style:
+                  margin:
+                    data: theme.spacing(1)
+                    _type: js/expression
+                  boxShadow: none
+                children:
+                  - App-X
+              - name: "@material-ui/core.Box"
+                _type: react/element
+                props:
+                  flexGrow:
+                    data: "1"
+                    _type: js/expression
+              - name: app-x/util/ThemeBadge
+                _type: react/element
+                style:
+                  margin:
+                    data: theme.spacing(1)
+                    _type: js/expression
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/HeaderUser
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme
+                _type: js/import
+          - name: app-x/route/RouterProvider
+            _type: react/element
+      theme:
+        _type: mui/theme
+        _order: 1
+      router:
+        name: app-x/route/RouterProvider.Context
+        _type: route/context
+        _order: 3
+      styles:
+        icon:
+          backgroundColor:
+            data: theme.palette.primary.light
+            _type: js/expression
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          width: 100%
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 2
+      component:
+        name: "@material-ui/core.AppBar"
+        _type: react/element
+        _order: 4
+        children:
+          - name: "@material-ui/core.Toolbar"
+            _type: react/element
+            children:
+              - name: "@material-ui/core.Fab"
+                _type: react/element
+                props:
+                  size: small
+                  color: primary
+                  onClick:
+                    data: e => router.hnavigate('sys', 'console', 'base', '/console')
+                    _type: js/expression
+                  className:
+                    data: styles.icon
+                    _type: js/expression
+                style:
+                  boxShadow: none
+                children:
+                  - name: "@material-ui/icons.ViewQuiltRounded"
+                    _type: react/element
+              - name: "@material-ui/core.Fab"
+                _type: react/element
+                props:
+                  size: medium
+                  color: primary
+                  onClick:
+                    data: e => router.navigate('/console')
+                    _type: js/expression
+                  variant: extended
+                style:
+                  margin:
+                    data: theme.spacing(1)
+                    _type: js/expression
+                  boxShadow: none
+                children:
+                  - App-X
+              - name: "@material-ui/core.Box"
+                _type: react/element
+                props:
+                  flexGrow:
+                    data: "1"
+                    _type: js/expression
+              - name: app-x/util/UserBadge
+                _type: react/element
+                props:
+                  auth:
+                    data: "{namespace:'sys',ui_name:'console',ui_deployment:'base'}"
+                    _type: js/expression
+                  realm: main
+                  authUrl: /login
+                  elevation: 0
+              - name: app-x/util/ThemeBadge
+                _type: react/element
+                style:
+                  margin:
+                    data: theme.spacing(1)
+                    _type: js/expression
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/auth/Login
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme/dark
+                _type: js/import
+          - name: app-x/route/RouterProvider
+            _type: react/element
+      theme:
+        _type: mui/theme
+        _order: 1
+      styles:
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 2
+      component:
+        name: self/page/landing/Unsplash_bg
+        _type: react/element
+        _order: 3
+        children:
+          - name: "@material-ui/core.Box"
+            _type: react/element
+            style:
+              top: 0
+              right: 0
+              margin:
+                data: theme.spacing(12,3)
+                _type: js/expression
+              position: fixed
+              backgroundColor:
+                data: theme.palette.background.paper
+                _type: js/expression
+            children:
+              - name: self/page/auth/SignInForm
+                _type: react/element
+                props:
+                  consoleUrl: /console
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/auth/SignInForm
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme/dark
+                _type: js/import
+          - name: app-x/route/RouterProvider
+            _type: react/element
+      theme:
+        _type: mui/theme
+        _order: 1
+      router:
+        name: app-x/route/RouterProvider.Context
+        _type: route/context
+        _order: 3
+      states:
+        error:
+          init: '""'
+          name: value
+          _type: react/state
+          setter: setValue
+        _order: 4
+        password:
+          init: '""'
+          name: value
+          _type: react/state
+          setter: setValue
+        username:
+          init: '""'
+          name: value
+          _type: react/state
+          setter: setValue
+      styles:
+        form:
+          width: 100%
+          margin:
+            data: theme.spacing(1)
+            _type: js/expression
+        grid:
+          margin:
+            data: theme.spacing(2, 0, 2)
+            _type: js/expression
+        _type: mui/style
+        error:
+          color:
+            data: theme.palette.error.main
+            _type: js/expression
+          margin:
+            data: theme.spacing(1)
+            _type: js/expression
+        paper:
+          width: 432
+          display: flex
+          padding:
+            data: theme.spacing(6, 3)
+            _type: js/expression
+          alignItems: center
+          flexDirection: column
+        _order: 2
+        google:
+          backgroundColor: "#DB4437"
+        facebook:
+          backgroundColor: "#4267B2"
+      handlers:
+        _order: 5
+        handleSubmit:
           body:
-            - |
-              $I('app-x/api.get')(
-                  'sys',
-                  'appx',
-                  '/ui/ui_deployment',
-                  data => {
-                      states.ui.setDeployments(data)
+            - >
+              event.preventDefault(); $I('app-x/api.login')(
+                  'main',
+                  states.username.value,
+                  states.password.value,
+                  res => {
+                      router.hnavigate('sys', 'console', 'base', props.consoleUrl)
                   },
                   err => {
-                      console.log(err)
-                      // TODO
+                      // console.error(err)
+                      states.error.setValue(err.message)
                   }
               )
-          _order: 4
-        component:
-          _type: react/element
-          name: self/page/landing/Unsplash_bg
-          children:
-            - _type: react/element
-              name: "@material-ui/core.Container"
-              props:
-                className:
-                  _type: js/expression
-                  data: styles.container
-              children:
-                - _type: react/element
-                  name: "@material-ui/core.Box"
-                  props:
-                    className:
-                      _type: js/expression
-                      data: styles.box
-                  children:
-                    - _type: js/map
-                      data:
-                        _type: js/filter
-                        data:
-                          _type: js/expression
-                          data: states.ui.deployments
-                        filter: |
-                          !(item.namespace == 'sys' && item.ui_name == 'console')
-                      result:
+          _type: js/function
+          params:
+            - event
+      component:
+        name: "@material-ui/core.Container"
+        _type: react/element
+        props:
+          className:
+            data: styles.paper
+            _type: js/expression
+        _order: 6
+        children:
+          - name: "@material-ui/core.Fab"
+            _type: react/element
+            props:
+              size: medium
+              color: primary
+            style:
+              margin:
+                data: theme.spacing(1)
+                _type: js/expression
+              boxShadow: none
+            children:
+              - name: "@material-ui/icons.ViewQuiltRounded"
+                _type: react/element
+          - name: "@material-ui/core.Typography"
+            _type: react/element
+            props:
+              variant: h6
+            style:
+              margin:
+                data: theme.spacing(1)
+                _type: js/expression
+            children:
+              - Sign in to App-X
+          - name: "@material-ui/core.Grid"
+            _type: react/element
+            props:
+              spacing: 2
+              className:
+                data: styles.grid
+                _type: js/expression
+              container: true
+          - name: form
+            _type: react/html
+            props:
+              onSubmit:
+                data: handlers.handleSubmit
+                _type: js/expression
+              className:
+                data: styles.form
+                _type: js/expression
+              noValidate: true
+            children:
+              - name: "@material-ui/core.TextField"
+                _type: react/element
+                props:
+                  id: username
+                  label: Login
+                  value:
+                    data: states.username.value
+                    _type: js/expression
+                  margin: normal
+                  variant: outlined
+                  onChange:
+                    body:
+                      - |
+                        states.username.setValue(e.target.value)
+                        states.error.setValue('')
+                    _type: js/function
+                    params:
+                      - e
+                  required: true
+                  autoFocus: true
+                  fullWidth: true
+                  autoComplete: username
+              - name: "@material-ui/core.TextField"
+                _type: react/element
+                props:
+                  id: password
+                  type: password
+                  label: Password
+                  value:
+                    data: states.password.value
+                    _type: js/expression
+                  margin: normal
+                  variant: outlined
+                  onChange:
+                    body:
+                      - |
+                        states.password.setValue(e.target.value)
+                        states.error.setValue('')
+                    _type: js/function
+                    params:
+                      - e
+                  required: true
+                  fullWidth: true
+                  autoComplete: current-password
+              - _type: js/condition
+                children:
+                  - result:
+                      name: "@material-ui/core.Grid"
+                      _type: react/element
+                      props:
+                        xs: 12
+                        item: true
+                      children:
+                        - name: "@material-ui/core.Typography"
+                          _type: react/element
+                          props:
+                            variant: subtitle1
+                            className:
+                              data: styles.error
+                              _type: js/expression
+                            component: h1
+                          children:
+                            - data: states.error.value
+                              _type: js/expression
+                    condition: states.error.value
+              - name: "@material-ui/core.Button"
+                _type: react/element
+                props:
+                  size: large
+                  color: primary
+                  onClick:
+                    data: handlers.handleSubmit
+                    _type: js/expression
+                  variant: contained
+                  fullWidth: true
+                style:
+                  margin:
+                    data: theme.spacing(2,0)
+                    _type: js/expression
+                  boxShadow: none
+                children:
+                  - Sign In
+              - name: "@material-ui/core.Box"
+                _type: react/element
+                props:
+                  mt: 5
+                children:
+                  - name: "@material-ui/core.Typography"
+                    _type: react/element
+                    props:
+                      align: center
+                      color: textSecondary
+                      variant: body2
+                    children:
+                      - "Copyright © app-x.org "
+                      - data: new Date().getFullYear()
+                        _type: js/expression
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/landing/Home
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme
+                _type: js/import
+          - name: app-x/route/RouterProvider
+            _type: react/element
+      effect:
+        body:
+          - |
+            // console.log(props)
+        _type: react/effect
+        _order: 3
+      router:
+        name: app-x/route/RouterProvider.Context
+        _type: route/context
+        _order: 2
+      styles:
+        grid:
+          width: 100%
+          bottom: 10%
+          zIndex: 0
+          padding:
+            data: theme.spacing(2)
+            _type: js/expression
+          position: fixed
+        _type: mui/style
+        _order: 1
+      component:
+        name: app-x/page/landing/YouTube_fs
+        _type: react/element
+        props:
+          youtube_playlist:
+            - end: 690
+              vid: vzR0dsZeQsY
+              start: 500
+            - end: 500
+              vid: vzR0dsZeQsY
+              start: 330
+            - end: 230
+              vid: vzR0dsZeQsY
+              start: 20
+            - end: 120
+              vid: HHBsvKnCkwI
+              start: 0
+            - end: 300
+              vid: HHBsvKnCkwI
+              start: 180
+            - end: 450
+              vid: HHBsvKnCkwI
+              start: 301
+            - end: 360
+              vid: RQ18TpXxbzU
+              start: 240
+            - end: 240
+              vid: RQ18TpXxbzU
+              start: 120
+            - end: 120
+              vid: RQ18TpXxbzU
+              start: 10
+            - end: 8
+              vid: k5obtOZe4ZQ
+              start: 0
+            - end: 338
+              vid: k5obtOZe4ZQ
+              start: 47
+            - end: 512
+              vid: k5obtOZe4ZQ
+              start: 375
+            - end: 596
+              vid: k5obtOZe4ZQ
+              start: 554
+            - end: -1
+              vid: _f43Gl_6hkc
+              start: 0
+            - end: 135
+              vid: -hcXR9aMTxI
+              start: 2
+            - end: 103
+              vid: wnhvanMdx4s
+              start: 0
+            - end: 306
+              vid: wnhvanMdx4s
+              start: 263
+            - end: 360
+              vid: xRFrjAVH1uQ
+              start: 238
+            - end: 235
+              vid: xRFrjAVH1uQ
+              start: 128
+            - end: 120
+              vid: xRFrjAVH1uQ
+              start: 20
+            - end: 63
+              vid: zRpazyH1WzI
+              start: 5
+            - end: 220
+              vid: zRpazyH1WzI
+              start: 99
+            - end: 2050
+              vid: zRpazyH1WzI
+              start: 1992
+            - vid: vOxmsqd8f58
+              start: 0
+        _order: 4
+        children:
+          - name: "@material-ui/core.Box"
+            _type: react/element
+            props:
+              className:
+                data: styles.grid
+                _type: js/expression
+            children:
+              - name: "@material-ui/core.Grid"
+                _type: react/element
+                props:
+                  spacing: 1
+                  container: true
+                children:
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 2
+                      md: 1
+                      sm: 1
+                      xl: 3
+                      xs: false
+                      item: true
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 3
+                      md: 4
+                      sm: 5
+                      xl: 2
+                      xs: 12
+                      item: true
+                    children:
+                      - name: "@material-ui/core.Button"
                         _type: react/element
-                        name: "@material-ui/core.Card"
                         props:
-                          key:
-                            _type: js/expression
-                            data: item.id
-                          style:
-                            cursor: move
-                          className:
-                            _type: js/expression
-                            data: styles.card
-                          draggable: true
+                          size: large
+                          color: primary
+                          onClick:
+                            body:
+                              - router.hnavigate('sys', 'console', 'base',
+                                '/docs')
+                            _type: js/function
+                          variant: contained
+                          fullWidth: true
+                          startIcon:
+                            name: "@material-ui/icons.MenuBook"
+                            _type: react/element
                         children:
-                          - _type: react/element
-                            name: "@material-ui/core.CardActionArea"
-                            children:
-                              - _type: react/element
-                                name: app-x/route/RouterProvider.HLink
-                                props:
-                                  href: /
-                                  ui_name:
-                                    _type: js/expression
-                                    data: item.ui_name
-                                  namespace:
-                                    _type: js/expression
-                                    data: item.namespace
-                                  ui_deployment:
-                                    _type: js/expression
-                                    data: item.ui_deployment
-                                children:
-                                  - _type: react/element
-                                    name: "@material-ui/core.CardContent"
-                                    children:
-                                      - _type: react/element
-                                        name: "@material-ui/core.Fab"
-                                        props:
-                                          size: medium
-                                          color: primary
-                                          component: div
-                                        style:
-                                          margin:
-                                            _type: js/expression
-                                            data: theme.spacing(1)
-                                          boxShadow: none
-                                        children:
-                                          - _type: react/element
-                                            name: "@material-ui/icons.ViewQuiltRounded"
-                                      - _type: react/element
-                                        name: "@material-ui/core.Typography"
-                                        props:
-                                          variant: body2
-                                          className:
-                                            _type: js/expression
-                                            data: styles.cardContent
-                                        children:
-                                          - _type: js/expression
-                                            data: item.namespace
-                                          - " / "
-                                          - _type: js/expression
-                                            data: item.ui_name
-                                          - " / "
-                                          - _type: js/expression
-                                            data: item.ui_deployment
-                                      - _type: react/element
-                                        name: "@material-ui/core.Typography"
-                                        props:
-                                          variant: h6
-                                          className:
-                                            _type: js/expression
-                                            data: styles.cardContent
-                                        children:
-                                          - _type: js/expression
-                                            data: item.ui_spec.description
-                          - _type: react/element
-                            name: "@material-ui/core.CardActions"
-                            children:
-                              - _type: react/element
-                                name: "@material-ui/core.Button"
-                                props:
-                                  size: small
-                                  color: secondary
-                                  className:
-                                    _type: js/expression
-                                    data: styles.cardContent
-                                children:
-                                  - Details
-          _order: 5
-        _test:
-          providers:
-            - name: react-redux.Provider
-              _type: react/element
-              props:
-                store:
-                  name: app-x/redux/store
-                  _type: js/import
-            - name: app-x/theme/GlobalStyleProvider
-              _type: react/element
-              props:
-                theme:
-                  name: app-x/theme/dark
-                  _type: js/import
+                          - Getting Started
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 1
+                      md: 1
+                      xl: 1
+                      xs: false
+                      item: true
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 1
+                      md: 1
+                      xl: 1
+                      xs: false
+                      item: true
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 3
+                      md: 4
+                      sm: 5
+                      xl: 2
+                      xs: 12
+                      item: true
+                    children:
+                      - name: "@material-ui/core.Button"
+                        _type: react/element
+                        props:
+                          size: large
+                          color: primary
+                          onClick:
+                            body:
+                              - router.hnavigate('sys', 'console', 'base',
+                                '/console')
+                            _type: js/function
+                          variant: contained
+                          fullWidth: true
+                          startIcon:
+                            name: "@material-ui/icons.Slideshow"
+                            _type: react/element
+                        children:
+                          - Live Demo
+                  - name: "@material-ui/core.Grid"
+                    _type: react/element
+                    props:
+                      lg: 2
+                      md: 1
+                      sm: 1
+                      xl: 3
+                      xs: false
+                      item: true
+  - namespace: sys
+    ui_name: console
+    ui_ver: internal
+    ui_component_name: /page/landing/Unsplash_bg
+    ui_component_type: react/component
+    ui_component_spec:
+      _test:
+        providers:
+          - name: react-redux.Provider
+            _type: react/element
+            props:
+              store:
+                name: app-x/redux/store
+                _type: js/import
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme
+                _type: js/import
+      styles:
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 1
+      component:
+        name: app-x/page/landing/Unsplash_bg
+        _type: react/element
+        props:
+          unsplashCollections:
+            - 542909
+            - 1922729
+            - 852718
+            - 1023843
+            - 543765
+            - 148982
+            - 349521
+            - 427860
+            - 353649
+        _order: 2
+        children:
+          - data: props.children
+            _type: js/expression
+

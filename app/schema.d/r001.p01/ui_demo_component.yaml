@@ -1,64 +1,64 @@
 ui_component:
-    ############################################################
-    - namespace: sys
-      ui_name: demo
-      ui_ver: internal
-      ui_component_name: /Router
-      ui_component_type: react/component
-      ui_component_spec:
-        theme:
-          _type: mui/theme
-          _order: 1
-        styles:
-          _type: mui/style
-          root:
-            color:
-              _type: js/expression
-              data: theme.palette.text.primary
-            height: 100%
-            backgroundColor:
-              _type: js/expression
-              data: theme.palette.background.paper
-          _order: 2
-        component:
-          _type: react/element
-          name: react-redux.Provider
-          props:
-            store:
-              _type: js/import
-              name: app-x/redux/store
-          children:
-            - _type: react/element
-              name: app-x/theme/GlobalStyleProvider
-              props:
-                theme:
-                  _type: js/import
-                  name: app-x/theme/light
-              children:
-                - _type: react/element
-                  name: app-x/route/RouterProvider
-                  children:
-                    - _type: react/element
-                      name: react-router-dom.Routes
-                      children:
-                        - _type: route/path
-                          path: /
-                          element:
-                            _type: react/element
-                            name: "@material-ui/core.Box"
-                            props:
-                              height: 100%
-                              display: flex
-                              alignItems: center
-                              justifyContent: center
-                            children:
-                              - _type: react/element
-                                name: "@material-ui/core.Typography"
-                                children:
-                                  - Demo Text
-                        - _type: route/path
-                          path: "*"
-                          element:
-                            _type: react/element
-                            name: app-x/page/error/NotFoundView
-          _order: 3
+  - namespace: sys
+    ui_name: demo
+    ui_ver: internal
+    ui_component_name: /Router
+    ui_component_type: react/component
+    ui_component_spec:
+      theme:
+        _type: mui/theme
+        _order: 1
+      styles:
+        root:
+          color:
+            data: theme.palette.text.primary
+            _type: js/expression
+          height: 100%
+          backgroundColor:
+            data: theme.palette.background.paper
+            _type: js/expression
+        _type: mui/style
+        _order: 2
+      component:
+        name: react-redux.Provider
+        _type: react/element
+        props:
+          store:
+            name: app-x/redux/store
+            _type: js/import
+        _order: 3
+        children:
+          - name: app-x/theme/GlobalStyleProvider
+            _type: react/element
+            props:
+              theme:
+                name: app-x/theme/light
+                _type: js/import
+            children:
+              - name: app-x/route/RouterProvider
+                _type: react/element
+                children:
+                  - name: react-router-dom.Routes
+                    _type: react/element
+                    children:
+                      - path: /
+                        _type: route/path
+                        element:
+                          name: "@material-ui/core.Box"
+                          _type: react/element
+                          props:
+                            height: 100%
+                            display: flex
+                            alignItems: center
+                            justifyContent: center
+                          children:
+                            - name: "@material-ui/core.Typography"
+                              _type: react/element
+                              children:
+                                - Demo Text
+                      - path: "*"
+                        _type: route/path
+                        element:
+                          name: app-x/page/error/NotFoundView
+                          _type: react/element
+
