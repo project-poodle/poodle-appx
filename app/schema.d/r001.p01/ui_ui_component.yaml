@@ -339,7 +339,7 @@ ui_component:
         _type: mui/style
         _order: 3
         sideNav:
-          width: 300
+          width: 280
           height: 100%
           backgroundColor:
             data: theme.palette.background.paper
@@ -398,7 +398,7 @@ ui_component:
                       - name: antd.Layout.Sider
                         _type: react/element
                         props:
-                          width: 300
+                          width: 280
                           className:
                             data: styles.sideNav
                             _type: js/expression
@@ -2487,4 +2487,3 @@ ui_component:
                     _type: js/expression
                 children:
                   - c
-

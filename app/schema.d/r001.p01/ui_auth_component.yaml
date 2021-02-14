@@ -230,7 +230,7 @@ ui_component:
         styles:
           _type: mui/style
           sideNav:
-            width: 300
+            width: 280
             height: 100%
             backgroundColor:
               _type: js/expression

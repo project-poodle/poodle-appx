@@ -86,22 +86,22 @@ const UI_Builder = (props) => {
         i: 'iframe',
         x: 0,
         y: 0,
-        w: 9,
-        h: 20,
+        w: 12,
+        h: 24,
       },
       {
         i: 'navTree',
-        x: 14,
+        x: 17,
         y: 0,
-        w: 6,
-        h: 20,
+        w: 7,
+        h: 24,
       },
       {
         i: 'propEditor',
-        x: 9,
+        x: 12,
         y: 0,
         w: 5,
-        h: 20,
+        h: 24,
       },
     ],
     sm: [
@@ -109,22 +109,22 @@ const UI_Builder = (props) => {
         i: 'iframe',
         x: 0,
         y: 0,
-        w: 10,
-        h: 10,
+        w: 12,
+        h: 12,
       },
       {
         i: 'navTree',
         x: 0,
-        y: 10,
-        w: 10,
-        h: 5,
+        y: 12,
+        w: 12,
+        h: 6,
       },
       {
         i: 'propEditor',
         x: 0,
-        y: 15,
-        w: 10,
-        h: 5,
+        y: 18,
+        w: 12,
+        h: 6,
       },
     ],
   })
@@ -139,7 +139,7 @@ const UI_Builder = (props) => {
       function resizeGridLayout() {
         const node = ReactDOM.findDOMNode(ref)
         // console.log(node, node.offsetWidth, node.offsetHeight)
-        setRowHeight((node.offsetHeight - 2) / 20)
+        setRowHeight((node.offsetHeight - 2) / 24)
         setWidth(node.offsetWidth - 2)
       }
       // resize now
@@ -192,7 +192,7 @@ const UI_Builder = (props) => {
           rowHeight={rowHeight}
           width={width}
           breakpoints={{md: 960, sm: 768}}
-          cols={{md: 20, sm: 10}}
+          cols={{md: 24, sm: 12}}
           onLayoutChange={onLayoutChange}
           onResize={onLayoutChange}
         >
