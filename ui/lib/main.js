@@ -38,6 +38,7 @@ import * as queryString from 'query-string'
 import * as timeAgo from 'javascript-time-ago'
 import * as timeAgoLocaleEn from 'javascript-time-ago/locale/en'
 import * as knownCssProperties from 'known-css-properties'
+import * as cssPropsValues from 'css-properties-values'
 // reflective prop types
 //import reflectPropTypes from './reflectPropTypes'
 
@@ -83,4 +84,5 @@ export default {
   "javascript-time-ago": timeAgo,
   "javascript-time-ago/locale/en": timeAgoLocaleEn,
   "known-css-properties": knownCssProperties,
+  "css-properties-values": cssPropsValues,
 }
