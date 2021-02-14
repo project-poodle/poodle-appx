@@ -948,7 +948,7 @@ ui_component:
                 _type: js/import
       theme:
         _type: mui/theme
-        _order: 7
+        _order: 8
       styles:
         root:
           color:
@@ -960,7 +960,7 @@ ui_component:
             data: theme.palette.background.paper
             _type: js/expression
         _type: mui/style
-        _order: 8
+        _order: 9
       effects:
         body:
           - _type: appx/api
@@ -983,7 +983,9 @@ ui_component:
                 setDeployments(result)
               }
         _type: react/effect
-        _order: 6
+        _order: 7
+        states:
+          - loadTime
       component:
         name: "@material-ui/core.Box"
         _type: react/element
@@ -991,7 +993,7 @@ ui_component:
           className:
             data: styles.root
             _type: js/expression
-        _order: 10
+        _order: 11
         children:
           - name: app-x/core/Dialog
             open: addOpen
@@ -1003,7 +1005,32 @@ ui_component:
                 _type: js/call
                 params:
                   - Add
-            onSubmit: data => console.log(`submit add`, data)
+            onSubmit:
+              body:
+                - data: |-
+                    {
+                      ui_ver: data.ui_ver,
+                      ui_deployment_spec: data.ui_deployment_spec
+                    }
+                  _type: appx/api
+                  method: post
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+                    ui_deployment:
+                      data: data.ui_deployment
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
             DialogProps:
               maxWidth: md
               fullWidth: true
@@ -1017,7 +1044,32 @@ ui_component:
                 _type: js/call
                 params:
                   - Clone
-            onSubmit: data => console.log(`clone`, data)
+            onSubmit:
+              body:
+                - data: |-
+                    {
+                      ui_ver: data.ui_ver,
+                      ui_deployment_spec: data.ui_deployment_spec
+                    }
+                  _type: appx/api
+                  method: post
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+                    ui_deployment:
+                      data: data.ui_deployment
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
             DialogProps:
               maxWidth: md
               fullWidth: true
@@ -1035,7 +1087,27 @@ ui_component:
                   - true
                   - false
                   - true
-            onSubmit: data => console.log(`delete`, data)
+            onSubmit:
+              body:
+                - _type: appx/api
+                  method: delete
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+                    ui_deployment:
+                      data: data.ui_deployment
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
             DialogProps:
               maxWidth: md
               fullWidth: true
@@ -1067,7 +1139,7 @@ ui_component:
                   body:
                     - |-
                       const apiMaps =
-                        row.ui_deployment_spec.apiMaps
+                        row.ui_deployment_spec.apiMaps || []
                       return apiMaps.map(map => (
                           `${map.namespace}/${map.app_name}`
                       )).flat().join(', ')
@@ -1160,6 +1232,11 @@ ui_component:
                         - true
                   onSubmit:
                     body:
+                      - body:
+                          - |-
+                            // console.log(row)
+                            row.toggleRowExpanded()
+                        _type: js/statement
                       - data: |-
                           {
                             ui_ver: data.ui_ver,
@@ -1170,7 +1247,7 @@ ui_component:
                         app_name: appx
                         endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
                         namespace: sys
-                        resultHandler: result => console.log(result)
+                        resultHandler: result => setLoadTime(Date.now())
                         endpointParams:
                           ui_name:
                             data: data.ui_name
@@ -1189,25 +1266,31 @@ ui_component:
         init: "false"
         name: addOpen
         _type: react/state
-        _order: 3
+        _order: 4
         setter: setAddOpen
       ...currRow:
         init: "{}"
         name: currRow
         _type: react/state
-        _order: 2
+        _order: 3
         setter: setCurrRow
+      ...loadTime:
+        init: "0"
+        name: loadTime
+        _type: react/state
+        _order: 2
+        setter: setLoadTime
       ...cloneOpen:
         init: "false"
         name: cloneOpen
         _type: react/state
-        _order: 4
+        _order: 5
         setter: setCloneOpen
       ...deleteOpen:
         init: "false"
         name: deleteOpen
         _type: react/state
-        _order: 5
+        _order: 6
         setter: setDeleteOpen
       ...deployments:
         init: "[]"
@@ -1217,7 +1300,7 @@ ui_component:
         setter: setDeployments
       renderRowPanel:
         _type: js/function
-        _order: 9
+        _order: 10
         params:
           - actionName
           - disableKeys

@@ -503,14 +503,14 @@ const request = (namespace, app_name, conf, callback, handler) => {
           }
           url = url.replace(match[1], endpointParams[match[2]])
         }
-        console.log(`api conf`, conf.endpoint, conf.endpointParams, url)
+        // console.log(`api conf`, conf.endpoint, conf.endpointParams, url)
       }
       if (!!url) {
         req.url = `${basePath}/${url}`.replace(/\/+/g, '/')
       } else {
         throw new Error(`ERROR: missing url [${conf.url}] or endpoint [${conf.endpoint}]`)
       }
-      console.log(`req.url`, req.url)
+      // console.log(`req.url`, req.url)
       if ('headers' in conf) {
         req.headers = {
           ...conf.headers,
