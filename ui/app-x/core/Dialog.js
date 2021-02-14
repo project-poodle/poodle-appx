@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect } from "react"
 import PropTypes from 'prop-types'
 import {
+  Box,
   Dialog as MuiDialog,
   DialogTitle,
+  useTheme,
 } from '@material-ui/core'
 import {
   FormProvider,
@@ -17,6 +19,8 @@ function isPrimitive(test) {
 }
 
 const Dialog = (props) => {
+  // theme
+  const theme = useTheme()
   // useForm hook
   const useFormProps = useForm(
     props.FormProps || {}
@@ -94,9 +98,26 @@ const Dialog = (props) => {
           <form
             onSubmit={onSubmit}
             >
-            <DialogTitle id={`dialog-title-${props.title.replace(/[^a-zA-Z0-9]/g, '-')}`}>
-              { props.icon }
-              { props.title }
+            <DialogTitle>
+              <Box display="flex" alignItems="center">
+                {
+                  !!props.icon
+                  &&
+                  (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      flexShrink={true}
+                      style={{margin: theme.spacing(0, 2, 0, 0)}}
+                      >
+                      { props.icon }
+                    </Box>
+                  )
+                }
+                <Box id={`dialog-title-${props.title.replace(/[^a-zA-Z0-9]/g, '-')}`}>
+                  { props.title }
+                </Box>
+              </Box>
             </DialogTitle>
             {
               props.children
