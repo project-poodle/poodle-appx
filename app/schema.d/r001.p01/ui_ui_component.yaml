@@ -816,11 +816,11 @@ ui_component:
             _type: react/element
       theme:
         _type: mui/theme
-        _order: 1
+        _order: 7
       router:
         name: app-x/route/RouterProvider.Context
         _type: route/context
-        _order: 5
+        _order: 10
       styles:
         root:
           color:
@@ -832,7 +832,7 @@ ui_component:
             data: theme?.palette.background.paper
             _type: js/expression
         _type: mui/style
-        _order: 2
+        _order: 8
       effects:
         body:
           - _type: appx/api
@@ -847,12 +847,14 @@ ui_component:
                 setUiApps(result)
               }
         _type: react/effect
-        _order: 4
+        _order: 9
+        states:
+          - loadTime
       ...uiApps:
         init: "[]"
         name: uiApps
         _type: react/state
-        _order: 3
+        _order: 1
         setter: setUiApps
       component:
         name: "@material-ui/core.Box"
@@ -861,8 +863,123 @@ ui_component:
           className:
             data: styles.root
             _type: js/expression
-        _order: 6
+        _order: 12
         children:
+          - name: app-x/core/Dialog
+            open: addOpen
+            _type: appx/dialog
+            title: "`Add UI App`"
+            setOpen: setAddOpen
+            children:
+              - func: renderRowPanel
+                _type: js/call
+                params:
+                  - Add
+            onSubmit:
+              body:
+                - data: |-
+                    {
+                      ui_spec: data.ui_spec
+                    }
+                  _type: appx/api
+                  method: post
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_ver:
+                      data: data.ui_ver
+                      _type: js/expression
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
+            DialogProps:
+              maxWidth: md
+              fullWidth: true
+          - name: app-x/core/Dialog
+            open: cloneOpen
+            _type: appx/dialog
+            title: "`Clone UI App`"
+            setOpen: setCloneOpen
+            children:
+              - func: renderRowPanel
+                _type: js/call
+                params:
+                  - Clone
+            onSubmit:
+              body:
+                - data: |-
+                    {
+                      ui_spec: data.ui_spec
+                    }
+                  _type: appx/api
+                  method: post
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_ver:
+                      data: data.ui_ver
+                      _type: js/expression
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
+            DialogProps:
+              maxWidth: md
+              fullWidth: true
+            defaultValue: currRow.original
+          - name: app-x/core/Dialog
+            open: deleteOpen
+            _type: appx/dialog
+            title: "`Delete UI App`"
+            setOpen: setDeleteOpen
+            children:
+              - func: renderRowPanel
+                _type: js/call
+                params:
+                  - Delete
+                  - true
+                  - false
+                  - true
+            onSubmit:
+              body:
+                - _type: appx/api
+                  method: delete
+                  app_name: appx
+                  endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
+                  namespace: sys
+                  resultHandler: result => setLoadTime(Date.now())
+                  endpointParams:
+                    ui_ver:
+                      data: data.ui_ver
+                      _type: js/expression
+                    ui_name:
+                      data: data.ui_name
+                      _type: js/expression
+                    namespace:
+                      data: data.namespace
+                      _type: js/expression
+              _type: js/function
+              params:
+                - data
+            DialogProps:
+              maxWidth: md
+              fullWidth: true
+            defaultValue: currRow.original
           - data: uiApps
             name: app-x/core/Table
             _type: appx/table
@@ -893,18 +1010,74 @@ ui_component:
                 accessor:
                   body:
                     - >-
-                      const imports = row.ui_spec.importMaps.imports.map(i =>
-                      i.prefix)
+                      const imports = (row.ui_spec.importMaps?.imports ||
+                      []).map(i => i.prefix)
 
-                      const libs = row.ui_spec.importMaps.libs.map(l => l.name)
+                      const libs = (row.ui_spec.importMaps?.libs || []).map(l => l.name)
 
                       return [].concat(imports, libs).flat().join(', ')
                   _type: js/function
                   params:
                     - row
+              - id: action
+                Cell:
+                  name: "@material-ui/core.Box"
+                  _type: react/element
+                  props:
+                    display: flex
+                    onClick:
+                      data: e => e.stopPropagation()
+                      _type: js/expression
+                    alignItems: center
+                    justifyContent: center
+                  children:
+                    - name: "@material-ui/core.Tooltip"
+                      _type: react/element
+                      props:
+                        title: Clone
+                      children:
+                        - name: "@material-ui/core.IconButton"
+                          _type: react/element
+                          props:
+                            size: small
+                            onClick:
+                              data: |-
+                                e => {
+                                  setCurrRow(row)
+                                  setCloneOpen(true)
+                                }
+                              _type: js/expression
+                          children:
+                            - name: "@material-ui/icons.AddToPhotosOutlined"
+                              _type: react/element
+                    - name: "@material-ui/core.Tooltip"
+                      _type: react/element
+                      props:
+                        title: Delete
+                      children:
+                        - name: "@material-ui/core.IconButton"
+                          _type: react/element
+                          props:
+                            size: small
+                            onClick:
+                              data: |-
+                                e => {
+                                  setCurrRow(row)
+                                  setDeleteOpen(true)
+                                }
+                              _type: js/expression
+                          children:
+                            - name: "@material-ui/icons.DeleteOutline"
+                              _type: react/element
+                _type: appx/table/column
+                Header: Action
             toolbar:
               name: "@material-ui/core.IconButton"
               _type: react/element
+              props:
+                onClick:
+                  data: e => setAddOpen(true)
+                  _type: js/expression
               children:
                 - name: "@material-ui/icons.AddOutlined"
                   _type: react/element
@@ -912,20 +1085,358 @@ ui_component:
               name: "@material-ui/core.Box"
               _type: react/element
               props:
-                display: flex
-                alignItems: center
-                justifyContent: center
+                width: 100%
+              style:
+                border: 1
+                borderTop: "0"
+                borderColor:
+                  data: theme.palette.divider
+                  _type: js/expression
+                borderStyle: solid
               children:
-                - name: "@material-ui/core.Typography"
+                - name: app-x/core/Form
+                  _type: appx/form
+                  onReset:
+                    body:
+                      - row.toggleRowExpanded()
+                    _type: js/function
+                  children:
+                    - func: renderRowPanel
+                      _type: js/call
+                      params:
+                        - Update
+                        - true
+                        - true
+                  onSubmit:
+                    body:
+                      - body:
+                          - |-
+                            // console.log(row)
+                            // row.toggleRowExpanded()
+                        _type: js/statement
+                      - data: |-
+                          {
+                            ui_spec: data.ui_spec
+                          }
+                        _type: appx/api
+                        method: put
+                        app_name: appx
+                        endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
+                        namespace: sys
+                        resultHandler: result => setLoadTime(Date.now())
+                        endpointParams:
+                          ui_ver:
+                            data: data.ui_ver
+                            _type: js/expression
+                          ui_name:
+                            data: data.ui_name
+                            _type: js/expression
+                          namespace:
+                            data: data.namespace
+                            _type: js/expression
+                    _type: js/function
+                    params:
+                      - data
+                  defaultValue: row.original
+      ...addOpen:
+        init: "false"
+        name: addOpen
+        _type: react/state
+        _order: 4
+        setter: setAddOpen
+      ...currRow:
+        init: "{}"
+        name: currRow
+        _type: react/state
+        _order: 3
+        setter: setCurrRow
+      ...loadTime:
+        init: "0"
+        name: loadTime
+        _type: react/state
+        _order: 2
+        setter: setLoadTime
+      ...cloneOpen:
+        init: "false"
+        name: cloneOpen
+        _type: react/state
+        _order: 5
+        setter: setCloneOpen
+      ...deleteOpen:
+        init: "false"
+        name: deleteOpen
+        _type: react/state
+        _order: 6
+        setter: setDeleteOpen
+      renderRowPanel:
+        _type: js/function
+        _order: 11
+        params:
+          - actionName
+          - disableKeys
+          - hideKeys
+          - hideNonKeys
+        return:
+          name: "@material-ui/core.Box"
+          _type: react/element
+          style:
+            padding:
+              data: theme.spacing(0, 4)
+              _type: js/expression
+          children:
+            - name: "@material-ui/core.Box"
+              _type: react/element
+              props:
+                display:
+                  data: "!!hideKeys ? 'none' : 'block'"
+                  _type: js/expression
+              children:
+                - name: antd.Row
                   _type: react/element
                   children:
-                    - data: |-
-                        JSON.stringify(
-                            row.original.ui_spec.importMaps,
-                            null,
-                            2
-                        )
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 8
+                      children:
+                        - id: namespace
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: Namespace
+                          style:
+                            padding:
+                              data: theme.spacing(0, 2, 1, 0)
+                              _type: js/expression
+                            maxWidth: 300
+                          required: true
+                          TextProps:
+                            size: small
+                            disabled:
+                              data: "!!disableKeys"
+                              _type: js/expression
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 8
+                      children:
+                        - id: ui_name
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: UI App
+                          style:
+                            padding:
+                              data: theme.spacing(0, 2, 1, 0)
+                              _type: js/expression
+                            maxWidth: 300
+                          required: true
+                          TextProps:
+                            size: small
+                            disabled:
+                              data: "!!disableKeys"
+                              _type: js/expression
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 8
+                      children:
+                        - id: ui_ver
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: UI Version
+                          style:
+                            padding:
+                              data: theme.spacing(0, 2, 1, 0)
+                              _type: js/expression
+                            maxWidth: 300
+                          required: true
+                          TextProps:
+                            size: small
+                            color: secondary
+                            margin: none
+                            disabled:
+                              data: "!!disableKeys"
+                              _type: js/expression
+            - name: "@material-ui/core.Box"
+              _type: react/element
+              props:
+                display:
+                  data: "!!hideNonKeys ? 'none' : 'block'"
+                  _type: js/expression
+              style:
+                margin:
+                  data: theme.spacing(2,0)
+                  _type: js/expression
+              children:
+                - name: antd.Row
+                  _type: react/element
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
                       _type: js/expression
+                  children:
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 12
+                      style:
+                        padding:
+                          data: theme.spacing(0, 1)
+                          _type: js/expression
+                      children:
+                        - id: ui_spec.index.title
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: Title
+                          TextProps:
+                            size: small
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 12
+                      style:
+                        padding:
+                          data: theme.spacing(0, 1)
+                          _type: js/expression
+                      children:
+                        - id: ui_spec.index.entry
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: Entry Point
+                          required: true
+                          TextProps:
+                            size: small
+                - name: antd.Row
+                  _type: react/element
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
+                      _type: js/expression
+                  children:
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 12
+                      style:
+                        padding:
+                          data: theme.spacing(0, 1)
+                          _type: js/expression
+                      children:
+                        - id: ui_spec.importMaps.imports
+                          name: app-x/core/InputTabular
+                          _type: appx/input/tabular
+                          label: Imports
+                          style:
+                            padding:
+                              data: theme.spacing(2, 0)
+                              _type: js/expression
+                          columns:
+                            - id: prefix
+                              name: app-x/core/InputText
+                              _span: 10
+                              _type: appx/input/text
+                              label: Prefix
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                            - id: path
+                              name: app-x/core/InputText
+                              _span: 12
+                              _type: appx/input/text
+                              label: Path
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                          actionSpan: 2
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 12
+                      style:
+                        padding:
+                          data: theme.spacing(0, 1)
+                          _type: js/expression
+                      children:
+                        - id: ui_spec.importMaps.libs
+                          name: app-x/core/InputTabular
+                          _type: appx/input/tabular
+                          label: Libs
+                          style:
+                            padding:
+                              data: theme.spacing(2, 0)
+                              _type: js/expression
+                          columns:
+                            - id: name
+                              name: app-x/core/InputText
+                              _span: 10
+                              _type: appx/input/text
+                              label: Name
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                            - id: path
+                              name: app-x/core/InputText
+                              _span: 12
+                              _type: appx/input/text
+                              label: Path
+                              required: true
+                              TextProps:
+                                size: small
+                                color: secondary
+                          actionSpan: 2
+                - id: ui_spec.comment
+                  name: app-x/core/InputText
+                  _type: appx/input/text
+                  label: Comment
+                  style:
+                    padding:
+                      data: theme.spacing(2, 0)
+                      _type: js/expression
+                  TextProps:
+                    size: small
+                    color: secondary
+            - name: "@material-ui/core.Box"
+              _type: react/element
+              props:
+                display: flex
+              style:
+                padding:
+                  data: theme.spacing(2, 0)
+                  _type: js/expression
+              children:
+                - name: "@material-ui/core.Box"
+                  _type: react/element
+                  props:
+                    flexGrow: "1"
+                - name: app-x/core/InputReset
+                  _type: appx/input/reset
+                  children:
+                    - name: "@material-ui/core.Button"
+                      _type: react/element
+                      props:
+                        color: secondary
+                        variant: outlined
+                      style:
+                        margin:
+                          data: theme.spacing(0, 2)
+                          _type: js/expression
+                      children:
+                        - Cancel
+                - name: app-x/core/InputSubmit
+                  _type: appx/input/submit
+                  children:
+                    - name: "@material-ui/core.Button"
+                      _type: react/element
+                      props:
+                        color: secondary
+                        variant: contained
+                      style:
+                        boxShadow: none
+                      children:
+                        - data: actionName
+                          _type: js/expression
   - namespace: sys
     ui_name: ui
     ui_ver: internal
