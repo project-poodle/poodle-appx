@@ -1020,7 +1020,7 @@ attr:
       obj_name: "ui_deployment"
       attr_name: "ui_ver"
       attr_spec:
-          key: true
+          key: false
           type: "VARCHAR(32)"
     - namespace: "sys"
       app_name: "appx"

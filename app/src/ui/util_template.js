@@ -81,7 +81,7 @@ function _process_child(js_context, childSpec, childData) {
         )
       }
     } else if (!!found.stmt) {
-      processed = _js_parse_statement(
+      processed = _js_parse_statements(
         js_context,
         found.stmt,
         {
@@ -140,7 +140,8 @@ function template_custom(js_context, ref, input) {
           })
         } else if (! (child.name in input)) {
           // if not present
-          return
+          result[`$${child.name}`] = t.nullLiteral()
+          result[`$${child.name}$raw`] = t.nullLiteral()
         } else if (!!child.array) {
           // if array
           result[`$${child.name}`] = t.arrayExpression(
@@ -177,6 +178,7 @@ function template_custom(js_context, ref, input) {
   })()
 
   // typeSpec expr
+  let stmt = false
   let processed = null
   if (!!typeSpec.template?.expr) {
     // if expr is defined
@@ -196,7 +198,7 @@ function template_custom(js_context, ref, input) {
     // if stmt is defined
     // const stmt = prettier.format(typeSpec.template.stmt, { semi: false, parser: "babel" })
     // console.log(stmt)
-    processed = _js_parse_statement(
+    processed = _js_parse_statements(
       js_context,
       typeSpec.template.stmt,
       {
@@ -206,6 +208,7 @@ function template_custom(js_context, ref, input) {
       },
       variables
     )
+    stmt = true
   } else {
     // invalid syntax
     throw new Error(`ERROR: [${input._type}] template [custom] missing [expr] or [stmt] [${JSON.stringify(input.template, null, 2)}]`)
@@ -213,7 +216,12 @@ function template_custom(js_context, ref, input) {
 
   //////////////////////////////////////////////////////////////////////
   // check for CONTEXT_JSX and return
-  if (js_context.CONTEXT_STATEMENT) {
+  if (!!stmt) {
+    // console.log(processed)
+    return t.blockStatement(
+      processed
+    )
+  } else if (js_context.CONTEXT_STATEMENT) {
     // console.log(`reg`, js_context, ref)
     reg_js_variable(js_context, `${js_context.CONTEXT_SCOPE}.${ref}`)
     return t.variableDeclaration(

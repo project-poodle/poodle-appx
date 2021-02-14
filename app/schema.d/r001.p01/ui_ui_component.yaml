@@ -89,10 +89,14 @@ ui_component:
         body:
           - _type: appx/api
             method: get
-            result: |-
-              // console.log(result)
-              setUiDeployments(result)
-              if (router?.pathname.startsWith('/ui_component')) {
+            app_name: appx
+            endpoint: /ui/ui_deployment
+            namespace: sys
+            resultHandler: |-
+              result => {
+                // console.log(result)
+                setUiDeployments(result)
+                if (router?.pathname.startsWith('/ui_component')) {
                   const parts = router.pathname.split('/')
                   const namespace = parts[2]
                   const ui_name = parts[3]
@@ -101,14 +105,12 @@ ui_component:
                   `${d.namespace}/${d.ui_name}/${d.ui_deployment}`
                    === `${namespace}/${ui_name}/${ui_deployment}`)
                   if (found) {
-                      navContext.selectDeployment(found)
+                    navContext.selectDeployment(found)
                   } else {
-                      navContext.selectDeployment(null)
+                    navContext.selectDeployment(null)
                   }
+                }
               }
-            app_name: appx
-            endpoint: /ui/ui_deployment
-            namespace: sys
         _type: react/effect
         _order: 5
       component:
@@ -499,19 +501,19 @@ ui_component:
       effects:
         body:
           - _type: appx/api
-            error: console.error(error)
             method: get
-            result: setUiApps(result)
             app_name: appx
             endpoint: /ui/ui_app
             namespace: sys
+            errorHandler: error => console.error(error)
+            resultHandler: result => setUiApps(result)
           - _type: appx/api
-            error: console.error(error)
             method: get
-            result: setUiDeployments(result)
             app_name: appx
             endpoint: /namespace/sys/ui_deployment
             namespace: sys
+            errorHandler: error => console.error(error)
+            resultHandler: result => setUiDeployments(result)
         _type: react/effect
         _order: 3
       ...uiApps:
@@ -834,14 +836,16 @@ ui_component:
       effects:
         body:
           - _type: appx/api
-            error: console.error(error)
             method: get
-            result: |-
-              // console.log('uiApps', result)
-              setUiApps(result)
             app_name: appx
             endpoint: /ui/ui_app
             namespace: sys
+            errorHandler: error => console.error(error)
+            resultHandler: |-
+              result => {
+                // console.log('uiApps', result)
+                setUiApps(result)
+              }
         _type: react/effect
         _order: 4
       ...uiApps:
@@ -960,20 +964,24 @@ ui_component:
       effects:
         body:
           - _type: appx/api
-            error: |-
-              console.error(error)
-              $I('antd.notification').error({
-                  message: 'Failed to load UI deployments',
-                  description: error.message || String(error),
-                  placement: 'bottomLeft'
-              })
             method: get
-            result: |-
-              // console.log(result)
-              setDeployments(result)
             app_name: appx
             endpoint: /namespace/sys/ui_deployment
             namespace: sys
+            errorHandler: |-
+              error => {
+                console.error(error)
+                $I('antd.notification').error({
+                  message: 'Failed to load UI deployments',
+                  description: error.message || String(error),
+                  placement: 'bottomLeft'
+                })
+              }
+            resultHandler: |-
+              result => {
+                // console.log(result)
+                setDeployments(result)
+              }
         _type: react/effect
         _order: 6
       component:
@@ -1159,7 +1167,11 @@ ui_component:
                           }
                         _type: appx/api
                         method: put
-                        params:
+                        app_name: appx
+                        endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
+                        namespace: sys
+                        resultHandler: result => console.log(result)
+                        endpointParams:
                           ui_name:
                             data: data.ui_name
                             _type: js/expression
@@ -1169,12 +1181,9 @@ ui_component:
                           ui_deployment:
                             data: data.ui_deployment
                             _type: js/expression
-                        result: console.log(result)
-                        app_name: appx
-                        endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
-                        namespace: sys
                     _type: js/function
-                    params: []
+                    params:
+                      - data
                   defaultValue: row.original
       ...addOpen:
         init: "false"
@@ -1521,17 +1530,19 @@ ui_component:
       snippet:
         body:
           - _type: appx/api
-            error: |-
-              $I('antd.notification').error({
-                  message: 'API failed',
-                  description: error,
-                  placement: "bottomLeft"
-              })
             method: get
-            result: console.log(result)
             app_name: appx
             endpoint: /namespace
             namespace: sys
+            errorHandler: |-
+              error => {
+                $I('antd.notification').error({
+                  message: 'API failed',
+                  description: error,
+                  placement: "bottomLeft"
+                })
+              }
+            resultHandler: console.log(result)
           - body:
               - // console.log(this)
             _type: js/statement

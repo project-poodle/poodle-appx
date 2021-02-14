@@ -7,15 +7,55 @@ import {
 // namespace:                # namespace             (:string|:expression)
 // app_name:                 # app_name              (:string|:expression)
 // method:                   # get, post, put, etc   (:string|:expression)
-// endpoint:                 # endpoint              (:string|:expression) - autosuggest
+// endpoint:                 # endpoint              (:string|:expression)
+// endpointParams:           # endpoint params       (:string|:object)
 // data:                     # api data              (:expression)         - for post, put, patch
-// prep:                     # prep code             (:string|:array<:statement>)
-// result:                   # result code           (:string|:array<:statement>)
-// error:                    # error code            (:string|:array<:statement>)
+// resultHandler:            # result handler        (:string|:js/function)
+// errorHandler:             # error handler         (:string|:js/function)
 export const appx_api = {
 
   type: 'appx/api',
   desc: 'API',
+  template: {
+    kind: 'custom',
+    stmt: ' \
+      ( \
+        ( \
+          namespace,  \
+          app_name, \
+          method, \
+          endpoint, \
+          endpointParams, \
+          data, \
+          resultHandler,  \
+          errorHandler, \
+        ) => {  \
+          $I("app-x/api.request")(  \
+            namespace,  \
+            app_name, \
+            { \
+              method: method, \
+              endpoint: endpoint, \
+              endpointParams: endpointParams, \
+              data: data, \
+            },  \
+            resultHandler,  \
+            errorHandler, \
+          ) \
+        } \
+      ) \
+      ( \
+        $namespace, \
+        $app_name,  \
+        $method,  \
+        $endpoint,  \
+        $endpointParams,  \
+        $data,  \
+        $resultHandler,  \
+        $errorHandler, \
+      ) \
+    ',
+  },
   _expand: true,
   _effects: [
     {
@@ -104,8 +144,8 @@ export const appx_api = {
       },
     },
     {
-      name: 'params',
-      desc: 'Parameters',
+      name: 'endpointParams',
+      desc: 'Endpoint Parameters',
       types: [
         {
           kind: 'class',
@@ -151,20 +191,20 @@ export const appx_api = {
             data: 'expression'
           },
         ],
-        class: 'expression',
       },
     },
     {
-      name: 'result',
+      name: 'resultHandler',
       desc: 'Result Handler',
       types: [
         {
           kind: 'class',
-          data: 'string'
+          data: 'string',
+          parse: true,
         },
         {
-          kind: 'class',
-          data: 'statement'
+          kind: 'type',
+          data: 'js/function',
         },
       ],
       _thisNode: {
@@ -175,30 +215,30 @@ export const appx_api = {
           },
         ],
         input: {
-          kind: 'input/statement',
+          kind: 'input/expression',
         },
       },
       _childNode: {
         types: [
           {
-            kind: 'class',
-            data: 'statement'
+            kind: 'type',
+            data: 'js/function',
           },
         ],
-        class: 'statement',
       },
     },
     {
-      name: 'error',
+      name: 'errorHandler',
       desc: 'Error Handler',
       types: [
         {
           kind: 'class',
-          data: 'string'
+          data: 'string',
+          parse: true,
         },
         {
-          kind: 'class',
-          data: 'statement'
+          kind: 'type',
+          data: 'js/function',
         },
       ],
       _thisNode: {
@@ -209,17 +249,16 @@ export const appx_api = {
           },
         ],
         input: {
-          kind: 'input/statement',
+          kind: 'input/expression',
         },
       },
       _childNode: {
         types: [
           {
-            kind: 'class',
-            data: 'statement'
+            kind: 'type',
+            data: 'js/function',
           },
         ],
-        class: 'statement',
       },
     },
   ]

@@ -492,9 +492,25 @@ const request = (namespace, app_name, conf, callback, handler) => {
       const token = data.token
       // handle request
       let req = { ...conf }
-      if ('url' in conf) {
-        req.url = `${basePath}/${conf.url}`.replace(/\/+/g, '/')
+      let url = conf.endpoint || conf.url || ''
+      if ('endpoint' in conf) {
+        const regex = /(:([_a-zA-Z0-9]+))/g
+        const endpointParams = conf.endpointParams || {}
+        let match
+        while (match = regex.exec(conf.endpoint)) {
+          if (! (match[2] in endpointParams)) {
+            throw new Error(`ERROR: unsubstantiated endpoint parameter [${match[1]}] for [${conf.endpoint}]`)
+          }
+          url = url.replace(match[1], endpointParams[match[2]])
+        }
+        console.log(`api conf`, conf.endpoint, conf.endpointParams, url)
       }
+      if (!!url) {
+        req.url = `${basePath}/${url}`.replace(/\/+/g, '/')
+      } else {
+        throw new Error(`ERROR: missing url [${conf.url}] or endpoint [${conf.endpoint}]`)
+      }
+      console.log(`req.url`, req.url)
       if ('headers' in conf) {
         req.headers = {
           ...conf.headers,

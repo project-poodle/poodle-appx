@@ -110,7 +110,7 @@ function parse_for_sql(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal }
     }
 
     // process object type
@@ -120,7 +120,7 @@ function parse_for_sql(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal }
     }
 
     // api sepc
@@ -130,7 +130,7 @@ function parse_for_sql(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal }
     }
 
     let verb = objPath.get(api_spec, ["syntax", "verb"])
@@ -139,7 +139,7 @@ function parse_for_sql(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal }
     }
 
     // process object attrs
@@ -149,7 +149,7 @@ function parse_for_sql(context, req, res) {
         log_api_status(context, FAILURE, msg)
         res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
         fatal = true
-        return
+        return { fatal: fatal }
     }
 
     // update select attrs
@@ -172,7 +172,7 @@ function parse_for_sql(context, req, res) {
     for (const param_key of Object.keys(params)) {
 
         if (fatal) {
-            return
+            return { fatal: fatal }
         }
 
         if (! (param_key in key_attrs) && ! (param_key in non_key_attrs)) {
@@ -180,7 +180,7 @@ function parse_for_sql(context, req, res) {
             log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
-            return
+            return { fatal: fatal }
         }
 
         data_attrs[param_key] = `${params[param_key]}`
@@ -191,15 +191,15 @@ function parse_for_sql(context, req, res) {
     for (const body_key of Object.keys(body)) {
 
         if (fatal) {
-            return
+            return { fatal: fatal }
         }
 
         if (! (body_key in non_key_attrs)) {
-            let msg = `ERROR: body_key not found [${body_key}] - [${JSON.stringify(body)}] !`
+            let msg = `ERROR: unrecognized body key [${body_key}] - [${JSON.stringify(body)}] !`
             log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
-            return
+            return { fatal: fatal }
         }
 
         data_attrs[body_key] = body[body_key]
