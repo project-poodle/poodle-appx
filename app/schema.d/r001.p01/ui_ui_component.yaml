@@ -1235,7 +1235,7 @@ ui_component:
                       - body:
                           - |-
                             // console.log(row)
-                            row.toggleRowExpanded()
+                            // row.toggleRowExpanded()
                         _type: js/statement
                       - data: |-
                           {
