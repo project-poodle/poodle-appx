@@ -61,6 +61,7 @@ import {
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
   REGEX_VAR,
+  deepCompareMemorize,
   lookup_classes,
   lookup_groups,
   lookup_types,
@@ -756,6 +757,38 @@ const PropEditor = (props) => {
   }
   ////////////////////////////////////////////////////////////////////////////////
 
+  const MemorizedBaseTab = React.useMemo(() => (props) => {
+    return (
+      <span>
+        Base
+        {
+          !!propBaseDirty
+          &&
+          (
+            <Asterisk className={styles.asterisk}>
+            </Asterisk>
+          )
+        }
+      </span>
+    )
+  }, [propBaseDirty].map(deepCompareMemorize))
+
+  const MemorizedYamlTab = React.useMemo(() => (props) => {
+    return (
+      <span>
+        YAML
+        {
+          !!propYamlDirty
+          &&
+          (
+            <Asterisk className={styles.asterisk}>
+            </Asterisk>
+          )
+        }
+      </span>
+    )
+  }, [propYamlDirty].map(deepCompareMemorize))
+
   // render
   return (
     <FormProvider {...hookForm}>
@@ -793,17 +826,7 @@ const PropEditor = (props) => {
             >
             <TabPane
               tab={
-                <span>
-                  Base
-                  {
-                    !!propBaseDirty
-                    &&
-                    (
-                      <Asterisk className={styles.asterisk}>
-                      </Asterisk>
-                    )
-                  }
-                </span>
+                <MemorizedBaseTab />
               }
               key="basic"
               className={styles.basicTab}
@@ -1346,19 +1369,9 @@ const PropEditor = (props) => {
               </Box>
             </TabPane>
             <TabPane
-            tab={
-              <span>
-                YAML
-                {
-                  !!propYamlDirty
-                  &&
-                  (
-                    <Asterisk className={styles.asterisk}>
-                    </Asterisk>
-                  )
-                }
-              </span>
-            }
+              tab={
+                <MemorizedYamlTab />
+              }
               key="yaml"
               className={styles.editor}
               >

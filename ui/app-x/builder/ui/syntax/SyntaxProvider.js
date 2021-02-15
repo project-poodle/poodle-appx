@@ -72,11 +72,14 @@ const SyntaxProvider = (props) => {
       },
       redo: _.cloneDeep(history.redo),
     }
-    console.log('updateDesignAction - newHistory', Date.now())
+    // console.log('updateDesignAction - newHistory', Date.now())
+
+    const clone = Date.now()
+    console.log('updateDesignAction - clone', clone, clone - start)
 
     // update state from record
     setTreeData(newTreeData)
-    console.log('updateDesignAction - setTreeData', Date.now())
+    // console.log('updateDesignAction - setTreeData', Date.now())
     // console.log(JSON.stringify(newTreeData, null, 2))
     setExpandedKeys(newExpandedKeys)
     setSelectedKey(newSelectedKey)
@@ -145,23 +148,23 @@ const SyntaxProvider = (props) => {
       },
       redo: [],
     }
-    console.log('makeFreshAction - newHistory', Date.now())
+    // console.log('makeFreshAction - newHistory', Date.now())
 
     // update state from record
     setTestData(newTestData)
-    console.log('makeFreshAction - setTestData', Date.now())
+    // console.log('makeFreshAction - setTestData', Date.now())
     setTreeData(newTreeData)
-    console.log('makeFreshAction - setTreeData', Date.now())
+    // console.log('makeFreshAction - setTreeData', Date.now())
     setExpandedKeys(newExpandedKeys)
-    console.log('makeFreshAction - setExpandedKeys', Date.now())
+    // console.log('makeFreshAction - setExpandedKeys', Date.now())
     setSelectedKey(newSelectedKey)
-    console.log('makeFreshAction - setSelectedKey', Date.now())
+    // console.log('makeFreshAction - setSelectedKey', Date.now())
     setUpdateKey(null)
     setSyntaxDirty(false)
 
     // set history
     setHistory(newHistory)
-    console.log('makeFreshAction - setHistory', Date.now())
+    // console.log('makeFreshAction - setHistory', Date.now())
 
     // syntax tree initialized - for fresh action only
     setSyntaxTreeInitialized(true)
@@ -202,6 +205,9 @@ const SyntaxProvider = (props) => {
     if (newHistory.undo.length > MAX_HISTORY) {
       newHistory.undo.splice(0, newHistory.undo.length - MAX_HISTORY)
     }
+
+    const clone = Date.now()
+    console.log('makeDesignAction - clone', clone, clone - start)
 
     // update state from action
     setTreeData(record.treeData)

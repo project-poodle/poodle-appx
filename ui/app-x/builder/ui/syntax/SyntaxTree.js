@@ -109,10 +109,6 @@ const SyntaxTree = (props) => {
       width: '100%',
       // overflow: 'scroll',
     },
-    toolTop: {
-      margin: theme.spacing(1, 2),
-      // cursor: 'move',
-    },
     fab: {
       margin: theme.spacing(1),
       // cursor: 'move',
@@ -972,10 +968,6 @@ const SyntaxTree = (props) => {
     // console.log(`render MemorizedToolbar`)
     // styles
     const styles = makeStyles((theme) => ({
-      toolTop: {
-        margin: theme.spacing(1, 2),
-        // cursor: 'move',
-      },
       fab: {
         margin: theme.spacing(1),
         // cursor: 'move',
@@ -1109,6 +1101,135 @@ const SyntaxTree = (props) => {
     )
   }, [contextAnchorEl, setContextAnchorEl, addMenuClicked, deleteMenuClicked].map(deepCompareMemorize))
 
+  // save button
+  const MemorizedTools = React.useMemo(() => (props) => {
+    // styles
+    const styles = makeStyles((theme) => ({
+      toolTop: {
+        margin: theme.spacing(1, 2),
+        // cursor: 'move',
+      },
+      fab: {
+        margin: theme.spacing(1),
+        // cursor: 'move',
+      },
+    }))()
+
+    return (
+      <Box key="toolTop" display="inline" className={styles.toolTop}>
+        <Tooltip
+          key="save"
+          title="Save"
+          placement="bottom"
+          >
+          <AntButton
+            size="small"
+            color="secondary"
+            type="default"
+            className={styles.fab}
+            key="save"
+            icon={<Save />}
+            shape="circle"
+            onClick={e => { setSaveTrigger(new Date()) }}
+            danger={syntaxDirty}
+            loading={!!saveTrigger}
+            >
+          </AntButton>
+        </Tooltip>
+        <Tooltip
+          key="reset"
+          title="Reset"
+          placement="bottom"
+          >
+          <AntButton
+            size="small"
+            color="secondary"
+            type="default"
+            className={styles.fab}
+            key="reset"
+            icon={<Reset />}
+            shape="circle"
+            onClick={e => { setLoadTrigger(new Date()) }}
+            loading={!!loadInProgress}
+            >
+          </AntButton>
+        </Tooltip>
+        <Tooltip
+          key="undo"
+          title="Undo"
+          placement="bottom"
+          >
+          <span>
+          <AntButton
+            size="small"
+            color="secondary"
+            type="default"
+            className={styles.fab}
+            key="undo"
+            icon={<Undo />}
+            shape="circle"
+            onClick={e => { undo() }}
+            disabled={!history.undo?.length}
+            >
+          </AntButton>
+          </span>
+        </Tooltip>
+        <Tooltip
+          key="redo"
+          title="Redo"
+          placement="bottom"
+          >
+          <span>
+          <AntButton
+            size="small"
+            color="secondary"
+            type="default"
+            className={styles.fab}
+            key="redo"
+            icon={<Redo />}
+            shape="circle"
+            onClick={e => { redo() }}
+            disabled={!history.redo?.length}
+            >
+          </AntButton>
+          </span>
+        </Tooltip>
+      </Box>
+    )
+  },
+  [
+    syntaxDirty,
+    saveTrigger,
+    loadInProgress,
+    history.undo?.length,
+    history.redo?.length,
+  ].map(deepCompareMemorize))
+
+  // test tab
+  const MemorizedTestTab = React.useMemo(() => (props) => {
+    // styles
+    const styles = makeStyles((theme) => ({
+      asterisk: {
+        // paddingLeft: theme.spacing(1),
+        color: theme.palette.error.light,
+      },
+    }))()
+
+    return (
+      <span>
+        Test
+        {
+          !!testDirty
+          &&
+          (
+            <Asterisk className={styles.asterisk}>
+            </Asterisk>
+          )
+        }
+      </span>
+    )
+  }, [testDirty].map(deepCompareMemorize))
+
   return (
     <Box className={styles.root}>
     {
@@ -1213,85 +1334,7 @@ const SyntaxTree = (props) => {
           // tabBarStyle={{marginLeft: 16}}
           tabBarExtraContent={{
             left:
-              <Box key="toolTop" display="inline" className={styles.toolTop}>
-                <Tooltip
-                  key="save"
-                  title="Save"
-                  placement="bottom"
-                  >
-                  <AntButton
-                    size="small"
-                    color="secondary"
-                    type="default"
-                    className={styles.fab}
-                    key="save"
-                    icon={<Save />}
-                    shape="circle"
-                    onClick={e => { setSaveTrigger(new Date()) }}
-                    danger={syntaxDirty}
-                    loading={!!saveTrigger}
-                    >
-                  </AntButton>
-                </Tooltip>
-                <Tooltip
-                  key="reset"
-                  title="Reset"
-                  placement="bottom"
-                  >
-                  <AntButton
-                    size="small"
-                    color="secondary"
-                    type="default"
-                    className={styles.fab}
-                    key="reset"
-                    icon={<Reset />}
-                    shape="circle"
-                    onClick={e => { setLoadTrigger(new Date()) }}
-                    loading={!!loadInProgress}
-                    >
-                  </AntButton>
-                </Tooltip>
-                <Tooltip
-                  key="undo"
-                  title="Undo"
-                  placement="bottom"
-                  >
-                  <span>
-                  <AntButton
-                    size="small"
-                    color="secondary"
-                    type="default"
-                    className={styles.fab}
-                    key="undo"
-                    icon={<Undo />}
-                    shape="circle"
-                    onClick={e => { undo() }}
-                    disabled={!history.undo?.length}
-                    >
-                  </AntButton>
-                  </span>
-                </Tooltip>
-                <Tooltip
-                  key="redo"
-                  title="Redo"
-                  placement="bottom"
-                  >
-                  <span>
-                  <AntButton
-                    size="small"
-                    color="secondary"
-                    type="default"
-                    className={styles.fab}
-                    key="redo"
-                    icon={<Redo />}
-                    shape="circle"
-                    onClick={e => { redo() }}
-                    disabled={!history.redo?.length}
-                    >
-                  </AntButton>
-                  </span>
-                </Tooltip>
-              </Box>
+              <MemorizedTools />
           }}
           >
           <TabPane
@@ -1334,17 +1377,7 @@ const SyntaxTree = (props) => {
             (
               <TabPane
                 tab={
-                  <span>
-                    Test
-                    {
-                      !!testDirty
-                      &&
-                      (
-                        <Asterisk className={styles.asterisk}>
-                        </Asterisk>
-                      )
-                    }
-                  </span>
+                  <MemorizedTestTab />
                 }
                 key="test"
                 className={styles.pane}

@@ -1105,11 +1105,7 @@ ui_component:
                             // console.log(row)
                             // row.toggleRowExpanded()
                         _type: js/statement
-                      - data: |-
-                          {
-                            ui_spec: data.ui_spec
-                          }
-                        _type: appx/api
+                      - _type: appx/api
                         method: put
                         app_name: appx
                         endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
@@ -1125,6 +1121,10 @@ ui_component:
                           namespace:
                             data: data.namespace
                             _type: js/expression
+                        data: |-
+                            {
+                              ui_spec: data.ui_spec
+                            }
                     _type: js/function
                     params:
                       - data
@@ -2151,7 +2151,7 @@ ui_component:
                   placement: "bottomLeft"
                 })
               }
-            resultHandler: console.log(result)
+            resultHandler: result => console.log(result)
           - body:
               - // console.log(this)
             _type: js/statement
@@ -2497,4 +2497,3 @@ ui_component:
                     _type: js/expression
                 children:
                   - c
-
