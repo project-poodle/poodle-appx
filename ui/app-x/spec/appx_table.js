@@ -7,7 +7,7 @@ import {
 // name:                     # name of the form      (:string)
 // data:                     # table data            (:string|:expression)
 // columns:                  # column options        (:array<:appx/table/column>)
-// toolbar:                  # toolbar               (:jsx)
+// tools:                    # tools                 (:jsx)
 // rowPanel                  # row panel             (:jsx)
 // style:                    # style for container   (:object<:expression>)
 // color:                    # color                 (primary|secondary)
@@ -79,12 +79,26 @@ export const appx_table = {
       },
     },
     {
-      name: 'toolbar',
-      desc: 'Toolbar',
+      name: 'tools',
+      desc: 'Tools',
       types: [
         {
           kind: 'class',
           data: 'jsx'
+        },
+      ],
+      _childNode: {
+        types: 'inherit',
+      },
+    },
+    {
+      name: 'columns',
+      desc: 'Columns',
+      array: true,
+      types: [
+        {
+          kind: 'type',
+          data: 'appx/table/column'
         },
       ],
       _childNode: {
@@ -106,20 +120,6 @@ export const appx_table = {
           name: 'row',
           desc: 'row data - e.g. row.original'
         }
-      ],
-      _childNode: {
-        types: 'inherit',
-      },
-    },
-    {
-      name: 'columns',
-      desc: 'Columns',
-      array: true,
-      types: [
-        {
-          kind: 'type',
-          data: 'appx/table/column'
-        },
       ],
       _childNode: {
         types: 'inherit',

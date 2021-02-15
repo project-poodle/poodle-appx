@@ -297,7 +297,7 @@ const Table = (props) => {
               display='flex'
               >
               {
-                props.toolbar
+                props.tools
               }
               <CSVLink
                 className={styles.tool}
@@ -592,7 +592,7 @@ const Table = (props) => {
 Table.propTypes = {
   data: PropTypes.array,
   columns: PropTypes.array,
-  toolbar: PropTypes.element,
+  tools: PropTypes.element,
   rowPanel: PropTypes.func,
   className: PropTypes.string,
   style: PropTypes.object,

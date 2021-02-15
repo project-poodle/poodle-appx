@@ -69,6 +69,23 @@ export const appx_input_tabular = {
       },
     },
     {
+      name: 'disabled',
+      desc: 'Disabled',
+      types: [
+        {
+          kind: 'class',
+          data: 'string',
+          parse: true,
+        },
+      ],
+      _thisNode: {
+        types: 'inherit',
+        input: {
+          kind: 'input/expression',
+        },
+      },
+    },
+    {
       name: 'actionSpan',
       desc: 'Action Span (total 24 spans)',
       types: [

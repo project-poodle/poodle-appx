@@ -198,6 +198,7 @@ const InputTabular = (props) => {
                       key="remove"
                       aria-label="Remove"
                       size="small"
+                      disabled={!!props.disabled}
                       onClick={e => {
                         remove(index)
                         if (!!props.callback) {
@@ -218,6 +219,7 @@ const InputTabular = (props) => {
         key="add"
         aria-label="Add"
         size="small"
+        disabled={!!props.disabled}
         onClick={e => {
           // console.log(`getValues`, getValues(), getValues(propsId))
           const new_row = {}
@@ -240,6 +242,7 @@ const InputTabular = (props) => {
 InputTabular.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
+  disabled: PropTypes.bool,
   callback: PropTypes.func,                 // callback function
   actionSpan: PropTypes.number,
   BoxProps: PropTypes.object,

@@ -841,7 +841,7 @@ ui_component:
         _type: react/effect
         _order: 9
         states:
-          - loadTime
+          - loadTrigger
       ...uiApps:
         init: "[]"
         name: uiApps
@@ -855,7 +855,7 @@ ui_component:
           className:
             data: styles.root
             _type: js/expression
-        _order: 12
+        _order: 11
         children:
           - name: app-x/core/Dialog
             open: addOpen
@@ -863,7 +863,7 @@ ui_component:
             title: "`Add UI App`"
             setOpen: setAddOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Add
@@ -878,7 +878,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_ver:
                       data: data.ui_ver
@@ -901,7 +901,7 @@ ui_component:
             title: "`Clone UI App`"
             setOpen: setCloneOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Clone
@@ -916,7 +916,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_ver:
                       data: data.ui_ver
@@ -940,12 +940,11 @@ ui_component:
             title: "`Delete UI App`"
             setOpen: setDeleteOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Delete
                   - true
-                  - false
                   - true
             onSubmit:
               body:
@@ -954,7 +953,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_ver:
                       data: data.ui_ver
@@ -975,6 +974,16 @@ ui_component:
           - data: uiApps
             name: app-x/core/Table
             _type: appx/table
+            tools:
+              name: "@material-ui/core.IconButton"
+              _type: react/element
+              props:
+                onClick:
+                  data: e => setAddOpen(true)
+                  _type: js/expression
+              children:
+                - name: "@material-ui/icons.AddOutlined"
+                  _type: react/element
             columns:
               - id: namespace
                 _type: appx/table/column
@@ -1063,16 +1072,6 @@ ui_component:
                               _type: react/element
                 _type: appx/table/column
                 Header: Action
-            toolbar:
-              name: "@material-ui/core.IconButton"
-              _type: react/element
-              props:
-                onClick:
-                  data: e => setAddOpen(true)
-                  _type: js/expression
-              children:
-                - name: "@material-ui/icons.AddOutlined"
-                  _type: react/element
             rowPanel:
               name: "@material-ui/core.Box"
               _type: react/element
@@ -1093,12 +1092,12 @@ ui_component:
                       - row.toggleRowExpanded()
                     _type: js/function
                   children:
-                    - func: renderRowPanel
+                    - func: renderDataPanel
                       _type: js/call
                       params:
                         - Update
                         - true
-                        - true
+                        - false
                   onSubmit:
                     body:
                       - body:
@@ -1115,7 +1114,7 @@ ui_component:
                         app_name: appx
                         endpoint: /namespace/:namespace/ui/:ui_name/:ui_ver
                         namespace: sys
-                        resultHandler: result => setLoadTime(Date.now())
+                        resultHandler: result => setLoadTrigger(Date.now())
                         endpointParams:
                           ui_ver:
                             data: data.ui_ver
@@ -1142,12 +1141,6 @@ ui_component:
         _type: react/state
         _order: 3
         setter: setCurrRow
-      ...loadTime:
-        init: "0"
-        name: loadTime
-        _type: react/state
-        _order: 2
-        setter: setLoadTime
       ...cloneOpen:
         init: "false"
         name: cloneOpen
@@ -1160,14 +1153,19 @@ ui_component:
         _type: react/state
         _order: 6
         setter: setDeleteOpen
-      renderRowPanel:
+      ...loadTrigger:
+        init: "0"
+        name: loadTrigger
+        _type: react/state
+        _order: 2
+        setter: setLoadTrigger
+      renderDataPanel:
         _type: js/function
-        _order: 11
+        _order: 12
         params:
-          - actionName
+          - action
           - disableKeys
-          - hideKeys
-          - hideNonKeys
+          - disableNonKeys
         return:
           name: "@material-ui/core.Box"
           _type: react/element
@@ -1178,9 +1176,9 @@ ui_component:
           children:
             - name: "@material-ui/core.Box"
               _type: react/element
-              props:
-                display:
-                  data: "!!hideKeys ? 'none' : 'block'"
+              style:
+                padding:
+                  data: theme.spacing(2,0)
                   _type: js/expression
               children:
                 - name: antd.Row
@@ -1197,7 +1195,7 @@ ui_component:
                           label: Namespace
                           style:
                             padding:
-                              data: theme.spacing(0, 2, 1, 0)
+                              data: theme.spacing(1, 2, 0, 0)
                               _type: js/expression
                             maxWidth: 300
                           required: true
@@ -1217,7 +1215,7 @@ ui_component:
                           label: UI App
                           style:
                             padding:
-                              data: theme.spacing(0, 2, 1, 0)
+                              data: theme.spacing(1, 2, 0, 0)
                               _type: js/expression
                             maxWidth: 300
                           required: true
@@ -1237,7 +1235,7 @@ ui_component:
                           label: UI Version
                           style:
                             padding:
-                              data: theme.spacing(0, 2, 1, 0)
+                              data: theme.spacing(1, 2, 0, 0)
                               _type: js/expression
                             maxWidth: 300
                           required: true
@@ -1250,10 +1248,6 @@ ui_component:
                               _type: js/expression
             - name: "@material-ui/core.Box"
               _type: react/element
-              props:
-                display:
-                  data: "!!hideNonKeys ? 'none' : 'block'"
-                  _type: js/expression
               style:
                 margin:
                   data: theme.spacing(2,0)
@@ -1282,6 +1276,9 @@ ui_component:
                           required: true
                           TextProps:
                             size: small
+                            disabled:
+                              data: "!!disableNonKeys"
+                              _type: js/expression
                     - name: antd.Col
                       _type: react/element
                       props:
@@ -1298,6 +1295,9 @@ ui_component:
                           required: true
                           TextProps:
                             size: small
+                            disabled:
+                              data: "!!disableNonKeys"
+                              _type: js/expression
                 - name: antd.Row
                   _type: react/element
                   style:
@@ -1332,6 +1332,9 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                                disabled:
+                                  data: "!!disableNonKeys"
+                                  _type: js/expression
                             - id: path
                               name: app-x/core/InputText
                               _span: 12
@@ -1341,6 +1344,10 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                                disabled:
+                                  data: "!!disableNonKeys"
+                                  _type: js/expression
+                          disabled: "!!disableNonKeys"
                           actionSpan: 2
                     - name: antd.Col
                       _type: react/element
@@ -1369,6 +1376,9 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                                disabled:
+                                  data: "!!disableNonKeys"
+                                  _type: js/expression
                             - id: path
                               name: app-x/core/InputText
                               _span: 12
@@ -1378,6 +1388,10 @@ ui_component:
                               TextProps:
                                 size: small
                                 color: secondary
+                                disabled:
+                                  data: "!!disableNonKeys"
+                                  _type: js/expression
+                          disabled: "!!disableNonKeys"
                           actionSpan: 2
                 - id: ui_spec.comment
                   name: app-x/core/InputText
@@ -1390,6 +1404,9 @@ ui_component:
                   TextProps:
                     size: small
                     color: secondary
+                    disabled:
+                      data: "!!disableNonKeys"
+                      _type: js/expression
             - name: "@material-ui/core.Box"
               _type: react/element
               props:
@@ -1428,7 +1445,7 @@ ui_component:
                       style:
                         boxShadow: none
                       children:
-                        - data: actionName
+                        - data: action
                           _type: js/expression
   - namespace: sys
     ui_name: ui
@@ -1485,7 +1502,7 @@ ui_component:
         _type: react/effect
         _order: 7
         states:
-          - loadTime
+          - loadTrigger
       component:
         name: "@material-ui/core.Box"
         _type: react/element
@@ -1493,7 +1510,7 @@ ui_component:
           className:
             data: styles.root
             _type: js/expression
-        _order: 11
+        _order: 10
         children:
           - name: app-x/core/Dialog
             open: addOpen
@@ -1501,7 +1518,7 @@ ui_component:
             title: "`Add UI Deployment`"
             setOpen: setAddOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Add
@@ -1517,7 +1534,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_name:
                       data: data.ui_name
@@ -1540,7 +1557,7 @@ ui_component:
             title: "`Clone UI Deployment`"
             setOpen: setCloneOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Clone
@@ -1556,7 +1573,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_name:
                       data: data.ui_name
@@ -1580,12 +1597,11 @@ ui_component:
             title: "`Delete UI Deployment`"
             setOpen: setDeleteOpen
             children:
-              - func: renderRowPanel
+              - func: renderDataPanel
                 _type: js/call
                 params:
                   - Delete
                   - true
-                  - false
                   - true
             onSubmit:
               body:
@@ -1594,7 +1610,7 @@ ui_component:
                   app_name: appx
                   endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
                   namespace: sys
-                  resultHandler: result => setLoadTime(Date.now())
+                  resultHandler: result => setLoadTrigger(Date.now())
                   endpointParams:
                     ui_name:
                       data: data.ui_name
@@ -1615,6 +1631,16 @@ ui_component:
           - data: deployments
             name: app-x/core/Table
             _type: appx/table
+            tools:
+              name: "@material-ui/core.IconButton"
+              _type: react/element
+              props:
+                onClick:
+                  data: e => setAddOpen(true)
+                  _type: js/expression
+              children:
+                - name: "@material-ui/icons.AddOutlined"
+                  _type: react/element
             columns:
               - id: namespace
                 _type: appx/table/column
@@ -1698,16 +1724,6 @@ ui_component:
                               _type: react/element
                 _type: appx/table/column
                 Header: Action
-            toolbar:
-              name: "@material-ui/core.IconButton"
-              _type: react/element
-              props:
-                onClick:
-                  data: e => setAddOpen(true)
-                  _type: js/expression
-              children:
-                - name: "@material-ui/icons.AddOutlined"
-                  _type: react/element
             rowPanel:
               name: "@material-ui/core.Box"
               _type: react/element
@@ -1728,11 +1744,10 @@ ui_component:
                       - row.toggleRowExpanded()
                     _type: js/function
                   children:
-                    - func: renderRowPanel
+                    - func: renderDataPanel
                       _type: js/call
                       params:
                         - Update
-                        - true
                         - true
                   onSubmit:
                     body:
@@ -1751,7 +1766,7 @@ ui_component:
                         app_name: appx
                         endpoint: /namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment
                         namespace: sys
-                        resultHandler: result => setLoadTime(Date.now())
+                        resultHandler: result => setLoadTrigger(Date.now())
                         endpointParams:
                           ui_name:
                             data: data.ui_name
@@ -1778,12 +1793,6 @@ ui_component:
         _type: react/state
         _order: 3
         setter: setCurrRow
-      ...loadTime:
-        init: "0"
-        name: loadTime
-        _type: react/state
-        _order: 2
-        setter: setLoadTime
       ...cloneOpen:
         init: "false"
         name: cloneOpen
@@ -1802,14 +1811,19 @@ ui_component:
         _type: react/state
         _order: 1
         setter: setDeployments
-      renderRowPanel:
+      ...loadTrigger:
+        init: "0"
+        name: loadTrigger
+        _type: react/state
+        _order: 2
+        setter: setLoadTrigger
+      renderDataPanel:
         _type: js/function
-        _order: 10
+        _order: 11
         params:
-          - actionName
+          - action
           - disableKeys
-          - hideKeys
-          - hideNonKeys
+          - disableNonKeys
         return:
           name: "@material-ui/core.Box"
           _type: react/element
@@ -1820,10 +1834,6 @@ ui_component:
           children:
             - name: "@material-ui/core.Box"
               _type: react/element
-              props:
-                display:
-                  data: "!!hideKeys ? 'none' : 'block'"
-                  _type: js/expression
               style:
                 padding:
                   data: theme.spacing(2, 0)
@@ -1880,28 +1890,6 @@ ui_component:
                       props:
                         span: 12
                       children:
-                        - id: ui_ver
-                          name: app-x/core/InputText
-                          _type: appx/input/text
-                          label: UI Version
-                          style:
-                            padding:
-                              data: theme.spacing(0, 2, 1, 0)
-                              _type: js/expression
-                            maxWidth: 300
-                          required: true
-                          TextProps:
-                            size: small
-                            color: secondary
-                            margin: none
-                            disabled:
-                              data: "!!disableKeys"
-                              _type: js/expression
-                    - name: antd.Col
-                      _type: react/element
-                      props:
-                        span: 12
-                      children:
                         - id: ui_deployment
                           name: app-x/core/InputText
                           _type: appx/input/text
@@ -1918,12 +1906,30 @@ ui_component:
                             disabled:
                               data: "!!disableKeys"
                               _type: js/expression
+                    - name: antd.Col
+                      _type: react/element
+                      props:
+                        span: 12
+                      children:
+                        - id: ui_ver
+                          name: app-x/core/InputText
+                          _type: appx/input/text
+                          label: UI Version
+                          style:
+                            padding:
+                              data: theme.spacing(0, 2, 1, 0)
+                              _type: js/expression
+                            maxWidth: 300
+                          required: true
+                          TextProps:
+                            size: small
+                            color: secondary
+                            margin: none
+                            disabled:
+                              data: "!!disableNonKeys"
+                              _type: js/expression
             - name: "@material-ui/core.Box"
               _type: react/element
-              props:
-                display:
-                  data: "!!hideNonKeys ? 'none' : 'block'"
-                  _type: js/expression
               children:
                 - id: ui_deployment_spec.apiMaps
                   name: app-x/core/InputTabular
@@ -1943,6 +1949,9 @@ ui_component:
                       TextProps:
                         size: small
                         color: secondary
+                        disabled:
+                          data: "!!disableNonKeys"
+                          _type: js/expression
                     - id: app_name
                       name: app-x/core/InputText
                       _span: 5
@@ -1952,6 +1961,9 @@ ui_component:
                       TextProps:
                         size: small
                         color: secondary
+                        disabled:
+                          data: "!!disableNonKeys"
+                          _type: js/expression
                     - id: rootPath
                       name: app-x/core/InputText
                       _span: 8
@@ -1961,6 +1973,9 @@ ui_component:
                       TextProps:
                         size: small
                         color: secondary
+                        disabled:
+                          data: "!!disableNonKeys"
+                          _type: js/expression
                     - id: app_deployment
                       name: app-x/core/InputText
                       _span: 5
@@ -1969,6 +1984,10 @@ ui_component:
                       TextProps:
                         size: small
                         color: secondary
+                        disabled:
+                          data: "!!disableNonKeys"
+                          _type: js/expression
+                  disabled: "!!disableNonKeys"
                   actionSpan: 1
                 - id: ui_deployment_spec.comment
                   name: app-x/core/InputText
@@ -1981,6 +2000,9 @@ ui_component:
                   TextProps:
                     size: small
                     color: secondary
+                    disabled:
+                      data: "!!disableNonKeys"
+                      _type: js/expression
             - name: "@material-ui/core.Box"
               _type: react/element
               props:
@@ -2019,7 +2041,7 @@ ui_component:
                       style:
                         boxShadow: none
                       children:
-                        - data: actionName
+                        - data: action
                           _type: js/expression
   - namespace: sys
     ui_name: ui
