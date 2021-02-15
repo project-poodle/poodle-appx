@@ -498,6 +498,18 @@ const PreviewTabs = (props) => {
     syntaxTreeInitialized,
   ])
 
+  const MemorizedPreviewSource = React.useMemo(() => () => {
+    return (
+      <PreviewSource />
+    )
+  }, [syntaxTreeInitialized, livePreview, treeData, testData].map(deepCompareMemorize))
+
+  const MemorizedPreviewYaml = React.useMemo(() => () => {
+    return (
+      <PreviewYaml />
+    )
+  }, [syntaxTreeInitialized, livePreview, treeData, testData].map(deepCompareMemorize))
+
   return (
     <Box className={styles.root}>
     {
@@ -681,7 +693,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="Code" key="code" className={styles.root}>
-                  <PreviewSource />
+                  <MemorizedPreviewSource />
                 </TabPane>
               )
             }
@@ -695,7 +707,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="YAML" key="yaml" className={styles.root}>
-                  <PreviewYaml />
+                  <MemorizedPreviewYaml />
                 </TabPane>
               )
             }
@@ -710,7 +722,7 @@ const PreviewTabs = (props) => {
               &&
               (
                 <TabPane tab="JSON" key="json" className={styles.root}>
-                  <PreviewJson />
+                  <MemorizedPreviewJson />
                 </TabPane>
               )
               */

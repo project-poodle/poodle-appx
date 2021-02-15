@@ -244,45 +244,107 @@ const YamlEditor = props => {
     }
   }, [contentRef.current])
   */
+  // editor change
+  const handleEditorChange = (ev, value) => {
+    setPropYamlDirty(true)
+    setYamlContent(value)
+  }
 
-  const MemorizedEditor = React.useMemo(() => (props) => {
+  /*
+  const MemorizedEditor = React.useMemo(() => () => {
     // theme
     const theme = useTheme()
-    // editor change
-    const handleEditorChange = (ev, value) => {
-      setPropYamlDirty(true)
-      setYamlContent(value)
-    }
-
     return (
-      <ControlledEditor
-        className={styles.editor}
-        height='100%'
-        language="yaml"
-        theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
-        options={{
-          readOnly: false,
-          wordWrap: 'on',
-          wrappingIndent: 'deepIndent',
-          scrollBeyondLastLine: false,
-          wrappingStrategy: 'advanced',
-          lineNumbersMinChars: 0,
-          glyphMargin: true,
-          // lineDecorationsWidth: 4,
-          minimap: {
-            enabled: false
-          },
-          // layoutInfo: {
-          //  glyphMarginWidth: 2,
-          //  glyphMarginLeft: 2,
-          //},
-        }}
-        value={yamlContent}
-        onChange={handleEditorChange}
-        >
-      </ControlledEditor>
     )
   }, [yamlContent].map(deepCompareMemorize))
+
+  const MemorizedFooter = React.useMemo(() => () => {
+    // theme
+    const theme = useTheme()
+    // make styles
+    const styles = makeStyles((theme) => ({
+      yamlToolbar: {
+        padding: theme.spacing(0, 2),
+        backgroundColor: theme.palette.background.paper,
+      },
+      yamlMsg: {
+        height: '100%',
+        width: '100%',
+        padding: theme.spacing(0, 2),
+        backgroundColor: theme.palette.background.paper,
+      },
+      fab: {
+        margin: theme.spacing(1),
+      },
+    }))()
+
+    return (
+      <Layout>
+        <Content>
+          <Box display="flex" alignItems="center" justifyContent="left" className={styles.yamlMsg}>
+            <Typography variant="body2" color={yamlError ? "error" : "textSecondary"}>
+              {yamlMsg}
+            </Typography>
+          </Box>
+        </Content>
+        <Sider width={100} className={styles.yamlToolbar}>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Tooltip
+              title="reset"
+              placement="top"
+              >
+              <AntButton
+                size="small"
+                color="secondary"
+                type="default"
+                className={styles.fab}
+                value="reset"
+                icon={<CloseOutlined />}
+                shape="circle"
+                onClick={e => {
+                  // reset prop editor data
+                  reset_yaml_content()
+                  setPropYamlDirty(false)
+                  setYamlError(false)
+                  setYamlMsg('')
+                }}
+                >
+              </AntButton>
+            </Tooltip>
+            <Tooltip
+              title="update"
+              placement="top"
+              >
+              <AntButton
+                size="small"
+                color="secondary"
+                type="default"
+                className={styles.fab}
+                value="update"
+                icon={<CheckOutlined />}
+                shape="circle"
+                onClick={e => {
+                  // setYamlSubmitTimer(new Date())
+                  onYamlSubmit()
+                }}
+                >
+              </AntButton>
+            </Tooltip>
+          </Box>
+        </Sider>
+      </Layout>
+    )
+  },
+  [
+    yamlMsg,
+    yamlError,
+    reset_yaml_content,
+    setPropYamlDirty,
+    setYamlError,
+    setYamlMsg,
+    onYamlSubmit
+  ].map(deepCompareMemorize))
+  */
 
   return (
     <Layout
@@ -295,7 +357,32 @@ const YamlEditor = props => {
           // ref={contentRef}
           className={styles.editor}
           >
-          <MemorizedEditor />
+          <ControlledEditor
+            className={styles.editor}
+            height='100%'
+            language="yaml"
+            theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
+            options={{
+              readOnly: false,
+              wordWrap: 'on',
+              wrappingIndent: 'deepIndent',
+              scrollBeyondLastLine: false,
+              wrappingStrategy: 'advanced',
+              lineNumbersMinChars: 0,
+              glyphMargin: true,
+              // lineDecorationsWidth: 4,
+              minimap: {
+                enabled: false
+              },
+              // layoutInfo: {
+              //  glyphMarginWidth: 2,
+              //  glyphMarginLeft: 2,
+              //},
+            }}
+            value={yamlContent}
+            onChange={handleEditorChange}
+            >
+          </ControlledEditor>
         </Box>
       </Content>
       <Footer className={styles.yamlFooter}>

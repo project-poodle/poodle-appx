@@ -757,7 +757,7 @@ const PropEditor = (props) => {
   }
   ////////////////////////////////////////////////////////////////////////////////
 
-  const MemorizedBaseTab = React.useMemo(() => (props) => {
+  const MemorizedBaseTab = React.useMemo(() => () => {
     return (
       <span>
         Base
@@ -773,7 +773,7 @@ const PropEditor = (props) => {
     )
   }, [propBaseDirty].map(deepCompareMemorize))
 
-  const MemorizedYamlTab = React.useMemo(() => (props) => {
+  const MemorizedYamlTab = React.useMemo(() => () => {
     return (
       <span>
         YAML
@@ -788,6 +788,12 @@ const PropEditor = (props) => {
       </span>
     )
   }, [propYamlDirty].map(deepCompareMemorize))
+
+  const MemorizedYamlEditor = React.useMemo(() => () => {
+    return (
+      <YamlEditor />
+    )
+  }, [treeData, selectedKey].map(deepCompareMemorize))
 
   // render
   return (
@@ -1375,7 +1381,7 @@ const PropEditor = (props) => {
               key="yaml"
               className={styles.editor}
               >
-              <YamlEditor />
+                <MemorizedYamlEditor />
             </TabPane>
           </Tabs>
         )

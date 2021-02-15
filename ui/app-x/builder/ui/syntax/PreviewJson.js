@@ -172,6 +172,7 @@ const PreviewJson = (props) => {
     livePreview,
     loadTimer,
     treeData,
+    testData,
   ])
 
   // memorized editor

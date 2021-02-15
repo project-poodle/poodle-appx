@@ -189,6 +189,7 @@ const PreviewYaml = (props) => {
     livePreview,
     loadTimer,
     treeData,
+    testData,
   ])
 
   // memorized editor

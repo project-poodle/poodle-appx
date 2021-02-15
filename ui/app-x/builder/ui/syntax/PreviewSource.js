@@ -283,6 +283,7 @@ const PreviewSource = (props) => {
     navComponent.ui_component_type,
     navRoute.ui_route_name,
     treeData,
+    testData,
   ])
 
   // memorized editor

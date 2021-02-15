@@ -183,8 +183,8 @@ const UI_Builder = (props) => {
   }, [])
 
   return (
-    <SyntaxProvider>
-      <Box ref={gridRef} className={styles.root}>
+    <Box ref={gridRef} className={styles.root}>
+      <SyntaxProvider>
         <ResponsiveGridLayout
           className={styles.root}
           layouts={layouts}
@@ -246,8 +246,8 @@ const UI_Builder = (props) => {
             </Box>
           </Box>
         </ResponsiveGridLayout>
-      </Box>
-    </SyntaxProvider>
+      </SyntaxProvider>
+    </Box>
   )
 }
 
