@@ -38,6 +38,9 @@ import PreviewSource from 'app-x/builder/ui/syntax/PreviewSource'
 import PreviewYaml from 'app-x/builder/ui/syntax/PreviewYaml'
 import PreviewJson from 'app-x/builder/ui/syntax/PreviewJson'
 import {
+  deepCompareMemorize,
+} from 'app-x/builder/ui/syntax/util_base'
+import {
   parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 
@@ -653,13 +656,7 @@ const PreviewTabs = (props) => {
                   &&
                   (
                     navComponent?.ui_component_type === 'react/component'
-                    || navComponent?.ui_component_type === 'html'
                   )
-                )
-                ||
-                (
-                  navSelected.type === 'ui_route'
-                  && !!navRoute?.ui_route_name
                 )
               )
               &&
@@ -679,16 +676,6 @@ const PreviewTabs = (props) => {
                 (
                   navSelected.type === 'ui_component'
                   && !!navComponent.ui_component_name
-                  &&
-                  (
-                    navComponent?.ui_component_type === 'react/component'
-                    || navComponent?.ui_component_type === 'react/provider'
-                  )
-                )
-                ||
-                (
-                  navSelected?.type === 'ui_route'
-                  && !!navRoute?.ui_route_name
                 )
               )
               &&
@@ -703,16 +690,6 @@ const PreviewTabs = (props) => {
                 (
                   navSelected.type === 'ui_component'
                   && !!navComponent.ui_component_name
-                  &&
-                  (
-                    navComponent?.ui_component_type === 'react/component'
-                    || navComponent?.ui_component_type === 'react/provider'
-                  )
-                )
-                ||
-                (
-                  navSelected?.type === 'ui_route'
-                  && !!navRoute?.ui_route_name
                 )
               )
               &&
@@ -723,20 +700,11 @@ const PreviewTabs = (props) => {
               )
             }
             {
+              /*
               (
                 (
                   navSelected.type === 'ui_component'
                   && !!navComponent.ui_component_name
-                  &&
-                  (
-                    navComponent?.ui_component_type === 'react/component'
-                    || navComponent?.ui_component_type === 'react/provider'
-                  )
-                )
-                ||
-                (
-                  navSelected?.type === 'ui_route'
-                  && !!navRoute?.ui_route_name
                 )
               )
               &&
@@ -745,6 +713,7 @@ const PreviewTabs = (props) => {
                   <PreviewJson />
                 </TabPane>
               )
+              */
             }
           </Tabs>
         </Box>

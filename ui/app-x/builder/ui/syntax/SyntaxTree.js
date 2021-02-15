@@ -69,6 +69,7 @@ import {
   lookup_child_for_ref
 } from 'app-x/builder/ui/syntax/util_parse'
 import {
+  deepCompareMemorize,
   // lookup_type_for_classname,
   lookup_types,
   lookup_groups,
@@ -265,7 +266,7 @@ const SyntaxTree = (props) => {
         },
         filtered
       )
-      console.log(`INFO: Loaded Syntax Tree`, loadedTree)
+      console.log(`INFO: Loaded Syntax Tree`, loadedTree, Date.now())
 
       const parsedTest = !!spec_data._test
         ? spec_data._test
@@ -938,10 +939,10 @@ const SyntaxTree = (props) => {
         onExpand={onExpand}
         onDrop={onDrop}
         onRightClick={onRightClick}
-        treeData={treeData}
+        // treeData={treeData}
       >
       {
-        treeData.map(treeNode => {
+        treeData.map(treeNodeData => {
           // get result
           function ConvertTreeNode(data) {
             // console.log(data.key)
@@ -955,19 +956,32 @@ const SyntaxTree = (props) => {
               data={data.data}
               className={`appx-tree-node ${lookup_accepted_classnames_for_node(data).join(' ')}`}
               children={data.children?.map(child => {
-                  return ConvertTreeNode(child)
+                 return ConvertTreeNode(child)
               })}
             >
             </TreeNode>
           }
-          return ConvertTreeNode(treeNode)
+          return ConvertTreeNode(treeNodeData)
         })
       }
       </Tree>
     )
   }
 
-  const Toolbar = (props) => {
+  const MemorizedToolbar = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedToolbar`)
+    // styles
+    const styles = makeStyles((theme) => ({
+      toolTop: {
+        margin: theme.spacing(1, 2),
+        // cursor: 'move',
+      },
+      fab: {
+        margin: theme.spacing(1),
+        // cursor: 'move',
+      },
+    }))()
+
     return (
       <Box
         key="toolbar"
@@ -984,6 +998,7 @@ const SyntaxTree = (props) => {
           .concat(lookup_groups().map(group => lookup_types_for_group(group)))
           .flat()
           .map(type => {
+            // console.log(`type`, type)
             return (
               <Tooltip
                 key={type}
@@ -1025,7 +1040,74 @@ const SyntaxTree = (props) => {
         }
       </Box>
     )
-  }
+  // }
+  }, [selectedTool])
+
+  // memorized test editor
+  const MemorizedTestEditor = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedTestEditor`)
+    return (
+      <TestEditor />
+    )
+  }, [navDeployment, navComponent, navSelected, testData].map(deepCompareMemorize))
+
+  // add dialog
+  const MemorizedAddDialog = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedAddDialog`)
+    return (
+      <SyntaxAddDialog
+        key="addDialog"
+        open={addDialogOpen}
+        setOpen={setAddDialogOpen}
+        addNodeParent={addNodeParent}
+        addNodeRef={addNodeRef}
+        addNodeType={addNodeType}
+      />
+    )
+  }, [addDialogOpen, setAddDialogOpen, addNodeParent, addNodeRef, addNodeType].map(deepCompareMemorize))
+
+  // delete dialog
+  const MemorizedDeleteDialog = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedDeleteDialog`)
+    return (
+      <SyntaxDeleteDialog
+        key="deleteDialog"
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        node={deleteNode}
+      />
+    )
+  }, [deleteDialogOpen, setDeleteDialogOpen, deleteNode].map(deepCompareMemorize))
+
+  // move dialog
+  const MemorizedMoveDialog = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedMoveDialog`)
+    return (
+      <SyntaxMoveDialog
+        key="moveDialog"
+        open={moveDialogOpen}
+        setOpen={setMoveDialogOpen}
+        moveDragNode={moveDragNode}
+        moveDropParent={moveDropParent}
+        moveCallback={moveCallback}
+      />
+    )
+  }, [moveDialogOpen, setMoveDialogOpen, moveDragNode, moveDropParent, moveCallback].map(deepCompareMemorize))
+
+  // syntax menu
+  const MemorizedSyntaxMenu = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedSyntaxMenu`)
+    return (
+      <SyntaxMenu
+        key="syntaxMenu"
+        contextAnchorEl={contextAnchorEl}
+        setContextAnchorEl={setContextAnchorEl}
+        addMenuClicked={addMenuClicked}
+        deleteMenuClicked={deleteMenuClicked}
+        >
+      </SyntaxMenu>
+    )
+  }, [contextAnchorEl, setContextAnchorEl, addMenuClicked, deleteMenuClicked].map(deepCompareMemorize))
 
   return (
     <Box className={styles.root}>
@@ -1231,7 +1313,7 @@ const SyntaxTree = (props) => {
                 </Box>
               </Content>
               <Sider key="sider" width={122} className={styles.sider}>
-                <Toolbar />
+                <MemorizedToolbar />
               </Sider>
             </Layout>
           </TabPane>
@@ -1268,45 +1350,17 @@ const SyntaxTree = (props) => {
                 className={styles.pane}
                 onContextMenu={handleSyntaxMenu}
                 >
-                <TestEditor>
-                </TestEditor>
+                <MemorizedTestEditor />
               </TabPane>
             )
           }
-          <SyntaxAddDialog
-            key="addDialog"
-            open={addDialogOpen}
-            setOpen={setAddDialogOpen}
-            addNodeParent={addNodeParent}
-            addNodeRef={addNodeRef}
-            addNodeType={addNodeType}
-            />
-          <SyntaxDeleteDialog
-            key="deleteDialog"
-            open={deleteDialogOpen}
-            setOpen={setDeleteDialogOpen}
-            node={deleteNode}
-            />
-          <SyntaxMoveDialog
-            key="moveDialog"
-            open={moveDialogOpen}
-            setOpen={setMoveDialogOpen}
-            moveDragNode={moveDragNode}
-            moveDropParent={moveDropParent}
-            moveCallback={moveCallback}
-            node={deleteNode}
-            />
-          <SyntaxMenu
-            key="syntaxMenu"
-            contextAnchorEl={contextAnchorEl}
-            setContextAnchorEl={setContextAnchorEl}
-            addMenuClicked={addMenuClicked}
-            deleteMenuClicked={deleteMenuClicked}
-            >
-          </SyntaxMenu>
         </Tabs>
       )
     }
+      <MemorizedAddDialog />
+      <MemorizedDeleteDialog />
+      <MemorizedMoveDialog />
+      <MemorizedSyntaxMenu />
     </Box>
   )
 }

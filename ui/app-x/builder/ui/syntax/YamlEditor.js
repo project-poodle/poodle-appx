@@ -30,6 +30,9 @@ import {
 
 // utilities
 import {
+  deepCompareMemorize,
+} from 'app-x/builder/ui/syntax/util_base'
+import {
   generate_tree_node,
   lookup_icon_for_type,
   lookup_icon_for_input,
@@ -242,11 +245,44 @@ const YamlEditor = props => {
   }, [contentRef.current])
   */
 
-  // editor change
-  const handleEditorChange = (ev, value) => {
-    setPropYamlDirty(true)
-    setYamlContent(value)
-  }
+  const MemorizedEditor = React.useMemo(() => (props) => {
+    // theme
+    const theme = useTheme()
+    // editor change
+    const handleEditorChange = (ev, value) => {
+      setPropYamlDirty(true)
+      setYamlContent(value)
+    }
+
+    return (
+      <ControlledEditor
+        className={styles.editor}
+        height='100%'
+        language="yaml"
+        theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
+        options={{
+          readOnly: false,
+          wordWrap: 'on',
+          wrappingIndent: 'deepIndent',
+          scrollBeyondLastLine: false,
+          wrappingStrategy: 'advanced',
+          lineNumbersMinChars: 0,
+          glyphMargin: true,
+          // lineDecorationsWidth: 4,
+          minimap: {
+            enabled: false
+          },
+          // layoutInfo: {
+          //  glyphMarginWidth: 2,
+          //  glyphMarginLeft: 2,
+          //},
+        }}
+        value={yamlContent}
+        onChange={handleEditorChange}
+        >
+      </ControlledEditor>
+    )
+  }, [yamlContent].map(deepCompareMemorize))
 
   return (
     <Layout
@@ -259,32 +295,7 @@ const YamlEditor = props => {
           // ref={contentRef}
           className={styles.editor}
           >
-          <ControlledEditor
-            className={styles.editor}
-            height='100%'
-            language="yaml"
-            theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
-            options={{
-              readOnly: false,
-              wordWrap: 'on',
-              wrappingIndent: 'deepIndent',
-              scrollBeyondLastLine: false,
-              wrappingStrategy: 'advanced',
-              lineNumbersMinChars: 0,
-              glyphMargin: true,
-              // lineDecorationsWidth: 4,
-              minimap: {
-                enabled: false
-              },
-              // layoutInfo: {
-              //  glyphMarginWidth: 2,
-              //  glyphMarginLeft: 2,
-              //},
-            }}
-            value={yamlContent}
-            onChange={handleEditorChange}
-            >
-          </ControlledEditor>
+          <MemorizedEditor />
         </Box>
       </Content>
       <Footer className={styles.yamlFooter}>

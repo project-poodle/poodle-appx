@@ -16,6 +16,9 @@ import NavProvider from 'app-x/builder/ui/NavProvider'
 import SyntaxProvider from 'app-x/builder/ui/syntax/SyntaxProvider'
 import PreviewProvider from 'app-x/builder/ui/syntax/PreviewProvider'
 import {
+  deepCompareMemorize,
+} from 'app-x/builder/ui/syntax/util_base'
+import {
   parse_tree_node,
 } from 'app-x/builder/ui/syntax/util_parse'
 
@@ -171,12 +174,12 @@ const PreviewJson = (props) => {
     treeData,
   ])
 
-  // render
-  return (
-    <Box
-      className={styles.editor}
-      onScroll={e => e.stopPropagation()}
-      >
+  // memorized editor
+  const MemorizedEditor = React.useMemo(() => (props) => {
+    // theme
+    const theme = useTheme()
+
+    return (
       <Editor
         language="json"
         theme={theme?.palette.type === 'dark' ? 'vs-dark' : 'vs'}
@@ -196,6 +199,16 @@ const PreviewJson = (props) => {
         value={json}
         >
       </Editor>
+    )
+  }, [json].map(deepCompareMemorize))
+
+  // render
+  return (
+    <Box
+      className={styles.editor}
+      onScroll={e => e.stopPropagation()}
+      >
+      <MemorizedEditor />
     </Box>
   )
 }

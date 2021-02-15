@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import {
   Icon,
   FileOutlined,
@@ -112,6 +113,23 @@ function parse_var_full_path(var_full_path) {
     import_paths: import_paths,
     sub_vars: sub_vars
   }
+}
+
+// deepCompareMemorize
+function deepCompareMemorize(value) {
+
+  const ref = React.useRef()
+  // it can be done by using useMemo as well
+  // but useRef is rather cleaner and easier
+
+  if (!_.isEqual(value, ref.current)) {
+    ref.current = value
+    // console.log('not equal', value, ref.current)
+  } else {
+    // console.log('equal', value, ref.current)
+  }
+
+  return ref.current
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -979,6 +997,7 @@ export {
   REGEX_VAR,
   isPrimitive,
   parse_var_full_path,
+  deepCompareMemorize,
   // lookup
   lookup_classes,
   lookup_groups,

@@ -46,6 +46,8 @@ const SyntaxProvider = (props) => {
   const updateDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey, lookupKey) => {
 
     // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
+    const start = Date.now()
+    console.log('updateDesignAction - start', start)
 
     if (!lookupKey || (lookupKey !== updateKey)) {
       // setUpdateKey(lookupKey)
@@ -70,9 +72,12 @@ const SyntaxProvider = (props) => {
       },
       redo: _.cloneDeep(history.redo),
     }
+    console.log('updateDesignAction - newHistory', Date.now())
 
     // update state from record
     setTreeData(newTreeData)
+    console.log('updateDesignAction - setTreeData', Date.now())
+    // console.log(JSON.stringify(newTreeData, null, 2))
     setExpandedKeys(newExpandedKeys)
     setSelectedKey(newSelectedKey)
     setUpdateKey(lookupKey)
@@ -80,6 +85,8 @@ const SyntaxProvider = (props) => {
 
     // set history
     setHistory(newHistory)
+    const end = Date.now()
+    console.log('updateDesignAction - end', Date.now(), end - start)
   }
 
   // update test action
@@ -121,6 +128,8 @@ const SyntaxProvider = (props) => {
   // make action
   const makeFreshAction = (action, newTreeData, newTestData, newExpandedKeys, newSelectedKey) => {
 
+    const start = Date.now()
+    console.log('makeFreshAction - start', start)
     // if fresh, clear history, and mark record as fresh
     // set current
     const newHistory = {
@@ -136,20 +145,29 @@ const SyntaxProvider = (props) => {
       },
       redo: [],
     }
+    console.log('makeFreshAction - newHistory', Date.now())
 
     // update state from record
-    setTreeData(newTreeData)
     setTestData(newTestData)
+    console.log('makeFreshAction - setTestData', Date.now())
+    setTreeData(newTreeData)
+    console.log('makeFreshAction - setTreeData', Date.now())
     setExpandedKeys(newExpandedKeys)
+    console.log('makeFreshAction - setExpandedKeys', Date.now())
     setSelectedKey(newSelectedKey)
+    console.log('makeFreshAction - setSelectedKey', Date.now())
     setUpdateKey(null)
     setSyntaxDirty(false)
 
     // set history
     setHistory(newHistory)
+    console.log('makeFreshAction - setHistory', Date.now())
 
     // syntax tree initialized - for fresh action only
     setSyntaxTreeInitialized(true)
+
+    const end = Date.now()
+    console.log('makeFreshAction - end', end, end - start)
     return
   }
 
@@ -157,6 +175,8 @@ const SyntaxProvider = (props) => {
   const makeDesignAction = (action, newTreeData, newExpandedKeys, newSelectedKey, lookupKey) => {
 
     // console.log(`makeDesignAction`)
+    const start = Date.now()
+    console.log('makeDesignAction - start', start)
 
     // keep the record
     const record = {
@@ -193,6 +213,9 @@ const SyntaxProvider = (props) => {
     // console.log(newHistory)
     // set history
     setHistory(newHistory)
+
+    const end = Date.now()
+    console.log('makeDesignAction - end', end, end - start)
   }
 
   // make test action
