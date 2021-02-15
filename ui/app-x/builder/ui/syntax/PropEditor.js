@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react"
+import ReactDOM from "react-dom"
 import YAML from 'yaml'
 import _ from 'lodash'
 // material ui
@@ -568,7 +569,9 @@ const PropEditor = (props) => {
   const onBaseSubmit = data => {
     try {
       // console.log('Editor data', data)
-      propEditorCallback(data)
+      ReactDOM.unstable_batchedUpdates(() => {
+        propEditorCallback(data)
+      })
     } catch (err) {
       console.log(`Editor`, data, err)
       notification.error({
