@@ -919,7 +919,7 @@ function load_api_endpoints() {
         result => {
           const endpoints = result.map(row => row.api_endpoint)
           apiEndpoints = endpoints.sort().filter(onlyUnique)
-          console.log(`apiEndpoints : ${apiEndpoints.length}`)
+          // console.log(`apiEndpoints : ${apiEndpoints.length}`)
         },
         error => {
           console.error(error)
