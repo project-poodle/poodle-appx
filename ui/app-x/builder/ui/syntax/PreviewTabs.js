@@ -118,21 +118,14 @@ const PreviewTabs = (props) => {
   const [ iframeHtml,         setIframeHtml         ] = useState('')
 
   // form ref and iframe ref
-  const formRef = React.createRef()
-  const iframeRef = React.createRef()
+  const formRef = React.useRef(null)
+  const iframeRef = React.useRef(null)
 
   // load content from backend api
   useEffect(() => {
 
     // load from backend if not livePreview
     if
-    (
-      !syntaxTreeInitialized
-    )
-    {
-      setPreviewInitialized(false)
-    }
-    else if
     (
       !livePreview
       && !!navDeployment
@@ -165,38 +158,6 @@ const PreviewTabs = (props) => {
           + '/_elem' + navComponent.ui_component_name + '.html').replace(/\+/g, '/')
         // console.log(iframeUrl)
         iframeRef.current.src=iframeUrl
-        if (navComponent.ui_component_type === 'react/component') {
-          setPreviewInitialized(false)
-        } else {
-          setPreviewInitialized(true)
-        }
-        setWidgetLoading(false)
-      }
-      else if
-      (
-        navSelected.type === 'ui_route'
-        && !!navRoute
-        && !!navRoute.ui_route_name
-      )
-      {
-        // setPreviewLoading(true)
-        // widget loading
-        setWidgetLoading(true)
-        // loading url
-        const replace_route = navRoute.ui_route_name.replace(/\*/g, '/')
-        const widget_route = replace_route.endsWith('/')
-          ? replace_route + '/index.html'
-          : replace_route + '.html'
-        // iframe url
-        const iframeUrl =
-          (globalThis.appx.UI_ROOT
-          + '/' + navDeployment.namespace
-          + '/' + navDeployment.ui_name
-          + '/' + navDeployment.ui_deployment
-          + '/_route' + widget_route).replace(/\/+/g, '/')
-        console.log(iframeUrl)
-        iframeRef.current.src=iframeUrl
-        setPreviewInitialized(false)
         setWidgetLoading(false)
       }
     }
@@ -212,26 +173,20 @@ const PreviewTabs = (props) => {
     loadTimer,
     livePreview,
     syntaxTreeInitialized,
+    iframeRef.current,
+    formRef.current,
   ])
 
   // load content from UI context treeData
   useEffect(() => {
 
-    // console.log(navDeployment)
-    // console.log(navSelected)
-    // console.log(navComponent)
-
     // load from UI context if livePreview
+    // console.log(`submit`, iframeRef.current, formRef.current, livePreview, syntaxTreeInitialized, previewInitialized)
+
     if
     (
-      !syntaxTreeInitialized
-    )
-    {
-      setPreviewInitialized(false)
-    }
-    else if
-    (
-      !previewInitialized
+      !!syntaxTreeInitialized
+      && !previewInitialized
       && !!livePreview
       && !!navDeployment
       && !!navDeployment.namespace
@@ -278,6 +233,7 @@ const PreviewTabs = (props) => {
             },
           }
           // console.log(submitData)
+          // console.log(`formRef.submit`, formRef.current, submitData)
           // build form for submission
           formRef.current.innerHTML = '' // clear children
           const input = document.createElement('input')
@@ -298,55 +254,6 @@ const PreviewTabs = (props) => {
           })
         }
       }
-      else if
-      (
-        navSelected.type === 'ui_route'
-        && !!navRoute
-        && !!navRoute.ui_route_name
-      )
-      {
-        try {
-          // widget loading
-          setWidgetLoading(true)
-          // preview loading
-          // setPreviewLoading(true)
-          // preview data
-          const submitData = {
-            type: 'ui_route',
-            output: 'html',
-            data: {
-              namespace: navDeployment.namespace,
-              ui_name: navDeployment.ui_name,
-              ui_ver: navDeployment.ui_ver,
-              ui_deployment: navDeployment.ui_deployment,
-              ui_route_name: navRoute.ui_route_name,
-              ui_route_spec: spec
-            },
-          }
-          // console.log(submitData)
-          // build form for submission
-          formRef.current.innerHTML = '' // clear children
-          const input = document.createElement('input')
-          input.name = `{"_trash": "`
-          input.value = `", "urlencoded": ${JSON.stringify(submitData)}}`
-          formRef.current.appendChild(input)
-          formRef.current.submit() // submit form
-          // set initialized flag
-          setLiveWidgetUpdating(true)
-          setPreviewInitialized(true)
-          setWidgetLoading(false)
-        } catch (err) {
-          setWidgetLoading(false)
-          notification.error({
-            message: `Failed to load`,
-            description: String(err),
-            placement: 'bottomLeft',
-          })
-        }
-      }
-    }
-    else {
-      setPreviewInitialized(true)
     }
   },
   [
@@ -356,13 +263,14 @@ const PreviewTabs = (props) => {
     navDeployment.ui_deployment,
     navComponent.ui_component_name,
     navComponent.ui_component_type,
-    navRoute.ui_route_name,
     navSelected.type,
     livePreview,
     treeData,
     loadTimer,
     previewInitialized,
     syntaxTreeInitialized,
+    iframeRef.current,
+    formRef.current,
   ])
 
   // load content from UI context treeData
@@ -432,45 +340,6 @@ const PreviewTabs = (props) => {
             window.location.origin,
           )
         }
-        else if
-        (
-          navSelected.type === 'ui_route'
-          && !!navRoute
-          && !!navRoute.ui_route_name
-        )
-        {
-          // live widget update
-          setLiveWidgetUpdating(true)
-          // setPreviewLoading(true)
-          // preview data
-          const message = {
-            path: globalThis.appx.UI_ROOT
-              + '/' + navDeployment?.namespace
-              + '/' + navDeployment?.ui_name
-              + '/' + navDeployment?.ui_deployment
-              + '/',
-            data: {
-              type: 'ui_route',
-              output: 'code',
-              data: {
-                namespace: navDeployment.namespace,
-                ui_name: navDeployment.ui_name,
-                ui_ver: navDeployment.ui_ver,
-                ui_spec: navDeployment.ui_spec,
-                ui_deployment: navDeployment.ui_deployment,
-                ui_deployment_spec: navDeployment.ui_deployment_spec,
-                ui_route_name: navRoute.ui_route_name,
-                ui_route_spec: spec
-              }
-            }
-          }
-          // build form for submission
-          // console.log(submitData)
-          iframeRef.current.contentWindow.postMessage(
-            message,
-            window.location.origin,
-          )
-        }
       } catch (error) {
         notification['error']({
           message: 'Live Update Failed',
@@ -496,6 +365,8 @@ const PreviewTabs = (props) => {
     treeData,
     previewInitialized,
     syntaxTreeInitialized,
+    iframeRef.current,
+    formRef.current,
   ])
 
   const MemorizedPreviewSource = React.useMemo(() => () => {
@@ -519,18 +390,7 @@ const PreviewTabs = (props) => {
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
         && !!navSelected.type
-        &&
-        (
-          (
-            navSelected.type === 'ui_component'
-            && !!navComponent.ui_component_name
-          )
-          ||
-          (
-            navSelected.type === 'ui_route'
-            && !!navRoute.ui_route_name
-          )
-        )
+        && !!navComponent.ui_component_name
       )
       &&
       (
@@ -554,6 +414,7 @@ const PreviewTabs = (props) => {
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
         && !!navSelected.type
+        && !!navComponent.ui_component_name
       )
       &&
       (
@@ -583,18 +444,7 @@ const PreviewTabs = (props) => {
         && !!navDeployment.ui_ver
         && !!navDeployment.ui_deployment
         && !!navSelected.type
-        &&
-        (
-          (
-            navSelected.type === 'ui_component'
-            && !!navComponent.ui_component_name
-          )
-          ||
-          (
-            navSelected.type === 'ui_route'
-            && !!navRoute.ui_route_name
-          )
-        )
+        && !!navComponent.ui_component_name
       )
       &&
       (

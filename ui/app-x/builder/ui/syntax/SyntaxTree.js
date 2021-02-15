@@ -158,6 +158,7 @@ const SyntaxTree = (props) => {
     navRoute,
     navSelected,
     syntaxTreeInitialized,
+    setSyntaxTreeInitialized,
   } = useContext(NavProvider.Context)
 
   // context
@@ -262,7 +263,7 @@ const SyntaxTree = (props) => {
         },
         filtered
       )
-      console.log(`INFO: Loaded Syntax Tree`, loadedTree, Date.now())
+      console.log(`INFO: Loaded Syntax Tree`, loadedTree, new Date())
 
       const parsedTest = !!spec_data._test
         ? spec_data._test
@@ -299,6 +300,7 @@ const SyntaxTree = (props) => {
         && !!navComponent.ui_component_name
       ) {
         setLoadInProgress(true)
+        // load url
         const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
         // console.log(url)
         api.get(
@@ -307,13 +309,15 @@ const SyntaxTree = (props) => {
           loadUrl,
           data => {
             // console.log(data)
-            process_api_data(data)
-            // setLoadTrigger(0)
-            setLoadInProgress(false)
-            setLoadTimer(new Date())
-            if (navComponent.ui_component_type === 'react/component') {
-              setPreviewInitialized(false)
-            }
+            ReactDOM.unstable_batchedUpdates(() => {
+              process_api_data(data)
+              // setLoadTrigger(0)
+              setLoadInProgress(false)
+              setLoadTimer(new Date())
+              if (navComponent.ui_component_type === 'react/component') {
+                setPreviewInitialized(false)
+              }
+            })
           },
           error => {
             console.error(error)
@@ -328,42 +332,6 @@ const SyntaxTree = (props) => {
             if (navComponent.ui_component_type === 'react/component') {
               setPreviewInitialized(false)
             }
-          }
-        )
-      }
-      else if
-      (
-        navSelected.type === 'ui_route'
-        && !!navRoute
-        && !!navRoute.ui_route_name
-      )
-      {
-        setLoadInProgress(true)
-        const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
-        // console.log(url)
-        api.get(
-          'sys',
-          'appx',
-          loadUrl,
-          data => {
-            // console.log(data)
-            process_api_data(data)
-            // setLoadTrigger(0)
-            setLoadInProgress(false)
-            setLoadTimer(new Date())
-            setPreviewInitialized(false)
-          },
-          error => {
-            console.error(error)
-            notification['error']({
-              message: `Failed to load UI route [${navRoute.ui_route_name}]`,
-              description: error.toString(),
-              placement: 'bottomLeft',
-            })
-            // setLoadTrigger(0)
-            setLoadInProgress(false)
-            setLoadTimer(new Date())
-            setPreviewInitialized(false)
           }
         )
       }
@@ -409,7 +377,7 @@ const SyntaxTree = (props) => {
         && !!navComponent
         && !!navComponent.ui_component_name
       ) {
-        // url
+        // save url
         const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_component/base64:${btoa(navComponent.ui_component_name)}`
         // console.log(url)
         api.put(
@@ -428,12 +396,14 @@ const SyntaxTree = (props) => {
               loadUrl,
               data => {
                 // console.log(data)
-                process_api_data(data)
-                setSaveTrigger(0)
-                setLoadTimer(new Date())
-                if (navComponent.ui_component_type === 'react/component') {
-                  setPreviewInitialized(false)
-                }
+                ReactDOM.unstable_batchedUpdates(() => {
+                  process_api_data(data)
+                  setSaveTrigger(0)
+                  setLoadTimer(new Date())
+                  if (navComponent.ui_component_type === 'react/component') {
+                    setPreviewInitialized(false)
+                  }
+                })
               },
               error => {
                 console.error(error)
@@ -462,63 +432,6 @@ const SyntaxTree = (props) => {
             if (navComponent.ui_component_type === 'react/component') {
               setPreviewInitialized(false)
             }
-          }
-        )
-      }
-      else if
-      (
-        navSelected.type === 'ui_route'
-        && !!navRoute
-        && !!navRoute.ui_route_name
-      )
-      {
-        // url
-        const saveUrl = `/namespace/${navDeployment.namespace}/ui/${navDeployment.ui_name}/${navDeployment.ui_ver}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
-        // console.log(url)
-        api.put(
-          'sys',
-          'appx',
-          saveUrl,
-          {
-            ui_route_spec: spec,
-          },
-          data => {
-            // console.log(data)
-            const loadUrl = `/namespace/${navDeployment.namespace}/ui_deployment/ui/${navDeployment.ui_name}/deployment/${navDeployment.ui_deployment}/ui_route/base64:${btoa(navRoute.ui_route_name)}`
-            api.get(
-              'sys',
-              'appx',
-              loadUrl,
-              data => {
-                // console.log(data)
-                process_api_data(data)
-                setSaveTrigger(0)
-                setLoadTimer(new Date())
-                setPreviewInitialized(false)
-              },
-              error => {
-                console.error(error)
-                notification['error']({
-                  message: `Failed to load UI route [${navRoute.ui_route_name}]`,
-                  description: error.toString(),
-                  placement: 'bottomLeft',
-                })
-                setSaveTrigger(0)
-                setLoadTimer(new Date())
-                setPreviewInitialized(false)
-              }
-            )
-          },
-          error => {
-            console.error(error)
-            notification['error']({
-              message: `Failed to save UI route [${navRoute.ui_route_name}]`,
-              description: error.toString(),
-              placement: 'bottomLeft',
-            })
-            setSaveTrigger(0)
-            setLoadTimer(new Date())
-            setPreviewInitialized(false)
           }
         )
       }
@@ -1103,6 +1016,7 @@ const SyntaxTree = (props) => {
 
   // save button
   const MemorizedTools = React.useMemo(() => (props) => {
+    // console.log(`render MemorizedTools`)
     // styles
     const styles = makeStyles((theme) => ({
       toolTop: {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {
@@ -308,18 +309,20 @@ const SyntaxAddDialog = (props) => {
   //////////////////////////////////////////////////////////////////////////////
   // onSubmit
   const onSubmit = data => {
-    try {
-      // console.log('Add submit data', data)
-      addCallback(data)
-      props.setOpen(false)
-    } catch (err) {
-      console.log(`Add`, data, err)
-      notification.error({
-        message: `Failed to Add [ ${nodeType?.replaceAll('/', ' / ')} ]`,
-        description: String(err),
-        placement: 'bottomLeft',
-      })
-    }
+    ReactDOM.unstable_batchedUpdates(() => {
+      try {
+        // console.log('Add submit data', data)
+          addCallback(data)
+          props.setOpen(false)
+      } catch (err) {
+        console.log(`Add`, data, err)
+        notification.error({
+          message: `Failed to Add [ ${nodeType?.replaceAll('/', ' / ')} ]`,
+          description: String(err),
+          placement: 'bottomLeft',
+        })
+      }
+    })
   }
 
   //////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {
@@ -80,18 +81,20 @@ const SyntaxDeleteDialog = (props) => {
 
   // on submit
   const onSubmit = node => {
-    try {
-      // console.log('Add submit data', data)
-      deleteCallback(node)
-      props.setOpen(false)
-    } catch (err) {
-      console.log(`Delete`, node, err)
-      notification.error({
-        message: `Failed to Delete [ ${node?.data._type.replaceAll('/', ' / ')} ]`,
-        description: String(err),
-        placement: 'bottomLeft',
-      })
-    }
+    ReactDOM.unstable_batchedUpdates(() => {
+      try {
+        // console.log('Add submit data', data)
+        deleteCallback(node)
+        props.setOpen(false)
+      } catch (err) {
+        console.log(`Delete`, node, err)
+        notification.error({
+          message: `Failed to Delete [ ${node?.data._type.replaceAll('/', ' / ')} ]`,
+          description: String(err),
+          placement: 'bottomLeft',
+        })
+      }
+    })
   }
 
   // delete callback

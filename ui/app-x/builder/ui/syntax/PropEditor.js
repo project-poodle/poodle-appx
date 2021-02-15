@@ -567,19 +567,19 @@ const PropEditor = (props) => {
   //////////////////////////////////////////////////////////////////////////////
   // onSubmit
   const onBaseSubmit = data => {
-    try {
-      // console.log('Editor data', data)
-      ReactDOM.unstable_batchedUpdates(() => {
-        propEditorCallback(data)
-      })
-    } catch (err) {
-      console.log(`Editor`, data, err)
-      notification.error({
-        message: `Failed to Edit [ ${nodeType?.replaceAll('/', ' / ')} ]`,
-        description: String(err),
-        placement: 'bottomLeft',
-      })
-    }
+    ReactDOM.unstable_batchedUpdates(() => {
+      try {
+        // console.log('Editor data', data)
+          propEditorCallback(data)
+      } catch (err) {
+        console.log(`Editor`, data, err)
+        notification.error({
+          message: `Failed to Edit [ ${nodeType?.replaceAll('/', ' / ')} ]`,
+          description: String(err),
+          placement: 'bottomLeft',
+        })
+      }
+    })
   }
 
   //////////////////////////////////////////////////////////////////////////////

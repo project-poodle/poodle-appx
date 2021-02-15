@@ -47,7 +47,7 @@ const SyntaxProvider = (props) => {
 
     // console.log('updateAction', action, newTreeData, newExpandedKeys, newSelectedKey, nodeKey)
     const start = Date.now()
-    console.log('updateDesignAction - start', start)
+    // console.log('updateDesignAction - start', start)
 
     if (!lookupKey || (lookupKey !== updateKey)) {
       // setUpdateKey(lookupKey)
@@ -75,7 +75,7 @@ const SyntaxProvider = (props) => {
     // console.log('updateDesignAction - newHistory', Date.now())
 
     const clone = Date.now()
-    console.log('updateDesignAction - clone', clone, clone - start)
+    // console.log('updateDesignAction - clone', clone, clone - start)
 
     // update state from record
     setTreeData(newTreeData)
@@ -89,7 +89,7 @@ const SyntaxProvider = (props) => {
     // set history
     setHistory(newHistory)
     const end = Date.now()
-    console.log('updateDesignAction - end', Date.now(), end - start)
+    // console.log('updateDesignAction - end', Date.now(), end - start)
   }
 
   // update test action
@@ -132,7 +132,7 @@ const SyntaxProvider = (props) => {
   const makeFreshAction = (action, newTreeData, newTestData, newExpandedKeys, newSelectedKey) => {
 
     const start = Date.now()
-    console.log('makeFreshAction - start', start)
+    // console.log('makeFreshAction - start', start)
     // if fresh, clear history, and mark record as fresh
     // set current
     const newHistory = {
@@ -170,7 +170,7 @@ const SyntaxProvider = (props) => {
     setSyntaxTreeInitialized(true)
 
     const end = Date.now()
-    console.log('makeFreshAction - end', end, end - start)
+    // console.log('makeFreshAction - end', end, end - start)
     return
   }
 
@@ -179,7 +179,7 @@ const SyntaxProvider = (props) => {
 
     // console.log(`makeDesignAction`)
     const start = Date.now()
-    console.log('makeDesignAction - start', start)
+    // console.log('makeDesignAction - start', start)
 
     // keep the record
     const record = {
@@ -207,7 +207,7 @@ const SyntaxProvider = (props) => {
     }
 
     const clone = Date.now()
-    console.log('makeDesignAction - clone', clone, clone - start)
+    // console.log('makeDesignAction - clone', clone, clone - start)
 
     // update state from action
     setTreeData(record.treeData)
@@ -221,7 +221,7 @@ const SyntaxProvider = (props) => {
     setHistory(newHistory)
 
     const end = Date.now()
-    console.log('makeDesignAction - end', end, end - start)
+    // console.log('makeDesignAction - end', end, end - start)
   }
 
   // make test action

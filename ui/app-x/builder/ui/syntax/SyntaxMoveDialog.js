@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {
@@ -286,18 +287,20 @@ const SyntaxMoveDialog = (props) => {
   //////////////////////////////////////////////////////////////////////////////
   // onSubmit
   const onSubmit = data => {
-    try {
-      // console.log('Move submit data', data)
-      moveCallback(data)
-      props.setOpen(false)
-    } catch (err) {
-      console.log(`Move`, data, err)
-      notification.error({
-        message: `Failed to Move [ ${nodeType?.replaceAll('/', ' / ')} ]`,
-        description: String(err),
-        placement: 'bottomLeft',
-      })
-    }
+    ReactDOM.unstable_batchedUpdates(() => {
+      try {
+        // console.log('Move submit data', data)
+        moveCallback(data)
+        props.setOpen(false)
+      } catch (err) {
+        console.log(`Move`, data, err)
+        notification.error({
+          message: `Failed to Move [ ${nodeType?.replaceAll('/', ' / ')} ]`,
+          description: String(err),
+          placement: 'bottomLeft',
+        })
+      }
+    })
   }
 
   //////////////////////////////////////////////////////////////////////////////
