@@ -1,0 +1,46 @@
+version: '3' 
+
+networks:
+  poodle:
+    external: false
+    name: poodle      
+
+services:
+  db:
+    image: mysql:8.0.19
+    restart: always
+    container_name: poodle-mysql
+    networks:
+      poodle:
+        aliases:
+          - poodle-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: P@@dle101
+      MYSQL_USER: appx
+      MYSQL_PASSWORD: P@@dle101
+      MYSQL_DATABASE: appx
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    working_dir: /var/lib/mysql
+    volumes:
+      - "~/mysql:/var/lib/mysql:rw"
+
+  poodle:
+    depends_on: 
+      - db
+    image: poodleproject/poodle-appx:latest
+    networks: 
+      - poodle
+    restart: always
+    container_name: poodle-appx
+    environment:
+      mysql_admin_pass: P@@dle101
+      mysql_admin_user: root
+      mysql_port: 3306
+      mysql_host: poodle-mysql
+    ports:
+      - "127.0.0.1:3000:3000"
+    
+
