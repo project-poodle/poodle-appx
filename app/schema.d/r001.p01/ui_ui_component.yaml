@@ -206,7 +206,7 @@ ui_component:
                       - name: "@material-ui/core.ListItemText"
                         _type: react/element
                         props:
-                          primary: Packages
+                          primary: UI Packages
               - name: "@material-ui/core.Divider"
                 _type: react/element
                 props:
