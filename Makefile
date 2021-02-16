@@ -1,4 +1,4 @@
-REPO=poodleproject
+REPO=poodlehub
 NAME=poodle-appx
 VERSION=0.1
 

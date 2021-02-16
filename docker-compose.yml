@@ -30,7 +30,7 @@ services:
   poodle:
     depends_on: 
       - db
-    image: poodleproject/poodle-appx:latest
+    image: poodlehub/poodle-appx:latest
     networks: 
       - poodle
     restart: always

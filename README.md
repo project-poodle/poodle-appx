@@ -57,7 +57,7 @@ rest API, and UI
       -e mysql_admin_user=root \
       -e mysql_port=3306 \
       --name=poodle-appx \
-      projectpoodle/poodle-appx:latest
+      poodlehub/poodle-appx:latest
 
       Note: If your DB is running on Mac then the mysql_host is to be found using the below command
       $ ipconfig getifaddr en0
