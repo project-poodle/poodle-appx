@@ -155,11 +155,15 @@ function parse_for_sql(context, req, res) {
     // update select attrs
     Object.keys(obj_attrs).forEach((obj_attr_key, i) => {
         let obj_attr = obj_attrs[obj_attr_key]
-        if ('key' in obj_attr.attr_spec && obj_attr.attr_spec.key) {
-            key_attrs[`${obj_attr_key}`] = `\`${obj_attr_key}\``
+        if (!!obj_attr.attr_spec.key) {
+            key_attrs[`${obj_attr_key}`] = {
+                name: `\`${obj_attr_key}\``,
+                type: obj_attr.attr_spec.type,
+            }
         } else {
-            if ((!('managed' in obj_attr.attr_spec)) || obj_attr.attr_spec.managed) {
-                non_key_attrs[`${obj_attr_key}`] = `\`${obj_attr_key}\``
+            non_key_attrs[`${obj_attr_key}`] = {
+                name: `\`${obj_attr_key}\``,
+                type: obj_attr.attr_spec.type,
             }
         }
     });

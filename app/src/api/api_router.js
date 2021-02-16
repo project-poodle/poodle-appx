@@ -6,6 +6,7 @@ const { log_api_status, SUCCESS, FAILURE } = require('./util')
 const { handle_get } = require('./get')
 const { handle_upsert } = require('./upsert')
 const { handle_update } = require('./update')
+const { handle_patch } = require('./patch')
 const { handle_delete } = require('./delete')
 const { handle_status } = require('./status')
 
@@ -130,6 +131,10 @@ async function handle_req(req, res) {
                 await handle_update(req.context, req, res)
                 return
 
+            case "patch":
+                await handle_patch(req.context, req, res)
+                return
+
             case "delete":
                 await handle_delete(req.context, req, res)
                 return
@@ -212,7 +217,7 @@ async function load_api_router(namespace, app_name, app_deployment) {
             api_endpoint: api_result.api_endpoint
         }
 
-        switch (api_result.api_method) {
+        switch (api_result.api_method.toLowerCase()) {
 
             case "get":
 
@@ -248,6 +253,17 @@ async function load_api_router(namespace, app_name, app_deployment) {
                     `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
                 break
 
+            case "patch":
+                router.patch(api_result.api_endpoint, async (req, res) => {
+
+                    req.params = decode_params(req.params)
+                    req.context = Object.assign({}, api_context, req.context)
+                    await handle_req(req, res)
+                })
+                log_api_status(api_result, SUCCESS,
+                    `INFO: published successfully [${JSON.stringify(api_result.api_spec)}] !`)
+                break
+
             case "delete":
                 router.delete(api_result.api_endpoint, async (req, res) => {
 
@@ -266,7 +282,7 @@ async function load_api_router(namespace, app_name, app_deployment) {
     }
 
     router.use('/', (req, res) => {
-        res.status(404).json({status: FAILURE, message: `ERROR: API for [${req.url}] not found !`})
+        res.status(404).json({status: FAILURE, message: `ERROR: ${req.method} API for [${req.url}] not found !`})
     })
 
     return router

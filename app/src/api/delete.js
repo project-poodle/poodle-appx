@@ -29,6 +29,15 @@ async function handle_delete(context, req, res) {
             return
         }
 
+        // check non key columns
+        if (!(attr_key in parsed.non_key_attrs)) {
+            let msg = `ERROR: data attr not found [${attr_key}] !`
+            log_api_status(context, FAILURE, msg)
+            res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
+            fatal = true
+            return
+        }
+
         // set attr
         sql = sql + `, \`${attr_key}\`=?`
 

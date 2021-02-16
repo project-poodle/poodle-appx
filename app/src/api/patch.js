@@ -6,11 +6,11 @@ const { json_transform, json_trigger } = require('../transform/json_transform')
 const { log_api_status, parse_for_sql, load_object, record_spec_audit, SUCCESS, FAILURE, REGEX_VAR } = require('./util')
 
 /**
- * handle_upsert
+ * handle_patch
  */
-async function handle_upsert(context, req, res) {
+async function handle_patch(context, req, res) {
 
-    let parsed = parse_for_sql(context, req, res)
+    let parsed = await parse_for_sql(context, req, res)
 
     if (parsed.fatal) {
         return
@@ -18,12 +18,20 @@ async function handle_upsert(context, req, res) {
 
     let sql_params = []
 
-    // select
-    let sql = `INSERT INTO \`${context.obj_name}\``
+    // patch
+    let sql = `UPDATE \`${context.obj_name}\``
+
+    // set clause
     let first = true
     Object.keys(parsed.data_attrs).forEach((attr_key, i) => {
-        // check attr columns
-        if (!(attr_key in parsed.key_attrs) && !(attr_key in parsed.non_key_attrs)) {
+
+        // skip key columns
+        if (attr_key in parsed.key_attrs) {
+            return
+        }
+
+        // check non key columns
+        if (!(attr_key in parsed.non_key_attrs)) {
             let msg = `ERROR: data attr not found [${attr_key}] !`
             log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
@@ -31,51 +39,61 @@ async function handle_upsert(context, req, res) {
             return
         }
 
+        let is_json = parsed.non_key_attrs[attr_key].type?.toLowerCase() === 'json'
+
         if (first) {
-            sql = sql + `(\`${attr_key}\``
+            if (is_json) {
+                sql = sql + ` SET \`${attr_key}\`=JSON_MERGE_PATCH(${attr_key}, ?)`
+            } else {
+                sql = sql + ` SET \`${attr_key}\`=?`
+            }
             first = false
         } else {
-            sql = sql + `, \`${attr_key}\``
+            if (is_json) {
+                sql = sql + `, \`${attr_key}\`=JSON_MERGE_PATCH(${attr_key}, ?)`
+            } else {
+                sql = sql + `, \`${attr_key}\`=?`
+            }
         }
-    })
-    sql = sql + `, \`deleted\`) VALUES (`
-    first = true
-    Object.keys(parsed.data_attrs).forEach((attr_key, i) => {
-        if (first) {
-            first = false
-        } else {
-            sql = sql + `, `
-        }
+        // add attr_value
         let attr_value = parsed.data_attrs[attr_key]
         if (typeof attr_value != 'object') {
-            sql = sql + `?`
             sql_params.push(attr_value)
         } else if (attr_value == null) {
-            sql = sql + `?`
             sql_params.push(null)
         } else {
-            sql = sql + `?`
             sql_params.push(`${JSON.stringify(attr_value)}`)
         }
     })
-    sql = sql + `, 0)`
 
-    Object.keys(parsed.key_attrs).forEach((key_attr, i) => {
+    // where clause
+    first = true
+    Object.keys(parsed.key_attrs).forEach((attr_key, i) => {
 
-        if (! (key_attr in parsed.data_attrs)) {
-            let msg = `ERROR: key attr not found [${key_attr}] !`
+        if (! (attr_key in parsed.data_attrs)) {
+            let msg = `ERROR: key attr not found [${attr_key}] !`
             log_api_status(context, FAILURE, msg)
             res.status(422).send(JSON.stringify({status: FAILURE, error: msg}))
             fatal = true
             return
         }
-    })
 
-    sql = sql + ` ON DUPLICATE KEY UPDATE \`deleted\`=0`
-    Object.keys(parsed.data_attrs).forEach((data_attr, i) => {
+        // where clause
+        if (first) {
+            sql = sql + ` WHERE \`${attr_key}\`=?`
+            first = false
+        } else {
+            sql = sql + ` AND \`${attr_key}\`=?`
+        }
 
-        if (data_attr in parsed.non_key_attrs) {
-            sql = sql + `, \`${data_attr}\`=VALUES(\`${data_attr}\`)`
+        // add attr_value
+        let attr_value = parsed.data_attrs[attr_key]
+        if (typeof attr_value != 'object') {
+            sql_params.push(attr_value)
+        } else if (attr_value == null) {
+            sql_params.push(null)
+        } else {
+            sql_params.push(`${JSON.stringify(attr_value)}`)
         }
     })
 
@@ -92,7 +110,7 @@ async function handle_upsert(context, req, res) {
 
     // record audit
     if (curr != null && obj_changed) {
-        await record_spec_audit(result.insertId, prev, curr, req)
+        await record_spec_audit(curr.id, prev, curr, req)
     }
 
     // invoke trigger if configured
@@ -114,5 +132,5 @@ async function handle_upsert(context, req, res) {
 
 // export
 module.exports = {
-    handle_upsert: handle_upsert
+    handle_patch: handle_patch
 }

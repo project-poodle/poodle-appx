@@ -32,15 +32,16 @@ rest API, and UI
 
 # Docker Build Image
 
-    -- 
     $ make image
+
 ## Docker with DB
+
     # To Launch all dependencies including DB
 
     $ mkdir ~/mysql  (mysql data dir. Not-Configurable)
     $ curl https://raw.githubusercontent.com/projectpoodle/poodle-appx/main/docker-compose.yml > docker-compose.yml
     $ docker compose up &
-    
+
     $ docker-compose up &        (Use for older versions )
 
     -- Use a browser to connect to http://localhost:3000/
@@ -49,7 +50,7 @@ rest API, and UI
     $ docker compose down
 
 ## Docker with custom DB
-  
+
     $ docker run \
       -p 127.0.0.1:3000:3000 \
       -e mysql_host=<your DB hosts' IP here> \
@@ -64,6 +65,8 @@ rest API, and UI
 
     -- Use a browser to connect to http://localhost:3000/
 
+
+# Optional Check
 
     -- (Optional) To check out the APIs from CLI, start a new terminal
 

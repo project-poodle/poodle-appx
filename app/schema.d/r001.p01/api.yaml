@@ -67,6 +67,21 @@ api:
               verb: "update"
           doc:
               desc: "update namespace for :namespace"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "namespace"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              # UPDATE appx.namespace SET namespace_spec = JSON_MERGE_PATCH(namespace_spec, :body.namespace_spec) WHERE namespace = :namespace
+              verb: "patch"
+          doc:
+              desc: "patch namespace for :namespace"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -181,6 +196,20 @@ api:
               verb: "update"
           doc:
               desc: "update app for :namespace / :app_name / :app_ver"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "app"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch app for :namespace / :app_name / :app_ver"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -316,6 +345,20 @@ api:
               verb: "update"
           doc:
               desc: "update app_runtime for :namespace / :app_name / :app_runtime"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "app_runtime"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app_runtime/app/:app_name/runtime/:app_runtime"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch app_runtime for :namespace / :app_name / :app_runtime"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -474,6 +517,20 @@ api:
               verb: "update"
           doc:
               desc: "update app_deployment for :namespace / :app_name / :app_runtime / :app_deployment"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "app_deployment"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app_deployment/app/:app_name/runtime/:app_runtime/deployment/:app_deployment"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch app_deployment for :namespace / :app_name / :app_runtime / :app_deployment"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -606,6 +663,20 @@ api:
               verb: "update"
           doc:
               desc: "update obj for :namespace / :app_name / :app_ver / :obj_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "obj"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch obj for :namespace / :app_name / :app_ver / :obj_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -742,6 +813,20 @@ api:
               verb: "update"
           doc:
               desc: "update attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "attr"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/attr/:attr_name"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch attr for :namespace / :app_name / :app_ver / :obj_name / :attr_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -920,6 +1005,20 @@ api:
               verb: "update"
           doc:
               desc: "update relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "relation"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/relation/:obj_name/:objn_name"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch relation for :namespace / :app_name / :app_ver / :obj_name / :objn_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1096,6 +1195,20 @@ api:
               verb: "update"
           doc:
               desc: "update api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "api"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/api/:api_method/:api_endpoint"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch api for :namespace / :app_name / :app_ver / :obj_name / :api_method / :api_endpoint"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1190,6 +1303,20 @@ api:
               verb: "update"
           doc:
               desc: "update transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "transform"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/app/:app_name/:app_ver/obj/:obj_name/transform/:transform_name"
+      api_spec:
+          permission: "app.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch transform for :namespace / :app_name / :app_ver / :obj_name / :transform_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1319,6 +1446,20 @@ api:
               verb: "update"
           doc:
               desc: "update ui for :namespace / :ui_name / :ui_ver"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver"
+      api_spec:
+          permission: "ui.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch ui for :namespace / :ui_name / :ui_ver"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1472,6 +1613,20 @@ api:
               verb: "update"
           doc:
               desc: "update ui_deployment for :namespace / :ui_name / :ui_deployment"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui_deployment"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/ui_deployment/ui/:ui_name/deployment/:ui_deployment"
+      api_spec:
+          permission: "ui.write"
+          syntax:
+              verb: "patch"
+          doc:
+              desc: "patch ui_deployment for :namespace / :ui_name / :ui_deployment"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1631,6 +1786,30 @@ api:
                           ui_deployment: "@dp"
           doc:
               desc: "update ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui_component"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_component/:ui_component_name"
+      api_spec:
+          permission: "ui.write"
+          syntax:
+              verb: "patch"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_component"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+          doc:
+              desc: "patch ui_component for :namespace / :ui_name / :ui_ver / :ui_component_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
@@ -1807,6 +1986,30 @@ api:
                           ui_deployment: "@dp"
           doc:
               desc: "update ui_route for :namespace / :ui_name / :ui_ver / :ui_route_name"
+    # patch
+    - namespace: "sys"
+      app_name: "appx"
+      app_ver: "internal"
+      app_rev: "default"
+      obj_name: "ui_route"
+      api_method: "patch"
+      api_endpoint: "/namespace/:namespace/ui/:ui_name/:ui_ver/ui_route/:ui_route_name"
+      api_spec:
+          permission: "ui.write"
+          syntax:
+              verb: "patch"
+              trigger:
+                "#dp{$cache['ui_deployment'][$params.namespace]['uis'][$params.ui_name][$params.ui_ver]}":
+                  - "$invoke":
+                      module: "../cache/cache"
+                      method: "load_cache_for"
+                      params:
+                        - '"ui_route"'
+                        - namespace: "$dp.namespace"
+                          ui_name: "$dp.ui_name"
+                          ui_deployment: "@dp"
+          doc:
+              desc: "patch ui_route for :namespace / :ui_name / :ui_ver / :ui_route_name"
     # delete
     - namespace: "sys"
       app_name: "appx"
