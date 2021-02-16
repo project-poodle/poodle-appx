@@ -26,7 +26,7 @@ appx:
                 # - "192.168.1.203"
         mysql_port: "3306"
         mysql_admin_user: "root"
-        mysql_admin_pass: "Vlt6DF6RcV"
+        mysql_admin_pass: "P@@dle101"
         # mysql_admin_pass: ""
         mysql_node_user: "{{{appx.init.appx_node_user}}}"
         mysql_node_pass: "{{{appx.init.appx_node_pass}}}"

@@ -16,11 +16,16 @@ pushd `pwd` > /dev/null
 cd `dirname $0`
 export CURR_DIR=`pwd`
 export BASE_DIR=${CURR_DIR}/..
+export INIT_ORIG=${CURR_DIR}/init.yaml
 source ${BASE_DIR}/common.d/func.sh
 popd > /dev/null
 
 # check_root
 
+##############################
+# override args
+
+env_var_update $INIT_ORIG
 
 ##############################
 # generate and install templates
@@ -112,6 +117,26 @@ if [ $? -ne 0 ]; then
 fi
 # chown ${appx__init__service_usr_appx}:${appx__init__service_grp_appx} ${MOUNT_APPX_FILE}
 chmod 644 ${MOUNT_APPX_FILE}
+
+echo "--------------------"
+echo "INFO: Checking Connection to DB"
+MAX_CHECKS=5; try=0;
+while true
+    do
+        eval_mysql_admin -p -e "SELECT version()"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: Connection to DB Failed. Will retry in 30s. Number of retries [$try]"
+            if [ $try == $MAX_CHECKS ]; then
+                echo "ERROR: Connection to DB Failed. Number of retries [$try]. Max retries reached. Exiting"
+                exit 1
+            fi    
+            try=$[$try+1]
+            sleep 30
+        else
+            echo "INFO: Connection to DB Successful" 
+            break
+        fi
+    done
 
 echo "--------------------"
 eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED WITH mysql_native_password BY '${appx__init__mysql_node_pass}'"

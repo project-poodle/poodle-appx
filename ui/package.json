@@ -1,7 +1,7 @@
 {
   "name": "appx-ui",
   "version": "0.1.0",
-  "proxy_server": "http://localhost:3000/",
+  "proxy_server": "http://0.0.0.0:3000/",
   "proxy_api_base": "/appx/api",
   "proxy_ui_base": "/appx/ui",
   "dist": "dist/lib",

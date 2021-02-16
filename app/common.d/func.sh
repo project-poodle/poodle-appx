@@ -126,3 +126,21 @@ function parse_yaml()
       }
    }'
 }
+
+function env_var_update()
+{   INIT_ORIG=$1
+    for key in "${!mysql_@}"; do
+        val="${!key}"
+        echo $key $val
+        if [ "$val" != ""  ]; then
+            if [ $key == mysql_host ]; then
+            sed -i "/list:.*/a  \                - \"$val\"" $INIT_ORIG
+            else
+            sed -i "s/$key:.*/$key: $val/" $INIT_ORIG
+            fi
+        else
+        echo "INFO: Using the default value of $key"
+        unset $val
+        fi
+    done
+}

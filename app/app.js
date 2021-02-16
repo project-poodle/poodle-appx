@@ -161,7 +161,7 @@ async function start() {
   //////////////////////////////////////////////////
   // start listening
     // start listening
-  var server = app.listen(3000, () => {
+  var server = app.listen(3000,'0.0.0.0', () => {
       console.log(`INFO: appx rest api server listening at http://${server.address().address}:${server.address().port}`)
   })
 }
