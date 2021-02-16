@@ -30,11 +30,11 @@ services:
   poodle:
     depends_on: 
       - db
-    image: poodle:latest
+    image: poodleproject/poodle-appx:latest
     networks: 
       - poodle
     restart: always
-    container_name: poodle
+    container_name: poodle-appx
     environment:
       mysql_admin_pass: P@@dle101
       mysql_admin_user: root
