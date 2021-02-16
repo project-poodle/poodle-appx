@@ -30,7 +30,7 @@ services:
   poodle:
     depends_on: 
       - db
-    image: app:latest
+    image: poodle:latest
     networks: 
       - poodle
     restart: always
@@ -39,7 +39,7 @@ services:
       mysql_admin_pass: P@@dle101
       mysql_admin_user: root
       mysql_port: 3306
-      mysql_host: 10.0.0.147
+      mysql_host: poodle-mysql
     ports:
       - "127.0.0.1:3000:3000"
     

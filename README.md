@@ -30,6 +30,37 @@ rest API, and UI
 
     -- Use a browser to connect to http://localhost:3000/
 
+# Docker
+
+    -- This docker image is in the nascent stage. Please build the image before using. 
+    $ docker build --tag poodle:latest .
+## Docker with DB
+    # To Launch all dependencies including DB
+
+    $ mkdir ~/mysql  (mysql data dir. Not-Configurable)
+    $ docker compose up &
+    
+    $ docker-compose up &        (Use for older versions )
+
+    -- Use a browser to connect to http://localhost:3000/
+
+    # To stop & clean all containers and dependencies
+    $ docker compose down
+
+## Docker with custom DB
+    $ docker run \
+      -p 127.0.0.1:3000:3000 \
+      -e mysql_host=<your DB hosts' IP here> \
+      -e mysql_admin_pass=<p@$$w0rD> \
+      -e mysql_admin_user=root \
+      -e mysql_port=3306 \
+      --name=poodle \
+      poodle:latest    
+
+      Note: If your DB is running on Mac, the mysql_host is to be found using the below command
+      $ ipconfig getifaddr en0
+
+    -- Use a browser to connect to http://localhost:3000/
 
 
     -- (Optional) To check out the APIs from CLI, start a new terminal

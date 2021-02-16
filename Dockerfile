@@ -13,9 +13,6 @@ RUN rm -fR node_modules/ dist/
 RUN npm install
 RUN npm run build
 WORKDIR /usr/src/poodle-appx/app
-#RUN ./init.d/init.sh ./init.d/init.yaml
-#RUN ./schema.d/r001.p01/run.sh
-#WORKDIR /usr/src/poodle-appx
 EXPOSE 3000
 RUN chmod +x docker-entrypoint.sh
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
