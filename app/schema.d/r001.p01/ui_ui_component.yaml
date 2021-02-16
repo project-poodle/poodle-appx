@@ -459,7 +459,7 @@ ui_component:
                           - path: /packages
                             _type: route/path
                             element:
-                              name: self/page/Namespaces
+                              name: self/page/UIPackages
                               _type: react/element
                           - path: /ui_component/*
                             _type: route/path
@@ -821,7 +821,7 @@ ui_component:
   - namespace: sys
     ui_name: ui
     ui_ver: internal
-    ui_component_name: /page/Namespaces
+    ui_component_name: /page/UIPackages
     ui_component_type: react/component
     ui_component_spec:
       _test:
@@ -895,7 +895,7 @@ ui_component:
                 accessor:
                   body:
                     - |-
-                      const bundle = 
+                      const bundle =
                         row.namespace_spec.ui?.packages?.reduce(
                           (accumulator, item) => {
                             accumulator[item.bundle] = item
@@ -911,7 +911,7 @@ ui_component:
                 accessor:
                   body:
                     - >-
-                      const packages = 
+                      const packages =
                         row.namespace_spec.ui?.packages.map(item => item.package) || []
                       return packages.join(', ')
                   _type: js/function
@@ -2832,4 +2832,3 @@ ui_component:
                     _type: js/expression
                 children:
                   - c
-
