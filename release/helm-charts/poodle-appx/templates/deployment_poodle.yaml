@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poodle-appx
+  labels:
+    app: poodle
+    chart: {{ include "poodle-appx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: poodle
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: poodle-appx
+      labels:
+        app: poodle
+        component: poodle-appx
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:      
+        - name: poodle-appx
+          command: ["/bin/sh","-c"]
+          args: ["./docker-entrypoint.sh"]        
+          image: "{{ .Values.dockerUrl }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http1
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: mysql_admin_user
+              value: "{{ .Values.mysql.user }}"
+            - name: mysql_admin_pass
+              value: "{{ .Values.mysql.pass }}"
+            - name: mysql_host
+              value: "{{ .Values.mysql.host }}"
+            - name: mysql_port
+              value: "{{ .Values.mysql.port }}"
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}

@@ -30,6 +30,18 @@ rest API, and UI
 
     -- Use a browser to connect to http://localhost:3000/
 
+## Kubernetes
+
+    $ tar cvzf poodle-appx--0.1.tgz -C helm-charts poodle-appx
+    $ kubectl create namespace poodle-appx
+    $ helm install --debug poodle-appx ./poodle-appx--0.1.tgz --namespace poodle-appx
+
+    # To Verify or Debug
+    $ kubectl get all -n poodle-appx
+    $ kubectl logs -f service/poodle-appx
+
+    -- Use a browser to connect to http://localhost:3000/
+    
 # Docker Build Image
 
     $ make image
@@ -64,7 +76,6 @@ rest API, and UI
       $ ipconfig getifaddr en0
 
     -- Use a browser to connect to http://localhost:3000/
-
 
 # Optional Check
 
