@@ -760,6 +760,17 @@ const PropEditor = (props) => {
   }
   ////////////////////////////////////////////////////////////////////////////////
 
+  function force_node_data_type(type) {
+    let value = getValues('data')
+    
+    switch (type) {
+      case 'js/expression':
+      case 'js/string':  setValue('data', String(value));  break;
+      case 'js/number':  setValue('data', Number(value));  break;
+      case 'js/boolean': setValue('data', Boolean(value)); break;
+    }
+  }
+
   const MemorizedBaseTab = React.useMemo(() => () => {
     return (
       <span>
@@ -1061,8 +1072,19 @@ const PropEditor = (props) => {
                             size="small"
                             onChange={
                               e => {
-                                setNodeType(e.target.value)
+                                innerProps.value = e.target.value
                                 innerProps.onChange(e)
+                                
+                                // force type change on node data
+                                force_node_data_type(e.target.value)
+                                
+                                thisNode.data._type = e.target.value
+                                setNodeType(e.target.value)
+                                
+                                // grab type spec and update tree node
+                                const spec = globalThis.appx.SPEC.types[e.target.value]
+                                setNodeSpec(spec)
+                                
                                 trigger('_ref')
                                 trigger('_type')
                                 setBaseSubmitTimer(new Date())
