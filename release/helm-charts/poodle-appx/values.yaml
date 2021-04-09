@@ -1,0 +1,40 @@
+# Generic values.yaml
+
+replicaCount: 1
+
+imagePullSecrets:
+
+dockerUrl:
+image:
+  repository: poodlehub/poodle-appx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+mysql_image:
+  repository: mysql
+  tag: 8.0.19
+  pullPolicy: IfNotPresent
+
+mysql:
+  user: root
+  pass: P@@dle101
+  host: poodle-mysql
+  port: 3306
+  user_app: appx
+  pass_app: P@@dle101
+  db: appx
+  path: /var/lib/mysql
+
+
+service:
+  type: LoadBalancer
+  port: 3000
+  host: localhost
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1Gi
+  limits:
+    cpu: 1
+    memory: 2Gi

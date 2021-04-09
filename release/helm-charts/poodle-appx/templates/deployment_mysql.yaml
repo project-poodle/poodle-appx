@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poodle-mysql
+  labels:
+    app: poodle
+    chart: {{ include "poodle-appx.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: poodle
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: poodle-mysql
+      labels:
+        app: poodle
+        component: poodle-mysql
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: poodle-appx
+          args: ["--default-authentication-plugin=mysql_native_password"]        
+          image: "{{ .Values.dockerUrl }}{{ .Values.mysql_image.repository }}:{{ .Values.mysql_image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: mysql
+              containerPort: {{ .Values.mysql.port }}
+              protocol: TCP
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MYSQL_USER
+              value: "{{ .Values.mysql.user_app }}"
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.mysql.pass }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.mysql.pass_app }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.mysql.db }}"
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+          - mountPath: {{ .Values.mysql.path }}
+            name: mysql
+      volumes:
+      - name: mysql
+        hostPath:
+          path: {{ .Values.mysql.path }}
+          type: DirectoryOrCreate
