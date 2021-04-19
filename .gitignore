@@ -108,3 +108,5 @@ dist
 conf.d/
 log.d/
 
+# ide files
+.idea
