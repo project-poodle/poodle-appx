@@ -25,6 +25,7 @@ const parser = new ArgumentParser({
 
 parser.add_argument('-c', '--conf', { help: 'mysql config file', required: true })
 parser.add_argument('-m', '--mount', { help: 'mount config file', required: true })
+parser.add_argument('-a', '--api_conf', { help: 'api config file', required: false })
 args = parser.parse_args()
 
 let db_conf_options = JSON.parse(fs.readFileSync(args.conf))
@@ -160,7 +161,15 @@ async function start() {
 
   //////////////////////////////////////////////////
   // start listening
-    // start listening
+  let port = 3000
+  if ( args.api_conf !== undefined ) {
+      try {
+          const api_conf = JSON.parse(fs.readFileSync(args.api_conf, 'utf8'))
+          port = api_conf['api_port'] || 3000
+      } catch (e) {
+          console.log(`WARN: error ${e} occurred while reading the api config: ${args.api_conf}`)
+      }
+  }
   var server = app.listen(3000,'0.0.0.0', () => {
       console.log(`INFO: appx rest api server listening at http://${server.address().address}:${server.address().port}`)
   })
