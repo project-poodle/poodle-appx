@@ -1,5 +1,5 @@
 const fs = require('fs')
-const ldap = require('ldapjs')
+const { Client } = require('ldapts')
 const deasync = require('deasync')
 const db = require('../db/db')
 const cache = require('../cache/cache')
@@ -19,42 +19,20 @@ ldap:
 let ldap_connect = (host, port, ssl, user, pass, callback) => {
 
     // console.log(host, port, ssl, user, pass)
-    let ldap_client = ldap.createClient({url: `${ssl?'ldap':'ldaps'}://${host}:${port}/`})
-    ldap_client.bind(user, pass, (err, result) => {
-        callback(err, ldap_client)
-    })
-}
-
-let ldap_connect_sync = deasync(ldap_connect)
-
-let ldap_search = (ldap_conn, base_dn, options, callback) => {
-
-    //console.log(ldap_conn, base_dn, options)
-    ldap_conn.search(base_dn, options, (err, search) => {
-        callback(err, search)
-    })
-}
-
-let ldap_search_sync = deasync(ldap_search)
-
-let ldap_search_objects = (ldap_search, callback) => {
-
-    let objects = []
-    let p = new Promise((resolve, reject) => {
-        ldap_search.on('searchEntry', entry => {
-            objects.push(entry.object)
-        })
-        ldap_search.on('page', page => {
-            resolve(objects)
-        })
-        ldap_search.on('error', err => {
+    let ldap_client = new Client({
+        url: `${ssl?'ldap':'ldaps'}://${host}:${port}/`,
+        timeout: 0,
+        connectTimeout: 0,
+        strictDN: true
+    });
+    let p = new Promise(async (resolve, reject) => {
+        try{
+            await ldap_client.bind(user, pass)
+            resolve(ldap_client)
+        } catch (err) {
             reject(err)
-        })
-        ldap_search.on('end', err => {
-            resolve(objects)
-        })
+        }
     })
-
     p.then(value => {
         callback(null, value)
     }).catch(err => {
@@ -63,7 +41,50 @@ let ldap_search_objects = (ldap_search, callback) => {
     })
 }
 
-let ldap_search_objects_sync = deasync(ldap_search_objects)
+let ldap_connect_sync = deasync(ldap_connect)
+
+let ldap_ublind = (ldap_client, callback) => {
+
+    let p = new Promise(async (resolve, reject) => {
+        try{
+            await ldap_client.unbind()
+            resolve(ldap_client)
+        } catch (err) {
+            reject(err)
+        }
+    })
+    p.then(value => {
+        callback(null, value)
+    }).catch(err => {
+        console.log(err)
+        callback(err, null)
+    })
+}
+
+let ldap_ublind_sync = deasync(ldap_ublind)
+
+let ldap_search = (ldap_conn, base_dn, options, callback) => {
+
+    //console.log(ldap_conn, base_dn, options)
+    let p = new Promise(async (resolve, reject) => {
+        try{
+            const {
+                searchEntries
+            } = await ldap_conn.search(base_dn, options)
+            resolve(searchEntries)
+        } catch (err) {
+            reject(err)
+        }
+    })
+    p.then(value => {
+        callback(null, value)
+    }).catch(err => {
+        console.log(err)
+        callback(err, null)
+    })
+}
+
+let ldap_search_sync = deasync(ldap_search)
 
 /*
 ldap:
@@ -123,15 +144,19 @@ function findLdapUserWithPass(realm, protocol, username, password) {
         scope: 'sub',
         attributes: ['dn', protocol.group_attr]
     }
-    let search = ldap_search_sync(ldap_client, protocol.base_dn, options)
-    let results = ldap_search_objects_sync(search)
-    // console.log(results)
+    let results = ldap_search_sync(ldap_client, protocol.base_dn, options)
 
-    if (!results || results.length == 0 || (! ('dn' in results[0]))) {
+    if (!results || results.length === 0 || (! ('dn' in results[0]))) {
         return {
             status: 'error',
             message: `Invalid Username or Password`
         }
+    }
+
+    try {
+        ldap_ublind_sync(ldap_client)
+    } catch (err) {
+        console.error(err)
     }
 
     // we have found the user, next, authenticate the user with password
