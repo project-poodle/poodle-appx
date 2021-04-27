@@ -109,6 +109,12 @@ function findLdapUserWithPass(realm, protocol, username, password) {
             }
         }
         let ldap_conf = JSON.parse(fs.readFileSync(conf_file, 'utf8'))
+        let authorized = false
+        if( ldap_conf.bind_user === undefined ) {
+            ldap_conf.bind_user = username
+            ldap_conf.bind_pass = password
+            authorized = true
+        }
         let ldap_client = ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl,
                                             ldap_conf.bind_user, ldap_conf.bind_pass)
         ldap_conn[protocol.conf] = {
@@ -136,7 +142,9 @@ function findLdapUserWithPass(realm, protocol, username, password) {
 
     // we have found the user, next, authenticate the user with password
     try {
-        ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl, results[0].dn, password)
+        if( !authorized ) {
+            ldap_connect_sync(ldap_conf.host, ldap_conf.port, ldap_conf.ssl, results[0].dn, password)
+        }
     } catch (err) {
         console.log(err)
         return {
