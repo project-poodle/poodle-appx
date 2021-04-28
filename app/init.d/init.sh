@@ -138,37 +138,42 @@ while true
             if [ $try == $MAX_CHECKS ]; then
                 echo "ERROR: Connection to DB Failed. Number of retries [$try]. Max retries reached. Exiting"
                 exit 1
-            fi    
+            fi
             try=$[$try+1]
             sleep 30
         else
-            echo "INFO: Connection to DB Successful" 
+            echo "INFO: Connection to DB Successful"
             break
         fi
     done
 
 echo "--------------------"
-eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED WITH mysql_native_password BY '${appx__init__mysql_node_pass}'"
-if [ $? -ne 0 ]; then
-    eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
+mysql_user_check=$(eval_mysql_admin -e "select user, host from mysql.user where user = '${appx__init__mysql_node_user}' and host = '%'" --json)
+
+if [[ "${mysql_user_check}" == "[]" ]]; then
+
+    eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED WITH mysql_native_password BY '${appx__init__mysql_node_pass}'"
     if [ $? -ne 0 ]; then
-        echo "ERROR: mysql failed to create user: ${appx__init__mysql_node_user} ! --- [/tmp/$$/]"
+        eval_mysql_admin -p -e "CREATE USER IF NOT EXISTS '${appx__init__mysql_node_user}'@'%' IDENTIFIED BY '${appx__init__mysql_node_pass}'"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: mysql failed to create user: ${appx__init__mysql_node_user} ! --- [/tmp/$$/]"
+            exit 1
+        fi
+    fi
+
+    echo "--------------------"
+    eval_mysql_admin -p -e "CREATE DATABASE IF NOT EXISTS \`${appx__init__schema_prefix}\`"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: mysql failed to create schema: ${appx__init__schema_prefix} ! --- [/tmp/$$/]"
         exit 1
     fi
-fi
 
-echo "--------------------"
-eval_mysql_admin -p -e "CREATE DATABASE IF NOT EXISTS \`${appx__init__schema_prefix}\`"
-if [ $? -ne 0 ]; then
-    echo "ERROR: mysql failed to create schema: ${appx__init__schema_prefix} ! --- [/tmp/$$/]"
-    exit 1
-fi
-
-echo "--------------------"
-eval_mysql_admin -p -e "GRANT ALL PRIVILEGES ON \`${appx__init__schema_prefix}\`.* TO '${appx__init__mysql_node_user}'@'%'"
-if [ $? -ne 0 ]; then
-    echo "ERROR: mysql failed to grant privileges to user: ${appx__init__mysql_node_user} ! --- [/tmp/$$/]"
-    exit 1
+    echo "--------------------"
+    eval_mysql_admin -p -e "GRANT ALL PRIVILEGES ON \`${appx__init__schema_prefix}\`.* TO '${appx__init__mysql_node_user}'@'%'"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: mysql failed to grant privileges to user: ${appx__init__mysql_node_user} ! --- [/tmp/$$/]"
+        exit 1
+    fi
 fi
 
 echo "--------------------"
