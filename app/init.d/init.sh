@@ -16,7 +16,7 @@ pushd `pwd` > /dev/null
 cd `dirname $0`
 export CURR_DIR=`pwd`
 export BASE_DIR=${CURR_DIR}/..
-export INIT_ORIG=${CURR_DIR}/init.yaml
+export INIT_ORIG=$(if [[ $1 ]]; then echo "$1"; else echo "${CURR_DIR}/init.yaml"; fi)
 source ${BASE_DIR}/common.d/func.sh
 popd > /dev/null
 
@@ -40,7 +40,7 @@ chmod 755 ${BASE_DIR}/conf.d
 umask 077
 
 echo "--------------------"
-eval_template -t ${CURR_DIR}/init.yaml -y1 ${CURR_DIR}/init.yaml > /tmp/$$/init.yaml
+eval_template -t ${INIT_ORIG} -y1 ${INIT_ORIG} > /tmp/$$/init.yaml
 if [ $? -ne 0 ]; then
     echo "ERROR: failed to generate init.yaml ! --- [/tmp/$$/]"
     exit 1
@@ -138,11 +138,11 @@ while true
             if [ $try == $MAX_CHECKS ]; then
                 echo "ERROR: Connection to DB Failed. Number of retries [$try]. Max retries reached. Exiting"
                 exit 1
-            fi    
+            fi
             try=$[$try+1]
             sleep 30
         else
-            echo "INFO: Connection to DB Successful" 
+            echo "INFO: Connection to DB Successful"
             break
         fi
     done
