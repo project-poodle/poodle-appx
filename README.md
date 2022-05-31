@@ -8,6 +8,8 @@ This repo is an application builder that enables easy building of data schema,
 rest API, and UI
 
 
+[![UI Builder Demo](https://img.youtube.com/vi/StTqXEQ2l-Y/0.jpg)](https://www.youtube.com/watch?v=qh8iQMggC1w "UI Builder Demo")
+
 # Prerequisites
 
 - NodeJS __v14__ or above (ES module support)
